@@ -253,7 +253,7 @@ public class BaseController extends BaseService {
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
@@ -275,7 +275,7 @@ public class BaseController extends BaseService {
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -296,28 +296,24 @@ public class BaseController extends BaseService {
 	 * @param validationMessage 
 	 * 				the validation message
 	 */
-	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
-			StringBuilder validationMessage) {
+	protected void generateAlert(Pane parentPane, String id, String context) {
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
-		if (id.contains("ontype")) {
-			id = id.replaceAll("_ontype", "");
+		if (id.contains(RegistrationConstants.ONTYPE)) {
+			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
 		}
-		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
-			Label label = ((Label) (parentPane
-					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-			if (!label.isVisible()) {
-				label.setText(context);
-				Tooltip tool = new Tooltip(context);
-				tool.getStyleClass().add("toolTip");
-				label.setTooltip(tool);
-				label.setVisible(true);
-			}
-		} else {
-			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));
+		Label label = ((Label) (parentPane
+				.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
+		if (!label.isVisible()) {
+			label.setText(context);
+			Tooltip tool = new Tooltip(context);
+			tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
+			label.setTooltip(tool);
+			label.setVisible(true);
 		}
+	
 	}
 
 	/**
@@ -465,18 +461,18 @@ public class BaseController extends BaseService {
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_DATA);
 		SessionContext.map().remove(RegistrationConstants.IS_Child);
-		SessionContext.map().remove("dd");
-		SessionContext.map().remove("mm");
-		SessionContext.map().remove("yyyy");
-		SessionContext.map().remove("toggleAgeOrDob");
-		SessionContext.map().remove("demographicDetail");
-		SessionContext.map().remove("documentScan");
-		SessionContext.map().remove("fingerPrintCapture");
-		SessionContext.map().remove("biometricException");
-		SessionContext.map().remove("faceCapture");
-		SessionContext.map().remove("irisCapture");
-		SessionContext.map().remove("registrationPreview");
-		SessionContext.map().remove("operatorAuthenticationPane");
+		SessionContext.map().remove(RegistrationConstants.DD);
+		SessionContext.map().remove(RegistrationConstants.MM);
+		SessionContext.map().remove(RegistrationConstants.YYYY);
+		SessionContext.map().remove(RegistrationConstants.DOB_TOGGLE);
+		SessionContext.map().remove(RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		SessionContext.map().remove(RegistrationConstants.DOCUMENT_SCAN);
+		SessionContext.map().remove(RegistrationConstants.FINGERPRINT_CAPTURE);
+		SessionContext.map().remove(RegistrationConstants.BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.FACE_CAPTURE);
+		SessionContext.map().remove(RegistrationConstants.IRIS_CAPTURE);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PREVIEW);
+		SessionContext.map().remove(RegistrationConstants.OPERATOR_AUTHENTICATION);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
@@ -880,7 +876,7 @@ public class BaseController extends BaseService {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Redirecting to Home page after success onboarding");
-				returnPage = "";
+				returnPage = RegistrationConstants.EMPTY;
 			}			
 		}
 
@@ -904,10 +900,10 @@ public class BaseController extends BaseService {
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigating to next page");
 
 		if (notTosShow != null) {
-			((Pane) pageId.lookup("#" + notTosShow)).setVisible(false);
+			((Pane) pageId.lookup(RegistrationConstants.HASH + notTosShow)).setVisible(false);
 		}
 		if (show != null) {
-			((Pane) pageId.lookup("#" + show)).setVisible(true);
+			((Pane) pageId.lookup(RegistrationConstants.HASH + show)).setVisible(true);
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigated to next page");
@@ -936,9 +932,9 @@ public class BaseController extends BaseService {
 			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
 			if (isPacketsPendingForEOD()) {
-				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
+				message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
-			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
+			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
@@ -1018,7 +1014,7 @@ public class BaseController extends BaseService {
 		label.setLayoutX(60);
 		label.setLayoutY(9);
 		label.getStyleClass().clear();
-		label.getStyleClass().addAll(styleClass, "label");
+		label.getStyleClass().addAll(styleClass, RegistrationConstants.LABEL_SMALL_CASE);
 		Image img = new Image(imageUrl);
 		ImageView imageView = new ImageView();
 		imageView.setImage(img);

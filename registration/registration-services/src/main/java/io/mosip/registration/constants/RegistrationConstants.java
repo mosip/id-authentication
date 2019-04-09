@@ -169,7 +169,6 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
 	public static final String REGISTRATION_ISEDIT = "isEditPage";
 	public static final String IS_Child = "isChild";
-	public static final String IS_CONSOLIDATED = "isConsolidated";
 	public static final String ENABLE = "Y";
 	public static final String DISABLE = "N";
 	public static final String VALIDATION_SPLITTER = "\\s,";
@@ -187,6 +186,16 @@ public class RegistrationConstants {
 	public static final String REG_DDC_003_1 = "REG_DDC_003_1";
 	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
 	public static final String REG_DDC_004 = "REG_DDC_004";
+	public static final String AGE_FIELD = "ageField";
+	public static final String MOBILE_NUMBER = "mobileNo";
+	public static final String POSTAL_CODE = "postalCode";
+	public static final String CNI_OR_PIN = "cniOrPinNumber";
+	public static final String UIN_ID = "uinId";
+	public static final String EMAIL_ID = "emailId";
+	public static final String ONTYPE = "ontype";
+	public static final String TOOLTIP = "toolTip";
+
+	
 
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
@@ -267,6 +276,8 @@ public class RegistrationConstants {
 	public static final String ONHOLD_COMMENTS = "ONHOLD_COMMENTS";
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
 	public static final String EMPTY = "";
+	public static final String SPACE = " ";
+	public static final String UNDER_SCORE = "_";
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 	public static final String PENDING = "Pending";
 	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";
@@ -324,6 +335,7 @@ public class RegistrationConstants {
 	public static final String AGENCY_CODE = "2018";
 	public static final String STATION_NUMBER = "78213";
 	public static final String RID_DATE_FORMAT = "ddMMyyyyHHmmss";
+	public static final String DATE_FORMAT_REG = "dd-MM-yyyy";
 
 	// Logger - Constants
 	public static final String APPLICATION_ID = "REG";
@@ -987,7 +999,7 @@ public class RegistrationConstants {
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX = "^.{1,50}$";
-	public static final String MOBILE_NUMBER_REGEX = "\\d++";
+	public static final String NUMBER_REGEX = "\\d+";
 	public static final int MOBILE_NUMBER_LENGTH = 9;
 	public static final String EMAIL_ID_REGEX = "^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
 	public static final String EMAIL_ID_REGEX_INITIAL = "([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
@@ -996,6 +1008,8 @@ public class RegistrationConstants {
 	public static final String UIN_REGEX = "\\d{1,30}";
 	public static final String POSTAL_CODE_REGEX = "\\d{5}";
 	public static final String POSTAL_CODE_REGEX_INITIAL = "\\d{1,5}";
+	public static final String REGEX_ANY = ".*";
+	
 
 	// master sync
 	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
@@ -1213,6 +1227,8 @@ public class RegistrationConstants {
 	public static final String SYNC_DATA_FREQ = "mosip.registration.sync_data_freq";
 
 	public static final String LABEL = "Label";
+	public static final String LABEL_SMALL_CASE = "label";
+
 	public static final Object UI_SYNC_DATA = "mosip.registration.ui_sync_data";
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
@@ -1223,6 +1239,9 @@ public class RegistrationConstants {
 	public static final String DOB = "dob";
 	public static final String ERRORS = "errors";
 	public static final String ERROR_MSG ="message";
+	public static final String OK_MSG ="ok";
+	public static final String NEW_LINE ="\\n";
+
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";

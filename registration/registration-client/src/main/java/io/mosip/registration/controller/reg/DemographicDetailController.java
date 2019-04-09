@@ -650,7 +650,6 @@ public class DemographicDetailController extends BaseController {
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
-			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(true);
 			switchedOn.setValue(true);
 			isChild = false;
@@ -951,11 +950,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.onTypeFocusUnfocusListener(dobParentPane, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			int age = 0;
-				if (newValue.matches("\\d+")) {
+				if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
 					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
+								RegistrationUIConstants.MAX_AGE_WARNING + RegistrationConstants.SPACE + maxAge);
 					} else {
 						age = Integer.parseInt(ageField.getText());
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
@@ -1782,7 +1781,6 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	public void clickMe() {
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
 		fullName.setText("أيوب توفيق");
 		int age = 27;
@@ -1810,7 +1808,6 @@ public class DemographicDetailController extends BaseController {
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 	
 
@@ -1849,8 +1846,8 @@ public class DemographicDetailController extends BaseController {
 			if (validateThisPane()) {
 				if (!switchedOn.get()) {
 
-					if (dd.getText().matches("\\d+") && mm.getText().matches("\\d+")
-							&& yyyy.getText().matches("\\d+")) {
+					if (dd.getText().matches(RegistrationConstants.NUMBER_REGEX) && mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
+							&& yyyy.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
 
 						LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
 								Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
@@ -1896,7 +1893,7 @@ public class DemographicDetailController extends BaseController {
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
 
 		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
-			SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat dateOfBirth = new SimpleDateFormat(RegistrationConstants.DATE_FORMAT_REG);
 			dateOfBirth.setLenient(false);
 			try {
 				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
@@ -1915,7 +1912,6 @@ public class DemographicDetailController extends BaseController {
 		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
-		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 
 		return isValid;
 	}

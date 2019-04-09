@@ -238,12 +238,12 @@ public class LoginController extends BaseController implements Initializable {
 			scene = getScene(loginRoot);
 			pageFlow.getInitialPageDetails();
 			primaryStage.setResizable(true);
-			primaryStage.setFullScreen(true);
-			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			//primaryStage.setFullScreen(true);
+			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			executePreLaunchTask(loginRoot);
+			//executePreLaunchTask(loginRoot);
 
 		} catch (IOException ioException) {
 
@@ -484,7 +484,7 @@ public class LoginController extends BaseController implements Initializable {
 		auditFactory.audit(AuditEvent.LOGIN_SUBMIT_OTP, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		if (validations.validateTextField(otpPane, otp, otp.getId(), RegistrationConstants.DISABLE)) {
+		if (validations.validateTextField(otpPane, otp, otp.getId())) {
 
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
 

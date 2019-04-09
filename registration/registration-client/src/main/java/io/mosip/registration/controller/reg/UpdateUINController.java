@@ -113,7 +113,6 @@ public class UpdateUINController extends BaseController implements Initializable
 
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
-			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
