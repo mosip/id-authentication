@@ -785,7 +785,7 @@ public class DemographicService {
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() == null) {
 				bookingRegistrationDTO = respEntity.getBody().getResponse();
 			}
