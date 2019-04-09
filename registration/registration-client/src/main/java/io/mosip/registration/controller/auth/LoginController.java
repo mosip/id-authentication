@@ -1113,9 +1113,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	private void removeLoginParam(String disableFlag, String loginMethod) {
 
-		if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)) {
-			loginList.removeIf(login -> login.equalsIgnoreCase(loginMethod));
-		}
+		loginList.removeIf(login -> loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)
+				&& login.equalsIgnoreCase(loginMethod));
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Ignoring login method if the configuration is off");

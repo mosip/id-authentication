@@ -958,14 +958,23 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	}
 
+	/**
+	 * This method will remove the auth method from list
+	 * 
+	 * @param authList
+	 * 			authentication list
+	 * @param disableFlag
+	 *            configuration flag
+	 * @param authCode
+	 *            auth mode
+	 */
 	private void removeAuthModes(List<String> authList, String flag, String authCode) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 				"Ignoring FingerPrint, Iris, Face Authentication if the configuration is off");
 
-		if (authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)) {
-			authList.removeIf(auth -> auth.equalsIgnoreCase(authCode));
-		}
+		authList.removeIf(auth -> authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)
+				&& auth.equalsIgnoreCase(authCode));
 	}
 
 }
