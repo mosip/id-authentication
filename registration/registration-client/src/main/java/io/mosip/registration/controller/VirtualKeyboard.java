@@ -249,8 +249,7 @@ public class VirtualKeyboard {
 				unshifted.length() == 1 && Character.isLetter(unshifted.charAt(0)));
 		final StringBinding text = Bindings.when(modifiers.shiftDown().or(modifiers.capsLockOn().and(letter)))
 				.then(shifted).otherwise(unshifted);
-		Button button = createButton(text, code, modifiers, target);
-		return button;
+		return createButton(text, code, modifiers, target);
 	}
 
 	private Button createNonshiftableButton(final String text, final KeyCode code, final Modifiers modifiers,

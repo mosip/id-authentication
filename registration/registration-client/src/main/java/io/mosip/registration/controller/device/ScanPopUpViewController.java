@@ -159,7 +159,7 @@ public class ScanPopUpViewController extends BaseController {
 				documentScanController.attachScannedDocument(popupStage);
 			} catch (IOException ioException) {
 				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			}
 		}
 
