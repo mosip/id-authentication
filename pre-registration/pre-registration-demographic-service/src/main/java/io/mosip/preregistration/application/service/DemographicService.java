@@ -884,8 +884,8 @@ public class DemographicService {
 					}, params);
 
 			if (responseEntity.getBody().getErrors() != null) {
-				if (!responseEntity.getBody().getErrors().getMessage()
-						.equalsIgnoreCase(ErrorMessages.DOCUMENT_IS_MISSING.getMessage())) {
+				if (!responseEntity.getBody().getErrors().getErrorCode()
+						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
 					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErrors().getErrorCode(),
 							responseEntity.getBody().getErrors().getMessage());
 				}
@@ -930,7 +930,7 @@ public class DemographicService {
 
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
 					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
-					.queryParam("pre_registration_id", preregId);
+					.queryParam("preRegistrationId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
