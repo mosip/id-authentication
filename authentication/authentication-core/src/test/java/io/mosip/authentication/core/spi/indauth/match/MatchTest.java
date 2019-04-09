@@ -125,7 +125,7 @@ public class MatchTest {
 		assertNotNull(authType.isAssociatedMatchType(matchType));
 		Environment environment = null;
 		String newlanguageInfoFetcher = null;
-		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment);
+		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment, languageInfoFetcher);
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class MatchTest {
 		};
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identity);
-		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(requestDTO);
+		matchType.getIdentityInfoList(requestDTO);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);

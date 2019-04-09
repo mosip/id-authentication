@@ -76,7 +76,7 @@ public interface AuthType {
 	 * @return the matching threshold
 	 */
 	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String language,
-			Environment environment) {
+			Environment environment, IdInfoFetcher idInfoFetcher) {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
 

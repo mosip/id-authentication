@@ -104,16 +104,8 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-				Environment environment) {
-
-			String bioType = getType();
-			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(COMPOSITE_THRESHOLD);
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				threshold = Integer.parseInt(property);
-			}
-			return Optional.ofNullable(threshold);
+				Environment environment, IdInfoFetcher idInfoFetcher) {
+			return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(COMPOSITE_THRESHOLD));
 		}
 
 		@Override
@@ -139,16 +131,8 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-				Environment environment) {
-
-			String bioType = getType();
-			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(COMPOSITE_THRESHOLD);
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				threshold = Integer.parseInt(property);
-			}
-			return Optional.ofNullable(threshold);
+				Environment environment, IdInfoFetcher idInfoFetcher) {
+			return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(COMPOSITE_THRESHOLD));
 		}
 
 		@Override
@@ -323,16 +307,8 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-			Environment environment) {
-
-		String bioType = getType();
-		Integer threshold = null;
-		String key = bioType.toLowerCase().concat(SINGLE_THRESHOLD);
-		String property = environment.getProperty(key);
-		if (property != null && !property.isEmpty()) {
-			threshold = Integer.parseInt(property);
-		}
-		return Optional.ofNullable(threshold);
+			Environment environment, IdInfoFetcher idInfoFetcher) {
+		return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(SINGLE_THRESHOLD));
 	}
 
 	/*

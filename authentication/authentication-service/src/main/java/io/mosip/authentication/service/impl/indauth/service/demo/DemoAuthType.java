@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -103,19 +101,6 @@ public enum DemoAuthType implements AuthType {
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
 		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(authTypePredicate).isPresent();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getMatchingThreshold(io.mosip.authentication.core.dto.indauth.AuthRequestDTO,
-	 * java.util.function.Function)
-	 */
-	@Override
-	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			String language, Environment environment) {
-		return Optional.of(AuthType.DEFAULT_MATCHING_THRESHOLD);
 	}
 
 	/*
