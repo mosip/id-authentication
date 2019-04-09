@@ -47,8 +47,8 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.integration.TokenIdManager;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -132,13 +132,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private PinAuthService pinAuthService;
 
-	/** The TokenId Generator */
-	@Autowired
-	private TokenIdGenerator<String> tokenIdGenerator;
-
 	/** The Id Info Fetcher */
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
+
+	/** The TokenId manager */
+	@Autowired
+	private TokenIdManager tokenIdManager;
 
 	/*
 	 * (non-Javadoc)
@@ -163,12 +163,12 @@ public class AuthFacadeImpl implements AuthFacade {
 		String uin = String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			// FIXME temporary fix for the api change
-//			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
-			staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
+			staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
+
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -429,7 +429,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
+			String strUTCDate = DateUtils
+					.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());

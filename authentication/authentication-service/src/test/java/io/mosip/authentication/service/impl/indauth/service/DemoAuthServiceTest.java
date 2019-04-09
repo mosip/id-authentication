@@ -105,11 +105,6 @@ public class DemoAuthServiceTest {
 	}
 
 	@Test
-	public void test() {
-		System.err.println(environment.getProperty("mosip.secondary-language"));
-	}
-
-	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -153,8 +148,6 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
-		System.err.println(listMatchInputsExp);
-		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp, listMatchInputsActual);
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
@@ -258,8 +251,6 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
-//		System.err.println(listMatchInputsExp);
-//		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 

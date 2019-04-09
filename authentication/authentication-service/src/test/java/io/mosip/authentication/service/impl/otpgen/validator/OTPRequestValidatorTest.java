@@ -235,7 +235,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setTransactionID("TXN0000001");
 		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		System.err.println(Instant.now() + toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 	}

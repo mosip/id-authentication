@@ -338,8 +338,6 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
 	}
 
 	@Test
@@ -591,8 +589,6 @@ public class BioAuthServiceTest {
 	 * Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(),
 	 * Mockito.any())) .thenReturn(cbeffValueMap); AuthStatusInfo validateBioDetails
 	 * = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
-	 * System.err.println(validateBioDetails.isStatus());
-	 * System.err.println(validateBioDetails.getErr()); }
 	 */
 
 	@Test
@@ -653,8 +649,6 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
 	}
 
 	@Test

@@ -68,7 +68,6 @@ public class FingerPrintMatchingStrategyTest {
 		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(FingerprintProvider.class.getSimpleName(), "Test");
 		int value3 = matchFunction.match(value, value, matchProperties);
-		System.err.println(value3);
 
 	}
 

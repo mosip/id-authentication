@@ -69,8 +69,8 @@ import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.authentication.service.integration.TokenIdManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -110,6 +110,7 @@ public class AuthFacadeImplTest {
 	/** The KycService **/
 	@Mock
 	private KycService kycService;
+	
 	/** The IdInfoHelper **/
 	@Mock
 	private IdInfoHelper idInfoHelper;
@@ -156,9 +157,9 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private PinAuthService pinAuthService;
-
+	
 	@Mock
-	private TokenIdGenerator<String> tokenIdGenerator;
+	private TokenIdManager tokenIdManager;
 
 	/**
 	 * Before.
@@ -166,7 +167,7 @@ public class AuthFacadeImplTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
-		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdGenerator", tokenIdGenerator);
+		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdManager", tokenIdManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
@@ -278,7 +279,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
@@ -750,7 +751,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
@@ -837,7 +838,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);

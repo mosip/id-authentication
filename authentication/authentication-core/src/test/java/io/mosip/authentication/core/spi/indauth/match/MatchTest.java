@@ -81,9 +81,6 @@ public class MatchTest {
 		assertFalse(authTypeInfoAvailable);
 		IdInfoFetcher languageInfoFetcher = null;
 		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
-		System.err.println(matchProperties);
-		System.err.println(authType.getDisplayName());
-		System.err.println(authType.getAssociatedMatchTypes());
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();

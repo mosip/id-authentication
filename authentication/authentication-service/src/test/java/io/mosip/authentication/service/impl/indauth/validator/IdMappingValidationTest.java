@@ -107,7 +107,6 @@ public class IdMappingValidationTest {
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -177,7 +176,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -196,7 +194,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors.hasErrors());
 		assertTrue(errors.hasErrors());
 	}
 

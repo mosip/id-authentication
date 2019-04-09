@@ -32,7 +32,9 @@ public enum RestServicesConstants {
 
 	DECRYPTION_SERVICE("decrypt-service"),
 	
-	TITLE_SERVICE("id-masterdata-title-service");
+	TITLE_SERVICE("id-masterdata-title-service"),
+	
+	TOKEN_ID_GENERATOR("token-id-generator");
 
 	/** The service name. */
 	private final String serviceName;
