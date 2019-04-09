@@ -351,7 +351,6 @@ public class RegistrationStatusServiceImpl
 				entity.getRetryCount());
 		String mappedValue = registrationExternalStatusCode.toString();
 		
-		registrationStatusDto.setRetryCount(retryCount);
 		registrationStatusDto.setStatusCode(mappedValue);
 		return registrationStatusDto;
 	}
