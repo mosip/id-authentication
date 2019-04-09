@@ -170,7 +170,6 @@ public class RegistrationStatusServiceTest {
 
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(
-				ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(RegistrationExternalStatusCode.PROCESSED);
 		RegistrationStatusSubRequestDto registrationId = new RegistrationStatusSubRequestDto();
 		registrationId.setRegistrationId("1001");
