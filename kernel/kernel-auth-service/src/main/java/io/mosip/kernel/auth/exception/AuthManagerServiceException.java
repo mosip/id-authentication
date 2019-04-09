@@ -9,7 +9,7 @@ import java.util.List;
 import io.mosip.kernel.core.exception.ServiceError;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 public class AuthManagerServiceException extends RuntimeException {
