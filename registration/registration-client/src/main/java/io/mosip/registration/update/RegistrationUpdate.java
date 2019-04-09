@@ -62,7 +62,7 @@ public class RegistrationUpdate {
 	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
-		
+
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
@@ -231,22 +231,18 @@ public class RegistrationUpdate {
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
 
 		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
-		} else if (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest) && jarInFolder.delete()) {
-			
-			// Download Jar
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());}
-		
-		
+		}
 
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
-		System.out.println("Downloading  "+jarName);
 		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
 
 	}
@@ -294,7 +290,6 @@ public class RegistrationUpdate {
 			return serverManifest;
 		}
 
-		System.out.println("Dwonloading "+serverRegClientURL + getLatestVersion() + SLASH + manifestFile);
 		// Get latest Manifest from server
 		setServerManifest(
 				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
@@ -318,7 +313,7 @@ public class RegistrationUpdate {
 	public void setLatestVersion(String latestVersion) {
 		this.latestVersion = latestVersion;
 	}
-	
+
 	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
 		String checkSum;
 		try {
@@ -328,7 +323,6 @@ public class RegistrationUpdate {
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
-			ioException.printStackTrace();
 			return false;
 		}
 

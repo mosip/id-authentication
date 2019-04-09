@@ -66,7 +66,6 @@ public class RegistrationUpdate {
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		System.out.println("Getting latest Version");
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
@@ -101,7 +100,6 @@ public class RegistrationUpdate {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
-		System.out.println("Getting current Version  " + currentVersion);
 		return currentVersion;
 	}
 
@@ -182,16 +180,13 @@ public class RegistrationUpdate {
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
 
 		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
-		} else if (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-				&& jarInFolder.delete()) {
-
-			// Download Jar
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 		}
 
 	}
@@ -307,13 +302,11 @@ public class RegistrationUpdate {
 		String checkSum;
 		try {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
-			System.out.println(jarFile.getName());
 			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
 					.get(Attributes.Name.CONTENT_TYPE);
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
-			ioException.printStackTrace();
 			return false;
 		}
 
