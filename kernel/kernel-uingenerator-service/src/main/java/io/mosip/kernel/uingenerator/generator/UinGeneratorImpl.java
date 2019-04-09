@@ -1,6 +1,5 @@
 package io.mosip.kernel.uingenerator.generator;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +45,7 @@ public class UinGeneratorImpl implements UinGenerator {
 	/**
 	 * The logger instance
 	 */
-	private static final Logger LOGGER =
-	LoggerFactory.getLogger(UinGeneratorImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorImpl.class);
 
 	/**
 	 * Field for number of uins to generate
@@ -67,11 +65,9 @@ public class UinGeneratorImpl implements UinGenerator {
 	/**
 	 * Constructor to set {@link #uinsCount} and {@link #uinLength}
 	 * 
-	 * @param uinsCount
-	 *            The number of uins to generate
-	 * @param uinLength
-	 *            The length of the uin
-	 * 
+	 * @param uinsCount        The number of uins to generate
+	 * @param uinLength        The length of the uin
+	 * @param uinDefaultStatus The Default value of the uin
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
 			@Value("${mosip.kernel.uin.length}") int uinLength) {
@@ -99,13 +95,12 @@ public class UinGeneratorImpl implements UinGenerator {
 			if (uinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
 				metaDataUtil.setCreateMetaData(uinBean);
-				//try {
-					uinWriter.persistUin(uinBean);
-					uinCount++;
-				/*} catch (Exception e) {
-					//Skinping on PK violation 
-					e.printStackTrace();
-				}*/
+				// try {
+				uinWriter.persistUin(uinBean);
+				uinCount++;
+				/*
+				 * } catch (Exception e) { //Skinping on PK violation e.printStackTrace(); }
+				 */
 			}
 		}
 		uinWriter.closeSession();
@@ -115,12 +110,9 @@ public class UinGeneratorImpl implements UinGenerator {
 	/**
 	 * Generates a id and then generate checksum
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id to generate
-	 * @param lowerBound
-	 *            The lowerbound for generating id
-	 * @param upperBound
-	 *            The upperbound for generating id
+	 * @param generatedIdLength The length of id to generate
+	 * @param lowerBound        The lowerbound for generating id
+	 * @param upperBound        The upperbound for generating id
 	 * @return the uin with checksum
 	 */
 	private String generateSingleId(int generatedIdLength, long lowerBound, long upperBound) {
@@ -132,12 +124,9 @@ public class UinGeneratorImpl implements UinGenerator {
 	/**
 	 * Appends a checksum to generated id
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id
-	 * @param generatedID
-	 *            The generated id
-	 * @param verhoeffDigit
-	 *            The checksum to append
+	 * @param generatedIdLength The length of id
+	 * @param generatedID       The generated id
+	 * @param verhoeffDigit     The checksum to append
 	 * @return uin with checksum
 	 */
 	private String appendChecksum(int generatedIdLength, Long generatedID, String verhoeffDigit) {

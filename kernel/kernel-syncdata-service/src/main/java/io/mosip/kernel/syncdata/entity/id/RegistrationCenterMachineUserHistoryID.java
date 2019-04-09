@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** ID class for Registration Center User Machine History
+/**
+ * ID class for Registration Center User Machine History
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -22,12 +24,12 @@ import lombok.NoArgsConstructor;
 public class RegistrationCenterMachineUserHistoryID implements Serializable {
 
 	/**
-	 *  Generated serial version
+	 * Generated serial version
 	 */
 	private static final long serialVersionUID = -1169819225048676557L;
 
 	/**
-	 *  Center Id
+	 * Center Id
 	 */
 	@Column(name = "regcntr_id", nullable = false, length = 10)
 	private String cntrId;
@@ -43,12 +45,11 @@ public class RegistrationCenterMachineUserHistoryID implements Serializable {
 	 */
 	@Column(name = "machine_id", nullable = false, length = 36)
 	private String machineId;
-	
+
 	/**
 	 * Effective TimeStamp
 	 */
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;
-
 
 }

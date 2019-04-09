@@ -27,6 +27,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -120,7 +121,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidSpecEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
@@ -145,7 +146,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testMethodArgumentNotValidException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -161,7 +162,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidFormatException() throws Exception {
 		String requestBody = "{\r\n" + "\"id\":\"\",\r\n" + "\"version\":\"\",\r\n" + "\"requesttime\":\"\",\r\n"
@@ -172,7 +173,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testIllegalArgumentException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -188,7 +189,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testEncryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
@@ -212,7 +213,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testDecryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();

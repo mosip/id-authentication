@@ -23,6 +23,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class EncryptorTest {
@@ -44,8 +45,7 @@ public class EncryptorTest {
 
 	}
 
-	private SecretKeySpec setSymmetricUp(int length, String algo)
-			throws java.security.NoSuchAlgorithmException {
+	private SecretKeySpec setSymmetricUp(int length, String algo) throws java.security.NoSuchAlgorithmException {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[length];
 		random.nextBytes(keyBytes);
@@ -54,22 +54,17 @@ public class EncryptorTest {
 
 	@Test
 	public void testRSAPKS1AsymmetricPrivateEncrypt() {
-		assertThat(encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(),
-				data), isA(byte[].class));
+		assertThat(encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data), isA(byte[].class));
 	}
 
 	@Test
 	public void testRSAPKS1AsymmetricPublicEncrypt() {
-		assertThat(encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(),
-				data), isA(byte[].class));
+		assertThat(encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(), data), isA(byte[].class));
 	}
 
 	@Test
-	public void testAESSymmetricEncrypt()
-			throws java.security.NoSuchAlgorithmException {
-		assertThat(
-				encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data),
-				isA(byte[].class));
+	public void testAESSymmetricEncrypt() throws java.security.NoSuchAlgorithmException {
+		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data), isA(byte[].class));
 	}
 
 	@Test(expected = InvalidKeyException.class)
@@ -84,13 +79,11 @@ public class EncryptorTest {
 
 	@Test(expected = InvalidDataException.class)
 	public void testRSAPKS1AsymmetricInvalidData() {
-		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(),
-				"".getBytes());
+		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), "".getBytes());
 	}
 
 	@Test(expected = InvalidKeyException.class)
-	public void testAESSymmetricEncryptInvalidKey()
-			throws java.security.NoSuchAlgorithmException {
+	public void testAESSymmetricEncryptInvalidKey() throws java.security.NoSuchAlgorithmException {
 		encryptorImpl.symmetricEncrypt(null, data);
 	}
 

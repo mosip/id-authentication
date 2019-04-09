@@ -88,8 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
         return filter;
     }
-
-
+	
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;

@@ -1,12 +1,9 @@
 package io.mosip.kernel.syncdata.exception;
 
-
-
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
-
 
 public class AuthManagerServiceException extends BaseUncheckedException {
 	/**
@@ -20,8 +17,7 @@ public class AuthManagerServiceException extends BaseUncheckedException {
 	private final List<ServiceError> list;
 
 	/**
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public AuthManagerServiceException(List<ServiceError> list) {
 		this.list = list;

@@ -61,15 +61,11 @@ public class RestRequestBuilder {
 	/**
 	 * Builds the request.
 	 *
-	 * @param restService
-	 *            the rest service
-	 * @param requestBody
-	 *            the request body
-	 * @param returnType
-	 *            the return type
+	 * @param restService the rest service
+	 * @param requestBody the request body
+	 * @param returnType  the return type
 	 * @return the rest request DTO
-	 * @throws IdRepoDataValidationException
-	 *             the ID data validation exception
+	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	public RestRequestDTO buildRequest(RestServicesConstants restService, Object requestBody, Class<?> returnType)
 			throws IdRepoDataValidationException {
@@ -142,14 +138,10 @@ public class RestRequestBuilder {
 	/**
 	 * Construct params.
 	 *
-	 * @param paramMap
-	 *            the param map
-	 * @param pathVariables
-	 *            the path variables
-	 * @param headers
-	 *            the headers
-	 * @param serviceName
-	 *            the service name
+	 * @param paramMap      the param map
+	 * @param pathVariables the path variables
+	 * @param headers       the headers
+	 * @param serviceName   the service name
 	 */
 	private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 			HttpHeaders headers, String serviceName) {
@@ -178,12 +170,9 @@ public class RestRequestBuilder {
 	/**
 	 * Check return type.
 	 *
-	 * @param returnType
-	 *            the return type
-	 * @param request
-	 *            the request
-	 * @throws IdRepoDataValidationException
-	 *             the ID data validation exception
+	 * @param returnType the return type
+	 * @param request    the request
+	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	private void checkReturnType(Class<?> returnType, RestRequestDTO request) throws IdRepoDataValidationException {
 		if (returnType != null) {
@@ -200,12 +189,9 @@ public class RestRequestBuilder {
 	/**
 	 * Check http method.
 	 *
-	 * @param request
-	 *            the request
-	 * @param httpMethod
-	 *            the http method
-	 * @throws IdRepoDataValidationException
-	 *             the ID data validation exception
+	 * @param request    the request
+	 * @param httpMethod the http method
+	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IdRepoDataValidationException {
 		if (!StringUtils.isEmpty(httpMethod)) {
@@ -221,12 +207,9 @@ public class RestRequestBuilder {
 	/**
 	 * Check uri.
 	 *
-	 * @param request
-	 *            the request
-	 * @param uri
-	 *            the uri
-	 * @throws IdRepoDataValidationException
-	 *             the ID data validation exception
+	 * @param request the request
+	 * @param uri     the uri
+	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IdRepoDataValidationException {
 		if (!StringUtils.isEmpty(uri)) {

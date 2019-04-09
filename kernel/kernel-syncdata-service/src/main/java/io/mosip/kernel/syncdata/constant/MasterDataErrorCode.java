@@ -1,11 +1,11 @@
 package io.mosip.kernel.syncdata.constant;
 
 public enum MasterDataErrorCode {
-	LAST_UPDATED_PARSE_EXCEPTION("KER_SYNC-100","Erro occurred while parsing lastUpdated timesatamp"),
-	APPLICATION_FETCH_EXCEPTION("KER-SYNC-101","Error occurred while fetching Applications"), 
-	MACHINE_DETAIL_FETCH_EXCEPTION("KER-SYNC-102","Error occurred while fetching Machine Details"), 
-	MACHINE_REG_CENTER_FETCH_EXCEPTION("KER-SYNC-103","Error occurred while fetching Machine Registration Center"), 
-	REG_CENTER_FETCH_EXCEPTION("KER-SYNC-104","Error occurred while fetching Registration Center"), 
+	LAST_UPDATED_PARSE_EXCEPTION("KER_SYNC-100", "Erro occurred while parsing lastUpdated timesatamp"),
+	APPLICATION_FETCH_EXCEPTION("KER-SYNC-101", "Error occurred while fetching Applications"),
+	MACHINE_DETAIL_FETCH_EXCEPTION("KER-SYNC-102", "Error occurred while fetching Machine Details"),
+	MACHINE_REG_CENTER_FETCH_EXCEPTION("KER-SYNC-103", "Error occurred while fetching Machine Registration Center"),
+	REG_CENTER_FETCH_EXCEPTION("KER-SYNC-104", "Error occurred while fetching Registration Center"),
 	REG_CENTER_TYPE_FETCH_EXCEPTION("KER-SYNC-105", "Error occurred while fetching Registration Center Type"),
 	TEMPLATE_FETCH_EXCEPTION("KER-SYNC-106", "Error occurred while fetching Templates"),
 	TEMPLATE_TYPE_FETCH_EXCEPTION("KER-SYNC-107", "Error occurred while fetching Template Types"),
@@ -17,7 +17,8 @@ public enum MasterDataErrorCode {
 	TITLE_FETCH_EXCEPTION("KER-SYNC-113", "Error occurred while fetching Titles"),
 	LANGUAGE_FETCH_EXCEPTION("KER-SYNC-114", "Error occurred while fetching Languages"),
 	GENDER_FETCH_EXCEPTION("KER-SYNC-115", "Error occurred while fetching Genders"),
-	REGISTARTION_CENTER_DEVICES_FETCH_EXCEPTION("KER-SYNC-116", "Error occurred while fetching Registration Center Devices"),
+	REGISTARTION_CENTER_DEVICES_FETCH_EXCEPTION("KER-SYNC-116",
+			"Error occurred while fetching Registration Center Devices"),
 	DEVICES_FETCH_EXCEPTION("KER-SYNC-117", "Error occurred while fetching Devices"),
 	DOCUMENT_CATEGORY_FETCH_EXCEPTION("KER-SYNC-118", "Error occurred while fetching Document Category"),
 	DOCUMENT_TYPE_FETCH_EXCEPTION("KER-SYNC-119", "Error occurred while fetching Document Type"),

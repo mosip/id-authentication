@@ -25,9 +25,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
@@ -131,8 +133,9 @@ import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.utils.SigningUtil;
+import io.mosip.kernel.syncdata.test.TestBootApplication;
 
-@SpringBootTest
+@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class SyncDataIntegrationTest {
@@ -513,6 +516,26 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserMachineHistory = new ArrayList<>();
 		registrationCenterUserMachineHistory
 				.add(new RegistrationCenterUserMachineHistory("10001", "1001", "10001", LocalDateTime.now(), "eng"));
+
+		registrationCenterDeviceHistory = new ArrayList<>();
+		registrationCenterDeviceHistory.add(new RegistrationCenterDeviceHistory(
+				new RegistrationCenterDeviceHistoryPk("1001", "1001", LocalDateTime.now()), "eng"));
+
+		registrationCenterMachineDeviceHistory = new ArrayList<>();
+		registrationCenterMachineDeviceHistory.add(new RegistrationCenterMachineDeviceHistory(
+				new RegistrationCenterMachineDeviceHistoryID("1001", "1001", "1001", LocalDateTime.now()), "eng"));
+
+		registrationCenterMachineHistory = new ArrayList<>();
+		registrationCenterMachineHistory.add(new RegistrationCenterMachineHistory(
+				new RegistrationCenterMachineHistoryID("1001", "1001", LocalDateTime.now()), "eng"));
+
+		registrationCenterUserHistory = new ArrayList<>();
+		registrationCenterUserHistory
+				.add(new RegistrationCenterUserHistory("1001", "1001", LocalDateTime.now(), "eng"));
+
+		registrationCenterUserMachineHistory = new ArrayList<>();
+		registrationCenterUserMachineHistory
+				.add(new RegistrationCenterUserMachineHistory("10001", "1001", "10001", LocalDateTime.now(), "eng"));
 		IndividualType individualType = new IndividualType();
 		CodeAndLanguageCodeID codeLangCode = new CodeAndLanguageCodeID();
 		codeLangCode.setCode("FR");
@@ -715,19 +738,93 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF"); 
 	}
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void testGetConfig() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
+				"mosip.kernel.syncdata.global-config-file");
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		mockMvc.perform(get("/configs")).andExpect(status().isOk());
+	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void testGlobalConfig() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
+				"mosip.kernel.syncdata.global-config-file");
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
+	}
+
+	@WithUserDetails(value = "reg-officer")
+	@Test
+	public void testGlobalConfigExceptionTest() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+	}
+
+	@WithUserDetails(value = "reg-officer")
+	@Test
+	public void testGlobalConfigServiceExceptionTest() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
+				"mosip.kernel.syncdata.global-config-file");
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenThrow(HttpServerErrorException.class);
+
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+	}
+	// @Test
+	// public void testGlobalConfigExceptionTest() throws Exception {
+	// ReflectionTestUtils.setField(syncConfigDetailsService,
+	// "globalConfigFileName", null);
+	// when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+	// .thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+	//
+	// when(restTemplate.getForObject(Mockito.anyString(),
+	// Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+	// mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+	// }
+	// @Test
+	// public void testGlobalConfigServiceExceptionTest() throws Exception {
+	// ReflectionTestUtils.setField(syncConfigDetailsService,
+	// "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
+	// when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+	// .thenThrow(HttpServerErrorException.class);
+	// mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+	// }
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void testRegistrationConfig() throws Exception {
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccess() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void syncMasterDataSuccessWithSerialNum() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlSerialNum)).andExpect(status().isOk());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void syncMasterDataSuccessWithMachAddress() throws Exception {
 		mockSuccess();
@@ -736,18 +833,21 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccessWithRegId() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccessWithlastUpadtedTimestamp() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
 		mockMvc.perform(
@@ -756,6 +856,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataApplicationFetchException() throws Exception {
 		mockSuccess();
 		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -764,6 +865,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineFetchException() throws Exception {
 		mockSuccess();
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -772,6 +874,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineSpecFetchException() throws Exception {
 		mockSuccess();
 		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -780,6 +883,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineTypeFetchException() throws Exception {
 		mockSuccess();
 		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -788,6 +892,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataDeviceFetchException() throws Exception {
 		mockSuccess();
 		when(deviceRepository.findLatestDevicesByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -796,6 +901,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataDeviceSpecFetchException() throws Exception {
 		mockSuccess();
 		when(deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(),
@@ -804,6 +910,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataDeviceTypeFetchException() throws Exception {
 		mockSuccess();
 		when(deviceTypeRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -812,6 +919,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataTemplateFetchException() throws Exception {
 		mockSuccess();
 		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -820,6 +928,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataTemplateFileFormatFetchException() throws Exception {
 		mockSuccess();
 		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -828,6 +937,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataTemplateTypeFetchException() throws Exception {
 		mockSuccess();
 		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -836,6 +946,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataHolidayFetchException() throws Exception {
 		mockSuccess();
 		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
@@ -844,6 +955,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataBiometricAttrFetchException() throws Exception {
 		mockSuccess();
 		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -852,6 +964,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataBiometricTypeFetchException() throws Exception {
 		mockSuccess();
 		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -860,6 +973,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataDocCategoryFetchException() throws Exception {
 		mockSuccess();
 		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -868,6 +982,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataDocTypeFetchException() throws Exception {
 		mockSuccess();
 		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -876,6 +991,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataLanguageFetchException() throws Exception {
 		mockSuccess();
 		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -884,6 +1000,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataGenderFetchException() throws Exception {
 		mockSuccess();
 		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -892,6 +1009,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataLocationFetchException() throws Exception {
 		mockSuccess();
 		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -900,6 +1018,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataIdTypesFetchException() throws Exception {
 		mockSuccess();
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -908,6 +1027,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any(),
@@ -916,6 +1036,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterTypeFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
@@ -924,6 +1045,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataValidFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
@@ -932,6 +1054,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataBlackListedWordFetchException() throws Exception {
 		mockSuccess();
 		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -940,6 +1063,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataReasonCatFetchException() throws Exception {
 		mockSuccess();
 		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -948,6 +1072,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataReasonListFetchException() throws Exception {
 		mockSuccess();
 		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -956,6 +1081,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataTitleFetchException() throws Exception {
 		mockSuccess();
 		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -964,6 +1090,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDatavalidDocumentFetchException() throws Exception {
 		mockSuccess();
 		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -972,6 +1099,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterMachineFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(),
@@ -980,6 +1108,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterDeviceFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
@@ -990,6 +1119,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterMachineDeviceFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineDeviceRepository
@@ -999,6 +1129,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterUserMachineFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserMachineRepository
@@ -1008,6 +1139,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterUserFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(),
@@ -1016,6 +1148,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterUserHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
@@ -1024,6 +1157,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterUserMachineHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserMachineHistoryRepository
@@ -1033,6 +1167,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterMachineHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),
@@ -1041,6 +1176,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterDeviceHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterDeviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(),
@@ -1049,6 +1185,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterMachineDeviceHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineDeviceHistoryRepository
@@ -1058,11 +1195,33 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
 				.thenReturn(new ArrayList<RegistrationCenterUser>());
 
 		mockMvc.perform(get("/registrationcenteruser/1")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+
+	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
+		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
+	}
+
+	// @Test
+	// @WithUserDetails(value = "reg-officer")
+	public void IsMachineIdPresentDataNotFoundTest() throws Exception {
+		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(new ArrayList<Machine>());
+		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isOk());
 	}
 
 	/*
@@ -1073,7 +1232,9 @@ public class SyncDataIntegrationTest {
 	 * mockMvc.perform(get(syncDataUrlWithRegId,
 	 * "1001")).andExpect(status().isInternalServerError()); }
 	 */
+
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void findApplicantValidDocServiceExceptionTest() throws Exception {
 		mockSuccess();
 		when(applicantValidDocumentRespository.findAllByTimeStamp(Mockito.any(), Mockito.any()))
@@ -1082,6 +1243,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void individualTypeExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1092,6 +1254,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void registrationCetnerDevicesServiceExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1102,6 +1265,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void registrationCenterTest() throws Exception {
 
 		mockSuccess();
@@ -1112,6 +1276,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void registrationCenterMachineExceptionTest() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
@@ -1120,6 +1285,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void registrationCenterMachineNullTest() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
@@ -1128,6 +1294,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void noMacAddressAndNoSNoNumTest() throws Exception {
 		mockSuccess();
 
@@ -1135,6 +1302,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterdataWithServiceException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
@@ -1143,6 +1311,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-admin")
 	public void syncMasterdataWithMachineListEmptyException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
@@ -1151,6 +1320,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void appAuthMethodExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1162,6 +1332,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void appDetailExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1173,6 +1344,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void appPriorityExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1184,6 +1356,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void screenAuthExceptionTest() throws Exception {
 
 		mockSuccess();
@@ -1195,6 +1368,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void processListExceptionTest() throws Exception {
 
 		mockSuccess();

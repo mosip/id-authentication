@@ -35,8 +35,7 @@ public class JsonUtilTest {
 	ParentCar2 parentCar2;
 
 	@Test
-	public void testJavaObjectToJsonFile()
-			throws JsonGenerationException, JsonMappingException, IOException {
+	public void testJavaObjectToJsonFile() throws JsonGenerationException, JsonMappingException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sample.json").getFile());
 		assertThat(JsonUtils.javaObjectToJsonFile(car, file.getAbsolutePath()), is(true));
@@ -52,8 +51,7 @@ public class JsonUtilTest {
 	}
 
 	@Test
-	public void testJsonStringToJavaObject()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void testJsonStringToJavaObject() throws JsonParseException, JsonMappingException, IOException {
 		Car car2 = (Car) JsonUtils.jsonStringToJavaObject(Car.class, JsonUtilTestConstants.json);
 		assertNotNull(car2);
 		assertThat(car2.getColor(), is("Black"));
@@ -129,8 +127,7 @@ public class JsonUtilTest {
 	}
 
 	@Test(expected = IOException.class)
-	public void testjsonFiletoJavaObjectWithIOException()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void testjsonFiletoJavaObjectWithIOException() throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonFileToJavaObject(ParentCar2.class, "C:/InvalidLocation");
 	}

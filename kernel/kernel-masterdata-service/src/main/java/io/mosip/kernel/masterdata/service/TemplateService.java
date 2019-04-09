@@ -24,8 +24,7 @@ public interface TemplateService {
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * @return {@link TemplateResponseDto}
 	 */
 	public TemplateResponseDto getAllTemplateByLanguageCode(String langCode);
@@ -34,10 +33,8 @@ public interface TemplateService {
 	 * To fetch all the {@link Template} based on language code and template type
 	 * code
 	 * 
-	 * @param langCode
-	 *            the language code
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param langCode         the language code
+	 * @param templateTypeCode the template type code
 	 * @return {@link TemplateResponseDto}
 	 */
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String langCode,
@@ -46,8 +43,7 @@ public interface TemplateService {
 	/**
 	 * Method to create template based on provided details
 	 * 
-	 * @param template
-	 *            the Template Dto.
+	 * @param template the Template Dto.
 	 * @return {@linkplain IdAndLanguageCodeID}
 	 */
 	public IdAndLanguageCodeID createTemplate(TemplateDto template);
@@ -55,8 +51,7 @@ public interface TemplateService {
 	/**
 	 * Method to update template based on provided details
 	 * 
-	 * @param template
-	 *            the Template Dto.
+	 * @param template the Template Dto.
 	 * @return {@linkplain IdAndLanguageCodeID}
 	 */
 	public IdAndLanguageCodeID updateTemplates(TemplateDto template);
@@ -64,8 +59,7 @@ public interface TemplateService {
 	/**
 	 * Method to delete template based on provided template id
 	 * 
-	 * @param id
-	 *            Template id.
+	 * @param id Template id.
 	 * @return {@linkplain IdResponseDto}
 	 */
 
@@ -74,8 +68,7 @@ public interface TemplateService {
 	/**
 	 * To fetch all the {@link Template} based on template type code
 	 * 
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param templateTypeCode the template type code
 	 * @return {@link TemplateResponseDto}
 	 */
 	public TemplateResponseDto getAllTemplateByTemplateTypeCode(String templateTypeCode);

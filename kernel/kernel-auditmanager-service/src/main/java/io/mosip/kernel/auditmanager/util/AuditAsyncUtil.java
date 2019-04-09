@@ -29,8 +29,7 @@ public class AuditAsyncUtil {
 	/**
 	 * Function to add audit asynchronously
 	 * 
-	 * @param auditRequestDto
-	 *            auditRequestDto
+	 * @param auditRequestDto auditRequestDto
 	 */
 	@Async
 	public void addAudit(AuditRequestDto auditRequestDto) {

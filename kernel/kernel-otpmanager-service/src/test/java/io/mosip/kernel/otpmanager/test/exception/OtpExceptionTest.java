@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,16 +26,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
+import io.mosip.kernel.otpmanager.test.OtpmanagerTestBootApplication;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(classes = OtpmanagerBootApplication.class)
+@SpringBootTest(classes = OtpmanagerTestBootApplication.class)
 public class OtpExceptionTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,6 +49,7 @@ public class OtpExceptionTest {
 	@MockBean
 	private OtpValidatorServiceImpl validatorService;
 
+	@WithUserDetails("individual")
 	@Test
 	public void testForExceptionWhenKeyIsNull() throws Exception {
 		List<ServiceError> validationErrorsList = new ArrayList<>();
@@ -67,6 +69,7 @@ public class OtpExceptionTest {
 				.andExpect(status().isOk());
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testForExceptionWhenKeyNotFound() throws Exception {
 		List<ServiceError> validationErrorsList = new ArrayList<>();
@@ -78,6 +81,7 @@ public class OtpExceptionTest {
 				.andExpect(status().isOk());
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
 		List<ServiceError> validationErrorsList = new ArrayList<>();

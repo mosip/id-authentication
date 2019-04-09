@@ -23,10 +23,8 @@ public interface AppAuthenticationMethodRepository
 	/**
 	 * Find by last updated and current time stamp.
 	 *
-	 * @param lastUpdatedTimeStamp
-	 *            the last updated time stamp
-	 * @param currentTimeStamp
-	 *            the current time stamp
+	 * @param lastUpdatedTimeStamp the last updated time stamp
+	 * @param currentTimeStamp     the current time stamp
 	 * @return list of app authenticationMethod
 	 */
 	@Query("FROM AppAuthenticationMethod WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime<=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2) ")

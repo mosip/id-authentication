@@ -2,8 +2,10 @@ package io.mosip.kernel.masterdata.dto.postresponse;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import lombok.Data;
+
 /**
- * Response Dto class 
+ * Response Dto class
+ * 
  * @author Srinivasan
  *
  */

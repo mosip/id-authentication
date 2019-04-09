@@ -102,7 +102,7 @@ public class JsonValidatorFromConfigServerTest {
 		JsonLoader.fromString("");
 		jsonValidator.validateJson(jsonString);
 	}
-	
+
 	@Test(expected = JsonSchemaIOException.class)
 	public void testForNullJsonSchemaSyntax() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, JsonSchemaIOException, FileIOException, IOException {

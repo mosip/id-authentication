@@ -276,10 +276,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * This method would return RegistrationCenterMachine mapping based on
 	 * macaddress/serial number
 	 * 
-	 * @param macId
-	 *            - mac address
-	 * @param serialNum
-	 *            - serial number
+	 * @param macId     - mac address
+	 * @param serialNum - serial number
 	 * @return - {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
@@ -322,12 +320,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * regCenterid is not available if regCenterId is present it would check for the
 	 * mapping. If the mapping is not present and is not active it will throw error.
 	 * 
-	 * @param regCenterId
-	 *            - registration center id
-	 * @param macId
-	 *            - mac address
-	 * @param serialNum
-	 *            - serial address
+	 * @param regCenterId - registration center id
+	 * @param macId       - mac address
+	 * @param serialNum   - serial address
 	 * @return {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,

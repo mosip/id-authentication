@@ -150,7 +150,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	private String validateToken(RoutingContext routingContext, String[] roles) {
 		boolean isAuthorized = false;
 		HttpServerRequest httpRequest = routingContext.request();
-		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE).split(";")[0];
 		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
 				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
 			List<ServiceError> errors = new ArrayList<>();
