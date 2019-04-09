@@ -1,4 +1,4 @@
-## kernel-idvalidator-tspid
+## kernel-idvalidator-mispid
 
 [Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
@@ -14,7 +14,7 @@
 **Properties to be added in Spring application environment using this component**
 
 ```
-mosip.kernel.tspid.length=4
+mosip.kernel.mispid.length=3
 ```
 
 [application-dev.properties](../../config/application-dev.properties)
@@ -25,7 +25,7 @@ mosip.kernel.tspid.length=4
  ```
  	<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator-tspid</artifactId>
+			<artifactId>kernel-idvalidator-mispid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -41,13 +41,13 @@ mosip.kernel.tspid.length=4
 
 Autowired interface IdValidator and call the method validateId(Id)
 
- Valid TSPID  Example:
+ Valid MISPID  Example:
  
  ```
 	@Autowired
-	private IdValidator<String> tspIdValidatorImpl;
+	private IdValidator<String> mispIdValidatorImpl;
 	
-	boolean isValid = tspIdValidatorImpl.validateId("1000"); //return true
+	boolean isValid = mispIdValidatorImpl.validateId("100"); //return true
 	
 ```
 

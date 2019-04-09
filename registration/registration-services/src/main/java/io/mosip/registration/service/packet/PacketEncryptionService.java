@@ -16,12 +16,17 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface PacketEncryptionService {
 
 	/**
-	 * Encrypts the input data using AES algorithm followed by RSA
+	 * Encrypts the input data using AES algorithm followed by RSA. Stores the
+	 * encrypted data in the specified location and saves the details in
+	 * {@link Registration}
 	 * 
+	 * @param registrationDTO
+	 *            the {@link RegistrationDTO} containing the registration details
 	 * @param packetZipData
 	 *            the data to be encrypted
 	 * @return encrypted data as byte array
 	 * @throws RegBaseCheckedException
+	 *             the checked exception
 	 */
 	ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException;

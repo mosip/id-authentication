@@ -37,6 +37,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -193,7 +194,7 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -206,10 +207,12 @@ public class AuthControllerTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStaticToken("234567890");
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
@@ -260,7 +263,8 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+		kycResponseDTO.setStaticToken("2345678");
+		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -273,10 +277,12 @@ public class AuthControllerTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStaticToken("234567890");
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");

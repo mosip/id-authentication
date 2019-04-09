@@ -46,8 +46,6 @@ public class UinProcesser {
 
 	/**
 	 * Create list of uins
-	 * 
-	 * @return List of uins
 	 */
 	public void generateUins() {
 		 uinGeneratorImpl.generateId();

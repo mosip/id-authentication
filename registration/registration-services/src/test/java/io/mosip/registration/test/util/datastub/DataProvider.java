@@ -311,7 +311,7 @@ public class DataProvider {
 										.with(value -> value.setLanguage(localLanguageCode))
 										.with(value -> value.setValue("Local Admin")).get()))
 								.get()))
-						.with(identity -> identity.setParentOrGuardianRIDOrUIN(new BigInteger("98989898898921913131")))
+						.with(identity -> identity.setParentOrGuardianRID(new BigInteger("98989898898921913131")))
 						.with(identity -> identity.setParentOrGuardianName((List<ValuesDTO>)Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))

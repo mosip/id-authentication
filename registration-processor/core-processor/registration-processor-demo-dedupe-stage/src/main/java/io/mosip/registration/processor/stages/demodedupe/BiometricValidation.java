@@ -42,7 +42,7 @@ public class BiometricValidation {
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = File.separator;
 
-	public boolean validateBiometric(String duplicateUin, String regId) throws ApisResourceAccessException, IOException {
+	public boolean validateBiometric(String duplicateUin, String regId) throws ApisResourceAccessException, IOException, ParseException {
 		/*
 		 * authRequestDTO.setIdvId(duplicateUin);
 		 * authRequestDTO.setAuthType(authTypeDTO); request.setIdentity(identityDTO);
@@ -83,6 +83,7 @@ public class BiometricValidation {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						regId, "Date Parse Exception in BiometricValidation" + e.getMessage()
 						+ ExceptionUtils.getStackTrace(e));
+				throw new ParseException(demographicJson.toString(), 0);
 			}
 		}
 

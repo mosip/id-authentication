@@ -34,6 +34,8 @@ public class AuthConstant {
 	public static final String OTP_VALIDATION_MESSAGE = "OTP validated Successfully";
 	
 	public static final String AUTH_COOOKIE_HEADER="Authorization";
+	
+	public static final String AUTH_HEADER="Authorization=";
 
 	public static final String TOKEN_INVALID_MESSAGE = "Token has been invalidated successfully";
 	
@@ -43,11 +45,15 @@ public class AuthConstant {
 	
 	public static final String UNAUTHORIZED_CODE = "401";
 	
-	public static final String INDIVIDUAL = "individual";
+	public static final String INDIVIDUAL = "INDIVIDUAL";
 	
 	public static final String PREREGISTRATION = "preregistration";
 	
 	public static final int RETURN_EXP_TIME= -10;
 
 	public static final String ALL_CHANNELS_MESSAGE = "OTP message sent across all the channels";
+	
+	public static final String SUCCESS_STATUS = "success";
+	
+	public static final String COOKIE="Cookie";
 }

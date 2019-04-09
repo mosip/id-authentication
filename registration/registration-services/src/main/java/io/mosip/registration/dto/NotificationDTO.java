@@ -1,5 +1,8 @@
 package io.mosip.registration.dto;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+
 /**
  * dto class for email and sms notification
  * 
@@ -7,36 +10,36 @@ package io.mosip.registration.dto;
  *
  */
 public class NotificationDTO {
-	private String message;
-	private String number;
+	private Map<String, String> request;
 	private String status;
+	private String requesttime;
 
 	/**
-	 * @return the message
+	 * @return the request
 	 */
-	public String getMessage() {
-		return message;
+	public Map<String, String> getRequest() {
+		return request;
 	}
 
 	/**
-	 * @param message the message to set
+	 * @param request the request to set
 	 */
-	public void setMessage(String message) {
-		this.message = message;
+	public void setRequest(Map<String, String> request) {
+		this.request = request;
 	}
 
 	/**
-	 * @return the number
+	 * @return the requesttime
 	 */
-	public String getNumber() {
-		return number;
+	public String getRequesttime() {
+		return requesttime;
 	}
 
 	/**
-	 * @param number the number to set
+	 * @param requesttime the requesttime to set
 	 */
-	public void setNumber(String number) {
-		this.number = number;
+	public void setRequesttime(String requesttime) {
+		this.requesttime = requesttime;
 	}
 
 	/**

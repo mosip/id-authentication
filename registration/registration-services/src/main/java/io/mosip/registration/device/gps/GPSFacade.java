@@ -46,6 +46,9 @@ public class GPSFacade extends GPSBU343Connector {
 	/**
 	 * Gets the latitudeFromGps long details from GPS device.
 	 *
+	 * @param centerLat the center lat
+	 * @param centerLngt the center lngt
+	 * @param gpsConnectionDevice the gps connection device
 	 * @return the latitudeFromGps long details
 	 */
 	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnectionDevice) {

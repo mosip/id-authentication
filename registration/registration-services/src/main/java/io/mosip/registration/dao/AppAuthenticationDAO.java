@@ -16,9 +16,13 @@ public interface AppAuthenticationDAO {
 	/**
 	 * This method is used to get the Login Mode
 	 * 
+	 * @param authType
+	 *            authentication type
+	 * @param roleList
+	 *            list of roles
+	 * 
 	 * @return Map of Login modes along with the sequence
 	 */
 	List<String> getModesOfLogin(String authType, Set<String> roleList);
-	
-}
 
+}

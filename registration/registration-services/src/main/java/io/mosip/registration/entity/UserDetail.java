@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * UserDetail entity details
+ * The Entity Class for User Detail details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

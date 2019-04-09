@@ -26,36 +26,28 @@ public class DocumentMultipartResponseDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
 	
-	/**
-	 * PreRegistration Id
-	 */
-	private String prereg_id;
-	
+
 	/**
 	 * Document Name
 	 */
-	private String doc_name;
+	private String docName;
 	
 	/**
 	 * Document Id
 	 */
-	private String doc_id;
+	private String documentId;
 	
 	/**
 	 * Document category
 	 */
-	private String doc_cat_code;
+	private String docCatCode;
 
 	/**
 	 * Document Type
 	 */
-	private String doc_typ_code;
+	private String docTypCode;
 
-	/**
-	 * Document File Format
-	 */
-	private String doc_file_format;
-	
+
 	/**
 	 * File content
 	 */

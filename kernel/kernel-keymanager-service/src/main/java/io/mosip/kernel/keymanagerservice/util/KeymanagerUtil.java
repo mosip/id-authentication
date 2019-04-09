@@ -119,7 +119,7 @@ public class KeymanagerUtil {
 	 * @return Entity with metadata
 	 */
 	public <T extends BaseEntity> T setMetaData(T entity) {
-		String contextUser = "defaultadmin@mosip.io";
+		String contextUser = "SYSTEM";
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 		entity.setCreatedBy(contextUser);
 		entity.setCreatedtimes(time);

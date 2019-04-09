@@ -86,6 +86,14 @@ public class SyncHandlerControllerAdvice {
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(CryptoManagerServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServiceException(
+			HttpServletRequest httpServletRequest, final CryptoManagerServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	private ResponseEntity<ResponseWrapper<ServiceError>> getServiceErrorResponseEntity(BaseUncheckedException e,
 			HttpStatus httpStatus, HttpServletRequest httpServletRequest) throws IOException {

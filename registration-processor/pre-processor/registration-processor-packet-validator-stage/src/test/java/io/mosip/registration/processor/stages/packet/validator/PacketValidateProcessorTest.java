@@ -55,6 +55,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -184,6 +185,7 @@ public class PacketValidateProcessorTest {
 	private String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
 
 	private String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
+	private String stageName = "PacketValidatorStage";
 
 	/**
 	 * Sets the up.
@@ -267,7 +269,8 @@ public class PacketValidateProcessorTest {
 		packetMetaInfo.setIdentity(identity);
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
@@ -348,7 +351,7 @@ public class PacketValidateProcessorTest {
 	@Test
 	public void testStructuralValidationSuccess() throws Exception {
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
 	}
@@ -360,7 +363,7 @@ public class PacketValidateProcessorTest {
 		when(env.getProperty(VALIDATECHECKSUM)).thenReturn("false");
 		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
 		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("false");
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
 	}
@@ -372,7 +375,7 @@ public class PacketValidateProcessorTest {
 		validationReport.setValid(false);
 
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}
 
@@ -448,7 +451,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
 		dto.setReg_type("ABC");
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 
 	}
@@ -534,7 +537,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -567,7 +570,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(!messageDto.getIsValid());
 
 	}
@@ -592,7 +595,7 @@ public class PacketValidateProcessorTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.FALSE);
 		// regTypeCheck=false;
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}
 
@@ -617,7 +620,7 @@ public class PacketValidateProcessorTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -627,7 +630,7 @@ public class PacketValidateProcessorTest {
 	public void testBAseUncheckedExceptions() throws Exception {
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenThrow(new BaseUncheckedException());
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -655,7 +658,7 @@ public class PacketValidateProcessorTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -689,7 +692,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(!messageDto.getIsValid());
 
 	}
@@ -707,7 +710,7 @@ public class PacketValidateProcessorTest {
 				.thenThrow(new DataAccessException("") {
 				});
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
 
 	}
@@ -715,7 +718,7 @@ public class PacketValidateProcessorTest {
 	@Test
 	public void testPreRegIdsAreNull() {
 		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -728,7 +731,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
 		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -743,7 +746,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpServerErrorException);
 		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -765,7 +768,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 	}
 
@@ -775,7 +778,7 @@ public class PacketValidateProcessorTest {
 				"Packet Decryption failure");
 		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -785,7 +788,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString()))
 				.thenThrow(new FSAdapterException("", ""));
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
 
 	}
@@ -796,7 +799,7 @@ public class PacketValidateProcessorTest {
 				.thenThrow(new TablenotAccessibleException("") {
 				});
 
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
 
 	}

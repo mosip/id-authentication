@@ -12,12 +12,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,10 +45,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.DocumentTypeDAO;
+import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -66,6 +72,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
 	private KeyGenerator keyGenerator;
+	
+	@Autowired
+	private DocumentTypeDAO documentTypeDAO;
+	
+	@Autowired
+	private MasterSyncDao masterSyncDao;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PreRegZipHandlingServiceImpl.class);
 
@@ -120,18 +132,39 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
+		
+		/*name after the first '_' considered as the doc type and before '_' as doc category*/
+		String docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+
+		/*
+		 * checking and setting the doc type name based on the reg client primary
+		 * language irrespective of pre reg language
+		 */
+		if (StringUtils.isNotEmpty(docTypeName)) {
+			List<DocumentType> documentTypes = documentTypeDAO.getDocTypeByName(docTypeName);
+			if (isListNotEmpty(documentTypes)
+					&& !ApplicationContext.applicationLanguage().equalsIgnoreCase(documentTypes.get(0).getLangCode())) {
+				List<DocumentType> docTypesForPrimaryLanguage = masterSyncDao.getDocumentTypes(
+						Arrays.asList(documentTypes.get(0).getCode()), ApplicationContext.applicationLanguage());
+				if (isListNotEmpty(docTypesForPrimaryLanguage)) {
+					docTypeName = docTypesForPrimaryLanguage.get(0).getName();
+				}
+			}
+		}
 		documentDetailsDTO.setValue(docCatgory.concat("_")
-				.concat(fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf("."))));
+				.concat(docTypeName));
 	}
 
 	/**
 	 * This method is used to parse the demographic json and converts it into
 	 * RegistrationDto
 	 * 
-	 * @param zipInputStream
+	 * @param bufferedReader
+	 *            - reader for text file
 	 * @param zipEntry
-	 * @throws IOException
+	 *            - a file entry in zip
 	 * @throws RegBaseCheckedException
+	 *             - holds the cheked exceptions
 	 */
 	private void parseDemographicJson(BufferedReader bufferedReader, ZipEntry zipEntry) throws RegBaseCheckedException {
 
@@ -144,7 +177,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				jsonValidator.validateJson(jsonString.toString(), RegistrationConstants.IDENTITY_JSON_FILE_NAME);
+				jsonValidator.validateJson(jsonString.toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
 			}
@@ -181,9 +214,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * the disk
 	 * 
 	 * @param PreRegistrationId
+	 *            - pre registration id
 	 * @param preRegPacket
-	 * @return PreRegistrationDTO
+	 *            - pre reg packet in bytes
+	 * @return PreRegistrationDTO - pre reg dto holds the pre reg data
 	 * @throws RegBaseCheckedException
+	 *             - holds the checked exceptions
 	 */
 	@Override
 	public PreRegistrationDTO encryptAndSavePreRegPacket(String PreRegistrationId, byte[] preRegPacket)
@@ -213,9 +249,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * location
 	 * 
 	 * @param PreRegistrationId
+	 *            - pre reg id
 	 * @param encryptedPacket
-	 * @return
+	 *            - pre reg encrypted packet in bytes
+	 * @return String - pre reg packet file path
 	 * @throws RegBaseCheckedException
+	 *             - holds the checked exceptions
 	 */
 	@Override
 	public String storePreRegPacketToDisk(String PreRegistrationId, byte[] encryptedPacket)
@@ -225,7 +264,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)).concat(separator).concat(PreRegistrationId)
 					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
-			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));
+			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
+					new File(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 
@@ -245,6 +285,17 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		}
 	}
 
+	
+	/**
+	 * This method is used to decrypt the pre registration packet using the
+	 * symmetric key
+	 * 
+	 * @param symmetricKey
+	 *            - key to decrypt the pre reg packet
+	 * @param encryptedPacket
+	 *            - pre reg encrypted packet in bytes
+	 * @return byte[] - decrypted pre reg packet
+	 */
 	@Override
 	public byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket) {
 
@@ -257,4 +308,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
+	private boolean isListNotEmpty(List<?> values) {
+		return values != null && !values.isEmpty();
+	}
 }

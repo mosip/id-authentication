@@ -29,6 +29,7 @@ import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 
+
 /**
  * This class handles fetching of everey roles that is in the server. The flow
  * is given as follows SYNC - AUTH SERVICE - AUTH SERVER
@@ -41,30 +42,27 @@ import io.mosip.kernel.syncdata.service.SyncRolesService;
 @Service
 public class SyncRolesServiceImpl implements SyncRolesService {
 
-	/**
-	 * restemplate instance
-	 */
+	/** restemplate instance. */
 	@Autowired
 	private RestTemplate restTemplate;
 
-	/**
-	 * Base end point read from property file
-	 */
+	/** Base end point read from property file. */
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUrl;
-	
+
+	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	/**
-	 * all roles end-point read from properties file
-	 */
+	/** all roles end-point read from properties file. */
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authServiceName;
-	
+
+	/** The sync data request id. */
 	@Value("${mosip.kernel.syncdata.syncdata-request-id:SYNCDATA.REQUEST}")
 	private String syncDataRequestId;
 
+	/** The sync data version id. */
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
@@ -75,27 +73,50 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	 */
 	@Override
 	public RolesResponseDto getAllRoles() {
-		RolesResponseDto rolesDtos = null;
-		ResponseEntity<String> response=null;
+
+		ResponseEntity<String> response = null;
 		try {
 
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
-			RequestWrapper<?> requestWrapper = new RequestWrapper<>();
-			requestWrapper.setId(syncDataRequestId);
-			requestWrapper.setVersion(syncDataVersionId);
-			HttpHeaders syncDataRequestHeaders = new HttpHeaders();
-			syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<RequestWrapper<?>> userRolesRequestEntity = new HttpEntity<>(requestWrapper,
-					syncDataRequestHeaders);
-			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient",HttpMethod.GET , userRolesRequestEntity, String.class);//(uriBuilder.toString() + "/registrationclient",
-					//String.class);
+			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
+			response = restTemplate.exchange(uriBuilder.toString()+ "/registrationclient", HttpMethod.GET, httpRequest,
+					String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
 		}
+
+		return getRolesFromResponse(response);
+
+	}
+
+	/**
+	 * Gets the http request.
+	 *
+	 * @return {@link HttpEntity}
+	 */
+	private HttpEntity<RequestWrapper<?>> getHttpRequest() {
+		RequestWrapper<?> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId(syncDataRequestId);
+		requestWrapper.setVersion(syncDataVersionId);
+		HttpHeaders rolesHttpHeaders = new HttpHeaders();
+		rolesHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		return new HttpEntity<>(requestWrapper, rolesHttpHeaders);
+
+	}
+
+	/**
+	 * Gets the roles from response.
+	 *
+	 * @param response the response
+	 * @return {@link RolesResponseDto}
+	 */
+	private RolesResponseDto getRolesFromResponse(ResponseEntity<String> response) {
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
+		RolesResponseDto rolesDtos = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorsList.isEmpty()) {
 			throw new AuthManagerServiceException(validationErrorsList);
@@ -103,16 +124,14 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 		ResponseWrapper<?> responseObject = null;
 		try {
 			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			rolesDtos = objectMapper.readValue(
-					objectMapper.writeValueAsString(responseObject.getResponse()), RolesResponseDto.class);
+			rolesDtos = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+					RolesResponseDto.class);
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 					exception);
 		}
-
 		return rolesDtos;
-
 	}
 
 }

@@ -36,7 +36,7 @@ public class AuditManagerController {
 	/**
 	 * Function to add new audit
 	 * 
-	 * @param auditRequestDto
+	 * @param requestDto
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */

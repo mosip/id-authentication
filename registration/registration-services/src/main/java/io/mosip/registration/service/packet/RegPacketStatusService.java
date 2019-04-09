@@ -15,6 +15,8 @@ public interface RegPacketStatusService {
 	/**
 	 * packet status sync with server
 	 * 
+	 * @param triggerpoint - the point by which the service was triggered
+	 * 
 	 * @return ResponseDTO which specifies either success response or error response
 	 *         after sync with server
 	 */
@@ -24,16 +26,18 @@ public interface RegPacketStatusService {
 	 * @return response DTO
 	 */
 	ResponseDTO deleteRegistrationPackets();
+	
 	/**
-	 * Packet Sync Status
-	 * @return response DTO
+	 * This method will sync the packets to the server
+	 * @param triggerpoint The trigger point for webservice call
+	 * @return Returning the response as dto
 	 */
 	public ResponseDTO syncPacket(String triggerpoint);
 	
 	/**
 	 * Delete Registrations
 	 * @param registrations
-	 * @return response
+	 * 			- the list of registrations that are to be deleted
 	 */
 	void deleteRegistrations(List<Registration> registrations);
 

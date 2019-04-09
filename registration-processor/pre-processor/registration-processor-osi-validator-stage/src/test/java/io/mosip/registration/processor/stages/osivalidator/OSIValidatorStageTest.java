@@ -19,7 +19,12 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -27,6 +32,8 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -69,6 +76,8 @@ public class OSIValidatorStageTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	@Mock
+	private FileSystemAdapter filesystemCephAdapterImpl;
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -103,8 +112,8 @@ public class OSIValidatorStageTest {
 		Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
 		auditLog.setAccessible(true);
 		auditLog.set(auditLogRequestBuilder, mockObj);
-		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
@@ -162,6 +171,64 @@ public class OSIValidatorStageTest {
 
 	}
 
+	@Test
+	public void fSAdapterExceptionTest() throws Exception {
+		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(new FSAdapterException("", ""));
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void apiResourceExceptionTest() throws Exception {
+		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(new ApisResourceAccessException(""));
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void exceptionTest() throws Exception {
+		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(new NullPointerException(""));
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void aPIResourceServerExceptionTest() throws Exception {
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpServerErrorException httpServerErrorException = new HttpServerErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpServerErrorException);
+		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(apisResourceAccessException);
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void aPIResourceClientExceptionTest() throws Exception {
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(apisResourceAccessException);
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
 	/**
 	 * Data access exception test.
 	 *
@@ -173,21 +240,6 @@ public class OSIValidatorStageTest {
 		Mockito.when(umcValidator.isValidUMC((anyString()))).thenReturn(Boolean.TRUE);
 		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenThrow(new DataAccessException("") {
 		});
-		MessageDTO messageDto = osiValidatorStage.process(dto);
-		assertEquals(true, messageDto.getInternalError());
-
-	}
-
-	/**
-	 * Exception test.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void exceptionTest() throws Exception {
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(null);
-		Mockito.when(oSIValidator.isValidOSI((anyString()))).thenReturn(false);
 		MessageDTO messageDto = osiValidatorStage.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 

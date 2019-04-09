@@ -14,15 +14,15 @@ import { SharedService } from '../booking.service';
 
 describe('CenterSelectionComponent', () => {
   let component: CenterSelectionComponent;
-  let locationData = [
-    {
+  let locationData = {
+    response: [{
       "locationHierarchylevel": 2,
       "locationHierarchyName": "city",
       "isActive": true
-    }
-  ];
-  let center = [
-    {
+    }]
+  };
+  let center = {
+    response: [{
       "id": "10002",
       "name": "Rural Municipal Mnasra",
       "centerTypeCode": "REG",
@@ -45,8 +45,8 @@ describe('CenterSelectionComponent', () => {
       "lunchStartTime": "13:00:00",
       "lunchEndTime": "14:00:00",
       "isActive": true
-    }
-  ];
+    }]
+  };
 
   let centers = {
     registrationCenters: [center]

@@ -11,10 +11,15 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
+/**
+ * The Class DOBTypeMatchingStrategyTest.
+ *
+ * @author Manoj SP
+ */
 public class DOBTypeMatchingStrategyTest {
 
 	/**
-	 * Check for Exact type matched with Enum value of DOB Type Matching Strategy
+	 * Check for Exact type matched with Enum value of DOB Type Matching Strategy.
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
@@ -23,7 +28,7 @@ public class DOBTypeMatchingStrategyTest {
 
 	/**
 	 * Check for Exact type not matched with Enum value of DOB Type Matching
-	 * Strategy
+	 * Strategy.
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategytype() {
@@ -31,7 +36,7 @@ public class DOBTypeMatchingStrategyTest {
 	}
 
 	/**
-	 * Assert the DOB Type Matching Strategy for Exact is Not null
+	 * Assert the DOB Type Matching Strategy for Exact is Not null.
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyfunctionisNotNull() {
@@ -39,7 +44,7 @@ public class DOBTypeMatchingStrategyTest {
 	}
 
 	/**
-	 * Assert the DOB Type Matching Strategy for Exact is null
+	 * Assert the DOB Type Matching Strategy for Exact is null.
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
@@ -49,9 +54,9 @@ public class DOBTypeMatchingStrategyTest {
 	}
 
 	/**
-	 * Tests doMatch function on Matching Strategy Function
-	 * 
-	 * @throws IdAuthenticationBusinessException
+	 * Tests doMatch function on Matching Strategy Function.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
@@ -64,10 +69,9 @@ public class DOBTypeMatchingStrategyTest {
 	}
 
 	/**
-	 * 
-	 * Tests the Match function with in-valid values
-	 * 
-	 * @throws IdAuthenticationBusinessException
+	 * Tests the Match function with in-valid values.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {

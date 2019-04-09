@@ -7,23 +7,30 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.RequestWrapper;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -56,6 +63,14 @@ public class Decryptor {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	private Environment env;
+
+
+	private static final String DECRYPT_SERVICE_ID = "mosip.registration.processor.crypto.decrypt.id";
+	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
 	private static final String DECRYPTION_SUCCESS = "Decryption success for RegistrationId : {}";
 	private static final String DECRYPTION_FAILURE = "Virus scan decryption failed for  registrationId ";
 	private static final String IO_EXCEPTION = "Exception Converting encrypted packet inputStream to string";
@@ -74,31 +89,38 @@ public class Decryptor {
 	 * @param registrationId
 	 * @return
 	 * @throws PacketDecryptionFailureException
+	 * @throws ApisResourceAccessException
 	 * @throws ParseException
 	 */
 
+	@SuppressWarnings("unchecked")
 	public InputStream decrypt(InputStream encryptedPacket, String registrationId)
-			throws PacketDecryptionFailureException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
+			ObjectMapper mapper=new ObjectMapper();
 			String centerId = registrationId.substring(0,centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
+			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(centerId);
+			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
 
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+			LocalDateTime ldt =null;
 			if (registrationId.length() > 14) {
 				String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
 				Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
 						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6));
-				LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
+				 ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
 				cryptomanagerRequestDto.setTimeStamp(ldt);
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -110,12 +132,18 @@ public class Decryptor {
 								.getErrorCode(),
 						"Packet DecryptionFailed-Invalid Packet format");
 			}
-
-			CryptomanagerResponseDto cryptomanagerResponseDto = (CryptomanagerResponseDto) restClientService.postApi(
-					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", cryptomanagerRequestDto, CryptomanagerResponseDto.class);
+			request.setId(env.getProperty(DECRYPT_SERVICE_ID));
+			request.setMetadata(null);
+			request.setRequest(cryptomanagerRequestDto);
+			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
+			request.setRequesttime(localdatetime);
+			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+			response =  (ResponseWrapper<CryptomanagerResponseDto>) restClientService.postApi(
+					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
+			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
-
 			isTransactionSuccessful = true;
 			description = DECRYPTION_SUCCESS + registrationId;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -153,10 +181,7 @@ public class Decryptor {
 			} else {
 				description = DECRYPTION_FAILURE + registrationId + "::" + e.getMessage();
 
-				throw new PacketDecryptionFailureException(
-						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-								.getErrorCode(),
-						e.getMessage());
+				throw e;
 			}
 
 		} catch (ParseException e) {
@@ -181,8 +206,8 @@ public class Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
+					ApiName.AUDIT);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, DECRYPTION_SUCCESS);

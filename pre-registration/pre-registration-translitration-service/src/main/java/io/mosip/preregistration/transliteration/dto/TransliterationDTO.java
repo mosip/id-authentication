@@ -31,10 +31,6 @@ public class TransliterationDTO implements Serializable{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6675771212299312546L;
 	
-	/** The from-field-name */
-	@JsonProperty("from_field_name")
-	@ApiModelProperty(value = "From Field Name", position = 1)
-	String fromFieldName;
 	
 	/** The from-field-value */
 	@JsonProperty("from_field_value")
@@ -46,10 +42,6 @@ public class TransliterationDTO implements Serializable{
 	@ApiModelProperty(value = "From Field Language", position = 3)
 	String fromFieldLang;
 	
-	/** The to-field-name */
-	@JsonProperty("to_field_name")
-	@ApiModelProperty(value = "To Field Name", position = 4)
-	String toFieldName;
 	
 	/** The to-field-value */
 	@JsonProperty("to_field_value")

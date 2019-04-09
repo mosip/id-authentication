@@ -6,9 +6,65 @@
 	-fx-font-size : 15px;
 }
 
-
 #doc_label{
 	-fx-font-size:10.0px;
+}
+
+.dividerTypeOne{
+	-fx-border-width : 0 0 1 0;
+	-fx-border-color : #C9C9C9;
+}
+.scroll-bar:vertical {
+		-fx-background-color : white;
+}
+
+.scroll-bar:vertical > .increment-button > .increment-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:vertical > .decrement-button > .decrement-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:horizontal > .increment-button > .increment-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:vertical > .thumb {
+    -fx-background-color: white;
+ }
+ 
+.scroll-pane {
+    -fx-background-color: white;
+	-fx-border-width : 0 0 0 0;
+    
+}
+ .scroll-bar:horizontal {
+		-fx-background-color : white;
+}
+
+.scroll-bar:horizontal > .thumb {
+    -fx-background-color: white;
+ }
+ 
+ .scroll-pane > .corner {
+    -fx-background-color: white;
+}
+ 
+
+.toolTip{
+	-fx-font: normal bold 10 Langdon;
+	-fx-base: #AE3522;
+	-fx-text-fill: red;
+	-fx-background-color : white;
 }
 
 #toggleLabel1{
@@ -29,6 +85,12 @@
 	-fx-pref-height: 20.0px;
 	-fx-pref-width: 55.0px;
 }
+
+#thresholdBar{
+	-fx-border-color : red;
+	-fx-border-width : 0 1 0 0;
+}
+
 .progress-barGreen > .bar {
     -fx-background-color: #45A30A;
 }
@@ -113,24 +175,8 @@
 	-fx-border-color: black;
 }
 
-.ackBackButton{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-background-color:#FFFFFF;
-	-fx-border-color: #FF4081;
-	-fx-font-family: Roboto;	
-}
-
 #anchor-pane-registration{
 	-fx-background-color: white;
-}
-
-.ackPageButton {
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-background-color: #FF4081;
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
 }
 
 #homeReg{
@@ -180,427 +226,8 @@
     -fx-background-color: #d9d9d9;
 }
 
-/*Header page design starts here*/
-.headerParentBorder{
-	-fx-border-color: #F4F4F4;
-	-fx-border-width: 1.0 1.0 0.0 1.0;
-	-fx-text-fill: white;  
-	-fx-background-color:#0B6A82
-}
-.menuBar{
-	-fx-background-color:#0B6A82
-}
-
-#headerPage{
-	-fx-text-fill: white;  
-	-fx-background-color:#0B6A82
-}
-.headerDetails {
-    -fx-background-color: #175768;
-}
-.headerDetails .label{
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
-	-fx-font-size: 14.0px;
-}
-.context-menu {
-  -fx-background-color: #FFFFFF;
-  -fx-border-color: #C9C9C9;
-  -fx-padding: 0em 0em 0em 0em;
-  -fx-page-information-alignment: 10;
-}
-.homeContent{
-  -fx-background-image: url(images/pexels-photo.png);
-  -fx-background-repeat: no-repeat;
-  -fx-background-size: auto;
-}
-.menu-item .label {
-    -fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/MenuItems.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
-}
-
-.separator .line { 
-	-fx-background-color: #C9C9C9;
-	-fx-border-width: 0.001px;
-}
-
-.menu-item:focused .label{
-	-fx-background-color: #FF4081;
-    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
-    -fx-background-image: url(images/MenuItemsFocus.png); 
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: left;
-    -fx-background-size: 20px 20px;
-    -fx-text-fill: white;    
-}
-.menu-item:focused {
-     -fx-background: -fx-accent;
-     -fx-background-color: #FF4081;
-}
-.menu-item {
-    -fx-background-color: transparent;
-    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
-}
-#logout .label{
-	-fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/logout.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
-}
-
-#logout:focused .label{
-	-fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/logoutFocus.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
-}
 
 
-.registrationOfficerIdPane{
-	-fx-background-radius: 21.0,21.0,21.0,21.0;	
-	-fx-background-color: #F57E20;
-	-fx-border-radius: 21.0,21.0,21.0,21.0;
-	-fx-border-color: #61AB01;
-}
-
-
-
-.internetModePane{
-	-fx-background-radius: 21.0,21.0,21.0,21.0;
-	-fx-background-color: #1EBD22;
-	-fx-border-radius: 21.0,21.0,21.0,21.0;
-	-fx-border-color: #61AB01;
-}
-/* Header Page design Ends Here */
-
-/* Home page design starts here */
-
-.newRegBtnStyle{
-	-fx-background-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FF4081;
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
-}
-.optionHeaderStyle{
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-	-fx-font-weight: lighter;
-}
-.uinUpdateStyle{
-	-fx-background-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-}
-.uinUpdateBtnStyle{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-background-color:#FFFFFF;
-	-fx-border-radius: 0.0,0.0,0.0,0.0;
-}
-.reggistrationPaneStyle{
-	-fx-border-width: 0.0 1.0 0.0 0.0;
-	-fx-border-color: #C9C9C9;
-	-fx-Opacity: 1.0; 
-}
-.operationalPaneDetailsPreReg{
-	-fx-border-width: 0.0 1.0 1.0 1.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-}
-.operationalPaneDetailsSync{
-	-fx-border-width: 1.0 1.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-	 -fx-border-radius: 4.0 4.0 0.0 0.0;
-  	 -fx-background-radius: 4.0 4.0 0.0 0.0;
-}
-.operationalPaneDetailsBioUpdate{
-	-fx-border-width: 0.0 1.0 1.0 1.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-	 -fx-border-radius: 0.0 0.0 4.0 4.0;
-  	 -fx-background-radius: 0.0 0.0 4.0 4.0;
-}
-.operationalDetails{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-font-size: 10.0px;
-}
-.operationalTitle{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-} 
-
-.slitLine{
-	-fx-stroke: #C9C9C9;
-}
-.newsUpdates{
-	-fx-background-color:#FFFFFF;
-	-fx-border-color: #C9C9C9;
-	-fx-border-radius: 4.0 4.0 4.0 4.0;
-  	-fx-background-radius: 4.0 4.0 4.0 4.0;
-}
-.newsUpdatesTitle{
-	-fx-font-size: 11.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: bold;
-}
-.newsUpdateTime{
-	-fx-font-size: 10.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: lighter;
-}
-.newsUpdateDescription{
-	-fx-font-size: 12.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-}
-.homeParentPane{
-	-fx-border-color: #F4F4F4;
-	-fx-border-width: 0.0 1.0 1.0 1.0;
-}
-#newsViewAll{
-	-fx-font-size: 10.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: bold;
-}
-/* Home Page Design Ends */
-
-/*Onoard User page Design Starts here*/
-.onboardUserPaneStyle{
-	-fx-background-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;	
-}
-.useronBoardLink{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-}
-.onboardUserParenrPane{
-	-fx-background-color:#F4F4F4;
-}
-.useronBoardLinkDesc{
-	-fx-font-family: Roboto;
-	-fx-font-size: 1.2em;
-	-fx-text-fill: #666666;	
-}
-.onboardAlertMsg{
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-	-fx-text-fill:  #45A30A;	
-	-fx-background-color:White;
-}
-/*Onoard User page Design Ends here*/
-
-/*user onboard FP design starts */
-.userOnboardHeader{
-	-fx-background-color:#FFFFFF;
-	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
-}
-.userOnboardBackPane{
-	-fx-background-color: #F7F8F9;
-}
-.userOnboardFooter{
-	-fx-background-color: #FFFFFF;	
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
-}
-.onboardProgressPane{
-	-fx-border-width: 1.0 0.0 0.0 0.0;
-	-fx-border-color: #C9C9C9;
-}
-.onboardParenPane{
-	-fx-border-width: 0.0 1.0 1.0 1.0;
-	-fx-border-color: #F7F8F9;
-}
-#onboardHomeLink{
-	-fx-text-fill: #C9C9C9;
-	-fx-font-family: Roboto;
-	-fx-font-weight: lighter;
-	-fx-font-size: 13.0px;	
-}
-#onboardPageDesc{
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-size: 14.0px;	
-}
-#onboardPageTitle{
-	-fx-text-fill: #FD518C;
-	-fx-font-family: Roboto;
-	-fx-font-size: 18.0px;	
-}
-.onboardFingerPrintPanes{	
-	-fx-background-color : #efefef;
-}
-.onboardProgressbar{
-	-fx-background-color : #C9C9C9;
-}
-.onboardScanBtn{
-	-fx-background-color : #FFFFFF;
-	-fx-text-fill: #FF4081;
-	-fx-border-color: #FF4081;
-	-fx-font-size: 12.0px;
-}
-
-/*user onboard FP design ends */
-/*common useronboard class*/
-.onboardPageBioTitle{
-	-fx-text-fill: #FD518C;
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-}
-.onboardImgPane{
-	-fx-background-color:#ffffff;
-}
-.onboardFingerDetails{
-	-fx-pref-height: 159.0px;
-	-fx-pref-width: 200.0px;
-}
-/*  */
-/*user onboard Iris design starts */
-.onboardIrisPanes{
-	-fx-background-color : #efefef;
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
-}
-.onboardBioDetails{
-	-fx-font-family: Roboto;
-	-fx-font-size: 12.0px;
-}
-.onboardBioDetailsHeader{
-	-fx-font-family: Roboto;
-	-fx-text-fill: #666666;
-	-fx-font-weight: lighter;
-	-fx-font-size: 14.0px;
-}
-.onboardIrisDetails{
-	-fx-pref-height: 154.0px;
-	-fx-pref-width: 205.0px;
-}
-/*user onboard Iris design ends */
-/*user onboard Face design starts*/
-.onboardFaceDetails{
-	-fx-pref-height: 160.0px;
-	-fx-pref-width: 228.0px;
-}
-.onboardFacePanes{
-	-fx-background-color : #efefef;
-	-fx-pref-height: 180.0px;
-	-fx-pref-width: 201.0px;
-}
-/*user onboard Face design ends*/
-/*user onboard exception design starts */
-.completedTracker{
-	-fx-text-fill: #E43391;
-	-fx-font-size: 12.0px;
-}
-.uncompleteTracker{
-	-fx-font-size: 12.0px;
-}
-.currentTracker{
-	-fx-text-fill: #E43391;
-	-fx-font-size: 14.0px;
-}
-.onboardOperatorDetailsHeader{
-	-fx-font-family: Roboto;
-	-fx-font-size: 10.0px;
-	-fx-text-fill: #000000;
-}
-.onboardOperatorDetails{
-	-fx-font-family: Roboto;
-	-fx-font-size: 12.0px;
-	-fx-text-fill: #000000;
-}
-.onboardOperatorDetailsPane{
-	-fx-border-width: 0.0 0.0 1.0 0.0;
-	-fx-border-color: #C9C9C9;
-}
-.onboardInfoDetails{
-	-fx-font-family: Roboto;
-	-fx-font-size: 12.0px;
-	-fx-text-fill: #666666;
-	-fx-font-weight: lighter;
-}
-.onboardInfoDetailsName{
-	-fx-font-family: Roboto;
-	-fx-font-size: 12.0px;
-	-fx-text-fill: #333333;
-}
-.onboardExceptionDetails{
-	-fx-font-family: Roboto;
-	-fx-font-size: 10.0px;
-	-fx-text-fill: #666666;
-	-fx-font-weight: lighter;
-}
-.exceptionCombobox{
-	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
-	fx-text-fill: #000000;
-	-fx-border-color: #C9C9C9;
-	-fx-font-size: 12px;
-}
-.exceptionFingerPane{
-	-fx-border-width: 0.0 1.0 0.0 0.0;
-	-fx-border-color: #C9C9C9;
-	-fx-pref-height: 231.0px;
-	-fx-pref-width: 345.0px;
-}
-.onboardExceptionLayout{
-	-fx-pref-height: 574.0px;
-	-fx-pref-width: 938.0px;
-}
-.regExceptionLayout{
-	-fx-background-color:#ffffff;
-	-fx-pref-height: 34.0px;
-	-fx-pref-width: 938.0px;
-}
-.exceptionBackPane{
-	-fx-background-color: #F7F8F9;
-}
-.operatorExceptionLayout{
-	-fx-pref-height: 59.0px;
-	-fx-pref-width: 772.0px;
-}
-.exceptionIrisPaneParent{
-	-fx-pref-height: 231.0px;
-	-fx-pref-width: 788.0px;
-}
-.exceptionPanes{
-	-fx-pref-height: 231.0px;
-	-fx-pref-width: 345.0px;
-}
-.biometricExceptionPaneIris{
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: white;
-}
-.biometricExceptionPaneFinger{
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: white;
-}
-.exceptionDocProof{
-	-fx-pref-height: 157.0px;
-	-fx-pref-width: 370.0px;
-}
-/*user onboard exception design ends */
 .selectedResidence{
 	-fx-background-color:#FF4081;
 	-fx-border-color:#FF4081;
@@ -655,17 +282,7 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0.0 0.0 1.0 0.0;
 }
-.imageAnchorPaneStyle{
-	-fx-background-color:#F4F4F4;
-}
 
-.exitButtonStyle{
-	-fx-border-color: transparent;
-    -fx-padding: 4.0 0.0 4.0 0.0;
-    -fx-text-fill: black;
-    -fx-background-image : url('/images/Close.png');
-    -fx-font-size: 14.0px;
-}
 .webCamPane {
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
@@ -706,12 +323,6 @@
 	-fx-pref-width: 100.0px;
 }
 
-.headerPane {
-	-fx-background-color:#808080;
-	-fx-pref-height: 54.0px;
-	-fx-pref-width: 483.0px;
-}
-
 .paneRoot {
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
@@ -723,17 +334,6 @@
 	-fx-background-color:#ffffff;
 	-fx-pref-height: 307.0px;
 	-fx-pref-width: 483.0px;
-}
-
-.RegbuttonStyle {
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;
-    -fx-pref-height:20.0px;
-    -fx-pref-width:60.0px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
 
 .imagePane {
@@ -837,10 +437,7 @@
 	-fx-pref-height: 300.0px; 
 	-fx-pref-width: 480.0px;
 }
-.authenticationStyle{
-	-fx-pref-height: 39.0px; 
-	-fx-pref-width: 269.0px;
-}
+
 #authenticateRootPane{
 	-fx-pref-height: 54.0px; 
 	-fx-pref-width: 483.0px;
@@ -854,12 +451,7 @@
 	-fx-border-width: 1.0; 
 	-fx-border-style: solid;
 }
-.removeBorderStyle{
-	-fx-border-color:white; 
-}
-.addBorderStyle{
-	-fx-border-color: black;
-}
+
 /*
 Working on new Css by taleev
 */
@@ -947,10 +539,6 @@ Working on new Css by taleev
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
-.parentPane{
-	-fx-background-color:#F4F4F4;
-}
-
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 600px;	
@@ -999,7 +587,7 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-font-size : 15px;
+	-fx-font-size : 1.1em;
 	 
 }
 
@@ -1084,16 +672,19 @@ Working on new Css by taleev
 		
 }
 
+.scanPage{
+	-fx-background-color : white;
+	-fx-text-fill : black;
+	-fx-font-size: 1.3em;
+	-fx-border-width : 1;
+	-fx-border-color : black;
+	
+}
+
 .demoGraphicFieldMessageLabel{
 		-fx-background-color:#ffffff;
 		-fx-text-fill : red;
 }
-
-#tF,#tF1,#tF2,#tF21,#tF22,#tF23,#t24,#tF25,#tF26,#tF27{
-	-fx-border-width : 0 1 0 0;
-	-fx-border-color : red;
-}
-
 
 
 .demographicCombobox{
@@ -1113,9 +704,13 @@ Working on new Css by taleev
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
-	-fx-font-size: 14px;
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 170px;
+	-fx-font-size: 1.2em;
+}
+
+#docPreviewImgViewPane{
+	-fx-border-width : 1;
+	-fx-border-color: black;
+		
 }
 
 .documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
@@ -1294,6 +889,7 @@ Working on new Css by taleev
 	
 }
 
+
 .registrationHeaderBorder{
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #FF4081;
@@ -1343,75 +939,8 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 35px;
 	-fx-pref-width: 1290px;	
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
-
-	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );	
 }
-
-#uinUpdateHeader{
-	-fx-background-color:#FFFFFF;
-	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
-	
-}
-
-.updateUinparentPane{
-	-fx-background-color:#F4F4F4;
-}
-
-.uinUpdateContentPane{
-	-fx-background-color:#FFFFFF;
-}
-
-.updateUinCheckBoxCommon .check-box > .box {
-    -fx-background-radius: 50;
-    -fx-border-radius: 50;
-    -fx-border-width: 1;
-    -fx-border-color: #FF4081;
-    -fx-padding: 1;
-    -fx-background-color: #FFFFFF;
-	-fx-background-insets: 0 0 0 0;
-}
-
-.updateUinCheckBoxCommon .check-box:selected > .box > .mark {
-     -fx-background-color: #FF4081;
-}
-
-.updateUinCheckBox {
-    -fx-background-color : #FFFFFF;
-    -fx-border-width : 1 1 1 1;
-    -fx-border-color : #FD528C;
-    -fx-padding : 3 10 5 3;
-    -fx-text-fill : #FD518C;
-    
-}
-
-.updateUinCheckBoxSelected{
-	-fx-background-color : #FF4081;
-    -fx-border-width : 1 1 1 1;
-    -fx-border-color : #FD528C;
-    -fx-padding : 0 10 5 3;
-	-fx-text-fill : #FFFFFF;
-	
-}
-
-.uinUpdateTextFiledStyle{
-	-fx-background-color: white;
-	-fx-border-color:#FD528C;
-	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-}
-
-.uinUpdateLabelsTypeTwo{
-	-fx-text-fill : #666666;
-	-fx-font-size : 15px;
-}
-
-.uinUpdateFooter{
-	-fx-background-color: #FFFFFF;	
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
-}
-
-
 .table-view {
     -fx-table-cell-border-color: #FFFFFF;
     -fx-border-width : 0 0 0 0;
@@ -1461,38 +990,11 @@ Working on new Css by taleev
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
-    -fx-background-color: white;
-}
-
-.pendingApprovalFooter{
-	-fx-background-color:#FFFFFF;
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+    -fx-background-color: #e8e8e8;
 }
 
 .uploadStatusColumn{
 		-fx-pref-width: 1000px;
-}
-
-.pendingApprovalHeader{
-	-fx-background-color:#FFFFFF;
-	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
-}
-
-.approveButton {
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-background-color: #FF4081;
-	-fx-text-fill: #FFFFFF;
-	-fx-font-family: Roboto;
-}
-
-.rejectButton{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-background-color:#FFFFFF;
-	-fx-border-color: #FF4081;
-	-fx-font-family: Roboto;
-		
 }
 
 .heading {
@@ -1501,15 +1003,7 @@ Working on new Css by taleev
 	-fx-font-family: Roboto;
 }
 
-.templateHeading {
-	-fx-font-size: 18.0px;
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-}
 
-.reRegTableId{
-	-fx-pref-width : 450;
-}
 
 /*
  *	rejection page 
@@ -1535,6 +1029,10 @@ Working on new Css by taleev
   -fx-pref-heigth : 150;
   -fx-pref-width : 400;
   
+}
+
+.dfd{
+ -fx-background-color : red;
 }
 
 .rejectionParentPane{
@@ -1603,7 +1101,7 @@ Working on new Css by taleev
 	
 }
 	
-/*Upload Packet */
+/*Upload Packet page design starts*/
 .uploadPacketparentPane{
 	-fx-background-color:#F4F4F4;
 }
@@ -1611,7 +1109,6 @@ Working on new Css by taleev
 		-fx-background-color : #FFFFFF;
 		-fx-padding : 0 0 0 0;
 }
-
 .mainHeader{
 		-fx-text-fill : #FD518C;
 		-fx-font-size : 20px;
@@ -1622,4 +1119,565 @@ Working on new Css by taleev
 }
 #saveToDevice, #formValidationButton{
 	-fx-background-color : #FF4081;
+}
+/*Upload Packet page design ends */
+
+/*UIN Upadte page design starts */
+#uinUpdateHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+.updateUinparentPane{
+	-fx-background-color:#F4F4F4;
+}
+.uinUpdateContentPane{
+	-fx-background-color:#FFFFFF;
+}
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+}
+.uinUpdateLabelsTypeTwo{
+	-fx-text-fill : #666666;
+	-fx-font-size : 15px;
+}
+.updateUinCheckBoxCommon .check-box > .box {
+    -fx-background-radius: 50;
+    -fx-border-radius: 50;
+    -fx-border-width: 1;
+    -fx-border-color: #FF4081;
+    -fx-padding: 1;
+    -fx-background-color: #FFFFFF;
+	-fx-background-insets: 0 0 0 0;
+}
+.updateUinCheckBox {
+    -fx-background-color : #FFFFFF;
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color : #FD528C;
+    -fx-padding : 3 10 5 3;
+    -fx-text-fill : #FD518C;    
+}
+.updateUinCheckBoxCommon .check-box:selected > .box > .mark {
+     -fx-background-color: #FF4081;
+}
+.updateUinCheckBoxSelected{
+	-fx-background-color : #FF4081;
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color : #FD528C;
+    -fx-padding : 0 10 5 3;
+	-fx-text-fill : #FFFFFF;	
+}
+.uinUpdateFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+/*UIN Update page Ends */
+
+/*Registration pending approval page design starts */
+.pendingApprovalFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.approveButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
+.rejectButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;		
+}
+.pendingApprovalHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+.parentPane{
+	-fx-background-color:#F4F4F4;
+}
+.imageAnchorPaneStyle{
+	-fx-background-color:#F4F4F4;
+}
+/*Registration pending approval page design ends */
+
+.authenticationStyle{
+	-fx-pref-height: 39.0px; 
+	-fx-pref-width: 269.0px;
+}
+.RegbuttonStyle {
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+    -fx-text-fill: black;
+    -fx-font-size: 10.0px;
+    -fx-pref-height:20.0px;
+    -fx-pref-width:60.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+/*Authentication page design ends */
+
+/*Acknowledgement page design starts */
+.templateHeading {
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+.ackBackButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+.ackPageButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+.ackMenu{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #E8E7E7;
+}
+/*Acknowledgement page design ends */
+
+/*Header page design starts here*/
+.headerParentBorder{
+	-fx-border-color: #F4F4F4;
+	-fx-border-width: 1.0 1.0 0.0 1.0;
+	-fx-text-fill: white;  
+	-fx-background-color:#0B6A82
+}
+.headerDetails {
+    -fx-background-color: #175768;
+}
+.registrationOfficerIdPane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #F57E20;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+}
+.internetModePane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;
+	-fx-background-color: #1EBD22;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+}
+.menuBar{
+	-fx-background-color:#0B6A82
+}
+.headerDetails .label{
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;
+}
+.context-menu {
+  -fx-background-color: #FFFFFF;
+  -fx-border-color: #C9C9C9;
+  -fx-padding: 0em 0em 0em 0em;
+  -fx-page-information-alignment: 10;
+}
+.menu-item .label {
+    -fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/MenuItems.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+}
+.separator .line { 
+	-fx-background-color: #C9C9C9;
+	-fx-border-width: 0.001px;
+}
+.menu-item:focused .label{
+	-fx-background-color: #FF4081;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+    -fx-background-image: url(images/MenuItemsFocus.png); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20px 20px;
+    -fx-text-fill: white;    
+}
+.menu-item:focused {
+     -fx-background: -fx-accent;
+     -fx-background-color: #FF4081;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
+}
+#logout .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+    -fx-background-image: url(images/logout.png);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20px 20px;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+#logout:focused .label{
+	-fx-text-fill: white;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logoutFocus.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+/* Header Page design Ends Here */
+
+/* Home page design starts here */
+
+.homeContent{
+  -fx-background-image: url(images/pexels-photo.png);
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: auto;
+  -fx-border-color: #F4F4F4;
+  -fx-border-width: 0.0 1.0 1.0 1.0;
+}
+.optionHeaderStyle{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-font-weight: lighter;
+}
+.newRegBtnStyle{
+	-fx-font-size: 16.0px;
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+.uinUpdateStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+.uinUpdateBtnStyle{
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-background-color:#FFFFFF;
+	-fx-border-radius: 0.0,0.0,0.0,0.0;
+}
+.operationalPaneDetailsSync{
+	-fx-border-width: 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	 -fx-border-radius: 4.0 4.0 0.0 0.0;
+  	 -fx-background-radius: 4.0 4.0 0.0 0.0;
+}
+.operationalTitle{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.operationalDetails{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+}
+.operationalPaneDetailsPreReg{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+.operationalPaneDetailsBioUpdate{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	 -fx-border-radius: 0.0 0.0 4.0 4.0;
+  	 -fx-background-radius: 0.0 0.0 4.0 4.0;
+}
+.newsUpdates{
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #C9C9C9;
+	-fx-border-radius: 4.0 4.0 4.0 4.0;
+  	-fx-background-radius: 4.0 4.0 4.0 4.0;
+}
+.newsUpdatesTitle{
+	-fx-font-size: 11.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+}
+.newsUpdateTime{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+}
+.powerdBy{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+}
+.splitLineSeparator{
+	-fx-stroke: #C9C9C9;
+}
+#newsViewAll{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+}
+/* Home Page Design Ends */
+
+/*User Onboard User page Design Starts here*/
+.onboardUserParentPane{
+	-fx-background-color:#F4F4F4;
+}
+.useronBoardLinkDesc{
+	-fx-font-family: Roboto;
+	-fx-font-size: 1.2em;
+	-fx-text-fill: #666666;	
+}
+.onboardUserPaneStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;	
+}
+.useronBoardLink{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+.onboardAlertMsg{
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-text-fill:  #45A30A;	
+	-fx-background-color:White;
+}
+/*Onoard User page Design Ends here*/
+
+/*user onboard exception design starts */
+.exceptionBackPane{
+	-fx-background-color: #F7F8F9;
+}
+.onboardImgPane{
+	-fx-background-color:#ffffff;
+}
+.onboardOperatorDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+}
+.onboardPageBioTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.onboardBioDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+	-fx-font-size: 14.0px;
+}
+.biometricExceptionPaneFinger{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: white;
+}
+.removeBorderStyle{
+	-fx-border-color:white; 
+}
+.addBorderStyle{
+	-fx-border-color: black;
+}
+.onboardInfoDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.onboardScanBtn{
+	-fx-background-color : #FFFFFF;
+	-fx-text-fill: #FF4081;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 12.0px;
+}
+.userOnboardHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
+}
+.userOnboardFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.onboardInfoDetailsName{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #333333;
+}
+.exceptionCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-text-fill: #000000;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 12px;
+}
+.onboardExceptionDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+
+#onboardPageTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;	
+}
+#onboardHomeLink{
+	-fx-text-fill: #C9C9C9;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+	-fx-font-size: 13.0px;	
+}
+#onboardPageDesc{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;	
+}
+.exceptionBackPane .table-view {
+    -fx-table-cell-border-color: #FFFFFF;
+    -fx-border-width : 0 0 0 0;
+    -fx-background-color: white;
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar{
+	-fx-background-color : white;
+	
+}
+
+.exceptionBackPane .table-cell {
+    -fx-padding: 0.0em; 
+    -fx-background-color: #FFFFFF; 
+    -fx-text-fill: red;
+    -fx-cell-size: 1.0em;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-button,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-button {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-arrow,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-arrow {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+  -fx-shape: null;
+}
+.exceptionBackPane .column-header-background { 
+	visibility: hidden; 
+	-fx-padding: -1em;
+}
+
+
+.exceptionBackPane .table-row-cell {
+    -fx-background-color: white;
+    -fx-background-insets: 0, 0 0 1 0;	
+	-fx-padding: 0.0em;	
+    -fx-border-width : 0 0 0 0;
+    -fx-border-color : white;
+    -fx-pref-height : 20;
+    -fx-pref-width : 30;
+}
+
+.exceptionBackPane .table-row-cell:focused{
+	-fx-border-width : 0 0 0 0;
+	-fx-padding: 0.0em;	
+	-fx-pref-height : 20;
+    -fx-pref-width : 30;
+}
+
+.exceptionBackPane .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
+	-fx-text-fill: red;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0 0 0 0;
+    -fx-padding: 0.0em;	
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #d1d1d1;
+}
+.fingerIrisSeparator{
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: #d1d1d1;
+}
+/*user onboard exception design ends */
+
+/*Tracker Style */
+.completedPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+.currentPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: bold;
+}
+.pendingPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+	-fx-font-weight: lighter;
+}
+.subPageCompleted{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+.subPageUncompleted{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+	-fx-font-weight: lighter;
+}
+.subPageCurrent{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+/*Tracker Style ends */
+
+ 
+ .dialog-pane{
+  -fx-background-color : #FFFFFF;
+ }
+ 
+ .dialog-pane .button{
+   -fx-background-color:#FF4081;
+   -fx-text-fill:white;
+   -fx-wrap-text: true;
+   -fx-cursor:hand;
+ }
+ 
+ .dialog-pane:header .header-panel {
+  -fx-background-color: #FFFFFF;
 }

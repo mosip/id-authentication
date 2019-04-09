@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 /**
- *  This is a repository class for entity {@link StaticPinHistory}.
+ *  This is a repository class for entity {@link StaticPinHistory,BaseRepository}.
  *  
  * @author Prem Kumar
  *

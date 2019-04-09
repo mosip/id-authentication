@@ -25,7 +25,8 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 
 /**
- * The Class PinAuthServiceImpl.
+ * The Class PinAuthServiceImpl - used to perform the service
+ * implementation for the PIN based authentication.
  * 
  * @author Sanjay Murali
  */
@@ -44,6 +45,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	@Autowired
 	private StaticPinRepository staticPinRepo;
 
+	/** The ida mapping config. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
 
@@ -65,9 +67,10 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * Construct match input.
+	 * constructMatchInput method used to construct the Match
+	 * input for the authentication request {@link AuthRequestDTO}
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param authRequestDTO {@link AuthRequestDTO}
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
@@ -75,7 +78,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * Construct match output.
+	 * constructMatchOutput method used to construct the Match
+	 * output computing with particular match matching strategy
 	 *
 	 * @param authRequestDTO  the auth request DTO
 	 * @param listMatchInputs the list match inputs
@@ -90,7 +94,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * Gets the s pin.
+	 * getSPin method used to fetch the SPIN value
+	 * of the individual's from the database
 	 *
 	 * @param uinValue the uin value
 	 * @param authReq  the match type

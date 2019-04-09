@@ -24,7 +24,9 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 
 /**
- * The implementation of Kyc Authentication service.
+ * The implementation of Kyc Authentication service
+ * which retrieves the identity information of the
+ * individual id and construct the KYC information
  * 
  * @author Sanjay Murali
  */
@@ -33,31 +35,26 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 public class KycServiceImpl implements KycService {
 
 	/** The Constant MOSIP_SECONDARY_LANG_CODE. */
-	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary-language";
 
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The env. */
 	@Autowired
 	Environment env;
+	
 	/** The demo helper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	/** The mapping config. */
 	@Autowired
 	private MappingConfig mappingConfig;
 
-	/**
-	 * This method will return the KYC info of the individual.
-	 *
-	 * @param uin                  the uin
-	 * @param allowedkycAttributes the ekyctype full or limited
-	 * @param secLangCode          the sec lang code
-	 * @param identityInfo         the identity info
-	 * @return the map
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.service.KycService#retrieveKycInfo(java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,11 +81,18 @@ public class KycServiceImpl implements KycService {
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
 			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
+					.filter(entry -> entry.getKey() != null)
 					.map(entry -> new SimpleEntry<>(
 							IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
 							entry.getValue()))
 					.filter(entry -> !entry.getKey().isEmpty())
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			for(String kycAttribute : allowedkycAttributes) {
+				String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
+				if(!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
+					idMappingIdentityInfo.put(idname, null);
+				}
+			}
 			kycResponseDTO.setIdentity(idMappingIdentityInfo);
 		}
 		return kycResponseDTO;
@@ -97,10 +101,10 @@ public class KycServiceImpl implements KycService {
 	/**
 	 * Construct identity info - Method to filter the details to be printed.
 	 *
-	 * @param allowedKycType the kyc type
-	 * @param identity       the identity
-	 * @param secLangCode    the sec lang code
-	 * @return the map
+	 * @param allowedKycType the attributes defined as per policy
+	 * @param identity       the identity information of the resident
+	 * @param secLangCode    the secondary language code to retrieve identity information detail in secondary language
+	 * @return the map returns filtered information defined as per policy
 	 */
 	private Map<String, Object> constructIdentityInfo(List<String> allowedKycType,
 			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {

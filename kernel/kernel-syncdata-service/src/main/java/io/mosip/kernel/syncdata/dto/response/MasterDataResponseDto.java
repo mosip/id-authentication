@@ -40,6 +40,8 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -91,7 +93,8 @@ public class MasterDataResponseDto {
 	private List<AppRolePriorityDto> appRolePriorities;
 	private List<ScreenAuthorizationDto> screenAuthorizations;
 	private List<ProcessListDto> processList;
-	//private List<SyncJobDefDto> syncJobDefinitions;
+	private List<SyncJobDefDto> syncJobDefinitions;
+	private List<ScreenDetailDto> screenDetails;
 	
 	
 	private List<RegistrationCenterMachineDto> registrationCenterMachines;

@@ -4,7 +4,7 @@ node {
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  def branch = env.NEXT_BRANCH_NAME
- def projectToBuild = 'registration-processor'
+ projectToBuild = 'registration-processor'
  def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -47,7 +47,7 @@ node {
  
 stage ('---------- mvn-clean-install ---------------') {
 	//rtMaven.deployer.deployArtifacts = false
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
 }
 
 stage('---------- SonarQube Analysis --------------') {
@@ -123,21 +123,21 @@ stage('----------- Publish build info -------------') {
      /*
      If Services are present in init directory, they have to be deployed in DM Zone
      */
-     if(parentDirectory == 'init'){
+     if(parentDirectory == 'registration-processor/init'){
          updatedServicesForDmz.add(moduleName)
          updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      }
      /*
      If Services are present in pre-processor, post-processor or core-processor directory, they have to be deployed in Private Zone
      */
-     else if ((parentDirectory == 'core-processor') || (parentDirectory == 'pre-processor') ||(parentDirectory == 'post-processor')){
+     else if ((parentDirectory == 'registration-processor/core-processor') || (parentDirectory == 'registration-processor/pre-processor') ||(parentDirectory == 'registration-processor/post-processor')){
          updatedServicesForPrivateZone.add(moduleName)
          updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      }
      /*
      If Services are present in root path in registartion-processor module and starts with 'registartion-processor-common', they have to be deployed in both private and DM Zones.
      */
-     else if (parentDirectory == '.' && moduleName.startsWith('registartion-processor-common')) 
+     else if (parentDirectory == 'registration-processor' && moduleName.startsWith('registartion-processor-common')) 
      {
           updatedServicesForDmz.add(moduleName)
           updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
@@ -191,21 +191,21 @@ stage('----------- Publish build info -------------') {
      /*
      If Services are present in init directory, they have to be deployed in DM Zone
      */
-     if(parentDirectory == 'init'){
+     if(parentDirectory == 'registration-processor/init'){
         updatedServicesForDmz.add(moduleName)
         updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      }
      /*
      If Services are present in pre-processor, post-processor or core-processor directory, they have to be deployed in Private Zone
      */
-     else if ((parentDirectory == 'core-processor') || (parentDirectory == 'pre-processor') ||(parentDirectory == 'post-processor')){
+     else if ((parentDirectory == 'registration-processor/core-processor') || (parentDirectory == 'registration-processor/pre-processor') ||(parentDirectory == 'registration-processor/post-processor')){
          updatedServicesForPrivateZone.add(moduleName)
          updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      }
      /*
      If Services are present in root path in module and starts with 'registartion-processor-common', they have to be deployed in both private and DM Zones.
      */
-     else if (parentDirectory == '.' && moduleName.startsWith('registartion-processor-common')) 
+     else if (parentDirectory == 'registration-processor' && moduleName.startsWith('registartion-processor-common')) 
      {
         updatedServicesForDmz.add(moduleName)
         updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")

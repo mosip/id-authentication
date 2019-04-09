@@ -8,7 +8,7 @@ public class MosipQueueConnectionFactoryImpl implements MosipQueueConnectionFact
 	public MosipQueue createConnection(String typeOfQueue, String username, String password,
 			String url) {
 		if(typeOfQueue.equalsIgnoreCase("ACTIVEMQ")) {
-			return new MosipActiveMq(username, password, url);
+			return new MosipActiveMq(typeOfQueue, username, password, url);
 		}
 		else {
 			return null;

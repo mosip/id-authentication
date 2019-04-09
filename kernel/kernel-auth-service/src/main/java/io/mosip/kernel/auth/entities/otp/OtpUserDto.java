@@ -8,13 +8,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class OtpUserDto extends BaseRequestResponseDTO{
-	
+@EqualsAndHashCode(callSuper = true)
+public class OtpUserDto extends BaseRequestResponseDTO {
+
 	private OtpUser request;
 
 }

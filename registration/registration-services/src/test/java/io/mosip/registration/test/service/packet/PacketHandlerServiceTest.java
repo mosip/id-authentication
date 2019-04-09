@@ -44,13 +44,16 @@ public class PacketHandlerServiceTest {
 		Mockito.when(
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
+
 		Assert.assertSame(mockedSuccessResponse, packetHandlerServiceImpl.handle(new RegistrationDTO()));
 	}
 
 	@Test
 	public void testCreationException() throws RegBaseCheckedException {
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
+
 		ResponseDTO actualResponse = packetHandlerServiceImpl.handle(new RegistrationDTO());
+
 		Assert.assertEquals(RegistrationExceptionConstants.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
 				actualResponse.getErrorResponseDTOs().get(0).getCode());
 	}
@@ -58,25 +61,27 @@ public class PacketHandlerServiceTest {
 	@Test
 	public void testHandlerException() throws RegBaseCheckedException {
 		RegBaseUncheckedException exception = new RegBaseUncheckedException("errorCode", "errorMsg");
+
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
 				.thenThrow(exception);
 		Mockito.when(
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
-		ResponseDTO dto = packetHandlerServiceImpl.handle(new RegistrationDTO());
-		Assert.assertNotNull(dto.getErrorResponseDTOs());
+
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(new RegistrationDTO()).getErrorResponseDTOs());
 	}
 
 	@Test
 	public void testHandlerChkException() throws RegBaseCheckedException {
 		RegBaseCheckedException exception = new RegBaseCheckedException("errorCode", "errorMsg");
+
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
 				.thenThrow(exception);
 		Mockito.when(
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
-		ResponseDTO dto = packetHandlerServiceImpl.handle(new RegistrationDTO());
-		Assert.assertNotNull(dto.getErrorResponseDTOs());
+
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(new RegistrationDTO()).getErrorResponseDTOs());
 	}
 
 }

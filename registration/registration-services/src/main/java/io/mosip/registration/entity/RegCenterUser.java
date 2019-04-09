@@ -17,8 +17,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * RegCenterUser entity details
- * 
+ * The Entity Class for Reg Center User details.
+ *
  * @author Sravya Surampalli
  * @since 1.0.0
  */

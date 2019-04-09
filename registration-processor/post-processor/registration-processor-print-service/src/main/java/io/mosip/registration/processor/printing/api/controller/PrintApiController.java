@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +39,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * 
  * @author M1048358 Alok
  */
-@RefreshScope
 @RestController
 @RequestMapping("/registration-processor")
 @Api(tags = "Print PDF")

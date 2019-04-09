@@ -4,6 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 
+ * @author balamurugan ramamoorthy
+ * @since 1.0.0
+ */
 public interface IMosipDocumentScannerService {
 
 	/**
@@ -37,16 +42,18 @@ public interface IMosipDocumentScannerService {
 	 *            - holds all the separate scanned pages
 	 * @return byte[] - The final single file which contains all the scanned files
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	byte[] asImage(List<BufferedImage> bufferedImages) throws IOException;
 
 	/**
-	 * This method is to get the image file in byte array from the given
-	 * BufferedImage
+	 * This method converts the BufferedImage to byte[]
 	 * 
 	 * @param bufferedImage
-	 * @return byte[]
+	 *            - holds the scanned image from the scanner
+	 * @return byte[] - scanned document Content
 	 * @throws IOException
+	 *             - holds the ioexcepion
 	 */
 	byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException;
 
@@ -54,9 +61,10 @@ public interface IMosipDocumentScannerService {
 	 * This method is used to convert the pdf file into images
 	 * 
 	 * @param pdfBytes
-	 * @param fileName
-	 * @return
+	 *            - pdf file in bytes
+	 * @return List - holds the list of buffered images
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException;
 

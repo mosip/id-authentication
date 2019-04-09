@@ -82,7 +82,7 @@ public class OtpValidatorServiceTest {
 		entity.setStatusCode("KEY_FREEZED");
 		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minus(1, ChronoUnit.MINUTES));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
-		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/otp/validate?key=testKey&otp=2345").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("failure")));
 	}
 

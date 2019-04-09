@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.UserRole;
 import lombok.Data;
 
 /**
- * Composite key for UserRole entity
+ * composite key for {@link UserRole}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

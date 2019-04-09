@@ -11,7 +11,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 /**
- * The Enum CompositeIrisMatchingStrategy.
+ * The Enum CompositeIrisMatchingStrategy - used to compare and
+ * evaluate the IRIS value received from the request and entity
  * 
  * @author Sanjay Murali
  */
@@ -28,15 +29,15 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 																			// provided
 				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
 			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage(),
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
 								BioAuthType.IRIS_COMP_IMG.getType()));
 			}
 		}
 		return 0;
 	});
 
+	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
 
 	/** The match strategy type. */
