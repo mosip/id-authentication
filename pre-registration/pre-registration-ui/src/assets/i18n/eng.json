@@ -270,7 +270,10 @@
     "action_resend": "Resend",
     "action_verify": "Verify",
     "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications",
-    "otp_valid_label": "Valid for"
+    "otp_valid_label": "Valid for",
+    "invalidEmail": "Invalid email id Entered",
+    "invalidMobile": "Invalid mobile number Entered",
+    "invalidInput": "Invalid email id or mobile number Entered"
   },
 
   "stepper": {

@@ -156,6 +156,22 @@ export class FileUploadComponent implements OnInit {
       attribute: '',
       value: ''
     };
+
+    let DOBDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
+    let genderDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
+    let biometricDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
     let requestArray = {
       attributes: []
     };
@@ -171,20 +187,20 @@ export class FileUploadComponent implements OnInit {
 
     requestArray.attributes.push(requestDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.dateofbirth;
-    requestDTO.value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+    DOBDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.dateofbirth;
+    DOBDTO.value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(DOBDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.genderCode;
-    requestDTO.value = this.users[0].request.demographicDetails.identity.gender[0].value;
+    genderDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.genderCode;
+    genderDTO.value = this.users[0].request.demographicDetails.identity.gender[0].value;
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(genderDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.biometricAvailable;
-    requestDTO.value = false;
+    biometricDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.biometricAvailable;
+    biometricDTO.value = false;
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(biometricDTO);
 
     // DOCUMENT_CATEGORY_DTO.request.attributes[2].value =
     // DOB = DOB + 'T11:46:12.640Z';
