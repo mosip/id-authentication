@@ -118,9 +118,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	private GridPane registrationTrackerImg;
 	@FXML
 	private TableView<ExceptionListDTO> exceptionTable;
-	@FXML 
+	@FXML
 	private TableColumn<ExceptionListDTO, String> exceptionTableColumn;
-	
+
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -134,7 +134,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
-	
+
 	@FXML
 	private Label registrationNavlabel;
 
@@ -148,12 +148,12 @@ public class BiometricExceptionController extends BaseController implements Init
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+
 		applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 
 		continueBtn.setDisable(true);
 
-		setExceptionImage();		
+		setExceptionImage();
 		fingerExceptionListener(rightLittle);
 		fingerExceptionListener(rightRing);
 		fingerExceptionListener(rightMiddle);
@@ -196,9 +196,10 @@ public class BiometricExceptionController extends BaseController implements Init
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+				registrationNavlabel.setText(
+						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 			}
-			
+
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 							.get(RegistrationConstants.FINGER_PANE)) {
@@ -244,7 +245,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
-				if (newValue && !fingerList.contains(fingerImage.getId())) {					
+				if (newValue && !fingerList.contains(fingerImage.getId())) {
 					fingerList.add(fingerImage.getId());
 					fingerImage.setOpacity(1.0);
 					showExceptionList();
@@ -282,18 +283,18 @@ public class BiometricExceptionController extends BaseController implements Init
 				APPLICATION_ID, "It will listen the iris on click functionality");
 
 		SimpleBooleanProperty toggleFunctionForIris = new SimpleBooleanProperty(false);
-		
+
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {				
-				
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
 				if (newValue && !irisList.contains(irisImage.getId())) {
-					irisList.add(irisImage.getId());					
+					irisList.add(irisImage.getId());
 					showExceptionList();
 				} else {
 					if (irisList.indexOf(irisImage.getId()) >= 0) {
 						irisList.remove(irisImage.getId());
 						showExceptionList();
-					}					
+					}
 				}
 				continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 
@@ -332,18 +333,20 @@ public class BiometricExceptionController extends BaseController implements Init
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
-				
-				if(fingerList.size()==10 && irisList.size()==2) {
+
+				if (fingerList.size() == 10 && irisList.size() == 2) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
-				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))){
+				} else if (RegistrationConstants.ENABLE
+						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
-				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,
-						getPageDetails(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
+				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION, getPageDetails(
+						RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
 			}
 			fingerPrintCaptureController.clearImage();
 			irisCaptureController.clearIrisBasedOnExceptions();
@@ -490,9 +493,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	public void disableNextBtn() {
 		continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 	}
-		
+
 	/**
-	 * Method to show the exception list  
+	 * Method to show the exception list
 	 */
 	private void showExceptionList() {
 		List<ExceptionListDTO> exceptionList = new ArrayList<>();

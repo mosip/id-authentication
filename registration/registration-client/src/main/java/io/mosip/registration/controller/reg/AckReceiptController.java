@@ -93,14 +93,16 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
 
 		if (getRegistrationData().getSelectionListDTO() != null) {
-			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			newRegistration.setVisible(false);
 		}
-		
+
 		if (getRegistrationData().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationData().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			registrationNavLabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 
 		WebEngine engine = webView.getEngine();
@@ -114,7 +116,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 * To print the acknowledgement receipt after packet creation when the user
 	 * clicks on print button.
 	 * 
-	 * @param event - the event that happens on click of print button
+	 * @param event
+	 *            - the event that happens on click of print button
 	 */
 	@FXML
 	public void printReceipt(ActionEvent event) {

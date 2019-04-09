@@ -156,10 +156,11 @@ public class DocumentScanController extends BaseController {
 	private TextField scannedField;
 
 	private int totalDocument;
-	
+
 	private boolean documentsUploaded;
-	
+
 	private int counter;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,10 +173,10 @@ public class DocumentScanController extends BaseController {
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel
-						.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+						.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
-			counter=0;
+			counter = 0;
 			totalDocument = 0;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
@@ -188,7 +189,8 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+				registrationNavlabel.setText(
+						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
 			}
@@ -197,8 +199,7 @@ public class DocumentScanController extends BaseController {
 				if (Integer.parseInt(newValue) <= 0) {
 					continueBtn.setDisable(false);
 					documentsUploaded = true;
-				}
-				else {
+				} else {
 					continueBtn.setDisable(true);
 					documentsUploaded = false;
 				}
@@ -206,7 +207,8 @@ public class DocumentScanController extends BaseController {
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
-			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -216,7 +218,7 @@ public class DocumentScanController extends BaseController {
 	 * To populate the document categories
 	 */
 	protected <T> void populateDocumentCategories() {
-		
+
 		counter++;
 
 		/* clearing all the previously added fields */
@@ -279,13 +281,13 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
-		
+
 		/* show the scan doc info label for format and size */
 		Label fileSizeInfoLabel = new Label();
 		fileSizeInfoLabel.setWrapText(true);
 		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
 		docScanVbox.getChildren().add(fileSizeInfoLabel);
-		
+
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
@@ -305,9 +307,9 @@ public class DocumentScanController extends BaseController {
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
-				
+
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
-				comboBox.setPrefWidth(docScanVbox.getWidth()/2);
+				comboBox.setPrefWidth(docScanVbox.getWidth() / 2);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
@@ -315,7 +317,7 @@ public class DocumentScanController extends BaseController {
 				comboBox.getStyleClass().add("documentCombobox");
 				Label documentLabel = new Label(docCategoryName);
 				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
-				documentLabel.setPrefWidth(docScanVbox.getWidth()/2);
+				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 					documentLabel.setVisible(true);
@@ -328,10 +330,10 @@ public class DocumentScanController extends BaseController {
 				}
 				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
-						if(counter==1) {
-							totalDocument++;
-							scannedField.setText("" + (totalDocument));
-						}
+					if (counter == 1) {
+						totalDocument++;
+						scannedField.setText("" + (totalDocument));
+					}
 				}
 
 				/*
@@ -1003,7 +1005,7 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
-	
+
 	public List<BufferedImage> getScannedPages() {
 		return scannedPages;
 	}
@@ -1011,6 +1013,5 @@ public class DocumentScanController extends BaseController {
 	public void setScannedPages(List<BufferedImage> scannedPages) {
 		this.scannedPages = scannedPages;
 	}
-	
 
 }

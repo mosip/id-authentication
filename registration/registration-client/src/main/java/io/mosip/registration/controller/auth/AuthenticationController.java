@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -415,7 +414,7 @@ public class AuthenticationController extends BaseController implements Initiali
 					RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
 			String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
 			String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
-					
+
 			removeAuthModes(userAuthenticationTypeList, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 			removeAuthModes(userAuthenticationTypeList, irisDisableFlag, RegistrationConstants.IRIS);
 			removeAuthModes(userAuthenticationTypeList, faceDisableFlag, RegistrationConstants.FACE);
@@ -743,11 +742,13 @@ public class AuthenticationController extends BaseController implements Initiali
 
 				if (fpMatchStatus) {
 					if (isSupervisor) {
-						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.SUPERVISOR_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+						fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
+								.concat(fingerprintDetailsDTO.getFingerType())
+								.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					} else {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
+										RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					}
 				}
 			}
@@ -788,9 +789,11 @@ public class AuthenticationController extends BaseController implements Initiali
 		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
-			irisDetailsDTO
-					.setIrisImageName(isSupervisor ? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
-							: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+			irisDetailsDTO.setIrisImageName(isSupervisor
+					? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType())
+							.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
+					: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType())
+							.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 		}
 		return irisMatchStatus;
 	}
@@ -894,7 +897,8 @@ public class AuthenticationController extends BaseController implements Initiali
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			registrationNavlabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 	}
 

@@ -72,7 +72,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private RadioButton yesRadio;
-	
+
 	@FXML
 	private Button nextButton;
 
@@ -93,13 +93,15 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		consent.setText((String) applicationContext.getApplicationMap().get(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
 		if (getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			registrationNavlabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 	}
 
