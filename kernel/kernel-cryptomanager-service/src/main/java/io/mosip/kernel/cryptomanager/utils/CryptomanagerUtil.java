@@ -91,7 +91,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Keymanager URL to encryptdata
 	 */
-	@Value("${mosip.kernel.keymanager-service-encrypt-url:http://localhost:8088/v1/keymanager/encrypt}")
+	@Value("${mosip.kernel.keymanager-service-encrypt-url}")
 	private String encryptUrl;
 
 	/**
@@ -126,8 +126,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to get public key of an application
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return {@link PublicKey} returned by Key Manager Service
 	 */
 	public PublicKey getPublicKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -188,8 +187,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to decrypt symmetric key
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -244,8 +242,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Gets the encrypted data.
 	 *
-	 * @param cryptoEncryptRequestDto
-	 *            the cryptoEncrypt request dto
+	 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
 	 * @return {@link String} encrypted data
 	 */
 	public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
@@ -262,8 +259,7 @@ public class CryptomanagerUtil {
 		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
 		ResponseEntity<String> response = null;
 		try {
-			response = restTemplate.postForEntity(/* encryptUrl */"http://localhost:8088/v1/keymanager/encrypt",
-					requestWrapper, String.class);
+			response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
