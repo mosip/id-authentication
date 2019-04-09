@@ -284,6 +284,7 @@ public class RegistrationConstants {
 	public static final String EMPTY = "";
 	public static final String SPACE = " ";
 	public static final String UNDER_SCORE = "_";
+	public static final String PDF = "pdf";
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 	public static final String PENDING = "Pending";
 	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";

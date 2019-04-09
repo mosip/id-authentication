@@ -260,7 +260,7 @@ public class DocumentScanController extends BaseController {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
-							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_") + 1));
+							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf(RegistrationConstants.UNDER_SCORE) + 1));
 				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
@@ -589,7 +589,7 @@ public class DocumentScanController extends BaseController {
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
 		documentDetailsDTO.setFormat(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE));
-		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document.getName()));
+		documentDetailsDTO.setValue(selectedDocument.concat(RegistrationConstants.UNDER_SCORE).concat(document.getName()));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
@@ -601,7 +601,7 @@ public class DocumentScanController extends BaseController {
 		if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 				|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
 			totalDocument--;
-			scannedField.setText("" + (totalDocument));
+			scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 		}
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
@@ -618,7 +618,7 @@ public class DocumentScanController extends BaseController {
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
 		gridPane.add(new Label("     "), 0, vboxElement.getChildren().size());
-		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 1, vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1, vboxElement.getChildren().size());
 		gridPane.add(new Label("  "), 2, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
@@ -643,7 +643,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 		/* clearing the previously loaded pdf pages inorder to clear up the memory */
 		initializePreviewSection();
-		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".") + 1))) {
+		if (RegistrationConstants.PDF.equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(RegistrationConstants.DOT) + 1))) {
 			try {
 				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
@@ -651,7 +651,7 @@ public class DocumentScanController extends BaseController {
 
 					docPreviewLabel.setVisible(true);
 					if (docPages.size() > 1) {
-						docPageNumber.setText("1");
+						docPageNumber.setText(RegistrationConstants.ONE);
 						docPreviewNext.setVisible(true);
 						docPreviewPrev.setVisible(true);
 						docPreviewNext.setDisable(false);
@@ -760,7 +760,7 @@ public class DocumentScanController extends BaseController {
 			if (key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
 					|| key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)) {
 				totalDocument++;
-				scannedField.setText("" + (totalDocument));
+				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 			}
 		});
 
@@ -801,7 +801,7 @@ public class DocumentScanController extends BaseController {
 
 			if (selectedDocumentToDisplay != null) {
 				displayDocument(selectedDocumentToDisplay.getDocument(),
-						selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
+						selectedDocumentToDisplay.getValue() + RegistrationConstants.DOT + selectedDocumentToDisplay.getFormat());
 			}
 		});
 
@@ -868,7 +868,7 @@ public class DocumentScanController extends BaseController {
 
 		docPreviewNext.setDisable(true);
 		docPreviewPrev.setDisable(true);
-		docPageNumber.setText("");
+		docPageNumber.setText(RegistrationConstants.EMPTY);
 		docPreviewImgView.setImage(null);
 		docPages = null;
 	}
