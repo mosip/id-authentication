@@ -208,7 +208,7 @@ public class Decryptor {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
-					ApiName.AUDIT);
+					ApiName.DMZAUDIT);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, DECRYPTION_SUCCESS);
