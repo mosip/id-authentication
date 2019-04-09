@@ -29,6 +29,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -50,6 +52,7 @@ import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
+import io.mosip.kernel.cryptomanager.exception.CryptoManagerSerivceException;
 import io.mosip.kernel.cryptomanager.exception.KeymanagerServiceException;
 import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
 
@@ -88,7 +91,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Keymanager URL to encryptdata
 	 */
-	@Value("${mosip.kernel.keymanager-service-encrypt-url:http://localhost:8088/v1/keymanager/encrypt}")
+	@Value("${mosip.kernel.keymanager-service-encrypt-url}")
 	private String encryptUrl;
 
 	/**
@@ -123,21 +126,31 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to get public key of an application
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return {@link PublicKey} returned by Key Manager Service
 	 */
 	public PublicKey getPublicKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
 		PublicKey key = null;
+		ResponseEntity<String> response = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp().atOffset(ZoneOffset.UTC))
 				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
+		try {
+			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-		ResponseEntity<String> response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
-				HttpMethod.GET, null, String.class);
-
+			if (!validationErrorsList.isEmpty()) {
+				throw new KeymanagerServiceException(validationErrorsList);
+			} else {
+				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+								+ ex.getResponseBodyAsString());
+			}
+		}
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -174,8 +187,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to decrypt symmetric key
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -188,13 +200,23 @@ public class CryptomanagerUtil {
 		requestWrapper.setRequest(keyManagerSymmetricKeyRequestDto);
 		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
 		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
-
+		ResponseEntity<String> response = null;
 		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
 				requestWrapper, keyManagerRequestHeaders);
+		try {
+			response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST, keyManagerRequestEntity,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-		ResponseEntity<String> response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST,
-				keyManagerRequestEntity, String.class);
-
+			if (!validationErrorsList.isEmpty()) {
+				throw new KeymanagerServiceException(validationErrorsList);
+			} else {
+				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+								+ ex.getResponseBodyAsString());
+			}
+		}
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -220,8 +242,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Gets the encrypted data.
 	 *
-	 * @param cryptoEncryptRequestDto
-	 *            the cryptoEncrypt request dto
+	 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
 	 * @return {@link String} encrypted data
 	 */
 	public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
@@ -233,12 +254,23 @@ public class CryptomanagerUtil {
 		KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
 		keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
 		keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
-		keyManagerEncryptDataRequestDto.setHashText(cryptoEncryptRequestDto.getData());
+		keyManagerEncryptDataRequestDto.setHashedData(cryptoEncryptRequestDto.getData());
 		keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
 		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
+		ResponseEntity<String> response = null;
+		try {
+			response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-		ResponseEntity<String> response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
-
+			if (!validationErrorsList.isEmpty()) {
+				throw new KeymanagerServiceException(validationErrorsList);
+			} else {
+				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+								+ ex.getResponseBodyAsString());
+			}
+		}
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);

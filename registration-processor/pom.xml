@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.2</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -131,6 +131,8 @@
 			**/utils/*.java,
 			**/util/*.java,
 			**/code/*.java,
+			**/entity/*.java,
+			**/config/*.java,
 
 			**/core/code/*.java,
 			**/packet/storage/entity/*.java,
@@ -197,6 +199,9 @@
 			**/registration/processor/core/config/CoreConfigBean.java,
 			**/registration/processor/core/kernel/beans/KernelConfig.java,
 			**/registration/processor/core/abstractverticle/MosipVerticleAPIManager.java,
+			**/registration/processor/core/http/*.java,
+			**/registration/processor/core/queue/factory/*.java,
+			**/registration/processor/core/queue/impl/*.java,
 			**/registration/processor/message/sender/config/MsgNotificationBeanCofig.java,
 			**/registration/processor/print/exception/QueueConnectionNotFound.java,
 			**/registration/processor/stages/demodedupe/StatusMessage.java,
@@ -208,6 +213,9 @@
 			**/registration/processor/packet/receiver/stage/PacketReceiverStage.java,
 			**/registration/processor/camel/bridge/**/*.java,
 			**/registration/processor/stages/connector/stage/**/*.java,
+			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
+			**/registration/processor/stages/demodedupe/DemoDedupeStage.java,
+			**/registration/processor/print/stage/PrintStage.java,
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>

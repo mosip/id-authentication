@@ -5,10 +5,12 @@
 package io.mosip.preregistration.application.service.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -86,8 +89,8 @@ public class DemographicServiceUtil {
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
-			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
-					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		}
 		return createDto;
 	}
@@ -114,8 +117,8 @@ public class DemographicServiceUtil {
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
-			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
-					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		}
 		return createDto;
 	}
@@ -142,8 +145,8 @@ public class DemographicServiceUtil {
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
-			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
-					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		}
 		return createDto;
 	}
@@ -217,14 +220,25 @@ public class DemographicServiceUtil {
 		return demographicEntity;
 	}
 
-	// /**
-	// * This method is used to add the initial request values into a map for input
-	// * validations.
-	// *
-	// * @param demographicRequestDTO
-	// * pass demographicRequestDTO
-	// * @return a map for request input validation
-	// */
+	 /**
+	 * This method is used to add the initial request values into a map for input
+	 * validations.
+	 *
+	 * @param demographicRequestDTO
+	 * pass demographicRequestDTO
+	 * @return a map for request input validation
+	 */
+	
+	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Login Service Util");
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("id", requestDto.getId());
+		requestMap.put("version", requestDto.getVersion());
+		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+		requestMap.put("requesttime",date.toString());
+		requestMap.put("request", requestDto.getRequest().toString());
+		return requestMap;
+	}
 	// public Map<String, String>
 	// prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO>
 	// demographicRequestDTO) {
@@ -330,8 +344,8 @@ public class DemographicServiceUtil {
 				|| statusCode.equals(StatusCodes.BOOKED.getCode())) {
 			return true;
 		} else {
-			throw new OperationNotAllowedException(ErrorCodes.PRG_PAM_APP_003.name(),
-					ErrorMessages.DELETE_OPERATION_NOT_ALLOWED.name());
+			throw new OperationNotAllowedException(ErrorCodes.PRG_PAM_APP_003.getCode(),
+					ErrorMessages.DELETE_OPERATION_NOT_ALLOWED.getMessage());
 		}
 	}
 
@@ -403,8 +417,8 @@ public class DemographicServiceUtil {
 		} catch (java.text.ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In getDateFromString method of pre-registration service- " + ex.getCause());
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.getCode(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage(), ex.getCause());
 		}
 	}
 
@@ -426,7 +440,7 @@ public class DemographicServiceUtil {
 		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
 			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails.toJSONString(), entry.getKey()),
 					entry.getValue())) {
-				throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(),
+				throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
 						entry.getKey() + entry.getValue());
 			}
 		}

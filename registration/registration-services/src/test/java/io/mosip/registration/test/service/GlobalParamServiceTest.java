@@ -211,7 +211,7 @@ public class GlobalParamServiceTest {
 
 		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
 		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false);
-		assertEquals(responseDTO.getErrorResponseDTOs().get(0).getMessage(),
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 	}
 

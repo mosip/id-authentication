@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.utils.SigningUtil;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -29,6 +30,9 @@ public class UserConfigIntegrationTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@MockBean
+	SigningUtil signingUtil;
 	
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
@@ -46,6 +50,7 @@ public class UserConfigIntegrationTest {
 	
 	@Test
 	public void testGetConfig() throws Exception {
+		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -58,6 +63,7 @@ public class UserConfigIntegrationTest {
 	public void testGlobalConfig() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
+		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -84,6 +90,7 @@ public class UserConfigIntegrationTest {
 
 	@Test
 	public void testRegistrationConfig() throws Exception {
+		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))

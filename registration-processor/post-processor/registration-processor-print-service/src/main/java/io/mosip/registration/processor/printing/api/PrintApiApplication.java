@@ -9,6 +9,7 @@ import org.springframework.context.annotation.FilterType;
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
 import io.mosip.registration.processor.packet.storage.config.PacketStorageBeanConfig;
+import io.mosip.registration.processor.printing.config.PrintServiceBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
@@ -25,7 +26,7 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
 		"io.mosip.registration.processor.message.sender.*", "io.mosip.registration.processor.status.*",
 		"io.mosip.registration.processor.rest.client.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 				RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class, KernelConfig.class,
-				RegistrationStatusBeanConfig.class }))
+				PrintServiceBeanConfig.class, RegistrationStatusBeanConfig.class }))
 
 public class PrintApiApplication {
 

@@ -48,9 +48,9 @@ import io.mosip.preregistration.login.dto.UserOtp;
 import io.mosip.preregistration.login.dto.UserOtpDTO;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
-import io.mosip.preregistration.login.exceptions.LoginServiceException;
-import io.mosip.preregistration.login.exceptions.ConfigFileNotFoundException;
-import io.mosip.preregistration.login.exceptions.util.LoginExceptionCatcher;
+import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
+import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.util.LoginExceptionCatcher;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 
 @Service

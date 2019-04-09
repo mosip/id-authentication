@@ -136,12 +136,12 @@ public class DocumentUploadServiceTest {
 	public void setUp() throws URISyntaxException, IOException {
 
 		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
-				+ "\"requesttime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
+				+ "\"requesttime\" : \"2020-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"docCatCode\" "
 				+ ": \"POA\",\"docTypCode\" : \"address\",\"langCode\":\"ENG\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
-				+ "\"requesttime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
+				+ "\"requesttime\" : \"2020-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
 				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 

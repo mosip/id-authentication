@@ -704,9 +704,13 @@ Working on new Css by taleev
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
-	-fx-font-size: 14px;
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 170px;
+	-fx-font-size: 1.2em;
+}
+
+#docPreviewImgViewPane{
+	-fx-border-width : 1;
+	-fx-border-color: black;
+		
 }
 
 .documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
