@@ -42,6 +42,7 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
+  disableContinueButton = false;
 
   constructor(
     private sharedService: SharedService,
@@ -206,6 +207,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.disableContinueButton = true;
     this.bookingDataList = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
@@ -223,6 +225,10 @@ export class TimeSelectionComponent implements OnInit {
         }
       });
     });
+    if (this.bookingDataList.length === 0) {
+      this.disableContinueButton = false;
+      return;
+    }
     const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
     this.dataService.makeBooking(request).subscribe(
@@ -265,6 +271,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   showError() {
+    this.disableContinueButton = false;
     const data = {
       case: 'MESSAGE',
       title: this.secondaryLanguagelabels.title_failure,
