@@ -31,11 +31,10 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * This is a general method which gives the response for all httpmethod
- * designators
- * 
+ * designators.
+ *
  * @author Yaswanth S
  * @since 1.0.0
- *
  */
 @Service
 public class RestClientUtil {
@@ -49,12 +48,22 @@ public class RestClientUtil {
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientUtil.class);
 
 	/**
-	 * Actual exchange using rest template
-	 * 
-	 * @param requestDto
-	 * @return ResponseEntity<?> response entity obtained from api
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws HttpServerErrorException when server exception from server
+	 * Actual exchange using rest template.
+	 *
+	 * @param requestHTTPDTO 
+	 * 				the request HTTPDTO
+	 * @return ResponseEntity 
+	 * 				response entity obtained from api
+	 * @throws RegBaseCheckedException 
+	 * 				the reg base checked exception
+	 * @throws HttpClientErrorException 
+	 * 				when client error exception from server
+	 * @throws HttpServerErrorException 
+	 * 				when server exception from server
+	 * @throws SocketTimeoutException 
+	 * 				the socket timeout exception
+	 * @throws ResourceAccessException 
+	 * 				the resource access exception
 	 */
 	public Map<String, Object> invoke(RequestHTTPDTO requestHTTPDTO)
 			throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
@@ -65,7 +74,7 @@ public class RestClientUtil {
 		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
 		//To-do need to be removed after checking this properly
-		/*try {
+		try {
 			if (requestHTTPDTO.getUri().toString().contains("https"))
 				turnOffSslChecking();
 		} catch (KeyManagementException keyManagementException) {
@@ -74,7 +83,7 @@ public class RestClientUtil {
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
-		}*/
+		}
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
@@ -90,6 +99,14 @@ public class RestClientUtil {
 		return responseMap;
 	}
 
+	/**
+	 * Turn off ssl checking.
+	 *
+	 * @throws NoSuchAlgorithmException 
+	 * 				the no such algorithm exception
+	 * @throws KeyManagementException 
+	 * 				the key management exception
+	 */
 	public static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {
 		// Install the all-trusting trust manager
 		final SSLContext sc = SSLContext.getInstance("SSL");
@@ -97,11 +114,15 @@ public class RestClientUtil {
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 	}
 
+	/** The Constant UNQUESTIONING_TRUST_MANAGER. */
 	public static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		 */
 		@Override
 		public void checkClientTrusted(X509Certificate[] arg0, String arg1)
 				throws java.security.cert.CertificateException {
@@ -109,6 +130,9 @@ public class RestClientUtil {
 
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		 */
 		@Override
 		public void checkServerTrusted(X509Certificate[] arg0, String arg1)
 				throws java.security.cert.CertificateException {

@@ -60,8 +60,8 @@ public class DocumentNotValidExceptionTest {
 	public void notValidException() throws FileNotFoundException, IOException {
 
 		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
-
-		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+		String preRegistrationId ="48690172097498";
+		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -69,11 +69,11 @@ public class DocumentNotValidExceptionTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json))
+		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId))
 				.thenThrow(documentNotValidException);
 		try {
 
-			documentUploadService.uploadDocument(multiPartFile, json);
+			documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId);
 			fail();
 
 		} catch (DocumentNotValidException e) {

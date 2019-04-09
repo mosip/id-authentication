@@ -58,6 +58,7 @@ public enum MasterDataErrorCode {
 	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SNC-152","Error occurred while fetching Registration Center Machine Device History"),
 	SYNC_JOB_DEF_FETCH_EXCEPTION("KER-SNC-153","Error occured while fetching sync job definitons"),
 	SYNC_JOB_DEF_PARSE_EXCEPTION("KER-SNC-154","Error occured while parsing the response");
+	
 	private final String errorCode;
 	private final String errorMessage;
 

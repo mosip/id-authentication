@@ -26,22 +26,25 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.dto.ExceptionListDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 
 @Controller
 public class BiometricExceptionController extends BaseController implements Initializable {
@@ -92,16 +95,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Pane rightHandPane;
 	@FXML
-	private Pane leftEyePane;
-	@FXML
-	private Pane rightEyePane;
-	@FXML
 	private Button previousBtn;
-	/*
-	 * @FXML private AnchorPane userOnboardTracker;
-	 * 
-	 * @FXML private ImageView registrationImg;
-	 */
 	@FXML
 	private GridPane biometricException;
 	@FXML
@@ -112,15 +106,21 @@ public class BiometricExceptionController extends BaseController implements Init
 	private GridPane operatorExceptionHeader;
 	@FXML
 	private GridPane exceptionDocProof;
-	// @FXML
-	// private AnchorPane regExceptionHeader;
 	@FXML
 	private GridPane userOnboardFooter;
 	@FXML
 	private GridPane registrationFooter;
 	@FXML
 	private GridPane spliterLine;
-
+	@FXML
+	private GridPane onboardTrackerImg;
+	@FXML
+	private GridPane registrationTrackerImg;
+	@FXML
+	private TableView<ExceptionListDTO> exceptionTable;
+	@FXML 
+	private TableColumn<ExceptionListDTO, String> exceptionTableColumn;
+	
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -134,23 +134,26 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	
+	@FXML
+	private Label registrationNavlabel;
 
 	@FXML
 	private Button continueBtn;
-	@FXML
-	private Button backBtn;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
+	ResourceBundle applicationLabelBundle;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 
 		continueBtn.setDisable(true);
-		backBtn.setDisable(true);
 
-		setExceptionImage();
+		setExceptionImage();		
 		fingerExceptionListener(rightLittle);
 		fingerExceptionListener(rightRing);
 		fingerExceptionListener(rightMiddle);
@@ -168,6 +171,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			regCenterID
 					.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			employeeCode.setText(SessionContext.userContext().getUserId());
+			machineID.setText((String)ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID));
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP))
 					.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
@@ -178,19 +182,23 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
-
-			// trackerImage.setVisible(false);
+			onboardTrackerImg.setVisible(true);
+			registrationTrackerImg.setVisible(false);
 			registrationExceptionHeader.setVisible(false);
 			exceptionDocProof.setVisible(false);
-			// regExceptionHeader.setVisible(false);
-			// registrationImg.setVisible(false);
 			registrationFooter.setVisible(false);
 			userOnboardFooter.setVisible(true);
-			// userOnboardTracker.setVisible(true);
 			operatorExceptionLayout.setVisible(true);
 			operatorExceptionHeader.setVisible(true);
 			spliterLine.setVisible(true);
 		} else {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			}
+			
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 							.get(RegistrationConstants.FINGER_PANE)) {
@@ -203,14 +211,13 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
-			exceptionDocProof.setVisible(true);
-			// regExceptionHeader.setVisible(true);
-			// registrationImg.setVisible(true);
+			onboardTrackerImg.setVisible(false);
+			registrationTrackerImg.setVisible(true);
+			exceptionDocProof.setVisible(false);
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);
 			spliterLine.setVisible(false);
 			userOnboardFooter.setVisible(false);
-			// userOnboardTracker.setVisible(false);
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
@@ -237,33 +244,18 @@ public class BiometricExceptionController extends BaseController implements Init
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
-				if (newValue && !fingerList.contains(fingerImage.getId())) {
+				if (newValue && !fingerList.contains(fingerImage.getId())) {					
 					fingerList.add(fingerImage.getId());
 					fingerImage.setOpacity(1.0);
+					showExceptionList();
 				} else {
 					if (fingerList.indexOf(fingerImage.getId()) >= 0) {
 						fingerList.remove(fingerImage.getId());
+						showExceptionList();
 					}
 					fingerImage.setOpacity(0.0);
 				}
-				if (fingerList.stream().anyMatch(fingerType -> fingerType.contains("left"))) {
-					leftHandPane.getStyleClass().clear();
-					leftHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
-				} else {
-					leftHandPane.getStyleClass().clear();
-					leftHandPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
-				}
-				if (fingerList.stream().anyMatch(fingerType -> fingerType.contains("right"))) {
-					rightHandPane.getStyleClass().clear();
-					rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
-				} else {
-					rightHandPane.getStyleClass().clear();
-					rightHandPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
-				}
-
 				continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-				backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-
 			}
 		});
 
@@ -290,22 +282,20 @@ public class BiometricExceptionController extends BaseController implements Init
 				APPLICATION_ID, "It will listen the iris on click functionality");
 
 		SimpleBooleanProperty toggleFunctionForIris = new SimpleBooleanProperty(false);
-		Pane irisPane = (Pane) biometricException.lookup("#" + irisImage.getId() + "Pane");
+		
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				irisPane.getStyleClass().clear();
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {				
+				
 				if (newValue && !irisList.contains(irisImage.getId())) {
-					irisList.add(irisImage.getId());
-					irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
+					irisList.add(irisImage.getId());					
+					showExceptionList();
 				} else {
 					if (irisList.indexOf(irisImage.getId()) >= 0) {
 						irisList.remove(irisImage.getId());
-					}
-					irisPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
+						showExceptionList();
+					}					
 				}
-
 				continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-				backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 
 			}
 		});
@@ -341,27 +331,21 @@ public class BiometricExceptionController extends BaseController implements Init
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-				List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
-						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
-								.getBiometricExceptionDTO();
-
-				long fingerPrintCount = biometricExceptionDTOs.stream()
-						.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
-
-				if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-						|| fingerPrintCount > 0) {
-
-					SessionContext.map().put("biometricException", false);
-					SessionContext.map().put("fingerPrintCapture", true);
-				} else {
-
-					SessionContext.map().put("biometricException", false);
-					SessionContext.map().put("irisCapture", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
+				
+				if(fingerList.size()==10 && irisList.size()==2) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
+				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
+				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))){
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,
-						getPageDetails("biometricException", RegistrationConstants.NEXT));
+						getPageDetails(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
 			}
 			fingerPrintCaptureController.clearImage();
 			irisCaptureController.clearIrisBasedOnExceptions();
@@ -382,10 +366,10 @@ public class BiometricExceptionController extends BaseController implements Init
 			List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
-				if (bioType.contains("Eye")) {
-					biometricExceptionDTO.setBiometricType("iris");
+				if (bioType.contains(RegistrationConstants.EYE)) {
+					biometricExceptionDTO.setBiometricType(RegistrationConstants.IRIS.toLowerCase());
 				} else {
-					biometricExceptionDTO.setBiometricType("fingerprint");
+					biometricExceptionDTO.setBiometricType(RegistrationConstants.FINGERPRINT);
 				}
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
@@ -431,13 +415,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		} else {
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				SessionContext.map().put("biometricException", false);
-				if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-					SessionContext.map().put("documentScan", true);
-				} else {
-					SessionContext.map().put("demographicDetail", true);
-				}
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,
@@ -462,26 +441,20 @@ public class BiometricExceptionController extends BaseController implements Init
 				if (bioException.getMissingBiometric().contains("left")
 						&& !bioException.getMissingBiometric().contains("Eye")) {
 					fingerList.add(bioException.getMissingBiometric());
-					leftHandPane.getStyleClass().clear();
-					leftHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 					ImageView fingerImage = (ImageView) leftHandPane.lookup("#" + bioException.getMissingBiometric());
 					fingerImage.setOpacity(1.0);
 
 				} else if (bioException.getMissingBiometric().contains("right")
 						&& !bioException.getMissingBiometric().contains("Eye")) {
 					fingerList.add(bioException.getMissingBiometric());
-					rightHandPane.getStyleClass().clear();
-					rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 					ImageView fingerImage = (ImageView) rightHandPane.lookup("#" + bioException.getMissingBiometric());
 					fingerImage.setOpacity(1.0);
 
 				} else if (bioException.getMissingBiometric().contains("Eye")) {
 					irisList.add(bioException.getMissingBiometric());
-					Pane irisPane = (Pane) biometricException.lookup("#" + bioException.getMissingBiometric() + "Pane");
-					irisPane.getStyleClass().clear();
-					irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				}
 			});
+			showExceptionList();
 		} else {
 			rightLittle.setOpacity(0.0);
 			rightRing.setOpacity(0.0);
@@ -493,10 +466,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			leftMiddle.setOpacity(0.0);
 			leftIndex.setOpacity(0.0);
 			leftThumb.setOpacity(0.0);
-			leftHandPane.getStyleClass().clear();
-			rightHandPane.getStyleClass().clear();
-			leftEyePane.getStyleClass().clear();
-			rightEyePane.getStyleClass().clear();
+			showExceptionList();
 		}
 	}
 
@@ -507,13 +477,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	private void loadPage(String page) {
-		VBox mainBox = new VBox();
 		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -526,7 +491,19 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	public void disableNextBtn() {
 		continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-		backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
+	}
+		
+	/**
+	 * Method to show the exception list  
+	 */
+	private void showExceptionList() {
+		List<ExceptionListDTO> exceptionList = new ArrayList<>();
+		fingerList.forEach(finger -> exceptionList.add(new ExceptionListDTO(applicationLabelBundle.getString(finger))));
+		irisList.forEach(iris -> exceptionList.add(new ExceptionListDTO(applicationLabelBundle.getString(iris))));
+		ObservableList<ExceptionListDTO> listOfException = FXCollections.observableArrayList(exceptionList);
+		exceptionTableColumn.setCellValueFactory(new PropertyValueFactory<ExceptionListDTO, String>("exceptionItem"));
+		exceptionTable.getItems().clear();
+		exceptionTable.setItems(listOfException);
 	}
 
 }

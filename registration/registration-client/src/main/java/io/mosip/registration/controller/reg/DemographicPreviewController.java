@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -70,7 +71,7 @@ public class DemographicPreviewController extends BaseController {
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
 		if(((RegistrationDTO)SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO()!=null) {
-			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 		}
 	}
 

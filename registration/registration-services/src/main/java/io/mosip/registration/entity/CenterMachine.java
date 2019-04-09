@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CenterMachineId;
 
 /**
- * Center Machine entity details
+ * The Entity Class for Center Machine details
  * 
  * @author Yaswanth S
  * @since 1.0.0

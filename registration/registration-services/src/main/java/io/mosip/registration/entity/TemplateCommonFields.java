@@ -5,6 +5,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * The Entity Class for TemplateCommonFields.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @MappedSuperclass
 public class TemplateCommonFields {
 	

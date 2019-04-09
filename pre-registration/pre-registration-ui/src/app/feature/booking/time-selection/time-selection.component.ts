@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
 
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
@@ -14,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-time-selection',
@@ -42,6 +42,7 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
+  disableContinueButton = false;
 
   constructor(
     private sharedService: SharedService,
@@ -206,34 +207,34 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.disableContinueButton = true;
     this.bookingDataList = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
             const bookingData = new BookingModel(
+              name.preRegId,
               this.registrationCenter.toString(),
               data.date,
               slot.fromTime,
               slot.toTime
             );
-            console.log(name);
-            const requestObject = {
-              newBookingDetails: bookingData,
-              oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
-              preRegistrationId: name.preRegId
-            };
-            this.bookingDataList.push(requestObject);
+            this.bookingDataList.push(bookingData);
           });
         }
       });
     });
-    const request = new BookingModelRequest(this.bookingDataList);
+    if (this.bookingDataList.length === 0) {
+      this.disableContinueButton = false;
+      return;
+    }
+    const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);
-        if (!response['err']) {
+        if (!response['errors']) {
           const data = {
             case: 'MESSAGE',
             title: this.secondaryLanguagelabels.title_success,
@@ -250,19 +251,13 @@ export class TimeSelectionComponent implements OnInit {
                 this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
                 const appointmentDateTime = Utils.getBookingDateTime(
-                  booking[0].newBookingDetails.appointment_date,
-                  booking[0].newBookingDetails.time_slot_from
+                  booking[0].appointment_date,
+                  booking[0].time_slot_from
                 );
                 this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
               });
-              const arr = this.router.url.split('/');
-              arr.pop();
-              arr.pop();
-              arr.push('summary');
-              arr.push('acknowledgement');
-              const url = arr.join('/');
+              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
-              // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
             });
         } else {
           this.showError();
@@ -276,6 +271,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   showError() {
+    this.disableContinueButton = false;
     const data = {
       case: 'MESSAGE',
       title: this.secondaryLanguagelabels.title_failure,
@@ -289,7 +285,7 @@ export class TimeSelectionComponent implements OnInit {
 
   navigateDashboard() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    this.router.navigate(['dashboard']);
   }
 
   navigateBack() {

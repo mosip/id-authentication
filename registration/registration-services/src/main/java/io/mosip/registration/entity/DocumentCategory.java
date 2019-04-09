@@ -11,6 +11,12 @@ import javax.persistence.Table;
 
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
+/**
+ * The Entity Class for DocumentCategory.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0
+ */
 @Entity
 @Table(schema = "reg", name = "doc_category")
 @IdClass(CodeAndLanguageCodeID.class)

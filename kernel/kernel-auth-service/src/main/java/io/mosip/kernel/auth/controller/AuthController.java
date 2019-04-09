@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
@@ -76,14 +77,11 @@ public class AuthController {
 	/**
 	 * API to authenticate using userName and password
 	 * 
-	 * @param request
-	 *            request is of type {@link LoginUser}
-	 * @param res
-	 *            the response
+	 * request is of type {@link LoginUser}
+	 * 
 	 * @return ResponseEntity Cookie value with Auth token
-	 * @throws Exception
-	 *             throws exception
 	 */
+
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridPwd")
 	public ResponseWrapper<AuthNResponse> authenticateUseridPwd(@RequestBody @Valid RequestWrapper<LoginUser> request,
@@ -95,6 +93,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
@@ -120,11 +119,9 @@ public class AuthController {
 	/**
 	 * API to send OTP
 	 * 
-	 * @param otpUserDto
-	 *            otpUser is of type {@link OtpUser}
+	 * otpUser is of type {@link OtpUser}
+	 * 
 	 * @return ResponseEntity with OTP Sent message
-	 * @throws Exception
-	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/sendotp")
@@ -136,6 +133,7 @@ public class AuthController {
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
 		if (authResponseDto != null) {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 		}
 		responseWrapper.setResponse(authNResponse);
@@ -145,16 +143,9 @@ public class AuthController {
 	/**
 	 * API to validate OTP with user Id
 	 * 
-	 * @param userOtpDto
-	 *            userOtp is of type {@link UserOtp}
-	 * 
-	 * @param res
-	 *            the response
+	 * userOtp is of type {@link UserOtp}
 	 * 
 	 * @return ResponseEntity with Cookie value with Auth token
-	 * 
-	 * @throws Exception
-	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridOTP")
@@ -167,6 +158,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			if (token != null && token.getUserId() != null) {
@@ -174,6 +166,7 @@ public class AuthController {
 			}
 		} else {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(
 					authResponseDto.getMessage() != null ? authResponseDto.getMessage() : "Otp validation failed");
 		}
@@ -184,14 +177,9 @@ public class AuthController {
 	/**
 	 * API to authenticate using clientId and secretKey
 	 * 
-	 * @param clientSecretDto
-	 *            clientSecretDto is of type {@link ClientSecretDto}
-	 * @param res
-	 *            the response
-	 * @return ResponseEntity with Cookie value with Auth token
+	 * clientSecretDto is of type {@link ClientSecretDto}
 	 * 
-	 * @throws Exception
-	 *             the exception
+	 * @return ResponseEntity with Cookie value with Auth token
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/clientidsecretkey")
@@ -205,6 +193,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
@@ -216,16 +205,8 @@ public class AuthController {
 	/**
 	 * API to validate token
 	 * 
-	 * @param request
-	 *            the request
-	 * @param res
-	 *            the response
 	 * 
 	 * @return ResponseEntity with MosipUserDto
-	 * @throws AuthManagerException
-	 *             the AuthManager Exception
-	 * @throws Exception
-	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/validateToken")
@@ -248,10 +229,10 @@ public class AuthController {
 			Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
 			res.addCookie(cookie);
 		} catch (NonceExpiredException exp) {
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, exp.getMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
 		} catch (AuthManagerException e) {
 
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, e.getMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		}
 		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
 		return responseWrapper;
@@ -260,13 +241,8 @@ public class AuthController {
 	/**
 	 * API to retry token when auth token expires
 	 * 
-	 * @param request
-	 *            the request
-	 * @param res
-	 *            the response
+	 * 
 	 * @return ResponseEntity with MosipUserDto
-	 * @throws Exception
-	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/refreshToken")
@@ -290,13 +266,8 @@ public class AuthController {
 	/**
 	 * API to invalidate token when both refresh and auth token expires
 	 * 
-	 * @param request
-	 *            the request
-	 * @param res
-	 *            the response
+	 * 
 	 * @return ResponseEntity with MosipUserDto
-	 * @throws Exception
-	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/invalidateToken")

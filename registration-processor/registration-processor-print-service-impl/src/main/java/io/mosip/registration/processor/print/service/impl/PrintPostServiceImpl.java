@@ -53,15 +53,12 @@ public class PrintPostServiceImpl {
 
 	@Value("${registration.processor.queue.address}")
 	private String address;
+	
+	@Value("${registration.processor.queue.printpostaladdress}")
+	private String printPostalAddress;
 
 	@Value("${registration.processor.PRINT_POSTAL_SERVICE}")
 	private String printPostServiceDirectory;
-
-	/** The print & postal service provider address. */
-	private String printPostalAddress = "postal-service";
-
-//	@Autowired
-//	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
 	private String registrationId;
 

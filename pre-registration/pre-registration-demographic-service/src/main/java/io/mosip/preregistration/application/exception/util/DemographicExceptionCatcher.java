@@ -25,6 +25,8 @@ import io.mosip.preregistration.application.exception.RecordFailedToDeleteExcept
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
+import io.mosip.preregistration.application.exception.RestCallException;
+import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
@@ -90,8 +92,8 @@ public class DemographicExceptionCatcher {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),
 					((DocumentFailedToDeleteException) ex).getErrorText());
 		} else if (ex instanceof IllegalArgumentException) {
-			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.name(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.name());
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage());
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
 			throw new SystemUnsupportedEncodingException(((SystemUnsupportedEncodingException) ex).getErrorCode(),
 					((SystemUnsupportedEncodingException) ex).getErrorText());
@@ -129,6 +131,12 @@ public class DemographicExceptionCatcher {
 					((JsonMappingException) ex).getErrorText());
 		} else if (ex instanceof IOException) {
 			throw new JsonValidationException(((IOException) ex).getErrorCode(), ((IOException) ex).getErrorText());
+		} else if (ex instanceof RestCallException) {
+			throw new RestCallException(((RestCallException) ex).getErrorCode(),
+					((RestCallException) ex).getErrorText());
+		} else if (ex instanceof SchemaValidationException) {
+			throw new SchemaValidationException(((SchemaValidationException) ex).getErrorCode(),
+					((SchemaValidationException) ex).getErrorText());
 		}
 	}
 

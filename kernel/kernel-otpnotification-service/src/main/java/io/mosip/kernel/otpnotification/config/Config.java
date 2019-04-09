@@ -37,14 +37,6 @@ public class Config {
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
 	}
-	
-	@Bean
-	public FilterRegistrationBean<Filter> forwardedHeaderFilter() {
-		FilterRegistrationBean<Filter> reqResFilter = new FilterRegistrationBean<>();
-		reqResFilter.setFilter(new ForwardedHeaderFilter());
-		reqResFilter.setOrder(0);
-		return reqResFilter;
-	}
 }
 
 

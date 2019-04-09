@@ -20,5 +20,7 @@ public class UinResponseDto {
 	 * The uin
 	 */
 	private String uin;
+	
+	private String status;
 
 }

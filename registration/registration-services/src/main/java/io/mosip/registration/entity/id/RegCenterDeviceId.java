@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.RegCenterDevice;
 import lombok.Data;
 
 /**
- * contains the composite primary key of {@link RegCenterDevice}
+ * contains the composite primary key for {@link RegCenterDevice}
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

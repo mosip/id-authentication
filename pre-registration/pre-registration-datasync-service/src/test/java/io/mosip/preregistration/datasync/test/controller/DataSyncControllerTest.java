@@ -93,10 +93,9 @@ public class DataSyncControllerTest {
 		File file1 = new File(reverseDataSyncUri.getPath());
 		jsonObjectRev = parser.parse(new FileReader(file1));
 
-		dataSyncRequestDTO.setRegClientId("12");
+		dataSyncRequestDTO.setRegistrationCenterId("12");
 		dataSyncRequestDTO.setFromDate("2019-01-01 00:00:00");
 		dataSyncRequestDTO.setToDate("2019-01-31 00:00:00");
-		dataSyncRequestDTO.setUserId("User1");
 		mainDataSyncRequestDTO.setId("mosip.pre-registration.datasync");
 		mainDataSyncRequestDTO.setVersion("1.0");
 		mainDataSyncRequestDTO.setRequesttime(new Timestamp(System.currentTimeMillis()));
@@ -123,11 +122,13 @@ public class DataSyncControllerTest {
 		mainPreRegArchiveDTO.setResponse(preRegArchiveDTO);
 
 		Mockito.when(dataSyncService.getPreRegistrationData("97285429827016")).thenReturn(mainPreRegArchiveDTO);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/datasync").contentType(MediaType.APPLICATION_JSON)
-				.param("pre_registration_id", "97285429827016");
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sync/{preRegistrationId}", "97285429827016")
+				.contentType(MediaType.APPLICATION_JSON);
+		// .param("pre_registration_id", "97285429827016");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
 	}
+
 	@WithUserDetails("reg-officer")
 	@Test
 	public void retrieveAllpregIdSuccessTest() throws Exception {
@@ -144,18 +145,20 @@ public class DataSyncControllerTest {
 		mainDataSyncResponseDTO.setResponse(preRegistrationIdsDTO);
 
 		Mockito.when(dataSyncService.retrieveAllPreRegIds(mainDataSyncRequestDTO)).thenReturn(mainDataSyncResponseDTO);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/datasync")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/sync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-	
+
 	@WithUserDetails("reg-officer")
 	@Test
 	public void reverseDatasyncSuccessTest() throws Exception {
 
-		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("1");
+		List<String> preids = new ArrayList<>();
+		preids.add("9876543212356");
+		reverseDatasyncReponseDTO.setPreRegistrationIds(preids);
 		reverseDatasyncReponseDTO.setCountOfStoredPreRegIds("1");
 		reverseDatasyncReponseDTO.setTransactionId("26fde349-0e56-11e9-99e1-f7683fbbce99");
 		List<String> responseList = new ArrayList<>();
@@ -166,7 +169,7 @@ public class DataSyncControllerTest {
 		mainReverseDataSyncResponseDTO.setResponse(reverseDatasyncReponseDTO);
 		Mockito.when(dataSyncService.storeConsumedPreRegistrations(mainReverseDataSyncRequestDTO))
 				.thenReturn(mainReverseDataSyncResponseDTO);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/datasync/store")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/sync/consumedPreRegIds")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObjectRev.toString());
 		System.out.println(requestBuilder);

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -32,6 +33,7 @@ import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
 
@@ -41,42 +43,46 @@ import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
  */
 @Component
 public class ILdapDataStore implements IDataStore {
-	
+
 	private DataBaseConfig dataBaseConfig;
-	
-	public ILdapDataStore()
-	{
+
+	public ILdapDataStore() {
 	}
-	public ILdapDataStore(DataBaseConfig dataBaseConfig)
-	{
+
+	public ILdapDataStore(DataBaseConfig dataBaseConfig) {
 		super();
-		this.dataBaseConfig=dataBaseConfig;
+		this.dataBaseConfig = dataBaseConfig;
 	}
 
 	@Autowired
-    TokenGenerator tokenGenerator;
-	
-	 @Autowired
-	 TokenValidator tokenValidator;
-	 
-	 @Autowired
-	 MosipEnvironment environment;
-	
+	TokenGenerator tokenGenerator;
+
+	@Autowired
+	TokenValidator tokenValidator;
+
+	@Autowired
+	MosipEnvironment environment;
+
 	private LdapConnection createAnonymousConnection() throws Exception {
-		//LdapNetworkConnection network = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
+		// LdapNetworkConnection network = new
+		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
+				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
-	
+
 	@Override
 	public MosipUserDto authenticateUser(LoginUser loginUser) throws Exception {
 		MosipUserDto mosipUser = getLoginDetails(loginUser);
 		return mosipUser;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.AuthNService#authenticateWithOtp(io.mosip.kernel.auth.entities.otp.OtpUser)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.service.AuthNService#authenticateWithOtp(io.mosip.kernel
+	 * .auth.entities.otp.OtpUser)
 	 */
 	@Override
 	public MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception {
@@ -87,41 +93,19 @@ public class ILdapDataStore implements IDataStore {
 	private MosipUserDto getOtpDetails(OtpUser otpUser) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(otpUser.getUserId());
-		if(!connection.exists(userdn))
-		{
-			if(otpUser.getOtpChannel().equals(AuthConstant.PHONE))
-			{
-				Entry userEntry = new DefaultEntry("uid=" + otpUser.getUserId() + ",ou=people,c=morocco",
-						"objectClass: organizationalPerson", "objectClass: person", "objectClass: inetOrgPerson",
-						"objectClass: top", "mobile", otpUser.getUserId(), "uid",
-						otpUser.getUserId(),"sn",otpUser.getUserId(),"cn",otpUser.getUserId());
-				connection.add(userEntry);
+		if (!connection.exists(userdn)) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 
-				Modification roleModification = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE,
-						"roleOccupant", String.valueOf(userdn));
-				connection.modify("cn=individual,ou=roles,c=morocco", roleModification);
-			}
-			else
-			{
-
-				Entry userEntry = new DefaultEntry("uid=" + otpUser.getUserId() + ",ou=people,c=morocco",
-						"objectClass: organizationalPerson", "objectClass: person", "objectClass: inetOrgPerson",
-						"objectClass: top", "mail", otpUser.getUserId(), "uid",
-						otpUser.getUserId());
-				connection.add(userEntry);
-
-				Modification roleModification = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE,
-						"roleOccupant", String.valueOf(userdn));
-				connection.modify("cn=individual,ou=roles,c=morocco", roleModification);
-			
-			}
-			
 		}
 		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
 		return mosipUserDto;
 	}
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.AuthNService#authenticateUserWithOtp(io.mosip.kernel.auth.entities.UserOtp)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.service.AuthNService#authenticateUserWithOtp(io.mosip.
+	 * kernel.auth.entities.UserOtp)
 	 */
 	@Override
 	public MosipUserDto authenticateUserWithOtp(UserOtp userOtp) throws Exception {
@@ -135,8 +119,13 @@ public class ILdapDataStore implements IDataStore {
 		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
 		return mosipUserDto;
 	}
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.AuthNService#authenticateWithSecretKey(io.mosip.kernel.auth.entities.ClientSecret)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.service.AuthNService#authenticateWithSecretKey(io.mosip.
+	 * kernel.auth.entities.ClientSecret)
 	 */
 	@Override
 	public MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
@@ -156,10 +145,14 @@ public class ILdapDataStore implements IDataStore {
 		connection.close();
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.AuthZService#verifyOtp(io.mosip.kernel.auth.entities.otp.OtpValidateRequestDto, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.service.AuthZService#verifyOtp(io.mosip.kernel.auth.
+	 * entities.otp.OtpValidateRequestDto, java.lang.String)
 	 */
-	
+
 	public MosipUserDto getLoginDetails(LoginUser loginUser) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(loginUser.getUserName());
@@ -172,7 +165,7 @@ public class ILdapDataStore implements IDataStore {
 		connection.close();
 		return null;
 	}
-	
+
 	private MosipUserDto lookupUserDetails(Dn userdn, LdapConnection connection) throws Exception {
 		try {
 			// if lookup access is retricted only to admin then bind the
@@ -189,9 +182,12 @@ public class ILdapDataStore implements IDataStore {
 			if (userLookup != null) {
 				mosipUserDto = new MosipUserDto();
 				mosipUserDto.setUserId(userLookup.get("uid").get().toString());
-				mosipUserDto.setMobile(userLookup.get("mobile")!=null?userLookup.get("mobile").get().toString():null);
-				mosipUserDto.setMail(userLookup.get("mail")!=null?userLookup.get("mail").get().toString():null);
-				mosipUserDto.setUserPassword(userLookup.get("userPassword")!=null?userLookup.get("userPassword").get().getBytes():null);
+				mosipUserDto
+						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
+				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
+				mosipUserDto.setUserPassword(
+						userLookup.get("userPassword") != null ? userLookup.get("userPassword").get().getBytes()
+								: null);
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
 				mosipUserDto.setRole(rolesString);
@@ -201,12 +197,11 @@ public class ILdapDataStore implements IDataStore {
 			throw new RuntimeException("unable to fetch user details", err);
 		}
 	}
-	
+
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");
-			String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=" + userdn
-					+ "))";
+			String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=" + userdn + "))";
 
 			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
@@ -231,7 +226,7 @@ public class ILdapDataStore implements IDataStore {
 
 		return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
 	}
-	
+
 	private Dn createUserDn(String userName) throws Exception {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}

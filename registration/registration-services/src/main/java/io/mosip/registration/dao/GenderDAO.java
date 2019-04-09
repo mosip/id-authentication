@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.Gender;
 
 /**
+ * DAO class for Gender
  * 
  * @author Brahmananda Reddy
  *

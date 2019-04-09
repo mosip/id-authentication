@@ -7,6 +7,7 @@ import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,29 +57,37 @@ public class NotificationServiceTest {
 
 		//NotificationDTO emailDTO = new NotificationDTO();
 		//emailDTO.setStatus("Email Request submitted");
-		HashMap<String, String> emailDTO=new HashMap<>();
-		emailDTO.put("status", "success");
+		HashMap<String, Object> finalMap=new HashMap<>();
+		HashMap<String, Object> email=new HashMap<>();
+		email.put("status", "success");
+		email.put("message", "Email Request submitted");
+		finalMap.put("response", email);
 		
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject(),Mockito.anyString())).thenReturn(emailDTO);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject(),Mockito.anyString())).thenReturn(finalMap);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "qwerty@gmail.com", "regid");
 
-		Assert.assertEquals("Success", responseDTO.getSuccessResponseDTO().getMessage());
+		Assert.assertEquals("success", responseDTO.getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
 	public void sendSMSTest()
 			throws HttpClientErrorException, RegBaseCheckedException, ResourceAccessException, SocketTimeoutException {
 		NotificationDTO smsdto = new NotificationDTO();
-		smsdto.setMessage("Test");
-		smsdto.setNumber("9994019598");
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("message", "Hi");
+		requestMap.put("number", "99999999");
+		smsdto.setRequest(requestMap);
 		smsdto.setStatus("success");
-		HashMap<String, String> smsResponse=new HashMap<>();
-		smsResponse.put("status", "success");
+		HashMap<String, Object> finalMap=new HashMap<>();
+		HashMap<String, Object> email=new HashMap<>();
+		email.put("status", "success");
+		email.put("message", "Sms Request submitted");
+		finalMap.put("response", email);
 
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject(),Mockito.anyString())).thenReturn(smsResponse);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject(),Mockito.anyString())).thenReturn(finalMap);
 		ResponseDTO responseDTO = notificationServiceImpl.sendSMS("Hi", "9999999999", "regid");
 
-		Assert.assertEquals("Success", responseDTO.getSuccessResponseDTO().getMessage());
+		Assert.assertEquals("success", responseDTO.getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
@@ -104,7 +113,7 @@ public class NotificationServiceTest {
 		List<Map<String,String>> list= new ArrayList();
 		Map<String,String> map=new HashMap<>();
 		map.put("errorCode", "Err_Code_KER200");
-		map.put("errorMessage", "To must be valid. It can't be empty or null.");
+		map.put("message", "To must be valid. It can't be empty or null.");
 		list.add(map);
 		emailDTO.put("errors",list);
 		

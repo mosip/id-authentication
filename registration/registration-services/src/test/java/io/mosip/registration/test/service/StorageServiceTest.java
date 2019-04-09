@@ -17,7 +17,6 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
@@ -28,7 +27,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.StorageServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FileUtils.class })
+@PrepareForTest({ FileUtils.class, ApplicationContext.class })
 public class StorageServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -36,19 +35,20 @@ public class StorageServiceTest {
 	private StorageServiceImpl storageService;
 
 	@Before
-	public void initialize() {
-		
+	public void initialize() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.PKT_STORE_LOC, "..//PacketStore");
 		appMap.put(RegistrationConstants.PACKET_STORE_DATE_FORMAT, "dd-MMM-yyyy");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
-		PowerMockito.spy(FileUtils.class);
+
+		PowerMockito.mockStatic(ApplicationContext.class, FileUtils.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 	}
 
 	@Test
 	public void testLocalStorage() throws Exception {
 		PowerMockito.doNothing().when(FileUtils.class, "copyToFile", Mockito.any(InputStream.class),
 				Mockito.any(File.class));
+
 		Assert.assertNotNull(storageService.storeToDisk("1234567890123", "demo".getBytes()));
 	}
 
@@ -61,6 +61,7 @@ public class StorageServiceTest {
 	public void testIOException() throws Exception {
 		PowerMockito.doThrow(new IOException("PCM", "File Not Found")).when(FileUtils.class, "copyToFile",
 				Mockito.any(InputStream.class), Mockito.any(File.class));
+
 		storageService.storeToDisk("12343455657676787", "packet.zip".getBytes());
 	}
 }

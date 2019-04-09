@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -23,16 +22,20 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 
+/**
+ * Implementation class for {@link RegistrationPacketVirusScanService}
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 @Service
-public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacketVirusScanService {
+public class RegistrationPacketVirusScanServiceImpl extends BaseService implements RegistrationPacketVirusScanService {
 
 	@Autowired
 	private VirusScanner<Boolean, String> virusScanner;
-
-	@Value("${PRE_REG_PACKET_LOCATION}")
-	private String preRegPacketLocation;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);
 
@@ -51,7 +54,8 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		List<String> pathList = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)), preRegPacketLocation,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)), 
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOGS_PATH)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DB_PATH)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.CLIENT_PATH)));
@@ -85,11 +89,9 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 					virusScannerException.getMessage());
 			LOGGER.debug("REGISTRATION - PACKET_SCAN_EXCEPTION_DEBUG", APPLICATION_NAME, APPLICATION_ID,
 					virusScannerException.getMessage() + ExceptionUtils.getStackTrace(virusScannerException));
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode("ServiceException");
-			errorResponseDTO.setMessage(RegistrationConstants.ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
-			errorList.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(errorList);
+			
+			setSuccessResponse(responseDTO, RegistrationConstants.ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, null);
+			
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - PACKET_SCAN_IOEXCEPTION", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));

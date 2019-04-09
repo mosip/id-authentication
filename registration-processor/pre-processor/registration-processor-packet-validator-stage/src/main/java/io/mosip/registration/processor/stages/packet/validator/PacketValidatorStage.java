@@ -53,7 +53,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		return packetvalidateprocessor.process(object);
+		return packetvalidateprocessor.process(object, this.getClass().getSimpleName());
 	}
 
 }

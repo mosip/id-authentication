@@ -169,6 +169,8 @@ public enum ApiName {
 	MACHINEDETAILS, 
 	
 	/** The external service. */
-	 EISERVICE;
+	 EISERVICE,
+	 
+	 RIDGENERATION;
 
 }

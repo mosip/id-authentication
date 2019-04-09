@@ -15,6 +15,12 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.UserDetailService;
 
+/**
+ * This is a job to sync the user detail data
+ * @author Sreekar Chukka
+ *
+ * @since 1.0.0
+ */
 @Component(value = "userDetailServiceJob")
 public class UserDetailServiceJob extends BaseJob {
 

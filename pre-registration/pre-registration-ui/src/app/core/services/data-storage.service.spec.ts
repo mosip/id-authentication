@@ -4,7 +4,7 @@ import { DataStorageService } from './data-storage.service';
 import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 describe('DataStorageService', () => {
   let service: DataStorageService = null;
@@ -134,7 +134,7 @@ describe('DataStorageService', () => {
 
   it('copyDocument', () => {
     let response = null;
-    service.copyDocument('POA', '12345', '54321').subscribe(value => {
+    service.copyDocument('12345', '54321').subscribe(value => {
       response = value;
     });
     expect(response).toBeDefined();
@@ -208,8 +208,8 @@ describe('DataStorageService', () => {
 
   it('makeBooking', () => {
     let response = null;
-    const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
-    const request = new BookingModelRequest(req);
+    const req = new BookingModel('1234', '1001', '2019-03-08', '09:00:00', '09:15:00');
+    const request = new RequestModel('aaa', req);
     service.makeBooking(request).subscribe(value => {
       response = value;
     });
@@ -248,9 +248,9 @@ describe('DataStorageService', () => {
 
   it('cancelAppointment', () => {
     let response = null;
-    const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
-    const request = new BookingModelRequest(req);
-    service.cancelAppointment(request).subscribe(value => {
+    const req = new BookingModel('1234', '1001', '2019-03-08', '09:00:00', '09:15:00');
+    const request = new RequestModel('aaa', req);
+    service.cancelAppointment(request, '111').subscribe(value => {
       response = value;
     });
     expect(response).toBe('success');
@@ -275,7 +275,7 @@ describe('DataStorageService', () => {
   it('sendFile', () => {
     const formData = new FormData();
     expect(() => {
-      service.sendFile(formData);
+      service.sendFile(formData, '111');
     }).toThrowError('HDFS not working');
   });
 });

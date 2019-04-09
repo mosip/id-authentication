@@ -3,10 +3,10 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { NgxPrintModule } from 'ngx-print';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { UserIdleModule } from 'angular-user-idle';
+import { UserIdleModule } from 'angular-user-idle';
 
 import { AppComponent } from './app.component';
-// import { AuthService } from './auth/auth.service';
+ import { AuthService } from './auth/auth.service';
 import { AppConfigService } from './app-config.service';
 import { SharedService } from './feature/booking/booking.service';
 
@@ -31,8 +31,8 @@ const appInitialization = (appConfig: AppConfigService) => {
     CoreModule,
     AuthModule,
     SharedModule,
-    NgxPrintModule
-    // UserIdleModule.forRoot({ idle: 10, timeout: 20, ping: 120 })
+    NgxPrintModule,
+    UserIdleModule.forRoot({idle: 3600, timeout: 60, ping: 14})
   ],
   providers: [
     // AuthService,

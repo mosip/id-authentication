@@ -19,4 +19,7 @@ public class ResponseDTO {
 	private Object identity;
 	
 	private List<Documents> documents;
+	
+	/** The status. */
+	private String status;
 }
