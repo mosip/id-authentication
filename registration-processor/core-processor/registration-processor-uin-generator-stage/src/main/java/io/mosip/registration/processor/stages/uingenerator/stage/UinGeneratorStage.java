@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -60,8 +61,8 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
+import io.mosip.registration.processor.stages.uingenerator.dto.UinGenResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinRequestDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
@@ -214,7 +215,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UinGeneratorStage::process()::entry");
-		UinResponseDto uinResponseDto = null;
+		UinGenResponseDto uinResponseDto=null;
 		registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 			registrationStatusDto
@@ -232,15 +233,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
 				Gson gsonObj = new Gson();
-				uinResponseDto = gsonObj.fromJson(test, UinResponseDto.class);
-				long uinInLong = Long.parseLong(uinResponseDto.getUin());
+				uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
+				long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
 				demographicIdentity.put("UIN", uinInLong);
-				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getUin());
+				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getResponse().getUin());
 				if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
-					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
+					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getResponse().getUin());
 					registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
-					sendResponseToUinGenerator(uinResponseDto.getUin(), UIN_ASSIGNED);
+					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_ASSIGNED);
 					isTransactionSuccessful = true;
 					description = "UIN updated succesfully for registrationId " + registrationId;
 					registrationStatusDto
@@ -252,22 +253,22 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 				} else {
 					String statusComment = idResponseDTO != null && idResponseDTO.getErrors() != null
-							? idResponseDTO.getErrors().get(0).getErrorMessage()
+							? idResponseDTO.getErrors().get(0).getMessage()
 							: NULL_IDREPO_RESPONSE;
 					registrationStatusDto.setStatusComment(statusComment);
 					object.setInternalError(Boolean.TRUE);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
-					sendResponseToUinGenerator(uinResponseDto.getUin(), UIN_UNASSIGNED);
+					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_UNASSIGNED);
 					isTransactionSuccessful = false;
 					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
-							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
+							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getMessage()
 									: NULL_IDREPO_RESPONSE;
 
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-							idResponseDTO != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
+							idResponseDTO != null ? idResponseDTO.getErrors().get(0).getMessage()
 									: NULL_IDREPO_RESPONSE + "  :  " + idResponseDTO != null ? idResponseDTO.toString()
 											: NULL_IDREPO_RESPONSE);
 				}
@@ -356,17 +357,20 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
+		requestDto.setRegistrationId(regId);
+		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(uin);
 		IdResponseDTO result = null;
 		idRequestDTO.setId(idRepoCreate);
-		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setRequest(requestDto);
-		idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+		idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 		idRequestDTO.setVersion(idRepoApiVersion);
+		idRequestDTO.setMetadata(null);
 		Gson gson = new GsonBuilder().create();
 		String idRequest = gson.toJson(idRequestDTO);
+
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Request to IdRepo API", "is: " + idRequest);
 		try {
@@ -495,10 +499,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private IdResponseDTO reActivateUin(String regId, Long uin, MessageDTO object) throws ApisResourceAccessException {
 		IdResponseDTO result = getIdRepoDataByUIN(uin);
 		List<String> pathsegments = new ArrayList<>();
+		RequestDto requestDto = new RequestDto();
 
 		if (result != null && result.getResponse() != null) {
 
-			if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
 
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				registrationStatusDto.setStatusComment(
@@ -507,16 +512,19 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				object.setIsValid(Boolean.FALSE);
 				return result;
 
-			} else {
+				} else {
 
-				pathsegments.add(Long.toString(uin));
-				idRequestDTO.setId(idRepoUpdate);
-				idRequestDTO.setRegistrationId(regId);
-				idRequestDTO.setStatus(RegistrationType.ACTIVATED.toString());
-				idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-				idRequestDTO.setVersion(idRepoApiVersion);
-				Gson gson = new GsonBuilder().create();
-				String idReq = gson.toJson(idResponseDTO);
+					requestDto.setRegistrationId(regId);
+					requestDto.setStatus(RegistrationType.ACTIVATED.toString());
+
+					pathsegments.add(Long.toString(uin));
+					idRequestDTO.setId(idRepoUpdate);
+					idRequestDTO.setRequest(requestDto);
+					idRequestDTO.setMetadata(null);
+					idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+					idRequestDTO.setVersion(idRepoApiVersion);
+					Gson gson = new GsonBuilder().create();
+					String idReq = gson.toJson(idResponseDTO);
 
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + regId, "Update Request to IdRepo API",
@@ -527,36 +535,37 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				if (result != null && result.getResponse() != null) {
 
-					if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
-						isTransactionSuccessful = true;
-						registrationStatusDto
-								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
-						registrationStatusDto.setStatusComment(
-								UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId);
-						description = UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId;
-						object.setIsValid(Boolean.TRUE);
-					} else {
+						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
+							isTransactionSuccessful = true;
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+							registrationStatusDto.setStatusComment(
+									UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId);
+							description = UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId;
+							object.setIsValid(Boolean.TRUE);
+						} else {
 
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+							registrationStatusDto.setStatusComment(UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
+									+ " for registration Id:  " + regId);
+							description = UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
+									+ " for registration Id:  " + regId;
+							object.setIsValid(Boolean.FALSE);
+						}
+					} else {
+						String statusComment = result != null && result.getErrors() != null
+								? result.getErrors().get(0).getMessage()
+								: NULL_IDREPO_RESPONSE;
+						registrationStatusDto.setStatusComment(statusComment);
 						registrationStatusDto
 								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
-						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
-								+ " for registration Id:  " + regId);
-						description = UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE + " for registration Id:  "
-								+ regId;
+
+						description = UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
+								? result.getErrors().get(0).getMessage()
+								: NULL_IDREPO_RESPONSE;
 						object.setIsValid(Boolean.FALSE);
 					}
-				} else {
-					String statusComment = result != null && result.getErrors() != null
-							? result.getErrors().get(0).getErrorMessage()
-							: NULL_IDREPO_RESPONSE;
-					registrationStatusDto.setStatusComment(statusComment);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
-
-					description = UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
-							? result.getErrors().get(0).getErrorMessage()
-							: NULL_IDREPO_RESPONSE;
-					object.setIsValid(Boolean.FALSE);
-				}
 
 			}
 
@@ -580,12 +589,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private IdResponseDTO deactivateUin(String regId, Long uin, MessageDTO object) throws ApisResourceAccessException {
 		IdResponseDTO idResponseDto = new IdResponseDTO();
 		List<String> pathsegments = new ArrayList<>();
-		String statusComment = "";
+		RequestDto requestDto = new RequestDto();
+		String statusComment ="";
 
 		idResponseDto = getIdRepoDataByUIN(uin);
 
-		if (idResponseDto.getResponse() != null
-				&& idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
+			if (idResponseDto.getResponse() != null && idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 			registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
@@ -593,36 +602,40 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			object.setIsValid(Boolean.FALSE);
 			return idResponseDto;
 
-		} else {
-			pathsegments.add(Long.toString(uin));
-			idRequestDTO.setId(idRepoUpdate);
-			idRequestDTO.setRegistrationId(regId);
-			idRequestDTO.setStatus(RegistrationType.DEACTIVATED.toString());
-			idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-			idRequestDTO.setVersion(idRepoApiVersion);
+			} else {
+				requestDto.setRegistrationId(regId);
+				requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
+
+				pathsegments.add(Long.toString(uin));
+				idRequestDTO.setId(idRepoUpdate);
+				idRequestDTO.setMetadata(null);
+				idRequestDTO.setRequest(requestDto);
+				idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+				idRequestDTO.setVersion(idRepoApiVersion);
 
 			idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 					pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-			if (idResponseDto != null && idResponseDto.getResponse() != null) {
-				if (idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
-					registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
-					description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
-					object.setIsValid(Boolean.TRUE);
-					statusComment = idResponseDto.getStatus().toString();
+				if (idResponseDto != null && idResponseDto.getResponse() != null) {
+					if (idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
+						description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
+						object.setIsValid(Boolean.TRUE);
+						statusComment=idResponseDto.getResponse().getStatus().toString();
+	
+					}
+				} else {
 
+					statusComment = idResponseDto != null && idResponseDto.getErrors() != null
+							? idResponseDto.getErrors().get(0).getMessage()
+							: NULL_IDREPO_RESPONSE;
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					registrationStatusDto.setStatusComment(statusComment);
+					description = statusComment;
+					object.setIsValid(Boolean.FALSE);
 				}
-			} else {
-
-				statusComment = idResponseDto != null && idResponseDto.getErrors() != null
-						? idResponseDto.getErrors().get(0).getErrorMessage()
-						: NULL_IDREPO_RESPONSE;
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
-				registrationStatusDto.setStatusComment(statusComment);
-				description = statusComment;
-				object.setIsValid(Boolean.FALSE);
-			}
 
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
@@ -684,8 +697,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private void sendResponseToUinGenerator(String uin, String uinStatus)
 			throws ApisResourceAccessException, JsonProcessingException {
 		UinRequestDto uinRequest = new UinRequestDto();
-		uinRequest.setUin(uin);
-		uinRequest.setStatus(uinStatus);
+		UinResponseDto uinDto = new UinResponseDto();
+		uinDto.setUin(uin);
+		uinDto.setStatus(uinStatus);
+		uinRequest.setRequest(uinDto);
 		String jsonString = null;
 		ObjectMapper objMapper = new ObjectMapper();
 		try {
@@ -695,7 +710,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					jsonString, String.class);
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
-			if (uinresponse.getUin() != null) {
+			if (uinresponse.getResponse() != null) {
 				String uinSuccessDescription = "Kernel service called successfully to update the uin status as assigned";
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Success",
@@ -724,10 +739,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		//
+
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
 }
+

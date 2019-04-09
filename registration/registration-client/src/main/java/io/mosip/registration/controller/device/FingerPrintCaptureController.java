@@ -172,6 +172,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@FXML
 	private Label leftSlapAttempt;
 
+	/** The left slap exception. */
+	@FXML
+	private Label leftSlapException;
+	
+	/** The right slap exception. */
+	@FXML
+	private Label rightSlapException;
+	
+	/** The thumb slap exception. */
+	@FXML
+	private Label thumbSlapException;
+	
 	/** The selected pane. */
 	private GridPane selectedPane = null;
 
@@ -524,6 +536,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		singleBiomtericCaptureCheck();
+		populateException();
 	}
 
 	/**
@@ -1367,5 +1380,47 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private void clearAttemptsBox(String styleClass, int retries) {
 		fpRetryBox.lookup("#retryAttempt_" + retries).getStyleClass().clear();
 		fpRetryBox.lookup("#retryAttempt_" + retries).getStyleClass().add(styleClass);
+	}
+	
+	/**
+	 * Populate exception.
+	 */
+	private void populateException() {
+		StringBuilder leftSlapExceptionFingers = new StringBuilder();
+		StringBuilder rightSlapExceptionFingers = new StringBuilder();
+		StringBuilder thumbSlapExceptionFingers = new StringBuilder();
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
+				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO() != null
+				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+						.getBiometricExceptionDTO() != null) {
+
+			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
+					.stream().forEach(bio -> {
+						if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
+								&& bio.getMissingBiometric().contains("left")
+								&& !bio.getMissingBiometric().contains("Thumb")) {
+							String str = (bio.getMissingBiometric()).replace("left", "").concat(",");
+							leftSlapExceptionFingers.append(str);
+						} else if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
+								&& bio.getMissingBiometric().contains("right")
+								&& !bio.getMissingBiometric().contains("Thumb")) {
+							String str = (bio.getMissingBiometric()).replace("right", "").concat(",");
+							rightSlapExceptionFingers.append(str);
+						} else if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
+								&& bio.getMissingBiometric().contains("Thumb")) {
+							String str = (bio.getMissingBiometric()).concat(",");
+							thumbSlapExceptionFingers.append(str);
+
+						}
+					});
+		}
+		leftSlapException.setText(
+				(leftSlapExceptionFingers.deleteCharAt(leftSlapExceptionFingers.length() - 1)).toString() + " finger");
+		rightSlapException
+				.setText((rightSlapExceptionFingers.deleteCharAt(rightSlapExceptionFingers.length() - 1)).toString()
+						+ " finger");
+		thumbSlapException
+				.setText((thumbSlapExceptionFingers.deleteCharAt(thumbSlapExceptionFingers.length() - 1)).toString()
+						+ " finger");
 	}
 }

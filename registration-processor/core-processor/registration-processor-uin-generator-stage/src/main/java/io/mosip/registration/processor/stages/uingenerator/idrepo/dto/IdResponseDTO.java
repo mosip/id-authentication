@@ -22,8 +22,7 @@ public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	/** The err. */
 	private List<ErrorDTO> errors;
 	
-	/** The status. */
-	private String status;
+	private Object metadata;
 	
 	/** The response. */
 	@JsonFilter("responseFilter")

@@ -223,23 +223,6 @@ export class FileUploadComponent implements OnInit {
     );
   }
 
-  sortUserFiles() {
-    let sortedUserFiles: FileModel[];
-    for (let document of this.LOD) {
-      for (let file of this.users[0].files[0]) {
-        if (document.code === file.doc_cat_code) {
-          sortedUserFiles.push(file);
-          break;
-        }
-      }
-    }
-    console.log('sorted file', sortedUserFiles);
-
-    for (let i = 0; i <= this.users[0].files[0]; i++) {
-      this.users[0].files[0][i] = sortedUserFiles[i];
-    }
-  }
-
   viewFirstFile() {
     this.fileIndex = 0;
     this.viewFile(this.users[0].files[0][0]);
