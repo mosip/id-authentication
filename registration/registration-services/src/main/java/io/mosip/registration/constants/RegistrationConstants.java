@@ -41,8 +41,6 @@ public class RegistrationConstants {
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
 	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
 	public static final String USER_AUTHENTICATION = "/fxml/Authentication.fxml";
-	public static final String DEMOGRAPHIC_PREVIEW = "/fxml/DemographicPreview.fxml";
-	public static final String BIOMETRIC_PREVIEW = "/fxml/BiometricPreview.fxml";
 	public static final String WEB_CAMERA_PAGE = "/fxml/WebCamera.fxml";
 	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
 	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
