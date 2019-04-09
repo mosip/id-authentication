@@ -183,22 +183,24 @@ public class LoginController extends BaseController implements Initializable {
 	private Service<String> taskService;
 
 	private List<String> loginList = new ArrayList<>();
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			// TODO to replace false with registrationUpdate.hasUpdate() method.
 			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
-			
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						responseDTO.getSuccessResponseDTO().getMessage());
 
-			otpValidity
-					.setText("Valid for "
-							+ Integer.parseInt(
-									(getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim()) / 60
-							+ " minutes");
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					responseDTO.getSuccessResponseDTO().getMessage());
+
+			int otpExpirySeconds = Integer
+					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+			int minutes = otpExpirySeconds / 60;
+			String seconds = String.valueOf(otpExpirySeconds % 60);
+			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
+			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds);
+
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (newValue.length() > Integer
@@ -320,24 +322,25 @@ public class LoginController extends BaseController implements Initializable {
 
 							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
 									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
-							
+
 							boolean status = getCenterMachineStatus(userDetail);
 							sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
 							sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-							loginList = status ? 
-									loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList) :
-										loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
+							loginList = status ? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
+									: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-							/*if (getCenterMachineStatus(userDetail)) {
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
-							} else {
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, true);
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-
-								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
-							}*/
+							/*
+							 * if (getCenterMachineStatus(userDetail)) {
+							 * sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
+							 * sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+							 * loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(),
+							 * roleList); } else { sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
+							 * true); sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE,
+							 * false);
+							 * 
+							 * loginList =
+							 * loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList); }
+							 */
 
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
@@ -348,7 +351,7 @@ public class LoginController extends BaseController implements Initializable {
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
-							
+
 							removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 							removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
 							removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
@@ -1052,25 +1055,24 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-								return RegistrationConstants.RESTART;
-							} else {
-								ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-										RegistrationConstants.OPT_TO_REG_MDS_J00001,
-										RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
+							return RegistrationConstants.RESTART;
+						} else {
+							ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+									RegistrationConstants.OPT_TO_REG_MDS_J00001,
+									RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-								ResponseDTO userResponseDTO = userDetailService
-										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+							ResponseDTO userResponseDTO = userDetailService
+									.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-								if (masterResponseDTO.getErrorResponseDTOs() != null
-										|| userResponseDTO.getErrorResponseDTOs() != null) {
-									return RegistrationConstants.FAILURE;
-								}
+							if (masterResponseDTO.getErrorResponseDTOs() != null
+									|| userResponseDTO.getErrorResponseDTOs() != null) {
+								return RegistrationConstants.FAILURE;
+							}
 
-							}						 
+						}
 
 						return RegistrationConstants.SUCCESS;
 					}
@@ -1100,22 +1102,21 @@ public class LoginController extends BaseController implements Initializable {
 		});
 
 	}
-	
+
 	/**
 	 * This method will remove the loginmethod from list
 	 * 
 	 * @param disableFlag
-	 *             configuration flag
+	 *            configuration flag
 	 * @param loginMethod
-	 *             login method
+	 *            login method
 	 */
 	private void removeLoginParam(String disableFlag, String loginMethod) {
-		
-		if (loginList.size() > 1
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)) {
+
+		if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)) {
 			loginList.removeIf(login -> login.equalsIgnoreCase(loginMethod));
 		}
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Ignoring login method if the configuration is off");
 
