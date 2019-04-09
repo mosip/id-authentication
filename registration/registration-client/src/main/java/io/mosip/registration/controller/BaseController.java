@@ -202,11 +202,11 @@ public class BaseController extends BaseService {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param T 
+	 * @param <T> 
 	 * 				the generic type
 	 * @param url 
 	 * 				the url
-	 * @return the t
+	 * @return T
 	 * @throws IOException 
 	 * 				Signals that an I/O exception has occurred.
 	 */
@@ -220,13 +220,13 @@ public class BaseController extends BaseService {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param T 
+	 * @param <T> 
 	 * 				the generic type
 	 * @param url 
 	 * 				the url
 	 * @param resource 
 	 * 				the resource
-	 * @return the t
+	 * @return T
 	 * @throws IOException 
 	 * 				Signals that an I/O exception has occurred.
 	 */
@@ -283,7 +283,7 @@ public class BaseController extends BaseService {
 	}
 
 	/**
-	 * /* Alert creation with specified context.
+	 * Alert creation with specified context.
 	 *
 	 * @param parentPane 
 	 * 				the parent pane
@@ -291,10 +291,6 @@ public class BaseController extends BaseService {
 	 * 				the id
 	 * @param context   
 	 * 				alert context
-	 * @param isConsolidated 
-	 * 				the is consolidated
-	 * @param validationMessage 
-	 * 				the validation message
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
@@ -377,7 +373,6 @@ public class BaseController extends BaseService {
 	 * {@code globalParams} is to retrieve required global config parameters for
 	 * login from config table.
 	 *
-	 * @return the global params
 	 */
 	protected void getGlobalParams() {
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
@@ -512,7 +507,6 @@ public class BaseController extends BaseService {
 	/**
 	 * Gets the finger print status.
 	 *
-	 * @return the finger print status
 	 */
 	public void updateAuthenticationStatus() {
 
@@ -521,7 +515,8 @@ public class BaseController extends BaseService {
 	/**
 	 * Scans documents.
 	 *
-	 * @param popupStage the stage
+	 * @param popupStage
+	 *            the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -890,10 +885,13 @@ public class BaseController extends BaseService {
 	/**
 	 * to navigate to the next page based on the current page.
 	 *
-	 * @param pageId     - Parent Anchorpane where other panes are included
-	 * @param notTosShow - Id of Anchorpane which has to be hidden
-	 * @param show       - Id of Anchorpane which has to be shown
-	 * @return the current page
+	 * @param pageId
+	 *            - Parent Anchorpane where other panes are included
+	 * @param notTosShow
+	 *            - Id of Anchorpane which has to be hidden
+	 * @param show
+	 *            - Id of Anchorpane which has to be shown
+	 * 
 	 */
 	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
 

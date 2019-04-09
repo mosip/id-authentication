@@ -217,8 +217,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * To get the Sequence of which Login screen to be displayed
 	 * 
-	 * @return String loginMode
-	 * @throws RegBaseCheckedException
+	 * @param primaryStage
+	 * 			primary Stage
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
 
@@ -403,8 +403,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * Validating User credentials on Submit
 	 * 
-	 * @return String loginMode
-	 * @throws RegBaseCheckedException
+	 * @param event
+	 *            event for validating credentials
 	 */
 	public void validateCredentials(ActionEvent event) {
 
@@ -450,7 +450,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Generate OTP based on EO username
 	 * 
 	 * @param event
-	 * @throws RegBaseCheckedException
+	 * 			event for generating OTP
 	 */
 	@FXML
 	public void generateOtp(ActionEvent event) {
@@ -485,6 +485,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and otp
 	 * 
 	 * @param event
+	 * 			event for validating OTP
 	 */
 	@FXML
 	public void validateOTP(ActionEvent event) {
@@ -517,6 +518,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and fingerprint
 	 * 
 	 * @param event
+	 * 			event for capturing fingerprint
 	 */
 	public void captureFingerPrint(ActionEvent event) {
 
@@ -551,6 +553,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and Iris
 	 * 
 	 * @param event
+	 * 			event for capturing Iris
 	 */
 	public void captureIris(ActionEvent event) {
 
@@ -585,6 +588,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and face
 	 * 
 	 * @param event
+	 * 			event to capture face
 	 */
 	public void captureFace(ActionEvent event) {
 
