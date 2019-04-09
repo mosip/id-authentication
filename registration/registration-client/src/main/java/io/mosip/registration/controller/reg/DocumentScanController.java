@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -99,6 +100,9 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
+	
+	@Autowired
+	private PDFGenerator pdfGenerator;
 
 	@FXML
 	protected GridPane documentScan;
@@ -549,7 +553,7 @@ public class DocumentScanController extends BaseController {
 		if (!"pdf".equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE))) {
 			byteArray = documentScanFacade.asImage(scannedPages);
 		} else {
-			byteArray = documentScanFacade.asPDF(scannedPages);
+			byteArray = pdfGenerator.asPDF(scannedPages);
 		}
 		if (byteArray == null) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
