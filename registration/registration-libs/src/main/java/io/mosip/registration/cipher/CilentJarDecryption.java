@@ -115,28 +115,7 @@ public class CilentJarDecryption extends Application {
 		}
 
 	}
-
-	private static boolean setProperties() throws IOException {
-
-		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-
-		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-
-		System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
-
-		String dbpath = new File(System.getProperty("user.dir")) + properties.getProperty("mosip.dbpath");
-
-		if (new File(dbpath).exists()) {
-			System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		StackPane stackPane = new StackPane();
@@ -169,11 +148,19 @@ public class CilentJarDecryption extends Application {
 						System.out.println("before Decryption");
 						CilentJarDecryption aesDecrypt = new CilentJarDecryption();
 						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+						
+						String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 
-						if (!setProperties()) {
+						FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+						Properties properties = new Properties();
+						properties.load(fileInputStream);
+						
+						String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
+
+						if (!new File(dbpath).exists()) {
 							return "NOTEXISTS";
 						}
-
+						
 						// TODO Check Internet Connectivity
 
 						try {
@@ -209,14 +196,17 @@ public class CilentJarDecryption extends Application {
 
 						FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
 								decryptedRegServiceBytes);
+						
 						try {
 
 							String libPath = new File("lib").getAbsolutePath();
 
 							Process process = Runtime.getRuntime()
-									.exec("java -Dspring.profiles.active=dev -Djava.ext.dirs=" + libPath + ";"
-											+ tempPath + ";" + "C:/Program%20Files/Java/jre1.8.0_181/lib/ext" + " -jar "
-											+ clientJar + ".jar");
+									.exec("java -Dspring.profiles.active=dev -Dmosip.dbpath="
+											+ properties.getProperty("mosip.dbpath") + " -Djava.ext.dirs=" + libPath
+											+ ";" + tempPath + ";" + "C:/Program%20Files/Java/jre1.8.0_181/lib/ext"
+											+ " -jar " + clientJar + ".jar");
+
 							System.out.println("the output stream is " + process.getOutputStream().getClass());
 							BufferedReader bufferedReader = new BufferedReader(
 									new InputStreamReader(process.getInputStream()));
