@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.code.RequestCodes;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 
 /**
  * This class provides the utility methods for Transliteration application.
@@ -45,7 +46,7 @@ public class TransliterationServiceUtil {
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(
-			MainRequestDTO<TransliterationDTO> requestDTO) {
+			MainRequestDTO<TransliterationRequestDTO> requestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
 		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
@@ -56,7 +57,7 @@ public class TransliterationServiceUtil {
 		return inputValidation;
 	}
 	
-	public boolean isEntryFieldsNull(TransliterationDTO requestFields) {
+	public boolean isEntryFieldsNull(TransliterationRequestDTO requestFields) {
 		return (!requestFields.getFromFieldLang().equals("") && !requestFields.getFromFieldValue().equals("")
 				 && !requestFields.getToFieldLang().equals(""));
 	}
@@ -84,9 +85,9 @@ public class TransliterationServiceUtil {
 	 * @param transliterationRequestDTO
 	 * @return transliterationResponseDTO with values
 	 */
-	public TransliterationDTO responseSetter(String value,
-			TransliterationDTO transliterationRequestDTO) {
-		TransliterationDTO transliterationResponseDTO = new TransliterationDTO();
+	public TransliterationResponseDTO responseSetter(String value,
+			TransliterationRequestDTO transliterationRequestDTO) {
+		TransliterationResponseDTO transliterationResponseDTO = new TransliterationResponseDTO();
 		transliterationResponseDTO.setFromFieldValue(transliterationRequestDTO.getFromFieldValue());
 		transliterationResponseDTO.setFromFieldLang(transliterationRequestDTO.getFromFieldLang());
 		transliterationResponseDTO.setToFieldValue(value);
@@ -98,7 +99,7 @@ public class TransliterationServiceUtil {
 	 * @param dto
 	 * @return true if dto contains supported languages.
 	 */
-	public boolean supportedLanguageCheck(TransliterationDTO dto) {
+	public boolean supportedLanguageCheck(TransliterationRequestDTO dto) {
 		return supportedLang.contains(dto.getFromFieldLang())&&supportedLang.contains(dto.getToFieldLang());
 	}
 	

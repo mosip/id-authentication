@@ -7,7 +7,7 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 public interface UinService {

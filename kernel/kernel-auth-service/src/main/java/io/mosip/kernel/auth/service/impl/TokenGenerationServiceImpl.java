@@ -13,7 +13,7 @@ import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.TokenGenerationService;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 @Component

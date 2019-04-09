@@ -77,7 +77,7 @@ The key solution considerations are -
 		1. Bio IDENTIFY: Prepare Identify request for 1:n bio match.
 		For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: id from table "abis_request".
 
-	1. "BiometricIdentificationHandlerStage": 
+	1. "BiometricIdentificationMiddlewareStage": 
 	This stage registers ABIS queue listerns and senders in deploy verticle method. ABIS queue listerns will listern to messages received on queue and sender is responsible to send messsages on ABIS queues. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
 
 	Upon receiving event, this stage reads "IN-PROGRESS" requests from "abis_request" table and start sending them to ABIS system.
@@ -95,6 +95,9 @@ The key solution considerations are -
 
 ![abis middleware logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
 
+- Demo Dedupe, Bio Dedupe Stage: These stages will be responsible to take business decesions like Rejecting packet or sending event for manual varification upon potential match found or sending event to UIN generation in case if no potential match found.
+- BiometricIdentificationHandlerStage: This stage will understand request to be sent to ABIS systems and hence responsible to construct request objects.
+- BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object and receives asynchrnous response from ABIS system.
 
 
 **Sequence Diagram**
