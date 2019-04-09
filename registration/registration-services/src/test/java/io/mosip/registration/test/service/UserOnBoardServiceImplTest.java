@@ -53,10 +53,16 @@ public class UserOnBoardServiceImplTest {
 	@Mock
 	private UserOnboardDAO userOnBoardDao;
 	
+	@Mock
+	io.mosip.registration.context.ApplicationContext context;
+	
 	@Before
 	public void init() {
 		Map<String,Object> appMap = new HashMap<>();
-		appMap.put(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT, "10");
+		appMap.put(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT, "10");		
+		appMap.put("mosip.registration.fingerprint_disable_flag", "Y");
+		appMap.put("mosip.registration.iris_disable_flag", "Y");
+		appMap.put("mosip.registration.face_disable_flag", "Y");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 	
@@ -158,6 +164,7 @@ public class UserOnBoardServiceImplTest {
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
+		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}

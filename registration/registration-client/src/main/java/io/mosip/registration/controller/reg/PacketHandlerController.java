@@ -209,7 +209,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			lostUINPane.setVisible(false);
 			// vHolder.setManaged(false);
 		}
-
+		
 	}
 
 	/**
@@ -413,7 +413,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(root, 0, 1);
+				homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
@@ -448,7 +448,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(uploadRoot, 0, 1);
+				homeController.getMainBox().add(uploadRoot, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -499,7 +499,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
-							homeController.getMainBox().add(root, 0, 1);
+							homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 						}
 					}
 				}
@@ -728,8 +728,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
-
-			homeController.getMainBox().add(root, 0, 1);
+			
+			homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,

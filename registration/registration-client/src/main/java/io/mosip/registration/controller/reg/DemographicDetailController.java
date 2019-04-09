@@ -1820,8 +1820,8 @@ public class DemographicDetailController extends BaseController {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				clearRegistrationData();
 				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
-				homeController.getMainBox().add(uinUpdate, 0, 1);
+				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));				
+				homeController.getMainBox().add(uinUpdate, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 				getScene(root);
 			} else {
 				goToHomePageFromRegistration();
