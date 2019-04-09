@@ -2,9 +2,7 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Class contains the constants used in Registration application
