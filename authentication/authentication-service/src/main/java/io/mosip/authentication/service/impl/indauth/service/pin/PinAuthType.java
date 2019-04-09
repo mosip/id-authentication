@@ -1,10 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.pin;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -14,6 +12,7 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
+import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeImpl;
 
 /**
  * The Enum PinAuthType - used to construct the Auth type
@@ -63,18 +62,8 @@ public enum PinAuthType implements AuthType {
 			return Objects.nonNull(authRequestDTO.getRequest().getOtp());
 		}
 	};
-
-	/** The type. */
-	private String type;
-
-	/** The associated match types. */
-	private Set<MatchType> associatedMatchTypes;
-
-	/** The auth type predicate. */
-	private Predicate<? super AuthTypeDTO> authTypePredicate;
-
-	/** The display name. */
-	private String displayName;
+	
+	private AuthTypeImpl authTypeImpl;
 
 	/**
 	 * Instantiates a new demo auth type.
@@ -87,53 +76,11 @@ public enum PinAuthType implements AuthType {
 	 */
 	private PinAuthType(String type, Set<MatchType> associatedMatchTypes,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
-		this.type = type;
-		this.authTypePredicate = authTypePredicate;
-		this.displayName = displayName;
-		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
+		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, authTypePredicate, displayName);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.impl.indauth.builder.AuthType#getDisplayName(
-	 * )
-	 */
+	
 	@Override
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#getType()
-	 */
-	@Override
-	public String getType() {
-		return type;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * isAuthTypeEnabled(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
-	 */
-	@Override
-	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(authTypePredicate).isPresent();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getAssociatedMatchTypes()
-	 */
-	@Override
-	public Set<MatchType> getAssociatedMatchTypes() {
-		return Collections.unmodifiableSet(associatedMatchTypes);
+	public AuthType getAuthTypeImpl() {
+		return authTypeImpl;
 	}
 }

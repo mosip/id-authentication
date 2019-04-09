@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -473,7 +474,10 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(requestBody, new TypeReference<Map<String, Object>>() {});
+			String reqStr = IOUtils.toString(requestBody, Charset.defaultCharset());
+			//requestBody empty for service like VID
+			return reqStr.isEmpty() ? null : mapper.readValue(reqStr, new TypeReference<Map<String, Object>>() {
+			});
 		} catch (IOException | ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);

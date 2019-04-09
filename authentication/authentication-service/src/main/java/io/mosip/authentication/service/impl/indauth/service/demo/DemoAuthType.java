@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,21 +36,13 @@ public enum DemoAuthType implements AuthType {
 	
 	
 
+
 	/**  */
 	// @formatter:on
 	;
+	
+	private AuthTypeImpl authTypeImpl;
 
-	/** The type. */
-	private String type;
-
-	/** The associated match types. */
-	private Set<MatchType> associatedMatchTypes;
-
-	/** The auth type predicate. */
-	private Predicate<? super AuthTypeDTO> authTypePredicate;
-
-	/** The display name. */
-	private String displayName;
 
 	/**
 	 * Instantiates a new demo auth type.
@@ -64,54 +55,7 @@ public enum DemoAuthType implements AuthType {
 	 */
 	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
-		this.type = type;
-		this.authTypePredicate = authTypePredicate;
-		this.displayName = displayName;
-		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.impl.indauth.builder.AuthType#getDisplayName(
-	 * )
-	 */
-	@Override
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#getType()
-	 */
-	@Override
-	public String getType() {
-		return type;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * isAuthTypeEnabled(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
-	 */
-	@Override
-	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(authTypePredicate).isPresent();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getAssociatedMatchTypes()
-	 */
-	@Override
-	public Set<MatchType> getAssociatedMatchTypes() {
-		return Collections.unmodifiableSet(associatedMatchTypes);
+		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, authTypePredicate, displayName);
 	}
 
 	/* (non-Javadoc)
@@ -128,13 +72,10 @@ public enum DemoAuthType implements AuthType {
 		return valuemap;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
-	 */
+
 	@Override
-	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return false;
+	public AuthType getAuthTypeImpl() {
+		return authTypeImpl;
 	}
-	
 
 }

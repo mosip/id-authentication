@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
+import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeImpl;
 
 /**
  * The Enum BioAuthType.
@@ -203,14 +203,7 @@ public enum BioAuthType implements AuthType {
 	/** The Constant FINGERPRINT. */
 	private static final String FINGERPRINT = "Fingerprint";
 
-	/** The type. */
-	private String type;
-
-	/** The associated match types. */
-	private Set<MatchType> associatedMatchTypes;
-
-	/** The display name. */
-	private String displayName;
+	private AuthTypeImpl authTypeImpl;
 
 	/** The count. */
 	private int count;
@@ -224,10 +217,8 @@ public enum BioAuthType implements AuthType {
 	 * @param count                the count
 	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName, int count) {
-		this.type = type;
-		this.displayName = displayName;
+		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, displayName);
 		this.count = count;
-		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
@@ -254,22 +245,6 @@ public enum BioAuthType implements AuthType {
 	 */
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest(), null).size();
-	}
-
-	/*
-	 * To get Display name
-	 */
-	@Override
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/*
-	 * To get type
-	 */
-	@Override
-	public String getType() {
-		return type;
 	}
 
 	/*
@@ -312,14 +287,6 @@ public enum BioAuthType implements AuthType {
 	}
 
 	/*
-	 * Get Associated Matchtypes
-	 */
-	@Override
-	public Set<MatchType> getAssociatedMatchTypes() {
-		return Collections.unmodifiableSet(associatedMatchTypes);
-	}
-
-	/*
 	 * Checks is Authtype information available based on authreqest
 	 */
 	@Override
@@ -345,5 +312,10 @@ public enum BioAuthType implements AuthType {
 		BioAuthType[] values = BioAuthType.values();
 		return Stream.of(values)
 				.filter(authType -> authType.getType().equalsIgnoreCase(type) && authType.getCount() == 1).findAny();
+	}
+	
+	@Override
+	public AuthType getAuthTypeImpl() {
+		return authTypeImpl;
 	}
 }

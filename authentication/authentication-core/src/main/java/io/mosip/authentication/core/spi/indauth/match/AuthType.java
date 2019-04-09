@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 
 /**
  * 
@@ -23,19 +25,6 @@ public interface AuthType {
 
 	public static final int DEFAULT_MATCHING_THRESHOLD = 100;
 
-	/**
-	 * Gets the display name.
-	 *
-	 * @return the display name
-	 */
-	String getDisplayName();
-
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	String getType();
 
 	/**
 	 * Checks if is associated match type.
@@ -46,15 +35,6 @@ public interface AuthType {
 	public default boolean isAssociatedMatchType(MatchType matchType) {
 		return getAssociatedMatchTypes().contains(matchType);
 	}
-
-	/**
-	 * Checks if is auth type enabled.
-	 *
-	 * @param authReq the auth req
-	 * @param helper  the helper
-	 * @return true, if is auth type enabled
-	 */
-	boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper);
 
 	/**
 	 * Gets the matching strategy.
@@ -79,21 +59,10 @@ public interface AuthType {
 			Environment environment, IdInfoFetcher idInfoFetcher) {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
-
-	/**
-	 * Gets the associated match types.
-	 *
-	 * @return the associated match types
-	 */
-	Set<MatchType> getAssociatedMatchTypes();
-
-	/**
-	 * Checks if is auth type info available.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @return true, if is auth type info available
-	 */
-	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO);
+	
+	public default boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+		return false;
+	}
 
 	/**
 	 * Gets the match properties.
@@ -126,5 +95,49 @@ public interface AuthType {
 	 */
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
+	}
+	
+	public AuthType getAuthTypeImpl();
+	
+
+	/**
+	 * Gets the display name.
+	 *
+	 * @return the display name
+	 */
+	public default String getDisplayName() {
+		return getAuthTypeImpl().getDisplayName();
+	}
+
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
+	public default String getType() {
+		return getAuthTypeImpl().getType();
+	}
+
+	/**
+	 * Checks if is auth type info available.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @return true, if is auth type info available
+	 */
+	public default boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
+		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
+	}
+
+	/**
+	 * Gets the associated match types.
+	 *
+	 * @return the associated match types
+	 */
+	public default Set<MatchType> getAssociatedMatchTypes() {
+		return Collections.unmodifiableSet(getAuthTypeImpl().getAssociatedMatchTypes());
+	}
+	
+	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
+		return getAuthTypeImpl().getAuthTypePredicate();
 	}
 }

@@ -68,6 +68,12 @@ public class MatchTest {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -161,6 +167,12 @@ public class MatchTest {
 
 			@Override
 			public Set<MatchType> getAssociatedMatchTypes() {
+				return null;
+			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
+				// TODO Auto-generated method stub
 				return null;
 			}
 		};
@@ -282,7 +294,7 @@ public class MatchTest {
 
 	@Test
 	public void TestAuthtype() {
-		AuthType authType = new AuthType() {
+		new AuthType() {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
@@ -313,6 +325,12 @@ public class MatchTest {
 
 			@Override
 			public Set<MatchType> getAssociatedMatchTypes() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
 				// TODO Auto-generated method stub
 				return null;
 			}
