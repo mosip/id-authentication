@@ -32,6 +32,6 @@ export class AuthService {
     this.dataStorageService.onLogout().subscribe(res => console.log(res));
     console.log('logout', localStorage.getItem('loggedOutLang'));
     this.router.navigate(['/']);
-    // window.location.reload();
+    window.location.reload();
   }
 }

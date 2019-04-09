@@ -168,12 +168,6 @@ describe('LoginComponent', () => {
     expect(component.showSpinner).toBeFalsy();
   });
 
-  it('should test message display', () => {
-    component.loggedOutLang = 'ara';
-    component.showMessage();
-    expect(localStorage.getItem('loggedOut')).toBeNull();
-  });
-
   it('should test disply otp message', () => {
     localStorage.setItem('langCode', 'ara');
     component.showOtpMessage();
