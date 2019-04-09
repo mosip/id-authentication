@@ -113,10 +113,10 @@ public class DocumentScanController extends BaseController {
 	protected ImageView docPreviewImgView;
 
 	@FXML
-	protected Button docPreviewNext;
+	protected Label docPreviewNext;
 
 	@FXML
-	protected Button docPreviewPrev;
+	protected Label docPreviewPrev;
 
 	@FXML
 	protected Label docPageNumber;
@@ -168,7 +168,7 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the DOCUMENT_SCAN_CONTROLLER");
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -206,7 +206,7 @@ public class DocumentScanController extends BaseController {
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
-			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -280,6 +280,13 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
+		
+		/* show the scan doc info label for format and size */
+		Label fileSizeInfoLabel = new Label();
+		fileSizeInfoLabel.setWrapText(true);
+		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
+		docScanVbox.getChildren().add(fileSizeInfoLabel);
+		
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
@@ -299,14 +306,17 @@ public class DocumentScanController extends BaseController {
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
-
+				
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
+				comboBox.setPrefWidth(docScanVbox.getWidth()/2);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
 				comboBox.getStyleClass().add("documentCombobox");
 				Label documentLabel = new Label(docCategoryName);
+				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
+				documentLabel.setPrefWidth(docScanVbox.getWidth()/2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 					documentLabel.setVisible(true);
@@ -363,7 +373,6 @@ public class DocumentScanController extends BaseController {
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
-				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
@@ -976,7 +985,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
-				SessionContext.map().put("documentScan", false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
 				updateUINMethodFlow();
 
 				registrationController.showUINUpdateCurrentPage();

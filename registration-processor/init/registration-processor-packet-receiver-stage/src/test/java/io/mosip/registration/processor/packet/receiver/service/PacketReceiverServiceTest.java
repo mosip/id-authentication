@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.camel.impl.scan.AnnotatedWithAnyPackageScanFilter;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -209,6 +211,48 @@ public class PacketReceiverServiceTest {
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+
+		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+
+		assertEquals(true, successResult.getIsValid());
+	}
+	
+	@Test
+	public void testRetryIfNotNull() throws IOException, URISyntaxException {
+
+		mockDto=new InternalRegistrationStatusDto();
+		mockDto.setRetryCount(3);
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
+		
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		File file = new File(classLoader.getResource("0000.zip").getFile());
+		mockMultipartFile = file;
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		.thenReturn(RegistrationExternalStatusCode.RESEND);
+
+		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+
+		assertEquals(true, successResult.getIsValid());
+	}
+	
+	@Test
+	public void testRetryIfNull() throws IOException, URISyntaxException {
+
+		mockDto=new InternalRegistrationStatusDto();
+		mockDto.setRetryCount(null);
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
+		
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		File file = new File(classLoader.getResource("0000.zip").getFile());
+		mockMultipartFile = file;
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
 

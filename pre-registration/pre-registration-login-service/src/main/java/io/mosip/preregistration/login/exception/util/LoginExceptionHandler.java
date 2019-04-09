@@ -1,4 +1,4 @@
-package io.mosip.preregistration.login.exceptions.util;
+package io.mosip.preregistration.login.exception.util;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,12 +20,12 @@ import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.login.dto.MainResponseDTO;
-import io.mosip.preregistration.login.exceptions.LoginServiceException;
-import io.mosip.preregistration.login.exceptions.ConfigFileNotFoundException;
-import io.mosip.preregistration.login.exceptions.InvalidateTokenException;
-import io.mosip.preregistration.login.exceptions.ParseResponseException;
-import io.mosip.preregistration.login.exceptions.SendOtpFailedException;
-import io.mosip.preregistration.login.exceptions.UserIdOtpFaliedException;
+import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
+import io.mosip.preregistration.login.exception.InvalidateTokenException;
+import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.ParseResponseException;
+import io.mosip.preregistration.login.exception.SendOtpFailedException;
+import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
 
 /**
  *This class handles the exception caught while login

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.login.exceptions.util;
+package io.mosip.preregistration.login.exception.util;
 
 import org.springframework.web.client.RestClientException;
 
@@ -6,12 +6,12 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
-import io.mosip.preregistration.login.exceptions.LoginServiceException;
-import io.mosip.preregistration.login.exceptions.ConfigFileNotFoundException;
-import io.mosip.preregistration.login.exceptions.InvalidateTokenException;
-import io.mosip.preregistration.login.exceptions.ParseResponseException;
-import io.mosip.preregistration.login.exceptions.SendOtpFailedException;
-import io.mosip.preregistration.login.exceptions.UserIdOtpFaliedException;
+import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
+import io.mosip.preregistration.login.exception.InvalidateTokenException;
+import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.ParseResponseException;
+import io.mosip.preregistration.login.exception.SendOtpFailedException;
+import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
 
 /**
  * This class is use to catch the exception while login

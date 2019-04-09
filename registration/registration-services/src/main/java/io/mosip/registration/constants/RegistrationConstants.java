@@ -73,6 +73,19 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
+	public static final String BIOMETRIC_EXCEPTION_FLOW = "biometricExceptionFlow";
+	
+	//css for quality indicator
+	public static final String RETRY_ATTEMPT = "#retryAttempt_";
+	public static final String RETRY_ATTEMPT_ID = "retryAttempt_";
+	public static final String QUALITY_LABEL_GREY = "qualityLabelGrey";
+	public static final String QUALITY_LABEL_GREEN = "qualityLabelGreen";
+	public static final String QUALITY_LABEL_RED = "qualityLabelRed";
+	public static final String PROGRESS_BAR_RED = "progress-barRed";
+	public static final String PROGRESS_BAR_GREEN = "progress-barGreen";
+	public static final String LABEL_RED = "labelRed";
+	public static final String LABEL_GREEN = "labelGreen";
+	public static final String IRIS_PANES_SELECTED = "IrisPanesSelected";
 
 	// Page Flow
 	public static final String VISIBILITY = "visibility";
@@ -111,6 +124,8 @@ public class RegistrationConstants {
 	public static final String OFFICER = "REGISTRATION_OFFICER";
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
+	public static final String SUPERVISOR_AUTH = "supervisor";
+	public static final String OFFICER_AUTH = "officer";
 
 	// Authentication Methods
 	public static final String PWORD = "PWD";
@@ -130,6 +145,7 @@ public class RegistrationConstants {
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
 	public static final String FINGER_TYPE_MINUTIA = "minutia";
+	public static final String FP_TIMEOUT = "TIMEOUT";
 
 	// Authorization Info
 	public static final String ADMIN_ROLE = "REGISTRATION_ADMIN";
@@ -225,8 +241,19 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_GENDER = "gender";
 	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";
 	public static final String UIN_UPDATE_CNIE_NUMBER = "cnieNumber";
+	public static final String UIN_UPDATE_DEMOGRAPHICDETAIL = "demographicDetail";
+	public static final String UIN_UPDATE_DOCUMENTSCAN = "documentScan";
+	public static final String UIN_UPDATE_FINGERPRINTCAPTURE = "fingerPrintCapture";
+	public static final String UIN_UPDATE_BIOMETRICEXCEPTION = "biometricException";
 	public static final String UIN_UPDATE_BIOMETRICS = "biometrics";
+	public static final String UIN_UPDATE_FACECAPTURE = "faceCapture";
+	public static final String UIN_UPDATE_IRISCAPTURE = "irisCapture";
+	public static final String UIN_UPDATE_REGISTRATIONPREVIEW = "registrationPreview";
+	public static final String UIN_UPDATE_OPERATORAUTHENTICATIONPANE = "operatorAuthenticationPane";
+	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
+	public static final String LOSTUINLBL = "/lostuin";
 
+	
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
@@ -526,7 +553,9 @@ public class RegistrationConstants {
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
 	public static final String WEBCAM_NAME = "mosip.registration.webcam_name";
 	public static final String WEBCAM_LIBRARY_NAME = "mosip.registration.webcam_library_name";
-
+	public static final String PHOTO_CAPTUREPANES_SELECTED = "photoCapturePanesSelected";
+	public static final String DEFAULT_EXCEPTION_IMAGE_PATH = "/images/ExceptionPhoto.png";
+	
 	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
 
@@ -572,10 +601,6 @@ public class RegistrationConstants {
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
-
-	public static final Set<String> getRoles() {
-		return new HashSet<>(Arrays.asList("*"));
-	}
 
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
@@ -727,6 +752,7 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
+	public static final String PROVIDER_NAME = "mosip.registration.provider_name";
 	
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -811,6 +837,7 @@ public class RegistrationConstants {
 	public static final String RIGHT = "Right";
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
+	public static final String FINGER = "finger";
 	public static final String FINGERPRINT = "Fingerprint";
 	public static final String FINGERPRINT_UPPERCASE = "FINGERPRINT";
 	public static final String LEFTPALM = "leftSlap";
@@ -852,6 +879,8 @@ public class RegistrationConstants {
 			"/UserOnboard/rightHand/rightMiddle/", "/UserOnboard/rightHand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/UserOnboard/thumb/leftThumb/",
 			"/UserOnboard/thumb/rightThumb/" };
+	public static final String COMMA = ",";
+	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";

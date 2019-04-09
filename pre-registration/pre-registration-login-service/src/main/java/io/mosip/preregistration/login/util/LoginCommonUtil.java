@@ -41,7 +41,7 @@ import io.mosip.preregistration.login.dto.MainResponseDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
-import io.mosip.preregistration.login.exceptions.ParseResponseException;
+import io.mosip.preregistration.login.exception.ParseResponseException;
 
 /**
  * 
