@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Update the Application
@@ -186,7 +187,13 @@ public class RegistrationUpdate {
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
+		} else if (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+				&& jarInFolder.delete()) {
+
+			// Download Jar
+			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 		}
+
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
@@ -284,13 +291,32 @@ public class RegistrationUpdate {
 	private boolean checkLocalJars(List<String> jarList) {
 		for (String jarFile : jarList) {
 
-			if (!(jarFile.contains(mosip) ? new File(binFolder + SLASH + jarFile).exists()
-					: new File(libFolder + SLASH + jarFile).exists())) {
+			File jar = jarFile.contains(mosip) ? new File(binFolder + SLASH + jarFile)
+					: new File(libFolder + SLASH + jarFile);
+
+			if (!(jar.exists()) || !isCheckSumValid(jar, localManifest)) {
 				return false;
 			}
+
 		}
 
 		return true;
+	}
+
+	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+		String checkSum;
+		try {
+			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
+			System.out.println(jarFile.getName());
+			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
+					.get(Attributes.Name.CONTENT_TYPE);
+			return manifestCheckSum.equals(checkSum);
+
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+			return false;
+		}
+
 	}
 
 }

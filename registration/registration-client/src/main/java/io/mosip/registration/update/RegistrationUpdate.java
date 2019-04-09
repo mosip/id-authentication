@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Update the Application
@@ -50,7 +51,7 @@ public class RegistrationUpdate {
 
 	private String currentVersion;
 
-	private String latestVersion;
+	private String latestVersion = "0.10.1";
 
 	private Manifest localManifest;
 
@@ -61,6 +62,7 @@ public class RegistrationUpdate {
 	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
+		
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
@@ -103,8 +105,7 @@ public class RegistrationUpdate {
 
 	public void getWithLatestJars()
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		
-	
+
 		// Get Server Manifest
 		getServerManifest();
 
@@ -235,10 +236,17 @@ public class RegistrationUpdate {
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
-		}
+		} else if (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest) && jarInFolder.delete()) {
+			
+			// Download Jar
+			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());}
+		
+		
+
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+		System.out.println("Downloading  "+jarName);
 		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
 
 	}
@@ -286,6 +294,7 @@ public class RegistrationUpdate {
 			return serverManifest;
 		}
 
+		System.out.println("Dwonloading "+serverRegClientURL + getLatestVersion() + SLASH + manifestFile);
 		// Get latest Manifest from server
 		setServerManifest(
 				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
@@ -308,5 +317,20 @@ public class RegistrationUpdate {
 
 	public void setLatestVersion(String latestVersion) {
 		this.latestVersion = latestVersion;
+	}
+	
+	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+		String checkSum;
+		try {
+			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
+			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
+					.get(Attributes.Name.CONTENT_TYPE);
+			return manifestCheckSum.equals(checkSum);
+
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+			return false;
+		}
+
 	}
 }
