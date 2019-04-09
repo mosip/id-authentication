@@ -389,7 +389,7 @@ public class Validations extends BaseController {
 
 		if (isChild) {
 			if (field.getText().length() <= Integer
-					.parseInt((String) ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
+					.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH))) {
 				try {
 					isIdValid = uinValidator.validateId(field.getText());
 				} catch (InvalidIDException invalidUinException) {
@@ -484,48 +484,39 @@ public class Validations extends BaseController {
 			switch (id.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY)
 					.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY)) {
 			case "emailId":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.EMAIL_VALIDATION_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.EMAIL_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "cniOrPinNumber":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.CNIE_VALIDATION_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
 			case "mobileNo":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.PHONE_VALIDATION_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.PHONE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "postalCode":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "fullName":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ID_FULL_NAME_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ID_FULL_NAME_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "ageField":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.AGE_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "addressLine1":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_1_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_1_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case "addressLine2":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_2_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_2_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
 			case "addressLine3":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_3_REGEX));
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_3_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
 			default:

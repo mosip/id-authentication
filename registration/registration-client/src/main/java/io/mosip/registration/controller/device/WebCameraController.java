@@ -89,10 +89,7 @@ public class WebCameraController extends BaseController implements Initializable
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
 
-		String photoProviderName = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.WEBCAM_LIBRARY_NAME));
-
-		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
+		photoProvider = photoCaptureFacade.getPhotoProviderFactory(getValueFromApplicationContext(RegistrationConstants.WEBCAM_LIBRARY_NAME));
 		if (photoProvider.isWebcamConnected()) {
 			photoProvider.close();
 		}

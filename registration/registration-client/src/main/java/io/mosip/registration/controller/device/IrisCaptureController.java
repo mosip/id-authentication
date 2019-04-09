@@ -156,8 +156,8 @@ public class IrisCaptureController extends BaseController {
 
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
-				for (int attempt = 0; attempt < Integer.parseInt(String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT))); attempt++) {
+				for (int attempt = 0; attempt < Integer
+						.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
 					Label label = new Label();
 					label.getStyleClass().add(RegistrationConstants.QUALITY_LABEL_GREY);
 					label.setId(RegistrationConstants.RETRY_ATTEMPT_ID + (attempt + 1));
@@ -415,8 +415,8 @@ public class IrisCaptureController extends BaseController {
 						Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0]) / 100);
 				irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 				if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
-						.split(RegistrationConstants.PERCENTAGE)[0]) > Double.valueOf(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD)))) {
+						.split(RegistrationConstants.PERCENTAGE)[0]) > Double
+								.valueOf(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) {
 					clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, irisDetailsDTO.getNumOfIrisRetry());
 					irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 					irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
@@ -483,7 +483,7 @@ public class IrisCaptureController extends BaseController {
 					SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
 
 					if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+							getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 						SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 					} else {
 						SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
@@ -531,8 +531,8 @@ public class IrisCaptureController extends BaseController {
 
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
 
-					if (RegistrationConstants.ENABLE.equalsIgnoreCase(String
-							.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+					if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 					} else {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);

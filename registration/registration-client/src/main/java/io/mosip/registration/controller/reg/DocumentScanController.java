@@ -263,9 +263,8 @@ public class DocumentScanController extends BaseController {
 			documentsMap.clear();
 		}
 
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null && RegistrationConstants.DISABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 			documentPane.setVisible(false);
 		}
 
@@ -469,8 +468,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-		if (byteArray.length > Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -542,7 +540,7 @@ public class DocumentScanController extends BaseController {
 			return;
 		}
 		byte[] byteArray;
-		if (!"pdf".equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)))) {
+		if (!"pdf".equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE))) {
 			byteArray = documentScanFacade.asImage(scannedPages);
 		} else {
 			byteArray = documentScanFacade.asPDF(scannedPages);
@@ -551,8 +549,7 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
-		if (byteArray.length > Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -584,7 +581,7 @@ public class DocumentScanController extends BaseController {
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
-		documentDetailsDTO.setFormat(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)));
+		documentDetailsDTO.setFormat(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE));
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document.getName()));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
@@ -992,8 +989,8 @@ public class DocumentScanController extends BaseController {
 
 			}
 		} else {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));

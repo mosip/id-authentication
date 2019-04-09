@@ -182,8 +182,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
 		List<String> configuredFieldsfromDB = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
-						.split(","));
+				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
 		if (!pendingApprovalRegistrations.isEmpty()) {
 			pendingApprovalCountLbl
@@ -192,7 +191,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
-		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
+		if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)
 				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
 			vHolder.getChildren().forEach(btnNode -> {
@@ -205,7 +204,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		}
 
-		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
+		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
 			// vHolder.setManaged(false);
@@ -275,10 +274,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
-		String fingerPrintDisableFlag = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-		String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-		String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+		String fingerPrintDisableFlag = getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+		String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
+		String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
 
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag)
 				&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
@@ -476,9 +474,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String
-								.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+								getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
 
 					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
@@ -625,8 +623,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.ACK_INSIDE_PACKET)))) {
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.ACK_INSIDE_PACKET))) {
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
@@ -643,7 +641,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			try {
 
-				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
+				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
 					syncAndUploadPacket();
@@ -652,12 +650,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC))
-						+ seperator
+				String filePath = getValueFromApplicationContext(RegistrationConstants.PKT_STORE_LOC) + seperator
 						+ formatDate(new Date(),
-								String.valueOf(
-										ApplicationContext.map().get(RegistrationConstants.PKT_STORE_DATE_FORMAT)))
-												.concat(seperator).concat(registrationDTO.getRegistrationId());
+								getValueFromApplicationContext(RegistrationConstants.PKT_STORE_DATE_FORMAT))
+										.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),

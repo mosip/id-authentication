@@ -663,8 +663,8 @@ public class DemographicDetailController extends BaseController {
 			ageFieldLocalLanguage.setDisable(true);
 			renderComboBoxes();
 			addRegions();
-			minAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
-			maxAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
+			minAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MIN_AGE));
+			maxAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
 			List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
@@ -1271,9 +1271,9 @@ public class DemographicDetailController extends BaseController {
 
 		boolean isParentOrGuradianUINOrRIDAvail = !(uinId.isDisabled() || uinId.getText().isEmpty());
 		boolean isParentOrGuardianUIN = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() == Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
 		boolean isParentOrGuardianRID = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() != Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)

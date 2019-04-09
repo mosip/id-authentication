@@ -85,8 +85,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		if (String.valueOf(
 				applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION)) != null
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.NOTIFICATION_DISABLE_FLAG)))) {
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);

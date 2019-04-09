@@ -129,8 +129,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 				.getBiometricExceptionDTO().stream()
 				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
 
-		if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+		if (!RegistrationConstants.DISABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 			SessionContext.getInstance().getMapObject().put("faceCapture", true);
 		} else if (irisCount > 0) {
 			SessionContext.map().put("irisCapture", true);
@@ -258,8 +258,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("registrationPreview", false);
-			if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			if (!RegistrationConstants.DISABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				SessionContext.map().put("documentScan", true);
 			} else {
 				SessionContext.map().put("registrationPreview", true);
@@ -293,8 +293,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 				SessionContext.map().put("fingerPrintCapture", true);
 			} else if (irisCount > 0) {
 				SessionContext.map().put("irisCapture", true);
-			} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+			} else if (!RegistrationConstants.DISABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 				SessionContext.map().put("faceCapture", true);
 			} else {
 				SessionContext.map().put("registrationPreview", true);

@@ -171,7 +171,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			regCenterID
 					.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			employeeCode.setText(SessionContext.userContext().getUserId());
-			machineID.setText((String)ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID));
+			machineID.setText(getValueFromApplicationContext(RegistrationConstants.USER_STATION_ID));
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP))
 					.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
@@ -335,11 +335,9 @@ public class BiometricExceptionController extends BaseController implements Init
 				
 				if(fingerList.size()==10 && irisList.size()==2) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
-				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))){
+				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))){
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
