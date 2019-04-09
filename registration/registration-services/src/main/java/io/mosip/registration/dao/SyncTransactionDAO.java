@@ -10,7 +10,7 @@ import io.mosip.registration.entity.SyncTransaction;
  * 
  * @author Dinesh Ashokan
  * 
- * @since1.0.0
+ * @since 1.0.0
  *
  */
 public interface SyncTransactionDAO {
@@ -19,7 +19,7 @@ public interface SyncTransactionDAO {
 	 * 
 	 * @param syncTransaction
 	 *            Details
-	 * @return
+	 * @return sync transaction
 	 */
 	SyncTransaction save(SyncTransaction syncTransaction);
 
@@ -33,9 +33,9 @@ public interface SyncTransactionDAO {
 	/**
 	 * Get All sync Transaction
 	 * 
-	 * @param request
+	 * @param req
 	 *            time
-	 * @param syncJobId
+	 * @param syncJobId job ID
 	 * @return list of sync transaction
 	 */
 	List<SyncTransaction> getSyncTransactions(Timestamp req, String syncJobId);
@@ -49,7 +49,7 @@ public interface SyncTransactionDAO {
 	 *            previous trigger time
 	 * @param currentFiredTime
 	 *            current trigger time
-	 * @return
+	 * @return list of sync transactions
 	 */
 	List<SyncTransaction> getAll(String syncJobId, Timestamp previousFiredTime, Timestamp currentFiredTime);
 }

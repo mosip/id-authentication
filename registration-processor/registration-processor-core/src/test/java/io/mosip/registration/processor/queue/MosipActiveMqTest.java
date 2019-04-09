@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.queue;
+/*package io.mosip.registration.processor.queue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -393,3 +393,4 @@ public class MosipActiveMqTest {
 	};
 
 }
+*/

@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.ScreenAuthorization;
 import lombok.Data;
 
 /**
- * Composite key for ScreenAuthorization entity
+ * Composite key for {@link ScreenAuthorization}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

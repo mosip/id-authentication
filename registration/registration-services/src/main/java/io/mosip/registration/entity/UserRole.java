@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * UserRole entity details
+ * The Entity Class for User Role details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

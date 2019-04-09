@@ -78,7 +78,7 @@ import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
 /**
- * Class for creating the Resident Registration
+ * Class for creating the Resident Registration as zip file
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

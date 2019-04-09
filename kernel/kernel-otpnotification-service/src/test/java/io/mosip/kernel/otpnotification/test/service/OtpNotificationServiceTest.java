@@ -22,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.otpnotification.OtpNotificationBootApplication;
 import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationResponseDto;
@@ -30,6 +29,7 @@ import io.mosip.kernel.otpnotification.dto.OtpResponseDto;
 import io.mosip.kernel.otpnotification.exception.OtpNotificationInvalidArgumentException;
 import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
 import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
+import io.mosip.kernel.otpnotification.test.OtpNotificationTestBootApplication;
 
 /**
  * The service test class for otp notification.
@@ -38,7 +38,7 @@ import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { OtpNotificationBootApplication.class })
+@SpringBootTest(classes = { OtpNotificationTestBootApplication.class })
 public class OtpNotificationServiceTest {
 
 	@MockBean

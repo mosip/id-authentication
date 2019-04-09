@@ -21,8 +21,17 @@ public interface GlobalParamDAO {
 	 * @return Map of global params
 	 */
 	Map<String, Object> getGlobalParams();
+	/**
+	 * This method saves the list of globalparam 
+	 * @param list of global params
+	 */
 
 	void saveAll(List<GlobalParam> list);
+	/**
+	 * This method is used to get the globalparam
+	 * @param globalParamId is a primary key
+	 * @return GlobalParam against the primary key
+	 */
 
 	GlobalParam get(GlobalParamId globalParamId);
 
@@ -34,7 +43,20 @@ public interface GlobalParamDAO {
 	 * @return list of global params
 	 */
 	List<GlobalParam> getAll(List<String> names);
+	/**
+	 * 
+	 * @return list of global params
+	 */
 
 	List<GlobalParam> getAllEntries();
+	
+	/**
+	 * Update software update status.
+	 *
+	 * @param status 
+	 * 				the status
+	 * @return the global param
+	 */
+	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable);
 
 }

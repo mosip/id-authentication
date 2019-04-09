@@ -1,5 +1,4 @@
 
-
 package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -60,17 +58,22 @@ import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
@@ -105,9 +108,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane irisPane;
-	
-	@Value("${mosip.primary-language}")
-	private String prim;
 
 	@FXML
 	private AnchorPane facePane;
@@ -136,12 +136,6 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private Label otpValidity;
 
-	@Value("${otp_validity_in_mins}")
-	private long otpValidityImMins;
-
-	@Value("${PROVIDER_NAME}")
-	private String deviceName;
-
 	@Autowired
 	private LoginService loginService;
 
@@ -166,6 +160,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private FaceFacade faceFacade;
 
+	@Autowired
+	private GlobalParamService globalParamService;
+
 	private boolean isNewUser = false;
 
 	@Autowired
@@ -175,28 +172,45 @@ public class LoginController extends BaseController implements Initializable {
 	private PageFlow pageFlow;
 
 	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
-	
-	@Autowired
 	private MasterSyncService masterSyncService;
-	
+
 	@Autowired
-	private UserDetailService userDetailService; 
+	private UserDetailService userDetailService;
 	@Autowired
 	private RestartController restartController;
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
-		stopTimer();
-		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if(newValue.length() > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
-			}
-		});
-	}
+	@FXML
+	private ProgressIndicator progressIndicator;
+
+	private Service<String> taskService;
 
 	private List<String> loginList = new ArrayList<>();
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+
+		try {
+			// TODO to replace false with registrationUpdate.hasUpdate() method.
+			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
+			
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						responseDTO.getSuccessResponseDTO().getMessage());
+
+			otpValidity.setText("Valid for " + Integer.parseInt(
+					((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
+					/ 60 + " minutes");
+			stopTimer();
+			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if (newValue.length() > Integer
+						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
+				}
+			});
+		} catch (RuntimeException runtimeExceptionexception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
+		}
+	}
 
 	/**
 	 * To get the Sequence of which Login screen to be displayed
@@ -205,45 +219,29 @@ public class LoginController extends BaseController implements Initializable {
 	 * @throws RegBaseCheckedException
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
-		
+
+		/* Save Global Param Values in Application Context's application map */
+		getGlobalParams();
+		ApplicationContext.loadResources();
+
 		try {
-			ResponseDTO responseDTO = getSyncConfigData();
-			if (responseDTO != null) {
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				if (successResponseDTO != null) {
-					if (successResponseDTO.getOtherAttributes() != null) {
-						restartController.restart();
-					}
-				}
-			}
-			
-			/* Save Global Param Values in Application Context's application map */		
-			getGlobalParams();
-			ApplicationContext.loadResources();
-			
-			ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-			ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			
-			if (responseDTO.getSuccessResponseDTO() == null || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
-			} else {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Retrieve Login mode");
 
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Retrieve Login mode");
+			fXComponents.setStage(primaryStage);
 
-				fXComponents.setStage(primaryStage);
+			validations.setResourceBundle();
+			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
-					validations.setResourceBundle();
-					BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-					
-					scene = getScene(loginRoot);
-					pageFlow.getInitialPageDetails();
-				//	primaryStage.setResizable(true);
-					//primaryStage.setFullScreen(true);
-				//	primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-					primaryStage.setScene(scene);
-					primaryStage.show();
-			}
+			scene = getScene(loginRoot);
+			pageFlow.getInitialPageDetails();
+			primaryStage.setResizable(true);
+			primaryStage.setFullScreen(true);
+			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+
+			executePreLaunchTask(loginRoot);
 
 		} catch (IOException ioException) {
 
@@ -282,9 +280,12 @@ public class LoginController extends BaseController implements Initializable {
 
 				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				String centerId = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID);
+				Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 
-				if (userDetail != null && userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
+				String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
+
+				if (userDetail != null
+						&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
 
 					ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
@@ -317,7 +318,8 @@ public class LoginController extends BaseController implements Initializable {
 
 							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID, userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_STATION_ID));
+							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
+									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
 							if (getCenterMachineStatus(userDetail)) {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
@@ -327,37 +329,22 @@ public class LoginController extends BaseController implements Initializable {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, true);
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 
-								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),
-										RegistrationConstants.getRoles());
+								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
 							}
-							
-							String fingerprintDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-							String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-							String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+
+							String fingerprintDisableFlag = String.valueOf(
+									ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+							String irisDisableFlag = String
+									.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+							String faceDisableFlag = String
+									.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FINGERPRINT));
-							}
-
-							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring Iris login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
-							}
-
-							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring Face login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
-							}
+							
+							removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+							removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+							removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
 
 							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
 									: null;
@@ -389,8 +376,7 @@ public class LoginController extends BaseController implements Initializable {
 						}
 					}
 				} else {
-					generateAlert(RegistrationConstants.ERROR,
-							RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
@@ -432,16 +418,16 @@ public class LoginController extends BaseController implements Initializable {
 			}
 		}
 
-		boolean offlineStatus = false;
+		boolean pwdValidationStatus = false;
 		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
 		if (RegistrationConstants.SUCCESS.equals(status)) {
-			offlineStatus = validateInvalidLogin(userDetail, "");
+			pwdValidationStatus = validateInvalidLogin(userDetail, "");
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+			pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 
-		if (offlineStatus) {
+		if (pwdValidationStatus) {
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
 			credentialsPane.setVisible(false);
@@ -474,7 +460,8 @@ public class LoginController extends BaseController implements Initializable {
 				changeToOTPSubmitMode();
 
 				// Generate alert to show OTP
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
@@ -521,7 +508,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateFingerPrint(ActionEvent event) {
+	public void captureFingerPrint(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_FINGERPRINT, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -533,7 +520,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean bioLoginStatus = false;
 
-		if (validateBiometricFP()) {
+		if (validateFingerPrint()) {
 			bioLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -555,7 +542,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateIris(ActionEvent event) {
+	public void captureIris(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_IRIS, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -567,7 +554,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean irisLoginStatus = false;
 
-		if (validateBiometricIris()) {
+		if (validateIris()) {
 			irisLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
@@ -589,7 +576,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateFace(ActionEvent event) {
+	public void captureFace(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -601,7 +588,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean faceLoginStatus = false;
 
-		if (validateBiometricFace()) {
+		if (validateFace()) {
 			faceLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
@@ -741,9 +728,11 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Setting values for session context and user context");
 
-			long refreshedLoginTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
-			long idealTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
-			
+			long refreshedLoginTime = Long.parseLong(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
+			long idealTime = Long
+					.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
+
 			sessionContext.setLoginTime(new Date());
 			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
 			sessionContext.setIdealTime(idealTime);
@@ -791,7 +780,8 @@ public class LoginController extends BaseController implements Initializable {
 					schedulerUtil.startSchedulerUtil();
 					loginList.clear();
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-
+					// to add events to the stage
+					getStage();
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -821,16 +811,16 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricFP() {
+	private boolean validateFingerPrint() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(deviceName);
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
 
 		if (fingerPrintConnector.captureFingerprint(
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
-				"") != 0) {
+				"") != RegistrationConstants.PARAM_ZERO) {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 
@@ -864,7 +854,7 @@ public class LoginController extends BaseController implements Initializable {
 						authenticationValidatorDTO);
 
 			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
+				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
@@ -880,7 +870,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricIris() {
+	private boolean validateIris() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
@@ -902,7 +892,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricFace() {
+	private boolean validateFace() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -931,8 +921,8 @@ public class LoginController extends BaseController implements Initializable {
 
 		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
 				? userDetail.getUnsuccessfulLoginCount().intValue()
-				: 0;
-				
+				: RegistrationConstants.PARAM_ZERO;
+
 		int invalidLoginCount = Integer
 				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
 
@@ -1024,6 +1014,104 @@ public class LoginController extends BaseController implements Initializable {
 		return (loginCount >= invalidLoginCount
 				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
 						- loginTime.getTime()) > invalidLoginTime);
+	}
+
+	private void executePreLaunchTask(BorderPane loginRoot) {
+
+		progressIndicator.setVisible(true);
+		loginRoot.setDisable(true);
+
+		/**
+		 * This anonymous service class will do the pre application launch task
+		 * progress.
+		 * 
+		 */
+		taskService = new Service<String>() {
+			@Override
+			protected Task<String> createTask() {
+				return /**
+						 * @author SaravanaKumar
+						 *
+						 */
+				new Task<String>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected String call() {
+
+						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+
+						
+						ResponseDTO responseDTO = getSyncConfigData();
+						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
+								return RegistrationConstants.RESTART;
+							} else {
+								ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+										RegistrationConstants.OPT_TO_REG_MDS_J00001,
+										RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+								ResponseDTO userResponseDTO = userDetailService
+										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+								if (masterResponseDTO.getErrorResponseDTOs() != null
+										|| userResponseDTO.getErrorResponseDTOs() != null) {
+									return RegistrationConstants.FAILURE;
+								}
+
+							}						 
+
+						return RegistrationConstants.SUCCESS;
+					}
+				};
+			}
+		};
+
+		progressIndicator.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+
+				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							restartController.restart();
+						}
+					});
+				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
+				}
+				loginRoot.setDisable(false);
+				progressIndicator.setVisible(false);
+			}
+		});
+
+	}
+	
+	/**
+	 * This method will remove the loginmethod from list
+	 * 
+	 * @param disableFlag
+	 *             configuration flag
+	 * @param loginMethod
+	 *             login method
+	 */
+	private void removeLoginParam(String disableFlag, String loginMethod) {
+		
+		if (loginList.size() > 1
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)) {
+			loginList.removeIf(login -> login.equalsIgnoreCase(loginMethod));
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Ignoring login method if the configuration is off");
+
 	}
 
 }

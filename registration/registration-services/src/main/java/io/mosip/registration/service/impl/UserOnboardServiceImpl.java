@@ -28,6 +28,8 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
+ * Implementation for {@link UserOnboardService} 
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0
@@ -69,8 +71,8 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		// API for validating biometrics need to be implemented
 		
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
-				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			
 			if (count >= UserOnBoardThresholdLimit) {
 				responseDTO = save(biometricDTO);

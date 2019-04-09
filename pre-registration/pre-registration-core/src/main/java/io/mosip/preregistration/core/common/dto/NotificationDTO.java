@@ -21,7 +21,7 @@ public class NotificationDTO {
 	/**
 	 * Pre-Registration ID
 	 */
-	private String preId;
+	private String preRegistrationId;
 	/**
 	 * appointmentDate
 	 */

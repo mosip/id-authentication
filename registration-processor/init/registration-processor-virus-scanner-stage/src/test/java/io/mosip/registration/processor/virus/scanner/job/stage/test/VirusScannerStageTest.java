@@ -43,6 +43,7 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
@@ -74,6 +75,9 @@ public class VirusScannerStageTest {
 
 	@Mock
 	private Decryptor decryptor;
+
+	@Mock
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	private static final InputStream stream = Mockito.mock(InputStream.class);
 

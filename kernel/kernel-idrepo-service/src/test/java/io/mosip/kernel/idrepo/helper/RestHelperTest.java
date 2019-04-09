@@ -422,7 +422,7 @@ public class RestHelperTest {
 	 * @throws RestServiceException
 	 *             the rest service exception
 	 */
-	@Test
+	//@Test
 	public void testRequestAsyncWithoutHeaders() throws IdRepoDataValidationException, RestServiceException {
 		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");

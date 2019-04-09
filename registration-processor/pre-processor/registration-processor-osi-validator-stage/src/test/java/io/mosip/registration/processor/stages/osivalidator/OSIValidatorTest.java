@@ -282,7 +282,7 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("1990/01/01").thenReturn(10);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(10);
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
@@ -516,6 +516,7 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerFingerpImageName(null);
 		regOsiDto.setOfficerHashedPwd("true");
 		regOsiDto.setIntroducerUin("U1234");
+		//regOsiDto.setIntroducerRegId("reg1234");
 		regOsiDto.setIntroducerFingerpImageName(null);
 		
 		JSONObject demoJson = new JSONObject();
@@ -523,7 +524,7 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("1990/01/01").thenReturn(10);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(10);
 		
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
@@ -535,6 +536,88 @@ public class OSIValidatorTest {
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertTrue(isValid);
+	}
+	/**
+	 * Test invalid iris.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void tesAllIntroducerRIDFingerPrint() throws ApisResourceAccessException, IOException, Exception{
+		regOsiDto.setIntroducerFingerpType("LEFTTHUMB");
+		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
+		regOsiDto.setSupervisorFingerType("LEFTRING");
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerFingerpImageName(null);
+		regOsiDto.setOfficerHashedPwd("true");
+		
+	    regOsiDto.setIntroducerRegId("reg1234");
+		regOsiDto.setIntroducerFingerpImageName(null);
+		
+		JSONObject demoJson = new JSONObject();
+		demoJson.put("age", "10");
+		List<String> ridList=new ArrayList<>();
+		ridList.add("reg1234");
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(10);
+		
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(ridList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertTrue(isValid);
+	}
+	/**
+	 * Test invalid iris.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void tesAllIntroducerRIDOnHold() throws ApisResourceAccessException, IOException, Exception{
+		regOsiDto.setIntroducerFingerpType("LEFTTHUMB");
+		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
+		regOsiDto.setSupervisorFingerType("LEFTRING");
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerFingerpImageName(null);
+		regOsiDto.setOfficerHashedPwd("true");
+		
+	    regOsiDto.setIntroducerRegId("reg1234");
+		regOsiDto.setIntroducerFingerpImageName(null);
+		
+		JSONObject demoJson = new JSONObject();
+		demoJson.put("age", "10");
+		List<String> ridList=new ArrayList<>();
+		
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(10);
+		
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(ridList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
 	}
 
 }

@@ -604,7 +604,7 @@ public class PacketInfoManagerImplTest {
 	@Test
 	public void saveDemographicInfoJsonTest() {
 
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229", metaDataList);
 		assertEquals("identity", utility.getGetRegProcessorDemographicIdentity());
 	}
 
@@ -613,7 +613,7 @@ public class PacketInfoManagerImplTest {
 	 */
 	@Test(expected = FileNotFoundInPacketStore.class)
 	public void fileNotFoundInPacketStoreTest() {
-		packetInfoManagerImpl.saveDemographicInfoJson(null, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(null, "2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -624,7 +624,7 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229",metaDataList);
 	}
 
 	/**
@@ -634,7 +634,7 @@ public class PacketInfoManagerImplTest {
 	public void demographicDedupeUnableToInsertDataTest() {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
 
 	}
 
@@ -645,7 +645,7 @@ public class PacketInfoManagerImplTest {
 	public void identityNotFoundExceptionTest() {
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn(null);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -700,7 +700,7 @@ public class PacketInfoManagerImplTest {
 	public void saveJsonUnableToInsertDataTest() {
 
 		Mockito.when(demographicJsonRepository.save(any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229",metaDataList);
 
 	}
 

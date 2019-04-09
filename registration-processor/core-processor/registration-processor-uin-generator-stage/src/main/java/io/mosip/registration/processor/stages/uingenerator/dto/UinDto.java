@@ -15,9 +15,17 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class UinDto extends UinResponseDto {
+public class UinDto{
 	
-	private String status;
+	private String id;
+	
+	private String version;
+	
+	private String responsetime;
+	
+	private Object metadata;
+	
+	private UinResponseDto response;
 	
 	private List<ErrorDTO> errors;
 

@@ -4,17 +4,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import javax.jms.Message;
+
+import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -32,11 +35,13 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
@@ -55,6 +60,7 @@ import io.vertx.ext.web.RoutingContext;
  * The Class PrintStage.
  * 
  * @author M1048358 Alok
+ * @author Ranjitha Siddegowda
  */
 @RefreshScope
 @Service
@@ -97,6 +103,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The is transactional. */
 	private boolean isTransactionSuccessful = false;
 
+	private String registrationId;
+
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -136,20 +144,57 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.address}")
 	private String address;
-
+	
 	/** The print & postal service provider address. */
-	private String printPostalAddress = "postal-service";
+	/** The address. */
+	@Value("${registration.processor.queue.printpostaladdress}")
+	private String printPostalAddress;
 
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	@Autowired
+	private UinValidator<String> uinValidatorImpl;
+
+	MessageDTO messageDTO;
+	
+	boolean isConnection = false;
+
+	private static final String SUCCESS = "Success";
+
+	private static final String RESEND = "Resend";
+	
+	private MessageDTO stageObject;
+	
+	private static final String CLASSNAME = "PrintStage";
+	
+	private static final String SEPERATOR = "::";
+	
+	private MosipQueue queue;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
-		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
+		
+		queue = getQueueConnection();
+		if (queue != null) {
+
+			QueueListener listener = new QueueListener() {
+				@Override
+				public void setListener(Message message) {
+					sendMessage(message);
+				}
+			};
+
+			mosipQueueManager.consume(queue, printPostalAddress, listener);
+			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
+		} else {
+			throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
+		}
+
 	}
 
 	/*
@@ -164,8 +209,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 		object.setMessageBusAddress(MessageBusAddress.PRINTING_BUS);
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
+		this.stageObject = object;
+		registrationId = object.getRid();
 		String regId = object.getRid();
-
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
@@ -173,14 +219,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String uin = packetInfoManager.getUINByRid(regId).get(0);
 
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
-
-			MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
-			if (queue == null) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), regId,
-						PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name());
-				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
-			}
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
 
@@ -200,64 +238,54 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
 			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
-
-			if (consumeResponseFromQueue(regId, queue)) {
-				description = "Print and Post Completed for the regId : " + regId;
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
-				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			} else {
-				description = "Re-Send uin card with regId " + regId + " for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
-				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-				object.setIsValid(Boolean.FALSE);
-			}
 
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			description = "Pdf Generation failed for : " + regId;
+			description = CLASSNAME + SEPERATOR + "Pdf Generation failed for " + regId + SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			description = CLASSNAME + SEPERATOR + "Template processing is failed for " + regId + SEPERATOR
+					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (QueueConnectionNotFound e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			description = CLASSNAME + SEPERATOR + "Queue Connection not found for " + regId + SEPERATOR
+					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (ConnectionUnavailableException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			description = CLASSNAME + SEPERATOR + "Queue Connection unavailable for " + regId + SEPERATOR
+					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			description = "Internal error occured while processing registration  id : " + regId;
+			description = CLASSNAME + SEPERATOR + "Internal error occured while processing registration id " + regId
+					+ SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} finally {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			description = isTransactionSuccessful ? "Pdf generated and sent to mosip queue"
-					: "Either pdf not generated or not sent to mosip queue";
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
+					ApiName.AUDIT);
 		}
 
 		return object;
@@ -357,47 +385,107 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 *            the ctx
 	 */
 	public void reSendPrintPdf(RoutingContext ctx) {
+		boolean isValidUin = false;
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
-		messageDTO.setRid(object.getString("regId"));
-		MessageDTO responseMessageDto = this.process(messageDTO);
-		if (responseMessageDto.getIsValid()) {
-			this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
-		} else {
-			this.setResponse(ctx, "Caught internal error in messageDto");
-		}
-
-	}
-
-	/**
-	 * Consume response from queue.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @param queue
-	 *            the queue
-	 * @return true, if successful
-	 */
-	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
-		boolean result = false;
-
-		// Consuming the response from the third party service provider
-		byte[] responseFromQueue = mosipQueueManager.consume(queue, printPostalAddress);
-		String response = new String(responseFromQueue);
-		JSONParser parser = new JSONParser();
-		JSONObject identityJson = null;
 		try {
-			identityJson = (JSONObject) parser.parse(response);
-			String uinFieldCheck = (String) identityJson.get("Status");
-			if (uinFieldCheck.equals("Success")) {
-				result = true;
+			messageDTO.setRid(object.getString("regId"));
+			String uin = object.getString("uin");
+			String status = object.getString("status");
+			isValidUin = uinValidatorImpl.validateId(uin);
+
+			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
+				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, uin, status);
+				if (!responseMessageDto.getIsValid()) {
+					this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
+				} else {
+					this.setResponse(ctx, "Caught internal error in messageDto");
+				}
+			} else {
+				this.setResponse(ctx, "Invalid request");
 			}
-		} catch (ParseException e) {
+
+		} catch (Exception e) {
+			this.setResponse(ctx, "Invalid request");
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
+					"", PlatformErrorMessages.RPR_BDD_UNKNOWN_EXCEPTION.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
-		return result;
+	}
+
+	public void sendMessage(Message message) {
+		String description = null;
+		try {
+
+			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+					.getRegistrationStatus(registrationId);
+
+			String response = new String(((ActiveMQBytesMessage) message).getContent().data);
+
+			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
+			String status = JsonUtil.getJSONValue(jsonObject, "Status");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "ConsumerStage::process()::exit");
+			if (status.equals(SUCCESS)) {
+				description = "Print and Post Completed for the regId : " + registrationId;
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
+				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setUpdatedBy(USER);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			} else if (status.equals(RESEND)) {
+				description = "Re-Send uin card with regId " + registrationId + " for printing";
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
+				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setUpdatedBy(USER);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+				this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS, this.stageObject);
+			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "ConsumerStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			description = CLASSNAME + SEPERATOR + "Internal error occured while processing registration id "
+					+ registrationId + SEPERATOR + e.getMessage();
+		} finally {
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
+					ApiName.AUDIT);
+		}
+	}
+
+	private MosipQueue getQueueConnection() {
+		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
+	}
+
+	@SuppressWarnings("unchecked")
+	private MessageDTO resendQueueResponse(MessageDTO messageDto, String uin, String status) {
+		JSONObject response = new JSONObject();
+		registrationId = messageDto.getRid();
+		stageObject = messageDto;
+		try {
+			response.put("UIN", uin);
+			response.put("Status", status);
+
+			mosipQueueManager.send(queue, response.toString().getBytes("UTF-8"), printPostalAddress);
+			messageDto.setIsValid(Boolean.FALSE);
+		} catch (UnsupportedEncodingException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_CMB_UNSUPPORTED_ENCODING.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		}
+		return messageDto;
 	}
 
 }

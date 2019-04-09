@@ -13,6 +13,7 @@ export class AuthInterceptorService {
     console.log('Intercepted!', req);
     const copiedReq = req.clone({
       // headers: req.headers.set('', ''),
+
       withCredentials: true
     });
     return next.handle(copiedReq);

@@ -67,9 +67,9 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 				registrationCenterId = new RegistrationCenterId();
 				registrationCenterId.setRcid(initialValue);
 				generatedRCID = initialValue;
-				registrationCenterId.setCreatedBy("default@user");
+				registrationCenterId.setCreatedBy("SYSTEM");
 				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				registrationCenterId.setUpdatedBy("default@user");
+				registrationCenterId.setUpdatedBy("SYSTEM");
 				registrationCenterId.setUpdatedDateTime(null);
 				registrationCenterIdRepository.create(registrationCenterId);
 
@@ -79,8 +79,8 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 				entity.setRcid(generatedRCID);
 				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				entity.setUpdatedBy("default@user");
-				entity.setCreatedBy("default@user");
+				entity.setUpdatedBy("SYSTEM");
+				entity.setCreatedBy("SYSTEM");
 				registrationCenterIdRepository.create(entity);
 
 			}

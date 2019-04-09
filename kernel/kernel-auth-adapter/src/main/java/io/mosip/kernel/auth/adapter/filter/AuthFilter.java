@@ -42,7 +42,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/","**/authenticate/**" };
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/","**/authenticate/**","/v1/emailnotifier/**" };
 	}
 
 	public AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {

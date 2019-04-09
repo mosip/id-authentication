@@ -65,8 +65,8 @@ public class BookingDAO {
 			availabilityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId,
 					regDate);
 		} catch (DataAccessLayerException e) {
-			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return availabilityList;
 
@@ -91,12 +91,12 @@ public class BookingDAO {
 		try {
 			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
 			if (localDatList.isEmpty()) {
-				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.toString(),
-						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
+				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
+						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return localDatList;
 	}
@@ -116,13 +116,13 @@ public class BookingDAO {
 					slotToTime, regDate, regcntrd);
 			if (entity == null) {
 
-				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
-						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
+				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.getCode(),
+						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
 			}
 
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return entity;
 	}
@@ -140,12 +140,12 @@ public class BookingDAO {
 		try {
 			entity = registrationBookingRepository.getPreRegId(preregistrationId);
 			if (entity == null) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entity;
 	}
@@ -159,12 +159,12 @@ public class BookingDAO {
 		try {
 			entity = registrationBookingRepository.save(bookingEnity);
 			if (entity == null) {
-				throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_019.toString(),
-						ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
+				throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_019.getCode(),
+						ErrorMessages.APPOINTMENT_CANCEL_FAILED.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entity;
 	}
@@ -178,12 +178,12 @@ public class BookingDAO {
 		try {
 			entity = bookingAvailabilityRepository.update(availibityEntity);
 			if (entity == null) {
-				throw new AvailabilityUpdationFailedException(ErrorCodes.PRG_BOOK_RCI_024.toString(),
-						ErrorMessages.AVAILABILITY_UPDATE_FAILED.toString());
+				throw new AvailabilityUpdationFailedException(ErrorCodes.PRG_BOOK_RCI_024.getCode(),
+						ErrorMessages.AVAILABILITY_UPDATE_FAILED.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return entity;
 	}
@@ -197,12 +197,12 @@ public class BookingDAO {
 		try {
 			entity = registrationBookingRepository.save(bookingEntity);
 			if (entity == null) {
-				throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-						ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
+				throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.getCode(),
+						ErrorMessages.APPOINTMENT_BOOKING_FAILED.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entity;
 	}
@@ -217,12 +217,12 @@ public class BookingDAO {
 		try {
 			entityList = registrationBookingRepository.findByRegistrationCenterId(registrationCenterId);
 			if (entityList.isEmpty()) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entityList;
 	}
@@ -238,8 +238,8 @@ public class BookingDAO {
 		try {
 			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId, regDate);
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return entityList;
 	}
@@ -257,12 +257,12 @@ public class BookingDAO {
 		try {
 			entityList = registrationBookingRepository.findBypreregistrationId(preId);
 			if (entityList.isEmpty()) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entityList;
 
@@ -281,8 +281,8 @@ public class BookingDAO {
 		try {
 			registrationBookingRepository.delete(bookingEnity);
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
 
@@ -297,22 +297,22 @@ public class BookingDAO {
 		try {
 			if (regCenterId != null && !regCenterId.isEmpty()) {
 				List<RegistrationBookingEntity> entities = registrationBookingRepository
-						.findByBookingDateTimeBetweenAndRegistrationCenterId(fromLocaldate, toLocaldate, regCenterId);
+						.findByRegDateBetweenAndRegistrationCenterId(fromLocaldate, toLocaldate, regCenterId);
 				if (entities != null && !entities.isEmpty()) {
 					for (RegistrationBookingEntity entity : entities) {
 						listOfPreIds.add(entity.getBookingPK().getPreregistrationId());
 					}
 				} else {
-					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.toString(),
-							ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.toString());
+					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),
+							ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
 				}
 			} else {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_007.toString(),
-						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_007.getCode(),
+						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.toString(),
-					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.toString());
+			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
 		}
 		return listOfPreIds;
 	}

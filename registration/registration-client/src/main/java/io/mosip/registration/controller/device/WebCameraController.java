@@ -10,11 +10,12 @@ import java.util.ResourceBundle;
 import javax.swing.JPanel;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
@@ -26,7 +27,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -43,11 +44,11 @@ public class WebCameraController extends BaseController implements Initializable
 	private static final Logger LOGGER = AppConfig.getLogger(WebCameraController.class);
 
 	@FXML
-	public AnchorPane webCameraPane;
+	public GridPane webCameraPane;
 
 	@FXML
 	private SwingNode webcamera;
-	
+
 	@FXML
 	protected Button capture;
 
@@ -66,9 +67,6 @@ public class WebCameraController extends BaseController implements Initializable
 	private PhotoCaptureFacade photoCaptureFacade;
 
 	private String imageType;
-
-	@Value("${WEBCAM_LIBRARY_NAME}")
-	private String photoProviderName;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -90,6 +88,9 @@ public class WebCameraController extends BaseController implements Initializable
 	public boolean isWebcamPluggedIn() {
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
+
+		String photoProviderName = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.WEBCAM_LIBRARY_NAME));
 
 		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
 		if (photoProvider.isWebcamConnected()) {

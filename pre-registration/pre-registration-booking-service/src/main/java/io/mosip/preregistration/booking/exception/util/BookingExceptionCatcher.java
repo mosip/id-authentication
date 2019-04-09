@@ -61,9 +61,10 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
 					((InvalidRequestParameterException) ex).getErrorText());
-		} else if (ex instanceof DateTimeException || ex instanceof InvalidDateTimeFormatException) {
-			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
-					((InvalidDateTimeFormatException) ex).getErrorText());
+		} else if (ex instanceof DateTimeException || ex instanceof java.time.format.DateTimeParseException
+				|| ex instanceof InvalidDateTimeFormatException) {
+			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
+					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
 		} else if (ex instanceof ParseException) {
 			throw new ParseException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
 					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
@@ -141,9 +142,6 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof DateTimeParseException) {
 			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage());
-		} else if (ex instanceof InvalidDateTimeFormatException) {
-			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
-					((InvalidDateTimeFormatException) ex).getErrorText());
 		} else if (ex instanceof TableNotAccessibleException) {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
 					((TableNotAccessibleException) ex).getErrorText());

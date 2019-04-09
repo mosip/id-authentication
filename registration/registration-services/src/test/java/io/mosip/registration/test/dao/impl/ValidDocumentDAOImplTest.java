@@ -16,8 +16,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
-import io.mosip.registration.entity.id.GenericId;
-import io.mosip.registration.repositories.ValidDocumentRepository;
+import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 
 public class ValidDocumentDAOImplTest {
 
@@ -26,7 +25,7 @@ public class ValidDocumentDAOImplTest {
 	@InjectMocks
 	private ValidDocumentDAOImpl validDocumentDAOImpl;
 	@Mock
-	private ValidDocumentRepository validDocumentRepository;
+	private ApplicantValidDocumentRepository validDocumentRepository;
 
 	@Test
 	public void test() {
@@ -36,13 +35,13 @@ public class ValidDocumentDAOImplTest {
 		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
 		validDocumentId.setAppTypeCode("007");
-		validDocument.setValidDocumentId(validDocumentId);
+		validDocument.setValidDocument(validDocumentId);
 		validDocument.setCrBy("createdBy");
 		validDocument.setLangCode("langCode");
 		List<ApplicantValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 
-		Mockito.when(validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(Mockito.anyString(),
+		Mockito.when(validDocumentRepository.findByValidDocumentAppTypeCodeAndDocumentCategoryCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(list);
 
 		assertEquals(list, validDocumentDAOImpl.getValidDocuments("NFR", "POA"));

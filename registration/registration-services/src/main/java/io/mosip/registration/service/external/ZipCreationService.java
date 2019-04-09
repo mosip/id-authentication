@@ -20,8 +20,11 @@ public interface ZipCreationService {
 	 * 
 	 * @param registrationDTO
 	 *            the Registration to be stored in zip file
+	 * @param jsonMap
+	 *            contains the map of files to be zipped
 	 * @return the byte array of packet zip file
 	 * @throws RegBaseCheckedException
+	 *             if any error occurs while zipping the files
 	 */
 	byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> jsonMap)
 			throws RegBaseCheckedException;

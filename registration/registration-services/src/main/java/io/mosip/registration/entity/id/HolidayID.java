@@ -6,9 +6,12 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.Holiday;
 import lombok.Data;
 
 /**
+ * Composite key for {@link Holiday}
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
  */

@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -51,8 +51,8 @@ public class DataSyncController {
 	 * @param DataSyncDTO
 	 * @return responseDto
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
-	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
 	@ApiOperation(value = "Fetch all PreRegistrationIds")
@@ -67,24 +67,24 @@ public class DataSyncController {
 	 * @param preId
 	 * @return zip file to download
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
-	@GetMapping(path = "/datasync", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@GetMapping(path = "/sync/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<MainResponseDTO<PreRegArchiveDTO>> retrievePreRegistrations(
-			@RequestParam(required = true, value = "pre_registration_id") String preId) {
+			@PathVariable(required = true, value = "preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
-				"In Datasync controller for retreiving pre-registration data with preRegId " + preId);
-		return ResponseEntity.status(HttpStatus.OK).body(dataSyncService.getPreRegistrationData(preId));
+				"In Datasync controller for retreiving pre-registration data with preRegId " + preRegistrationId);
+		return ResponseEntity.status(HttpStatus.OK).body(dataSyncService.getPreRegistrationData(preRegistrationId));
 	}
 
 	/**
 	 * @param consumedData
 	 * @return response object
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
-	@PostMapping(path = "/datasync/store", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@PostMapping(path = "/sync/consumedPreRegIds", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),
 			@ApiResponse(code = 400, message = "Unable to save the records") })

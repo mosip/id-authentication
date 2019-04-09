@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOA
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -41,6 +40,8 @@ import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.UserBiometricRepository;
 
 /**
+ * The implementation class of {@link UserOnboardDAO}
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0
@@ -161,6 +162,8 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			bioMetricsList.add(bioMetrics);
 
+			userBiometricRepository.deleteByUserBiometricIdUsrId(SessionContext.userContext().getUserId());
+
 			userBiometricRepository.saveAll(bioMetricsList);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
@@ -185,7 +188,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setIsActive(true);
 			user.setLangCode("eng");
 
-			machineMappingDAO.save(user);
+			//machineMappingDAO.save(user);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"User and machine information insertion sucessful");

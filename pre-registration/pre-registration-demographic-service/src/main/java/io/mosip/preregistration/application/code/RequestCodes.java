@@ -87,7 +87,17 @@ public enum RequestCodes {
 	UPDATE("update"),
 	
 	/*postalCode*/
-	POSTAL_CODE("postalCode");
+	POSTAL_CODE("postalCode"),
+	
+	/*email*/
+	EMAIL("email"),
+	
+	/*phone*/
+	PHONE("phone"),
+	
+	/*cnieNumber*/
+	CNIE_NUMBER("CNIENumber");
+	
 	
 	/**
 	 * @param code

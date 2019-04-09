@@ -16,6 +16,9 @@ public interface ScreenAuthorizationDAO {
 	/**
 	 * This method is used to get the screen authorization
 	 * 
+	 * @param roleCode
+	 *            user role
+	 * 
 	 * @return AuthorizationDTO of authorization details
 	 */
 	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);

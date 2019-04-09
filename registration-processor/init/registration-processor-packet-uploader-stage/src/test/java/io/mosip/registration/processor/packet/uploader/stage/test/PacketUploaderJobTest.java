@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -69,6 +70,7 @@ public class PacketUploaderJobTest {
 		public int getMaxRetryCount() {
 			return maxRetryCount;
 		}
+
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
@@ -141,9 +143,10 @@ public class PacketUploaderJobTest {
 		listAppender = new ListAppender<>();
 		doNothing().when(fileManager).deletePacket(any(), any());
 		doNothing().when(fileManager).deleteFolder(any(), any());
-
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
 	}
@@ -206,25 +209,6 @@ public class PacketUploaderJobTest {
 	}
 
 	@Test
-	public void StatusUpdateExceptionTest() throws Exception {
-
-		listAppender.start();
-		fooLogger.addAppender(listAppender);
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1001.zip").getFile());
-		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(any());
-		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
-		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket("1001");
-		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
-	}
-
-	@Test
 	public void SystemExceptionTest() throws Exception {
 
 		listAppender.start();
@@ -232,23 +216,6 @@ public class PacketUploaderJobTest {
 		Mockito.doThrow(Exception.class).when(packetArchiver).archivePacket("1001");
 
 		packetUploaderStage.process(dto);
-	}
-
-	@Test
-	public void IOExceptionTest() throws Exception {
-
-		listAppender.start();
-		fooLogger.addAppender(listAppender);
-
-		Mockito.doNothing().when(packetArchiver).archivePacket(any());
-
-		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));
-
-		packetUploaderStage.process(dto);
-
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
-
 	}
 
 	@Test

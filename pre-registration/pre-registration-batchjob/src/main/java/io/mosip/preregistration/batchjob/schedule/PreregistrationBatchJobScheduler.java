@@ -61,7 +61,7 @@ public class PreregistrationBatchJobScheduler {
 		}
 	}
 	
-	@Scheduled(cron="${preregistration.job.schedule.cron.bookingJob}")
+	@Scheduled(cron="${preregistration.job.schedule.cron.slotavailability}")
 	public void bookingJobScheduler() {
 		
 		JobParameters jobParam= new JobParametersBuilder().addLong("bookingJobTime", System.currentTimeMillis())

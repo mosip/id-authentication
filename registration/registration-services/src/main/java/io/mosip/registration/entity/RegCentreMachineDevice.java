@@ -14,8 +14,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 
 /**
- * RegCentreMachineDevice entity details
- * 
+ * The Entity Class for Reg Centre Machine Device details.
+ *
  * @author Brahmananda Reddy
  * @since 1.0.0
  */

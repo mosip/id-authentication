@@ -1,6 +1,11 @@
 package io.mosip.registration.processor.core.packet.dto.regcentermachine;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,73 +51,132 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationCenterDto {
 
-	/** The id. */
+//	/** The id. */
+//	private String id;
+//
+//	/** The name. */
+//	private String name;
+//
+//	/** The center type code. */
+//	private String centerTypeCode;
+//
+//	/** The address line 1. */
+//	private String addressLine1;
+//
+//	/** The address line 2. */
+//	private String addressLine2;
+//
+//	/** The address line 3. */
+//	private String addressLine3;
+//
+//	/** The latitude. */
+//	private String latitude;
+//
+//	/** The longitude. */
+//	private String longitude;
+//
+//	/** The location code. */
+//	private String locationCode;
+//
+//	/** The holiday location code. */
+//	private String holidayLocationCode;
+//
+//	/** The contact phone. */
+//	private String contactPhone;
+//
+//	/** The number of stations. */
+//	private Short numberOfStations;
+//
+//	/** The working hours. */
+//	private String workingHours;
+//
+//	/** The language code. */
+//	private String languageCode;
+//
+//	/** The number of kiosks. */
+//	private Short numberOfKiosks;
+//
+//	/** The per kiosk process time. */
+//	private LocalTime perKioskProcessTime;
+//
+//	/** The center start time. */
+//	private LocalTime centerStartTime;
+//
+//	/** The center end time. */
+//	private LocalTime centerEndTime;
+//
+//	/** The time zone. */
+//	private String timeZone;
+//
+//	/** The contact person. */
+//	private String contactPerson;
+//
+//	/** The lunch start time. */
+//	private LocalTime lunchStartTime;
+//
+//	/** The lunch end time. */
+//	private LocalTime lunchEndTime;
+//
+//	/** The is active. */
+//	private Boolean isActive;
+	
+	
+	
+	
+	
+	
 	private String id;
 
-	/** The name. */
 	private String name;
 
-	/** The center type code. */
 	private String centerTypeCode;
 
-	/** The address line 1. */
 	private String addressLine1;
 
-	/** The address line 2. */
 	private String addressLine2;
 
-	/** The address line 3. */
 	private String addressLine3;
 
-	/** The latitude. */
 	private String latitude;
 
-	/** The longitude. */
 	private String longitude;
 
-	/** The location code. */
 	private String locationCode;
 
-	/** The holiday location code. */
+
 	private String holidayLocationCode;
 
-	/** The contact phone. */
+
 	private String contactPhone;
 
-	/** The number of stations. */
-	private Short numberOfStations;
 
-	/** The working hours. */
 	private String workingHours;
 
-	/** The language code. */
-	private String languageCode;
 
-	/** The number of kiosks. */
+	private String langCode;
+
 	private Short numberOfKiosks;
 
-	/** The per kiosk process time. */
-	private LocalTime perKioskProcessTime;
+	private String perKioskProcessTime;
 
-	/** The center start time. */
-	private LocalTime centerStartTime;
+	private String centerStartTime;
 
-	/** The center end time. */
-	private LocalTime centerEndTime;
 
-	/** The time zone. */
+	private String centerEndTime;
+
+
 	private String timeZone;
 
-	/** The contact person. */
 	private String contactPerson;
 
-	/** The lunch start time. */
-	private LocalTime lunchStartTime;
 
-	/** The lunch end time. */
-	private LocalTime lunchEndTime;
+	private String lunchStartTime;
 
-	/** The is active. */
+	private String lunchEndTime;
+
+
 	private Boolean isActive;
+	
+	private String effectivetimes;
 
 }

@@ -3,6 +3,7 @@ package io.mosip.registration.processor.biodedupe.stage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 
@@ -31,9 +32,11 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -77,8 +80,13 @@ public class BioDedupeProcessorTest {
 	/** The matched reg ids. */
 	List<String> matchedRegIds = new ArrayList<String>();
 
+	@Mock
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
+
 	@InjectMocks
 	private BioDedupeProcessor bioDedupeProcessor;
+
+	private String stageName = "BioDedupeStage";
 
 	/**
 	 * Sets the up.
@@ -90,12 +98,15 @@ public class BioDedupeProcessorTest {
 	public void setUp() throws Exception {
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 		dto.setRid("reg1234");
 		registrationStatusDto.setRegistrationId("reg1234");
 
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 	}
 
 	/**
@@ -110,10 +121,9 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertTrue(messageDto.getIsValid());
 
@@ -132,10 +142,9 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());
 
@@ -154,10 +163,9 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.FAILURE.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());
 
@@ -175,7 +183,7 @@ public class BioDedupeProcessorTest {
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(bioDedupeService).insertBiometrics(anyString());
 
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -194,7 +202,7 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -213,7 +221,7 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -232,7 +240,7 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -251,7 +259,7 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -269,7 +277,7 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenThrow(new DataAccessException("") {
 		});
 
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -279,7 +287,7 @@ public class BioDedupeProcessorTest {
 	public void exceptionTest() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenThrow(new NullPointerException());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 

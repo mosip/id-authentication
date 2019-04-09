@@ -38,6 +38,7 @@ import io.mosip.kernel.auth.adapter.filter.AuthFilter;
 import io.mosip.kernel.auth.adapter.filter.ClientInterceptor;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
+import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -77,12 +78,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public AuthFilter authFilter() {
-		RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
-		AuthFilter filter = new AuthFilter(requestMatcher);
-		filter.setAuthenticationManager(authenticationManager());
-		return filter;
-	}
+    public AuthFilter authFilter() {
+          RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
+          AuthFilter filter = new AuthFilter(requestMatcher);
+           filter.setAuthenticationManager(authenticationManager());
+          filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+        return filter;
+    }
+
 
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

@@ -43,8 +43,6 @@ public enum MasterDataErrorCode {
 	REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION("KER-SYNC-137","Error occurred while fetching Registration Center Machine User History"),
 	REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-138","Error occurred while fetching Registration Center Device History"),
 	REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION("KER-SYNC-139","Error occurred while fetching Registration Center Machine History"),
-	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-140","Error occurred while fetching Registration Center Machine Device History"),
-	APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION("KER-SNC-136","Error occurred while fetching ApplicantValidDocument"),
 	EMPTY_MAC_OR_SERIAL_NUMBER("KER-SNC-140","Mac-Address and Serial Number cannot be empty"),
 	REGISTRATION_CENTER_NOT_FOUND("KER-SNC-141","Registration center not found"),
 	APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION("KER-SNC-142","Error occurred while fetching app authorization methods"),
@@ -54,7 +52,13 @@ public enum MasterDataErrorCode {
 	SCREEN_AUTHORIZATION_FETCH_EXCEPTION("KER-SNC-146","Error occurred while fetching screen authorizations"),
 	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-147","Error occurred while fetching Individual types"),
 	INVALID_MAC_OR_SERIAL_NUMBER("KER-SNC-148","Mac-Address and/or Serial Number does not exist	"),
-	REG_CENTER_UPDATED("KER-SNC-149","Registration Center has been updated for the received Machine ID");
+	REG_CENTER_UPDATED("KER-SNC-149","Registration Center has been updated for the received Machine ID"),
+	SCREEN_DETAIL_FETCH_EXCEPTION("KER-SNC-150","Error occured while fetching screen detail"),
+	APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION("KER-SNC-151","Error occurred while fetching ApplicantValidDocument"),
+	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SNC-152","Error occurred while fetching Registration Center Machine Device History"),
+	SYNC_JOB_DEF_FETCH_EXCEPTION("KER-SNC-153","Error occured while fetching sync job definitons"),
+	SYNC_JOB_DEF_PARSE_EXCEPTION("KER-SNC-154","Error occured while parsing the response");
+	
 	private final String errorCode;
 	private final String errorMessage;
 

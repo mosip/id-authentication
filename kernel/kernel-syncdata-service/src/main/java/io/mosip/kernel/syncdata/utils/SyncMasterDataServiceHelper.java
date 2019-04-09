@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.utils;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -7,10 +8,20 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -50,11 +61,14 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
+import io.mosip.kernel.syncdata.dto.response.SyncJobDefResponseDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
@@ -93,11 +107,14 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
+import io.mosip.kernel.syncdata.entity.ScreenDetail;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
+import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
+import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
@@ -137,6 +154,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryR
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
+import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -240,7 +258,15 @@ public class SyncMasterDataServiceHelper {
 	private ScreenAuthorizationRepository screenAuthorizationRepository;
 	@Autowired
 	private ProcessListRepository processListRepository;
-	
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private ScreenDetailRepository screenDetailRepository;
+
+	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8095/admin/syncjobdef}")
+	private String baseUri;
 
 	/**
 	 * Method to fetch machine details by regCenter id
@@ -1499,7 +1525,8 @@ public class SyncMasterDataServiceHelper {
 			appAuthenticationMethods = appAuthenticationMethodRepository
 					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (appAuthenticationMethods != null && !appAuthenticationMethods.isEmpty()) {
@@ -1551,7 +1578,7 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(appRolePriorityDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<ScreenAuthorizationDto>> getScreenAuthorizationDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1561,8 +1588,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			screenAuthorizationList = screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
-					currentTimeStamp);
+			screenAuthorizationList = screenAuthorizationRepository
+					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
 		} catch (DataAccessException ex) {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
@@ -1572,7 +1599,7 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(screenAuthorizationDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<ProcessListDto>> getProcessList(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1593,10 +1620,70 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(processListDtos);
 	}
-	
-	
-	
-	
-	
+
+	@Async
+	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+
+		ResponseEntity<String> response = null;
+		List<SyncJobDefDto> syncJobDefDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			StringBuilder builder = new StringBuilder();
+			builder.append(baseUri).append("/" + lastUpdatedTime.toString());
+
+			response = restTemplate.getForEntity(builder.toString(), String.class);
+		} catch (RestClientException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
+		}
+		String responseBody = response.getBody();
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new AuthManagerServiceException(validationErrorsList);
+		}
+		ResponseWrapper<SyncJobDefResponseDto> responseObject = null;
+		try {
+           
+			responseObject = objectMapper.readValue(responseBody,
+					new TypeReference<ResponseWrapper<SyncJobDefResponseDto>>() {
+					});
+			if(responseObject.getResponse()!=null) {
+			syncJobDefDtos = responseObject.getResponse().getSyncJobDefinitions();
+			}
+
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(MasterDataErrorCode.SYNC_JOB_DEF_PARSE_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SYNC_JOB_DEF_PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(),
+					exception);
+		}
+
+		return CompletableFuture.completedFuture(syncJobDefDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<ScreenDetailDto>> getScreenDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<ScreenDetail> screenDetails = null;
+		List<ScreenDetailDto> screenDetailDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			screenDetails = screenDetailRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (screenDetails != null && !screenDetails.isEmpty()) {
+			screenDetailDtos = MapperUtils.mapAll(screenDetails, ScreenDetailDto.class);
+		}
+		return CompletableFuture.completedFuture(screenDetailDtos);
+	}
 
 }

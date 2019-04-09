@@ -10,8 +10,8 @@ import java.util.Map;
  *
  */
 public interface UserStoreFactory {
-	
-	Map<String,IDataStore> getUserStores();
-	
+
+	Map<String, IDataStore> getUserStores();
+
 	IDataStore getDataStoreBasedOnApp(String appId);
 }

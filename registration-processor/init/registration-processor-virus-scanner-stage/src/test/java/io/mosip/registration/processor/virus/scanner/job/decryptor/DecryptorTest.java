@@ -18,12 +18,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
@@ -46,6 +47,11 @@ public class DecryptorTest {
 	private File encrypted;
 	private InputStream inputStream;
 
+	@Mock
+	private Environment env;
+	private static final String DECRYPT_SERVICE_ID = "mosip.registration.processor.crypto.decrypt.id";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
 	@Before
 	public void setup() throws FileNotFoundException {
 		data = "bW9zaXA";
@@ -55,6 +61,8 @@ public class DecryptorTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		encrypted = new File(classLoader.getResource("84071493960000320190110145452.zip").getFile());
 		inputStream = new FileInputStream(encrypted);
+		Mockito.when(env.getProperty(DECRYPT_SERVICE_ID)).thenReturn("mosip.cryptomanager.decrypt");
+		Mockito.when(env.getProperty(DATETIME_PATTERN)).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	}
 
@@ -63,7 +71,9 @@ public class DecryptorTest {
 
 		CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
 		cryptomanagerResponseDto.setData("bW9zaXA");
-		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any())).thenReturn(cryptomanagerResponseDto);
+		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerResponseDto);
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any())).thenReturn(response);
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "84071493960000320190110145452");
 		String decryptedString = IOUtils.toString(decryptedStream, "UTF-8");
 		assertEquals("mosip", decryptedString);
@@ -97,7 +107,7 @@ public class DecryptorTest {
 
 	}
 
-	@Test(expected = PacketDecryptionFailureException.class)
+	@Test(expected = ApisResourceAccessException.class)
 	public void PacketDecryptionFailureExceptionTest()
 			throws FileNotFoundException, ApisResourceAccessException, PacketDecryptionFailureException {
 
@@ -108,14 +118,16 @@ public class DecryptorTest {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "84071493960000320190110145452");
 
 	}
-	
+
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatTest() throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "019011014");
 
 	}
+
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatParsingDateTimeTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatParsingDateTimeTest()
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "8407149396000032019T110145452");
 
 	}
