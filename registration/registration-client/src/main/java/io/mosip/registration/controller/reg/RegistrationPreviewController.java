@@ -148,10 +148,10 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		if (yesRadio.isSelected() || noRadio.isSelected()) {
 			if (yesRadio.isSelected()) {
 				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+						.setConsentOfApplicant(RegistrationConstants.YES);
 			} else {
 				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+						.setConsentOfApplicant(RegistrationConstants.NO);
 			}
 
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {

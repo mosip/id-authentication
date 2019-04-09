@@ -428,7 +428,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private TextField uinId;
 
-	public boolean isChild;
+	private boolean isChild;
 
 	private Node keyboardNode;
 

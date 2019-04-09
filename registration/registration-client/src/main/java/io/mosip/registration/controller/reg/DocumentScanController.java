@@ -314,9 +314,9 @@ public class DocumentScanController extends BaseController {
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
-				comboBox.getStyleClass().add("documentCombobox");
+				comboBox.getStyleClass().add(RegistrationConstants.DOC_COMBO_BOX);
 				Label documentLabel = new Label(docCategoryName);
-				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
+				documentLabel.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_FIELD_LABEL);
 				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
@@ -332,7 +332,7 @@ public class DocumentScanController extends BaseController {
 						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
 					if (counter == 1) {
 						totalDocument++;
-						scannedField.setText("" + (totalDocument));
+						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 					}
 				}
 
@@ -343,7 +343,7 @@ public class DocumentScanController extends BaseController {
 				documentComboBoxes.put(docCategoryCode, comboBox);
 
 				VBox documentVBox = new VBox();
-				documentVBox.getStyleClass().add("scanVBox");
+				documentVBox.getStyleClass().add(RegistrationConstants.SCAN_VBOX);
 				documentVBox.setId(docCategoryCode);
 
 				documentVBoxes.put(docCategoryCode, documentVBox);
@@ -351,7 +351,7 @@ public class DocumentScanController extends BaseController {
 				Button scanButton = new Button();
 				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
-				scanButton.getStyleClass().add("documentContentButton");
+				scanButton.getStyleClass().add(RegistrationConstants.DOCUMENT_CONTENT_BUTTON);
 				scanButton.setGraphic(new ImageView(new Image(
 						this.getClass().getResourceAsStream(RegistrationConstants.SCAN), 12, 12, true, true)));
 				scanButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -368,7 +368,7 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								RegistrationUIConstants.PLEASE_SELECT + " " + documentCategory.getCode() + " "
+								RegistrationUIConstants.PLEASE_SELECT + RegistrationConstants.SPACE + documentCategory.getCode() + " "
 										+ RegistrationUIConstants.DOCUMENT);
 					}
 				});
@@ -419,7 +419,7 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-		if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+		if (RegistrationConstants.YES.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -438,7 +438,7 @@ public class DocumentScanController extends BaseController {
 
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
-			if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+			if (RegistrationConstants.YES.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);

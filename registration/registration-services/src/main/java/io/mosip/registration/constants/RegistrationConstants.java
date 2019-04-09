@@ -194,6 +194,12 @@ public class RegistrationConstants {
 	public static final String EMAIL_ID = "emailId";
 	public static final String ONTYPE = "ontype";
 	public static final String TOOLTIP = "toolTip";
+	public static final String DOC_COMBO_BOX = "documentCombobox";
+	public static final String DEMOGRAPHIC_FIELD_LABEL = "demoGraphicFieldLabel";
+	public static final String SCAN_VBOX = "scanVBox";
+	public static final String DOCUMENT_CONTENT_BUTTON = "documentContentButton";
+
+
 
 	
 
@@ -1207,8 +1213,8 @@ public class RegistrationConstants {
 	public static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "ANTIVIRUS_SERVICE_NOT_ACCESSIBLE";
 
 	// concent of applicant
-	public static final String CONCENT_OF_APPLICANT_SELECTED = "Yes";
-	public static final String CONCENT_OF_APPLICANT_UNSELECTED = "No";
+	public static final String YES = "Yes";
+	public static final String NO = "No";
 
 	// User Details
 	public static final String USER_DETAILS_SERVICE_NAME = "user_details";
