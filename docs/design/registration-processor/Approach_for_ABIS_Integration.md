@@ -75,8 +75,7 @@ The key solution considerations are -
 		1. Demo IDENTIFY: Prepare Identify request (1:1, 1:2 etc.) match using gallery API for potential matched records from "reg_demo_dedupe_list"
 		1. Bio INSERT: In case demo insert option is not done due to missing demo dedupe potential match then insert records in ABIS. In case insert option is already executed then skip Bio insert operation.
 		1. Bio IDENTIFY: Prepare Identify request for 1:n bio match.
-
-	For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: id from table "abis_request".
+		For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: id from table "abis_request".
 
 	1. "BiometricIdentificationHandlerStage": 
 	This stage registers ABIS queue listerns and senders in deploy verticle method. ABIS queue listerns will listern to messages received on queue and sender is responsible to send messsages on ABIS queues. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
