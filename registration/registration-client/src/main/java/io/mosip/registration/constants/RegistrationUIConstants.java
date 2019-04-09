@@ -247,6 +247,8 @@ public class RegistrationUIConstants {
 	public static final String USER_MACHINE_VALIDATION_MSG = bundle.getString("USER_MACHINE_VALIDATION_MSG");
 	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
 	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
+	public static final String USER_ONBOARD_ERROR = bundle.getString("USER_ONBOARD_ERROR");
+	
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";
 

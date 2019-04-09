@@ -163,8 +163,6 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private GlobalParamService globalParamService;
 
-	private boolean isNewUser = false;
-
 	@Autowired
 	private Validations validations;
 
@@ -238,8 +236,8 @@ public class LoginController extends BaseController implements Initializable {
 			scene = getScene(loginRoot);
 			pageFlow.getInitialPageDetails();
 			primaryStage.setResizable(true);
-			//primaryStage.setFullScreen(true);
-			//primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			primaryStage.setFullScreen(true);
+			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
@@ -322,8 +320,15 @@ public class LoginController extends BaseController implements Initializable {
 
 							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
 									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+							
+							boolean status = getCenterMachineStatus(userDetail);
+							sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
+							sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+							loginList = status ? 
+									loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList) :
+										loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
 
-							if (getCenterMachineStatus(userDetail)) {
+							/*if (getCenterMachineStatus(userDetail)) {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
@@ -332,7 +337,7 @@ public class LoginController extends BaseController implements Initializable {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 
 								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
-							}
+							}*/
 
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
