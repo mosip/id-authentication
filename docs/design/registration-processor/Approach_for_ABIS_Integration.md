@@ -45,17 +45,17 @@ The key solution considerations are -
 - 	Add key registration.processor.abis.details having value 
 ```html
 {
-"abis": [
-{
-"name": "", 
-"host": "",
-"port": ""
-"brokerUrl": "",
-"queuename": "",
-"username": "",
-"password": ""
-}
-]
+ "abis": [
+   {
+    "name": "", 
+    "host": "",
+    "port": ""
+    "brokerUrl": "",
+    "queuename": "",
+    "username": "",
+    "password": ""
+   }
+ ]
 }
 ```
 3.	Update MessageDTO: Add field called isForMatchIdentification boolean field.
