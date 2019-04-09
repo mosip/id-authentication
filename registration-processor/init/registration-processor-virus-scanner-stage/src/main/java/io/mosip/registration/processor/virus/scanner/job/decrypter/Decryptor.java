@@ -107,11 +107,10 @@ public class Decryptor {
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(centerId);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
+			
 
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
@@ -139,8 +138,10 @@ public class Decryptor {
 			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
 			request.setRequesttime(localdatetime);
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 			response =  (ResponseWrapper<CryptomanagerResponseDto>) restClientService.postApi(
 					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
+			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
 			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);

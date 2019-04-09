@@ -299,7 +299,6 @@ public class UMCValidator {
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
 				isValidUser = false;
 
 				this.registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
