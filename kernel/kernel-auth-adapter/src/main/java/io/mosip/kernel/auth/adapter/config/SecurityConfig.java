@@ -81,13 +81,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public AuthFilter authFilter() {
-		RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
-		AuthFilter filter = new AuthFilter(requestMatcher);
-		filter.setAuthenticationManager(authenticationManager());
-		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
-	    return filter;
-	}
+    public AuthFilter authFilter() {
+          RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
+          AuthFilter filter = new AuthFilter(requestMatcher);
+           filter.setAuthenticationManager(authenticationManager());
+          filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+        return filter;
+    }
+
 
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

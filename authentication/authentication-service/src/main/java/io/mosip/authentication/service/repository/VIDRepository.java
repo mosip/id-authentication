@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +24,6 @@ public interface VIDRepository extends BaseRepository<VIDEntity, String> {
 
 	@Query(value = "SELECT * FROM ida.vid where uin=:uin ORDER BY generated_dtimes DESC", nativeQuery = true)
 	List<VIDEntity> findByUIN(@Param("uin") String uin, Pageable pagaeable);
-
-	@Query(value = "Select VIDEntity where uin = :uin order by generatedOn desc", nativeQuery = true)
-	List<VIDEntity> findByUIN(@Param("uin") String uin);
 
 	@Query(value = "SELECT id FROM ida.vid where uin=:uin ORDER BY generated_dtimes DESC", nativeQuery = true)
 	List<String> findVIDByUIN(@Param("uin") String uin, Pageable pagaeable);

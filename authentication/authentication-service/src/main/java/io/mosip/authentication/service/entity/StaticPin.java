@@ -49,11 +49,11 @@ public class StaticPin {
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedOn;
 
-	/** The is deleted. */
+	/** The StaticPin is deleted or not. */
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
-	/** The deleted on. */
+	/** The StaticPin deleted on. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedOn;
 }

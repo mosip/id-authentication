@@ -24,30 +24,46 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * The Class AuditRequestFactoryTest.
+ *
+ * @author Manoj SP
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AuditRequestFactoryTest {
 	
+	/** The audit factory. */
 	@InjectMocks
 	AuditRequestFactory auditFactory;
 
+	/** The env. */
 	@Autowired
 	Environment env;
 	
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 	}
 	
+	/**
+	 * Test build request.
+	 */
 	@Test
 	public void testBuildRequest() {
-		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-		actualRequest.setActionTimeStamp(null);
+		RequestWrapper<AuditRequestDto> actualRequest = auditFactory.buildRequest(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+		actualRequest.setRequesttime(null);
+		actualRequest.getRequest().setActionTimeStamp(null);
 
 		AuditRequestDto expectedRequest = new AuditRequestDto();
+		RequestWrapper<AuditRequestDto> expected = new RequestWrapper<>();
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 
@@ -67,11 +83,13 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setModuleName(AuditModules.FINGERPRINT_AUTH.getModuleName());
 			expectedRequest.setModuleId(AuditModules.FINGERPRINT_AUTH.getModuleId());
 			expectedRequest.setDescription("desc");
+			expected = RestRequestFactory.createRequest(expectedRequest);
+			expected.setRequesttime(null);
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		assertEquals(expectedRequest, actualRequest);
+		assertEquals(expected, actualRequest);
 	}
 	
 }

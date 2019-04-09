@@ -120,9 +120,9 @@ spec:
           servicePort: 9099
       - path: /preregistration/v1/qrCode
         backend:
-          serviceName: pre-registration-generateQRcode-service
+          serviceName: pre-registration-generateqrcode-service
           servicePort: 9091
-      - path: /identity
+      - path: /v1/identity
         backend:
           serviceName: authentication-service
           servicePort: 8090

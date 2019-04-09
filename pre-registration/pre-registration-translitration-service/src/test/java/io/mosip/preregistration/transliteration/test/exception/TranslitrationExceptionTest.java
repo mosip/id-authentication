@@ -16,7 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.MissingRequestParameterException;
@@ -59,13 +60,11 @@ public class TranslitrationExceptionTest {
 	 */
 	@Test(expected = InvalidRequestParameterException.class)
 	public void mandetoryRequestFieldsTest() {
-		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
+		TransliterationRequestDTO mandatoryFielddto = new TransliterationRequestDTO();
 		mandatoryFielddto.setFromFieldLang("English");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
-		mandatoryFielddto.setToFieldName("");
 
-		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
+		MainRequestDTO<TransliterationRequestDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
 		mandatoryFieldRequest.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mandatoryFieldRequest.setRequest(mandatoryFielddto);
@@ -81,15 +80,13 @@ public class TranslitrationExceptionTest {
 	public void mandetoryDtoFieldsTest() {
 		MandatoryFieldRequiredException ex = new MandatoryFieldRequiredException();
 
-		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
+		TransliterationRequestDTO mandatoryFielddto = new TransliterationRequestDTO();
 		mandatoryFielddto.setFromFieldLang("");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
 		mandatoryFielddto.setToFieldLang("Arabic");
-		mandatoryFielddto.setToFieldValue("");
-		mandatoryFielddto.setToFieldName("Name2");
+		
 
-		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
+		MainRequestDTO<TransliterationRequestDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
 		mandatoryFieldRequest.setVersion("1.0");
 		mandatoryFieldRequest.setRequesttime(new Timestamp(System.currentTimeMillis()));
@@ -105,13 +102,11 @@ public class TranslitrationExceptionTest {
 	@Test
 	public void illegalParamTest() {
 		MissingRequestParameterException ex = new MissingRequestParameterException("MISSING_PARAM");
-		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
+		TransliterationRequestDTO mandatoryFielddto = new TransliterationRequestDTO();
 		mandatoryFielddto.setFromFieldLang("");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
 		mandatoryFielddto.setToFieldLang("Arabic");
-		mandatoryFielddto.setToFieldName("");
-		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
+		MainRequestDTO<TransliterationRequestDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
 		Mockito.when(serviceImpl2.translitratorService(mandatoryFieldRequest)).thenThrow(ex);
 

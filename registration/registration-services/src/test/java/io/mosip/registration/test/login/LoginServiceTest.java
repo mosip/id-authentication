@@ -87,15 +87,14 @@ public class LoginServiceTest {
 	public void getModesOfLoginTest() {
 
 		List<AppAuthenticationDetails> loginList = new ArrayList<AppAuthenticationDetails>();
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence(Mockito.anyString(), Mockito.anyString())).thenReturn(loginList);
+		Set<String> roleSet = new HashSet<>();
+		roleSet.add("OFFICER");
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence("LOGIN", roleSet)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
 		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence("LOGIN","*")).thenReturn(loginList);
-		
-		Set<String> roleSet = new HashSet<>();
-		roleSet.add("OFFICER");
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence("LOGIN",roleSet)).thenReturn(loginList);
 		
 		Mockito.when(appAuthenticationDAO.getModesOfLogin("LOGIN",roleSet)).thenReturn(modes);
 		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN",roleSet));

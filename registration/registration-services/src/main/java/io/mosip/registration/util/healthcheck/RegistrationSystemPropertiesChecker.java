@@ -35,8 +35,11 @@ public class RegistrationSystemPropertiesChecker {
 
 			}
 		} else {
-			//TO-DO need to fix it after discussing with Aman
-			machineId = "8C-16-45-5A-5D-0D";
+			try {
+				machineId = getWindowsMacAddress();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return machineId;
 	}

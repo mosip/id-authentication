@@ -61,7 +61,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -157,15 +156,17 @@ public class OSIValidator {
 		boolean isValidOsi = false;
 
 		Identity identity = osiUtils.getIdentity(registrationId);
-		/** Getting data from packet MetadataInfo*/
-		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId,identity);
+		/** Getting data from packet MetadataInfo */
+		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		String officerId = regOsi.getOfficerId();
 		String supervisorId = regOsi.getSupervisorId();
 		if (officerId == null && supervisorId == null) {
-			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			registrationStatusDto
+					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			return false;
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
+				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::exit");
@@ -197,7 +198,7 @@ public class OSIValidator {
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 			// officer password and otp check
-			String officerPassword =regOsi.getOfficerHashedPwd();
+			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
@@ -271,9 +272,11 @@ public class OSIValidator {
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
 				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 				}
 				return flag;
 			} else if ((validateUIN(supervisorId))
@@ -429,7 +432,10 @@ public class OSIValidator {
 			pd.getWriteMethod().invoke(obj, value);
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			e.printStackTrace();
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage());
+
 		}
 	}
 
@@ -584,8 +590,10 @@ public class OSIValidator {
 	/**
 	 * Validate otp and pwd.
 	 *
-	 * @param password the password
-	 * @param otp the otp
+	 * @param password
+	 *            the password
+	 * @param otp
+	 *            the otp
 	 * @return true, if successful
 	 */
 	boolean validateOtpAndPwd(String password, String otp) {
@@ -711,9 +719,9 @@ public class OSIValidator {
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
 			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
-			if(!introducerUINList.isEmpty()) {
-						return true;
-					}
+			if (!introducerUINList.isEmpty()) {
+				return true;
+			}
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
 			return false;
 		} else {

@@ -105,7 +105,9 @@ public class SendNotificationController extends BaseController implements Initia
 	/**
 	 * To generate email and SMS notification to the user after successful
 	 * registration
-	 * @param event - action to be happened on click of send button
+	 * 
+	 * @param event
+	 *            - action to be happened on click of send button
 	 */
 	@FXML
 	public void sendNotification(ActionEvent event) {
@@ -166,14 +168,16 @@ public class SendNotificationController extends BaseController implements Initia
 					}
 				}
 				if (notifications.size() > 1) {
-					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
+					generateAlert(RegistrationConstants.ALERT_INFORMATION,
+							RegistrationUIConstants.NOTIFICATION_SUCCESS);
 					popupStage.close();
 				} else if (notifications.size() == 1) {
 					if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_EMAIL)) {
-						generateAlert(RegistrationConstants.SUCCESS,
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.EMAIL_NOTIFICATION_SUCCESS);
 					} else if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_MOBILE)) {
-						generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 					}
 					popupStage.close();
 				}

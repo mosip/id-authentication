@@ -15,38 +15,51 @@ package io.mosip.preregistration.documents.code;
 public enum RequestCodes {
 
 	/* id */
-	id,
+	ID("id"),
 
 	/* version */
-	ver,
+	VERSION("version"),
 
 	/* request date time */
-	reqTime,
+	REQ_TIME("requesttime"),
 
 	/* request object */
-	request,
+	REQUEST("request"),
 
 	/* user id */
-	userId,
+	USERID("userId"),
 
 	/* preRegistration Id */
-	preRegistrationId,
+	PREREGISTRATIONID("preRegistrationId"),
 
 	/* create by */
-	createdBy,
+	CREATEDBY("createdBy"),
 
 	/* created Date time */
-	createdDatetime,
+	CR_DATE_TIME("createdDatetime"),
 
 	/* updated By */
-	updatedBy,
+	UPDATEDBY("updatedBy"),
 
 	/* updated Date time */
-	updatedDatetime,
+	UPDATED_DATE_TIME("updatedDatetime"),
 
 	/* status Code */
-	statusCode,
+	STATUSCODE("statusCode"),
 
 	/* language Code */
-	langCode;
+	LANGCODE("langCode");
+	
+	private RequestCodes(String code) {
+		this.code = code;
+	}
+
+	private final String code;
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 }

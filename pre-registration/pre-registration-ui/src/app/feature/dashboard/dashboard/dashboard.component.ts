@@ -7,8 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { SharedService } from '../../booking/booking.service';
+import { AutoLogoutService } from 'src/app/core/services/auto-logout.service';
+
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
 import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
@@ -16,6 +17,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-registration',
@@ -27,6 +29,7 @@ export class DashBoardComponent implements OnInit {
   userFiles: any[] = [];
   tempFiles;
   loginId = '';
+  message = {};
 
   secondaryLanguagelabels: any;
   disableModifyDataButton = false;
@@ -45,16 +48,25 @@ export class DashBoardComponent implements OnInit {
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
     private sharedService: SharedService,
-    private configService: ConfigService,
-    private translate: TranslateService
+    private autoLogout: AutoLogoutService,
+    private translate: TranslateService,
+    private configService: ConfigService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     localStorage.setItem('modifyDocument', 'false');
   }
   ngOnInit() {
+    console.log('IN DASHBOARD');
+
     this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
+
+    this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
+    if (!this.message['timerFired']) {
+      this.autoLogout.keepWatching();
+    }
+
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
       console.log(this.secondaryLanguagelabels);
@@ -141,6 +153,7 @@ export class DashBoardComponent implements OnInit {
   onNewApplication() {
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
+      console.log('OUT DASHBOARD IN DEMOGRAPHIC');
       this.isNewApplication = true;
     } else {
       this.router.navigate(['/']);
@@ -215,28 +228,30 @@ export class DashBoardComponent implements OnInit {
 
   cancelAppointment(element: any) {
     element.regDto.pre_registration_id = element.applicationID;
-    this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
-      response => {
-        if (!response['err']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
-          const index = this.users.indexOf(element);
-          this.users[index].status = 'Pending Appointment';
-          this.users[index].appointmentDateTime = '-';
-        } else {
+    this.dataStorageService
+      .cancelAppointment(new RequestModel(appConstants.IDS.cancelAppointment, element.regDto), element.applicationID)
+      .subscribe(
+        response => {
+          if (!response['errors']) {
+            this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
+            const index = this.users.indexOf(element);
+            this.users[index].status = 'Pending Appointment';
+            this.users[index].appointmentDateTime = '-';
+          } else {
+            this.displayMessage(
+              this.secondaryLanguagelabels.title_error,
+              this.secondaryLanguagelabels.msg_could_not_deleted
+            );
+          }
+        },
+        error => {
+          console.log(error);
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
             this.secondaryLanguagelabels.msg_could_not_deleted
           );
         }
-      },
-      error => {
-        console.log(error);
-        this.displayMessage(
-          this.secondaryLanguagelabels.title_error,
-          this.secondaryLanguagelabels.msg_could_not_deleted
-        );
-      }
-    );
+      );
   }
 
   onDelete(element) {
@@ -290,8 +305,14 @@ export class DashBoardComponent implements OnInit {
     this.addtoNameList(user);
     console.log(this.sharedService.getNameList());
 
+    console.log('preid', preId);
+
     this.dataStorageService.getUser(preId).subscribe(
-      response => this.onModification(response, preId),
+      response => {
+        console.log('RESPONSE [Modify Information]', response);
+
+        this.onModification(response, preId);
+      },
       error => {
         console.log('error', error);
         return this.router.navigate(['error']);
@@ -314,11 +335,8 @@ export class DashBoardComponent implements OnInit {
       this.selectedUsers.splice(this.selectedUsers.indexOf(user));
     }
     if (this.selectedUsers.length > 0) {
-      console.log('idhar hai');
-
       this.disableModifyAppointmentButton = false;
     } else {
-      console.log('else idhar hai');
       this.disableModifyAppointmentButton = true;
     }
   }
@@ -358,6 +376,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
+    console.log('user files', response);
+
     this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
   }

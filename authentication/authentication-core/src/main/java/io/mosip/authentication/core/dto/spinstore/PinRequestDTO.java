@@ -11,9 +11,6 @@ import lombok.Data;
 @Data
 public class PinRequestDTO {
 
-	/** The value StaticPinIdentityDTO */
-//	private StaticPinIdentityDTO identity;
-
 	/** The value pinValue */
 	private String staticPin;
 }

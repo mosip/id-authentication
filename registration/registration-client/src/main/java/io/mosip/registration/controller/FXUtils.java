@@ -239,8 +239,13 @@ public class FXUtils {
 					hideErrorMessageLabel(parentPane, field);
 					if (localField != null) {
 						if (haveToTransliterate) {
+							try {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
 						} else {
 							localField.setText(field.getText());
 						}
@@ -496,8 +501,8 @@ public class FXUtils {
 		if (!comboBoxValues.isEmpty()) {
 			IntPredicate findIndexOfSelectedItem = null;
 			if (comboBoxValues.get(0) instanceof LocationDto) {
-				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName()
-						.equals(selectedValue);
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName().equals(
+						selectedValue) || ((LocationDto) comboBoxValues.get(index)).getCode().equals(selectedValue);
 			} else if (comboBoxValues.get(0) instanceof GenderDto) {
 				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
 						.equals(selectedValue);

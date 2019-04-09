@@ -35,37 +35,36 @@ import io.mosip.kernel.core.util.FileUtils;
 @Component
 public class RegistrationUpdate {
 
-	private static String backUpPath = "D://mosip/AutoBackUp";
+	private String backUpPath = "D://mosip/AutoBackUp";
 
 	private static String SLASH = "/";
 
-	private static String manifestFile = "MANIFEST.MF";
+	private String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
 	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private static String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
+	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
 	private static String libFolder = "lib/";
-	private static String binFolder = "bin/";
+	private String binFolder = "bin/";
 
-	private static String currentVersion;
+	private String currentVersion;
 
-	private static String latestVersion;
+	private String latestVersion;
 
-	private static Manifest localManifest;
+	private Manifest localManifest;
 
-	private static Manifest serverManifest;
+	private Manifest serverManifest;
 
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException, NullPointerException {
+	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		System.out.println("Getting latest Version");
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
@@ -73,15 +72,15 @@ public class RegistrationUpdate {
 			// Get latest version using meta-inf.xml
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-			org.w3c.dom.Document metaInfXmlDocument = (org.w3c.dom.Document) db
-					.parse(new URL(serverMosipXmlFileUrl).openStream());
+			org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
 
 			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
 			if (list != null && list.getLength() > 0) {
 				NodeList subList = list.item(0).getChildNodes();
 
 				if (subList != null && subList.getLength() > 0) {
-					latestVersion = subList.item(0).getNodeValue();
+					// Set Latest Version
+					setLatestVersion(subList.item(0).getNodeValue());
 				}
 			}
 
@@ -95,26 +94,32 @@ public class RegistrationUpdate {
 			return currentVersion;
 		} else {
 			// Get Local manifest file
-			Manifest localManifest = getLocalManifest();
-			if (localManifest != null) {
+			if (getLocalManifest() != null) {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
-		System.out.println("Getting current Version  " + currentVersion);
 		return currentVersion;
 	}
 
 	public void getWithLatestJars()
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		Manifest local = getLocalManifest();
-		Manifest server = getServerManifest();
+		
+	
+		// Get Server Manifest
+		getServerManifest();
+
+		// Back Current Application
+		Path backUp = backUpCurrentApplication();
+
+		// replace local manifest with Server manifest
+		serverManifest.write(new FileOutputStream(new File(manifestFile)));
 
 		List<String> downloadJars = new LinkedList<>();
 		List<String> deletableJars = new LinkedList<>();
 		List<String> checkableJars = new LinkedList<>();
 
-		Map<String, Attributes> localAttributes = local.getEntries();
-		Map<String, Attributes> serverAttributes = server.getEntries();
+		Map<String, Attributes> localAttributes = localManifest.getEntries();
+		Map<String, Attributes> serverAttributes = serverManifest.getEntries();
 
 		// Compare local and server Manifest
 		for (Entry<String, Attributes> jar : localAttributes.entrySet()) {
@@ -134,7 +139,7 @@ public class RegistrationUpdate {
 					downloadJars.add(jar.getKey());
 
 				}
-				server.getEntries().remove(jar.getKey());
+				serverManifest.getEntries().remove(jar.getKey());
 
 			}
 		}
@@ -142,8 +147,6 @@ public class RegistrationUpdate {
 		for (Entry<String, Attributes> jar : serverAttributes.entrySet()) {
 			downloadJars.add(jar.getKey());
 		}
-
-		Path backUpPath = backUpCurrentApplication();
 
 		try {
 			deleteJars(deletableJars);
@@ -153,14 +156,16 @@ public class RegistrationUpdate {
 			checkableJars.removeAll(downloadJars);
 
 			// Download latest jars if not in local
-			checkJars(getLatestVersion(), downloadJars, true);
-			checkJars(getLatestVersion(), checkableJars, false);
+			checkJars(getLatestVersion(), downloadJars);
+			checkJars(getLatestVersion(), checkableJars);
 
-			replaceManifest();
+			setLocalManifest(getServerManifest());
+			setServerManifest(null);
+			setLatestVersion(null);
 
 		} catch (RuntimeException exception) {
 
-			replaceBackupWithCurrentApplication(backUpPath);
+			replaceBackupWithCurrentApplication(backUp);
 
 			throw exception;
 		}
@@ -184,15 +189,10 @@ public class RegistrationUpdate {
 		// manifest backup file
 		File manifest = new File(backUpFolder.getAbsolutePath() + SLASH + manifestFile);
 
-		try {
+		FileUtils.copyDirectory(new File(binFolder), bin);
+		FileUtils.copyDirectory(new File(libFolder), lib);
 
-			FileUtils.copyDirectory(new File(binFolder), bin);
-			FileUtils.copyDirectory(new File(libFolder), lib);
-
-			FileUtils.copyFile(new File(manifestFile), manifest);
-		} catch (io.mosip.kernel.core.exception.IOException ioException) {
-			throw ioException;
-		}
+		FileUtils.copyFile(new File(manifestFile), manifest);
 
 		for (File backUpFile : new File(backUpPath).listFiles()) {
 			if (!backUpFile.getAbsolutePath().equals(backUpFolder.getAbsolutePath())) {
@@ -215,17 +215,14 @@ public class RegistrationUpdate {
 
 	}
 
-	private void checkJars(String version, List<String> checkableJars, boolean isToBeDownloaded)
-			throws IOException, io.mosip.kernel.core.exception.IOException {
-		if (isToBeDownloaded) {
-			deleteJars(checkableJars);
-		}
+	private void checkJars(String version, List<String> checkableJars) throws IOException {
+
 		for (String jarFile : checkableJars) {
-			if (jarFile.contains(mosip)) {
-				checkForJarFile(version, binFolder, jarFile);
-			} else {
-				checkForJarFile(version, libFolder, jarFile);
-			}
+
+			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+
+			checkForJarFile(version, folder, jarFile);
+
 		}
 
 	}
@@ -242,38 +239,29 @@ public class RegistrationUpdate {
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
-		System.out.println("Downloading " + jarName);
-		// TODO No Internet Connection Please Try Again
 		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
 
 	}
 
-	private void deleteJars(List<String> deletableJars) {
-		deletableJars.forEach(jarName -> {
-			try {
-				deleteJar(jarName);
-			} catch (io.mosip.kernel.core.exception.IOException ioException) {
-				throw new RuntimeException();
-			}
-		});
+	private void deleteJars(List<String> deletableJars) throws io.mosip.kernel.core.exception.IOException {
+
+		for (String jarName : deletableJars) {
+			deleteJar(jarName);
+		}
 
 	}
 
 	private void deleteJar(String jarName) throws io.mosip.kernel.core.exception.IOException {
 		File deleteFile = null;
-		if (jarName.contains(mosip)) {
-			deleteFile = new File(binFolder + jarName);
-		} else {
-			deleteFile = new File(libFolder + jarName);
-		}
 
-		// Delete Jars
+		String deleteFolder = jarName.contains(mosip) ? binFolder : libFolder;
+
+		deleteFile = new File(deleteFolder + jarName);
+
 		if (deleteFile.exists()) {
-			try {
-				FileUtils.forceDelete(deleteFile);
-			} catch (io.mosip.kernel.core.exception.IOException ioException) {
-				throw ioException;
-			}
+			// Delete Jar
+			FileUtils.forceDelete(deleteFile);
+
 		}
 	}
 
@@ -306,75 +294,19 @@ public class RegistrationUpdate {
 
 	}
 
-	public void getJars()
-			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-
-		if (new File(libFolder).list().length == 0 || new File(binFolder).list().length == 0) {
-
-			// TODO Mandatory Internet Required
-			if (hasUpdate()) {
-				getWithLatestJars();
-			} else {
-				checkJars();
-			}
-		} else {
-			checkJars();
-		}
-
-	}
-
-	private void checkJars() throws IOException, io.mosip.kernel.core.exception.IOException {
-		Manifest manifest = getLocalManifest();
-
-		if (manifest != null) {
-			Map<String, Attributes> localAttributes = manifest.getEntries();
-
-			List<String> checkableJars = new LinkedList<>();
-			for (Entry<String, Attributes> jar : localAttributes.entrySet()) {
-				checkableJars.add(jar.getKey());
-			}
-
-			// check all the jars in the manifest were available in zip extracted folder
-			if (!checkableJars.isEmpty()) {
-				checkJars(getCurrentVersion(), checkableJars, false);
-			}
-
-		}
-	}
-
-	private void replaceManifest() throws IOException, ParserConfigurationException, SAXException {
-
-		File manifest = new File(manifestFile);
-
-		setServerManifest(null);
-		try (FileOutputStream fileOutputStream = new FileOutputStream(manifest)) {
-			getServerManifest().write(fileOutputStream);
-
-			// Refresh Local Manifest
-			setLocalManifest(getServerManifest());
-
-			setCurrentVersion(getLatestVersion());
-
-			setLatestVersion(null);
-
-			setServerManifest(null);
-		}
-
-	}
-
 	private void setLocalManifest(Manifest localManifest) {
-		RegistrationUpdate.localManifest = localManifest;
+		this.localManifest = localManifest;
 	}
 
 	private void setServerManifest(Manifest serverManifest) {
-		RegistrationUpdate.serverManifest = serverManifest;
+		this.serverManifest = serverManifest;
 	}
 
 	public void setCurrentVersion(String currentVersion) {
-		RegistrationUpdate.currentVersion = currentVersion;
+		this.currentVersion = currentVersion;
 	}
 
 	public void setLatestVersion(String latestVersion) {
-		RegistrationUpdate.latestVersion = latestVersion;
+		this.latestVersion = latestVersion;
 	}
 }

@@ -12,6 +12,6 @@ import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
  */
 public interface OTPGenerateService {
 
-	OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto);
+	OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto, String token);
 
 }

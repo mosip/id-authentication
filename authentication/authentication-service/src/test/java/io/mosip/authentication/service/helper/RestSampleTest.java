@@ -32,6 +32,7 @@ import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.kernel.core.http.RequestWrapper;
 
 @Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -83,7 +84,7 @@ public class RestSampleTest {
 		PowerMockito.mockStatic(WebClient.class);
 		PowerMockito.when(WebClient.class, WebClient.builder().clientConnector(Mockito.any()))
 				.thenReturn(WebClient.builder());
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,

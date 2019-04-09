@@ -19,5 +19,5 @@ public class ErrorDTO {
 	private String errorCode;
 	
 	/** The err message. */
-	private String errorMessage;
+	private String message;
 }

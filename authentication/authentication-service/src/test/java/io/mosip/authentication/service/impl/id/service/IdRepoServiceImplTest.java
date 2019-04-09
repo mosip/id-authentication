@@ -32,7 +32,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
@@ -74,9 +74,11 @@ public class IdRepoServiceImplTest {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", "activated");
+		Map<String, Map<String, Object>> finalMap = new HashMap<>();
+		finalMap.put("response", response);
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
 		Mockito.when(idReposerviceImpl.getIdenity("76746685", false)).thenReturn(response);
 
 		assertNotNull(response);
@@ -84,7 +86,7 @@ public class IdRepoServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdRepo_ThrowException() throws IdAuthenticationBusinessException, RestServiceException {
-		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		new RestRequestDTO();
 
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.SERVER_ERROR));
@@ -102,7 +104,9 @@ public class IdRepoServiceImplTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("status", "invalid");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(valueMap);
+		Map<String, Map<String, Object>> finalMap = new HashMap<>();
+		finalMap.put("response", valueMap);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
 		idReposerviceImpl.getIdenity("76746685", false);
 	}
 

@@ -184,6 +184,13 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(CryptoManagerSerivceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServieException(HttpServletRequest httpServletRequest,
+			final CryptoManagerSerivceException e) throws IOException {
+		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
+				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	@ExceptionHandler(KeymanagerServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> keymanagerServiceException(

@@ -17,7 +17,8 @@ public class RegistrationUIConstants {
 	//ALERT
 	public static final String ERROR = bundle.getString("ERROR");
 	public static final String INFORMATION = bundle.getString("INFORMATION");
-	public static final String SUCCESS = bundle.getString("SUCCESS");	
+	public static final String SUCCESS = bundle.getString("SUCCESS");
+	public static final String FAILURE = bundle.getString("FAILURE");
 	
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
@@ -131,6 +132,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
 	public static final String SCAN_DOC_SIZE = bundle.getString("SCAN_DOC_SIZE");
+	public static final String SCAN_DOC_INFO = bundle.getString("SCAN_DOC_INFO");
 	public static final String SCAN_DOCUMENT_CONNECTION_ERR = bundle.getString("SCAN_DOCUMENT_CONNECTION_ERR");
 	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");

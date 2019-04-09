@@ -508,7 +508,7 @@ public class Validations extends BaseController {
 				.valueOf(ApplicationContext.map().get(RegistrationConstants.ID_FULL_NAME_REGEX));
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "age":
+			case "ageField":
 				validation[0] = String
 				.valueOf(ApplicationContext.map().get(RegistrationConstants.AGE_REGEX));
 				validation[1] = RegistrationConstants.TRUE;

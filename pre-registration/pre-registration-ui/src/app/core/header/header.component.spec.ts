@@ -1,35 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HeaderComponent } from './header.component';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpLoaderFactory } from 'src/app/i18n.module';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { MaterialModule } from 'src/app/material.module';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
-import { FooterComponent } from '../footer/footer.component';
-import { AuthService } from 'src/app/auth/auth.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { HeaderComponent } from './header.component';
+import { HttpLoaderFactory } from 'src/app/i18n.module';
+import { HttpClient } from 'selenium-webdriver/http';
+import { HttpClientModule } from '@angular/common/http';
 import { DataStorageService } from '../services/data-storage.service';
-import { of } from 'rxjs/internal/observable/of';
-
-class MockService {
-  use() {}
-  url = 'some/url/here';
-
-  onLogout() {
-    return of({});
-  }
-}
+import { MaterialModule } from 'src/app/material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
-  let footerComponent: FooterComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-
-  beforeEach(async(() => {
+  beforeEach(() => {
+    const dataServiceStub = { getSecondaryLanguageLabels: () => ({}) };
+    const authServiceStub = { isAuthenticated: () => ({}), onLogout: () => ({}) };
+    const routerStub = { navigate: () => ({}) };
+    const translateServiceStub = { use: () => ({}) };
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, FooterComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [HeaderComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
@@ -40,32 +32,43 @@ describe('HeaderComponent', () => {
         }),
         HttpClientModule,
         MaterialModule,
-        RouterTestingModule,
         BrowserAnimationsModule
       ],
-      providers: [AuthService, { provide: DataStorageService, useClass: MockService }]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
+      providers: [
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: Router, useValue: routerStub },
+        { provide: TranslateService, useValue: translateServiceStub },
+        { provide: DataStorageService, useValue: dataServiceStub }
+      ]
+    });
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
-
-  it('should create', () => {
+  it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should remove token', () => {
-    component.removeToken();
-    fixture.detectChanges();
-    expect(localStorage.getItem('loggedIn')).toBe('false');
+  describe('onLogoClick', () => {
+    it('makes expected calls', () => {
+      const routerStub: Router = fixture.debugElement.injector.get(Router);
+      spyOn(routerStub, 'navigate');
+      component.onLogoClick();
+      expect(routerStub.navigate).toHaveBeenCalled();
+    });
   });
-
-  it('should do logout', () => {
-    component.doLogout();
-    fixture.detectChanges();
-    expect(localStorage.getItem('loggedOut')).toBe('true');
+  describe('onHome', () => {
+    it('makes expected calls', () => {
+      const routerStub: Router = fixture.debugElement.injector.get(Router);
+      spyOn(routerStub, 'navigate');
+      component.onHome();
+      expect(routerStub.navigate).toHaveBeenCalled();
+    });
   });
+  // describe('doLogout', () => {
+  //   it('makes expected calls', () => {
+  //     const authServiceStub: AuthService = fixture.debugElement.injector.get(AuthService);
+  //     spyOn(authServiceStub, 'onLogout');
+  //     component.doLogout();
+  //     expect(authServiceStub.onLogout).toHaveBeenCalled();
+  //   });
+  // });
 });

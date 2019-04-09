@@ -113,10 +113,10 @@ public class DocumentScanController extends BaseController {
 	protected ImageView docPreviewImgView;
 
 	@FXML
-	protected Button docPreviewNext;
+	protected Label docPreviewNext;
 
 	@FXML
-	protected Button docPreviewPrev;
+	protected Label docPreviewPrev;
 
 	@FXML
 	protected Label docPageNumber;
@@ -156,7 +156,10 @@ public class DocumentScanController extends BaseController {
 	private TextField scannedField;
 
 	private int totalDocument;
-
+	
+	private boolean documentsUploaded;
+	
+	private int counter;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -165,17 +168,18 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the DOCUMENT_SCAN_CONTROLLER");
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel
 						.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 			}
+			counter=0;
 			totalDocument = 0;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
-			continueBtn.setDisable(true);
+			documentsUploaded = false;
 
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
@@ -190,15 +194,19 @@ public class DocumentScanController extends BaseController {
 			}
 
 			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-				if (Integer.parseInt(newValue) <= 0)
+				if (Integer.parseInt(newValue) <= 0) {
 					continueBtn.setDisable(false);
-				else
+					documentsUploaded = true;
+				}
+				else {
 					continueBtn.setDisable(true);
+					documentsUploaded = false;
+				}
 			});
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
-			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -208,6 +216,8 @@ public class DocumentScanController extends BaseController {
 	 * To populate the document categories
 	 */
 	protected <T> void populateDocumentCategories() {
+		
+		counter++;
 
 		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
@@ -270,6 +280,13 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
+		
+		/* show the scan doc info label for format and size */
+		Label fileSizeInfoLabel = new Label();
+		fileSizeInfoLabel.setWrapText(true);
+		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
+		docScanVbox.getChildren().add(fileSizeInfoLabel);
+		
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
@@ -289,14 +306,17 @@ public class DocumentScanController extends BaseController {
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
-
+				
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
+				comboBox.setPrefWidth(docScanVbox.getWidth()/2);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
 				comboBox.getStyleClass().add("documentCombobox");
 				Label documentLabel = new Label(docCategoryName);
+				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
+				documentLabel.setPrefWidth(docScanVbox.getWidth()/2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 					documentLabel.setVisible(true);
@@ -307,10 +327,12 @@ public class DocumentScanController extends BaseController {
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 					documentLabel.setAlignment(Pos.CENTER_RIGHT);
 				}
-				if (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
-					totalDocument++;
-					scannedField.setText("" + (totalDocument));
+				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
+						if(counter==1) {
+							totalDocument++;
+							scannedField.setText("" + (totalDocument));
+						}
 				}
 
 				/*
@@ -351,12 +373,10 @@ public class DocumentScanController extends BaseController {
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
-				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
 		}
-		System.out.println(totalDocument);
 	}
 
 	/**
@@ -965,7 +985,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
-				SessionContext.map().put("documentScan", false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
 				updateUINMethodFlow();
 
 				registrationController.showUINUpdateCurrentPage();
@@ -986,5 +1006,14 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
+	
+	public List<BufferedImage> getScannedPages() {
+		return scannedPages;
+	}
+
+	public void setScannedPages(List<BufferedImage> scannedPages) {
+		this.scannedPages = scannedPages;
+	}
+	
 
 }

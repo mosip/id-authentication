@@ -2,13 +2,16 @@ package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
 
-import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+
 /**
- * @author M1046129
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Getter
@@ -19,18 +22,28 @@ public class BookingRequestDTO implements Serializable{
 	 */
 	private static final long serialVersionUID = 3339740008361919496L;
 	/**
-	 * pre-Registration Id
+	 * registration Center Id
 	 */
-	@ApiModelProperty(value = "Pre-Registration ID", position = 1)
-	private String preRegistrationId;
+	@JsonProperty("registration_center_id")
+	@ApiModelProperty(value = "Registration Center ID", position = 1)
+	private String registrationCenterId;
 	/**
-	 * Old Booking Details
+	 * booked Date Time
 	 */
-	@ApiModelProperty(value = "Old Booking Data", position = 2)
-	private BookingRegistrationDTO oldBookingDetails;
+	@JsonProperty("appointment_date")
+	@ApiModelProperty(value = "Appointment Date", position = 2)
+	private String regDate;
 	/**
-	 * New Booking Details
+	 * booked from Time Slot
 	 */
-	@ApiModelProperty(value = "New Booking Data", position = 3)
-	private BookingRegistrationDTO newBookingDetails;
+	@JsonProperty("time_slot_from")
+	@ApiModelProperty(value = "From Time Slot", position = 3)
+	private String slotFromTime;
+	/**
+	 * booked to Time Slot
+	 */
+	@JsonProperty("time_slot_to")
+	@ApiModelProperty(value = "To Time Slot", position = 4)
+	private String slotToTime;
+		
 }

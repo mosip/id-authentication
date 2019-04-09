@@ -7,26 +7,41 @@ public class RestCallException extends BaseUncheckedException{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg pass the error message
+	 * Default constructor
 	 */
-	public RestCallException(String msg) {
-		super("", msg);
+	public RestCallException() {
+		super();
 	}
 
 	/**
-	 * @param errCode pass the error code
-	 * @param msg pass the error message
+	 * @param errorMessage pass the error message
 	 */
-	public RestCallException(String errCode, String msg) {
-		super(errCode, msg);
+	public RestCallException(String errorMessage) {
+		super("", errorMessage);
 	}
 
 	/**
-	 * @param errCode pass the error code
-	 * @param msg pass the error message
-	 * @param cause pass the cause
+	 * @param errorCode pass the error code
+	 * @param errorMessage pass the error message
 	 */
-	public RestCallException(String errCode, String msg, Throwable cause) {
-		super(errCode, msg, cause);
+	public RestCallException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
+	}
+
+	/**
+	 * @param errorMessage pass the error message
+	 * @param rootCause pass the cause
+	 */
+	public RestCallException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode pass the error code
+	 * @param errorMessage pass the error message
+	 * @param rootCause pass the cause
+	 */
+	public RestCallException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 }

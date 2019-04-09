@@ -18,10 +18,10 @@ public enum RequestCodes {
 	ID("id"), 
 
 	/* version */
-	VER("ver"), 
+	VER("version"), 
 
 	/* request date time */
-	REQ_TIME("reqTime"), 
+	REQ_TIME("requesttime"), 
 
 	/* request object */
 	REQUEST("request");

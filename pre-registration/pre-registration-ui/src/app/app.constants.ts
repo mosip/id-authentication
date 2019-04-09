@@ -1,16 +1,14 @@
-export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-// export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
+// export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-// export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
-export const NESTED_ERROR = 'err';
+export const NESTED_ERROR = 'errors';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
-// export const ALLOWED_BOOKING_TIME = 24;
+export const APPENDER = '/';
 
 export const YEAR_PATTERN = '(\\d{4})';
 export const MONTH_PATTERN = '([0]\\d|1[0-2])';
@@ -18,42 +16,47 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
-  transliteration: 'mosip.pre-registration.transliteration.transliterate'
+  updateUser: 'mosip.pre-registration.demographic.update',
+  transliteration: 'mosip.pre-registration.transliteration.transliterate',
+  notification: 'mosip.pre-registration.notification.notify',
+  cancelAppointment: 'mosip.pre-registration.appointment.cancel',
+  booking: 'mosip.pre-registration.booking.book',
+  qrCode: 'mosip.pre-registration.qrcode.generate',
+  sendOtp: 'mosip.pre-registration.login.sendotp',
+  validateOtp: 'mosip.pre-registration.login.useridotp',
+  documentUpload: 'mosip.pre-registration.document.upload',
+  applicantTypeId: 'mosip.applicanttype.fetch'
 };
-
-// export const LANGUAGE_CODE = {
-//   primary: 'eng',
-//   secondary: 'ara',
-//   primaryKeyboardLang: 'en',
-//   secondaryKeyboardLang: 'ar'
-// };
 
 export const APPEND_URL = {
   config: 'config',
-  send_otp: 'sendotp',
-  verify_otp: 'useridotp',
-  invalid_token: 'invalidatetoken',
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
-  applicants: 'demographic/applications',
-  get_applicant: 'demographic/applications/details',
-  location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
+  send_otp: 'sendOtp',
+  login: 'validateOtp',
+  logout: 'invalidatetoken',
+  // login: 'login',
+  // logout: 'logout',
+  location_metadata: 'locations/locationhierarchy/',
+  location_immediate_children: 'locations/immediatechildren/',
+  applicants: 'applications',
+  // get_applicant: 'applications',
+  location: 'v1/masterdata/',
+  gender: 'v1/masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/',
-  validDocument: 'v1.0/applicanttype/',
+  applicantType: 'v1/applicanttype/',
+  validDocument: 'applicanttype/',
   getApplicantType: 'getApplicantType',
-  document: 'document/documents',
+  document: 'documents/',
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
-  booking_appointment: 'booking/appointment',
-  booking_availability: 'booking/appointment/availability',
-  qr_code: 'notification/generateQRCode',
+  booking_appointment: 'appointment',
+  booking_availability: 'appointment/availability/',
+  delete_application: 'applications/',
+  qr_code: 'qrCode/generate',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/v1.0/',
-  auth: 'auth/'
+  master_data: 'v1/masterdata/',
+  auth: 'login/'
 };
 
 export const PARAMS_KEYS = {
@@ -64,7 +67,10 @@ export const PARAMS_KEYS = {
   getDocument: PRE_REGISTRATION_ID,
   getDocumentCategories: 'languages',
   deleteFile: 'documentId',
-  getAvailabilityData: 'registration_center_id'
+  getAvailabilityData: 'registration_center_id',
+  catCode: 'catCode',
+  sourcePrId: 'sourcePrId',
+  POA: 'POA'
 };
 
 export const ERROR_CODES = {
@@ -94,7 +100,8 @@ export const CONFIG_KEYS = {
   mosip_email_length: 'mosip.id.validation.identity.email.length',
   mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'preregistration.address.length',
-  preregistration_fullname_length: 'preregistration.fullname.length'
+  preregistration_fullname_length: 'preregistration.fullname.length',
+  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age'
   // mosip.kernel.sms.number.length
   // preregistration.max.file.size
   // preregistration.workflow.demographic,
@@ -122,7 +129,6 @@ export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
   preRegistrationId: 'preRegistrationId',
   genderTypes: 'genderType'
-  // residentTypes: 'residentType'
 };
 
 export const APPLICATION_STATUS_CODES = {
@@ -131,41 +137,50 @@ export const APPLICATION_STATUS_CODES = {
   expired: 'Expired'
 };
 
-export const DOCUMENT_UPLOAD_REQUEST_DTO = {
-  id: 'mosip.pre-registration.document.upload',
-  version: '1.0',
-  requesttime: '2018-12-28T05:23:08.019Z',
-  request: {
-    pre_registartion_id: '',
-    doc_cat_code: '',
-    doc_typ_code: 'address',
-    lang_code: 'ENG'
-  }
+export const APPLICANT_TYPE_ATTRIBUTES = {
+  individualTypeCode: 'individualTypeCode',
+  dateofbirth: 'dateofbirth',
+  genderCode: 'genderCode',
+  biometricAvailable: 'biometricAvailable'
 };
+// export const DOCUMENT_UPLOAD_REQUEST_DTO = {
+//   id: 'mosip.pre-registration.document.upload',
+//   version: '1.0',
+//   requesttime: '2018-12-28T05:23:08.019Z',
+//   request: {
+//     pre_registartion_id: '',
+//     doc_cat_code: '',
+//     doc_typ_code: 'address',
+//     lang_code: 'ENG'
+//   }
+// };
 
-export const DOCUMENT_CATEGORY_DTO = {
-  attributes: [
-    {
-      attribute: 'individualTypeCode',
-      value: 'FR'
-    },
-    {
-      attribute: 'dateofbirth',
-      value: '2012-03-08T11:46:12.640Z'
-    },
-    {
-      attribute: 'genderCode',
-      value: 'MLE'
-    },
-    {
-      attribute: 'biometricAvailable',
-      value: false
-    }
-  ],
-  id: 'mosip.applicanttype.fetch',
-  requestTime: '2012-03-08T11:46:12.640Z',
-  version: 'V1.0'
-};
+// export const DOCUMENT_CATEGORY_DTO = {
+//   request: {
+//     attributes: [
+//       {
+//         attribute: 'individualTypeCode',
+//         value: 'FR'
+//       },
+//       {
+//         attribute: 'dateofbirth',
+//         value: '2012-03-08T11:46:12.640Z'
+//       },
+//       {
+//         attribute: 'genderCode',
+//         value: 'MLE'
+//       },
+//       {
+//         attribute: 'biometricAvailable',
+//         value: false
+//       }
+//     ]
+//   },
+//   id: 'mosip.applicanttype.fetch',
+//   requestTime: '2012-03-08T11:46:12.640Z',
+//   metadata: {},
+//   version: 'V1.0'
+// };
 
 export const virtual_keyboard_languages = {
   eng: 'en',
