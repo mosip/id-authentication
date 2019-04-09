@@ -273,7 +273,18 @@ public class CommonLibrary extends BaseTestCase{
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
-	} // end POST_REQUEST
+	}
+	public Response post_RequestWithoutBody(String url, String contentHeader, String acceptHeader) {
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+		
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}// end POST_REQUEST
 	public Response dataSyncPost_Request(String url, Object body, String contentHeader, String acceptHeader) {
 
 		 
@@ -446,7 +457,6 @@ public Response putRequestWithPathParameter(String url, HashMap<String, String> 
          logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
          return getResponse;
    } // end GET_REQUEST
-    
     public Response put_Request(String url,String contentHeader,String acceptHeader,HashMap<String, String> valueMap) {
     	  logger.info("REST-ASSURED: Sending a PUT request to " + url);
     	  Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);

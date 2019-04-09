@@ -124,6 +124,10 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.put_RequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, object);
 	}
+	public Response postRequestWithoutBody(String Resource_URI) {
+		return commonLibrary.post_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
 
 	public Response postRequestFormData(JSONObject jsonString, String serviceUri) {
 		return commonLibrary.post_RequestWithBodyAsMultipartFormData(jsonString, ApplnURI + serviceUri);

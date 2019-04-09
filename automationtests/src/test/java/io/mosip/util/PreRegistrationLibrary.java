@@ -244,9 +244,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request = validateOTPRequest(testSuite);
 		Response validateOTPRes = validateOTP(request);
 		String cookieValue = validateOTPRes.getCookie("Authorization");
-		String auth_token = cookieValue;
-
-		return auth_token;
+		return cookieValue;
 
 	}
 
@@ -598,8 +596,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
+	/**
+	 * Update demographic details method
+	 * @param body
+	 * @param pre_registration_id
+	 */
 
-	public void updateDemographicDetails(JSONObject body, String pre_registration_id,String dob) {
+	public Response updateDemographicDetails(JSONObject body, String pre_registration_id) {
 		testSuite = "Retrive_PreRegistration/Retrive Pre registration data of an applicant after booking an appointment_smoke";
 		request = getRequest(testSuite);
 		request.put("pre_registration_id", pre_registration_id);
@@ -609,16 +612,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JSONObject object = null;
-		for (Object key : body.keySet()) {
-			if (key.equals("identity")) {
-				object = (JSONObject) body.get(key);
-				object.put("dateOfBirth", dob);
-				body.replace(key, object);
-			}
-			
-	}
 		response = applnLib.putRequestWithParameter(preReg_CreateApplnURI, path_value, body);
+		return response;
 	}
 
 	/*
@@ -1426,6 +1421,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		return response;
 	}
+	public Response logOut() {
+		try {
+
+			response = applnLib.postRequestWithoutBody(invalidateToken_URI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		return response;
+	}
 
 	/**
 	 * Its a batch job service which changed the status of consumed application into
@@ -1678,7 +1682,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		/**
 		 * Reading request body from configpath
 		 */
-		request = getRequest(testSuite);
+		otpRequest = getRequest(testSuite);
 
 		double d = (Math.random() * 1000000000);
 		long l = (long) d;
@@ -1702,6 +1706,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public JSONObject getOtpRequest(String testSuite) {
 		JSONObject otpRequest = null;
+		otpRequest=getRequest(testSuite);
 		/**
 		 * Reading request body from configpath
 		 */

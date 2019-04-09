@@ -1,9 +1,9 @@
 {
-  "id": "string",
-  "version": "string",
-  "requesttime": "2019-03-21T07:35:47.045Z",
-  "request": {
-    "langCode": "eng",
-    "userId": "8200000000"
-  }
+	"id": "mosip.pre-registration.login.sendotp",
+	"version": "1.0",
+	"requesttime": "2019-03-15T07:24:47.605Z",
+	"request": {
+		"langCode": "fra",
+		"userId": "8907654778"
+	}
 }
