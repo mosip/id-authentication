@@ -53,7 +53,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		String otp = otpData.get(0).toString();
-		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
+		lib.compareValues(response.jsonPath().get("response.message").toString(), "Email Request submitted");
 	}
 	/*@Test
 	public void sendOtpToMobile() {
