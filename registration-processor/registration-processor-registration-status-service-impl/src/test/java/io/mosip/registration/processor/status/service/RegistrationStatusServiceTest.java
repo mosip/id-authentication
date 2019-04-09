@@ -25,6 +25,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -168,13 +169,15 @@ public class RegistrationStatusServiceTest {
 	public void testGetByIdsSuccess() {
 
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
-
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(
+				ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(RegistrationExternalStatusCode.PROCESSED);
 		RegistrationStatusSubRequestDto registrationId = new RegistrationStatusSubRequestDto();
 		registrationId.setRegistrationId("1001");
 		List<RegistrationStatusSubRequestDto> registrationIds = new ArrayList<>();
 		registrationIds.add(registrationId);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds(registrationIds);
-		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", list.get(0).getStatusCode());
+		assertEquals("PROCESSED", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)

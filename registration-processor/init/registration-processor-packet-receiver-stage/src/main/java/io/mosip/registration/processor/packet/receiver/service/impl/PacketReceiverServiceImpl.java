@@ -266,18 +266,16 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	public Boolean isExternalStatusResend(String registrationId) {
-		List<RegistrationStatusSubRequestDto> regIds = new ArrayList<RegistrationStatusSubRequestDto>();
+		List<RegistrationStatusSubRequestDto> regIds = new ArrayList<>();
 		RegistrationStatusSubRequestDto registrationStatusSubRequestDto = new RegistrationStatusSubRequestDto();
 		registrationStatusSubRequestDto.setRegistrationId(registrationId);
 		regIds.add(registrationStatusSubRequestDto);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
 
-		List<RegistrationStatusDto> registrationInternalStatusDto = registrationStatusService.getByIds(regIds);
-		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(
-				registrationInternalStatusDto.get(0).getStatusCode(),
-				registrationInternalStatusDto.get(0).getRetryCount());
-		String mappedValue = registrationExternalStatusCode.toString();
+		List<RegistrationStatusDto> registrationExternalStatusCode = registrationStatusService.getByIds(regIds);
+
+		String mappedValue = registrationExternalStatusCode.get(0).getStatusCode();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");
 		return (mappedValue.equals(RESEND));

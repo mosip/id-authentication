@@ -19,6 +19,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -29,6 +30,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class RegistrationStatusServiceImpl.
@@ -65,6 +67,9 @@ public class RegistrationStatusServiceImpl
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
+	
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusServiceImpl.class);
 
@@ -340,8 +345,14 @@ public class RegistrationStatusServiceImpl
 		registrationStatusDto.setRegistrationId(entity.getId());
 		String statusCode = entity.getStatusCode();
 		Integer retryCount = entity.getRetryCount() != null ? entity.getRetryCount() : 0;
+		
+		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(
+				entity.getStatusCode(),
+				entity.getRetryCount());
+		String mappedValue = registrationExternalStatusCode.toString();
+		
 		registrationStatusDto.setRetryCount(retryCount);
-		registrationStatusDto.setStatusCode(statusCode);
+		registrationStatusDto.setStatusCode(mappedValue);
 		return registrationStatusDto;
 	}
 
