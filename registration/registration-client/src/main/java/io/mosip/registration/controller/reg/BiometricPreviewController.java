@@ -154,12 +154,12 @@ public class BiometricPreviewController extends BaseController {
 		leftIrisThreshold.setText(irisThreshold);
 		rightIrisThreshold.setText(irisThreshold);
 
-		leftPalmThresholdScoreLbl.setText(getQualityScore(
-				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
-		rightPalmThresholdScoreLbl.setText(getQualityScore(
-				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
-		thumbsThresholdScoreLbl.setText(getQualityScore(
-				Double.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
+		leftPalmThresholdScoreLbl.setText(getQualityScore(Double
+				.parseDouble(getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
+		rightPalmThresholdScoreLbl.setText(getQualityScore(Double
+				.parseDouble(getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
+		thumbsThresholdScoreLbl.setText(getQualityScore(Double
+				.parseDouble(getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
 
 		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
 
@@ -311,9 +311,5 @@ public class BiometricPreviewController extends BaseController {
 
 	private String getQualityScore(Double qulaityScore) {
 		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
-	}
-
-	private String getValueFromSessionMap(String key) {
-		return (String) ApplicationContext.map().get(key);
 	}
 }

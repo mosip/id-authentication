@@ -550,7 +550,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		if (!RegistrationConstants.DISABLE
-				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
 				&& getRegistrationDTOFromSession() !=null && getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
@@ -1047,11 +1047,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, false);
 					if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+							getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
 						irisCaptureController.clearIrisBasedOnExceptions();
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+							getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 					} else {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
@@ -1358,17 +1358,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private BiometricDTO getBiometricDTOFromSession() {
 		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
-
-	/**
-	 * Gets the value from application context.
-	 *
-	 * @param key the key
-	 * @return the value from application context
-	 */
-	private String getValueFromApplicationContext(String key) {
-		return (String) applicationContext.getApplicationMap().get(key);
-	}
-
+	
 	/**
 	 * Clear attempts box.
 	 *

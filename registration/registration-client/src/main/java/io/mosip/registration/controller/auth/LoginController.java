@@ -196,13 +196,15 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 						responseDTO.getSuccessResponseDTO().getMessage());
 
-			otpValidity.setText("Valid for " + Integer.parseInt(
-					((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
-					/ 60 + " minutes");
+			otpValidity
+					.setText("Valid for "
+							+ Integer.parseInt(
+									(getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim()) / 60
+							+ " minutes");
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (newValue.length() > Integer
-						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
+						.parseInt(getValueFromApplicationContext(RegistrationConstants.PWORD_LENGTH))) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
@@ -332,12 +334,12 @@ public class LoginController extends BaseController implements Initializable {
 								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
 							}
 
-							String fingerprintDisableFlag = String.valueOf(
-									ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-							String irisDisableFlag = String
-									.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-							String faceDisableFlag = String
-									.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+							String fingerprintDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+							String irisDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.IRIS_DISABLE_FLAG);
+							String faceDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.FACE_DISABLE_FLAG);
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
@@ -728,10 +730,9 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Setting values for session context and user context");
 
-			long refreshedLoginTime = Long.parseLong(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
-			long idealTime = Long
-					.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
+			long refreshedLoginTime = Long
+					.parseLong(getValueFromApplicationContext(RegistrationConstants.REFRESHED_LOGIN_TIME));
+			long idealTime = Long.parseLong(getValueFromApplicationContext(RegistrationConstants.IDEAL_TIME));
 
 			sessionContext.setLoginTime(new Date());
 			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
@@ -815,11 +816,12 @@ public class LoginController extends BaseController implements Initializable {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
+				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
 
 		if (fingerPrintConnector.captureFingerprint(
-				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
-				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
+				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
+				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
 				"") != RegistrationConstants.PARAM_ZERO) {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
@@ -924,10 +926,10 @@ public class LoginController extends BaseController implements Initializable {
 				: RegistrationConstants.PARAM_ZERO;
 
 		int invalidLoginCount = Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_COUNT));
 
 		int invalidLoginTime = Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_TIME)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_TIME));
 
 		Timestamp loginTime = userDetail.getUserlockTillDtimes();
 

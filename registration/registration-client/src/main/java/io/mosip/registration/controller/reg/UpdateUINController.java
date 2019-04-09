@@ -129,8 +129,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	private void updateUINFieldsConfiguration() {
 
 		List<String> configuredFieldsfromDB = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
-						.split(","));
+				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
 		List<String> configvalues = new ArrayList<>();
 		configvalues.addAll(configuredFieldsfromDB);

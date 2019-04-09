@@ -1079,8 +1079,8 @@ public class BaseController extends BaseService {
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 			irisCaptureController.clearIrisBasedOnExceptions();
-		} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+		} else if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 		} else {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
@@ -1095,9 +1095,18 @@ public class BaseController extends BaseService {
 	 * @return true, if successful
 	 */
 	protected boolean updateUINNextPage(String pageFlag) {
-		return RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(pageFlag)))
+		return RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(pageFlag))
 				&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+	}
+	
+	/**
+	 * Gets the value from application context.
+	 *
+	 * @param key the key
+	 * @return the value from application context
+	 */
+	protected String getValueFromApplicationContext(String key) {
+		return String.valueOf(applicationContext.getApplicationMap().get(key));
 	}
 
 }

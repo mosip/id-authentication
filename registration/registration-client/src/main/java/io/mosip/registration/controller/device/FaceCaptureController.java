@@ -367,7 +367,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Override
 	public void calculateRecaptureTime(String photoType) {
 		int configuredSeconds = Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.FACE_RECAPTURE_TIME));
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
 			/* Set Time which last photo was captured */
@@ -489,21 +489,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 		takePhoto.setDisable(true);
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			applicantFaceTrackerImg.setVisible(true);
-			exceptionFaceTrackerImg.setVisible(false);
+				applicantFaceTrackerImg.setVisible(true);
+				exceptionFaceTrackerImg.setVisible(false);
 			}
-			
+
 			if (validatePhotoTimer(lastPhotoCaptured,
-					Integer.parseInt(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
+					Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.FACE_RECAPTURE_TIME)),
 					photoAlert)) {
 				takePhoto.setDisable(false);
 				photoAlert.setVisible(false);
 			}
 		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE) && hasBiometricException
 				&& validatePhotoTimer(lastExceptionPhotoCaptured,
-						Integer.parseInt(String
-								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
+						Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.FACE_RECAPTURE_TIME)),
 						photoAlert)) {
 			applicantFaceTrackerImg.setVisible(false);
 			exceptionFaceTrackerImg.setVisible(true);
@@ -541,14 +539,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private boolean markReasonForFingerprintException(List<FingerprintDetailsDTO> capturedFingers,
 			boolean hasBiometricException) {
 		if (capturedFingers != null && !capturedFingers.isEmpty()) {
-			String leftSlapQualityThreshold = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD));
-			String rightSlapQualityThreshold = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD));
-			String thumbQualityThreshold = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD));
-			String fingerprintRetries = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_RETRIES_COUNT));
+			String leftSlapQualityThreshold = getValueFromApplicationContext(
+					RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
+			String rightSlapQualityThreshold = getValueFromApplicationContext(
+					RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
+			String thumbQualityThreshold = getValueFromApplicationContext(
+					RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
+			String fingerprintRetries = getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT);
+			
 			for (FingerprintDetailsDTO capturedFinger : capturedFingers) {
 				List<FingerprintDetailsDTO> segmentedFingers = capturedFinger.getSegmentedFingerprints();
 				for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
@@ -568,9 +566,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 */
 	private boolean markReasonForIrisException(List<IrisDetailsDTO> capturedIrises, boolean hasBiometricException) {
 		if (capturedIrises != null && !capturedIrises.isEmpty()) {
-			String irisQualityThreshold = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD));
-			String irisRetries = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT));
+			String irisQualityThreshold = getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD);
+			String irisRetries = getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT);
 			double irisThreshold = Double.parseDouble(irisQualityThreshold);
 			int numOfRetries = Integer.parseInt(irisRetries);
 			for (IrisDetailsDTO capturedIris : capturedIrises) {
