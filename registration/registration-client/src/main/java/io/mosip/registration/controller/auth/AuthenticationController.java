@@ -234,7 +234,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_PASSWORD : AuditEvent.REG_OPERATOR_AUTH_PASSWORD,
 				Components.REG_OS_AUTH, username.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		String status = "";
+		String status = RegistrationConstants.EMPTY;
 		if (isSupervisor) {
 			if (!username.getText().isEmpty()) {
 				if (fetchUserRole(username.getText())) {
@@ -507,8 +507,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to enable the respective authentication mode
 	 * 
-	 * @param loginMode
-	 *            - name of authentication mode
+	 * @param loginMode - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -668,8 +667,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to check the role of supervisor in case of biometric exception
 	 * 
-	 * @param userId
-	 *            - username entered by the supervisor in the authentication screen
+	 * @param userId - username entered by the supervisor in the authentication
+	 *               screen
 	 * @return boolean variable "true", if the person is authenticated as supervisor
 	 *         or "false", if not
 	 */
@@ -689,8 +688,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the fingerprint for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
@@ -702,7 +700,8 @@ public class AuthenticationController extends BaseController implements Initiali
 				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
 		int statusCode = fingerPrintConnector.captureFingerprint(
 				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)), "");
+				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
+				RegistrationConstants.EMPTY);
 		if (statusCode != 0) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 		} else {
@@ -758,8 +757,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
@@ -800,8 +798,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
@@ -844,8 +841,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * event class to exit from authentication window. pop up window.
 	 * 
-	 * @param event
-	 *            - the action event
+	 * @param event - the action event
 	 */
 	public void exitWindow(ActionEvent event) {
 		Stage primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
@@ -856,10 +852,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Setting the init method to the Basecontroller
 	 * 
-	 * @param parentControllerObj
-	 *            - Parent Controller name
-	 * @param authType
-	 *            - Authentication Type
+	 * @param parentControllerObj - Parent Controller name
+	 * @param authType            - Authentication Type
 	 * @throws RegBaseCheckedException
 	 */
 	public void init(BaseController parentControllerObj, String authType) throws RegBaseCheckedException {
@@ -898,6 +892,11 @@ public class AuthenticationController extends BaseController implements Initiali
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
 			registrationNavlabel.setText(
 					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
+		}
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
 	}
 

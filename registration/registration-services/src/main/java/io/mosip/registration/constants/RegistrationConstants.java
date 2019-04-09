@@ -287,7 +287,12 @@ public class RegistrationConstants {
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 	public static final String PENDING = "Pending";
 	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";
+	public static final String EOD_PROCESS_ID = "id";
+	public static final String EOD_PROCESS_STATUSCOMMENT = "statusComment";
+	public static final String EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH = "acknowledgementFormPath";
+	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
 
+	
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
 	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
@@ -559,7 +564,8 @@ public class RegistrationConstants {
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
 	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
 	public static final String CLICK = "click";
-
+	public static final String REG_CONSENT = "mosip.registration.consent_";
+	
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
 	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";

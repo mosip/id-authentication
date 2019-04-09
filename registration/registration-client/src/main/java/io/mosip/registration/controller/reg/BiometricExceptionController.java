@@ -336,11 +336,13 @@ public class BiometricExceptionController extends BaseController implements Init
 
 				if (fingerList.size() == 10 && irisList.size() == 2) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
-				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+
+				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-				} else if (RegistrationConstants.ENABLE
-						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+
+				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))){
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 				}
 				registrationController.showUINUpdateCurrentPage();

@@ -339,9 +339,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void showReciept() {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt Started.");
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-					.get(RegistrationConstants.REGISTRATION_DATA);
-			ackReceiptController.setRegistrationData(registrationDTO);
+			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 
 			StringBuilder templateContent = new StringBuilder();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();

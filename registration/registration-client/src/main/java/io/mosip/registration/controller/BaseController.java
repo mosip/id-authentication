@@ -465,14 +465,14 @@ public class BaseController extends BaseService {
 		SessionContext.map().remove(RegistrationConstants.MM);
 		SessionContext.map().remove(RegistrationConstants.YYYY);
 		SessionContext.map().remove(RegistrationConstants.DOB_TOGGLE);
-		SessionContext.map().remove(RegistrationConstants.DEMOGRAPHIC_DETAIL);
-		SessionContext.map().remove(RegistrationConstants.DOCUMENT_SCAN);
-		SessionContext.map().remove(RegistrationConstants.FINGERPRINT_CAPTURE);
-		SessionContext.map().remove(RegistrationConstants.BIOMETRIC_EXCEPTION);
-		SessionContext.map().remove(RegistrationConstants.FACE_CAPTURE);
-		SessionContext.map().remove(RegistrationConstants.IRIS_CAPTURE);
-		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PREVIEW);
-		SessionContext.map().remove(RegistrationConstants.OPERATOR_AUTHENTICATION);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_FACECAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_IRISCAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
@@ -1094,6 +1094,18 @@ public class BaseController extends BaseService {
 		return RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(pageFlag))
 				&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 	}
+
+	/**
+	 * Biomertic exception count.
+	 *
+	 * @param biometric the biometric
+	 * @return the long
+	 */
+	protected long biomerticExceptionCount(String biometric) {
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO().stream()
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(biometric)).count();
+	}
 	
 	/**
 	 * Gets the value from application context.
@@ -1102,7 +1114,6 @@ public class BaseController extends BaseService {
 	 * @return the value from application context
 	 */
 	protected String getValueFromApplicationContext(String key) {
-		return String.valueOf(applicationContext.getApplicationMap().get(key));
+		return (String) applicationContext.getApplicationMap().get(key);
 	}
-
 }

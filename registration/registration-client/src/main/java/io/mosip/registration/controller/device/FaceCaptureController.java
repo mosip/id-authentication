@@ -292,8 +292,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG) || fingerPrintCount > 0
 							|| fingerPrintExceptionCount > 0) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-					} else {
+					} else if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+					} else {
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {
@@ -306,11 +308,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
-	}
-
-	private long biomerticExceptionCount(String biometric) {
-		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
-				.stream().filter(bio -> bio.getBiometricType().equalsIgnoreCase(biometric)).count();
 	}
 
 	/**
@@ -536,12 +533,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private boolean markReasonForFingerprintException(List<FingerprintDetailsDTO> capturedFingers,
 			boolean hasBiometricException) {
 		if (capturedFingers != null && !capturedFingers.isEmpty()) {
-			String leftSlapQualityThreshold = getValueFromApplicationContext(
-					RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
-			String rightSlapQualityThreshold = getValueFromApplicationContext(
-					RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
-			String thumbQualityThreshold = getValueFromApplicationContext(
-					RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
+
+			String leftSlapQualityThreshold = getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
+			String rightSlapQualityThreshold = getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
+			String thumbQualityThreshold = getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
 			String fingerprintRetries = getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT);
 
 			for (FingerprintDetailsDTO capturedFinger : capturedFingers) {

@@ -173,6 +173,7 @@ public class DocumentScanController extends BaseController {
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+
 				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
 						.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
@@ -189,6 +190,7 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+
 				registrationNavlabel.setText(
 						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 				docScanVbox.setDisable(true);
@@ -368,8 +370,8 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								RegistrationUIConstants.PLEASE_SELECT + RegistrationConstants.SPACE + documentCategory.getCode() + " "
-										+ RegistrationUIConstants.DOCUMENT);
+								RegistrationUIConstants.PLEASE_SELECT + RegistrationConstants.SPACE
+										+ documentCategory.getCode() + " " + RegistrationUIConstants.DOCUMENT);
 					}
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
@@ -419,7 +421,8 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-		if (RegistrationConstants.YES.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+		if (RegistrationConstants.YES
+				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -438,7 +441,8 @@ public class DocumentScanController extends BaseController {
 
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
-			if (RegistrationConstants.YES.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+			if (RegistrationConstants.YES
+					.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);
@@ -551,6 +555,7 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
+
 		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
@@ -709,10 +714,8 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will set the inde and page number for the document
 	 * 
-	 * @param index
-	 *            - index of the preview section
-	 * @param pageNumber
-	 *            - page number for the preview section
+	 * @param index      - index of the preview section
+	 * @param pageNumber - page number for the preview section
 	 */
 	private void setDocPreview(int index, int pageNumber) {
 		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
@@ -722,8 +725,7 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will create Image to delete scanned document
 	 * 
-	 * @param field
-	 *            the {@link VBox}
+	 * @param field the {@link VBox}
 	 */
 	private ImageView createImageView(VBox vboxElement) {
 
@@ -771,8 +773,7 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will create Hyperlink to view scanned document
 	 * 
-	 * @param field
-	 *            the {@link String}
+	 * @param field the {@link String}
 	 */
 	private Hyperlink createHyperLink(String document) {
 
@@ -991,6 +992,7 @@ public class DocumentScanController extends BaseController {
 
 			}
 		} else {
+
 			if (RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {

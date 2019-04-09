@@ -201,25 +201,26 @@ public class UpdateUINController extends BaseController implements Initializable
 
 				if (uinValidatorImpl.validateId(uinId.getText())) {
 
-					SelectionListDTO selectionListDTO = new SelectionListDTO();
-
-					selectionListDTO.setName(name.isSelected());
-					selectionListDTO.setAge(age.isSelected());
-					selectionListDTO.setGender(gender.isSelected());
-					selectionListDTO.setAddress(address.isSelected());
-					selectionListDTO.setPhone(phone.isSelected());
-					selectionListDTO.setEmail(email.isSelected());
-					selectionListDTO.setBiometrics(biometrics.isSelected());
-					selectionListDTO.setCnieNumber(cnieNumber.isSelected());
-					selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
-					selectionListDTO.setForeigner(foreigner.isSelected());
-
-					selectionListDTO.setUinId(uinId.getText());
-
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
 							|| phone.isSelected() || email.isSelected() || biometrics.isSelected()
 							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
 							|| foreigner.isSelected()) {
+
+						SelectionListDTO selectionListDTO = new SelectionListDTO();
+
+						selectionListDTO.setName(name.isSelected());
+						selectionListDTO.setAge(age.isSelected());
+						selectionListDTO.setGender(gender.isSelected());
+						selectionListDTO.setAddress(address.isSelected());
+						selectionListDTO.setPhone(phone.isSelected());
+						selectionListDTO.setEmail(email.isSelected());
+						selectionListDTO.setBiometrics(biometrics.isSelected());
+						selectionListDTO.setCnieNumber(cnieNumber.isSelected());
+						selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
+						selectionListDTO.setForeigner(foreigner.isSelected());
+
+						selectionListDTO.setUinId(uinId.getText());
+
 						registrationController.init(selectionListDTO);
 
 						Parent createRoot = BaseController.load(
