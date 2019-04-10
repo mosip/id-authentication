@@ -74,7 +74,7 @@ stage ('---------- build ---------------') {
 			print file.exists()
 			if(file.exists()){
 			// installing node modules and building the angular project
-			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --base-href . --output-path=dist && popd"
+			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --prod --base-href . --output-path=dist && popd"
 			}
 		}
 	}
@@ -225,7 +225,7 @@ stage ('---------- build ---------------') {
     /*
      Removing all untagged images
      */
-    sh "docker rmi \$(docker images | awk '/<none>/ {print \}') || true"
+    sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
 
   }
 
