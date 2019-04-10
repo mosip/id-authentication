@@ -21,7 +21,7 @@
 			<artifactId>authentication-core</artifactId>
 			<version>0.10.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
@@ -89,6 +89,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${kernel.core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pinvalidator</artifactId>
+			<version>${kernel.version}</version>
 		</dependency>
 
 		<!-- Postgres -->

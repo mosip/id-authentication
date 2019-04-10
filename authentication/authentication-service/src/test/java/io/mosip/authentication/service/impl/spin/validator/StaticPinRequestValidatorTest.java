@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -23,13 +24,16 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
+import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * This class Tests The StaticPinValidator class.
@@ -55,6 +59,9 @@ public class StaticPinRequestValidatorTest {
 
 	@Mock
 	UinValidatorImpl uinValidator;
+
+	@Mock
+	PinValidatorImpl pinValidator;
 
 	@Mock
 	VidValidatorImpl vidValidator;
@@ -90,8 +97,10 @@ public class StaticPinRequestValidatorTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
+		Mockito.when(pinValidator.validatePin(Mockito.any())).thenReturn(true);
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -108,14 +117,17 @@ public class StaticPinRequestValidatorTest {
 		String pin = null;
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
+		Mockito.when(pinValidator.validatePin(Mockito.any())).thenThrow(
+				new InvalidPinException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()));
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
 	public void testStaticPinValidator_pinValueEmpty() {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String uin = "4950679436";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
@@ -126,8 +138,12 @@ public class StaticPinRequestValidatorTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		staticPinRequestDTO.setRequest(pinRequestDTO);
+		Mockito.when(pinValidator.validatePin(Mockito.any())).thenThrow(
+				new InvalidPinException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()));
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -145,13 +161,16 @@ public class StaticPinRequestValidatorTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
+		Mockito.when(pinValidator.validatePin(Mockito.any())).thenThrow(
+				new InvalidPinException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()));
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
 	public void testStaticPinValidator_Vid() {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String vid = "5371843613598206";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		staticPinRequestDTO.setIndividualIdType(IdType.VID.getType());
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
@@ -162,8 +181,12 @@ public class StaticPinRequestValidatorTest {
 		String pin = "test656";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
+		Mockito.when(pinValidator.validatePin(Mockito.any())).thenThrow(
+				new InvalidPinException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()));
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -172,4 +195,25 @@ public class StaticPinRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
 		pinRequestValidator.validate(staticPinRequestDTO, errors);
 	}
+
+	@Test
+	public void TestInvalidUinVidValue() {
+		String vid = "5371843613598206";
+		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
+		staticPinRequestDTO.setId("mosip.identity.static-pin");
+		staticPinRequestDTO.setIndividualId(vid);
+		staticPinRequestDTO.setIndividualIdType("invalid");
+		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
+				.toString();
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
+		PinRequestDTO pinRequestDTO = new PinRequestDTO();
+		String pin = "test656";
+		pinRequestDTO.setStaticPin(pin);
+		staticPinRequestDTO.setRequest(pinRequestDTO);
+		Errors errors = new BeanPropertyBindingResult(staticPinRequestDTO, "staticPinRequestDTO");
+		pinRequestValidator.validate(staticPinRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
 }
