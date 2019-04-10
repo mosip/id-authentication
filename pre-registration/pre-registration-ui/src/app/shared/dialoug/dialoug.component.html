@@ -6,7 +6,7 @@
         <td><i class="material-icons">email</i></td>
         <td>
             <mat-form-field>
-                <input matInput placeholder="{{ 'dialog.text_email' | translate}}" (keyup)="validateEmail()" type="text" [(ngModel)]="applicantEmail" />
+                <input #email matInput placeholder="{{ 'dialog.text_email' | translate}}" (keyup)="validateEmail()" type="text" [(ngModel)]="applicantEmail" (focusout)="enableButton(email, mobile)" />
             </mat-form-field>
         </td>
       </tr>
@@ -14,7 +14,7 @@
         <td><i class="material-icons">chat</i></td>
         <td>
             <mat-form-field>
-                <input matInput placeholder="{{ 'dialog.text_mobile' | translate}}" (keyup)="validateMobile()" type="text" [(ngModel)]="applicantNumber" />
+                <input #mobile matInput placeholder="{{ 'dialog.text_mobile' | translate}}" (keyup)="validateMobile()" type="text" [(ngModel)]="applicantNumber" (focusout)="enableButton(email, mobile)"/>
             </mat-form-field>
         </td>
       </tr>
@@ -23,7 +23,7 @@
     <div *ngIf="invalidApplicantEmail"><div>{{ 'dialog.invalidApplicantEmailId' | translate }}</div></div>
   </div>
   <div mat-dialog-actions>
-    <button [disabled]="invalidApplicantNumber || invalidApplicantEmail" mat-button [mat-dialog-close]="inputList" cdkFocusInitial>
+    <button [disabled]="disableSend" mat-button [mat-dialog-close]="inputList" cdkFocusInitial>
       {{ 'dialog.action_ok' | translate }}
     </button>
   </div>
