@@ -192,9 +192,7 @@ public class UinGeneratorStageTest {
 		appDocument.setDocName("POA");
 		appDocument.setDocStore("ProofOfAddress".getBytes());
 		applicantDocument.add(appDocument);
-
-		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
-		//Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
+		
 
 	}
 

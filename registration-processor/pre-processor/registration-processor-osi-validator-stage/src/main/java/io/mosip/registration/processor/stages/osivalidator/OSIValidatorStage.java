@@ -106,7 +106,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = true;//umcValidator.isValidUMC(registrationId);
+			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
 			}

@@ -151,6 +151,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The demographic identity. */
 	JSONObject demographicIdentity = null;
+	
+	JSONObject idJSON = null;
 
 	/** The registration status service. */
 	@Autowired
@@ -418,7 +420,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
 		Documents documentsInfoDto = null;
-		demographicIdentity = getDemoIdentity(registrationId);
+		idJSON = getDemoIdentity(registrationId);
 		regProcessorIdentityJson = getMappeedJSONIdentity();
 		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
 		String proofOfDateOfBirthLabel =regProcessorIdentityJson.getIdentity().getPob().getValue();
@@ -427,11 +429,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
 		
 		
-		JSONObject proofOfAddress = JsonUtil.getJSONObject(demographicIdentity, proofOfAddressLabel);
-		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(demographicIdentity, proofOfDateOfBirthLabel);
-		JSONObject proofOfIdentity = JsonUtil.getJSONObject(demographicIdentity, proofOfIdentityLabel);
-		JSONObject proofOfRelationship= JsonUtil.getJSONObject(demographicIdentity, proofOfRelationshipLabel);
-		JSONObject applicantBiometric= JsonUtil.getJSONObject(demographicIdentity, applicantBiometricLabel);
+		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJSON, proofOfAddressLabel);
+		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJSON, proofOfDateOfBirthLabel);
+		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJSON, proofOfIdentityLabel);
+		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJSON, proofOfRelationshipLabel);
+		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJSON, applicantBiometricLabel);
 		
 		if(proofOfAddress!=null) {
 			InputStream poaStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfAddress.get("value"));
@@ -737,12 +739,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		//this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("10011100110009120190409052441");
-		dto.setIsValid(false);
-		MessageDTO dto2= process(dto);
-		this.send(mosipEventBus ,MessageBusAddress.UIN_GENERATION_BUS_OUT,dto2);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
 	

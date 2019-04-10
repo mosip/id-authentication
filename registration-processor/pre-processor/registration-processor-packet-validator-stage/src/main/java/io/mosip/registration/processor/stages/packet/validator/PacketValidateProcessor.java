@@ -188,7 +188,7 @@ public class PacketValidateProcessor {
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
-			Boolean isValid = true;//validate(registrationStatusDto, packetMetaInfo, object);
+			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
 
 			if (isValid) {
 				registrationStatusDto
