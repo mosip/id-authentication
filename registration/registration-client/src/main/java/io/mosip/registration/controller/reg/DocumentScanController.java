@@ -100,7 +100,7 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
-	
+
 	@Autowired
 	private PDFGenerator pdfGenerator;
 
@@ -199,17 +199,17 @@ public class DocumentScanController extends BaseController {
 						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
+			} else {
+				scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
+					if (Integer.parseInt(newValue) <= 0) {
+						continueBtn.setDisable(false);
+						documentsUploaded = true;
+					} else {
+						continueBtn.setDisable(true);
+						documentsUploaded = false;
+					}
+				});
 			}
-
-			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-				if (Integer.parseInt(newValue) <= 0) {
-					continueBtn.setDisable(false);
-					documentsUploaded = true;
-				} else {
-					continueBtn.setDisable(true);
-					documentsUploaded = false;
-				}
-			});
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
@@ -264,7 +264,8 @@ public class DocumentScanController extends BaseController {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
-							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf(RegistrationConstants.UNDER_SCORE) + 1));
+							documentDetailsDTO.getValue().substring(
+									documentDetailsDTO.getValue().indexOf(RegistrationConstants.UNDER_SCORE) + 1));
 				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
@@ -593,7 +594,8 @@ public class DocumentScanController extends BaseController {
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
 		documentDetailsDTO.setFormat(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE));
-		documentDetailsDTO.setValue(selectedDocument.concat(RegistrationConstants.UNDER_SCORE).concat(document.getName()));
+		documentDetailsDTO
+				.setValue(selectedDocument.concat(RegistrationConstants.UNDER_SCORE).concat(document.getName()));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
@@ -622,7 +624,8 @@ public class DocumentScanController extends BaseController {
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
 		gridPane.add(new Label("     "), 0, vboxElement.getChildren().size());
-		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1, vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1,
+				vboxElement.getChildren().size());
 		gridPane.add(new Label("  "), 2, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
@@ -647,7 +650,8 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 		/* clearing the previously loaded pdf pages inorder to clear up the memory */
 		initializePreviewSection();
-		if (RegistrationConstants.PDF.equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(RegistrationConstants.DOT) + 1))) {
+		if (RegistrationConstants.PDF
+				.equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(RegistrationConstants.DOT) + 1))) {
 			try {
 				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
@@ -718,8 +722,10 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will set the inde and page number for the document
 	 * 
-	 * @param index      - index of the preview section
-	 * @param pageNumber - page number for the preview section
+	 * @param index
+	 *            - index of the preview section
+	 * @param pageNumber
+	 *            - page number for the preview section
 	 */
 	private void setDocPreview(int index, int pageNumber) {
 		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
@@ -729,7 +735,8 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will create Image to delete scanned document
 	 * 
-	 * @param field the {@link VBox}
+	 * @param field
+	 *            the {@link VBox}
 	 */
 	private ImageView createImageView(VBox vboxElement) {
 
@@ -777,7 +784,8 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method will create Hyperlink to view scanned document
 	 * 
-	 * @param field the {@link String}
+	 * @param field
+	 *            the {@link String}
 	 */
 	private Hyperlink createHyperLink(String document) {
 
@@ -804,8 +812,8 @@ public class DocumentScanController extends BaseController {
 			DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
 
 			if (selectedDocumentToDisplay != null) {
-				displayDocument(selectedDocumentToDisplay.getDocument(),
-						selectedDocumentToDisplay.getValue() + RegistrationConstants.DOT + selectedDocumentToDisplay.getFormat());
+				displayDocument(selectedDocumentToDisplay.getDocument(), selectedDocumentToDisplay.getValue()
+						+ RegistrationConstants.DOT + selectedDocumentToDisplay.getFormat());
 			}
 		});
 
