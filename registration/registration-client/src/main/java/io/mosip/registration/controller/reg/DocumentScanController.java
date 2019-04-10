@@ -562,6 +562,7 @@ public class DocumentScanController extends BaseController {
 		}
 
 		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
+			scannedPages.clear();
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
