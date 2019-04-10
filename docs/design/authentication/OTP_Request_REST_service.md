@@ -40,7 +40,7 @@ Sample Request Body –
 }
 ```
 
-2.	Authenticate and Authorize TSP <<TBD>>
+2.	Authenticate and Authorize MOSIP Partner.
 3.	Validate “reqTime” for incoming OTP Requests for valid format and timestamp < 20mins from current time
 4.	Integrate with kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
 5.	Create OTP using OTP key in the format using OtpUtil- <product_id>_<uin_ref_id>_<txn_id>_<mua_code>
@@ -74,7 +74,6 @@ Below are details on the above classes –
 -	***IDAuthFilter*** – Spring filter to intercept OTP Request and Response in order to authenticate/authorize TSP
 -	***OTPController*** – Spring Controller to receive OTP Request
 -	***OTPRequestValidator*** – Spring Validator to validate input request object OTPRequestDTO
--	***OTPFacade*** – Sprint Component that acts like facade layer to validate UIN/VID and invoke OTPService to process OTP request
 -	***OTPService*** – Spring Service that interacts with OTPManager and OTPUtil to generate OTP
 -	***OTPManager*** – Manager class to integrate with Kernel Generate OTP and Validate OTP Rest APIs
 -	***OTPUtil*** – Utility class to generate unique key to be used to generate OTP
