@@ -232,22 +232,27 @@ public class HeaderController extends BaseController {
 				restartController.restart();
 			}
 
-/*			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
-					.get(RegistrationConstants.UI_SYNC_DATA))) {
-				syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+			/*
+			 * if ("Y".equalsIgnoreCase((String)
+			 * ApplicationContext.getInstance().getApplicationMap()
+			 * .get(RegistrationConstants.UI_SYNC_DATA))) { syncData =
+			 * BaseController.load(getClass().getResource(RegistrationConstants.
+			 * SYNC_DATA));
+			 * 
+			 * VBox pane = (VBox) menu.getParent().getParent().getParent();
+			 * Object parent = pane.getChildren().get(0);
+			 * pane.getChildren().clear(); pane.getChildren().add((Node)
+			 * parent); pane.getChildren().add(syncData); }
+			 */
 
-				VBox pane = (VBox) menu.getParent().getParent().getParent();
-				Object parent = pane.getChildren().get(0);
-				pane.getChildren().clear();
-				pane.getChildren().add((Node) parent);
-				pane.getChildren().add(syncData);
-			}*/
-
-		} /*catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-		}*/ catch (RuntimeException runtimeException) {
+		} /*
+			 * catch (IOException ioException) {
+			 * LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+			 * APPLICATION_ID, ioException.getMessage() +
+			 * ExceptionUtils.getStackTrace(ioException));
+			 * 
+			 * }
+			 */ catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
@@ -487,11 +492,13 @@ public class HeaderController extends BaseController {
 			public void handle(WorkerStateEvent t) {
 
 				ResponseDTO responseDTO = taskService.getValue();
-				if (responseDTO.getSuccessResponseDTO() != null) {
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
-				} else if (responseDTO.getErrorResponseDTOs() != null) {
+				if (responseDTO.getErrorResponseDTOs() != null) {
 					generateAlert(RegistrationConstants.SYNC_FAILURE,
 							responseDTO.getErrorResponseDTOs().get(0).getMessage());
+				} else {
+
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
+
 				}
 				gridPane.setDisable(false);
 				progressIndicator.setVisible(false);
