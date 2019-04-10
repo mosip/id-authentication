@@ -39,9 +39,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -131,6 +133,9 @@ public class PrintStageTest {
 
 	@Mock
 	public FileSystemAdapter filesystemAdapter;
+	
+	@Mock
+	private UinValidator<String> uinValidatorImpl;
 
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
@@ -211,12 +216,13 @@ public class PrintStageTest {
 	@Test
 	public void testAll() throws Exception {
 		ctx = setContext();
-		PrintStageApplication.main(null);
+		//PrintStageApplication.main(null);
 		testDeployVerticle();
 		testDeployVerticleForResend();
-		//testSendMessage();
-		testResendPrintPdf();
-		testRoutes();
+		testResendPrintPdfSuccess();
+		//testRoutes();
+		testResendPrintPdfFailure();
+		//testResendPrintPdfException();
 	}
 
 	public void testDeployVerticle() throws Exception {
@@ -374,15 +380,18 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-/*	public void testSendMessage() {
-		stage.sendMessage(null);
-	}*/
-
-	public void testResendPrintPdf() {
+	public void testResendPrintPdfSuccess() {
+		Mockito.when(uinValidatorImpl.validateId(any())).thenReturn(true);
 		stage.reSendPrintPdf(ctx);
 		assertTrue(responseObject);
 	}
-
+	
+	public void testResendPrintPdfFailure() {
+		Mockito.when(uinValidatorImpl.validateId(any())).thenReturn(false);
+		stage.reSendPrintPdf(ctx);
+		assertTrue(responseObject);
+	}
+	
 	public void testRoutes() throws ClientProtocolException, IOException {
 		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
 		HttpClient client = HttpClientBuilder.create().build();
@@ -633,16 +642,5 @@ public class PrintStageTest {
 		};
 
 	}
-	
-/*	public void sendMessageSuccessTest() throws Exception {
-		Message message = null;
-		//message.setRid("51130282650000320190117144316");
-		String response = "{\"Status\":\"Success\",\"UIN\":\"6718394257\"}";
-
-		
-		PowerMockito.whenNew(String.class).withArguments(Mockito.any()).thenReturn(response);
-		
-		stage.cosnumerListener(message);
-	}*/
 
 }
