@@ -76,7 +76,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
@@ -202,7 +201,7 @@ public class LoginController extends BaseController implements Initializable {
 			String seconds = String.valueOf(otpExpirySeconds % 60);
 			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
 			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
-					+ RegistrationUIConstants.SECONDS);
+					+ RegistrationUIConstants.MINUTES);
 
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {

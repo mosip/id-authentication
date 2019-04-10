@@ -457,8 +457,8 @@ public class ServiceDelegateUtil {
 			properties.load(new StringReader(cookie.replaceAll(";", "\n")));
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
 			authTokenDTO.setCookie(cookie);
-			authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
-			authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
+			//authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
+			//authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
 			if (loginMode.equals(LoginMode.CLIENTID)) {
@@ -496,6 +496,13 @@ public class ServiceDelegateUtil {
 				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
+				if (isTokenValid) {
+					Map<String, Object> responseBody = (Map<String, Object>) responseMap
+							.get(RegistrationConstants.REST_RESPONSE_BODY);
+					if (responseBody != null && responseBody.get("errors") != null) {
+						isTokenValid = false;
+					}
+				}
 			}
 		} catch (URISyntaxException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| SocketTimeoutException | RegBaseCheckedException restException) {
