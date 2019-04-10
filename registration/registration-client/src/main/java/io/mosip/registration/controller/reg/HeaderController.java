@@ -232,7 +232,7 @@ public class HeaderController extends BaseController {
 				restartController.restart();
 			}
 
-			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
+/*			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
 					.get(RegistrationConstants.UI_SYNC_DATA))) {
 				syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 
@@ -241,13 +241,13 @@ public class HeaderController extends BaseController {
 				pane.getChildren().clear();
 				pane.getChildren().add((Node) parent);
 				pane.getChildren().add(syncData);
-			}
+			}*/
 
-		} catch (IOException ioException) {
+		} /*catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
-		} catch (RuntimeException runtimeException) {
+		}*/ catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
