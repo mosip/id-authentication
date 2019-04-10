@@ -762,7 +762,7 @@ public class DemographicDetailController extends BaseController {
 			localAdminAuthorityLocalLanguage.setNodeOrientation(orientation);
 			localAdminAuthorityLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
 			localAdminAuthorityLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
-			parentName.setNodeOrientation(orientation);
+			parentNameLocalLanguage.setNodeOrientation(orientation);
 			parentNameLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
 			parentNameLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 
