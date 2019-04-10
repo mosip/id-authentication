@@ -496,6 +496,10 @@ public class ServiceDelegateUtil {
 				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
+				if (isTokenValid) {
+					isTokenValid = !isResponseValid(
+							(Map<String, Object>) responseMap.get(RegistrationConstants.REST_RESPONSE_BODY), "errors");
+				}
 			}
 		} catch (URISyntaxException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| SocketTimeoutException | RegBaseCheckedException restException) {
