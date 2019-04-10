@@ -408,10 +408,10 @@ export class FileUploadComponent implements OnInit {
       console.log('none selected');
       this.sameAsselected = false;
     } else {
-      this.registration.setSameAs(event.value);
       this.dataStroage.copyDocument(event.value, this.users[0].preRegId).subscribe(
         response => {
           console.log('copy document', response);
+          this.registration.setSameAs(event.value);
           if (response['err'] == null) {
             this.removePOADocument();
           } else {
