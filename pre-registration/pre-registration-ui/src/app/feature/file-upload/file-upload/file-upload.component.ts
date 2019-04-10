@@ -43,7 +43,7 @@ export class FileUploadComponent implements OnInit {
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-  documentType: string;
+  documentCategory: string;
   loginId: string;
   documentIndex: number;
   LOD: DocumentCategory[];
@@ -310,12 +310,12 @@ export class FileUploadComponent implements OnInit {
   }
 
   selectChange(event, index: number) {
-    this.documentType = event.source.placeholder;
+    this.documentCategory = event.source.placeholder;
     this.documentIndex = index;
   }
 
   openedChange(event, index: number) {
-    this.documentType = this.LOD[index].code;
+    this.documentCategory = this.LOD[index].code;
     this.documentIndex = index;
   }
 
@@ -346,9 +346,9 @@ export class FileUploadComponent implements OnInit {
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
   }
   setJsonString(event) {
-    this.documentUploadRequestBody.docCatCode = this.documentType;
+    this.documentUploadRequestBody.docCatCode = this.documentCategory;
     this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
-    this.documentUploadRequestBody.docTypCode = this.documentType;
+    this.documentUploadRequestBody.docTypCode = event.value;
     this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
@@ -362,7 +362,7 @@ export class FileUploadComponent implements OnInit {
       response => {
         console.log('document response', response);
 
-        this.updateUsers(response, event);
+        this.updateUsers(response);
       },
       error => {
         alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
@@ -376,13 +376,13 @@ export class FileUploadComponent implements OnInit {
     this.formData = new FormData();
   }
 
-  updateUsers(fileResponse, event) {
+  updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response[0].documentCat;
-    this.userFiles.doc_file_format = event.target.files[0].type;
-    this.userFiles.documentId = fileResponse.response[0].documnetId;
-    this.userFiles.docName = event.target.files[0].name;
-    this.userFiles.docTypCode = fileResponse.response[0].documentType;
+    this.userFiles.docCatCode = fileResponse.response[0].docCatCode;
+    this.userFiles.doc_file_format = fileResponse.response[0].docFileFormat;
+    this.userFiles.documentId = fileResponse.response[0].documentId;
+    this.userFiles.docName = fileResponse.response[0].docName;
+    this.userFiles.docTypCode = fileResponse.response[0].docTypCode;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     for (let file of this.users[0].files[0]) {

@@ -8,6 +8,7 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { NotificationDtoModel } from 'src/app/shared/models/notification-model/notification-dto.model';
 import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -174,7 +175,9 @@ export class AcknowledgementComponent implements OnInit {
         applicantNumber[0] === undefined ? null : applicantNumber[0]
         );
       console.log(notificationDto);
-      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(notificationDto));
+      const model = new RequestModel(appConstants.IDS.notification, notificationDto);
+      console.log('notification request', model);
+      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(model));
       this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
       this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
