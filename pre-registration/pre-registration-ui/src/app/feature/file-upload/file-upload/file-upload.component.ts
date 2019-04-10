@@ -32,35 +32,35 @@ export class FileUploadComponent implements OnInit {
     ],
     preRegistrationId: ''
   };
-  applicantType;
-  sameAsselected = false;
+  applicantType: string;
+  sameAsselected: boolean = false;
   isModify: any;
-  fileName = '';
+  fileName: string = '';
   fileByteArray;
   fileUrl;
-  applicantPreRegId;
+  applicantPreRegId: string;
   userFiles: FileModel = new FileModel();
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-  documentType;
-  loginId;
-  documentIndex;
+  documentType: string;
+  loginId: string;
+  documentIndex: number;
   LOD: DocumentCategory[];
-  fileIndex = -1;
+  fileIndex: number = -1;
   secondaryLanguagelabels: any;
 
-  sameAs;
-  disableNavigation = false;
+  sameAs: string;
+  disableNavigation: boolean = false;
   // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
-  browseDisabled = true;
+  browseDisabled: boolean = true;
 
   // disabled = true;
   documentUploadRequestBody: DocumentUploadRequestDTO = {
-    doc_cat_code: '',
-    doc_typ_code: '',
-    lang_code: ''
+    docCatCode: '',
+    docTypCode: '',
+    langCode: ''
   };
 
   documentCategoryDto: DocumentCategoryDTO = {
@@ -69,8 +69,8 @@ export class FileUploadComponent implements OnInit {
   };
   documentCategoryrequestDto: DocumentCategoryDTO[];
   documentRequest: RequestModel;
-  step = 0;
-  multipleApplicants = false;
+  step: number = 0;
+  multipleApplicants: boolean = false;
   allApplicants: any[] = [];
   constructor(
     private registration: RegistrationService,
@@ -81,8 +81,7 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
-    console.log('CALIING FILE UPLOAD');
-
+    console.log('IN FILE-UPLOAD');
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
@@ -153,12 +152,30 @@ export class FileUploadComponent implements OnInit {
   }
   async getApplicantTypeID() {
     // let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
-    let requestDTO: DocumentCategoryDTO;
+    let requestDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
+    let DOBDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
+    let genderDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
+    let biometricDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
+
     let requestArray = {
       attributes: []
     };
     let DOCUMENT_CATEGORY_DTO: RequestModel;
-    let re = /\//g;
     let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
 
     requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.individualTypeCode;
@@ -170,20 +187,20 @@ export class FileUploadComponent implements OnInit {
 
     requestArray.attributes.push(requestDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.dateofbirth;
-    requestDTO.value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+    DOBDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.dateofbirth;
+    DOBDTO.value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(DOBDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.genderCode;
-    requestDTO.value = this.users[0].request.demographicDetails.identity.gender[0].value;
+    genderDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.genderCode;
+    genderDTO.value = this.users[0].request.demographicDetails.identity.gender[0].value;
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(genderDTO);
 
-    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.biometricAvailable;
-    requestDTO.value = false;
+    biometricDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.biometricAvailable;
+    biometricDTO.value = false;
 
-    requestArray.attributes.push(requestDTO);
+    requestArray.attributes.push(biometricDTO);
 
     // DOCUMENT_CATEGORY_DTO.request.attributes[2].value =
     // DOB = DOB + 'T11:46:12.640Z';
@@ -225,34 +242,17 @@ export class FileUploadComponent implements OnInit {
     );
   }
 
-  sortUserFiles() {
-    let sortedUserFiles;
-    for (let document of this.LOD) {
-      for (let file of this.users[0].files[0]) {
-        if (document.code === file.doc_cat_code) {
-          sortedUserFiles.push(file);
-          break;
-        }
-      }
-    }
-    console.log('sorted file', sortedUserFiles);
-
-    for (let i = 0; i <= this.users[0].files[0]; i++) {
-      this.users[0].files[0][i] = sortedUserFiles[i];
-    }
-  }
-
   viewFirstFile() {
     this.fileIndex = 0;
     this.viewFile(this.users[0].files[0][0]);
   }
 
-  viewFileByIndex(i) {
+  viewFileByIndex(i: number) {
     this.viewFile(this.users[0].files[0][i]);
   }
 
-  viewFile(file) {
-    this.fileName = file.doc_name;
+  viewFile(file: FileModel) {
+    this.fileName = file.docName;
     this.fileByteArray = file.multipartFile;
     let i = 0;
     for (let x of this.users[0].files[0]) {
@@ -346,9 +346,9 @@ export class FileUploadComponent implements OnInit {
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
   }
   setJsonString(event) {
-    this.documentUploadRequestBody.doc_cat_code = this.documentType;
-    this.documentUploadRequestBody.lang_code = localStorage.getItem('langCode');
-    this.documentUploadRequestBody.doc_typ_code = this.documentType;
+    this.documentUploadRequestBody.docCatCode = this.documentType;
+    this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
+    this.documentUploadRequestBody.docTypCode = this.documentType;
     this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
@@ -468,6 +468,7 @@ export class FileUploadComponent implements OnInit {
     arr.push('summary');
     arr.push('preview');
     const url = arr.join('/');
+    console.log('OUT FILE-UPLOAD IN PREVIEW');
     this.router.navigateByUrl(url);
   }
 
@@ -483,9 +484,9 @@ export class FileUploadComponent implements OnInit {
 }
 
 export interface DocumentUploadRequestDTO {
-  doc_cat_code: string;
-  doc_typ_code: string;
-  lang_code: string;
+  docCatCode: string;
+  docTypCode: string;
+  langCode: string;
 }
 
 export interface DocumentCategoryDTO {

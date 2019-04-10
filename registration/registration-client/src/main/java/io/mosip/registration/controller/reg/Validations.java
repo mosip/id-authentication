@@ -69,17 +69,17 @@ public class Validations extends BaseController {
 	public Validations() {
 		try {
 			noAlert = new ArrayList<>();
-			noAlert.add("ageField");
-			noAlert.add("dd");
-			noAlert.add("mm");
-			noAlert.add("yyyy");
-			noAlert.add("ddLocalLanguage");
-			noAlert.add("mmLocalLanguage");
-			noAlert.add("yyyyLocalLanguage");
-			noAlert.add("mobileNo");
-			noAlert.add("postalCode");
-			noAlert.add("cniOrPinNumber");
-			noAlert.add("uinId");
+			noAlert.add(RegistrationConstants.AGE_FIELD);
+			noAlert.add(RegistrationConstants.DD);
+			noAlert.add(RegistrationConstants.MM);
+			noAlert.add(RegistrationConstants.YYYY);
+			noAlert.add(RegistrationConstants.DD+RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.MM+RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.YYYY+RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.MOBILE_NUMBER);
+			noAlert.add(RegistrationConstants.POSTAL_CODE);
+			noAlert.add(RegistrationConstants.CNI_OR_PIN);
+			noAlert.add(RegistrationConstants.UIN_ID);
 			validationMessage = new StringBuilder();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -112,18 +112,15 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	public boolean validateTheFields(Pane pane, List<String> notTovalidate, boolean isValid, String isConsolidated) {
+	public boolean validateTheFields(Pane pane, List<String> notTovalidate, boolean isValid) {
 		for (Node node : pane.getChildren()) {
 			if (node instanceof Pane) {
-				if (!validateTheFields((Pane) node, notTovalidate, isValid, isConsolidated)) {
+				if (!validateTheFields((Pane) node, notTovalidate, isValid)) {
 					isValid = false;
 				}
 			} else if (nodeToValidate(notTovalidate, node)) {
-					if (!validateTheNode(pane, node, node.getId(), isConsolidated)) {
+					if (!validateTheNode(pane, node, node.getId())) {
 						isValid = false;
-					}
-					if (isConsolidated.equals(RegistrationConstants.ENABLE)) {
-						isValid = getValidationMessage().toString().isEmpty();
 					}
 				}
 		}
@@ -175,7 +172,7 @@ public class Validations extends BaseController {
 				.collect(Collectors.toList());
 		this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
 				.stream().map(BlacklistedWordsDto :: getWord).collect(Collectors.toList());
-		return validateTheFields(pane, notTovalidate, isValid, "N");
+		return validateTheFields(pane, notTovalidate, isValid);
 	}
 
 	/**
@@ -192,59 +189,13 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	public boolean validateTheNode(Pane parentPane, Node node, String id, String isConsolidated) {
+	public boolean validateTheNode(Pane parentPane, Node node, String id) {
 		if (node instanceof ComboBox<?>) {
-			return validateComboBox(parentPane, (ComboBox<?>) node, id, isConsolidated);
+			return validateComboBox(parentPane, (ComboBox<?>) node, id);
 		}
-		if (node instanceof VBox) {
-			return validateDocument((VBox) node, id, isConsolidated);
-		} else {
-			return validateTextField(parentPane, (TextField) node, id, isConsolidated);
-		}
+			return validateTextField(parentPane, (TextField) node, id);
 	}
-
-	/**
-	 * Validate for the document upload.
-	 *
-	 * @param node the node
-	 * @param id the id
-	 * @param isConsolidated
-	 *            the flag to indicate for displaying consolidated message
-	 * @return true, if successful
-	 */
-	private boolean validateDocument(VBox node, String id, String isConsolidated) {
-		boolean validated = false;
-		try {
-
-			outer: for (Node documentNode : node.getChildren()) {
-				if (documentNode instanceof HBox) {
-					for (Node innerNode : ((HBox) documentNode).getChildren()) {
-						if (innerNode instanceof VBox) {
-							validated = false;
-							if (innerNode.isDisabled()) {
-								validated = true;
-							} else if (!(((VBox) innerNode).getChildren().isEmpty())) {
-								validated = true;
-							} else {
-								/*
-								 * generateAlert(messageBundle.getString( "docMandateMsg").replace("{}", ((VBox)
-								 * innerNode).getId()), isConsolidated, validationMessage);
-								 */
-								node.requestFocus();
-								break outer;
-							}
-						}
-					}
-				}
-			}
-
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-		}
-		return node.getChildren().isEmpty() ? true : validated;
-	}
-
+	
 	/**
 	 * Validate for the TextField.
 	 *
@@ -258,12 +209,12 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	public boolean validateTextField(Pane parentPane, TextField node, String id, String isConsolidated) {
+	public boolean validateTextField(Pane parentPane, TextField node, String id) {
 		if (node.getId().contains(RegistrationConstants.LOCAL_LANGUAGE)) {
-			return languageSpecificValidation(parentPane, node, id, isConsolidated, localLabelBundle,
+			return languageSpecificValidation(parentPane, node, id, localLabelBundle,
 					localMessageBundle, localLanguageblackListedWords);
 		} else {
-			return languageSpecificValidation(parentPane, node, id, isConsolidated, applicationLabelBundle,
+			return languageSpecificValidation(parentPane, node, id, applicationLabelBundle,
 					applicationMessageBundle, applicationLanguageblackListedWords);
 		}
 	}
@@ -280,7 +231,7 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	private boolean languageSpecificValidation(Pane parentPane, TextField node, String id, String isConsolidated,
+	private boolean languageSpecificValidation(Pane parentPane, TextField node, String id,
 			ResourceBundle labelBundle, ResourceBundle messageBundle, List<String> blackListedWords) {
 		boolean isInputValid = false;
 
@@ -297,17 +248,17 @@ public class Validations extends BaseController {
 			if (node.isDisabled() || (!isMandatory && inputText.isEmpty())) {
 				isInputValid = true;
 			} else if (!id.contains(RegistrationConstants.ON_TYPE) && isMandatory && inputText.isEmpty()) {
-				generateInvalidValueAlert(parentPane, id, isConsolidated, labelBundle.getString(label).concat(" ")
+				generateInvalidValueAlert(parentPane, id, labelBundle.getString(label).concat(RegistrationConstants.SPACE)
 						.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), showAlert);
 			} else if (inputText.matches(regex)) {
-				isInputValid = validateBlackListedWords(parentPane, node, id, isConsolidated, blackListedWords,
+				isInputValid = validateBlackListedWords(parentPane, node, id, blackListedWords,
 						showAlert,
 						String.format("%s %s %s", messageBundle.getString(RegistrationConstants.BLACKLISTED_1),
 								labelBundle.getString(label),
 								messageBundle.getString(RegistrationConstants.BLACKLISTED_2)));
 			} else {
-				generateInvalidValueAlert(parentPane, id, isConsolidated,
-						messageBundle.getString(label + "_" + RegistrationConstants.REG_DDC_004), showAlert);
+				generateInvalidValueAlert(parentPane, id,
+						messageBundle.getString(label + RegistrationConstants.UNDER_SCORE + RegistrationConstants.REG_DDC_004), showAlert);
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -317,14 +268,14 @@ public class Validations extends BaseController {
 		return isInputValid;
 	}
 
-	private boolean validateBlackListedWords(Pane parentPane, TextField node, String id, String isConsolidated,
+	private boolean validateBlackListedWords(Pane parentPane, TextField node, String id,
 			List<String> blackListedWords, boolean showAlert, String errorMessage) {
 		boolean isInputValid = false;
 		if (blackListedWords != null && !id.contains(RegistrationConstants.ON_TYPE)) {
 			String bWords = String.join(", ", Stream.of(node.getText().split("\\s+")).collect(Collectors.toList())
 					.stream().filter(word -> blackListedWords.contains(word)).collect(Collectors.toList()));
 			if (bWords.length() > 0) {
-				generateInvalidValueAlert(parentPane, id, isConsolidated, String.format("%s %s", bWords, errorMessage),
+				generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage),
 						showAlert);
 			} else {
 				isInputValid = true;
@@ -335,16 +286,16 @@ public class Validations extends BaseController {
 		return isInputValid;
 	}
 
-	private void generateInvalidValueAlert(Pane parentPane, String id, String isConsolidated, String message,
+	private void generateInvalidValueAlert(Pane parentPane, String id, String message,
 			boolean showAlert) {
 		if (!showAlert)
-			generateAlert(parentPane, id, message, isConsolidated, validationMessage);
+			generateAlert(parentPane, id, message);
 	}
 
 	/**
 	 * Validate for the ComboBox type of node
 	 */
-	private boolean validateComboBox(Pane parentPane, ComboBox<?> node, String id, String isConsolidated) {
+	private boolean validateComboBox(Pane parentPane, ComboBox<?> node, String id) {
 		boolean isComboBoxValueValid = false;
 		try {
 			if (id.matches(RegistrationConstants.POR_DOCUMENTS) && !isChild)
@@ -357,9 +308,8 @@ public class Validations extends BaseController {
 			
 			if (node.getValue() == null) {
 				generateAlert(parentPane, id,
-						applicationLabelBundle.getString(id).concat(" ")
-								.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)),
-						isConsolidated, validationMessage);
+						applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
+								.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
 			} else {
 				isComboBoxValueValid = true;
 			}
@@ -389,7 +339,7 @@ public class Validations extends BaseController {
 
 		if (isChild) {
 			if (field.getText().length() <= Integer
-					.parseInt((String) ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
+					.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH))) {
 				try {
 					isIdValid = uinValidator.validateId(field.getText());
 				} catch (InvalidIDException invalidUinException) {
@@ -483,53 +433,45 @@ public class Validations extends BaseController {
 		} else {
 			switch (id.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY)
 					.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY)) {
-			case "emailId":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.EMAIL_VALIDATION_REGEX));
+			case RegistrationConstants.EMAIL_ID:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.EMAIL_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "cniOrPinNumber":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.CNIE_VALIDATION_REGEX));
+			case RegistrationConstants.CNI_OR_PIN:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
-			case "mobileNo":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.PHONE_VALIDATION_REGEX));
+			case RegistrationConstants.MOBILE_NUMBER:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.PHONE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "postalCode":
-				validation[0] = String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX));
+			case RegistrationConstants.POSTAL_CODE:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "fullName":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ID_FULL_NAME_REGEX));
+			case RegistrationConstants.FULL_NAME:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ID_FULL_NAME_REGEX);
+
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "ageField":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.AGE_REGEX));
+			case RegistrationConstants.AGE_FIELD:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "addressLine1":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_1_REGEX));
+			case RegistrationConstants.ADDRESS_LINE1:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_1_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
-			case "addressLine2":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_2_REGEX));
+			case RegistrationConstants.ADDRESS_LINE2:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_2_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
-			case "addressLine3":
-				validation[0] = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_3_REGEX));
+			case RegistrationConstants.ADDRESS_LINE3:
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.ADDRESS_LINE_3_REGEX);
 				validation[1] = RegistrationConstants.FALSE;
 				break;
 			default:
-				validation[0] = ".*";
+				validation[0] = RegistrationConstants.REGEX_ANY;
 				validation[1] = RegistrationConstants.FALSE;
 			}
 		}

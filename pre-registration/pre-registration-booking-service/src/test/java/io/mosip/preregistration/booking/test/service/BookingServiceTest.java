@@ -180,7 +180,7 @@ public class BookingServiceTest {
 	MainListRequestDTO<BookingRequestDTO> bookingDto = new MainListRequestDTO<>();
 	MainListRequestDTO<BookingRequestDTO> reBookingDto = new MainListRequestDTO<>();
 
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	@Value("${id}")
@@ -244,11 +244,11 @@ public class BookingServiceTest {
 
 		statusDTOA.setBookingStatus(StatusCodes.BOOKED.getCode());
 		statusDTOA.setPreRegistrationId(bookingPreId);
-		statusDTOA.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+		statusDTOA.setBookingMessage("Appointment booked successfully");
 
 		statusDTOB.setBookingStatus(StatusCodes.BOOKED.getCode());
 		statusDTOB.setPreRegistrationId(bookingPreId);
-		statusDTOB.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+		statusDTOB.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> resp = new ArrayList<>();
 
@@ -546,7 +546,7 @@ public class BookingServiceTest {
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
 		bookingStatusDTO.setPreRegistrationId("12345678909876");
 		bookingStatusDTO.setBookingStatus(StatusCodes.EXPIRED.getCode());
-		bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		respList.add(bookingStatusDTO);
@@ -634,7 +634,7 @@ public class BookingServiceTest {
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
 		bookingStatusDTO.setPreRegistrationId("12345678909876");
 		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-		bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		respList.add(bookingStatusDTO);
@@ -853,7 +853,7 @@ public class BookingServiceTest {
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto,
 				"23587986034785");
-		assertEquals("APPOINTMENT_SUCCESSFULLY_CANCELED", responseDto.getResponse().getMessage());
+		assertEquals("Appointment cancelled successfully", responseDto.getResponse().getMessage());
 
 	}
 
@@ -891,7 +891,7 @@ public class BookingServiceTest {
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
 		bookingStatusDTO.setPreRegistrationId("12345678909876");
 		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-		bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		respList.add(bookingStatusDTO);
@@ -999,7 +999,7 @@ public class BookingServiceTest {
 
 		BookingStatusDTO response = service.book("23587986034785", successBookDto);
 
-		assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
+		assertEquals("Appointment booked successfully", response.getBookingMessage());
 	}
 
 	@Test(expected = TableNotAccessibleException.class)

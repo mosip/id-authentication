@@ -146,6 +146,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to Home page on Logout and destroying Session context
+	 * 
+	 * @param event
+	 * 			logout event
 	 */
 	public void logout(ActionEvent event) {
 		try {
@@ -179,6 +182,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to Home page
+	 * 
+	 * @param event
+	 * 			event for redirecting to home
 	 */
 	public void redirectHome(ActionEvent event) {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -247,6 +253,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to PacketStatusSync Page
+	 * 
+	 * @param event
+	 * 			event for sync packet status
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		if (isMachineRemapProcessStarted()) {
@@ -325,6 +334,7 @@ public class HeaderController extends BaseController {
 	 * This method is to trigger the Pre registration sync service
 	 * 
 	 * @param event
+	 * 			event for downloading pre reg data
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {

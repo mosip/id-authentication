@@ -34,6 +34,7 @@ export class PreviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('IN PREVIEW');
     this.primaryLanguage = localStorage.getItem('langCode');
     this.secondaryLanguage = localStorage.getItem('secondaryLangCode');
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
@@ -56,18 +57,15 @@ export class PreviewComponent implements OnInit {
     let fields = appConstants.previewFields;
     fields.forEach(field => {
       this.previewData[field].forEach(element => {
-          element.name = this.locCodeToName(
-          element.value,
-          element.language
-        )
-      })
-    })
+        element.name = this.locCodeToName(element.value, element.language);
+      });
+    });
   }
 
   setResidentStatus() {
     this.previewData['residenceStatus'].forEach(element => {
       element.name = appConstants.residentTypesMapping[element.value][element.language];
-    })
+    });
   }
 
   documentsMapping() {
@@ -77,7 +75,7 @@ export class PreviewComponent implements OnInit {
       if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
         const obj = {
           doc_name: appConstants.sameAs[localStorage.getItem('langCode')]
-        }
+        };
         file.push(obj);
       }
       const obj = {
@@ -135,7 +133,7 @@ export class PreviewComponent implements OnInit {
 
   enableContinue(): boolean {
     let flag = true;
-    this.documentMapObject.forEach(object => {      
+    this.documentMapObject.forEach(object => {
       if (object.fileName === undefined) {
         if (object.code === 'POA' && this.registrationService.getSameAs() !== '') {
           flag = true;
@@ -143,7 +141,7 @@ export class PreviewComponent implements OnInit {
           flag = false;
         }
       }
-    })
+    });
     return flag;
   }
 

@@ -26,11 +26,12 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.service.NotificationService;
+
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
 /**
  * @author Sanober Noor
- *@since 1.0.0
+ * @since 1.0.0
  */
 @SpringBootTest(classes = { NotificationApplicationTest.class })
 @RunWith(SpringRunner.class)
@@ -54,13 +55,12 @@ public class NotificationControllerTest {
 
 	@MockBean
 	private NotificationServiceUtil serviceUtil;
-	
 
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
-	
-	MainResponseDTO<Map<String,String>> configRes = new MainResponseDTO<>();
+
+	MainResponseDTO<Map<String, String>> configRes = new MainResponseDTO<>();
 
 	@Before
 	public void setUp() {
@@ -74,41 +74,43 @@ public class NotificationControllerTest {
 
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		
+
 	}
 
 	/**
 	 * This test method is for success sendNotification method
+	 * 
 	 * @throws Exception
 	 */
 	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void sendNotificationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
-String langCode="eng";
+		String langCode = "eng";
 		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
-		
+
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/notify")
-				.file(new MockMultipartFile("NotificationDTO",stringjson,
-						"application/json",stringjson.getBytes(Charset.forName("UTF-8") ))).
-				file(new MockMultipartFile("langCode",langCode,
-						"application/json",langCode.getBytes(Charset.forName("UTF-8") 
-								 )))).andExpect(status().isOk());
+				.file(new MockMultipartFile("NotificationRequestDTO", stringjson, "application/json",
+						stringjson.getBytes(Charset.forName("UTF-8"))))
+				.file(new MockMultipartFile("langCode", langCode, "application/json",
+						langCode.getBytes(Charset.forName("UTF-8")))))
+				.andExpect(status().isOk());
 
 	}
 
-//	/**
-//	 * This test method is for success qrCodeGeneration 
-//	 * @throws Exception
-//	 */
-//	@WithUserDetails("individual")
-//	@Test
-//	public void qrCodeGenerationTest() throws Exception {
-//		String stringjson = mapper.writeValueAsString(notificationDTO);
-//		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
-//		
-//		mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
-//			.content(stringjson)).andExpect(status().isOk());
-//
-//	}
+	// /**
+	// * This test method is for success qrCodeGeneration
+	// * @throws Exception
+	// */
+	// @WithUserDetails("individual")
+	// @Test
+	// public void qrCodeGenerationTest() throws Exception {
+	// String stringjson = mapper.writeValueAsString(notificationDTO);
+	// Mockito.when(service.sendNotification(stringjson, "eng",
+	// null)).thenReturn(responseDTO);
+	//
+	// mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
+	// .content(stringjson)).andExpect(status().isOk());
+	//
+	// }
 }

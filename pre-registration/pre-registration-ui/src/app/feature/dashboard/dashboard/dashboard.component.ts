@@ -56,6 +56,8 @@ export class DashBoardComponent implements OnInit {
     localStorage.setItem('modifyDocument', 'false');
   }
   ngOnInit() {
+    console.log('IN DASHBOARD');
+
     this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
@@ -151,6 +153,7 @@ export class DashBoardComponent implements OnInit {
   onNewApplication() {
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
+      console.log('OUT DASHBOARD IN DEMOGRAPHIC');
       this.isNewApplication = true;
     } else {
       this.router.navigate(['/']);
@@ -225,28 +228,30 @@ export class DashBoardComponent implements OnInit {
 
   cancelAppointment(element: any) {
     element.regDto.pre_registration_id = element.applicationID;
-    this.dataStorageService.cancelAppointment(new RequestModel(appConstants.IDS.cancelAppointment, element.regDto), element.applicationID).subscribe(
-      response => {
-        if (!response['errors']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
-          const index = this.users.indexOf(element);
-          this.users[index].status = 'Pending Appointment';
-          this.users[index].appointmentDateTime = '-';
-        } else {
+    this.dataStorageService
+      .cancelAppointment(new RequestModel(appConstants.IDS.cancelAppointment, element.regDto), element.applicationID)
+      .subscribe(
+        response => {
+          if (!response['errors']) {
+            this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
+            const index = this.users.indexOf(element);
+            this.users[index].status = 'Pending Appointment';
+            this.users[index].appointmentDateTime = '-';
+          } else {
+            this.displayMessage(
+              this.secondaryLanguagelabels.title_error,
+              this.secondaryLanguagelabels.msg_could_not_deleted
+            );
+          }
+        },
+        error => {
+          console.log(error);
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
             this.secondaryLanguagelabels.msg_could_not_deleted
           );
         }
-      },
-      error => {
-        console.log(error);
-        this.displayMessage(
-          this.secondaryLanguagelabels.title_error,
-          this.secondaryLanguagelabels.msg_could_not_deleted
-        );
-      }
-    );
+      );
   }
 
   onDelete(element) {

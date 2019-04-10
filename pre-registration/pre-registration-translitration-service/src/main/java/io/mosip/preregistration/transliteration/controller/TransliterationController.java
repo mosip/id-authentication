@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,8 +52,8 @@ public class TransliterationController {
 	@ApiOperation(value = "Get Pre-Registartion-Translitration data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully"),
 			@ApiResponse(code = 400, message = "Unable to get the translitration") })
-	public ResponseEntity<MainResponseDTO<TransliterationDTO>> translitrator(
-			@RequestBody(required = true) MainRequestDTO<TransliterationDTO> requestDTO) {
+	public ResponseEntity<MainResponseDTO<TransliterationResponseDTO>> translitrator(
+			@RequestBody(required = true) MainRequestDTO<TransliterationRequestDTO> requestDTO) {
 		return ResponseEntity.status(HttpStatus.OK).body(transliterationService.translitratorService(requestDTO));
 	}
 }

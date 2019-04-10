@@ -38,9 +38,8 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  *
  */
 @Service
-public class UserMachineMappingServiceImpl implements UserMachineMappingService {
-	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
+public class UserMachineMappingServiceImpl extends BaseService implements UserMachineMappingService {
+	
 	@Autowired
 	private BaseService baseService;
 	@Autowired

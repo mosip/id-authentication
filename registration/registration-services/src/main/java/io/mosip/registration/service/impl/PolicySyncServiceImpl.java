@@ -50,8 +50,6 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 @Service
 public class PolicySyncServiceImpl extends BaseService implements PolicySyncService {
 	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
-	@Autowired
 	private PolicySyncDAO policySyncDAO;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PolicySyncServiceImpl.class);

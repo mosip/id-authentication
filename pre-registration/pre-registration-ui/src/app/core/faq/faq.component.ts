@@ -9,7 +9,7 @@ import { DataStorageService } from '../services/data-storage.service';
 export class FaqComponent implements OnInit {
 
   langCode = '';
-  data = {};
+  data = [];
   answerTranslation = '';
 
   constructor(private dataStorageService: DataStorageService) { }

@@ -4,7 +4,7 @@
 package io.mosip.kernel.auth.service;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 public interface TokenGenerationService {

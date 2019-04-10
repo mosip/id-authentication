@@ -2,6 +2,7 @@ package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,16 +31,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
+import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
@@ -65,16 +66,17 @@ public class NotificationServiceTest {
 	@MockBean(name = "restTemplate")
 	private RestTemplate restTemplate;
 
-	@MockBean
-	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-
+	
+	@MockBean
+   private NotificationUtil NotificationUtil;
 	private NotificationDTO notificationDTO;
 	boolean requestValidatorFlag = false;
 	TemplateResponseDTO templateResponseDTO = new TemplateResponseDTO();
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	MainListResponseDTO<NotificationResponseDTO> responselist=new MainListResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
 	MainRequestDTO<NotificationDTO> mainReqDto = new MainRequestDTO<>();
@@ -91,12 +93,13 @@ public class NotificationServiceTest {
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
-		mainReqDto.setId("mosip.pre-registration.demographic.create");
+		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
-
-		mainReqDto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
+//2019-04-8T07:22:57.186Z
+		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
+		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
@@ -116,7 +119,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-//	@Test
+@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
@@ -124,10 +127,12 @@ public class NotificationServiceTest {
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
 		templateResponseListDTO.setTemplates(tepmlateList);
+		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
 		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
 				templateResponseListDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
 				.thenReturn(res);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
@@ -189,36 +194,7 @@ public class NotificationServiceTest {
 
 	}
 
-//	/**
-//	 * This method return the success test case for generateQRCode method
-//	 * 
-//	 * @throws QrcodeGenerationException
-//	 * @throws java.io.IOException
-//	 */
-//	@Test
-//	public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.io.IOException {
-//		String stringjson = mapper.writeValueAsString(notificationDTO);
-//		byte[] qrCode = null;
-//		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
-//		responsedto.setQrcode(qrCode);
-//		qrCodeResponseDTO.setResponse(responsedto);
-//		qrCodeResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-//		Mockito.when(qrCodeGenerator.generateQrCode(stringjson, QrVersion.V25)).thenReturn(qrCode);
-//		MainResponseDTO<QRCodeResponseDTO> response = service.generateQRCode(stringjson);
-//
-//		assertEquals(qrCodeResponseDTO.getResponse(), response.getResponse());
-//	}
-//
-//	@Test
-//	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException {
-//		String stringjson = mapper.writeValueAsString(notificationDTO);
-//
-//		Mockito.when(qrCodeGenerator.generateQrCode(null, QrVersion.V25)).thenThrow(QrcodeGenerationException.class);
-//		service.generateQRCode(stringjson);
-//
-//		assertEquals(null, qrCodeResponseDTO.getResponse());
-//
-//	}
+
 
 	/**
 	 * This test method is for succes case of getConfig

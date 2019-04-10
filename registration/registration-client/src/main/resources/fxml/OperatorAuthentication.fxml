@@ -196,7 +196,7 @@
 							<children>
 								<GridPane GridPane.columnIndex="1" GridPane.columnSpan="2">
 									<children>
-										<Label fx:id="passwdLabel" styleClass="paneHeader" text="%registrationofficerverification" />
+										<Label styleClass="paneHeader" text="%pwdAuthentication" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -293,7 +293,7 @@
 							<children>
 								<GridPane GridPane.columnIndex="1" GridPane.columnSpan="2">
 									<children>
-										<Label fx:id="otpLabel" styleClass="paneHeader" text="%registrationofficerverification" />
+										<Label styleClass="paneHeader" text="%otpAuthentication" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -421,7 +421,7 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<Label fx:id="fingerPrintLabel" styleClass="paneHeader" text="%rofingerprintauthentication" />
+										<Label styleClass="paneHeader" text="%fpAuthentication" />
 									</children>
 								</GridPane>
 							</children>
@@ -656,7 +656,7 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<Label fx:id="irisLabel" styleClass="paneHeader" text="%roirisauthentication" />
+										<Label styleClass="paneHeader" text="%irisAuthentication" />
 									</children>
 								</GridPane>
 							</children>
@@ -891,7 +891,7 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<Label fx:id="faceLabel" styleClass="paneHeader" text="%rofaceauthentication" />
+										<Label styleClass="paneHeader" text="%photoAuthentication" />
 									</children>
 								</GridPane>
 							</children>

@@ -167,7 +167,7 @@ public class RegistrationApprovalController extends BaseController implements In
 						setTextFill(Color.GREEN);
 					} else if (item != null && item.equals(RegistrationUIConstants.REJECTED)) {
 						setTextFill(Color.RED);
-					}else {
+					} else {
 						setTextFill(Color.BLACK);
 					}
 				}
@@ -186,10 +186,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		rejectionBtn.setVisible(false);
 		imageAnchorPane.setVisible(false);
 
-		id.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>("id"));
-		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>("statusComment"));
-		acknowledgementFormPath.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalDTO, String>("acknowledgementFormPath"));
+		id.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalDTO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
+		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
 		table.setOnMouseClicked((MouseEvent event) -> {
@@ -213,7 +215,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			webView.getEngine().loadContent("");
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
@@ -247,7 +249,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
-		
+
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
@@ -268,10 +270,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event
-	 *            the event
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @param event the event
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -318,7 +318,8 @@ public class RegistrationApprovalController extends BaseController implements In
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
 					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
-							primarystage, approvalmapList, table, "RegistrationApprovalController");
+							primarystage, approvalmapList, table,
+							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
@@ -348,13 +349,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage
-	 *            the stage
-	 * @param fxmlPath
-	 *            the fxml path
+	 * @param primarystage the stage
+	 * @param fxmlPath     the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 

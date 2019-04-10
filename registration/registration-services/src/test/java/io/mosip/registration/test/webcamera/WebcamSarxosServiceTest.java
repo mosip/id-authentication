@@ -7,8 +7,11 @@ import static org.mockito.Mockito.when;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.device.webcam.impl.WebcamSarxosServiceImpl;
 
 @RunWith(PowerMockRunner.class)
@@ -36,11 +40,20 @@ public class WebcamSarxosServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
 	@Mock
 	WebcamDiscoveryService discoveryService;
 	
 	@Mock
 	Webcam webcam;
+	
+	@Before
+	public void initialize() {
+		Map<String, Object> temp = new HashMap<String, Object>();
+		temp.put("mosip.registration.webcam_name", "logitech");
+		applicationContext.setApplicationMap(temp);
+	}
 	
 	@Test
 	public void testIsWebcamConnected() {

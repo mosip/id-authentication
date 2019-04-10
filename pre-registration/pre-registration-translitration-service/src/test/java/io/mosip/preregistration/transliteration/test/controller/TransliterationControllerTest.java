@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 
@@ -82,15 +82,15 @@ public class TransliterationControllerTest {
 	}
 
 	/**
-	 * @throws Exception on eoor
+	 * @throws Exception on error
 	 */
 	@Test
 	public void successTest() throws Exception {
 
 		logger.info("----------Successful transliteration controller operation-------");
-		MainResponseDTO<TransliterationDTO> response = new MainResponseDTO<>();
-		TransliterationDTO dto = new TransliterationDTO();
-		//response.setResponse(dto);
+		MainResponseDTO<TransliterationResponseDTO> response = new MainResponseDTO<>();
+//		TransliterationResponseDTO dto = new TransliterationResponseDTO();
+//		//response.setResponse(dto);
 		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/transliterate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
