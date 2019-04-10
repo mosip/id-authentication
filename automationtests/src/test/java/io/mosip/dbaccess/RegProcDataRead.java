@@ -41,7 +41,7 @@ public class RegProcDataRead {
 		session.beginTransaction();
 
 		SyncRegistrationDto dto =validateRegIdinRegistrationList(session,regId);
-		int count = countRegIdInRegistrationList(session,regId);
+//		int count = countRegIdInRegistrationList(session,regId);
 		if(dto!=null /*&& count== 0*/)
 		{
 			session.close();
@@ -178,7 +178,11 @@ public class RegProcDataRead {
 		}
 	}
 
-	private int countRegIdInRegistrationList(Session session, String regId) {
+	public List<Object> countRegIdInRegistrationList(String regId) {
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		
 		String queryString= "Select regprc.registration_list.reg_id, count(1)"+
 				" From regprc.registration_list where regprc.registration_list.reg_id= :regId_value "
 				+ "Group By regprc.registration_list.reg_id Having count(1)>1";
@@ -186,7 +190,7 @@ public class RegProcDataRead {
 		logger.info("regId is : " +regId);																																			
 		Query query = session.createSQLQuery(queryString);
 		query.setParameter("regId_value", regId);
-		int result = query.executeUpdate();
+		List<Object> result = query.getResultList();
 		logger.info("result==== : "+result);
 		
 		session.getTransaction().commit();

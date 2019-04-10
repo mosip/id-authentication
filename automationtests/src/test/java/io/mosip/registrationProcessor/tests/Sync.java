@@ -163,6 +163,7 @@ public class Sync extends BaseTestCase implements ITest {
 						logger.info("Reg Id is : " +regIds);
 
 						SyncRegistrationDto dbDto = readDataFromDb.regproc_dbDataInRegistrationList(regIds);	
+						List<Object> count = readDataFromDb.countRegIdInRegistrationList(regIds);
 						logger.info("dbDto :" +dbDto);
 
 						//Checking audit logs (not yet implemented)
@@ -171,7 +172,7 @@ public class Sync extends BaseTestCase implements ITest {
 							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
 							logger.info("AUDIT DTO : "+auditDto.getApplicationName());*/
 
-						if(dbDto != null /*&& auditDto != null*/) {
+						if(dbDto != null && count.isEmpty()/*&& auditDto != null*/) {
 							//if reg id present in response and reg id fetched from table matches, then it is validated
 							if (expectedRegIds.contains(dbDto.getRegistrationId())/*&& expectedRegIds.contains(auditDto.getId())*/){
 
