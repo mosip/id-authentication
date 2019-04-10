@@ -1,13 +1,14 @@
 {
-  "response": [
-    {
-      "errorCode": "RPR-RGS-008",
-      "registrationId": "209161001100abcd0190218154630",
-      "status": "FAILURE",
-      "message": "RegistrationId Must Be Numeric Only"
-    }
-  ],
   "id": "mosip.registration.sync",
   "version": "1.0",
-  "responsetime": "2019-03-07T06:57:57.106Z"
+  "responsetime": "2019-04-10T09:11:11.452Z",
+  "errors": [
+    {
+      "registrationId": "209161001100abcd0190218154630",
+      "status": "FAILURE",
+      "message": "RegistrationId Must Be Numeric Only",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-008"
+    }
+  ]
 }

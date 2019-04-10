@@ -21,17 +21,17 @@
      <class name="io.mosip.registrationProcessor.tests.Sync"/>          
     </classes>
   </test>
-  <test name="RegistrationProcessor.PacketReceiver">    						
+ <test name="RegistrationProcessor.PacketReceiver">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
      <class name="io.mosip.registrationProcessor.tests.PacketReceiver"/>          
     </classes>
-  </test> <!-- Test --> 
+  </test>  
   <test name="RegistrationProcessor.IntegrationScenarios">    						
     <classes>
      <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios"/>          
     </classes>
-  </test> <!-- Test -->
+  </test> 
     <test name="RegistrationProcessor.StageValidationTests">    						
     <classes>
      <class name="io.mosip.registrationProcessor.tests.StageValidationTests"/>  

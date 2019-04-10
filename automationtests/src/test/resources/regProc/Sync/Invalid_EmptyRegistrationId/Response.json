@@ -1,13 +1,14 @@
 {
-  "response": [
-    {
-      "errorCode": "RPR-RGS-009",
-      "registrationId": "",
-      "status": "FAILURE",
-      "message": "RegistrationId Length Must Be 29"
-    }
-  ],
   "id": "mosip.registration.sync",
   "version": "1.0",
-  "responsetime": "2019-03-07T07:00:36.268Z"
+  "responsetime": "2019-04-10T09:13:49.136Z",
+  "errors": [
+    {
+      "registrationId": "",
+      "status": "FAILURE",
+      "message": "RegistrationId Length Must Be 29",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-009"
+    }
+  ]
 }
