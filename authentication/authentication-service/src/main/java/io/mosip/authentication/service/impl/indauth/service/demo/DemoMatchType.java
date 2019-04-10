@@ -60,7 +60,7 @@ public enum DemoMatchType implements MatchType {
 			}),
 
 	/** Gender Match Type. */
-	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender, false),
+	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender,false),
 
 	/** Phone Match Type. */
 	PHONE(IdaIdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT),
