@@ -177,7 +177,8 @@ export class AcknowledgementComponent implements OnInit {
       console.log(notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);
       console.log('notification request', model);
-      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(model));
+      console.log('stringified model', JSON.stringify(model).trim());
+      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(model).trim());
       this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
       this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {

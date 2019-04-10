@@ -250,11 +250,13 @@ export class TimeSelectionComponent implements OnInit {
               this.temp.forEach(name => {
                 this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                const appointmentDateTime = Utils.getBookingDateTime(
-                  booking[0].appointment_date,
-                  booking[0].time_slot_from
-                );
-                this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                if (booking[0]) {
+                  const appointmentDateTime = Utils.getBookingDateTime(
+                    booking[0].appointment_date,
+                    booking[0].time_slot_from
+                  );
+                  this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                }
               });
               const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
@@ -289,6 +291,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
+    this.sharedService.flushNameList();
     this.temp.forEach(name => {
       this.sharedService.addNameList(name);
     });
