@@ -200,25 +200,35 @@ public class IrisCaptureController extends BaseController {
 	 * Populate exception.
 	 */
 	private void populateException() {
-		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
-				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO() != null
-				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-						.getBiometricExceptionDTO() != null) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
+					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO() != null) {
+				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().stream()
+						.forEach(bio -> setExceptionIris(bio));
+			}
+		} else {
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
+					&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO() != null
+					&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							.getBiometricExceptionDTO() != null) {
 
-			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
-					.stream().forEach(bio -> {
-						if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
-								&& bio.getMissingBiometric().equalsIgnoreCase(RegistrationConstants.LEFT.toLowerCase()
-										.concat(RegistrationConstants.EYE.toLowerCase()))) {
-							leftIrisException.setText(ApplicationContext.applicationLanguageBundle()
-									.getString(bio.getMissingBiometric()));
-						} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
-								&& bio.getMissingBiometric().equalsIgnoreCase(RegistrationConstants.RIGHT.toLowerCase()
-										.concat(RegistrationConstants.EYE.toLowerCase()))) {
-							rightIrisException.setText(ApplicationContext.applicationLanguageBundle()
-									.getString(bio.getMissingBiometric()));
-						}
-					});
+				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
+						.stream().forEach(bio -> setExceptionIris(bio));
+			}
+		}
+	}
+
+	private void setExceptionIris(BiometricExceptionDTO bio) {
+		if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
+				&& bio.getMissingBiometric().equalsIgnoreCase(
+						RegistrationConstants.LEFT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
+			leftIrisException
+					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
+		} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
+				&& bio.getMissingBiometric().equalsIgnoreCase(
+						RegistrationConstants.RIGHT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
+			rightIrisException
+					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
 		}
 	}
 
@@ -680,10 +690,6 @@ public class IrisCaptureController extends BaseController {
 		return StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
 				? RegistrationConstants.LEFT
 				: RegistrationConstants.RIGHT;
-	}
-
-	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	private String getQualityScoreAsString(double qualityScore) {

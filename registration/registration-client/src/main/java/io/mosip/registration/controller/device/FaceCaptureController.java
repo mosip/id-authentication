@@ -707,10 +707,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		timeline.play();
 	}
 
-	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
-	}
-
 	/**
 	 * To get the current timestamp
 	 * 
