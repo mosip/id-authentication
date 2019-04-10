@@ -173,7 +173,7 @@ public class OSIValidator {
 			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			return false;
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(registrationId)))
 			isValidOsi = true;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::exit");
@@ -314,7 +314,7 @@ public class OSIValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
+	private boolean isValidIntroducer(String registrationId)
 			throws IOException, ApisResourceAccessException {
 			
 		int childAgeLimit = Integer.parseInt(ageLimit);
@@ -343,7 +343,7 @@ public class OSIValidator {
 				}
 			}
 			if (introducerUinString != null) {
-				return validateIntroducer(regOsi, registrationId, introducerUinString);
+				return validateIntroducer(registrationId, introducerUinString);
 			} else {
 				return false;
 			}
@@ -692,39 +692,9 @@ public class OSIValidator {
 	 */
 	
 	//TODO Now Introducer data will come in ID JSON Logic is going to change 
-	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
+	private boolean validateIntroducer(String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
 		
-		/*if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
-				&& (regOsi.getIntroducerPhotoName() == null)) {
-			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-			return false;
-		}
-
-		if (regOsi.getIntroducerFingerpImageName() != null) {
-			String fingerPrint = BIOMETRIC
-					+ getHashSequenceValue(registrationId, JsonConstant.INTRODUCERBIOMETRICSEQUENCE);
-			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}
-		if (regOsi.getIntroducerIrisImageName() != null) {
-			String iris = BIOMETRIC + regOsi.getIntroducerIrisImageName().toUpperCase();
-			String irisType = regOsi.getIntroducerIrisType();
-			if (!validateIris(introducerUin, iris, irisType, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}
-		if (regOsi.getIntroducerPhotoName() != null) {
-			String face = BIOMETRIC + regOsi.getIntroducerPhotoName().toUpperCase();
-			if (!validateFace(introducerUin, face, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}*/
 		return true;
 
 	}
