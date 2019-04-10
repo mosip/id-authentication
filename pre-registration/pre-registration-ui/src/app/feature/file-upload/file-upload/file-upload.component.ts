@@ -44,6 +44,7 @@ export class FileUploadComponent implements OnInit {
   user: UserModel = new UserModel();
   users: UserModel[] = [];
   documentCategory: string;
+  documentType: string;
   loginId: string;
   documentIndex: number;
   LOD: DocumentCategory[];
@@ -275,6 +276,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   handleFileInput(event) {
+    console.log('event of file upload', event);
     this.disableNavigation = true;
     if (event.target.files[0].type === 'application/pdf') {
       if (event.target.files[0].name.length < 46) {
@@ -311,6 +313,7 @@ export class FileUploadComponent implements OnInit {
 
   selectChange(event, index: number) {
     this.documentCategory = event.source.placeholder;
+    this.documentType = event.source.value;
     this.documentIndex = index;
   }
 
@@ -348,7 +351,7 @@ export class FileUploadComponent implements OnInit {
   setJsonString(event) {
     this.documentUploadRequestBody.docCatCode = this.documentCategory;
     this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
-    this.documentUploadRequestBody.docTypCode = event.value;
+    this.documentUploadRequestBody.docTypCode = this.documentType;
     this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
