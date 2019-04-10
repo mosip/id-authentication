@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -27,7 +26,6 @@ import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 
-@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
