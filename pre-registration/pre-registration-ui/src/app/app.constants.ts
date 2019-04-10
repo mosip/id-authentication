@@ -102,7 +102,11 @@ export const CONFIG_KEYS = {
   mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'preregistration.address.length',
   preregistration_fullname_length: 'preregistration.fullname.length',
-  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age'
+  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age',
+  mosip_preregistration_auto_logout_idle :'mosip.preregistration.auto.logout.idle',
+  mosip_preregistration_auto_logout_timeout : 'mosip.preregistration.auto.logout.timeout',
+  mosip_preregistration_auto_logout_ping  : 'mosip.preregistration.auto.logout.ping'
+
   // mosip.kernel.sms.number.length
   // preregistration.max.file.size
   // preregistration.workflow.demographic,
