@@ -7,8 +7,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 
 /**
  * The Class RegistrationStatusMapUtil.
@@ -23,6 +28,9 @@ public class RegistrationStatusMapUtil {
 	/** The unmodifiable map. */
 	private static Map<RegistrationStatusCode, RegistrationExternalStatusCode> unmodifiableMap = Collections
 			.unmodifiableMap(statusMap);
+
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusMapUtil.class);
 
 	@Value("${registration.processor.threshold}")
 	private int threshold;
@@ -79,14 +87,26 @@ public class RegistrationStatusMapUtil {
 
 	}
 
-	public RegistrationExternalStatusCode getExternalStatus(String statusCode, Integer retryCount) {
-		RegistrationExternalStatusCode mappedValue;
+	public RegistrationExternalStatusCode getExternalStatus(RegistrationStatusEntity entity) {	
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				entity.getReferenceRegistrationId(), "RegistrationStatusMapUtil::getExternalStatus()::entry");
+
+		RegistrationExternalStatusCode mappedValue = null;
 		Map<RegistrationStatusCode, RegistrationExternalStatusCode> mapStatus = RegistrationStatusMapUtil
 				.statusMapper();
-		mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(statusCode));
-		if ((retryCount < threshold) && (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
-			mappedValue = RegistrationExternalStatusCode.RESEND;
+		if(entity.getStatusCode() != null) {
+			mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(entity.getStatusCode()));
+			if ((entity.getRetryCount() < threshold) && (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
+				mappedValue = RegistrationExternalStatusCode.RESEND;
+			}
+		}else {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), entity.getReferenceRegistrationId(),
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_STATUS_NOT_EXIST.getMessage());
 		}
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				entity.getReferenceRegistrationId(), "RegistrationStatusMapUtil::getExternalStatus()::exit");		
 		return mappedValue;
 	}
 
