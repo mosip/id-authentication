@@ -211,7 +211,7 @@ export const languageMapping = {
 export const notificationDtoKeys = {
   notificationDto: 'NotificationRequestDTO',
   langCode: 'langCode',
-  file: 'file'
+  file: 'attachment'
 };
 
 export const residentTypesMapping = {
