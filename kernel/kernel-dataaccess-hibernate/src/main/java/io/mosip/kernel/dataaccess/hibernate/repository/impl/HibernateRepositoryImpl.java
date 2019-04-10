@@ -21,6 +21,8 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Hibernate implementation of the {@link BaseRepository} interface.
  * 
@@ -173,6 +175,7 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 	 * io.mosip.kernel.core.dao.repository.BaseRepository#createQuerySelect(java.
 	 * lang.String, java.util.Map)
 	 */
+	@SuppressFBWarnings(value="findsecbugs:SQL_INJECTION_JPA",justification = " " )
 	@Override
 	public List<E> createQuerySelect(String qlString, Map<String, Object> params) {
 		List<E> entityList = null;
