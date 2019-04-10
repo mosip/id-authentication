@@ -105,5 +105,11 @@ The key solution considerations are -
 ------------
 
 
+Demo Match Found Sequence Diagram:
 
 ![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_match_seq_diagram.png)
+
+
+Demo No Match Sequence Diagram:
+
+![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_no_match_seq_diagram.png)
