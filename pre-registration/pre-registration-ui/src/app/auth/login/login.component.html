@@ -13,7 +13,7 @@
       {{'login.sub_text' | translate}} <span class="boldText"> {{'login.sub_text_UID' | translate}} </span>
     </div>
 
-    <div [ngClass]="selectedLanguage === 'French' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'">
+    <div [ngClass]="selectedLanguage === 'French' || loggedOutLang === 'fra' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'">
       <div>
         <mat-form-field appearance="outline">
           <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="changeLanguage()" placeholder="Select your language">

@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.booking.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
@@ -119,6 +122,26 @@ public class BookingController {
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO, preRegistrationId));
 	}
+	
+	/**
+	 * Post API to book the appointment.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
+	 * @throws ParseException
+	 * @throws java.text.ParseException
+	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	@PostMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Booking Appointment")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
+			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
+	public ResponseEntity<MainResponseDTO<List<BookingStatusDTO>>> bookMultiAppoinment(
+			@RequestBody(required = true) MainListRequestDTO<MultiBookingRequestDTO> bookingDTO) {
+		log.info("sessionId", "idType", "id",
+				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookMultiAppointment(bookingDTO));
+	}
 
 	/**
 	 * Get API to get the booked appointment details.
@@ -178,7 +201,7 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete booking") })
 	public ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> discardIndividual(
-			@RequestParam(value = "pre_registration_id") String preId) {
+			@RequestParam(value = "preRegistrationId") String preId) {
 		log.info("sessionId", "idType", "id", "In Booking controller for deletion of booking with preId " + preId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.deleteBooking(preId));

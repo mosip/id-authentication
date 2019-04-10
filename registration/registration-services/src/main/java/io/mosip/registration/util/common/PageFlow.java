@@ -90,7 +90,7 @@ public class PageFlow {
 		ApplicationContext.map().put(RegistrationConstants.ONBOARD_LIST, getOnboardPageList(onboardMap));
 		ApplicationContext.map().put(RegistrationConstants.ONBOARD_MAP, onboardMap);
 		ApplicationContext.map().put(RegistrationConstants.REGISTRATION_MAP, registrationMap);
-		ApplicationContext.map().put("biometricExceptionFlow", registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY));
+		ApplicationContext.map().put(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW, registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY));
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Map and storing in Application Context");

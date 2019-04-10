@@ -42,9 +42,7 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
-
-  //quickfix to be removed
-  preID = [];
+  disableContinueButton = false;
 
   constructor(
     private sharedService: SharedService,
@@ -209,33 +207,31 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.disableContinueButton = true;
     this.bookingDataList = [];
-    this.preID = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
             const bookingData = new BookingModel(
+              name.preRegId,
               this.registrationCenter.toString(),
               data.date,
               slot.fromTime,
               slot.toTime
             );
-            console.log(name);
-            this.preID.push(name.preRegId);
-            // const requestObject = {
-            //   newBookingDetails: bookingData,
-            //   oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
-            //   preRegistrationId: name.preRegId
-            // };
             this.bookingDataList.push(bookingData);
           });
         }
       });
     });
+    if (this.bookingDataList.length === 0) {
+      this.disableContinueButton = false;
+      return;
+    }
     const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
-    this.dataService.makeBooking(request, this.preID).subscribe(
+    this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);
         if (!response['errors']) {
@@ -255,19 +251,13 @@ export class TimeSelectionComponent implements OnInit {
                 this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
                 const appointmentDateTime = Utils.getBookingDateTime(
-                  booking[0].newBookingDetails.appointment_date,
-                  booking[0].newBookingDetails.time_slot_from
+                  booking[0].appointment_date,
+                  booking[0].time_slot_from
                 );
                 this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
               });
-              const arr = this.router.url.split('/');
-              arr.pop();
-              arr.pop();
-              arr.push('summary');
-              arr.push('acknowledgement');
-              const url = arr.join('/');
+              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
-              // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
             });
         } else {
           this.showError();
@@ -281,6 +271,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   showError() {
+    this.disableContinueButton = false;
     const data = {
       case: 'MESSAGE',
       title: this.secondaryLanguagelabels.title_failure,

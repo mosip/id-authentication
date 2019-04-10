@@ -428,7 +428,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private TextField uinId;
 
-	public boolean isChild;
+	private boolean isChild;
 
 	private Node keyboardNode;
 
@@ -567,6 +567,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox applicationFullName;
 	@FXML
+	private GridPane fullNameGridPane;
+	@FXML
 	private ImageView fullNameKeyboardImage;
 	@FXML
 	private ImageView addressLine1KeyboardImage;
@@ -648,7 +650,6 @@ public class DemographicDetailController extends BaseController {
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
-			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(true);
 			switchedOn.setValue(true);
 			isChild = false;
@@ -661,8 +662,8 @@ public class DemographicDetailController extends BaseController {
 			ageFieldLocalLanguage.setDisable(true);
 			renderComboBoxes();
 			addRegions();
-			minAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
-			maxAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
+			minAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MIN_AGE));
+			maxAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
 			List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
@@ -695,7 +696,7 @@ public class DemographicDetailController extends BaseController {
 	 */
 	protected void lostUIN() {
 		lostUIN = true;
-		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 	}
 
 	/**
@@ -949,11 +950,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.onTypeFocusUnfocusListener(dobParentPane, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			int age = 0;
-				if (newValue.matches("\\d+")) {
+				if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
 					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
+								RegistrationUIConstants.MAX_AGE_WARNING + RegistrationConstants.SPACE + maxAge);
 					} else {
 						age = Integer.parseInt(ageField.getText());
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
@@ -1105,11 +1106,11 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 190.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 535.00, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 625.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 710.00, keyboardNode);
-			vk.focusListener(parentNameLocalLanguage, 1180.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, 180.00, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, 450.00, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, 535.00, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, 610.00, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, 1090.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -1269,9 +1270,9 @@ public class DemographicDetailController extends BaseController {
 
 		boolean isParentOrGuradianUINOrRIDAvail = !(uinId.isDisabled() || uinId.getText().isEmpty());
 		boolean isParentOrGuardianUIN = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() == Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
 		boolean isParentOrGuardianRID = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() != Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
@@ -1743,32 +1744,32 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(500.00);
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth());
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(535.00);
+				keyboardNode.setLayoutY(450.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(625.00);
+				keyboardNode.setLayoutY(535.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(710.00);
+				keyboardNode.setLayoutY(610.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(190.00);
+				keyboardNode.setLayoutY(180.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(1180.00);
+				keyboardNode.setLayoutY(1090.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 
@@ -1780,7 +1781,6 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	public void clickMe() {
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
 		fullName.setText("أيوب توفيق");
 		int age = 27;
@@ -1808,7 +1808,6 @@ public class DemographicDetailController extends BaseController {
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 	
 
@@ -1847,8 +1846,8 @@ public class DemographicDetailController extends BaseController {
 			if (validateThisPane()) {
 				if (!switchedOn.get()) {
 
-					if (dd.getText().matches("\\d+") && mm.getText().matches("\\d+")
-							&& yyyy.getText().matches("\\d+")) {
+					if (dd.getText().matches(RegistrationConstants.NUMBER_REGEX) && mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
+							&& yyyy.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
 
 						LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
 								Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
@@ -1868,9 +1867,15 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-						SessionContext.map().put("demographicDetail", false);
-						SessionContext.map().put("documentScan", true);
-						registrationController.showUINUpdateCurrentPage();
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
+					if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)
+							|| (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+									|| updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+					} else {
+						updateUINMethodFlow();
+					}
+					registrationController.showUINUpdateCurrentPage();
 				} else {
 					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
@@ -1888,7 +1893,7 @@ public class DemographicDetailController extends BaseController {
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
 
 		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
-			SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat dateOfBirth = new SimpleDateFormat(RegistrationConstants.DATE_FORMAT_REG);
 			dateOfBirth.setLenient(false);
 			try {
 				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
@@ -1907,7 +1912,6 @@ public class DemographicDetailController extends BaseController {
 		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
-		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 
 		return isValid;
 	}

@@ -45,7 +45,7 @@ public class ClientJarEncryption {
 	private static final String MOSIP_PACKET_STORE_PARAM = "mosip.packetstorepath= ";
 	private static final String MOSIP_PACKET_STORE_PATH = "../PacketStore";
 	private static final String MOSIP_LOG_PATH = "../logs";
-	private static final String MOSIP_DB_PATH = "/db/reg";
+	private static final String MOSIP_DB_PATH = "db/reg";
 	private static final String MOSIP_REG_LIBS = "registration-libs-";
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";

@@ -141,7 +141,7 @@ public class DemographicServiceTest {
 	/**
 	 * Autowired reference for $link{DemographicServiceUtil}
 	 */
-	@Autowired
+	@Mock
 	DemographicServiceUtil serviceUtil;
 
 	JSONParser parser = new JSONParser();
@@ -181,7 +181,7 @@ public class DemographicServiceTest {
 	MainListResponseDTO<DemographicCreateResponseDTO> responseCreateDTO = null;
 	AuditRequestDto auditRequestDto = new AuditRequestDto();
 
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	/**
@@ -309,10 +309,8 @@ public class DemographicServiceTest {
 		bookingRegistrationDTO.setSlotFromTime("09:00");
 		bookingRegistrationDTO.setSlotToTime("09:13");
 
-		requestMap.put("id", request.getId());
-		requestMap.put("ver", request.getVersion());
-		requestMap.put("reqTime", request.getRequesttime().toString());
-		requestMap.put("request", request.getRequest().toString());
+	
+		requestMap.put("version",versionUrl);
 
 		// requestMap.put(RequestCodes.FROM_DATE.getCode(), fromDate);
 		// requestMap.put(RequestCodes.TO_DATE.getCode(), toDate);
@@ -357,7 +355,8 @@ public class DemographicServiceTest {
 	public void successSaveImplTest() throws Exception {
 
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
+		requestMap.put("id",createId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
@@ -393,7 +392,8 @@ public class DemographicServiceTest {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
+		requestMap.put("id",createId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
@@ -409,7 +409,9 @@ public class DemographicServiceTest {
 	@Test
 	public void successUpdateTest() throws Exception {
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
+		requestMap.put("id",updateId);
+		request.setId(updateId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
@@ -431,7 +433,9 @@ public class DemographicServiceTest {
 		HttpRequestException exception = new HttpRequestException(ErrorCodes.PRG_PAM_APP_007.name(),
 				ErrorMessages.JSON_PARSING_FAILED.name());
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
+		requestMap.put("id",updateId);
+		request.setId(updateId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
@@ -726,7 +730,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test(expected = RecordFailedToDeleteException.class)
+	@Test(expected = RecordFailedToDeleteException.class)
 	public void deleteRecordFailedToDeleteException() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_APP_004",
@@ -757,7 +761,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}), Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -766,7 +770,7 @@ public class DemographicServiceTest {
 		preRegistrationService.deleteIndividual(preRegId);
 	}
 
-//	@Test(expected = DocumentFailedToDeleteException.class)
+	@Test(expected = DocumentFailedToDeleteException.class)
 	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
@@ -796,7 +800,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -808,7 +812,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test(expected = BookingDeletionFailedException.class)
+	@Test(expected = BookingDeletionFailedException.class)
 	public void deleteRecordRestCallException() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
@@ -844,7 +848,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -910,6 +914,9 @@ public class DemographicServiceTest {
 	@Test
 	public void updateByPreIdTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
+		requestMap.put("id",createId);
+		request.setId(updateId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		request.setRequest(createPreRegistrationDTO);
@@ -917,7 +924,7 @@ public class DemographicServiceTest {
 		preRegistrationService.updatePreRegistration(request, preId);
 	}
 
-//	@Test(expected = RestCallException.class)
+	@Test(expected = RestCallException.class)
 	public void deleteIndividualRestExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
@@ -944,7 +951,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenThrow(RestClientException.class);
+				}),Mockito.anyMap())).thenThrow(RestClientException.class);
 
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(1);
@@ -958,6 +965,9 @@ public class DemographicServiceTest {
 	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(null);
+		requestMap.put("id",createId);
+		request.setId(updateId);
+		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		request.setRequest(createPreRegistrationDTO);

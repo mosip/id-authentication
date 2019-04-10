@@ -57,14 +57,14 @@
                   <Button fx:id="getOTP" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
                   <Button fx:id="resend" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="true" />
                   <Button layoutX="53.0" layoutY="195.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
-                  <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
+                  <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="fingerprintPane" layoutX="72.0" layoutY="220.0" prefHeight="192.0" prefWidth="207.0" styleClass="loginAnchorPaneStyle" visible="false">
                <children>
               	 <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
                	  <Label layoutX="57.0" layoutY="75.0" text="%withfingerprint" />
-                  <Button fx:id="submit" layoutX="57.0" layoutY="170.0" mnemonicParsing="false" onAction="#validateFingerPrint" styleClass="loginSubmitStyle" text="%submit" />
+                  <Button fx:id="submit" layoutX="57.0" layoutY="170.0" mnemonicParsing="false" onAction="#captureFingerPrint" styleClass="loginSubmitStyle" text="%submit" />
                   <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
       						<Image url="@../images/FingerprintScan.png" />
@@ -76,7 +76,7 @@
                <children>
                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
                  <Label layoutX="57.0" layoutY="75.0" text="%withiris" />
-                 <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#validateIris" styleClass="loginSubmitStyle" text="%submit" />
+                 <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#captureIris" styleClass="loginSubmitStyle" text="%submit" />
                   <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.00" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
       						<Image url="@../images/Eyescan.png" />
@@ -88,7 +88,7 @@
                <children>
                <Label layoutX="57.0" layoutY="31.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="31.0" />
                   <Label layoutX="57.0" layoutY="75.0" text="%withface" />
-                  <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#validateFace" styleClass="loginSubmitStyle" text="%submit" />
+                  <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#captureFace" styleClass="loginSubmitStyle" text="%submit" />
                   <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
       						<Image url="@../images/FaceScan.png" />

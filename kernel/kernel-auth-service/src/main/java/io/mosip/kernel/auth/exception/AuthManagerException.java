@@ -4,7 +4,7 @@
 package io.mosip.kernel.auth.exception;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 public class AuthManagerException extends RuntimeException {

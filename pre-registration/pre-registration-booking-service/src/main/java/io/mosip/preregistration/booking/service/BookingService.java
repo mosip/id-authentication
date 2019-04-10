@@ -28,13 +28,13 @@ import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
@@ -97,7 +97,7 @@ public class BookingService {
 	@Autowired
 	private BookingDAO bookingDAO;
 
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	@Value("${id}")
@@ -314,6 +314,111 @@ public class BookingService {
 		responseDTO.setResponse(response);
 		return responseDTO;
 	}
+	
+	/**
+	 * This method will book the multiple appointments.
+	 * 
+	 * @param multiBookingRequestDTO
+	 * @return response with status code
+	 * @throws java.text.ParseException
+	 */
+	/**
+	 * @param multiBookingRequestDTOs
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public MainResponseDTO<List<BookingStatusDTO>> bookMultiAppointment(
+			MainListRequestDTO<MultiBookingRequestDTO> bookingRequestDTOs) {
+		log.info("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service");
+		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
+		boolean isSaveSuccess = false;
+		List<BookingStatusDTO> respList = new ArrayList<>();
+		try {
+			if (ValidationUtil.requestValidator(bookingRequestDTOs)) {
+				for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
+					/* Getting Status From Demographic */
+					String preRegStatusCode = serviceUtil
+							.callGetStatusRestService(bookingRequestDTO.getPreRegistrationId());
+
+					//Taking one booking request from multiple
+					BookingRequestDTO bookingRequest=new BookingRequestDTO();
+					bookingRequest.setRegDate(bookingRequestDTO.getRegDate());
+					bookingRequest.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
+					bookingRequest.setSlotFromTime(bookingRequestDTO.getSlotFromTime());
+					bookingRequest.setSlotToTime(bookingRequestDTO.getSlotToTime());
+
+					if (serviceUtil.mandatoryParameterCheck(bookingRequestDTO.getPreRegistrationId(),
+							bookingRequest)) {
+
+						/* Checking the availability of slots */
+						checkSlotAvailability(bookingRequest);
+
+						if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+							
+							
+
+							/* Creating new booking */
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+
+						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+
+							/* Concatenating Booking date and slot from time */
+							RegistrationBookingEntity bookingEntity = bookingDAO
+									.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
+
+							String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
+							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
+
+							log.info("sessionId", "idType", "id",
+									"In bookMultiAppointment method of Booking Service for booking Date Time- "
+											+ bookedDateTime);
+							/* Time span check for re-book */
+							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
+
+							/* Deleting old booking */
+							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+
+							/* Increase availability */
+							increaseAvailability(bookingRequest);
+
+							/* Creating new booking */
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+
+						} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+
+							/* Deleting old booking */
+							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+							
+							/* Creating new booking */
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+						}
+
+					}
+
+				}
+			}
+			isSaveSuccess = true;
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
+		} finally {
+			if (isSaveSuccess) {
+				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
+						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Appointment failed to book", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
+			}
+		}
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		responseDTO.setId(idUrl);
+		responseDTO.setVersion(versionUrl);
+		responseDTO.setResponse(respList);
+		return responseDTO;
+	}
 
 	/**
 	 * This method is for getting appointment details.
@@ -400,7 +505,7 @@ public class BookingService {
 					serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
 					bookingStatusDTO.setPreRegistrationId(preRegistrationId);
 					bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-					bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+					bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 					/* Reduce Availability */
 					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 					bookingDAO.updateAvailibityEntity(availableEntity);
@@ -457,7 +562,7 @@ public class BookingService {
 					bookingDAO.updateAvailibityEntity(availableEntity);
 
 					cancelBookingResponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
-					cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
+					cancelBookingResponseDTO.setMessage("Appointment cancelled successfully");
 
 				}
 			}

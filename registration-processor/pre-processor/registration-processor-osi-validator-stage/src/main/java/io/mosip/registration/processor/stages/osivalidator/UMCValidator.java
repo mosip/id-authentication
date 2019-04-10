@@ -132,11 +132,11 @@ public class UMCValidator {
                               pathsegments, "", "", ResponseWrapper.class);
         	  rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterResponseDto.class);
 
-                 if(responseWrapper.getErrors()==null) {
+                 if(responseWrapper.getErrors()==null) { 
                        activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
                        if (!activeRegCenter) {
                        this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-                       }
+                       } 
                  }else {
                 	 List<ErrorDTO> error = responseWrapper.getErrors();
 	               	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
@@ -147,13 +147,10 @@ public class UMCValidator {
                  if (e.getCause() instanceof HttpClientErrorException) {
                        HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
                        String result = httpClientException.getResponseBodyAsString();
-                       Gson gsonObj = new Gson();
-                       rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
-                    //   ErrorDTO error = rcpdto.getErrors().get(0);
-                       List<ErrorDTO> error = responseWrapper.getErrors();
+                     
                        activeRegCenter = false;
 
-                       this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+                       this.registrationStatusDto.setStatusComment(result);
 
 			} else {
 				throw e;
@@ -219,13 +216,11 @@ public class UMCValidator {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				mhrdto = gsonObj.fromJson(result, MachineHistoryResponseDto.class);
-				List<ErrorDTO> error = responseWrapper.getErrors();
-           	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+				
+				
+				this.registrationStatusDto.setStatusComment(result);
+
 				isActiveMachine = false;
-			} else {
-				throw e;
 			}
 		}
 		return isActiveMachine;
@@ -304,9 +299,7 @@ public class UMCValidator {
 
 				this.registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
 
-			} else {
-				throw e;
-			}
+			} 
 		}
 		return isValidUser;
 	}
@@ -349,9 +342,9 @@ public class UMCValidator {
 	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "UMCValidator::isValidUMC()::entry");
+				registrationId, "UMCValidator::isValidUMC()::entry"); 
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
-
+ 
 		identity = osiUtils.getIdentity(registrationId);
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		boolean umc = false;
@@ -506,21 +499,10 @@ public class UMCValidator {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					registrationCenterDeviceHistoryResponseDto = gsonObj.fromJson(result,
-							RegistrationCenterDeviceHistoryResponseDto.class);
-					List<ErrorDTO> error = responseWrapper.getErrors();
+					
 					isDeviceMappedWithCenter = false;
-					if (error.get(0).getErrorcode().equalsIgnoreCase("KER-MSD-133")) {
-						this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
-								+ StatusMessage.CENTER_ID + " " + rcmDto.getRegcntrId() + StatusMessage.DEVICE_NOT_FOUND
-								+ " " + rcmDto.getRegId());
-					} else {
-						this.registrationStatusDto.setStatusComment(error.get(0).getErrorcode());
-					}
-				}  else {
-                    throw e;
-                }
+					this.registrationStatusDto.setStatusComment(result);
+				}  
 				break;
 			}
 		}
@@ -609,20 +591,11 @@ public class UMCValidator {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					deviceHistoryResponsedto = gsonObj.fromJson(result, DeviceHistoryResponseDto.class);
-					  List<ErrorDTO> error = responseWrapper.getErrors();
+					
 					isDeviceActive = false;
-					if (error.get(0).getErrorcode().equalsIgnoreCase("KER-MSD-129")) {
-						this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
-								+ StatusMessage.DEVICE_NOT_FOUND + " " + rcmDto.getRegId());
-					} else {
-						this.registrationStatusDto.setStatusComment(error.get(0).getErrorcode());
-					}
+					   this.registrationStatusDto.setStatusComment(result);
 
-					} else {
-						throw e;
-					}
+					} 
 					break;
 				}
 
@@ -718,17 +691,8 @@ public class UMCValidator {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 
 				String result = httpClientException.getResponseBodyAsString();
-				Gson gson = new Gson();
-				RegistartionCenterTimestampResponseDto responseDto = gson.fromJson(result,
-						RegistartionCenterTimestampResponseDto.class);
-				if (responseDto.getErrors().get(0).getErrorCode().equals("KER-MSD-033")) {
-					this.registrationStatusDto.setStatusComment(responseDto.getErrors().get(0).getErrorMessage());
-				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " "
-							+ rcmDto.getRegcntrId() + StatusMessage.CENTER_NOT_FOUND + " " + rcmDto.getRegId());
-				}
-			} else {
-				throw e;
+				   this.registrationStatusDto.setStatusComment(result);
+				
 			}
 		}
 		return isValid;

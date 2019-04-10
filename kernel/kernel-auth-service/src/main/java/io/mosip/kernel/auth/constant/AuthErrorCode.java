@@ -34,7 +34,7 @@ public enum AuthErrorCode {
 	USER_VALIDATION_ERROR("KER-ATH-003", "User Detail doesn't exist"),
 	
 	/**
-	 * USER VALIDATION ERROR
+	 * PASSWORD VALIDATION ERROR
 	 */
 	PASSWORD_VALIDATION_ERROR("KER-ATH-004", "Incorrect Password");
 
