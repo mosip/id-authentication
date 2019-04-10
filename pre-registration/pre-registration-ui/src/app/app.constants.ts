@@ -202,7 +202,7 @@ export const languageMapping = {
 };
 
 export const notificationDtoKeys = {
-  notificationDto: 'NotificationDTO',
+  notificationDto: 'NotificationRequestDTO',
   langCode: 'langCode',
   file: 'file'
 };
