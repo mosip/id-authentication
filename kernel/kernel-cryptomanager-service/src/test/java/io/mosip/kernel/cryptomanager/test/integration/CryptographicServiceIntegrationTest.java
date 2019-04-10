@@ -204,6 +204,7 @@ public class CryptographicServiceIntegrationTest {
 		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testEncryptPrivateKey() throws Exception {
 		KeyManagerEncryptResponseDto keyManagerEncryptResponseDto = new KeyManagerEncryptResponseDto();

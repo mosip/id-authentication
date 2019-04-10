@@ -24,13 +24,13 @@ import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /**
  * Rest Controller for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
- * @author Bal Vikash Sharma
  * @author Srinivasan
  *
  * @since 1.0.0

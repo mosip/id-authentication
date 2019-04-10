@@ -25,6 +25,7 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -99,7 +100,7 @@ public class KeymanagerController {
 	 * @return {@link EncryptDataResponseDto}
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Encrypt data", response = EncryptDataResponseDto.class)
+	@ApiOperation(value = "Encrypt data")
 	@PostMapping("/encrypt")
 	public ResponseWrapper<EncryptDataResponseDto> encrypt(
 			@RequestBody RequestWrapper<EncryptDataRequestDto> encryptDataRequestDto) {

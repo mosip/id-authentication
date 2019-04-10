@@ -44,7 +44,6 @@ import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
@@ -53,8 +52,6 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
-import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
-import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.test.KeymanagerTestBootApplication;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
@@ -407,6 +404,8 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+
+	@WithUserDetails("reg-processor")
 	@Test
 	public void encryptWithReferenceId() throws Exception {
 		

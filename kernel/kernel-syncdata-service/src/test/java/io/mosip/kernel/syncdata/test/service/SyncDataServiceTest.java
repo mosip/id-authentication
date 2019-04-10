@@ -1,6 +1,8 @@
 package io.mosip.kernel.syncdata.test.service;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -37,6 +39,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
@@ -255,7 +258,7 @@ public class SyncDataServiceTest {
 	}
 
 	// ------------------------------------------UserDetails--------------------------//
-	// @Test
+	/*// @Test
 	public void getAllUserDetail() {
 		String response = "{ \"mosipUserDtoList\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\"  } ] }";
 		String regId = "10044";
@@ -275,9 +278,9 @@ public class SyncDataServiceTest {
 		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
-	}
+	}*/
 
-	// @Test(expected = SyncDataServiceException.class)
+/*	// @Test(expected = SyncDataServiceException.class)
 	public void getAllUserDetailExcp() {
 		String response = "{ \"userDetails\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"roles\": [ \"REGISTRATION_ADMIN\", \"INDIVIDUAL\" ] } ] }";
 		String regId = "10044";
@@ -298,8 +301,8 @@ public class SyncDataServiceTest {
 				.andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
-
-	// @Test
+*/
+	/*// @Test
 	public void getAllUserDetailNoDetail() {
 		// String response = "{ \"userDetails\": [] }";
 		String regId = "10044";
@@ -319,7 +322,7 @@ public class SyncDataServiceTest {
 		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
 				.andRespond(withSuccess());
 		assertNull(syncUserDetailsService.getAllUserDetail(regId));
-	}
+	}*/
 
 	// ------------------------------------------AllRolesSync--------------------------//
 

@@ -27,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpServerErrorException;
@@ -738,79 +739,8 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF"); 
 	}
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void testGetConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/configs")).andExpect(status().isOk());
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void testGlobalConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
-	}
-
-	@WithUserDetails(value = "reg-officer")
-	@Test
-	public void testGlobalConfigExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	}
-
-	@WithUserDetails(value = "reg-officer")
-	@Test
-	public void testGlobalConfigServiceExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenThrow(HttpServerErrorException.class);
-
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	}
-	// @Test
-	// public void testGlobalConfigExceptionTest() throws Exception {
-	// ReflectionTestUtils.setField(syncConfigDetailsService,
-	// "globalConfigFileName", null);
-	// when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-	// .thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-	//
-	// when(restTemplate.getForObject(Mockito.anyString(),
-	// Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-	// mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	// }
-	// @Test
-	// public void testGlobalConfigServiceExceptionTest() throws Exception {
-	// ReflectionTestUtils.setField(syncConfigDetailsService,
-	// "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
-	// when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-	// .thenThrow(HttpServerErrorException.class);
-	// mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	// }
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void testRegistrationConfig() throws Exception {
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
-	}
-
-	@Test
+	
+    @Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccess() throws Exception {
 		mockSuccess();
@@ -1380,6 +1310,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void screenDetailException() throws Exception {
 		mockSuccess();
 		when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1389,6 +1320,7 @@ public class SyncDataIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncJobDefException() throws Exception {
 		mockSuccess();
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
