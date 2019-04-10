@@ -238,7 +238,6 @@ public class OSIValidatorTest {
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
@@ -261,7 +260,6 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerHashedPin(null);
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -282,7 +280,6 @@ public class OSIValidatorTest {
 		
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
@@ -302,7 +299,6 @@ public class OSIValidatorTest {
 		authResponseDTO.setStatus("N");
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(authResponseDTO);
 
@@ -322,7 +318,6 @@ public class OSIValidatorTest {
 	public void testvalidateFingerprintFailure() throws Exception {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
@@ -343,7 +338,6 @@ public class OSIValidatorTest {
 	public void testvalidateFaceFailure() throws Exception {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
@@ -367,7 +361,6 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -387,7 +380,6 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerId(null);
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(authResponseDTO);
 
@@ -408,7 +400,6 @@ public class OSIValidatorTest {
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -429,7 +420,6 @@ public class OSIValidatorTest {
 		demographicInfoDto.setUin(null);
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
@@ -461,7 +451,6 @@ public class OSIValidatorTest {
 		
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);

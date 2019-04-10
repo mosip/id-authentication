@@ -223,7 +223,7 @@ public class PacketValidateProcessorTest {
 
 		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified, preRegistrationId));
 
-		Document documentPob = new Document();
+		/*Document documentPob = new Document();
 		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
 		documentPob.setDocumentName("ProofOfBirth");
 		Document document = new Document();
@@ -233,7 +233,7 @@ public class PacketValidateProcessorTest {
 		documents.add(documentPob);
 		documents.add(document);
 		// identity.setDocuments(documents);
-		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
+		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);*/
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
 		FieldValueArray applicantBiometric = new FieldValueArray();
@@ -301,7 +301,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
+	//	Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
 		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
 		ReverseDatasyncReponseDTO reverseDatasyncReponseDTO = new ReverseDatasyncReponseDTO();
 		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("2");

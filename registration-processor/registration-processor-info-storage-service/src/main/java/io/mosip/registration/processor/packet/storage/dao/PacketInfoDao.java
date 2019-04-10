@@ -8,18 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
-import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
 /**
@@ -32,23 +24,15 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
-	/** The reg center machine repository. */
-	@Autowired
-	private BasePacketRepository<RegCenterMachineEntity, RegCenterMachinePKEntity> regCenterMachineRepository;
 
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
-	@Autowired
-	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
 
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
-	/** The reg osi repository. */
-	@Autowired
-	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	/** The Constant SELECT. */
 	private static final String SELECT = " SELECT ";
@@ -84,7 +68,8 @@ public class PacketInfoDao {
 		if (!assignedPackets.isEmpty()) {
 			assignedPackets.forEach(assignedPacket -> {
 				String regId = assignedPacket.getId().getRegId();
-				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
+				//TODO Need to clarify about QCUSER concept
+				applicantInfo = new ArrayList<>();//qcuserRegRepositary.getApplicantInfo(regId);
 			});
 			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
@@ -93,11 +78,11 @@ public class PacketInfoDao {
 					if (object instanceof IndividualDemographicDedupeEntity) {
 						demoDedupeList.add(convertEntityToDemographicDto((IndividualDemographicDedupeEntity) object));
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
-					} else if (object instanceof ApplicantPhotographEntity) {
+					} /*else if (object instanceof ApplicantPhotographEntity) {
 						applicantInfoDto.setApplicantPhotograph(
 								convertEntityToPhotographDto((ApplicantPhotographEntity) object));
 
-					}
+					}*/
 				}
 				applicantInfoDtoList.add(applicantInfoDto);
 			});
@@ -107,72 +92,9 @@ public class PacketInfoDao {
 		return applicantInfoDtoList;
 	}
 
-	/**
-	 * Gets the entitiesfor reg osi.
-	 *
-	 * @param regId the reg id
-	 * @return the entitiesfor reg osi
-	 */
-	public RegOsiDto getEntitiesforRegOsi(String regId) {
-		RegOsiDto regOsiDto = null;
-		List<RegOsiEntity> osiEntityList = regOsiRepository.findByRegOsiId(regId);
-		if (osiEntityList != null) {
-			regOsiDto = convertRegOsiEntityToDto(osiEntityList.get(0));
-		}
-		return regOsiDto;
-	}
 
-	
 
-	/**
-	 * Convert reg osi entity to dto.
-	 *
-	 * @param regOsiEntity
-	 *            the reg osi entity
-	 * @return the reg osi dto
-	 */
-	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
-		RegOsiDto regOsiDto = new RegOsiDto();
-		regOsiDto.setRegId(regOsiEntity.getId().getRegId());
-		regOsiDto.setPreregId(regOsiEntity.getPreregId());
-		regOsiDto.setOfficerId(regOsiEntity.getOfficerId());
-		regOsiDto.setOfficerHashedPin(regOsiEntity.getOfficerHashedPin());
-		regOsiDto.setOfficerHashedPwd(regOsiEntity.getOfficerHashedPwd());
-		regOsiDto.setSupervisorId(regOsiEntity.getSupervisorId());
-		regOsiDto.setSupervisorHashedPwd(regOsiEntity.getSupervisorHashedPwd());
-		regOsiDto.setSupervisorHashedPin(regOsiEntity.getSupervisorHashedPin());
-		regOsiDto.setIntroducerTyp(regOsiEntity.getIntroducerTyp());
-		regOsiDto.setIsActive(true);
-		regOsiDto.setIsDeleted(false);
 
-		return regOsiDto;
-
-	}
-
-	/**
-	 * Convert entity to photograph dto.
-	 *
-	 * @param object
-	 *            the object
-	 * @return the photograph dto
-	 */
-	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
-		PhotographDto photographDto = new PhotographDto();
-
-		photographDto.setActive(object.isActive());
-		photographDto.setCrBy(object.getCrBy());
-		photographDto.setExcpPhotoName(object.getExcpPhotoName());
-		photographDto.setExcpPhotoStore(object.getExcpPhotoStore());
-		photographDto.setHasExcpPhotograph(object.getHasExcpPhotograph());
-		photographDto.setImageName(object.getImageName());
-		photographDto.setImageStore(object.getImageStore());
-		photographDto.setNoOfRetry(object.getNoOfRetry());
-		photographDto.setPreRegId(object.getPreRegId());
-		photographDto.setQualityScore(object.getQualityScore());
-		photographDto.setRegId(object.getId().getRegId());
-
-		return photographDto;
-	}
 
 	/**
 	 * Convert entity to demographic dto.
@@ -213,27 +135,6 @@ public class PacketInfoDao {
 		return demographicDedupeDtoList;
 	}
 
-	/**
-	 * Gets the applicant iris image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant iris image name by id
-	 */
-	public List<String> getApplicantIrisImageNameById(String regId) {
-		return demographicDedupeRepository.getApplicantIrisImageNameById(regId);
-	}
-
-	/**
-	 * Gets the applicant finger print image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant finger print image name by id
-	 */
-	public List<String> getApplicantFingerPrintImageNameById(String regId) {
-		return demographicDedupeRepository.getApplicantFingerPrintImageNameById(regId);
-	}
 
 	/**
 	 * Update is active if duplicate found.
@@ -307,23 +208,6 @@ public class PacketInfoDao {
 
 	public List<String> getRegIdByUIN(String uin) {
 		return demographicDedupeRepository.getRegIdByUIN(uin);
-	}
-
-	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
-		List<ApplicantDocument> applicantDocumentDtos = new ArrayList<>();
-
-		List<ApplicantDocumentEntity> applicantDocumentEntities = applicantDocumentEntity.getDocumentsByRegId(regId);
-		for (ApplicantDocumentEntity entity : applicantDocumentEntities) {
-			applicantDocumentDtos.add(convertEntityToApplicantDocumentDto(entity));
-		}
-		return applicantDocumentDtos;
-	}
-
-	private ApplicantDocument convertEntityToApplicantDocumentDto(ApplicantDocumentEntity entity) {
-		ApplicantDocument applicantDocumentDto = new ApplicantDocument();
-		applicantDocumentDto.setDocName(entity.getId().getDocCatCode()); 
-		applicantDocumentDto.setDocStore(entity.getDocStore());
-		return applicantDocumentDto;
 	}
 
 	/**

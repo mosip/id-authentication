@@ -122,7 +122,6 @@ public class UMCValidatorTest {
 
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(packetMetaInfoStream);
 
-		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
 		metaData = new ArrayList<>();
 		FieldValue fv = new FieldValue();
 		fv.setLabel("REGISTRATIONID");

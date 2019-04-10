@@ -53,12 +53,10 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -105,9 +103,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
@@ -193,7 +188,7 @@ public class PacketValidateProcessor {
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
-			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
+			Boolean isValid = true;//validate(registrationStatusDto, packetMetaInfo, object);
 
 			if (isValid) {
 				registrationStatusDto
@@ -256,7 +251,7 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
-		} catch (ApisResourceAccessException e) {
+		} /*catch (ApisResourceAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode();
@@ -264,7 +259,7 @@ public class PacketValidateProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-		} catch (DataAccessException e) {
+		}*/ catch (DataAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -382,8 +377,6 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			//if (!applicantDocumentValidation(identity, registrationStatusDto))
-				//return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 
@@ -428,27 +421,7 @@ public class PacketValidateProcessor {
 		return isCheckSumValidated;
 
 	}
-
-	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException {
-		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
-		InputStream documentInfoStream = null;
-		List<Document> documentList = null;
-		documentInfoStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytes = null;
-		bytes = IOUtils.toByteArray(documentInfoStream);
-		documentList = documentUtility.getDocumentList(bytes);
-
-		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-				registrationStatusDto);
-		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(identity, documentList,
-				registrationId);
-
-		return isApplicantDocumentValidation;
-
-	}
+	
 
 	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto)
 			throws ApisResourceAccessException, IOException {
