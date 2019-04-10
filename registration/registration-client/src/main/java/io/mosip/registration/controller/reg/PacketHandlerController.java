@@ -167,6 +167,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
+	
+	@FXML
+	ProgressIndicator progressIndicator;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -846,5 +849,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
 				.ifPresent(message -> generateAlert("ERROR", alertMsg));
 
+	}
+	
+	public ProgressIndicator getProgressIndicator() {
+		return progressIndicator;
 	}
 }
