@@ -205,7 +205,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					this.registrationId, ApiName.DMZAUDIT);
+					this.registrationId, ApiName.AUDIT);
 
 		}
 

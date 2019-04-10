@@ -119,6 +119,9 @@ public enum PlatformErrorMessages {
 	RPR_RGS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "024",
 			"Invalid Input Parameter - id"),
 
+	RPR_RGS_REGISTRATION_STATUS_NOT_EXIST(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "025",
+			"RegistrationStatusCode is null"),
+	
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),

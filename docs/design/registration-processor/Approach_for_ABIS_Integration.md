@@ -105,5 +105,19 @@ The key solution considerations are -
 ------------
 
 
+Demo Failed Sequence Diagram:
 
 ![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_match_seq_diagram.png)
+
+
+Demo Success Sequence Diagram:
+
+![ABIS middleware demo no match sequence diagram](_images/abis_middleware_demo_no_match_seq_diagram.png)
+
+Bio Failed Sequence Diagram:
+
+![ABIS middleware bio match sequence diagram](_images/abis_middleware_bio_match_seq_diagram.png)
+
+Bio Success Sequence Diagram:
+
+![ABIS middleware bio no match sequence diagram](_images/abis_middleware_bio_no_match_seq_diagram.png)

@@ -109,7 +109,7 @@ public class DemodedupeProcessor {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.DEMOGRAPHIC_VERIFICATION.toString());
 			registrationStatusDto.setRegistrationStageName(stageName);
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			registrationStatusDto.setLatestTransactionStatusCode("");
 
 			// Persist Demographic packet Data if packet Registration type is NEW
 			if (registrationStatusDto.getRegistrationType().equals(RegistrationType.NEW.name())) {
@@ -119,7 +119,8 @@ public class DemodedupeProcessor {
 				demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				bytesArray = IOUtils.toByteArray(demographicInfoStream);
-				packetInfoManager.saveDemographicInfoJson(bytesArray,registrationId,packetMetaInfo.getIdentity().getMetaData());
+				packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
+						packetMetaInfo.getIdentity().getMetaData());
 			}
 
 			// Potential Duplicate Ids after performing demo dedupe
@@ -168,8 +169,9 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 
-					code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
-					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
+					code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
+					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()
+							+ " -- " + registrationId;
 
 				}
 
@@ -259,6 +261,9 @@ public class DemodedupeProcessor {
 					description + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 		} finally {
+
+			if (registrationStatusDto.getLatestTransactionStatusCode() == "")
+				registrationStatusDto.setLatestTransactionStatusCode("SUCCESS");
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage()

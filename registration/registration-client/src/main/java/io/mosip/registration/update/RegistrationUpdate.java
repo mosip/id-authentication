@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
@@ -36,13 +37,13 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Component
 public class RegistrationUpdate {
 
-	private String backUpPath = "D://mosip/AutoBackUp";
-
+	
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
+	private String backUpPath = "D://mosip/AutoBackUp";
 	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
 	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
@@ -242,8 +243,8 @@ public class RegistrationUpdate {
 
 	}
 
-	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
-		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
+	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+		return getInputStreamOf(serverRegClientURL + version + SLASH + libFolder + jarName);
 
 	}
 
@@ -292,7 +293,8 @@ public class RegistrationUpdate {
 
 		// Get latest Manifest from server
 		setServerManifest(
-				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
+				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
+		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
 
 		return serverManifest;
 
@@ -324,6 +326,23 @@ public class RegistrationUpdate {
 
 		} catch (IOException ioException) {
 			return false;
+		}
+
+	}
+
+	private boolean hasSpace(int bytes) {
+
+		return bytes < new File("/").getFreeSpace();
+	}
+
+	private InputStream getInputStreamOf(String url) throws IOException {
+		URLConnection connection = new URL(url).openConnection();
+
+		// Space Check
+		if (hasSpace(connection.getContentLength())) {
+			return connection.getInputStream();
+		} else {
+			throw new IOException("No Disk Space");
 		}
 
 	}

@@ -192,13 +192,12 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
-    const obj = new RequestModel(appConstants.IDS.notification, data);
     return this.httpClient.post(
       this.BASE_URL +
         this.PRE_REG_URL +
         appConstants.APPEND_URL.notification +
         appConstants.APPEND_URL.send_notification,
-      obj
+      data
     );
   }
 

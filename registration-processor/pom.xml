@@ -109,7 +109,7 @@
 		<registration.processor.message.sender.version>0.10.2</registration.processor.message.sender.version>
 		<packet.bio.dedupe.api.version>0.10.2</packet.bio.dedupe.api.version>
 		<registration.processor.print.service.version>0.10.2</registration.processor.print.service.version>
-        <registration.processor.print.service.impl.version>0.10.2</registration.processor.print.service.impl.version>
+        	<registration.processor.print.service.impl.version>0.10.2</registration.processor.print.service.impl.version>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.9.8</kernel.core.version>
