@@ -11,6 +11,7 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from '../../booking/booking.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -44,6 +45,7 @@ export class FileUploadComponent implements OnInit {
   user: UserModel = new UserModel();
   users: UserModel[] = [];
   documentCategory: string;
+  documentType: string;
   loginId: string;
   documentIndex: number;
   LOD: DocumentCategory[];
@@ -76,7 +78,7 @@ export class FileUploadComponent implements OnInit {
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
     private router: Router,
-    private route: ActivatedRoute,
+    private config: ConfigService,
     private domSanitizer: DomSanitizer,
     private sharedService: SharedService,
     private translate: TranslateService
@@ -89,7 +91,7 @@ export class FileUploadComponent implements OnInit {
   ngOnInit() {
     let applicants;
     this.loginId = this.registration.getLoginId();
-    this.getAllApplicants();
+    this.getAllApplicants(); //for same as in POA
     this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
     applicants = this.sharedService.getAllApplicants();
@@ -275,10 +277,20 @@ export class FileUploadComponent implements OnInit {
   }
 
   handleFileInput(event) {
+    console.log('event of file upload', event);
     this.disableNavigation = true;
-    if (event.target.files[0].type === 'application/pdf') {
-      if (event.target.files[0].name.length < 46) {
-        if (event.target.files[0].size < 1000000) {
+    if (
+      event.target.files[0].type ===
+      this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
+    ) {
+      if (
+        event.target.files[0].name.length <
+        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
+      ) {
+        if (
+          event.target.files[0].size <
+          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+        ) {
           this.getBase64(event.target.files[0]).then(data => {
             this.fileByteArray = data;
             this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
@@ -311,6 +323,7 @@ export class FileUploadComponent implements OnInit {
 
   selectChange(event, index: number) {
     this.documentCategory = event.source.placeholder;
+    this.documentType = event.source.value;
     this.documentIndex = index;
   }
 
@@ -321,26 +334,6 @@ export class FileUploadComponent implements OnInit {
 
   onFilesChange(fileList: FileList) {}
 
-  removeFile(applicantIndex, file_cat_code) {
-    let fileIndex = 0;
-    for (let element of this.users[0].files[0]) {
-      if (element.doc_cat_code == file_cat_code) {
-        break;
-      }
-      fileIndex++;
-    }
-
-    this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
-      this.users[applicantIndex].files[0].splice(fileIndex, 1);
-      if (this.users[0].files[0].length == 0) {
-        this.removeFilePreview();
-      } else {
-        this.viewLastFile();
-      }
-    });
-    this.fileIndex--;
-  }
-
   removeFilePreview() {
     this.fileName = '';
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
@@ -348,7 +341,7 @@ export class FileUploadComponent implements OnInit {
   setJsonString(event) {
     this.documentUploadRequestBody.docCatCode = this.documentCategory;
     this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
-    this.documentUploadRequestBody.docTypCode = event.value;
+    this.documentUploadRequestBody.docTypCode = this.documentType;
     this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
@@ -386,7 +379,7 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     for (let file of this.users[0].files[0]) {
-      if (file.doc_cat_code == this.userFiles.docCatCode) {
+      if (file.docCatCode == this.userFiles.docCatCode) {
         this.removeFilePreview();
         this.users[this.step].files[0][i] = this.userFiles;
         this.fileIndex--;
@@ -437,7 +430,7 @@ export class FileUploadComponent implements OnInit {
     this.userFiles = new FileModel();
     let i = 0;
     for (let file of this.users[0].files[0]) {
-      if (file.doc_cat_code == 'POA') {
+      if (file.docCatCode == 'POA') {
         this.users[0].files[0][i] = this.userFiles;
         i++;
       }
@@ -446,7 +439,7 @@ export class FileUploadComponent implements OnInit {
 
   ifDisabled(category) {
     this.users[0].files[0].forEach(element => {
-      if ((element.doc_cat_code = category)) {
+      if ((element.docCatCode = category)) {
         return true;
       }
     });
