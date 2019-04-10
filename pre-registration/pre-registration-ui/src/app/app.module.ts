@@ -4,7 +4,6 @@ import { NgxPrintModule } from 'ngx-print';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 import { AppComponent } from './app.component';
 import { AppConfigService } from './app-config.service';
 import { SharedService } from './feature/booking/booking.service';
@@ -47,5 +46,5 @@ const appInitialization = (appConfig: AppConfigService) => {
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  config : ConfigService;
+  config: ConfigService;
 }
