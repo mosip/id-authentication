@@ -103,9 +103,12 @@ export const CONFIG_KEYS = {
   preregistration_address_length: 'preregistration.address.length',
   preregistration_fullname_length: 'preregistration.fullname.length',
   mosip_id_validation_identity_age: 'mosip.id.validation.identity.age',
-  mosip_preregistration_auto_logout_idle :'mosip.preregistration.auto.logout.idle',
-  mosip_preregistration_auto_logout_timeout : 'mosip.preregistration.auto.logout.timeout',
-  mosip_preregistration_auto_logout_ping  : 'mosip.preregistration.auto.logout.ping'
+  mosip_preregistration_auto_logout_idle: 'mosip.preregistration.auto.logout.idle',
+  mosip_preregistration_auto_logout_timeout: 'mosip.preregistration.auto.logout.timeout',
+  mosip_preregistration_auto_logout_ping: 'mosip.preregistration.auto.logout.ping',
+  preregistration_document_alllowe_files: 'preregistration.documentupload.allowed.file.type',
+  preregistration_document_alllowe_file_size: 'preregistration.documentupload.allowed.file.size',
+  preregistration_document_alllowe_file_name_lenght: 'preregistration.documentupload.allowed.file.nameLength'
 
   // mosip.kernel.sms.number.length
   // preregistration.max.file.size
