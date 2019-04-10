@@ -30,8 +30,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
-import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -43,11 +41,8 @@ import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValid
  * @author Manoj SP
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
-
 @WebMvcTest
-
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPRequestValidatorTest {
 
@@ -69,9 +64,6 @@ public class OTPRequestValidatorTest {
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;
 
-	@Mock
-	private OTPAuthServiceImpl otpAuthServiceImpl;
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
@@ -82,10 +74,6 @@ public class OTPRequestValidatorTest {
 		assertTrue(otpRequestValidator.supports(OtpRequestDTO.class));
 	}
 
-	@Test
-	public void testSupportFalse() {
-		assertFalse(otpRequestValidator.supports(AuthRequestValidator.class));
-	}
 
 	@Test
 	public void testValidUin() {
@@ -170,8 +158,6 @@ public class OTPRequestValidatorTest {
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-
-	@SuppressWarnings("deprecation")
 
 	@Test
 	public void testTimeParseError() {

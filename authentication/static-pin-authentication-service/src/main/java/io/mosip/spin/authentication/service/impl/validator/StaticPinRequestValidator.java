@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.validator.IdAuthValidator;
+import io.mosip.authentication.common.id.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;

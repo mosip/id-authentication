@@ -16,11 +16,11 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.auth.validator.BaseAuthRequestValidator;
+import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**

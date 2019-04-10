@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.CompositeIrisMatchingStrategy;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.FaceMatchingStrategy;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.FingerPrintMatchingStrategy;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.IrisMatchingStrategy;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.MultiFingerprintMatchingStrategy;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -28,11 +33,6 @@ import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.impl.indauth.service.bio.CompositeIrisMatchingStrategy;
-import io.mosip.authentication.service.impl.indauth.service.bio.FaceMatchingStrategy;
-import io.mosip.authentication.service.impl.indauth.service.bio.FingerPrintMatchingStrategy;
-import io.mosip.authentication.service.impl.indauth.service.bio.IrisMatchingStrategy;
-import io.mosip.authentication.service.impl.indauth.service.bio.MultiFingerprintMatchingStrategy;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;;
 
 /**

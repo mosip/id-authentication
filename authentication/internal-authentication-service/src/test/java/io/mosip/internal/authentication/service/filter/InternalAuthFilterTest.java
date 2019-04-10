@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -28,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.integration.KeyManager;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
+import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -22,8 +24,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
-import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 

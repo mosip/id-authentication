@@ -31,6 +31,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.factory.AuditRequestFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.indauth.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -45,8 +47,6 @@ import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
-import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 
 /**
  * This code tests the AuthController

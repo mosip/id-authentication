@@ -11,10 +11,10 @@ import io.mosip.authentication.common.impl.face.provider.MorphoFaceProvider;
 import io.mosip.authentication.common.impl.fingerauth.provider.CogentFingerprintProvider;
 import io.mosip.authentication.common.impl.fingerauth.provider.MantraFingerprintProvider;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.common.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.common.service.impl.iris.MorphoIrisProvider;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
-import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 /**
  * A factory for creating BiometricProvider objects.

@@ -42,6 +42,8 @@ import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.common.integration.MasterDataManager;
+import io.mosip.authentication.common.service.impl.indauth.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.impl.indauth.service.DemoAuthServiceImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -57,7 +59,6 @@ import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

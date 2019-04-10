@@ -3,10 +3,8 @@ package io.mosip.authentication.common.integration;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.el.stream.Optional;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,14 +29,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDto;
+import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.integration.dto.CryptomanagerRequestDto;
-import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
-import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 // 

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,7 +41,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.internal.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -51,7 +49,6 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
  * @author Prem Kumar
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -346,7 +343,6 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 

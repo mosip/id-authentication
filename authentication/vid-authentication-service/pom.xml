@@ -9,8 +9,8 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.10.1</version>
 	</parent>
-	<artifactId>vid-authentication-service</artifactId>
-	<name>vid-authentication-service</name>
+	<artifactId>vid-service</artifactId>
+	<name>vid-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,6 +25,11 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -9,10 +9,10 @@ import org.junit.Test;
 
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DemoAuthType;
+import io.mosip.authentication.common.service.impl.indauth.service.bio.MultiFingerprintMatchingStrategy;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.service.impl.indauth.service.bio.MultiFingerprintMatchingStrategy;
 
 public class MultiFingerPrintMatchingStratergyTest {
 	@Test(expected = IdAuthenticationBusinessException.class)

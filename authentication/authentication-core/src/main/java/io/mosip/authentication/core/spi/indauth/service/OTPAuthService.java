@@ -1,5 +1,9 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+
 /**
  * 
  * The interface to Validate OTP request via {OTP Manager}.
@@ -17,6 +21,6 @@ public interface OTPAuthService extends AuthService{
 	 * @param uin the uin
 	 * @return AuthStatusInfo
 	 * @throws IdAuthenticationBusinessException exception
-	 *//*
-	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;*/
+	 */
+//	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;
 }

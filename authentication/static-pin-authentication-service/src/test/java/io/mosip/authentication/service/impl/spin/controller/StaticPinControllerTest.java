@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.spin.controller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,7 +32,6 @@ import io.mosip.spin.authentication.service.impl.validator.StaticPinRequestValid
  * @author Prem Kumar
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

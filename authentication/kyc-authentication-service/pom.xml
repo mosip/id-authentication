@@ -16,6 +16,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+		<!-- Kernel Hibernate Impl -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>${kernel.hibernate.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
@@ -24,11 +30,6 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.10.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.authentication</groupId>
-			<artifactId>authentication-service</artifactId>
 			<version>0.10.1</version>
 		</dependency>
 	</dependencies>

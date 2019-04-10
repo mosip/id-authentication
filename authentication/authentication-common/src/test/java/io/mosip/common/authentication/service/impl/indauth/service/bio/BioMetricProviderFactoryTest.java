@@ -19,9 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.impl.fingerauth.provider.CogentFingerprintProvider;
 import io.mosip.authentication.common.impl.fingerauth.provider.MantraFingerprintProvider;
+import io.mosip.authentication.common.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.common.service.impl.iris.MorphoIrisProvider;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 /**
  * The Class BioMetricProviderFactoryTest.

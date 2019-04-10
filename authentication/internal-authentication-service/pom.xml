@@ -22,9 +22,15 @@
 			<version>0.10.1</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.authentication</groupId>
-			<artifactId>authentication-service</artifactId>
-			<version>0.10.1</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<!-- Kernel Hibernate Impl -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>${kernel.hibernate.version}</version>
 		</dependency>
 	</dependencies>
 </project>

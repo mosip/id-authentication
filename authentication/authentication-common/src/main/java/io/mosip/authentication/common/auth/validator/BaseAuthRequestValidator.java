@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.id.validator.IdAuthValidator;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioMatchType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
@@ -27,7 +28,6 @@ import io.mosip.authentication.common.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.common.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.common.integration.MasterDataManager;
-import io.mosip.authentication.common.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;

@@ -11,11 +11,11 @@ import java.util.function.BiFunction;
 
 import org.junit.Test;
 
+import io.mosip.authentication.common.service.impl.indauth.service.bio.CompositeIrisMatchingStrategy;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
-import io.mosip.authentication.service.impl.indauth.service.bio.CompositeIrisMatchingStrategy;
 
 public class CompositeIrisMatchingStrategyTest {
 	@Test(expected = IdAuthenticationBusinessException.class)

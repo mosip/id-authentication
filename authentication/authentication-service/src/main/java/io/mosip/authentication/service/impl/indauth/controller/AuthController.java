@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -21,7 +22,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
-import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

@@ -2,7 +2,7 @@ package io.mosip.authentication.common.impl.indauth.service.bio;
 
 import org.junit.Test;
 
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
+import io.mosip.authentication.common.service.impl.iris.MorphoIrisProvider;
 
 
 /**

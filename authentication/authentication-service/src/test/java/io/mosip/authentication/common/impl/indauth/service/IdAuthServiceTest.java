@@ -29,7 +29,7 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.impl.id.service.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 
 /**
  * This class tests the IdAuthServiceImpl.java

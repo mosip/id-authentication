@@ -33,6 +33,7 @@ import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.common.integration.MasterDataManager;
+import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;

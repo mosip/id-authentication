@@ -43,7 +43,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.service.impl.id.service.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 
 /**
  * IdAuthServiceImplTest test class.

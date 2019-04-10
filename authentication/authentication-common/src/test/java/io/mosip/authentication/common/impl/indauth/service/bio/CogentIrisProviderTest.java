@@ -1,9 +1,8 @@
 package io.mosip.authentication.common.impl.indauth.service.bio;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
 
-import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.common.service.impl.iris.CogentIrisProvider;
 
 
 
