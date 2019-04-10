@@ -117,7 +117,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 				responseDTO.setSuccessResponseDTO(sucessResponse);
 
 			}
-
+			
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
 
 		} catch (RegBaseUncheckedException uncheckedException) {

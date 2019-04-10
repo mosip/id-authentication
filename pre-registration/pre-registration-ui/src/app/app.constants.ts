@@ -56,7 +56,8 @@ export const APPEND_URL = {
   notification: 'notification/',
   send_notification: 'notify',
   master_data: 'v1/masterdata/',
-  auth: 'login/'
+  auth: 'login/',
+  cancelAppointment: 'appointment/'
 };
 
 export const PARAMS_KEYS = {

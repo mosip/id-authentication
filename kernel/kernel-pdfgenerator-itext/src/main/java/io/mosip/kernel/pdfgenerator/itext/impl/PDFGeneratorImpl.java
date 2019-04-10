@@ -175,7 +175,9 @@ public class PDFGeneratorImpl implements PDFGenerator {
 			Document document = new Document(new PdfDocument(pdfWriter));
 
 			for (BufferedImage bufferedImage : bufferedImages) {
-				document.add(new Image(ImageDataFactory.create(getImageBytesFromBufferedImage(bufferedImage))));
+				Image image = new Image(ImageDataFactory.create(getImageBytesFromBufferedImage(bufferedImage)));
+				image.scaleToFit(600, 750);
+				document.add(image);
 			}
 
 			document.close();

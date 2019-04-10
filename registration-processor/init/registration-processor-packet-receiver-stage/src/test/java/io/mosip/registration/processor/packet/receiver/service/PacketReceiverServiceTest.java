@@ -146,11 +146,10 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusComment("registration begins");
 
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setRetryCount(4);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
 
 		try {
@@ -184,7 +183,7 @@ public class PacketReceiverServiceTest {
 			ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 			Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 					"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-					EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
+					EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		}
 

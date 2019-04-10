@@ -125,8 +125,7 @@ public class FXUtils {
 	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
 	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
-		return validation.validateTextField(parentPane, field, fieldId,
-				(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED));
+		return validation.validateTextField(parentPane, field, fieldId);
 	}
 
 	/**

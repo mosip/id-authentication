@@ -58,9 +58,9 @@ export class FileUploadComponent implements OnInit {
 
   // disabled = true;
   documentUploadRequestBody: DocumentUploadRequestDTO = {
-    doc_cat_code: '',
-    doc_typ_code: '',
-    lang_code: ''
+    docCatCode: '',
+    docTypCode: '',
+    langCode: ''
   };
 
   documentCategoryDto: DocumentCategoryDTO = {
@@ -346,9 +346,9 @@ export class FileUploadComponent implements OnInit {
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
   }
   setJsonString(event) {
-    this.documentUploadRequestBody.doc_cat_code = this.documentType;
-    this.documentUploadRequestBody.lang_code = localStorage.getItem('langCode');
-    this.documentUploadRequestBody.doc_typ_code = this.documentType;
+    this.documentUploadRequestBody.docCatCode = this.documentType;
+    this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
+    this.documentUploadRequestBody.docTypCode = this.documentType;
     this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
@@ -484,9 +484,9 @@ export class FileUploadComponent implements OnInit {
 }
 
 export interface DocumentUploadRequestDTO {
-  doc_cat_code: string;
-  doc_typ_code: string;
-  lang_code: string;
+  docCatCode: string;
+  docTypCode: string;
+  langCode: string;
 }
 
 export interface DocumentCategoryDTO {
