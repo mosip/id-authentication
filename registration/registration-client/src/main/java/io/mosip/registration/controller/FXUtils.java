@@ -191,7 +191,7 @@ public class FXUtils {
 			boolean haveToTransliterate) {
 
 		focusUnfocusListener(parentPane, field, localField);
-
+		
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				if (localField != null) {
@@ -305,7 +305,6 @@ public class FXUtils {
 	private void focusAction(Pane parentPane, TextField field) {
 		if (field != null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-				hideErrorMessageLabel(parentPane, field);
 				if (newValue) {
 					showLabel(parentPane, field);
 				} else {
@@ -382,13 +381,14 @@ public class FXUtils {
 	 * @param regex
 	 *            the regular expression pattern to validate the input of field
 	 */
-	public void dobListener(TextField field, TextField fieldToPopulate, String regex) {
+	public void dobListener(TextField field, TextField fieldToPopulate, TextField localFieldToPopulate, String regex) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
 				if (age >= 0 && age <= 118) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
+					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 				}
 			}
 		});
