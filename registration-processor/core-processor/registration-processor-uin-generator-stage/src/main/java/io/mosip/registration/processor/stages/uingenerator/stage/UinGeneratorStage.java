@@ -445,7 +445,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			InputStream pobStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfDateOfBirth.get("value"));
 			byte[] pobBytes = IOUtils.toByteArray(pobStream);
 			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(proofOfAddressLabel);
+			documentsInfoDto.setCategory(proofOfDateOfBirthLabel);
 			documentsInfoDto.setValue(CryptoUtil.encodeBase64(pobBytes));
 			applicantDocuments.add(documentsInfoDto);
 		}
@@ -466,7 +466,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			applicantDocuments.add(documentsInfoDto);
 		}
 		if(applicantBiometric!=null) {
-			/* IN Applicant Biometric getting multiple BDB document which one need to set to applicantDocuments array     */
+			 //IN Applicant Biometric getting multiple BDB document which one need to set to applicantDocuments array     
 			InputStream biometricStream = adapter.getFile(registrationId,PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + applicantBiometric.get("value"));
 			byte[] biometricBytes = IOUtils.toByteArray(biometricStream);
 			documentsInfoDto = new Documents();
@@ -737,12 +737,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
-		/*MessageDTO dto = new MessageDTO();
-		dto.setRid("10011100110000620190321062916");
+		//this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10011100110009120190409052441");
 		dto.setIsValid(false);
 		MessageDTO dto2= process(dto);
-		this.send(mosipEventBus ,MessageBusAddress.UIN_GENERATION_BUS_OUT,dto2);*/
+		this.send(mosipEventBus ,MessageBusAddress.UIN_GENERATION_BUS_OUT,dto2);
 
 	}
 	

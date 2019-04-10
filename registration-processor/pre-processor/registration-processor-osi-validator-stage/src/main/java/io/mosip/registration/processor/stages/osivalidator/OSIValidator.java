@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -320,31 +321,43 @@ public class OSIValidator {
 		int applicantAge = getApplicantAge(registrationId);
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				&& applicantAge<= childAgeLimit && applicantAge>0) {
-			String introducerUinKey = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
-			String introducerRidKey = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
-			String introducerUin = JsonUtil.getJSONValue(demographicIdentity, introducerUinKey);
-			String introducerRid = JsonUtil.getJSONValue(demographicIdentity, introducerRidKey);
-			if (introducerUin == null && introducerRid == null) {
+			String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
+			String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
+			Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
+			Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
+			BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
+			BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
+			if (introducerUIN == null && introducerRID == null) {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
+			String introducerRidString = bigIntegerToString(introducerRID);
+			String introducerUinString = bigIntegerToString(introducerUIN);
+			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
 
-				introducerUin = getIntroducerUIN(introducerRid);
-				if (introducerUin == null) {
-
+				introducerUinString = getIntroducerUIN(introducerRidString);
+				if (introducerUinString == null) {
 					registrationStatusDto
 							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
 			}
-			if (introducerUin != null) {
-				return validateIntroducer(regOsi, registrationId, introducerUin);
+			if (introducerUinString != null) {
+				return validateIntroducer(regOsi, registrationId, introducerUinString);
 			} else {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private BigInteger numberToBigInteger(Number number ) {
+		return number!=null? new BigInteger(String.valueOf(number)):null;
+	}
+	
+	private String bigIntegerToString(BigInteger number ) {
+
+		return String.valueOf(number);
 	}
 
 	private int getApplicantAge(String registrationId) throws IOException {

@@ -256,9 +256,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		if (hdfsAdapter.isPacketPresent(registrationId)) {
 
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-			fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
+			//fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
+			//fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+			//fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
 
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
