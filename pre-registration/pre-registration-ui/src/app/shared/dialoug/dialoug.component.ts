@@ -57,8 +57,7 @@ export class DialougComponent implements OnInit {
   }
 
   validateMobile() {
-    const re = this.config.getConfigByKey(appConstants.CONFIG_KEYS.mosip_regex_phone);
-    if (re.test(String(this.applicantNumber).toLowerCase())) {
+    if (!isNaN(this.applicantNumber) && this.applicantNumber.length === 10) {
       this.inputList[1] = this.applicantNumber;
       this.invalidApplicantNumber = false;
       this.disableSend = false;
@@ -69,7 +68,7 @@ export class DialougComponent implements OnInit {
   }
 
   validateEmail() {
-    const re = this.config.getConfigByKey(appConstants.CONFIG_KEYS.mosip_regex_email);
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(this.applicantEmail).toLowerCase())) {
       this.inputList[0] = this.applicantEmail;
       this.invalidApplicantEmail = false;
@@ -81,14 +80,15 @@ export class DialougComponent implements OnInit {
   }
 
   enableButton(email, mobile) {
-    if (!email.value && !mobile.value) 
-      this.disableSend = true;
-    else if (email.value && !mobile.value && !this.invalidApplicantEmail)
-      this.disableSend = false;
-    else if (mobile.value && !email.value && !this.invalidApplicantNumber)
-      this.disableSend = false;
-    else if (!this.invalidApplicantEmail && !this.invalidApplicantNumber)
-      this.disableSend = false;
+    console.log(email, mobile);
+    // if (!email.value && !mobile.value) 
+    //   this.disableSend = true;
+    // else if (email.value && !mobile.value && !this.invalidApplicantEmail)
+    //   this.disableSend = false;
+    // else if (mobile.value && !email.value && !this.invalidApplicantNumber)
+    //   this.disableSend = false;
+    // else if (!this.invalidApplicantEmail && !this.invalidApplicantNumber)
+    //   this.disableSend = false;
   }
 
   onSelectCheckbox() {
