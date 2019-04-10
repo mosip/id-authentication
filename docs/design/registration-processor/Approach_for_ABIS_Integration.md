@@ -97,7 +97,7 @@ The key solution considerations are -
 
 - Demo Dedupe, Bio Dedupe Stage: These stages will be responsible to take business decesions like Rejecting packet or sending event for manual varification upon potential match found or sending event to UIN generation in case if no potential match found.
 - BiometricIdentificationHandlerStage: This stage will understand request to be sent to ABIS systems and hence responsible to construct request objects.
-- BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object and receives asynchrnous response from ABIS system.
+- BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object to be send to ABIS and receives asynchrnous response from ABIS system.
 
 
 **Sequence Diagram**
@@ -106,4 +106,4 @@ The key solution considerations are -
 
 
 
-![ABIS middleware sequence diagram](_images/abis_middleware_seq_diagram.png)
+![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_match_seq_diagram.png)
