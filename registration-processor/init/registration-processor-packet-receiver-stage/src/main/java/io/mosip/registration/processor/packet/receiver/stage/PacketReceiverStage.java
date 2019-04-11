@@ -132,7 +132,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
 			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
-			MessageDTO messageDTO = packetReceiverService.storePacket(file, this.getClass().getSimpleName());
+			MessageDTO messageDTO = packetReceiverService.validatePacket(file, this.getClass().getSimpleName());
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
@@ -141,12 +141,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 								RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), listObj),
 						APPLICATION_JSON);
 				this.sendMessage(messageDTO);
-			} else {
-				this.setResponse(ctx,
-						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString(), listObj),
-						APPLICATION_JSON);
-			}
+			} 
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));

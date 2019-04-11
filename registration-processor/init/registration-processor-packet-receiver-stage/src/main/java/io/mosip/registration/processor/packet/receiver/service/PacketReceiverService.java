@@ -21,6 +21,6 @@ public interface PacketReceiverService<T, U> {
 	 *            the file
 	 * @return the u
 	 */
-	public U storePacket(T file, String stageName);
+	public U validatePacket(T file, String stageName);
 
 }
