@@ -11,7 +11,9 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
 /**
- * The Class AuthTypeImpl.
+ * The Class AuthTypeImpl - used to instantiate respective
+ * Auth type to set the type, associate match types, display name
+ * and to get which auth type is enabled
  * 
  * @author Sanjay Murali
  */

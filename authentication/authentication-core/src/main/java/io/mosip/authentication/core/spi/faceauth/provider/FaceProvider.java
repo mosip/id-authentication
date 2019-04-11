@@ -17,6 +17,8 @@ import com.google.gson.JsonSyntaxException;
  */
 public abstract class FaceProvider implements MosipFaceProvider {
 
+	/** The Constant UNKNOWN. */
+	private static final String UNKNOWN = "UNKNOWN";
 	/**
 	 * The Odd Uin constant
 	 */
@@ -87,7 +89,7 @@ public abstract class FaceProvider implements MosipFaceProvider {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			String uin = reqInfoMap.get(IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
-			if (reqInfoMap.containsKey(FaceProvider.FACE) || reqInfoMap.containsKey("UNKNOWN1")) {
+			if (reqInfoMap.containsKey(FaceProvider.FACE) || reqInfoMap.keySet().stream().anyMatch(key -> key.startsWith(UNKNOWN))) {
 				return environment.getProperty(uinType + FACE_MATCH_VALUE, Double.class);
 			}
 		}
