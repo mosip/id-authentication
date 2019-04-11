@@ -246,6 +246,8 @@ public class PacketValidateProcessor {
 			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -257,6 +259,8 @@ public class PacketValidateProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode();
@@ -265,6 +269,8 @@ public class PacketValidateProcessor {
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -277,6 +283,8 @@ public class PacketValidateProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 		} catch (IdentityNotFoundException | IOException exc) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(exc.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
@@ -289,6 +297,8 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (TablenotAccessibleException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 			object.setInternalError(Boolean.TRUE);
@@ -298,6 +308,8 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (BaseUncheckedException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -310,6 +322,8 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(ex.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			isTransactionSuccessful = false;
@@ -382,8 +396,8 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			//if (!applicantDocumentValidation(identity, registrationStatusDto))
-				//return false;
+			// if (!applicantDocumentValidation(identity, registrationStatusDto))
+			// return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 
