@@ -55,6 +55,7 @@ public class RegProcDataRead {
 
 	public RegistrationStatusEntity regproc_dbDataInRegistration(String regId)
 	{
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -92,7 +93,7 @@ public class RegProcDataRead {
 		for (Object obj : objs) {
 			TestData = (Object[]) obj;
 			registrationStatusEntity.setId((String)TestData[0]);
-			registrationStatusEntity.setRegistrationType((String)TestData[1]);
+			/*registrationStatusEntity.setRegistrationType((String)TestData[1]);
 			registrationStatusEntity.setReferenceRegistrationId((String)TestData[2]);
 			registrationStatusEntity.setStatusCode((String)TestData[3]);
 			registrationStatusEntity.setLangCode((String)TestData[4]);
@@ -103,7 +104,7 @@ public class RegProcDataRead {
 			registrationStatusEntity.setUpdatedBy((String)TestData[12]);
 			registrationStatusEntity.setIsDeleted((boolean)TestData[14]);
 			registrationStatusEntity.setApplicantType((String)TestData[16]);
-			logger.info("Status is : " +status_code);
+			logger.info("Status is : " +status_code);*/
 
 			// commit the transaction
 			session.getTransaction().commit();

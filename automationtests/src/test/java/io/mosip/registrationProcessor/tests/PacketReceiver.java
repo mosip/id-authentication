@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -33,6 +34,7 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.dbaccess.RegProcDataRead;
+import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.RegistrationStatusEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
@@ -81,11 +83,13 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder = null;
 		try {
-			switch (testParam) {
+			switch ("smokeAndRegression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+				break;
 			case "regression":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+				break;
 			default:
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
@@ -108,143 +112,96 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		String configPath = "src/test/resources/" + testSuite + "/";
 		File folder = new File(configPath);
 		File[] listOfFolders = folder.listFiles();
 		JSONObject objectData = new JSONObject();
+
 		try {
 			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		//outer and inner keys which are dynamic in the actual response
-		outerKeys.add("requesttimestamp");
-		outerKeys.add("responsetime");
-		innerKeys.add("createdDateTime");
-		innerKeys.add("updatedDateTime");
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("requesttimestamp");
+			outerKeys.add("responsetime");
+			innerKeys.add("createdDateTime");
+			innerKeys.add("updatedDateTime");
 
-	for (int j = 0; j < listOfFolders.length; j++) {
-			if (listOfFolders[j].isDirectory()) {
-				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-					logger.info("Testcase name is" + listOfFolders[j].getName());
-					File[] listOfFiles = listOfFolders[j].listFiles();
-					for (File f : listOfFiles) {
-						if (f.getName().toLowerCase().contains("request")) {
-							objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-							file=new File(f.getParent()+"/"+objectData.get("path"));
-							rId = file.getName().substring(0, file.getName().length()-4);
+			for (int j = 0; j < listOfFolders.length; j++) {
+				if (listOfFolders[j].isDirectory()) {
+					if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
+						logger.info("Testcase name is" + listOfFolders[j].getName());
+						File[] listOfFiles = listOfFolders[j].listFiles();
+						for (File f : listOfFiles) {
+							if (f.getName().toLowerCase().contains("request")) {
+								objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+								file=new File(f.getParent()+"/"+objectData.get("path"));
+								rId = file.getName().substring(0, file.getName().length()-4);
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		//generation of actual response
-		actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
 
-		String statusCode = null;
-		String errorCode = null;
-		Map<String,String> response  = actualResponse.jsonPath().get("response");
-		Map<String,String> error  = actualResponse.jsonPath().get("error");
+			//generation of actual response
+			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
-		//Asserting actual and expected response
-		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-		if (status) {
-			switch ("smokeAndRegression"){
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+			if (status) {
+				boolean isError = expectedResponse.containsKey("errors");
+				logger.info("isError ========= : "+isError);
 
-			case "smoke" :
-				statusCode = response.get("status");
-				logger.info("statusCode : "+statusCode);
+				if(!isError){
+					String actualStatus = null;
+					String expectedStatus = null;
+					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+					JSONArray expected = (JSONArray) expectedResponse.get("response");
+					Iterator<Object> iterator = expected.iterator();
+					//extracting status from the expected response
+					while(iterator.hasNext()){
+						JSONObject jsonObject = (JSONObject) iterator.next();
+						expectedStatus = jsonObject.get("status").toString().trim();
+					}
 
-				if(statusCode.matches("PACKET_UPLOADED_TO_VIRUS_SCAN")){
-				//	RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(rId);	
-					//String status = dbDto.getStatusCode();
-					if (dbDto!=null) {
-						logger.info("Validated in db..........");
-						finalStatus="Pass";
-						softAssert.assertTrue(true);
-					}	
-				}else {
-					finalStatus="Fail";
-					softAssert.assertTrue(false);
+
+					for(Map<String,String> res : response){
+						actualStatus=res.get("status").toString();
+						if (expectedStatus.matches(actualStatus)){
+							logger.info("STATUS MATCHED....");
+							finalStatus = "Pass";
+							softAssert.assertTrue(true);
+						} 
+					}
+
+				}else{
+					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
+					String expectedErrorCode = null;
+					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+					for(Map<String,String> err : error){
+						String errorCode = err.get("errorcode").toString();
+						Iterator<Object> iterator1 = expectedError.iterator();
+						// extracting error code from expected response
+						while(iterator1.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator1.next();
+							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+						}
+						if(expectedErrorCode.matches(errorCode)){
+							finalStatus = "Pass";
+							softAssert.assertTrue(true);
+						}
+					}
 				}
-
-			case "regression" :
-				errorCode = error.get("errorcode");
-				logger.info("errorCode in switch : "+errorCode);
-
-				if(errorCode.matches("RPR-PKR-005")){
-					//String status = dbDto.getStatusCode();
-					logger.info("DUPLICATE PACKET RECEIVED");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else if(errorCode.matches("RPR-PKR-001")){
-					//String status = dbDto.getStatusCode();
-					logger.info("PACKET NOT SYNCED");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else if(errorCode.matches("RPR-PKR-002")){
-					//String status = dbDto.getStatusCode();
-					logger.info("PACKET SIZED INVALID");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else {
-					finalStatus="Fail";
-					softAssert.assertTrue(false);
-				}
-
-			default : 
-				statusCode = response.get("status");
-				logger.info("statusCode : "+statusCode);
-
-				if(statusCode.matches("PACKET_UPLOADED_TO_VIRUS_SCAN")){
-					RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(rId);	
-					//String status = dbDto.getStatusCode();
-					if (dbDto!=null) {
-						logger.info("Validated in db..........");
-						finalStatus="Pass";
-						softAssert.assertTrue(true);
-					}	
-				}else {
-					finalStatus="Fail";
-					softAssert.assertTrue(false);
-				}
-
-				errorCode = error.get("errorcode");
-				logger.info("errorCode in switch : "+errorCode);
-
-				if(errorCode.matches("RPR-PKR-005")){
-					//String status = dbDto.getStatusCode();
-					logger.info("DUPLICATE PACKET RECEIVED");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else if(errorCode.matches("RPR-PKR-001")){
-					//String status = dbDto.getStatusCode();
-					logger.info("PACKET NOT SYNCED");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else if(errorCode.matches("RPR-PKR-002")){
-					//String status = dbDto.getStatusCode();
-					logger.info("PACKET SIZED INVALID");
-					finalStatus="Pass";
-					softAssert.assertTrue(true);
-				}else {
-					finalStatus="Fail";
-					softAssert.assertTrue(false);
-				}
-
+			}else{
+				finalStatus="Fail";
+				softAssert.assertTrue(false);
 			}
 
-			softAssert.assertTrue(true);
+			object.put("status", finalStatus);
+			arr.add(object);
 
-		}else{
-			finalStatus="Fail";
-			softAssert.assertTrue(false);
-		}
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
 		}
