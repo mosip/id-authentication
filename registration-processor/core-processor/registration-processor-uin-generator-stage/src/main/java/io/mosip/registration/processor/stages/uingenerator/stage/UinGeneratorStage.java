@@ -360,7 +360,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		requestDto.setRegistrationId("10003100030001920190410135313");
+		requestDto.setRegistrationId(regId);
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
 
 		List<String> pathsegments = new ArrayList<>();
