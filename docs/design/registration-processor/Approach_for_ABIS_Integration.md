@@ -93,11 +93,18 @@ The key solution considerations are -
 
 ------------
 
-![abis middleware logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
+Behavior of Identification:
+
+![abis middleware identification logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
 
 - Demo Dedupe, Bio Dedupe Stage: These stages will be responsible to take business decesions like Rejecting packet or sending event for manual varification upon potential match found or sending event to UIN generation in case if no potential match found.
 - BiometricIdentificationHandlerStage: This stage will understand request to be sent to ABIS systems and hence responsible to construct request objects.
 - BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object to be send to ABIS and receives asynchrnous response from ABIS system.
+
+
+Behavior of Ping:
+
+![abis middleware identification logical diagram](_images/reproc_abis_middleware_ping_logical_arch_diagram.png)
 
 
 **Sequence Diagram**
