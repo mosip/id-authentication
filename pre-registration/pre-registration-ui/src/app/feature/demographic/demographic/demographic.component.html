@@ -12,7 +12,7 @@
               matInput
               #fullName
               [matKeyboard]="keyboardLang"
-              maxlength={{FULLNAME_LENGTH}}
+              maxlength="{{ FULLNAME_LENGTH }}"
               placeholder="{{ 'demographic.label_name' | translate }}"
               [formControlName]="formControlNames.fullName"
               (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
@@ -147,8 +147,7 @@
               userForm.get(formControlNames.residenceStatus).invalid
             "
           >
-          {{ 'demographic.validation.nationality_validation' | translate }}
-           
+            {{ 'demographic.validation.nationality_validation' | translate }}
           </div>
 
           <mat-form-field>
@@ -156,7 +155,7 @@
               matInput
               [matKeyboard]="keyboardLang"
               #addressLine1
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               placeholder="{{ 'demographic.label_address1' | translate }}"
               [formControlName]="formControlNames.addressLine1"
               (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
@@ -172,7 +171,7 @@
               matInput
               #addressLine2
               [matKeyboard]="keyboardLang"
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               placeholder="{{ 'demographic.label_address2' | translate }}"
               [formControlName]="formControlNames.addressLine2"
               (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
@@ -188,7 +187,7 @@
               matInput
               #addressLine3
               [matKeyboard]="keyboardLang"
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               placeholder="{{ 'demographic.label_address3' | translate }}"
               [formControlName]="formControlNames.addressLine3"
               (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
@@ -288,7 +287,7 @@
                 matInput
                 #mobileNumber
                 type="text"
-                maxlength={{MOBILE_LENGTH}}
+                maxlength="{{ MOBILE_LENGTH }}"
                 placeholder="{{ 'demographic.label_mob_num' | translate }}"
                 [formControlName]="formControlNames.phone"
               />
@@ -302,7 +301,7 @@
             <mat-form-field>
               <input
                 #email
-                maxlength={{EMAIL_LENGTH}}
+                maxlength="{{ EMAIL_LENGTH }}"
                 matInput
                 placeholder="{{ 'demographic.label_email_id' | translate }}"
                 [formControlName]="formControlNames.email"
@@ -315,7 +314,7 @@
             <mat-form-field>
               <input
                 #pin
-                maxlength={{CNIE_LENGTH}}
+                maxlength="{{ CNIE_LENGTH }}"
                 matInput
                 type="text"
                 placeholder="{{ 'demographic.label_pin' | translate }}"
@@ -334,7 +333,7 @@
             <input
               matInput
               [matKeyboard]="keyboardSecondaryLang"
-              maxlength={{FULLNAME_LENGTH}}
+              maxlength="{{ FULLNAME_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_name"
               [formControlName]="formControlNames.fullNameSecondary"
               name="t_fullName"
@@ -458,7 +457,7 @@
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine1
               name="t_addressLine1"
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address1"
               [formControlName]="formControlNames.addressLine1Secondary"
             />
@@ -474,7 +473,7 @@
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine2
               name="t_addressLine2"
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address2"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
@@ -489,7 +488,7 @@
               matInput
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine3
-              maxlength={{ADDRESS_LENGTH}}
+              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address3"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
@@ -603,7 +602,12 @@
     </div>
   </div>
   <div class="user__buttons">
-    <button class="user__btn" type="button" (click)="onBack()" [disabled]="isNewApplicant || this.message['modifyUserFromPreview'] === 'true'">
+    <button
+      class="user__btn"
+      type="button"
+      (click)="onBack()"
+      [disabled]="isNewApplicant || this.message['modifyUserFromPreview'] === 'true'"
+    >
       {{ 'demographic.action_back' | translate }}
     </button>
     <button
