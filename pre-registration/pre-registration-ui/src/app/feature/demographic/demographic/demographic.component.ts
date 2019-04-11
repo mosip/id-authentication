@@ -733,13 +733,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     );
     this.sharedService.updateNameList(this.step, {
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.transUserForm.controls[this.formControlValues.fullNameSecondary].value,
+      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
       preRegId: this.preRegId,
-      postalCode: this.userForm.controls[this.formControlValues.postalCode].value,
+      postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
       regDto: this.sharedService.getNameList()[0].regDto
     });
 
-    console.log(this.sharedService.getNameList());
+    console.log('GET NAME LIST on Modification', this.sharedService.getNameList());
   }
 
   private onAddition(response: any, request: ResponseModel) {
@@ -751,6 +751,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       preRegId: this.preRegId,
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
+    console.log('GET NAME LIST On ADDITON', this.sharedService.getNameList());
   }
 
   onSubmission() {
