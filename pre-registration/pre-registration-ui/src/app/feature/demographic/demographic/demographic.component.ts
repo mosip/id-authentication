@@ -733,11 +733,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     );
     this.sharedService.updateNameList(this.step, {
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      fullNameSecondaryLang: this.transUserForm.controls[this.formControlValues.fullNameSecondary].value,
       preRegId: this.preRegId,
-      postalCode: this.formControlValues.postalCode,
+      postalCode: this.userForm.controls[this.formControlValues.postalCode].value,
       regDto: this.sharedService.getNameList()[0].regDto
     });
+
+    console.log(this.sharedService.getNameList());
   }
 
   private onAddition(response: any, request: ResponseModel) {
@@ -811,27 +813,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private createRequestJSON(identity: IdentityModel) {
-    // const identity = this.createIdentityJSONDynamic();
-    // let preRegistrationId = '';
-    // let createdBy = this.loginId;
-    // let createdDateTime = Utils.getCurrentDate();
-    // let updatedBy = '';
-    // let updatedDateTime = '';
     let langCode = this.primaryLang;
     if (this.user) {
-      // preRegistrationId = this.user.preRegId;
-      // createdBy = this.user.request.createdBy;
-      // createdDateTime = this.user.request.createdDateTime;
-      // updatedBy = this.loginId;
-      // updatedDateTime = Utils.getCurrentDate();
       langCode = this.user.request.langCode;
     }
     const req: RequestModel = {
-      // preRegistrationId: preRegistrationId,
-      // createdBy: createdBy,
-      // createdDateTime: createdDateTime,
-      // updatedBy: updatedBy,
-      // updatedDateTime: updatedDateTime,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)
     };
@@ -839,18 +825,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private createResponseJSON(identity: IdentityModel) {
-    // const identity = this.createIdentityJSONDynamic();
     let preRegistrationId = '';
     let createdBy = this.loginId;
     let createdDateTime = Utils.getCurrentDate();
-    // let updatedBy = '';
     let updatedDateTime = '';
     let langCode = this.primaryLang;
     if (this.user) {
       preRegistrationId = this.user.preRegId;
       createdBy = this.user.request.createdBy;
       createdDateTime = this.user.request.createdDateTime;
-      // updatedBy = this.loginId;
       updatedDateTime = Utils.getCurrentDate();
       langCode = this.user.request.langCode;
     }
@@ -858,7 +841,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       preRegistrationId: preRegistrationId,
       createdBy: createdBy,
       createdDateTime: createdDateTime,
-      // updatedBy: updatedBy,
       updatedDateTime: updatedDateTime,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)
