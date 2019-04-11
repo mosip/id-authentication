@@ -86,7 +86,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder= null;
 		try {
-			switch (testParam) {
+			switch ("smoke") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 			case "regression":
@@ -113,6 +113,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = new JSONObject();
+		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		List<Map<String,String>> response = actualResponse.jsonPath().get("response");
 
 		try {
@@ -157,13 +158,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 							logger.info("inside statuscode loop...................");
 
 							//audit log check(not yet implemented)
-							LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
+							/*LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
 							logger.info("log time : "+logTime);
 							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-							logger.info("AUDIT DTO : "+auditDto.getApplicationName());
+							logger.info("AUDIT DTO : "+auditDto.getApplicationName());*/
 							//rest of the validations will be added 
 
-							RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(regIds);	
+							RegistrationStatusEntity dbDto = readDataFromDb.regproc_dbDataInRegistration(regIds);	
 							logger.info("dbDto :" +dbDto);
 
 							if(dbDto != null /*&& auditDto != null*/) {
