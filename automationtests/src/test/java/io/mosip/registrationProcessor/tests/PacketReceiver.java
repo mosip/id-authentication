@@ -157,7 +157,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				logger.info("statusCode : "+statusCode);
 
 				if(statusCode.matches("PACKET_UPLOADED_TO_VIRUS_SCAN")){
-					RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(rId);	
+				//	RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(rId);	
 					//String status = dbDto.getStatusCode();
 					if (dbDto!=null) {
 						logger.info("Validated in db..........");
