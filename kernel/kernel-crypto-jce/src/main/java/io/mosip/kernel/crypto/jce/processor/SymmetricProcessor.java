@@ -32,7 +32,7 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-@SuppressFBWarnings(value = "findsecbugs:STATIC_IV", justification = "Secure random is created in a private method generateIV, IV is passed from encryption which is created randomly, It is recreated in decryption so is secure")
+//@SuppressFBWarnings(value = "findsecbugs:STATIC_IV", justification = "Secure random is created in a private method generateIV, IV is passed from encryption which is created randomly, It is recreated in decryption so is secure")
 public class SymmetricProcessor {
 	private static SecureRandom random;
 
@@ -70,6 +70,7 @@ public class SymmetricProcessor {
 	 * @param mode   if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
+	@SuppressWarnings("findsecbugs:STATIC_IV")
 	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
@@ -125,6 +126,7 @@ public class SymmetricProcessor {
 	 * @param mode   if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
+	@SuppressWarnings("findsecbugs:STATIC_IV")
 	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
