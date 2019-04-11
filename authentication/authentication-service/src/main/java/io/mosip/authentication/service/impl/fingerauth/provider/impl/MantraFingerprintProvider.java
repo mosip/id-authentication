@@ -9,7 +9,6 @@ import MFS100.MFS100Event;
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MantraFingerprintProvider - Provider class for Mantra fingerprint
  * devices.

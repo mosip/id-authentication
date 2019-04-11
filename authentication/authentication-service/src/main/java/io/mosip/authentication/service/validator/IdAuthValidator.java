@@ -26,7 +26,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
- * The Class IdAuthValidator.
+ * The Class IdAuthValidator - abstract class containing common validations.
  *
  * @author Manoj SP
  */
