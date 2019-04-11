@@ -270,11 +270,11 @@ public class DemographicService {
 		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
 		log.info("sessionId", "idType", "id",
 				"Pre Registration start time : " + DateUtils.getUTCCurrentDateTimeString());
-		requiredRequestMap.put("id",createId);
+		requiredRequestMap.put("id", createId);
 		MainListResponseDTO<DemographicCreateResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
 		boolean isSuccess = false;
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request),requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
 				DemographicRequestDTO demographicRequest = request.getRequest();
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
@@ -340,10 +340,10 @@ public class DemographicService {
 		log.info("sessionId", "idType", "id",
 				"Pre Registration start time : " + DateUtils.getUTCCurrentDateTimeString());
 		MainListResponseDTO<DemographicUpdateResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
-		requiredRequestMap.put("id",updateId);
+		requiredRequestMap.put("id", updateId);
 		boolean isSuccess = false;
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request),requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
 				Map<String, String> requestParamMap = new HashMap<>();
 				requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
 				if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -775,7 +775,7 @@ public class DemographicService {
 		try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl + "/appointment/");
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
@@ -785,7 +785,7 @@ public class DemographicService {
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() == null) {
 				bookingRegistrationDTO = respEntity.getBody().getResponse();
 			}
@@ -884,8 +884,8 @@ public class DemographicService {
 					}, params);
 
 			if (responseEntity.getBody().getErrors() != null) {
-				if (!responseEntity.getBody().getErrors().getMessage()
-						.equalsIgnoreCase(ErrorMessages.DOCUMENT_IS_MISSING.getMessage())) {
+				if (!responseEntity.getBody().getErrors().getErrorCode()
+						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
 					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErrors().getErrorCode(),
 							responseEntity.getBody().getErrors().getMessage());
 				}
@@ -930,7 +930,7 @@ public class DemographicService {
 
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
 					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
-					.queryParam("pre_registration_id", preregId);
+					.queryParam("preRegistrationId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);

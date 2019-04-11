@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.camel.impl.scan.AnnotatedWithAnyPackageScanFilter;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -143,12 +145,11 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 
-		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setRetryCount(4);
+		registrationStatusDto.setStatusCode("RESEND");
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
 
 		try {
@@ -182,7 +183,7 @@ public class PacketReceiverServiceTest {
 			ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 			Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 					"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-					EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
+					EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		}
 
@@ -214,10 +215,58 @@ public class PacketReceiverServiceTest {
 
 		assertEquals(true, successResult.getIsValid());
 	}
+	
+	@Test
+	public void testRetryIfNotNull() throws IOException, URISyntaxException {
+
+		mockDto=new InternalRegistrationStatusDto();
+		mockDto.setRetryCount(3);
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
+		
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		File file = new File(classLoader.getResource("0000.zip").getFile());
+		mockMultipartFile = file;
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
+		.thenReturn(RegistrationExternalStatusCode.RESEND);
+
+		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+
+		assertEquals(true, successResult.getIsValid());
+	}
+	
+	@Test
+	public void testRetryIfNull() throws IOException, URISyntaxException {
+
+		mockDto=new InternalRegistrationStatusDto();
+		mockDto.setRetryCount(null);
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
+		
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		File file = new File(classLoader.getResource("0000.zip").getFile());
+		mockMultipartFile = file;
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
+		.thenReturn(RegistrationExternalStatusCode.RESEND);
+
+		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+
+		assertEquals(true, successResult.getIsValid());
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test(expected = DuplicateUploadRequestException.class)
 	public void testDuplicateUploadRequest() throws IOException, URISyntaxException {
+		
+		registrationStatusDto.setStatusCode("REREGISTER");
+		registrations.add(registrationStatusDto);
+		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
+		
+		
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);

@@ -27,11 +27,6 @@ public class RegistrationExceptionMapperUtil {
 	 */
 	private static Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> statusMapper() {
 
-		statusMap.put(RegistrationExceptionTypeCode.ABIS_ABORT_EXCEPTION, RegistrationTransactionStatusCode.SUCCESS);
-		statusMap.put(RegistrationExceptionTypeCode.UNABLE_TO_SERVE_REQUEST_ABIS_EXCEPTION,
-				RegistrationTransactionStatusCode.SUCCESS);
-		statusMap.put(RegistrationExceptionTypeCode.ABIS_INTERNAL_ERROR, RegistrationTransactionStatusCode.SUCCESS);
-
 		statusMap.put(RegistrationExceptionTypeCode.REG_STATUS_VALIDATION_EXCEPTION,
 				RegistrationTransactionStatusCode.FAILED);
 

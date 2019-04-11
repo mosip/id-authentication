@@ -10,6 +10,6 @@ export class ErrorComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    if (this.authService.isAuthenticated()) this.authService.onLogout();
+    // if (this.authService.isAuthenticated()) this.authService.onLogout();
   }
 }

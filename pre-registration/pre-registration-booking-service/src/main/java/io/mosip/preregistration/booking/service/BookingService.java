@@ -329,7 +329,7 @@ public class BookingService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<List<BookingStatusDTO>> bookMultiAppointment(
 			MainListRequestDTO<MultiBookingRequestDTO> bookingRequestDTOs) {
-		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
+		log.info("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service");
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		boolean isSaveSuccess = false;
 		List<BookingStatusDTO> respList = new ArrayList<>();
@@ -371,7 +371,7 @@ public class BookingService {
 							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
 							log.info("sessionId", "idType", "id",
-									"In bookAppointment method of Booking Service for booking Date Time- "
+									"In bookMultiAppointment method of Booking Service for booking Date Time- "
 											+ bookedDateTime);
 							/* Time span check for re-book */
 							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
@@ -400,7 +400,7 @@ public class BookingService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
+			log.error("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex);
 		} finally {
 			if (isSaveSuccess) {

@@ -49,14 +49,15 @@ export const APPEND_URL = {
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
-  booking_appointment: 'appointment/multi',
+  booking_appointment: 'appointment',
   booking_availability: 'appointment/availability/',
   delete_application: 'applications/',
   qr_code: 'qrCode/generate',
   notification: 'notification/',
   send_notification: 'notify',
   master_data: 'v1/masterdata/',
-  auth: 'login/'
+  auth: 'login/',
+  cancelAppointment: 'appointment/'
 };
 
 export const PARAMS_KEYS = {
@@ -101,7 +102,14 @@ export const CONFIG_KEYS = {
   mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'preregistration.address.length',
   preregistration_fullname_length: 'preregistration.fullname.length',
-  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age'
+  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age',
+  mosip_preregistration_auto_logout_idle: 'mosip.preregistration.auto.logout.idle',
+  mosip_preregistration_auto_logout_timeout: 'mosip.preregistration.auto.logout.timeout',
+  mosip_preregistration_auto_logout_ping: 'mosip.preregistration.auto.logout.ping',
+  preregistration_document_alllowe_files: 'preregistration.documentupload.allowed.file.type',
+  preregistration_document_alllowe_file_size: 'preregistration.documentupload.allowed.file.size',
+  preregistration_document_alllowe_file_name_lenght: 'preregistration.documentupload.allowed.file.nameLength'
+
   // mosip.kernel.sms.number.length
   // preregistration.max.file.size
   // preregistration.workflow.demographic,
@@ -201,9 +209,9 @@ export const languageMapping = {
 };
 
 export const notificationDtoKeys = {
-  notificationDto: 'NotificationDTO',
+  notificationDto: 'NotificationRequestDTO',
   langCode: 'langCode',
-  file: 'file'
+  file: 'attachment'
 };
 
 export const residentTypesMapping = {

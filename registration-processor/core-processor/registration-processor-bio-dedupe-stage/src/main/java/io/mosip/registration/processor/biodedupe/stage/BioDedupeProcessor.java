@@ -117,8 +117,7 @@ public class BioDedupeProcessor {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					code + " - " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 		} catch (ABISInternalError e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.ABIS_INTERNAL_ERROR));
+
 			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
 			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -126,8 +125,6 @@ public class BioDedupeProcessor {
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (ABISAbortException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.ABIS_ABORT_EXCEPTION));
 			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
 			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -136,8 +133,6 @@ public class BioDedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 
 		} catch (UnexceptedError e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.UNEXCEPTED_ERROR));
 
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
@@ -147,8 +142,6 @@ public class BioDedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 
 		} catch (UnableToServeRequestABISException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.UNABLE_TO_SERVE_REQUEST_ABIS_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + " -- " + registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

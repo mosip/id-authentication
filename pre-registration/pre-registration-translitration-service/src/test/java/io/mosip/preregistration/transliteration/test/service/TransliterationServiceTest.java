@@ -30,7 +30,8 @@ import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
@@ -68,13 +69,13 @@ public class TransliterationServiceTest {
 	private JSONObject jsonObject;
 	private JSONObject jsonTestObject;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private MainRequestDTO< TransliterationDTO> requestDto=null;
-	private TransliterationDTO transliterationRequest=null;
+	private MainRequestDTO< TransliterationRequestDTO> requestDto=null;
+	private TransliterationRequestDTO transliterationRequest=null;
 	boolean requestValidatorFlag = false;
 	Map<String, String> requestMap = new HashMap<>();
 	Map<String, String> requiredRequestMap = new HashMap<>();
 	String times = null;
-	MainResponseDTO<TransliterationDTO> responseDTO = null;
+	MainResponseDTO<TransliterationResponseDTO> responseDTO = null;
 	
 	@Value("${ver}")
 	String versionUrl;
@@ -93,13 +94,13 @@ public class TransliterationServiceTest {
 		idEntity.setLanguageId("Latin-Arabic");
 		idEntity.setToLang("Arabic");
 		
-		transliterationRequest=new TransliterationDTO();
+		transliterationRequest=new TransliterationRequestDTO();
 		transliterationRequest.setFromFieldLang("eng");
 		transliterationRequest.setFromFieldValue("Kishan");
 		transliterationRequest.setToFieldLang("ara");
-		transliterationRequest.setToFieldValue("");
 		
-		responseDTO = new MainResponseDTO<TransliterationDTO>();
+		
+		responseDTO = new MainResponseDTO<TransliterationResponseDTO>();
 		responseDTO.setResponsetime(times);
 		responseDTO.setErrors(null);
 	}
@@ -107,19 +108,19 @@ public class TransliterationServiceTest {
 	@Test
 	public void successTest() {
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
-		TransliterationDTO transliterationRequest2=new TransliterationDTO();
+		TransliterationResponseDTO transliterationRequest2=new TransliterationResponseDTO();
 		transliterationRequest2.setFromFieldLang("eng");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("ara");
 		transliterationRequest2.setToFieldValue("كِسهَن");
-		requestDto=new MainRequestDTO<TransliterationDTO>();
+		MainRequestDTO<TransliterationRequestDTO> requestDto=new MainRequestDTO<TransliterationRequestDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
 		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		requestDto.setVersion("1.0");
 		requestDto.setRequest(transliterationRequest);
 		responseDTO.setResponse(transliterationRequest2);
 		
-		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
+		MainResponseDTO<TransliterationResponseDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 		assertEquals(result.getResponse().getToFieldValue(), responseDTO.getResponse().getToFieldValue());
 		
 	}
@@ -130,12 +131,12 @@ public class TransliterationServiceTest {
 		IllegalParamException exception = new IllegalParamException(ErrorCodes.PRG_TRL_APP_002.getCode(),
 				ErrorMessage.INCORRECT_MANDATORY_FIELDS.toString(), null);
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenThrow(exception);
-		TransliterationDTO transliterationRequest2=new TransliterationDTO();
+		TransliterationResponseDTO transliterationRequest2=new TransliterationResponseDTO();
 		transliterationRequest2.setFromFieldLang("eng");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("ara");
 		transliterationRequest2.setToFieldValue("كِسهَن");
-		requestDto=new MainRequestDTO<TransliterationDTO>();
+		requestDto=new MainRequestDTO<TransliterationRequestDTO>();
 		requestDto.setRequest(transliterationRequest);
 		transliterationServiceImpl.translitratorService(requestDto);
 	}
@@ -147,19 +148,18 @@ public class TransliterationServiceTest {
 		
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		
-		TransliterationDTO transliterationRequest2=new TransliterationDTO();
-		TransliterationDTO request=new TransliterationDTO();
+		TransliterationResponseDTO transliterationRequest2=new TransliterationResponseDTO();
+		TransliterationRequestDTO request=new TransliterationRequestDTO();
 		request.setFromFieldLang("");
 		request.setFromFieldValue("Kishan");
 		request.setToFieldLang("ara");
-		request.setToFieldValue("");
-		requestDto=new MainRequestDTO<TransliterationDTO>();
+		requestDto=new MainRequestDTO<TransliterationRequestDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
 		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		requestDto.setVersion("1.0");
 		requestDto.setRequest(request);
 		responseDTO.setResponse(transliterationRequest2);
-		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
+		MainResponseDTO<TransliterationResponseDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 		
 	}
 	@Test(expected=UnSupportedLanguageException.class)
@@ -167,20 +167,20 @@ public class TransliterationServiceTest {
 		UnSupportedLanguageException exception=new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
 				ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
-		TransliterationDTO transliterationRequest=new TransliterationDTO();
-		transliterationRequest=new TransliterationDTO();
+		TransliterationRequestDTO transliterationRequest=new TransliterationRequestDTO();
+		transliterationRequest=new TransliterationRequestDTO();
 		transliterationRequest.setFromFieldLang("enl");
 		transliterationRequest.setFromFieldValue("Kishan");
 		transliterationRequest.setToFieldLang("ara");
-		transliterationRequest.setToFieldValue("");
-		requestDto=new MainRequestDTO<TransliterationDTO>();
+		requestDto=new MainRequestDTO<TransliterationRequestDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
 		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		requestDto.setVersion("1.0");
 		requestDto.setRequest(transliterationRequest);
 		
-		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
+		MainResponseDTO<TransliterationResponseDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 	}
 
 	
 }
+

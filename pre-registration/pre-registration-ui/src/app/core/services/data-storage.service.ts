@@ -93,7 +93,7 @@ export class DataStorageService {
   cancelAppointment(data: RequestModel, preRegId: string) {
     console.log('cancel appointment data', data);
     return this.httpClient.put(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preRegId,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.cancelAppointment + preRegId,
       data
     );
   }
@@ -192,13 +192,12 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
-    const obj = new RequestModel(appConstants.IDS.notification, data);
     return this.httpClient.post(
       this.BASE_URL +
         this.PRE_REG_URL +
         appConstants.APPEND_URL.notification +
         appConstants.APPEND_URL.send_notification,
-      obj
+      data
     );
   }
 

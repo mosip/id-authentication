@@ -31,10 +31,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -68,8 +66,6 @@ public class NotificationServiceTest {
 	@MockBean(name = "restTemplate")
 	private RestTemplate restTemplate;
 
-	@MockBean
-	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
@@ -123,7 +119,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-	@Test
+@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
@@ -198,36 +194,7 @@ public class NotificationServiceTest {
 
 	}
 
-//	/**
-//	 * This method return the success test case for generateQRCode method
-//	 * 
-//	 * @throws QrcodeGenerationException
-//	 * @throws java.io.IOException
-//	 */
-//	@Test
-//	public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.io.IOException {
-//		String stringjson = mapper.writeValueAsString(notificationDTO);
-//		byte[] qrCode = null;
-//		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
-//		responsedto.setQrcode(qrCode);
-//		qrCodeResponseDTO.setResponse(responsedto);
-//		qrCodeResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-//		Mockito.when(qrCodeGenerator.generateQrCode(stringjson, QrVersion.V25)).thenReturn(qrCode);
-//		MainResponseDTO<QRCodeResponseDTO> response = service.generateQRCode(stringjson);
-//
-//		assertEquals(qrCodeResponseDTO.getResponse(), response.getResponse());
-//	}
-//
-//	@Test
-//	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException {
-//		String stringjson = mapper.writeValueAsString(notificationDTO);
-//
-//		Mockito.when(qrCodeGenerator.generateQrCode(null, QrVersion.V25)).thenThrow(QrcodeGenerationException.class);
-//		service.generateQRCode(stringjson);
-//
-//		assertEquals(null, qrCodeResponseDTO.getResponse());
-//
-//	}
+
 
 	/**
 	 * This test method is for succes case of getConfig
