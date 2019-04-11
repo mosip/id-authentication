@@ -6,7 +6,8 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 
 /**
- * The Class DataValidationUtil.
+ * The Class DataValidationUtil - Checks for errors in the error object
+ * and throws {@link IDDataValidationException}, if any error is present.
  *
  * @author Manoj SP
  */
