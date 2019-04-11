@@ -48,7 +48,6 @@ import sun.security.pkcs11.SunPKCS11;
  * @since 1.0.0
  *
  */
-@SuppressFBWarnings(value="findsecbugs:HARD_CODE_PASSWORD",justification="Password is not hardcoded, reading from a property file")
 @Component
 public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore, InitializingBean {
 
@@ -186,6 +185,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * loaded again from the given input stream.
 	 * 
 	 */
+	@SuppressWarnings("findsecbugs:HARD_CODE_PASSWORD")
 	private void loadKeystore() {
 
 		try {
@@ -239,6 +239,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getAsymmetricKey(java.
 	 * lang.String)
 	 */
+	@SuppressWarnings("findsecbugs:HARD_CODE_PASSWORD")
 	@Override
 	public PrivateKeyEntry getAsymmetricKey(String alias) {
 		PrivateKeyEntry privateKeyEntry = null;
@@ -306,6 +307,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#storeAsymmetricKey(java.
 	 * security.KeyPair, java.lang.String)
 	 */
+	@SuppressWarnings("findsecbugs:HARD_CODE_PASSWORD")
 	@Override
 	public void storeAsymmetricKey(KeyPair keyPair, String alias, LocalDateTime validityFrom,
 			LocalDateTime validityTo) {
@@ -332,6 +334,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getSymmetricKey(java.lang
 	 * .String)
 	 */
+	@SuppressWarnings("findsecbugs:HARD_CODE_PASSWORD")
 	@Override
 	public SecretKey getSymmetricKey(String alias) {
 		SecretKey secretKey = null;
@@ -358,6 +361,7 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#storeSymmetricKey(javax.
 	 * crypto.SecretKey, java.lang.String)
 	 */
+	@SuppressWarnings("findsecbugs:HARD_CODE_PASSWORD")
 	@Override
 	public void storeSymmetricKey(SecretKey secretKey, String alias) {
 
