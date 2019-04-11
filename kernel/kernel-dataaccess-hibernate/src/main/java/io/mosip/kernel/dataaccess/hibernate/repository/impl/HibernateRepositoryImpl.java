@@ -175,7 +175,6 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 	 * io.mosip.kernel.core.dao.repository.BaseRepository#createQuerySelect(java.
 	 * lang.String, java.util.Map)
 	 */
-	@SuppressFBWarnings(value="findsecbugs:SQL_INJECTION_JPA",justification = " " )
 	@Override
 	public List<E> createQuerySelect(String qlString, Map<String, Object> params) {
 		List<E> entityList = null;
