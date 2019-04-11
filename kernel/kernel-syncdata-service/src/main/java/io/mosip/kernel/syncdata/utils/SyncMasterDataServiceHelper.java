@@ -117,6 +117,7 @@ import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -166,6 +167,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  * Sync handler masterData service helper
  * 
  * @author Abhishek Kumar
+ * @author Srinivasan
  * @since 1.0.0
  */
 @Component
@@ -1648,7 +1650,7 @@ public class SyncMasterDataServiceHelper {
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
-			throw new SyncDataServiceException("ABCHGIUYEE", "762334487");
+			throw new SyncServiceException(validationErrorsList);
 		}
 		ResponseWrapper<SyncJobDefResponseDto> responseObject = null;
 		try {
