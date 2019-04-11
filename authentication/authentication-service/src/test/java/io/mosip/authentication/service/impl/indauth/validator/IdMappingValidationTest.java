@@ -266,6 +266,7 @@ public class IdMappingValidationTest {
 		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FID");
+		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTOFace);
 
