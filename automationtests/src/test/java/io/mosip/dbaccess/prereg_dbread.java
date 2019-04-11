@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.entity.DemographicEntity;
 import io.mosip.service.BaseTestCase;
 
 
@@ -364,6 +365,51 @@ public class prereg_dbread {
 	
 	}
 	
+	public static List<?> validateDB(String queryStr)
+	{
+		List<?> flag;
+		
+		factory = new Configuration().configure("prereg.cfg.xml")
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		/*factory = new Configuration().configure("prereg.cfg.xml")
+				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdata(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
 
+	}
+	
+	
+
+	public static List<Object> validateDBdata(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		org.hibernate.query.Query query= session.createQuery(queryStr);
+		
+		//Query query = session.createSQLQuery(queryString);
+	
+		//List<Object> objs = (List<Object>) query.list();
+		List<Object> objs = query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		return objs;
+		
+	
+	}
+	
+
+	
+	
 
 }
