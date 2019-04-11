@@ -1078,10 +1078,8 @@ public class BaseController extends BaseService {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-			fingerPrintCaptureController.clearImage();
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
-			irisCaptureController.clearIrisBasedOnExceptions();
 		} else if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);

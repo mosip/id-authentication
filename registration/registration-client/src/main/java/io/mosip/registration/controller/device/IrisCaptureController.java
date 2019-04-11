@@ -27,7 +27,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.iris.IrisFacade;
-import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -149,7 +148,6 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
 
 			// Set Threshold
 			String irisThreshold = getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD);
@@ -199,7 +197,11 @@ public class IrisCaptureController extends BaseController {
 	/**
 	 * Populate exception.
 	 */
-	private void populateException() {
+	public void populateException() {
+		
+		leftIrisException.setText(RegistrationConstants.HYPHEN);
+		leftIrisException.setText(RegistrationConstants.HYPHEN);
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
 					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO() != null) {
@@ -447,7 +449,6 @@ public class IrisCaptureController extends BaseController {
 			popupStage.close();
 			if (validateIris() && validateIrisLocalDedup()) {
 				continueBtn.setDisable(false);
-				backBtn.setDisable(false);
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -752,7 +753,6 @@ public class IrisCaptureController extends BaseController {
 
 		if (anyIrisException(RegistrationConstants.LEFT) && anyIrisException(RegistrationConstants.RIGHT)) {
 			continueBtn.setDisable(false);
-			backBtn.setDisable(false);
 		}
 		singleBiometricCaptureCheck();
 		populateException();
@@ -761,7 +761,6 @@ public class IrisCaptureController extends BaseController {
 	private void singleBiometricCaptureCheck() {
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
 		}
 		if (getRegistrationDTOFromSession() != null
 				&& !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
@@ -769,11 +768,6 @@ public class IrisCaptureController extends BaseController {
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
-			backBtn.setDisable(false);
-		} else if (getRegistrationDTOFromSession() != null
-				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
-			backBtn.setDisable(false);
 		}
 	}
 
