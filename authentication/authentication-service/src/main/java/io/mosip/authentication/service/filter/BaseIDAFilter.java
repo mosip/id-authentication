@@ -63,7 +63,10 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final String REQUEST = "request";
 
 	/** The Constant MOSIP_IDA_API_IDS. */
-	private static final String MOSIP_IDA_API_IDS = "mosip.ida.api.ids.";
+	private static final String MOSIP_IDA_API_ID = "mosip.ida.api.id.";
+	
+	/** The Constant MOSIP_IDA_API_VERSION. */
+	private static final String MOSIP_IDA_API_VERSION = "mosip.ida.api.version.";
 
 	/** The Constant ID. */
 	private static final String ID = "id";
@@ -208,9 +211,9 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
-		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper)));
+		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVersion(Objects.nonNull(requestMap) && requestMap.get(VERSION) instanceof String ? (String) requestMap.get(VERSION) : null);
+		authResponseDTO.setVersion(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
 				new TypeReference<Map<String, Object>>() {
 				});
@@ -318,7 +321,7 @@ public abstract class BaseIDAFilter implements Filter {
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		
-			String id = fetchId(requestWrapper);
+			String id = fetchId(requestWrapper, MOSIP_IDA_API_ID);
 			requestWrapper.resetInputStream();
 			if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
 				validateId(requestBody, id);
@@ -333,13 +336,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestWrapper the {@link ResettableStreamHttpServletRequest}
 	 * @return the string
 	 */
-	private String fetchId(ResettableStreamHttpServletRequest requestWrapper) {
+	private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
 		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
 		if ((!StringUtils.isEmpty(url)) && (!StringUtils.isEmpty(contextPath))) {
 			String[] splitedUrlByContext = url.split(contextPath);
-			id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
+			id = attribute + splitedUrlByContext[1].split("/")[1];
 		}
 		return id;
 	}
@@ -356,7 +359,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private void validateVersion(Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		String verFromRequest = requestBody.containsKey(VERSION) ? (String) requestBody.get(VERSION) : null;
-		if(Objects.isNull(verFromRequest)) {
+		if(StringUtils.isEmpty(verFromRequest)) {
 			handleException(VERSION, false);
 		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches()) {
@@ -374,7 +377,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
 		String idFromRequest = requestBody.containsKey(ID) ? (String) requestBody.get(ID) : null;
 		String property = env.getProperty(id);
-		if(Objects.isNull(idFromRequest)) {
+		if(StringUtils.isEmpty(idFromRequest)) {
 			handleException(ID, false);
 		}
 		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
@@ -422,13 +425,10 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
-			String version = null;
-			if (Objects.nonNull(requestBody) && requestBody.get(VERSION) instanceof String) {
-				version = (String) requestBody.get(VERSION);
-			}
-			responseMap.replace(VERSION, version);
-			String idType = Objects.nonNull(requestBody)? (String) requestBody.get(ID) : null;
-			responseMap.put(ID, idType);
+			requestWrapper.resetInputStream();
+			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
+			requestWrapper.resetInputStream();
+			responseMap.put(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;
