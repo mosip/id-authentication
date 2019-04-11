@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +85,7 @@ public class DocumentServiceUtil {
 	 * Reference for ${file.extension} from property file
 	 */
 	@Value("${preregistration.document.extention}")
-	private List<String> fileExtension;
+	private String fileExtension;
 	
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
@@ -166,7 +168,7 @@ public class DocumentServiceUtil {
 		documentEntity.setCrBy(userId);
 		documentEntity.setUpdBy(userId);
 		documentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
-		documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		//documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return documentEntity;
 	}
 
@@ -302,7 +304,8 @@ public class DocumentServiceUtil {
 	 */
 	public boolean fileExtensionCheck(MultipartFile file) {
 		log.info("sessionId", "idType", "id", "In fileExtensionCheck method of document service util");
-		if (fileExtension.contains(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase())) {
+		List<String> items = Arrays.asList(fileExtension.split("\\s*,\\s*"));
+		if (items.contains(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase())) {
 			return true;
 		} else {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
