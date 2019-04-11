@@ -703,7 +703,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
-			if (syncJob.getValue().getParentSyncJobId() == null && syncJob.getValue().getApiName() != null) {
+			if ((syncJob.getValue().getParentSyncJobId()==null || syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL")) && syncJob.getValue().getApiName() != null) {
 
 				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (jobResponse.getErrorResponseDTOs() != null) {

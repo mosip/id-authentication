@@ -189,15 +189,20 @@ public class FXUtils {
 	 */
 	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
-
+		
 		focusUnfocusListener(parentPane, field, localField);
 		
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				if (localField != null) {
 					if (haveToTransliterate) {
-						localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
-								ApplicationContext.localLanguage(), field.getText()));
+						try {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
 					} else {
 						localField.setText(field.getText());
 					}
@@ -305,6 +310,7 @@ public class FXUtils {
 	private void focusAction(Pane parentPane, TextField field) {
 		if (field != null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+				hideErrorMessageLabel(parentPane, field);
 				if (newValue) {
 					showLabel(parentPane, field);
 				} else {

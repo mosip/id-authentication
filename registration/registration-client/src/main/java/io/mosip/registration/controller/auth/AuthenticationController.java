@@ -879,7 +879,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		int minutes = otpExpirySeconds / 60;
 		String seconds = String.valueOf(otpExpirySeconds % 60);
 		seconds = seconds.length() < 2 ? "0" + seconds : seconds;
-		otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds);
+		otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
+				+ RegistrationUIConstants.MINUTES);
 		stopTimer();
 		isSupervisor = false;
 		isEODAuthentication = false;
@@ -962,7 +963,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * This method will remove the auth method from list
 	 * 
 	 * @param authList
-	 * 			authentication list
+	 *            authentication list
 	 * @param disableFlag
 	 *            configuration flag
 	 * @param authCode

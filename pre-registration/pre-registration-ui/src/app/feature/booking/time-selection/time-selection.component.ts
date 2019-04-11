@@ -248,9 +248,9 @@ export class TimeSelectionComponent implements OnInit {
             .afterClosed()
             .subscribe(() => {
               this.temp.forEach(name => {
-                this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
                 if (booking[0]) {
+                  this.sharedService.addNameList(name);
                   const appointmentDateTime = Utils.getBookingDateTime(
                     booking[0].appointment_date,
                     booking[0].time_slot_from

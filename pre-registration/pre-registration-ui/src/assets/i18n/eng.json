@@ -312,6 +312,17 @@
     "action_back": "BACK",
     "action_continue": "CONTINUE",
     "action_preview": "PREVIEW",
+    "consent": {
+      "title": "Terms and Conditions",
+      "subtitle": "Your Agreement",
+      "message": "To provide consent for storage and utilization of personal information as given",
+      "checkCondition": "Click to accept the terms and conditions",
+      "acceptButton": "Accept",
+      "alertMessageFirst":"You will be logged out due to not accepting Terms & Conditions",
+      "alertMessageSecond":"You will be redirected to ‘Your Application Page’ due to not accepting Terms & Conditions",
+      "alertMessageThird":"You will be redirected to ‘Preview Page’ due to not accepting Terms & Conditions"
+    },
+
     "validation": {
       "name_required": "Please enter valid name",
       "age_validation": "Age should be less than 150",

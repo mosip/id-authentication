@@ -37,13 +37,13 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Component
 public class RegistrationUpdate {
 
-	private String backUpPath = "D://mosip/AutoBackUp";
-
+	
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
+	private String backUpPath = "D://mosip/AutoBackUp";
 	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
 	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
