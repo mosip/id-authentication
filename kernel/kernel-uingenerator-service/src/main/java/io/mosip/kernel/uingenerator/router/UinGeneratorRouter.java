@@ -29,6 +29,7 @@ import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -75,10 +76,13 @@ public class UinGeneratorRouter {
 		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
 		if (!profile.equalsIgnoreCase("test")) {
-			authHandler.addAuthFilter(router, path, null, new String[] { "REGISTRATION_PROCESSOR" });
+			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
 		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
 		router.route().handler(BodyHandler.create());
+		if (!profile.equalsIgnoreCase("test")) {
+			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
+		}
 		router.put(path).consumes("application/json").handler(this::updateRouter);
 		return router;
 	}
