@@ -82,10 +82,10 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_PROCESSING, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_PROCESSING,
+		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_REPROCESSING, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING,
 				RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_PROCESSING,
+		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING,
 				RegistrationExternalStatusCode.PROCESSING);
 
 		return unmodifiableMap;
