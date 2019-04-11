@@ -54,7 +54,43 @@ public class PreRegistrationUtil
 	
 	
 	/*
-	 * Generic method for dynamically change the request values in json file 
+	 * Generic method for dynamically change the request values in json file and write in file
+	 * 
+	 */
+	
+	
+	
+	public ObjectNode dynamicJsonRequestFile(String jsonPathTraverse,String jsonSetVal,String readFilePath,String writeFilePath) {
+		
+		String yourActualJSONString = null;
+		ObjectNode newJson = null;
+		Configuration config = setConfigIntialize();
+		
+		
+		
+		try {
+			yourActualJSONString = new String(Files.readAllBytes(Paths.get(readFilePath)), StandardCharsets.UTF_8);
+		    newJson=JsonPath.using(config).parse(yourActualJSONString).set(jsonPathTraverse,jsonSetVal).json();
+			FileWriter writer = new FileWriter(new File(writeFilePath));
+			writer.append(newJson.toString());
+			writer.flush();
+			writer.close();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return newJson;
+		
+	}
+	
+	
+	
+	/*
+	 * Generic method for dynamically change the request values in json file and write in file
 	 * 
 	 */
 	
@@ -86,6 +122,8 @@ public class PreRegistrationUtil
 		return newJson;
 		
 	}
+	
+	
 	
 	
 	/*
