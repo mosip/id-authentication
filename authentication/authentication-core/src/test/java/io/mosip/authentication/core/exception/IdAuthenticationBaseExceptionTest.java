@@ -7,21 +7,33 @@ import org.junit.Test;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * @author Manoj SP
+ * The Class IdAuthenticationBaseExceptionTest.
  *
+ * @author Manoj SP
  */
 public class IdAuthenticationBaseExceptionTest {
 
-    @Test(expected = IdAuthenticationBaseException.class)
-    public void IdAuthenticationBaseExceptionTest() throws IdAuthenticationBaseException {
-	throw new IdAuthenticationBaseException("abcd");
-    }
+	/**
+	 * Id authentication base exception test.
+	 *
+	 * @throws IdAuthenticationBaseException the id authentication base exception
+	 */
+	@Test(expected = IdAuthenticationBaseException.class)
+	public void IdAuthenticationBaseExceptionTest() throws IdAuthenticationBaseException {
+		throw new IdAuthenticationBaseException("abcd");
+	}
 
-    @Test
-    public void testIdAuthenticationBaseExceptionActionCode() throws IdAuthenticationBaseException {
-	IdAuthenticationBaseException ex = new IdAuthenticationBaseException(
-		IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP);
-	assertEquals(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getActionMessage(), ex.getActionMessage());
-	
-    }
+	/**
+	 * Test id authentication base exception action code.
+	 *
+	 * @throws IdAuthenticationBaseException the id authentication base exception
+	 */
+	@Test
+	public void testIdAuthenticationBaseExceptionActionCode() throws IdAuthenticationBaseException {
+		IdAuthenticationBaseException ex = new IdAuthenticationBaseException(
+				IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP);
+		assertEquals(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getActionMessage(),
+				ex.getActionMessage());
+
+	}
 }
