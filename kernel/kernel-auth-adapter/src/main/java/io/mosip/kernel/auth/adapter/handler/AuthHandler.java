@@ -81,7 +81,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private RestTemplate restTemplate;
+	
 
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,

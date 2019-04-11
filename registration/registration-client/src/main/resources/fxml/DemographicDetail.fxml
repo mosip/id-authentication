@@ -187,7 +187,7 @@
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="fullNameParentPane" prefHeight="120.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="fullNameParentPane" prefHeight="130.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="fullNameGridPane">
 																					<columnConstraints>

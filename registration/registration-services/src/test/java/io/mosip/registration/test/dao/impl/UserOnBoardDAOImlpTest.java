@@ -2,7 +2,6 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 
 import java.io.File;
@@ -28,9 +27,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.impl.UserOnboardDAOImpl;
-import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -47,6 +44,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.UserBiometricRepository;
+import io.mosip.registration.repositories.UserMachineMappingRepository;
 
 /**
  * @author Sreekar Chukka
@@ -59,7 +57,7 @@ public class UserOnBoardDAOImlpTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private MachineMappingDAO machineMappingDAO;
+	private UserMachineMappingRepository userMachineMappingRepository;
 
 	@Mock
 	private UserBiometricRepository userBiometricRepository;
@@ -189,10 +187,25 @@ public class UserOnBoardDAOImlpTest {
 
 		Mockito.when(userBiometricRepository.saveAll(bioMetricsList)).thenReturn(bioMetricsList);
 		doNothing().when(userBiometricRepository).deleteByUserBiometricIdUsrId(Mockito.anyString());
-		Mockito.when(machineMappingDAO.save(user)).thenReturn("success");
 
 		assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
 
+	}
+	
+	@Test
+	public void savetest() {
+		UserMachineMapping machineMapping = new UserMachineMapping();
+		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
+		Assert.assertSame(userOnboardDAOImpl.save(), RegistrationConstants.SUCCESS);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void saveFailuretest() {
+
+		UserMachineMapping machineMapping = new UserMachineMapping();
+		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class)))
+				.thenThrow(RuntimeException.class);
+		userMachineMappingRepository.save(machineMapping);
 	}
 
 	@SuppressWarnings("serial")

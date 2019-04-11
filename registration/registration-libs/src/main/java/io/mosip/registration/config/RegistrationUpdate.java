@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,9 +192,9 @@ public class RegistrationUpdate {
 
 	}
 
-	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
 		System.out.println("Downloading " + jarName);
-		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
+		return getInputStreamOf(serverRegClientURL + version + SLASH + libFolder + jarName);
 
 	}
 
@@ -242,8 +243,9 @@ public class RegistrationUpdate {
 
 		// Get latest Manifest from server
 
+		// Get latest Manifest from server
 		setServerManifest(
-				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
+				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
 		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
 
 		return serverManifest;
@@ -308,6 +310,23 @@ public class RegistrationUpdate {
 
 		} catch (IOException ioException) {
 			return false;
+		}
+
+	}
+
+	private boolean hasSpace(int bytes) {
+
+		return bytes < new File("/").getFreeSpace();
+	}
+
+	private InputStream getInputStreamOf(String url) throws IOException {
+		URLConnection connection = new URL(url).openConnection();
+
+		// Space Check
+		if (hasSpace(connection.getContentLength())) {
+			return connection.getInputStream();
+		} else {
+			throw new IOException("No Disk Space");
 		}
 
 	}

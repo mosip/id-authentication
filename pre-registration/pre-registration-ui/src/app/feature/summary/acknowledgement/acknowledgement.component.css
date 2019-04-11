@@ -140,4 +140,10 @@ table tr td {
   .ack__message-container {
     padding-left: 0;
   }
+
+  .ack-book_later-btn, .ack-continue-btn {
+    font-size: 10px;
+    padding: 0px 2px;
+    margin-right: 20px;
+}
 }

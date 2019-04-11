@@ -71,6 +71,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -78,6 +79,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -199,7 +201,8 @@ public class LoginController extends BaseController implements Initializable {
 			int minutes = otpExpirySeconds / 60;
 			String seconds = String.valueOf(otpExpirySeconds % 60);
 			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
-			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds);
+			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
+					+ RegistrationUIConstants.SECONDS);
 
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
@@ -218,7 +221,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * To get the Sequence of which Login screen to be displayed
 	 * 
 	 * @param primaryStage
-	 * 			primary Stage
+	 *            primary Stage
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
 
@@ -237,10 +240,14 @@ public class LoginController extends BaseController implements Initializable {
 
 			scene = getScene(loginRoot);
 			pageFlow.getInitialPageDetails();
-			primaryStage.setResizable(true);
-			primaryStage.setFullScreen(true);
-			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-			primaryStage.setScene(scene);
+			Screen screen = Screen.getPrimary();
+			Rectangle2D bounds = screen.getVisualBounds();
+			primaryStage.setX(bounds.getMinX());
+			primaryStage.setY(bounds.getMinY());
+			primaryStage.setWidth(bounds.getWidth());
+			primaryStage.setHeight(bounds.getHeight());	
+			primaryStage.setResizable(false);
+					primaryStage.setScene(scene);
 			primaryStage.show();
 
 			executePreLaunchTask(loginRoot);
@@ -450,7 +457,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Generate OTP based on EO username
 	 * 
 	 * @param event
-	 * 			event for generating OTP
+	 *            event for generating OTP
 	 */
 	@FXML
 	public void generateOtp(ActionEvent event) {
@@ -485,7 +492,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and otp
 	 * 
 	 * @param event
-	 * 			event for validating OTP
+	 *            event for validating OTP
 	 */
 	@FXML
 	public void validateOTP(ActionEvent event) {
@@ -518,7 +525,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and fingerprint
 	 * 
 	 * @param event
-	 * 			event for capturing fingerprint
+	 *            event for capturing fingerprint
 	 */
 	public void captureFingerPrint(ActionEvent event) {
 
@@ -553,7 +560,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and Iris
 	 * 
 	 * @param event
-	 * 			event for capturing Iris
+	 *            event for capturing Iris
 	 */
 	public void captureIris(ActionEvent event) {
 
@@ -588,7 +595,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * Validate User through username and face
 	 * 
 	 * @param event
-	 * 			event to capture face
+	 *            event to capture face
 	 */
 	public void captureFace(ActionEvent event) {
 
