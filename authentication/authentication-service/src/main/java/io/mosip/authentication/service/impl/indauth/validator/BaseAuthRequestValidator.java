@@ -91,13 +91,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Final Constant For MODEL */
 	private static final String DEVICE_PROVIDER_ID = "deviceProviderID";
 
-	// TODO remove the below properties and the commented fields.
-//	/** The Final Constant For FINGERPRINT_PROVIDER_ALL */
-//	private static final String FINGERPRINT_PROVIDER_ALL = "fingerprint.provider.all";
-//
-//	/** The Final Constant For IRIS_PROVIDER_ALL */
-//	private static final String IRIS_PROVIDER_ALL = "iris.provider.all";
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
 
