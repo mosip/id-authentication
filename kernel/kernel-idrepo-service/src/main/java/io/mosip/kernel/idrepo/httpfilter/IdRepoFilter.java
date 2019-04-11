@@ -21,8 +21,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -118,7 +116,7 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		Instant requestTime = Instant.now();
-		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
+
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
 
@@ -128,11 +126,7 @@ public class IdRepoFilter extends OncePerRequestFilter {
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
 			response.getWriter().write(buildErrorResponse());
 		} else {
-			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-
-			filterChain.doFilter(requestWrapper, responseWrapper);
-			mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response body : \n" + responseWrapper.toString());
-			response.getWriter().write(responseWrapper.toString());
+			filterChain.doFilter(request, response);
 		}
 
 		Instant responseTime = Instant.now();
