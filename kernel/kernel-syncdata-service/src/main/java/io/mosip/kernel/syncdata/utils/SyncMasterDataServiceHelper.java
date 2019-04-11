@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -113,9 +115,9 @@ import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
-import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -165,6 +167,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  * Sync handler masterData service helper
  * 
  * @author Abhishek Kumar
+ * @author Srinivasan
  * @since 1.0.0
  */
 @Component
@@ -265,7 +268,7 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private ScreenDetailRepository screenDetailRepository;
 
-	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8095/admin/syncjobdef}")
+	@Value("${mosip.kernel.syncdata.admin-base-url}")
 	private String baseUri;
 
 	/**
@@ -1631,10 +1634,13 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			StringBuilder builder = new StringBuilder();
-			builder.append(baseUri).append("/" + lastUpdatedTime.toString());
+			// Query parameters
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromUriString(baseUri)
+					// Add query parameter
+					.queryParam("lastupdatedtimestamp", DateUtils.formatToISOString(lastUpdatedTime));
 
-			response = restTemplate.getForEntity(builder.toString(), String.class);
+			response = restTemplate.getForEntity(builder.toUriString(), String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
@@ -1644,16 +1650,16 @@ public class SyncMasterDataServiceHelper {
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerServiceException(validationErrorsList);
+			throw new SyncServiceException(validationErrorsList);
 		}
 		ResponseWrapper<SyncJobDefResponseDto> responseObject = null;
 		try {
-           
+
 			responseObject = objectMapper.readValue(responseBody,
 					new TypeReference<ResponseWrapper<SyncJobDefResponseDto>>() {
 					});
-			if(responseObject.getResponse()!=null) {
-			syncJobDefDtos = responseObject.getResponse().getSyncJobDefinitions();
+			if (responseObject.getResponse() != null) {
+				syncJobDefDtos = responseObject.getResponse().getSyncJobDefinitions();
 			}
 
 		} catch (IOException | NullPointerException exception) {

@@ -28,12 +28,18 @@ import io.mosip.kernel.admin.repository.SyncJobDefRepository;
 public class AdminIntegrationTest {
 
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 
 	@MockBean
-	SyncJobDefRepository syncJobDefRepository;
+	private SyncJobDefRepository syncJobDefRepository;
 
-	List<SyncJobDef> syncJobDefs = null;
+	private List<SyncJobDef> syncJobDefs = null;
+
+	private static final String URL = "/syncjobdef?lastupdatedtimestamp=2019-09-09T09:09:09.000Z";
+
+	private static final String EXCEPTION_URL = "/syncjobdef?lastupdatedtimestamp=2019-02-09T09:09:09.000Z";
+
+	private static final String EMPTY_TIMESTAMP_URL = "/syncjobdef";
 
 	@Before
 	public void setup() {
@@ -45,39 +51,41 @@ public class AdminIntegrationTest {
 		syncJobDef.setLockDuration("10000");
 		syncJobDefs = new ArrayList<>();
 		syncJobDefs.add(syncJobDef);
-
 	}
 
 	@Test
 	public void syncJobDefsuccessTest() throws Exception {
 		when(syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(syncJobDefs);
-		mockMvc.perform(get("/syncjobdef/{lastupdatedtimestamp}", "2019-09-09T09:09:09.000Z"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(URL)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void syncJobDefEmptyTest() throws Exception {
 		when(syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(new ArrayList<SyncJobDef>());
-		mockMvc.perform(get("/syncjobdef/{lastupdatedtimestamp}", "2019-09-09T09:09:09.000Z"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(URL)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void syncJobDefNullTest() throws Exception {
 		when(syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(null);
-		mockMvc.perform(get("/syncjobdef/{lastupdatedtimestamp}", "2019-09-09T09:09:09.000Z"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(URL)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void syncJobDefExceptionTest() throws Exception {
 		when(syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/syncjobdef/{lastupdatedtimestamp}", "2019-09-09T09:09:09.000Z"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(EXCEPTION_URL)).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void syncJobDefEmptyTimeStampTest() throws Exception {
+		when(syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(syncJobDefs);
+		mockMvc.perform(get(EMPTY_TIMESTAMP_URL)).andExpect(status().isOk());
 	}
 
 }
