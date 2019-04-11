@@ -144,6 +144,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				}
 			}
 
+
 			//generation of actual response
 			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
@@ -164,6 +165,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 						JSONObject jsonObject = (JSONObject) iterator.next();
 						expectedStatus = jsonObject.get("status").toString().trim();
 					}
+
 
 					for(Map<String,String> res : response){
 						actualStatus=res.get("status").toString();
