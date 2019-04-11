@@ -54,15 +54,45 @@ public class DocumentExceptionHandler {
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
-	 * Reference for ${id} from property file
+	 * Reference for ${mosip.preregistration.document.upload.id} from property file
 	 */
-	@Value("${id}")
-	private String id;
+	@Value("${mosip.preregistration.document.upload.id}")
+	private String uploadId;
+
+	/**
+	 * Reference for ${mosip.preregistration.document.copy.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.copy.id}")
+	private String copyId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.fetch.metadata.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.fetch.metadata.id}")
+	private String fetchMetaDataId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.fetch.content.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.fetch.content.id}")
+	private String fetchContentId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.delete.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.delete.id}")
+	private String deleteId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.delete.specific.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.delete.specific.id}")
+	private String deleteSpecificId;
 
 	/**
 	 * Reference for ${ver} from property file
 	 */
-	@Value("${ver}")
+	@Value("${version}")
 	private String ver;
 
 	/**
@@ -78,7 +108,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -97,7 +127,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -116,7 +146,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
@@ -135,7 +165,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
@@ -155,7 +185,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
@@ -175,7 +205,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
@@ -194,7 +224,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
@@ -214,7 +244,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -232,7 +262,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -251,7 +281,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -270,7 +300,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -289,7 +319,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -308,7 +338,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -327,7 +357,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -346,7 +376,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -364,7 +394,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -383,7 +413,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -401,7 +431,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -424,7 +454,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -443,7 +473,7 @@ public class DocumentExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErrors(errorDetails);
 		errorRes.setResponsetime(getCurrentResponseTime());
-		errorRes.setId(id);
+//		errorRes.setId(id);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}

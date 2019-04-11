@@ -351,7 +351,7 @@ public class DemographicServiceTest {
 	/**
 	 * @throws Exception
 	 */
-//	@Test
+	@Test
 	public void successSaveImplTest() throws Exception {
 
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
@@ -387,7 +387,7 @@ public class DemographicServiceTest {
 	/**
 	 * @throws Exception
 	 */
-	//@Test(expected = TableNotAccessibleException.class)
+	@Test(expected = TableNotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
@@ -406,7 +406,7 @@ public class DemographicServiceTest {
 		preRegistrationService.addPreRegistration(request);
 	}
 
-//	@Test
+	@Test
 	public void successUpdateTest() throws Exception {
 		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
 		requestMap.put("id",updateId);
@@ -428,7 +428,7 @@ public class DemographicServiceTest {
 		assertEquals("98746563542672", res.getResponse().get(0).getPreRegistrationId());
 	}
 
-//	@Test(expected = JsonValidationException.class)
+	@Test(expected = JsonValidationException.class)
 	public void updateFailureCheck() throws Exception {
 		HttpRequestException exception = new HttpRequestException(ErrorCodes.PRG_PAM_APP_007.name(),
 				ErrorMessages.JSON_PARSING_FAILED.name());
@@ -450,7 +450,7 @@ public class DemographicServiceTest {
 		preRegistrationService.updatePreRegistration(request, preId);
 	}
 
-	//@Test(expected = NullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void createByDateFailureTest() throws Exception {
 		InvalidRequestParameterException exception = new InvalidRequestParameterException(
 				ErrorCodes.PRG_PAM_APP_012.toString(), ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -730,7 +730,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test(expected = RecordFailedToDeleteException.class)
+	@Test(expected = RecordFailedToDeleteException.class)
 	public void deleteRecordFailedToDeleteException() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_APP_004",
@@ -761,7 +761,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}), Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -770,7 +770,7 @@ public class DemographicServiceTest {
 		preRegistrationService.deleteIndividual(preRegId);
 	}
 
-//	@Test(expected = DocumentFailedToDeleteException.class)
+	@Test(expected = DocumentFailedToDeleteException.class)
 	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
@@ -800,7 +800,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -812,7 +812,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test(expected = BookingDeletionFailedException.class)
+	@Test(expected = BookingDeletionFailedException.class)
 	public void deleteRecordRestCallException() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
@@ -848,7 +848,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenReturn(res);
+				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
@@ -911,7 +911,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test
+	@Test
 	public void updateByPreIdTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		requestMap.put("id",createId);
@@ -924,7 +924,7 @@ public class DemographicServiceTest {
 		preRegistrationService.updatePreRegistration(request, preId);
 	}
 
-//	@Test(expected = RestCallException.class)
+	@Test(expected = RestCallException.class)
 	public void deleteIndividualRestExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
@@ -951,7 +951,7 @@ public class DemographicServiceTest {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-				}))).thenThrow(RestClientException.class);
+				}),Mockito.anyMap())).thenThrow(RestClientException.class);
 
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(1);
@@ -962,7 +962,7 @@ public class DemographicServiceTest {
 
 	}
 
-//	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(null);
 		requestMap.put("id",createId);

@@ -32,8 +32,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -48,20 +46,12 @@ public class CilentJarDecryption extends Application {
 
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
-	private static final String REGISTRATION = "registration";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
 
 	private Service<String> taskService;
-	static {
-		String tempPath = System.getProperty("java.io.tmpdir");
-		System.setProperty("java.ext.dirs",
-				"C:\\Users\\M1046564\\Desktop\\mosip-sw-0.10.0\\lib;" + tempPath + "/mosip/");
-
-		System.out.println(System.getProperty("java.ext.dirs"));
-	}
 
 	/**
 	 * Decrypt the bytes
@@ -88,8 +78,12 @@ public class CilentJarDecryption extends Application {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws InterruptedException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 */
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException,
+			io.mosip.kernel.core.exception.IOException, ParserConfigurationException, SAXException {
 
 		launch(null);
 		/*
@@ -111,51 +105,17 @@ public class CilentJarDecryption extends Application {
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
 
-		if (registrationUpdate.getCurrentVersion() != null) {
-			if (registrationUpdate.hasRequiredJars()) {
-				// TODO Decrypt Client and Services
-			} else {
-				// TODO Internet Required
-				registrationUpdate.getWithLatestJars();
-			}
+		if (registrationUpdate.getCurrentVersion() != null && registrationUpdate.hasRequiredJars()) {
+
+			// TODO Decrypt Client and Services
+
 		} else {
 			// TODO Internet Required
 			registrationUpdate.getWithLatestJars();
 		}
-		/*
-		 * if (registrationUpdate.hasUpdate()) {
-		 * 
-		 * // Generate alert to update or to continue with existing boolean update =
-		 * true;
-		 * 
-		 * if (update) { try { registrationUpdate.getWithLatestJars(); } catch
-		 * (io.mosip.kernel.core.exception.IOException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); } } else { registrationUpdate.getJars(); } } else
-		 * { registrationUpdate.getJars(); }
-		 */
-	}
-
-	private static boolean setProperties() throws IOException {
-
-		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-
-		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-
-		System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
-
-		String dbpath = new File(System.getProperty("user.dir")) + properties.getProperty("mosip.dbpath");
-
-		if (new File(dbpath).exists()) {
-			System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
-			return true;
-		} else {
-			return false;
-		}
 
 	}
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		StackPane stackPane = new StackPane();
@@ -188,17 +148,25 @@ public class CilentJarDecryption extends Application {
 						System.out.println("before Decryption");
 						CilentJarDecryption aesDecrypt = new CilentJarDecryption();
 						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+						
+						String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 
-						if (!setProperties()) {
+						FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+						Properties properties = new Properties();
+						properties.load(fileInputStream);
+						
+						String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
+
+						if (!new File(dbpath).exists()) {
 							return "NOTEXISTS";
 						}
-
+						
 						// TODO Check Internet Connectivity
-						try {
 
+						try {
 							checkForJars();
-						} catch (ParserConfigurationException | SAXException
-								| io.mosip.kernel.core.exception.IOException e) {
+						} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
+								| SAXException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -228,13 +196,17 @@ public class CilentJarDecryption extends Application {
 
 						FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
 								decryptedRegServiceBytes);
+						
 						try {
 
 							String libPath = new File("lib").getAbsolutePath();
 
 							Process process = Runtime.getRuntime()
-									.exec("java -Dspring.profiles.active=qa -Djava.ext.dirs=" + libPath + ";" + tempPath
+									.exec("java -Dspring.profiles.active=dev -Dmosip.dbpath="
+											+ properties.getProperty("mosip.dbpath") + " -Djava.ext.dirs=" + libPath
+											+ ";" + tempPath + ";" + "C:/Program%20Files/Java/jre1.8.0_181/lib/ext"
 											+ " -jar " + clientJar + ".jar");
+
 							System.out.println("the output stream is " + process.getOutputStream().getClass());
 							BufferedReader bufferedReader = new BufferedReader(
 									new InputStreamReader(process.getInputStream()));

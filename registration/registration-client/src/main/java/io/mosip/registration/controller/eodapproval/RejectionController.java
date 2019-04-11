@@ -133,15 +133,15 @@ public class RejectionController extends BaseController implements Initializable
 		}
 
 		Map<String, String> map = new WeakHashMap<>();
-		map.put("registrationID", rejRegData.getId());
-		map.put("statusCode", RegistrationClientStatusCode.REJECTED.getCode());
-		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());
+		map.put(RegistrationConstants.REGISTRATIONID, rejRegData.getId());
+		map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.REJECTED.getCode());
+		map.put(RegistrationConstants.STATUSCOMMENT, rejectionComboBox.getSelectionModel().getSelectedItem());
 		rejectionmapList.add(map);
 
 		rejectionSubmit.disableProperty().set(true);
 		rejPrimarystage.close();
 
-		if (controllerName.equals("RegistrationApprovalController")) {
+		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
 			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(

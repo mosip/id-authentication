@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -95,7 +97,7 @@
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 
-       <!-- joda-time -->
+		<!-- joda-time -->
 		<jodatime.version>2.8.1</jodatime.version>
 
 		<!-- local -->
@@ -109,8 +111,7 @@
 		<registration.processor.message.sender.version>0.10.2</registration.processor.message.sender.version>
 		<packet.bio.dedupe.api.version>0.10.2</packet.bio.dedupe.api.version>
 		<registration.processor.print.service.version>0.10.2</registration.processor.print.service.version>
-        <registration.processor.print.service.impl.version>0.10.2</registration.processor.print.service.impl.version>
-
+		<registration.processor.print.service.impl.version>0.10.2</registration.processor.print.service.impl.version>
 		<!-- Kernel -->
 		<kernel.core.version>0.9.8</kernel.core.version>
 		<kernel.dataaccess.hibernate.version>0.9.8</kernel.dataaccess.hibernate.version>
@@ -242,17 +243,17 @@
 		<module>registration-processor-rest-client</module>
 		<module>registration-processor-packet-manager</module>
 		<module>registration-processor-common-camel-bridge</module>
-        <module>registration-processor-bio-dedupe-service-impl</module>
-    	<module>registration-processor-print-service-impl</module>
+		<module>registration-processor-bio-dedupe-service-impl</module>
+		<module>registration-processor-print-service-impl</module>
 		<module>registration-processor-info-storage-service</module>
 		<module>registration-processor-registration-status-service-impl</module>
 		<module>registration-processor-quality-checker</module>
-	    <module>registration-processor-message-sender-impl</module>
-        <module>init</module>
-        <module>pre-processor</module>
-        <module>core-processor</module>
-        <module>post-processor</module>
-  </modules>
+		<module>registration-processor-message-sender-impl</module>
+		<module>init</module>
+		<module>pre-processor</module>
+		<module>core-processor</module>
+		<module>post-processor</module>
+	</modules>
 
 	<profiles>
 		<profile>

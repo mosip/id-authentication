@@ -8,7 +8,6 @@ import java.security.KeyManagementException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +37,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * it does the key policy synch
@@ -111,24 +109,24 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<String, String>();
-		requestParams.put("timeStamp",Instant.now().toString());
+		requestParams.put("timeStamp", Instant.now().toString());
 		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			@SuppressWarnings("unchecked")
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
 					.get("policysync", requestParams, false, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-			
+
 			if (null != publicKeyResponse.getResponse() && !publicKeyResponse.getResponse().isEmpty()
 					&& publicKeyResponse.getResponse().size() > 0) {
 
 				keyStore.setId(UUID.randomUUID().toString());
 				keyStore.setPublicKey(publicKeyResponse.getResponse().get("publicKey").toString().getBytes());
-				LocalDateTime issuedAt = DateUtils.parseToLocalDateTime(publicKeyResponse.getResponse().get("issuedAt").toString());
-				LocalDateTime expiryAt = DateUtils.parseToLocalDateTime(publicKeyResponse.getResponse().get("expiryAt").toString());
-				keyStore.setValidFromDtimes(
-						Timestamp.valueOf(issuedAt));
-				keyStore.setValidTillDtimes(
-						Timestamp.valueOf(expiryAt));
+				LocalDateTime issuedAt = DateUtils
+						.parseToLocalDateTime(publicKeyResponse.getResponse().get("issuedAt").toString());
+				LocalDateTime expiryAt = DateUtils
+						.parseToLocalDateTime(publicKeyResponse.getResponse().get("expiryAt").toString());
+				keyStore.setValidFromDtimes(Timestamp.valueOf(issuedAt));
+				keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
 				keyStore.setCreatedBy(getUserIdFromSession());
 				keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				policySyncDAO.updatePolicy(keyStore);
