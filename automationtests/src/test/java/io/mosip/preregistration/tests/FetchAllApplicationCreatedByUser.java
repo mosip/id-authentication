@@ -104,7 +104,7 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 			actualRequest = preLab.createRequest("Create_PreRegistration/createPreRegistration_smoke");
 			Response createResponse = preLab.CreatePreReg(actualRequest);
 			String createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
-			Actualresponse = preLab.fetchAllPreRegistrationCreatedByUser(createdBy);
+			Actualresponse = preLab.fetchAllPreRegistrationCreatedByUser();
 		} else {
 
 			Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));

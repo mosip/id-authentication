@@ -301,8 +301,8 @@ public class prereg_dbread {
 	public static List<Object> fetchOTPFromDB(String queryStr, Class dtoClass)
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("kernelinteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("kerneldev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{

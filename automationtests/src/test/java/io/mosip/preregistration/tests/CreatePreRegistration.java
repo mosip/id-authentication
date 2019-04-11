@@ -119,6 +119,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		actualRequest.put("requesttime", lib.getCurrentDate());
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
 

@@ -36,6 +36,13 @@ public class ApplicationLibrary extends BaseTestCase {
 	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParam(ApplnURI + Resource_URI, valueMap);
 	}
+	public Response getRequestWithoutParm(String Resource_URI) {
+		return commonLibrary.getRequestWithoutParm(ApplnURI + Resource_URI);
+	}
+	
+	public Response getRequestParm(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.get_Request_pathParameters(ApplnURI + Resource_URI, valueMap);
+	}
 	public Response getRequestDataSync(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParamDataSync(ApplnURI + Resource_URI, valueMap);
 	}
@@ -62,12 +69,18 @@ public class ApplicationLibrary extends BaseTestCase {
 	public Response deleteRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.delete_Request(ApplnURI + Resource_URI, valueMap);
 	}
+	public Response deleteRequestWithParm(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.deleteRequest(ApplnURI + Resource_URI, valueMap);
+	}
 
 	// public Response PutRequest(String Resource_URI, String )
 	public Response putMultipartFile(File file, String Url) {
 		return commonLibrary.Post_DataPacket(file, ApplnURI + Url);
 	}
 
+	public Response putFileAndJsonWithParm(String Resource_Uri, Object body, File file,HashMap<String, String> parm) {
+		return commonLibrary.Post_JSONwithFileWithParm(body, file, ApplnURI + Resource_Uri, MediaType.MULTIPART_FORM_DATA,parm);
+	}
 	public Response putFileAndJson(String Resource_Uri, Object body, File file) {
 		return commonLibrary.Post_JSONwithFile(body, file, ApplnURI + Resource_Uri, MediaType.MULTIPART_FORM_DATA);
 	}

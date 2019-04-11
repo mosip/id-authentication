@@ -1,7 +1,7 @@
 {
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0",
-    "err": null,
+    "errors": null,
     "responsetime": "2019-03-25T08:10:29.899Z",
     "response": [
         {
@@ -31,7 +31,7 @@
                             "value": "بنغالور"
                         }
                     ],
-                    "postalCode": "ASG21",
+                    "postalCode": "ASG212",
                     "localAdministrativeAuthority": [
                         {
                             "language": "fra",
