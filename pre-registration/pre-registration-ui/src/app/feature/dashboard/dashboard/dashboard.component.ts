@@ -64,6 +64,11 @@ export class DashBoardComponent implements OnInit {
 
     this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
     if (!this.message['timerFired']) {
+      //console.log("INSIDE AUTO LOGOUT DASHBOARD TIMER FIRED");
+      this.autoLogout.getValues();
+
+      this.autoLogout.setValues();
+
       this.autoLogout.keepWatching();
     }
 
