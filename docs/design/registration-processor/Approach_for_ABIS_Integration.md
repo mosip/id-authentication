@@ -51,13 +51,17 @@ The key solution considerations are -
     "host": "",
     "port": ""
     "brokerUrl": "",
-    "queuename": "",
-    "username": "",
+    "queueName": "",
+    "pingInboundQueueName": "",
+    "pingOutboundQueueName": "",
+    "userName": "",
     "password": ""
    }
  ]
 }
 ```
+- Add key registration.processor.abis.ping.schedule with expected value: 
+0 0/5 * * * ?  .This triggers scheduler after every 5 minutes.
 3.	Update MessageDTO: Add field called isForMatchIdentification boolean field.
 
 4.	Create or Update Stage:
@@ -78,14 +82,19 @@ The key solution considerations are -
 		For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: id from table "abis_request".
 
 	1. "BiometricIdentificationMiddlewareStage": 
-	This stage registers ABIS queue listerns and senders in deploy verticle method. ABIS queue listerns will listern to messages received on queue and sender is responsible to send messsages on ABIS queues. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
+		This stage registers ABIS queue listerns and senders in deploy verticle method. ABIS queue listerns will listern to messages received on queue and sender is responsible to send messsages on ABIS queues. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
 
-	Upon receiving event, this stage reads "IN-PROGRESS" requests from "abis_request" table and start sending them to ABIS system.
-	Once message send, mark request status with "SENT".
+		Upon receiving event, this stage reads "IN-PROGRESS" requests from "abis_request" table and start sending them to ABIS system.
+		Once message send, mark request status with "SENT".
 
-	Once listern receives message, check for given registration id and for INSERT or IDENTIFY operation if all ABIS system has send response.
-	In case if response not received from all ABIS then wait for it or else in case received response from all ABIS sent event to BiometricIdentificationHandlerStage.
+		Once listern receives message, check for given registration id and for INSERT or IDENTIFY operation if all ABIS system has send response.
+		In case if response not received from all ABIS then wait for it or else in case received response from all ABIS sent event to BiometricIdentificationHandlerStage.
 
+	1. Ping Operation:
+		1. Create Stage: Create stage called BiometricIdentificationManagerStage. This stage is responsible for handling ABIS ping operation. Upon receiving event from scheduler BiometricIdentificationManagerStage sent ping message on each ABIS queue. 
+		1. PingBiometricIdentificationSender: Register/deploy jms sender in BiometricIdentificationManagerStage start (deployVerticle) method. 
+		1. PingScheduler: Create or register chime scheduler to trigger event to BiometricIdentificationManagerStage  after every 5 minutes. Upon receiveing event sent ping message to all ABIS systems. Number of ABIS systems registered in MOSIP are configured in spring cloud server using key: registration.processor.abis.details. 
+		1. PingBiometricIdentificationListener: Register/deploy jms listener in BiometricIdentificationManagerStage start (deployVerticle) method. ABIS sent reponse for all ping request back on queue - pingOutboundQueueName. In case not received response from any particular ABIS, mark that ABIS system as IN-ACTIVE in "abis_application" table. Update IN-ACTIVE to ACTIVE for ABIS for which we receive ping acknowledgement message from ABIS system.
 
 
 
