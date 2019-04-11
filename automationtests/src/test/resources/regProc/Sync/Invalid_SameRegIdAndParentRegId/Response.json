@@ -1,14 +1,14 @@
 {
-  "response": [
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-10T09:10:14.184Z",
+  "errors": [
     {
-      "errorCode": "RPR-RGS-005",
       "registrationId": "20916100110014920190218154630",
       "status": "FAILURE",
       "message": "RegistrationId and Parent RegistrationId cannot be same",
-      "parentRegistrationId": "20916100110014920190218154630"
+      "parentRegistrationId": "20916100110014920190218154630",
+      "errorcode": "RPR-RGS-005"
     }
-  ],
-  "id": "mosip.registration.sync",
-  "version": "1.0",
-  "responsetime": "2019-03-07T06:57:04.554Z"
+  ]
 }
