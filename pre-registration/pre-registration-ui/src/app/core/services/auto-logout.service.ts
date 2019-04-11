@@ -3,7 +3,10 @@ import { UserIdleService } from "angular-user-idle";
 import { AuthService } from "src/app/auth/auth.service";
 import { MatDialog } from "@angular/material";
 import { DialougComponent } from "src/app/shared/dialoug/dialoug.component";
-import { BehaviorSubject, merge, fromEvent } from "rxjs";
+import { BehaviorSubject, merge, fromEvent, timer } from "rxjs";
+import { ConfigService } from 'src/app/core/services/config.service';
+import * as appConstants from 'src/app/app.constants';
+import { timeout } from "q";
 
 @Injectable({
   providedIn: "root"
@@ -13,13 +16,25 @@ export class AutoLogoutService {
   currentMessageAutoLogout = this.messageAutoLogout.asObservable();
   isActive = false;
 
+  idle : number;
+  timeout : number;
+  ping :number;
+  timer = {
+    idle: this.idle,
+    timeout : this .timeout,
+    ping: this.ping
+  };
+
   constructor(
     private userIdle: UserIdleService,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private configservice: ConfigService
   ) {}
-  setisActive(value){
+
+  setisActive(value: boolean){
     this.isActive=value;
+
   }
   getisActive(){
   return this.isActive;
@@ -31,12 +46,17 @@ export class AutoLogoutService {
 
 
   public keepWatching() {
+    this.idle = this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_idle);
+    this.timeout = this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_timeout);
+    this.ping = this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_ping);
+    this.userIdle.setConfigValues(this.timer);
+
     this.userIdle.startWatching();
     this.changeMessage({ timerFired: true });
 
     this.userIdle.onTimerStart().subscribe(
       res => {
-        console.log("hi");
+         console.log("hi");
         if (res == 1) {
           this.setisActive(false);
           this.openPopUp();
@@ -60,7 +80,7 @@ export class AutoLogoutService {
   }
 
   onLogOut() {
-    console.log("first logout function");
+    // console.log("first logout function");
     this.userIdle.stopWatching();
     this.dialog.closeAll();
     this.authService.onLogout();

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
@@ -25,6 +26,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Update the Application
@@ -35,13 +37,13 @@ import io.mosip.kernel.core.util.FileUtils;
 @Component
 public class RegistrationUpdate {
 
-	private String backUpPath = "D://mosip/AutoBackUp";
-
+	
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
+	private String backUpPath = "D://mosip/AutoBackUp";
 	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
 	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
@@ -50,7 +52,7 @@ public class RegistrationUpdate {
 
 	private String currentVersion;
 
-	private String latestVersion;
+	private String latestVersion = "0.10.1";
 
 	private Manifest localManifest;
 
@@ -61,6 +63,7 @@ public class RegistrationUpdate {
 	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
+
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
@@ -103,8 +106,7 @@ public class RegistrationUpdate {
 
 	public void getWithLatestJars()
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		
-	
+
 		// Get Server Manifest
 		getServerManifest();
 
@@ -230,16 +232,19 @@ public class RegistrationUpdate {
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
 
 		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
 		}
+
 	}
 
-	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
-		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
+	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+		return getInputStreamOf(serverRegClientURL + version + SLASH + libFolder + jarName);
 
 	}
 
@@ -288,7 +293,8 @@ public class RegistrationUpdate {
 
 		// Get latest Manifest from server
 		setServerManifest(
-				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
+				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
+		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
 
 		return serverManifest;
 
@@ -308,5 +314,36 @@ public class RegistrationUpdate {
 
 	public void setLatestVersion(String latestVersion) {
 		this.latestVersion = latestVersion;
+	}
+
+	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+		String checkSum;
+		try {
+			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
+			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
+					.get(Attributes.Name.CONTENT_TYPE);
+			return manifestCheckSum.equals(checkSum);
+
+		} catch (IOException ioException) {
+			return false;
+		}
+
+	}
+
+	private boolean hasSpace(int bytes) {
+
+		return bytes < new File("/").getFreeSpace();
+	}
+
+	private InputStream getInputStreamOf(String url) throws IOException {
+		URLConnection connection = new URL(url).openConnection();
+
+		// Space Check
+		if (hasSpace(connection.getContentLength())) {
+			return connection.getInputStream();
+		} else {
+			throw new IOException("No Disk Space");
+		}
+
 	}
 }

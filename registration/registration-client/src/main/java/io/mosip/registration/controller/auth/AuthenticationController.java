@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -194,8 +193,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
-		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(),
-				RegistrationConstants.DISABLE)) {
+		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId())) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
@@ -236,7 +234,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_PASSWORD : AuditEvent.REG_OPERATOR_AUTH_PASSWORD,
 				Components.REG_OS_AUTH, username.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		String status = "";
+		String status = RegistrationConstants.EMPTY;
 		if (isSupervisor) {
 			if (!username.getText().isEmpty()) {
 				if (fetchUserRole(username.getText())) {
@@ -411,12 +409,10 @@ public class AuthenticationController extends BaseController implements Initiali
 			LOGGER.info(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 					"Ignoring FingerPrint, Iris, Face Authentication if the configuration is off");
 
-			String fingerprintDisableFlag = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-			String irisDisableFlag = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-			String faceDisableFlag = String
-					.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+			String fingerprintDisableFlag = getValueFromApplicationContext(
+					RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+			String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
+			String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
 
 			removeAuthModes(userAuthenticationTypeList, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 			removeAuthModes(userAuthenticationTypeList, irisDisableFlag, RegistrationConstants.IRIS);
@@ -458,13 +454,13 @@ public class AuthenticationController extends BaseController implements Initiali
 						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
 				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
 						&& authenticationType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT))
 						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+								getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
 								&& authenticationType.equalsIgnoreCase(RegistrationConstants.IRIS))
 						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))
+								getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))
 								&& authenticationType.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 					enableErrorPage();
@@ -485,8 +481,8 @@ public class AuthenticationController extends BaseController implements Initiali
 					 * authentication is required
 					 */
 					if ((toogleBioException != null && toogleBioException.booleanValue())
-							&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(
-									ApplicationContext.map().get(RegistrationConstants.SUPERVISOR_AUTH_CONFIG)))) {
+							&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+									getValueFromApplicationContext(RegistrationConstants.SUPERVISOR_AUTH_CONFIG))) {
 						authCount = 0;
 						isSupervisor = true;
 						getAuthenticationModes(ProcessNames.EXCEPTION.getType());
@@ -702,11 +698,12 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
+				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
 		int statusCode = fingerPrintConnector.captureFingerprint(
-				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
-				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
-				"");
+				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
+				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
+				RegistrationConstants.EMPTY);
 		if (statusCode != 0) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 		} else {
@@ -745,11 +742,13 @@ public class AuthenticationController extends BaseController implements Initiali
 
 				if (fpMatchStatus) {
 					if (isSupervisor) {
-						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.SUPERVISOR_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+						fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
+								.concat(fingerprintDetailsDTO.getFingerType())
+								.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					} else {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
+										RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					}
 				}
 			}
@@ -790,9 +789,11 @@ public class AuthenticationController extends BaseController implements Initiali
 		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
-			irisDetailsDTO
-					.setIrisImageName(isSupervisor ? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
-							: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+			irisDetailsDTO.setIrisImageName(isSupervisor
+					? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType())
+							.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
+					: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType())
+							.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 		}
 		return irisMatchStatus;
 	}
@@ -873,9 +874,13 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	public void initData(String authType) throws RegBaseCheckedException {
 		authCount = 0;
-		otpValidity.setText("Valid for " + Integer.parseInt(
-				((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
-				/ 60 + " minutes");
+		int otpExpirySeconds = Integer
+				.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+		int minutes = otpExpirySeconds / 60;
+		String seconds = String.valueOf(otpExpirySeconds % 60);
+		seconds = seconds.length() < 2 ? "0" + seconds : seconds;
+		otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
+				+ RegistrationUIConstants.MINUTES);
 		stopTimer();
 		isSupervisor = false;
 		isEODAuthentication = false;
@@ -888,15 +893,24 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		otpValidity.setText("Valid for " + Integer.parseInt(
-				((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
-				/ 60 + " minutes");
+		int otpExpirySeconds = Integer
+				.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+		int minutes = otpExpirySeconds / 60;
+		String seconds = String.valueOf(otpExpirySeconds % 60);
+		seconds = seconds.length() < 2 ? "0" + seconds : seconds;
+		otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds);
 		stopTimer();
 		if (getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			registrationNavlabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
+		}
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
 	}
 
@@ -945,14 +959,23 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	}
 
+	/**
+	 * This method will remove the auth method from list
+	 * 
+	 * @param authList
+	 *            authentication list
+	 * @param disableFlag
+	 *            configuration flag
+	 * @param authCode
+	 *            auth mode
+	 */
 	private void removeAuthModes(List<String> authList, String flag, String authCode) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 				"Ignoring FingerPrint, Iris, Face Authentication if the configuration is off");
 
-		if (authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)) {
-			authList.removeIf(auth -> auth.equalsIgnoreCase(authCode));
-		}
+		authList.removeIf(auth -> authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)
+				&& auth.equalsIgnoreCase(authCode));
 	}
 
 }

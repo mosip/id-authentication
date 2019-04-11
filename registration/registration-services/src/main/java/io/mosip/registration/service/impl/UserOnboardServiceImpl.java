@@ -28,7 +28,7 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
- * Implementation for {@link UserOnboardService} 
+ * Implementation for {@link UserOnboardService}
  * 
  * @author Sreekar Chukka
  *
@@ -69,11 +69,14 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		count = count + (photoDetails == null ? 0 : 1);
 
 		// API for validating biometrics need to be implemented
-		
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-			
+
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+
 			if (count >= UserOnBoardThresholdLimit) {
 				responseDTO = save(biometricDTO);
 			} else {
@@ -102,20 +105,25 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering save method");
 
 		try {
-
-			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering insert method");
-
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
 			if (onBoardingResponse.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
-				SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
-				sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);
-				sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-				sucessResponse.setMessage(RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
-				responseDTO = new ResponseDTO();
-				responseDTO.setSuccessResponseDTO(sucessResponse);
+				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "operator details inserted");
+				
+				String saveUser = userOnBoardDao.save();
+				if (saveUser.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+							"center user machine details inserted");
+
+					SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
+					sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);
+					sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+					sucessResponse.setMessage(RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
+					responseDTO = new ResponseDTO();
+					responseDTO.setSuccessResponseDTO(sucessResponse);
+				}
 			}
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");

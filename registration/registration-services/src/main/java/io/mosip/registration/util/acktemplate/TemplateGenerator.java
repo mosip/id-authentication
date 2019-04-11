@@ -934,30 +934,27 @@ public class TemplateGenerator extends BaseService {
 			}
 			if (missingLeftFingers != 0) {
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_USER_LANG,
-						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
-								String.valueOf(missingLeftFingers)));
-				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat.format(
-						(String) localProperties.getString("exceptionCount"), String.valueOf(missingLeftFingers)));
+						missingLeftFingers + " " + applicationLanguageProperties.getString("exceptionCount"));
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_LOCAL_LANG,
+						localProperties.getString("exceptionCount") + " " + missingLeftFingers);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 			if (missingRightFingers != 0) {
 				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_USER_LANG,
-						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
-								String.valueOf(missingRightFingers)));
-				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat.format(
-						(String) localProperties.getString("exceptionCount"), String.valueOf(missingRightFingers)));
+						missingRightFingers + " " + applicationLanguageProperties.getString("exceptionCount"));
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_LOCAL_LANG,
+						localProperties.getString("exceptionCount") + " " + missingRightFingers);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 			if (missingThumbs != 0) {
 				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_USER_LANG,
-						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
-								String.valueOf(missingThumbs)));
-				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_LOCAL_LANG, MessageFormat
-						.format((String) localProperties.getString("exceptionCount"), String.valueOf(missingThumbs)));
+						missingThumbs + " " + applicationLanguageProperties.getString("exceptionCount"));
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_LOCAL_LANG,
+						localProperties.getString("exceptionCount") + " " + missingThumbs);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
