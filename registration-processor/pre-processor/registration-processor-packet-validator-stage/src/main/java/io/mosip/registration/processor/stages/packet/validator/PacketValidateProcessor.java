@@ -251,7 +251,7 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
-		} /*catch (ApisResourceAccessException e) {
+		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode();
@@ -259,7 +259,7 @@ public class PacketValidateProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-		}*/ catch (DataAccessException e) {
+		} catch (DataAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -318,7 +318,7 @@ public class PacketValidateProcessor {
 
 		} finally {
 
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -330,8 +330,8 @@ public class PacketValidateProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			}
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
 					: description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

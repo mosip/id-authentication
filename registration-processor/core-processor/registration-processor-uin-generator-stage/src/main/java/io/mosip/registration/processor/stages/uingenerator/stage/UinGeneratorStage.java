@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -37,12 +38,17 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -58,7 +64,6 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinGenResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinRequestDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
@@ -355,7 +360,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		requestDto.setRegistrationId(regId);
+		requestDto.setRegistrationId("10003100030001920190410135313");
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
 
 		List<String> pathsegments = new ArrayList<>();
@@ -414,7 +419,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	private List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
-		Documents documentsInfoDto = null;
+		
 		idJSON = getDemoIdentity(registrationId);
 		regProcessorIdentityJson = getMappeedJSONIdentity();
 		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
@@ -423,58 +428,30 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		String proofOfRelationshipLabel =regProcessorIdentityJson.getIdentity().getPor().getValue();
 		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
 		
-		
 		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJSON, proofOfAddressLabel);
 		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJSON, proofOfDateOfBirthLabel);
 		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJSON, proofOfIdentityLabel);
 		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJSON, proofOfRelationshipLabel);
 		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJSON, applicantBiometricLabel);
 		
-		if(proofOfAddress!=null) {
-			InputStream poaStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfAddress.get("value"));
-			byte[] poaBytes = IOUtils.toByteArray(poaStream);
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(proofOfAddressLabel);
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(poaBytes));
-			applicantDocuments.add(documentsInfoDto);
-		}
-		if(proofOfDateOfBirth!=null) {
-			InputStream pobStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfDateOfBirth.get("value"));
-			byte[] pobBytes = IOUtils.toByteArray(pobStream);
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(proofOfDateOfBirthLabel);
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(pobBytes));
-			applicantDocuments.add(documentsInfoDto);
-		}
-		if(proofOfIdentity!=null) {
-			InputStream poiStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfIdentity.get("value"));
-			byte[] poiBytes = IOUtils.toByteArray(poiStream);
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(proofOfIdentityLabel);
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(poiBytes));
-			applicantDocuments.add(documentsInfoDto);
-		}
-		if(proofOfRelationship!=null) {
-			InputStream porStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + proofOfRelationship.get("value"));
-			byte[] porBytes = IOUtils.toByteArray(porStream);
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(proofOfRelationshipLabel);
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(porBytes));
-			applicantDocuments.add(documentsInfoDto);
-		}
-		if(applicantBiometric!=null) {
-			 //IN Applicant Biometric getting multiple BDB document which one need to set to applicantDocuments array     
-			InputStream biometricStream = adapter.getFile(registrationId,PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + applicantBiometric.get("value"));
-			byte[] biometricBytes = IOUtils.toByteArray(biometricStream);
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(applicantBiometricLabel);
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(biometricBytes));
-			applicantDocuments.add(documentsInfoDto);
-		}
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
 		return applicantDocuments;
 	}
-
 	
+	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
+		Documents documentsInfoDto = new Documents();;
+		InputStream poiStream=null;
+		if(idDocObj!=null) {
+			poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
+		}
+		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
+		documentsInfoDto.setCategory(idDocLabel);
+		return 	documentsInfoDto;
+	}
 
 	/**
 	 * Re activate uin.
@@ -735,6 +712,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
+
 	}
 	
 	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {
