@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,13 +15,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
-import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -34,10 +32,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
@@ -97,8 +92,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 	
 	SyncRegistrationEntity regEntity;
+	@Autowired
+	private VirusScanner<Boolean, InputStream> virusScannerService;
 
 	Boolean storageFlag;
+	private boolean isEncryptedFileCleaned;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -112,7 +110,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
 		InternalRegistrationStatusDto dto;
-
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
 		if (file.getName() != null && file.exists()) {
@@ -136,12 +133,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			 
 			 
 			try {
-				dto = registrationStatusService.getRegistrationStatus
-
-						(registrationId);
+				dto = registrationStatusService.getRegistrationStatus(registrationId);
 				InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath());
 				validateHashCode(registrationId, encryptedInputStream);
-				validatePacket(file.length(), fileOriginalName);
+				validatePacketFormat(fileOriginalName,registrationId);
+				validatePacketSize(file.length(), registrationId);
 				if (isDuplicatePacket(registrationId) && !isExternalStatusResend(registrationId)) {
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
@@ -194,9 +190,23 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		return messageDTO;
 	}
 
+	private void validatePacketFormat(String fileOriginalName,String regId) {
+		if (!(fileOriginalName.endsWith(getExtention()))) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), regId,
+					PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
+			throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
+		}
+		
+	}
+
 	private void scanFile(InputStream encryptedInputStream) {
 		//call kernel scan file and throw exception if it fails and handle exception
-		
+			isEncryptedFileCleaned=virusScannerService.scanFile(encryptedInputStream);
+		if(!isEncryptedFileCleaned)
+		{
+			//throw new VirusScanFailedException("");
+		}
 	}
 
 	/**
@@ -254,8 +264,15 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		
 		
 	}
-	private void validatePacket(long length,String fileExtension) {
+	private void validatePacketSize(long length,String regid) {
+		if (length > getMaxFileSize()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), regid,
+					PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
+			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
+		}
 		
 	}
+	
 
 }

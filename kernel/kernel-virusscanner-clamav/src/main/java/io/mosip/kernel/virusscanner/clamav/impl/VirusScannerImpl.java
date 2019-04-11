@@ -22,6 +22,7 @@ import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.Status;
 import xyz.capybara.clamav.exceptions.ClamavException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The implementation Class for VirusScannerService.
  *
@@ -29,21 +30,29 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * @author Pranav Kumar
  */
 @Component
-public class VirusScannerImpl implements VirusScanner<Boolean, String> {
+public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerImpl.class);
 
+	/** The host. */
 	@Value("${mosip.kernel.virus-scanner.host}")
 	private String host;
 
+	/** The port. */
 	@Value("${mosip.kernel.virus-scanner.port}")
 	private int port;
 
+	/** The clamav client. */
 	protected ClamavClient clamavClient;
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The Constant ANTIVIRUS_SERVICE_NOT_ACCESSIBLE. */
 	private static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "The anti virus service is not accessible";
+	
+	/** The Constant FILE_NOT_PRESENT. */
 	private static final String FILE_NOT_PRESENT = "The file not found for for scanning";
 
 	/**
@@ -87,6 +96,30 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 
 		return result;
 	}
+	
+	/* (non-Javadoc)
+	 * @see 
+	 * io.mosip.kernel.core.virusscanner.spi.VirusScanner#scanFile(java.io.InputStream)
+	 */
+	@Override
+	public Boolean scanFile(InputStream is)
+	{
+		Boolean result = Boolean.FALSE;
+		createConnection();
+		try {
+			ScanResult scanResult = this.clamavClient.scan(is);
+			if (scanResult.getStatus() == Status.OK) {
+				result = Boolean.TRUE;
+			} else {
+				Map<String, Collection<String>> listOfVirus = scanResult.getFoundViruses();
+				LOGGER.warn("Virus Found in file : "+listOfVirus);
+			}
+		} catch (ClamavException e) {
+			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+		}
+		return result;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -118,14 +151,12 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 		}
 		return result;
 	}
-
 	/**
-	 * This Method is used to scan byte array
-	 * 
-	 * @param docArray
-	 *            array
-	 * 
+	 * This Method is used to scan byte array.
+	 *
+	 * @param docArray            array
 	 * @return a true if file is virus free and false if file is infected
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 
 	@Override
@@ -156,12 +187,11 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	}
 
 	/**
-	 * This Method is used to scan File
-	 * 
-	 * @param doc
-	 *            object
-	 * 
+	 * This Method is used to scan File.
+	 *
+	 * @param doc            object
 	 * @return a true if file is virus free and false if file is infected
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Override
 	public Boolean scanDocument(File doc) throws IOException {
