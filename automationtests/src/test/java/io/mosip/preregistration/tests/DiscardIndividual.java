@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.postgresql.ssl.jdbc4.LibPQFactory;
 import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -73,9 +74,11 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	static String folderPath = "preReg/Discard_Individual";
 	static String outputFile = "Discard_IndividualOutput.json";
 	static String requestKeyFile = "Discard_IndividualRequest.json";
+	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	public DiscardIndividual() {
 		super();	
 	}
+	
 	/**
 	 * Data Providers to read the input json files from the folders
 	 * @param context
@@ -92,7 +95,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smokeAndRegression") {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -180,13 +183,14 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
           } catch (Exception e) {
                 Reporter.log("Exception : " + e.getMessage());
           }
+          lib.logOut();
     }
     @BeforeMethod
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
           preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
-        
+          authToken=lib.getToken(); 
     }
     @Override
     public String getTestName() {

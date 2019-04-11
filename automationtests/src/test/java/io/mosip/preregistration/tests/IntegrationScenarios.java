@@ -296,14 +296,12 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse3 = lib.CreatePreReg(createPregRequest);
-		String userId = preRegResponse1.jsonPath().get("response[0].createdBy").toString();
-
 		// Delete a preReg
 		String preRegIdToDelete = preRegResponse3.jsonPath().get("response[0].preRegistrationId").toString();
 		response = lib.discardApplication(preRegIdToDelete);
 		lib.compareValues(response.jsonPath().getString("response[0].preRegistrationId").toString(), preRegIdToDelete);
 
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(userId);
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		
 			int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
 			Assert.assertEquals(no, 2);
@@ -413,8 +411,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 * creating preRegistration and fetching created pre registration by user id.
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
-		createdBy = createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		/**
 		 * adding assertion
 		 */
@@ -432,8 +429,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
-		createdBy = preRegResponse1.jsonPath().get("response[0].createdBy").toString();
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		try {
 			if (fetchResponse.jsonPath().get("status").toString().equalsIgnoreCase("true")) {
 				int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
@@ -459,11 +455,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 			lib.compareValues(preID, fetchResponse.jsonPath().get("response[0].preRegistrationId").toString());
 			Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 			lib.compareValues(fetchResponse.jsonPath().get("response[0].bookingRegistrationDTO").toString(),
@@ -482,7 +477,6 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -491,7 +485,7 @@ public class IntegrationScenarios extends BaseTestCase {
 				preID);
 		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
 				"APPOINTMENT_SUCCESSFULLY_CANCELED");
-		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		Assert.assertEquals(
 				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response[0].preRegistrationId").toString(),
 				preID);
@@ -615,9 +609,8 @@ public class IntegrationScenarios extends BaseTestCase {
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
 		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		createdBy = createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
 		lib.discardApplication(preID);
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		lib.compareValues(fetchResponse.jsonPath().get("err.message").toString(), "NO_RECORD_FOUND_FOR_USER_ID");
 
 	}
