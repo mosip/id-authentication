@@ -87,6 +87,7 @@ public class RegistrationStatusMapUtil {
 				RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING,
 				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING, RegistrationExternalStatusCode.PROCESSING);
 
 		return unmodifiableMap;
 
