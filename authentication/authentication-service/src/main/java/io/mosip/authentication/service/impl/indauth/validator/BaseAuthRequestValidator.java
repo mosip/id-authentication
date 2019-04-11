@@ -204,7 +204,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 						new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors, getPattern(STATICPIN));
+				checkAdditionalFactorsValue(pinOpt.get(), PIN_VALUE, errors, getPattern(STATICPIN));
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
@@ -216,7 +216,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(otp, OTP2, errors, getPattern(OTP));
+				checkAdditionalFactorsValue(otp.get(), OTP2, errors, getPattern(OTP));
 			}
 		}
 	}
@@ -228,8 +228,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 * @param pattern
 	 */
-	private void checkAdditionalFactorsValue(Optional<String> info, String type, Errors errors, Pattern pattern) {
-		if (!pattern.matcher(info.get()).matches()) {
+	private void checkAdditionalFactorsValue(String info, String type, Errors errors, Pattern pattern) {
+		if (Objects.nonNull(pattern) && !pattern.matcher(info).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Invalid Input " + type + " pin Value");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

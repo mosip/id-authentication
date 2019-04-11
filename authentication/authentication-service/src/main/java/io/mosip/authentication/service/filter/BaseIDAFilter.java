@@ -320,8 +320,7 @@ public abstract class BaseIDAFilter implements Filter {
 		
 			String id = fetchId(requestWrapper);
 			requestWrapper.resetInputStream();
-			if (Objects.nonNull(requestBody) && !requestBody.isEmpty() && requestBody.containsKey(ID)
-					&& requestBody.containsKey(VERSION)) {
+			if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
 				validateId(requestBody, id);
 				validateVersion(requestBody);
 			}
@@ -356,9 +355,12 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private void validateVersion(Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		String verFromRequest = (String) requestBody.get(VERSION);
+		String verFromRequest = requestBody.containsKey(VERSION) ? (String) requestBody.get(VERSION) : null;
+		if(Objects.isNull(verFromRequest)) {
+			handleException(VERSION, false);
+		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches()) {
-			exceptionHandling(VERSION);
+			handleException(VERSION, true);
 		}
 	}
 
@@ -370,9 +372,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
-		String idFromRequest = (String) requestBody.get(ID);
-		if (Objects.isNull(id) || !env.getProperty(id).equals(idFromRequest)) {
-			exceptionHandling(ID);
+		String idFromRequest = requestBody.containsKey(ID) ? (String) requestBody.get(ID) : null;
+		String property = env.getProperty(id);
+		if(Objects.isNull(idFromRequest)) {
+			handleException(ID, false);
+		}
+		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+			handleException(ID, true);
 		}
 	}
 
@@ -383,12 +389,20 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param type the type is either ID or Version
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void exceptionHandling(String type) throws IdAuthenticationAppException {
-		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-		throw new IdAuthenticationAppException(
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
+	private void handleException(String type, boolean isPresent) throws IdAuthenticationAppException {
+		if(!isPresent) {
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), type));
+		} else {			
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
+		}
 	}
 
 	/**
