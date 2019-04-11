@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -12,21 +14,31 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.ValidDocCategoryDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
+import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * This service class contains methods that create and delete valid document.
  * 
  * @author Ritesh Sinha
+ * @author Neha Sinha
+ * 
  * @since 1.0.0
  *
  */
@@ -37,8 +49,15 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	/**
 	 * Reference to ValidDocumentRepository.
 	 */
+
 	@Autowired
 	private ValidDocumentRepository documentRepository;
+
+	@Autowired
+	private DocumentCategoryRepository documentCategoryRepository;
+
+	@Autowired
+	private DocumentTypeRepository documentTypeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -91,6 +110,35 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		responseDto.setDocCategoryCode(docCatCode);
 		responseDto.setDocTypeCode(docTypeCode);
 		return responseDto;
+	}
+
+	@Override
+	public ValidDocCategoryAndDocTypeResponseDto getValidDocumentByLangCode(String langCode) {
+
+		ValidDocCategoryAndDocTypeResponseDto validDocCategoryAndDocTypeResponseDto = new ValidDocCategoryAndDocTypeResponseDto();
+		List<ValidDocCategoryDto> categoryDtos = new ArrayList<>();
+		
+		List<DocumentCategory> documentCategories = documentCategoryRepository
+				.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+		for (DocumentCategory documentCategory : documentCategories) {
+			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(documentCategory.getCode());
+			List<DocumentType> documentTypes = new ArrayList<>();
+			
+			for (ValidDocument validDocument : validDocuments) {
+				DocumentType documentType = documentTypeRepository
+						.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(validDocument.getDocTypeCode(),
+								langCode);
+				documentTypes.add(documentType);
+			}
+
+			List<DocumentTypeDto> documenttypes = MapperUtils.mapAll(documentTypes, DocumentTypeDto.class);
+			ValidDocCategoryDto validDocCategoryDto = MapperUtils.map(documentCategory, ValidDocCategoryDto.class);
+			validDocCategoryDto.setDocumenttypes(documenttypes);
+			categoryDtos.add(validDocCategoryDto);
+		}
+		
+		validDocCategoryAndDocTypeResponseDto.setDocumentcategories(categoryDtos);
+		return validDocCategoryAndDocTypeResponseDto;
 	}
 
 }
