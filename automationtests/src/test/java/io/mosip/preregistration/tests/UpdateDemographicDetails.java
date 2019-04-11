@@ -46,7 +46,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		initialize();
 	}
 
-	/*@Test
+	@Test
 	public void updateDemographicDetailsOfPendingAppointmentApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		String DOB = "25-09-1993";
@@ -152,10 +152,6 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(createRequest, pre_registration_id);
 		String actualDOB = updateDemographicDetailsResponse.jsonPath()
 				.get("response[0].demographicDetails.identity.dateOfBirth").toString();
-	}*/
-	@Test
-	public void updateDemographicDetailsOfPendingAppointmentApplication() {
-	System.out.println("5555555555555555555555555555555512368123681236812368");
 	}
 	@BeforeMethod
 	public void getAuthToken()
