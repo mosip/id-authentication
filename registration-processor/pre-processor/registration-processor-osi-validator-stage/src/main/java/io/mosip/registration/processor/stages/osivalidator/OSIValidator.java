@@ -458,7 +458,8 @@ public class OSIValidator {
 			pd.getWriteMethod().invoke(obj, value);
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			e.printStackTrace();
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"OSIValidator", e.getMessage());
 		}
 	}
 
