@@ -1,6 +1,6 @@
 ﻿code,method_seq,lang_code,is_active,cr_by,cr_dtimes
 PWD,1,eng,TRUE,superadmin,now()
 OTP,2,eng,TRUE,superadmin,now()
-BIO,3,eng,TRUE,superadmin,now()
+FINGERPRINT,3,eng,TRUE,superadmin,now()
 IRIS,4,eng,TRUE,superadmin,now()
 FACE,5,eng,TRUE,superadmin,now()

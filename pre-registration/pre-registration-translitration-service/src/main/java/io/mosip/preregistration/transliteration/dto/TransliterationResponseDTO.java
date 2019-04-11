@@ -15,8 +15,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * This DTO class defines the variables to accept the input parameter from
- * request.
+ * This DTO class defines the variables to accept the response values for
+ * transliteration
  * 
  * @author Kishan Rathore
  * @since 1.0.0
@@ -26,7 +26,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TransliterationDTO implements Serializable{
+public class TransliterationResponseDTO implements Serializable{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6675771212299312546L;

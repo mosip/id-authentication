@@ -271,7 +271,10 @@
     "action_resend": "Renvoyer",
     "action_verify": "Vérifier",
     "logout_msg": "Le demandeur doit se connecter avec le même téléphone portable / courriel pour accéder aux applications créées.",
-    "otp_valid_label": "valable"
+    "otp_valid_label": "valable",
+    "invalidEmail": "Identifiant email invalide entré",
+    "invalidMobile": "Numéro de téléphone invalide entré",
+    "invalidInput": "Identifiant email ou numéro de portable invalide entré"
   },
   "stepper": {
     "link_demographic": "Détails démographiques",

@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
@@ -90,11 +91,11 @@ public class TransliterationService {
 	 * @param requestDTO
 	 * @return responseDto with transliterated value
 	 */
-	public MainResponseDTO<TransliterationDTO> translitratorService(MainRequestDTO<TransliterationDTO> requestDTO) {
-		MainResponseDTO<TransliterationDTO> responseDTO = new MainResponseDTO<>();
+	public MainResponseDTO<TransliterationResponseDTO> translitratorService(MainRequestDTO<TransliterationRequestDTO> requestDTO) {
+		MainResponseDTO<TransliterationResponseDTO> responseDTO = new MainResponseDTO<>();
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO),requiredRequestMap)) {
-				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
+				TransliterationRequestDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
 					if(serviceUtil.supportedLanguageCheck(transliterationRequestDTO)) {
 						String languageId = idRepository

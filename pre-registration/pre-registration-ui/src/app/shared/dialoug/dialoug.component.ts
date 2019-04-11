@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Router } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Location } from '@angular/common';
-import { SharedService } from 'src/app/feature/booking/booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
+import * as appConstants from '../../app.constants';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 export interface DialogData {
   case: number;
@@ -30,12 +30,15 @@ export class DialougComponent implements OnInit {
   selectedName: any;
   addedList = [];
   disableAddButton = true;
+  disableSend = true;
+
   constructor(
     public dialogRef: MatDialogRef<DialougComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData | any,
     private authService: AuthService,
     private location: Location,
-    private regService: RegistrationService
+    private regService: RegistrationService,
+    private config: ConfigService
   ) {}
 
   // tslint:disable-next-line:use-life-cycle-interface
@@ -57,8 +60,10 @@ export class DialougComponent implements OnInit {
     if (!isNaN(this.applicantNumber) && this.applicantNumber.length === 10) {
       this.inputList[1] = this.applicantNumber;
       this.invalidApplicantNumber = false;
+      this.disableSend = false;
     } else {
       this.invalidApplicantNumber = true;
+      this.disableSend = true;
     }
   }
 
@@ -67,9 +72,23 @@ export class DialougComponent implements OnInit {
     if (re.test(String(this.applicantEmail).toLowerCase())) {
       this.inputList[0] = this.applicantEmail;
       this.invalidApplicantEmail = false;
+      this.disableSend = false;
     } else {
       this.invalidApplicantEmail = true;
+      this.disableSend = true;
     }
+  }
+
+  enableButton(email, mobile) {
+    console.log(email, mobile);
+    // if (!email.value && !mobile.value) 
+    //   this.disableSend = true;
+    // else if (email.value && !mobile.value && !this.invalidApplicantEmail)
+    //   this.disableSend = false;
+    // else if (mobile.value && !email.value && !this.invalidApplicantNumber)
+    //   this.disableSend = false;
+    // else if (!this.invalidApplicantEmail && !this.invalidApplicantNumber)
+    //   this.disableSend = false;
   }
 
   onSelectCheckbox() {

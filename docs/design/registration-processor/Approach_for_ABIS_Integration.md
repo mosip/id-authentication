@@ -77,7 +77,7 @@ The key solution considerations are -
 		1. Bio IDENTIFY: Prepare Identify request for 1:n bio match.
 		For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: id from table "abis_request".
 
-	1. "BiometricIdentificationHandlerStage": 
+	1. "BiometricIdentificationMiddlewareStage": 
 	This stage registers ABIS queue listerns and senders in deploy verticle method. ABIS queue listerns will listern to messages received on queue and sender is responsible to send messsages on ABIS queues. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
 
 	Upon receiving event, this stage reads "IN-PROGRESS" requests from "abis_request" table and start sending them to ABIS system.
@@ -93,8 +93,18 @@ The key solution considerations are -
 
 ------------
 
-![abis middleware logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
+Behavior of Identification:
 
+![abis middleware identification logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
+
+- Demo Dedupe, Bio Dedupe Stage: These stages will be responsible to take business decesions like Rejecting packet or sending event for manual varification upon potential match found or sending event to UIN generation in case if no potential match found.
+- BiometricIdentificationHandlerStage: This stage will understand request to be sent to ABIS systems and hence responsible to construct request objects.
+- BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object to be send to ABIS and receives asynchrnous response from ABIS system.
+
+
+Behavior of Ping:
+
+![abis middleware identification logical diagram](_images/reproc_abis_middleware_ping_logical_arch_diagram.png)
 
 
 **Sequence Diagram**
@@ -102,5 +112,19 @@ The key solution considerations are -
 ------------
 
 
+Demo Failed Sequence Diagram:
 
-![ABIS middleware sequence diagram](_images/abis_middleware_seq_diagram.png)
+![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_match_seq_diagram.png)
+
+
+Demo Success Sequence Diagram:
+
+![ABIS middleware demo no match sequence diagram](_images/abis_middleware_demo_no_match_seq_diagram.png)
+
+Bio Failed Sequence Diagram:
+
+![ABIS middleware bio match sequence diagram](_images/abis_middleware_bio_match_seq_diagram.png)
+
+Bio Success Sequence Diagram:
+
+![ABIS middleware bio no match sequence diagram](_images/abis_middleware_bio_no_match_seq_diagram.png)
