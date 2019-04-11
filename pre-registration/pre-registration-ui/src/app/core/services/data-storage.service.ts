@@ -250,14 +250,22 @@ export class DataStorageService {
   }
 
   copyDocument(sourceId: string, destinationId: string) {
-    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + destinationId;
+    const url =
+      this.BASE_URL +
+      this.PRE_REG_URL +
+      appConstants.APPEND_URL.document +
+      destinationId +
+      '?catCode=' +
+      appConstants.PARAMS_KEYS.POA +
+      '&sourcePreId=' +
+      sourceId;
     console.log('copy document URL', url);
+    const params = new URLSearchParams().set(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA);
+    // params.set(appConstants.PARAMS_KEYS.sourcePrId, sourceId);
+
     return this.httpClient.put(url, {
       observe: 'body',
-      responseType: 'json',
-      params: new HttpParams()
-        .append(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA)
-        .append(appConstants.PARAMS_KEYS.sourcePrId, sourceId)
+      responseType: 'json'
     });
   }
 
