@@ -198,6 +198,24 @@ public class RegProcDataRead {
 		return result;
 	}
 	
+	public List<Object> countRegIdInRegistration(String regIds) {
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		
+		String queryString= "Select regprc.registration.id, count(1)"+
+				" From regprc.registration where regprc.registration.id= :regId_value "
+				+ "Group By regprc.registration.id Having count(1)>1";
+
+		logger.info("regId is : " +regIds);																																			
+		Query query = session.createSQLQuery(queryString);
+		query.setParameter("regId_value", regIds);
+		List<Object> result = query.getResultList();
+		logger.info("result==== : "+result);
+		
+		session.getTransaction().commit();
+		return result;
+	}
 	
 	public boolean regproc_dbDeleteRecordInRegistrationList(String regId)
 	{
@@ -341,6 +359,10 @@ public class RegProcDataRead {
 		return auditDto;
 
 	}
+
+
+
+	
 
 
 }

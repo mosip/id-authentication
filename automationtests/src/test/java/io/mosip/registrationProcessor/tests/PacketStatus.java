@@ -36,6 +36,7 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.dbdto.AuditRequestDto;
+import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.RegistrationStatusEntity;
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.service.ApplicationLibrary;
@@ -86,11 +87,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder= null;
 		try {
-			switch ("smoke") {
+			switch ("regression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+				break;
 			case "regression":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+				break;
 			default:
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
@@ -114,14 +117,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = new JSONObject();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
-		List<Map<String,String>> response = actualResponse.jsonPath().get("response");
+
 
 		try {
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			//generation of actual response
 			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
-
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
@@ -132,74 +134,85 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 
 			if (status) {
+				boolean isError = expectedResponse.containsKey("errors");
+				logger.info("isError ========= : "+isError);
 
-				JSONArray expected = (JSONArray) expectedResponse.get("response");
-				if(expected!=null&& !expected.isEmpty() && actualRequest!=null){
-					List<String> expectedRegIds = new ArrayList<>();
-					String expectedRegId = null;
-					//extracting reg ids from the expected response
-					Iterator<Object> iterator = expected.iterator();
-					while(iterator.hasNext()){
-						JSONObject jsonObject = (JSONObject) iterator.next();
-						expectedRegId = jsonObject.get("registrationId").toString().trim();
-						logger.info("expectedRegId: "+expectedRegId);
-						expectedRegIds.add(expectedRegId);
+				if(!isError){
+					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+					logger.info("response : "+response );
+					JSONArray expected = (JSONArray) expectedResponse.get("response");
+					if(expected!=null&& !expected.isEmpty() && actualRequest!=null){
+						List<String> expectedRegIds = new ArrayList<>();
+						String expectedRegId = null;
+						logger.info("expected: "+expected);
+						Iterator<Object> iterator = expected.iterator();
+						//extracting reg ids from the expected response
+						while(iterator.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator.next();
+							expectedRegId = jsonObject.get("registrationId").toString().trim();
+							logger.info("expectedRegId: "+expectedRegId);
+							expectedRegIds.add(expectedRegId);
+						}
 
-					}
-					for(Map<String,String> res : response){
-						String statusCode = res.get("statusCode");
-						logger.info("statusCode : "+statusCode);
-
-						regIds=res.get("registrationId").toString();
-						logger.info("Reg Id is : " +regIds);
-
-						//If status code is processing, rsend or processed, reg id is checked in the db tables
-						if(statusCode.matches(".*PROCESSING*.")|| statusCode.matches(".*RESEND*.")||statusCode.matches(".*PROCESSED*.")) {
-							logger.info("inside statuscode loop...................");
-
-							//audit log check(not yet implemented)
-							/*LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
-							logger.info("log time : "+logTime);
-							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-							logger.info("AUDIT DTO : "+auditDto.getApplicationName());*/
-							//rest of the validations will be added 
+						for(Map<String,String> res : response){
+							regIds=res.get("registrationId").toString();
+							logger.info("Reg Id is : " +regIds);
 
 							RegistrationStatusEntity dbDto = readDataFromDb.regproc_dbDataInRegistration(regIds);	
+							List<Object> count = readDataFromDb.countRegIdInRegistration(regIds);
 							logger.info("dbDto :" +dbDto);
 
-							if(dbDto != null /*&& auditDto != null*/) {
+							//Checking audit logs (not yet implemented)
+							/*	LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
+						logger.info("log time : "+logTime);
+						AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
+						logger.info("AUDIT DTO : "+auditDto.getApplicationName());*/
+
+							if(dbDto != null && count.isEmpty()/*&& auditDto != null*/) {
 								//if reg id present in response and reg id fetched from table matches, then it is validated
 								if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
-									Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
-									while(iterator.hasNext()){
-										JSONObject jsonObject = (JSONObject) iterator.next();
-										logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
-										String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
-										logger.info("expectedRegId: "+expectedRegIdNew);
 
-										if (expectedRegIdNew.matches(dbDto.getId())){							
-
-											logger.info("Validated in DB.......");
-											finalStatus = "Pass";
-										} 
-									}
-								}else {
-									finalStatus="Fail";
-								}
+									logger.info("Validated in DB.......");
+									finalStatus = "Pass";
+									softAssert.assertTrue(true);
+								} 
 							}
-						}else {
-							finalStatus="Pass";
-						}
-						softAssert.assertTrue(true);
-					}}else {
-						finalStatus="Fail";
-						//softAssert.assertTrue(false);
-					}
 
-				softAssert.assertAll();
-				object.put("status", finalStatus);
-				arr.add(object);
-			}
+						}
+					}
+					finalStatus = "Pass";
+					softAssert.assertTrue(true);
+				}else{
+
+					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
+					String expectedErrorCode = null;
+					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+					logger.info("error : "+error );
+					for(Map<String,String> err : error){
+						String errorCode = err.get("errorcode").toString();
+						logger.info("errorCode : "+errorCode);
+						Iterator<Object> iterator1 = expectedError.iterator();
+
+						while(iterator1.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator1.next();
+							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+							logger.info("expectedErrorCode: "+expectedErrorCode);
+						}
+						if(expectedErrorCode.matches(errorCode)){
+							finalStatus = "Pass";
+							softAssert.assertTrue(true);
+						}
+					}
+				}
+
+			}else {
+				finalStatus="Fail";
+				softAssert.assertTrue(false);
+			}		
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occurred in Packet Status class in packetStatus method "+e);
 		}
