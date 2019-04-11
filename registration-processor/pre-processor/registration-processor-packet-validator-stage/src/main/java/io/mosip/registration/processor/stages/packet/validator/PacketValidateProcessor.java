@@ -377,6 +377,8 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
+			if (!applicantDocumentValidation(identity, registrationStatusDto))
+				return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 
@@ -421,7 +423,27 @@ public class PacketValidateProcessor {
 		return isCheckSumValidated;
 
 	}
-	
+
+	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
+			throws IOException {
+		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
+			return true;
+		InputStream documentInfoStream = null;
+		List<Document> documentList = null;
+		documentInfoStream = adapter.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+		byte[] bytes = null;
+		bytes = IOUtils.toByteArray(documentInfoStream);
+		documentList = documentUtility.getDocumentList(bytes);
+
+		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+				registrationStatusDto);
+		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(identity, documentList,
+				registrationId);
+
+		return isApplicantDocumentValidation;
+
+	}
 
 	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto)
 			throws ApisResourceAccessException, IOException {
