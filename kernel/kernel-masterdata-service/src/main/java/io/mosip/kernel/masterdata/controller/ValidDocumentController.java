@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
@@ -71,6 +73,15 @@ public class ValidDocumentController {
 
 		ResponseWrapper<DocCategoryAndTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.deleteValidDocuemnt(docCatCode, docTypeCode));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@GetMapping("/validdocuments/{languagecode}")
+	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")
+	public ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> getValidDocumentByLangCode(@PathVariable("languagecode") String langCode) {
+		ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.getValidDocumentByLangCode(langCode));
 		return responseWrapper;
 	}
 }
