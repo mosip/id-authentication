@@ -8,8 +8,9 @@ import io.mosip.registration.dto.ApplicantValidDocumentDto;
 import io.mosip.registration.dto.IndividualTypeDto;
 
 /**
- * @author Sreekar Chukka
+ * The Class for MasterDataResponseDto.
  *
+ * @author Sreekar Chukka
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -53,7 +54,36 @@ public class MasterDataResponseDto {
 	private List<AppRolePriorityDto> appRolePriorities;
 	private List<ScreenAuthorizationDto> screenAuthorizations;
 	private List<ProcessListDto> processList;
-	
+	private List<SyncJobDefDto> syncJobDefinitions;
+	private List<ScreenDetailDto> screenDetails;
+
+	/**
+	 * @return the syncJobDefinitions
+	 */
+	public List<SyncJobDefDto> getSyncJobDefinitions() {
+		return syncJobDefinitions;
+	}
+
+	/**
+	 * @param syncJobDefinitions the syncJobDefinitions to set
+	 */
+	public void setSyncJobDefinitions(List<SyncJobDefDto> syncJobDefinitions) {
+		this.syncJobDefinitions = syncJobDefinitions;
+	}
+
+	/**
+	 * @return the screenDetails
+	 */
+	public List<ScreenDetailDto> getScreenDetails() {
+		return screenDetails;
+	}
+
+	/**
+	 * @param screenDetails the screenDetails to set
+	 */
+	public void setScreenDetails(List<ScreenDetailDto> screenDetails) {
+		this.screenDetails = screenDetails;
+	}
 
 	/**
 	 * @return the appAuthenticationMethods
@@ -141,8 +171,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param applicantValidDocuments
-	 *            the applicantValidDocuments to set
+	 * @param applicantValidDocuments the applicantValidDocuments to set
 	 */
 	public void setApplicantValidDocuments(List<ApplicantValidDocumentDto> applicantValidDocuments) {
 		this.applicantValidDocuments = applicantValidDocuments;
@@ -156,8 +185,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param individualTypes
-	 *            the individualTypes to set
+	 * @param individualTypes the individualTypes to set
 	 */
 	public void setIndividualTypes(List<IndividualTypeDto> individualTypes) {
 		this.individualTypes = individualTypes;
@@ -171,8 +199,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterMachines
-	 *            the registrationCenterMachines to set
+	 * @param registrationCenterMachines the registrationCenterMachines to set
 	 */
 	public void setRegistrationCenterMachines(List<RegistrationCenterMachineDto> registrationCenterMachines) {
 		this.registrationCenterMachines = registrationCenterMachines;
@@ -186,8 +213,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterDevices
-	 *            the registrationCenterDevices to set
+	 * @param registrationCenterDevices the registrationCenterDevices to set
 	 */
 	public void setRegistrationCenterDevices(List<RegistrationCenterDeviceDto> registrationCenterDevices) {
 		this.registrationCenterDevices = registrationCenterDevices;
@@ -201,8 +227,8 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterMachineDevices
-	 *            the registrationCenterMachineDevices to set
+	 * @param registrationCenterMachineDevices the registrationCenterMachineDevices
+	 *                                         to set
 	 */
 	public void setRegistrationCenterMachineDevices(
 			List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices) {
@@ -217,8 +243,8 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterUserMachines
-	 *            the registrationCenterUserMachines to set
+	 * @param registrationCenterUserMachines the registrationCenterUserMachines to
+	 *                                       set
 	 */
 	public void setRegistrationCenterUserMachines(
 			List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines) {
@@ -233,8 +259,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterUsers
-	 *            the registrationCenterUsers to set
+	 * @param registrationCenterUsers the registrationCenterUsers to set
 	 */
 	public void setRegistrationCenterUsers(List<RegistrationCenterUserDto> registrationCenterUsers) {
 		this.registrationCenterUsers = registrationCenterUsers;
@@ -248,8 +273,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenter
-	 *            the registrationCenter to set
+	 * @param registrationCenter the registrationCenter to set
 	 */
 	public void setRegistrationCenter(List<RegistrationCenterDto> registrationCenter) {
 		this.registrationCenter = registrationCenter;
@@ -263,8 +287,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterTypes
-	 *            the registrationCenterTypes to set
+	 * @param registrationCenterTypes the registrationCenterTypes to set
 	 */
 	public void setRegistrationCenterTypes(List<RegistrationCenterTypeDto> registrationCenterTypes) {
 		this.registrationCenterTypes = registrationCenterTypes;
@@ -278,8 +301,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param machineDetails
-	 *            the machineDetails to set
+	 * @param machineDetails the machineDetails to set
 	 */
 	public void setMachineDetails(List<MachineDto> machineDetails) {
 		this.machineDetails = machineDetails;
@@ -293,8 +315,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param machineSpecification
-	 *            the machineSpecification to set
+	 * @param machineSpecification the machineSpecification to set
 	 */
 	public void setMachineSpecification(List<MachineSpecificationDto> machineSpecification) {
 		this.machineSpecification = machineSpecification;
@@ -308,8 +329,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param machineType
-	 *            the machineType to set
+	 * @param machineType the machineType to set
 	 */
 	public void setMachineType(List<MachineTypeDto> machineType) {
 		this.machineType = machineType;
@@ -323,8 +343,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param devices
-	 *            the devices to set
+	 * @param devices the devices to set
 	 */
 	public void setDevices(List<DeviceDto> devices) {
 		this.devices = devices;
@@ -338,8 +357,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param deviceTypes
-	 *            the deviceTypes to set
+	 * @param deviceTypes the deviceTypes to set
 	 */
 	public void setDeviceTypes(List<DeviceTypeDto> deviceTypes) {
 		this.deviceTypes = deviceTypes;
@@ -353,8 +371,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param deviceSpecifications
-	 *            the deviceSpecifications to set
+	 * @param deviceSpecifications the deviceSpecifications to set
 	 */
 	public void setDeviceSpecifications(List<DeviceSpecificationDto> deviceSpecifications) {
 		this.deviceSpecifications = deviceSpecifications;
@@ -368,8 +385,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param holidays
-	 *            the holidays to set
+	 * @param holidays the holidays to set
 	 */
 	public void setHolidays(List<HolidayDto> holidays) {
 		this.holidays = holidays;
@@ -383,8 +399,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param documentCategories
-	 *            the documentCategories to set
+	 * @param documentCategories the documentCategories to set
 	 */
 	public void setDocumentCategories(List<DocumentCategoryDto> documentCategories) {
 		this.documentCategories = documentCategories;
@@ -398,8 +413,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param documentTypes
-	 *            the documentTypes to set
+	 * @param documentTypes the documentTypes to set
 	 */
 	public void setDocumentTypes(List<DocumentTypeDto> documentTypes) {
 		this.documentTypes = documentTypes;
@@ -413,8 +427,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param templates
-	 *            the templates to set
+	 * @param templates the templates to set
 	 */
 	public void setTemplates(List<TemplateDto> templates) {
 		this.templates = templates;
@@ -428,8 +441,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param templatesTypes
-	 *            the templatesTypes to set
+	 * @param templatesTypes the templatesTypes to set
 	 */
 	public void setTemplatesTypes(List<TemplateTypeDto> templatesTypes) {
 		this.templatesTypes = templatesTypes;
@@ -443,8 +455,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param templateFileFormat
-	 *            the templateFileFormat to set
+	 * @param templateFileFormat the templateFileFormat to set
 	 */
 	public void setTemplateFileFormat(List<TemplateFileFormatDto> templateFileFormat) {
 		this.templateFileFormat = templateFileFormat;
@@ -458,8 +469,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param reasonCategory
-	 *            the reasonCategory to set
+	 * @param reasonCategory the reasonCategory to set
 	 */
 	public void setReasonCategory(List<PostReasonCategoryDto> reasonCategory) {
 		this.reasonCategory = reasonCategory;
@@ -473,8 +483,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param reasonList
-	 *            the reasonList to set
+	 * @param reasonList the reasonList to set
 	 */
 	public void setReasonList(List<ReasonListDto> reasonList) {
 		this.reasonList = reasonList;
@@ -488,8 +497,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param blackListedWords
-	 *            the blackListedWords to set
+	 * @param blackListedWords the blackListedWords to set
 	 */
 	public void setBlackListedWords(List<BlacklistedWordsDto> blackListedWords) {
 		this.blackListedWords = blackListedWords;
@@ -503,8 +511,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param locationHierarchy
-	 *            the locationHierarchy to set
+	 * @param locationHierarchy the locationHierarchy to set
 	 */
 	public void setLocationHierarchy(List<LocationDto> locationHierarchy) {
 		this.locationHierarchy = locationHierarchy;
@@ -518,8 +525,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param biometricattributes
-	 *            the biometricattributes to set
+	 * @param biometricattributes the biometricattributes to set
 	 */
 	public void setBiometricattributes(List<BiometricAttributeDto> biometricattributes) {
 		this.biometricattributes = biometricattributes;
@@ -533,8 +539,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param biometricTypes
-	 *            the biometricTypes to set
+	 * @param biometricTypes the biometricTypes to set
 	 */
 	public void setBiometricTypes(List<BiometricTypeDto> biometricTypes) {
 		this.biometricTypes = biometricTypes;
@@ -548,8 +553,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param applications
-	 *            the applications to set
+	 * @param applications the applications to set
 	 */
 	public void setApplications(List<ApplicationDto> applications) {
 		this.applications = applications;
@@ -563,8 +567,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param idTypes
-	 *            the idTypes to set
+	 * @param idTypes the idTypes to set
 	 */
 	public void setIdTypes(List<IdTypeDto> idTypes) {
 		this.idTypes = idTypes;
@@ -578,8 +581,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param titles
-	 *            the titles to set
+	 * @param titles the titles to set
 	 */
 	public void setTitles(List<TitleDto> titles) {
 		this.titles = titles;
@@ -593,8 +595,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param genders
-	 *            the genders to set
+	 * @param genders the genders to set
 	 */
 	public void setGenders(List<GenderDto> genders) {
 		this.genders = genders;
@@ -608,8 +609,7 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param languages
-	 *            the languages to set
+	 * @param languages the languages to set
 	 */
 	public void setLanguages(List<LanguageDto> languages) {
 		this.languages = languages;

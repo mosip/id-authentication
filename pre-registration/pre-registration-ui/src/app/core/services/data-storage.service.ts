@@ -7,10 +7,27 @@ import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
+/**
+ * @description This class is responsible for sending or receiving data to the service.
+ *
+ * @author Shashank Agrawal
+ * @author Agnitra Banerjee
+ * @author Gurdayal Dhillon
+ * @export
+ * @class DataStorageService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class DataStorageService {
+  /**
+   * @description Creates an instance of DataStorageService.
+   * @see HttpClient
+   * @param {HttpClient} httpClient
+   * @param {AppConfigService} appConfigService
+   * @param {ConfigService} configService
+   * @memberof DataStorageService
+   */
   constructor(
     private httpClient: HttpClient,
     private appConfigService: AppConfigService,
@@ -18,28 +35,56 @@ export class DataStorageService {
   ) {}
 
   //need to remove
-  // BASE_URL = 'https://dev.mosip.io/';
+  // BASE_URL2 = 'https://dev.mosip.io/';
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   // BASE_URL = 'https://dev.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
+  /**
+   * @description This method returns the list of users
+   *
+   * @param {string} userId
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getUsers(userId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
     return this.httpClient.get<Applicant[]>(url);
   }
 
+  /**
+   * @description This method returns the user details for the given pre-registration id.
+   *
+   * @param {string} preRegId - pre-registartion-id
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getUser(preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     return this.httpClient.get(url);
   }
 
+  /**
+   * @description This methos returns the list of available genders
+   *
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getGenderDetails() {
     const url = this.BASE_URL + appConstants.APPEND_URL.gender;
     return this.httpClient.get(url);
   }
 
+  /**
+   * @description This method is responsible for doing the transliteration for a given word.
+   *
+   * @param {*} request
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getTransliteration(request: any) {
     const obj = new RequestModel(appConstants.IDS.transliteration, request);
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration;
@@ -59,6 +104,13 @@ export class DataStorageService {
     );
   }
 
+  /**
+   * @description This method adds the user
+   *
+   * @param {*} identity `Object`
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   addUser(identity: any) {
     const obj = new RequestModel(appConstants.IDS.newUser, identity);
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
@@ -66,6 +118,14 @@ export class DataStorageService {
     return this.httpClient.post(url, obj);
   }
 
+  /**
+   * @description This method update the user for the given pre-registration-id
+   *
+   * @param {*} identity - `Object`
+   * @param {string} preRegId - pre-registartion-id
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   updateUser(identity: any, preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     const obj = new RequestModel(appConstants.IDS.updateUser, identity);
@@ -93,7 +153,7 @@ export class DataStorageService {
   cancelAppointment(data: RequestModel, preRegId: string) {
     console.log('cancel appointment data', data);
     return this.httpClient.put(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preRegId,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.cancelAppointment + preRegId,
       data
     );
   }
@@ -146,11 +206,26 @@ export class DataStorageService {
     );
   }
 
+  /**
+   * @description This method return the list of list of countries.
+   *
+   * @param {string} value
+   * @return an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getLocationMetadataHirearchy(value: string) {
     const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
     return this.httpClient.get(url);
   }
 
+  /**
+   * @description This method return the below list of location hierarchy in specified language for the given location hierarchy and langugae code.
+   *
+   * @param {string} lang
+   * @param {string} location
+   * @return an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getLocationImmediateHierearchy(lang: string, location: string) {
     const url =
       this.BASE_URL +
@@ -175,14 +250,22 @@ export class DataStorageService {
   }
 
   copyDocument(sourceId: string, destinationId: string) {
-    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + destinationId;
+    const url =
+      this.BASE_URL +
+      this.PRE_REG_URL +
+      appConstants.APPEND_URL.document +
+      destinationId +
+      '?catCode=' +
+      appConstants.PARAMS_KEYS.POA +
+      '&sourcePreId=' +
+      sourceId;
     console.log('copy document URL', url);
+    const params = new URLSearchParams().set(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA);
+    // params.set(appConstants.PARAMS_KEYS.sourcePrId, sourceId);
+
     return this.httpClient.put(url, {
       observe: 'body',
-      responseType: 'json',
-      params: new HttpParams()
-        .append(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA)
-        .append(appConstants.PARAMS_KEYS.sourcePrId, sourceId)
+      responseType: 'json'
     });
   }
 
@@ -192,13 +275,12 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
-    const obj = new RequestModel(appConstants.IDS.notification, data);
     return this.httpClient.post(
       this.BASE_URL +
         this.PRE_REG_URL +
         appConstants.APPEND_URL.notification +
         appConstants.APPEND_URL.send_notification,
-      obj
+      data
     );
   }
 
@@ -291,6 +373,12 @@ export class DataStorageService {
     return this.httpClient.post(url, obj);
   }
 
+  /**
+   * @description This method is responsible to logout the user and invalidate the token.
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   onLogout() {
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.logout;
     return this.httpClient.post(url, '');

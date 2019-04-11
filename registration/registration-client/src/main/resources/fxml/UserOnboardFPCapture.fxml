@@ -197,8 +197,8 @@
                                              <children>
                                                 <GridPane GridPane.columnIndex="1">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="110.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="36.0" minWidth="10.0" prefWidth="17.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -236,7 +236,7 @@
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                            <Label fx:id="rightSlapException" styleClass="exceptionLabel" text="-" />
+                                                            <Label fx:id="rightSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />
                                                          </children>
                                                       </VBox>
                                                    </children>
@@ -290,13 +290,13 @@
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                                  <Label fx:id="thumbSlapException" styleClass="exceptionLabel" text="-" />
+                                                                  <Label fx:id="thumbSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />
                                                                </children>
                                                             </VBox>
                                                          </children>
                                                          <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="79.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="29.0" minWidth="0.0" prefWidth="5.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -438,13 +438,13 @@
                                                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                    <children>
                                                       <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                      <Label fx:id="leftSlapException" styleClass="exceptionLabel" text="-" />
+                                                      <Label fx:id="leftSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />
                                                    </children>
                                                 </VBox>
                                              </children>
                                              <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="110.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="59.0" minWidth="2.0" prefWidth="18.0" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

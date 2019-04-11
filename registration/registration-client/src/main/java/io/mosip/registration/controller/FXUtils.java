@@ -125,8 +125,7 @@ public class FXUtils {
 	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
 	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
-		return validation.validateTextField(parentPane, field, fieldId,
-				(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED));
+		return validation.validateTextField(parentPane, field, fieldId);
 	}
 
 	/**
@@ -190,15 +189,20 @@ public class FXUtils {
 	 */
 	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
-
+		
 		focusUnfocusListener(parentPane, field, localField);
-
+		
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				if (localField != null) {
 					if (haveToTransliterate) {
-						localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
-								ApplicationContext.localLanguage(), field.getText()));
+						try {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
 					} else {
 						localField.setText(field.getText());
 					}
@@ -383,13 +387,14 @@ public class FXUtils {
 	 * @param regex
 	 *            the regular expression pattern to validate the input of field
 	 */
-	public void dobListener(TextField field, TextField fieldToPopulate, String regex) {
+	public void dobListener(TextField field, TextField fieldToPopulate, TextField localFieldToPopulate, String regex) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
 				if (age >= 0 && age <= 118) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
+					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 				}
 			}
 		});

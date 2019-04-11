@@ -72,7 +72,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
+//	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
@@ -132,7 +132,7 @@ public class BookingController {
 	 * @throws java.text.ParseException
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
-	@PostMapping(path = "/appointment/multi", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
@@ -201,7 +201,7 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete booking") })
 	public ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> discardIndividual(
-			@RequestParam(value = "pre_registration_id") String preId) {
+			@RequestParam(value = "preRegistrationId") String preId) {
 		log.info("sessionId", "idType", "id", "In Booking controller for deletion of booking with preId " + preId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.deleteBooking(preId));

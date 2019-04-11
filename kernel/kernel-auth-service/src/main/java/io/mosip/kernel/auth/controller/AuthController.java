@@ -93,6 +93,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
@@ -132,6 +133,7 @@ public class AuthController {
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
 		if (authResponseDto != null) {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 		}
 		responseWrapper.setResponse(authNResponse);
@@ -156,6 +158,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			if (token != null && token.getUserId() != null) {
@@ -163,6 +166,7 @@ public class AuthController {
 			}
 		} else {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(
 					authResponseDto.getMessage() != null ? authResponseDto.getMessage() : "Otp validation failed");
 		}
@@ -189,6 +193,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);

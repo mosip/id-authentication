@@ -145,12 +145,11 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 
-		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setRetryCount(4);
+		registrationStatusDto.setStatusCode("RESEND");
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
 
 		try {
@@ -184,7 +183,7 @@ public class PacketReceiverServiceTest {
 			ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 			Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 					"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-					EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
+					EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		}
 
@@ -230,7 +229,7 @@ public class PacketReceiverServiceTest {
 		
 		File file = new File(classLoader.getResource("0000.zip").getFile());
 		mockMultipartFile = file;
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 		.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
@@ -251,7 +250,7 @@ public class PacketReceiverServiceTest {
 		
 		File file = new File(classLoader.getResource("0000.zip").getFile());
 		mockMultipartFile = file;
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 		.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
@@ -262,6 +261,12 @@ public class PacketReceiverServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = DuplicateUploadRequestException.class)
 	public void testDuplicateUploadRequest() throws IOException, URISyntaxException {
+		
+		registrationStatusDto.setStatusCode("REREGISTER");
+		registrations.add(registrationStatusDto);
+		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
+		
+		
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);

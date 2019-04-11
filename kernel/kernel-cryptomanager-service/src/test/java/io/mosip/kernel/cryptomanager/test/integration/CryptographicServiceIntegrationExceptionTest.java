@@ -6,7 +6,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
@@ -47,7 +46,6 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -73,8 +71,6 @@ public class CryptographicServiceIntegrationExceptionTest {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private KeyGenerator generator;
-	@Autowired
 	private ObjectMapper mapper;
 
 	@MockBean
@@ -85,8 +81,6 @@ public class CryptographicServiceIntegrationExceptionTest {
 	private UriComponentsBuilder builder;
 
 	private Map<String, String> uriParams;
-
-	private KeyPair keyPair;
 
 	private CryptomanagerRequestDto requestDto;
 
@@ -113,7 +107,6 @@ public class CryptographicServiceIntegrationExceptionTest {
 		encryptRequestWrapper.setId(ID);
 		encryptRequestWrapper.setVersion(VERSION);
 		encryptRequestWrapper.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
-		keyPair = generator.getAsymmetricKey();
 		server = MockRestServiceServer.bindTo(restTemplate).build();
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");

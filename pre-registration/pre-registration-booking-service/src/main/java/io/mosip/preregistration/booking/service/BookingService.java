@@ -3,6 +3,7 @@ package io.mosip.preregistration.booking.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,7 +109,7 @@ public class BookingService {
 	@PostConstruct
 	public void setupBookingService() {
 		requiredRequestMap.put("id", idUrl);
-		requiredRequestMap.put("ver", versionUrl);
+		requiredRequestMap.put("version", versionUrl);
 
 	}
 
@@ -233,7 +234,7 @@ public class BookingService {
 		boolean isSaveSuccess = false;
 		BookingStatusDTO response = new BookingStatusDTO();
 		try {
-			if (ValidationUtil.requestValidator(bookingRequestDTOs)) {
+			if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs),requiredRequestMap)) {
 				for (BookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
 
 					/* Getting Status From Demographic */
@@ -329,12 +330,12 @@ public class BookingService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<List<BookingStatusDTO>> bookMultiAppointment(
 			MainListRequestDTO<MultiBookingRequestDTO> bookingRequestDTOs) {
-		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
+		log.info("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service");
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		boolean isSaveSuccess = false;
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		try {
-			if (ValidationUtil.requestValidator(bookingRequestDTOs)) {
+			if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs),requiredRequestMap)) {
 				for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
 					/* Getting Status From Demographic */
 					String preRegStatusCode = serviceUtil
@@ -371,7 +372,7 @@ public class BookingService {
 							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
 							log.info("sessionId", "idType", "id",
-									"In bookAppointment method of Booking Service for booking Date Time- "
+									"In bookMultiAppointment method of Booking Service for booking Date Time- "
 											+ bookedDateTime);
 							/* Time span check for re-book */
 							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
@@ -400,7 +401,7 @@ public class BookingService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
+			log.error("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex);
 		} finally {
 			if (isSaveSuccess) {
@@ -468,7 +469,7 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
 
-		if (ValidationUtil.requestValidator(requestdto)) {
+		if (ValidationUtil.requestValidator(prepareRequestParamMap(requestdto),requiredRequestMap)) {
 			responseDto.setResponse(cancelBooking(requestdto.getRequest(), preRegistrationId));
 		}
 
@@ -751,4 +752,31 @@ public class BookingService {
 		return response;
 	}
 
+	/**
+	 * This method is used to add the initial request values into a map for input
+	 * validations.
+	 * 
+	 * @param MainRequestDTO
+	 *            pass requestDTO
+	 * @return a map for request input validation
+	 */
+	public Map<String, String> prepareRequestParamMap(MainListRequestDTO<?> requestDTO) {
+		Map<String, String> inputValidation = new HashMap<>();
+		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
+		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
+		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+		inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
+		return inputValidation;
+	}
+	
+	public Map<String, String> prepareRequestParamMap(MainRequestDTO<?> requestDTO) {
+		Map<String, String> inputValidation = new HashMap<>();
+		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
+		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
+		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+		inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
+		return inputValidation;
+	}
 }

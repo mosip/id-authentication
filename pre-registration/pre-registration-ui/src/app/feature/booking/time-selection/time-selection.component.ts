@@ -42,6 +42,7 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
+  disableContinueButton = false;
 
   constructor(
     private sharedService: SharedService,
@@ -206,6 +207,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.disableContinueButton = true;
     this.bookingDataList = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
@@ -223,6 +225,10 @@ export class TimeSelectionComponent implements OnInit {
         }
       });
     });
+    if (this.bookingDataList.length === 0) {
+      this.disableContinueButton = false;
+      return;
+    }
     const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
     this.dataService.makeBooking(request).subscribe(
@@ -242,13 +248,15 @@ export class TimeSelectionComponent implements OnInit {
             .afterClosed()
             .subscribe(() => {
               this.temp.forEach(name => {
-                this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                const appointmentDateTime = Utils.getBookingDateTime(
-                  booking[0].appointment_date,
-                  booking[0].time_slot_from
-                );
-                this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                if (booking[0]) {
+                  this.sharedService.addNameList(name);
+                  const appointmentDateTime = Utils.getBookingDateTime(
+                    booking[0].appointment_date,
+                    booking[0].time_slot_from
+                  );
+                  this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                }
               });
               const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
@@ -265,6 +273,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   showError() {
+    this.disableContinueButton = false;
     const data = {
       case: 'MESSAGE',
       title: this.secondaryLanguagelabels.title_failure,
@@ -282,6 +291,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
+    this.sharedService.flushNameList();
     this.temp.forEach(name => {
       this.sharedService.addNameList(name);
     });

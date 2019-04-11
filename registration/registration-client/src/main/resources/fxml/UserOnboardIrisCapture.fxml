@@ -236,7 +236,7 @@
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                            <Label styleClass="exceptionLabel" text="-" />
+                                                            <Label fx:id="leftIrisException" styleClass="exceptionLabel" text="-" />
                                                          </children>
                                                       </VBox>
                                                    </children>
@@ -290,7 +290,7 @@
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                                  <Label styleClass="exceptionLabel" text="-" />
+                                                                  <Label fx:id="rightIrisException" styleClass="exceptionLabel" text="-" />
                                                                </children>
                                                             </VBox>
                                                          </children>
