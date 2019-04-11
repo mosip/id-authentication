@@ -54,10 +54,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
   DOB_PATTERN: string;
   POSTALCODE_PATTERN: string;
   POSTALCODE_LENGTH: string;
-  ADDRESS_LENGTH: string;
+  ADDRESS_PATTERN: string;
   defaultDay: string;
   defaultMonth: string;
-  FULLNAME_LENGTH: string;
+  FULLNAME_PATTERN: string;
 
   ageOrDobPref = '';
   showDate = false;
@@ -180,8 +180,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.CNIE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_CINE_length];
     this.EMAIL_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_email_length];
     this.MOBILE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_mobile_length];
-    this.ADDRESS_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
-    this.FULLNAME_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
+    this.ADDRESS_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
+    this.FULLNAME_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
     this.agePattern = this.config[appConstants.CONFIG_KEYS.mosip_id_validation_identity_age];
   }
 
@@ -243,7 +243,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.userForm = new FormGroup({
       [this.formControlNames.fullName]: new FormControl(this.formControlValues.fullName.trim(), [
         Validators.required,
-        Validators.maxLength(Number(this.FULLNAME_LENGTH)),
+        // Validators.maxLength(Number(this.FULLNAME_LENGTH)),
+        Validators.pattern(this.FULLNAME_PATTERN),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.gender]: new FormControl(this.formControlValues.gender, Validators.required),
@@ -277,16 +278,19 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH)),
+        Validators.pattern(this.ADDRESS_PATTERN),
+        // Validators.maxLength(Number(this.ADDRESS_PATTERN)),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.addressLine2]: new FormControl(
         this.formControlValues.addressLine2,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH))
+        Validators.pattern(this.ADDRESS_PATTERN)
+        // Validators.maxLength(Number(this.ADDRESS_PATTERN))
       ),
       [this.formControlNames.addressLine3]: new FormControl(
         this.formControlValues.addressLine3,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH))
+        Validators.pattern(this.ADDRESS_PATTERN)
+        // Validators.maxLength(Number(this.ADDRESS_PATTERN))
       ),
       [this.formControlNames.region]: new FormControl(this.formControlValues.region, Validators.required),
       [this.formControlNames.province]: new FormControl(this.formControlValues.province, Validators.required),
