@@ -43,11 +43,11 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.spin.service.impl.spin.service.StaticPinServiceImpl;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
-import io.mosip.spin.authentication.service.impl.spin.service.StaticPinServiceImpl;
 
 /**
  * Test class for StaticPinFacadeImpl
