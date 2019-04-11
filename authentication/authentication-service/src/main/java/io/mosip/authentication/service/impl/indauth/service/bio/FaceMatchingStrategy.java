@@ -16,7 +16,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * @author Dinesh Karuppiah.T
  */
 public enum FaceMatchingStrategy implements MatchingStrategy {
-	/** The Constant idvid. */
 
 	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
@@ -39,6 +38,9 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 
 	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
+	
+	/** The matching strategy impl. */
+	private MatchingStrategyImpl matchingStrategyImpl;
 
 	/**
 	 * Instantiates a new iris matching strategy.
@@ -47,37 +49,8 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 	 * @param matchFunction     the match function
 	 */
 	private FaceMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
-		this.matchStrategyType = matchStrategyType;
-		this.matchFunction = matchFunction;
+		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 
-	}
-
-	/** The match strategy type. */
-	private MatchingStrategyType matchStrategyType;
-
-	/** The match function. */
-	private MatchFunction matchFunction;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
-	 */
-	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
-	 * getMatchFunction()
-	 */
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
 	}
 
 	/**
@@ -87,6 +60,14 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 	 */
 	public static String getIdvid() {
 		return IDVID;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchingStrategy()
+	 */
+	@Override
+	public MatchingStrategy getMatchingStrategy() {
+		return matchingStrategyImpl;
 	}
 
 }

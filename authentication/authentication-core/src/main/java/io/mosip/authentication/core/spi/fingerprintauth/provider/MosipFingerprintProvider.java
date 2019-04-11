@@ -36,5 +36,6 @@ public interface MosipFingerprintProvider extends MosipBiometricProvider {
 	 * @param fingerImage the finger image
 	 * @return the optional
 	 */
+	@SuppressWarnings("rawtypes")
 	Optional<Map> segmentFingerprint(byte[] fingerImage);
 }

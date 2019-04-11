@@ -97,6 +97,11 @@ public interface AuthType {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 	
+	/**
+	 * Gets the auth type impl.
+	 *
+	 * @return the auth type impl
+	 */
 	public AuthType getAuthTypeImpl();
 	
 

@@ -39,12 +39,9 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 
 	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
-
-	/** The match strategy type. */
-	private final MatchingStrategyType matchStrategyType;
-
-	/** The match function. */
-	private final MatchFunction matchFunction;
+	
+	/** The matching strategy impl. */
+	private MatchingStrategyImpl matchingStrategyImpl;
 
 	/**
 	 * Instantiates a new composite iris matching strategy.
@@ -53,34 +50,24 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	 * @param matchFunction     the match function
 	 */
 	private CompositeIrisMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
-		this.matchStrategyType = matchStrategyType;
-		this.matchFunction = matchFunction;
+		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
+	/**
+	 * Gets the idvid.
+	 *
+	 * @return the idvid
 	 */
-	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
-	 * getMatchFunction()
-	 */
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
-	}
-
 	public static String getIdvid() {
 		return IDVID;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchingStrategy()
+	 */
+	@Override
+	public MatchingStrategy getMatchingStrategy() {
+		return matchingStrategyImpl;
 	}
 
 }
