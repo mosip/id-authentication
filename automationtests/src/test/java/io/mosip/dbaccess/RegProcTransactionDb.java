@@ -23,7 +23,7 @@ public class RegProcTransactionDb {
 	private static Logger logger = Logger.getLogger(RegProcTransactionDb.class);
 	TransactionStatusDTO transactionStatus=new TransactionStatusDTO();
 	public List<String> readStatus(String regId) {
-		 factory = new Configuration().configure("regprocinteg.cfg.xml")
+		 factory = new Configuration().configure("regproc_qa.cfg.xml")
 	                .addAnnotatedClass(TransactionEntity.class).buildSessionFactory();
 		 session = factory.getCurrentSession();
 		 Transaction t=session.beginTransaction();

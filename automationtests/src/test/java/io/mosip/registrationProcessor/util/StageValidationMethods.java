@@ -1,22 +1,70 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import io.mosip.dbentity.TransactionStatus;
+import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.BaseTestCase;
+import io.restassured.response.Response;
 import io.mosip.dbaccess.RegProcTransactionDb;
 
-public class StageValidationMethods {
+public class StageValidationMethods extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
 	RegProcTransactionDb packetTransaction = new RegProcTransactionDb();
 	final String configPath = "src/test/resources/regProc/Stagevalidation";
 	public String finalStatus = "";
 	static public List<String> statusFromDb=new LinkedList<String>();
-	public List<String> getStatusList(String testCaseName) {
-		List<String> regStatus = packetTransaction.readStatus(getRegID(testCaseName));
+	ApplicationLibrary applnMethods=new ApplicationLibrary();
+	@SuppressWarnings("unchecked")
+	public void syncPacket(String regId) {
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		Properties prop=new Properties();
+		try {
+			prop.load(new FileReader(new File(propertyFilePath)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject syncRequest=new JSONObject();
+		syncRequest.put("id", "mosip.registration.sync");
+		syncRequest.put("version", "1.0");
+		JSONArray request=new JSONArray();
+		JSONObject requestBody=new JSONObject();
+		requestBody.put("langCode", "eng");
+		requestBody.put("parentRegistrationId", null);
+		requestBody.put("registrationId", regId);
+		requestBody.put("statusComment","");
+		requestBody.put("syncStatus", "PRE_SYNC");
+		requestBody.put("syncType","NEW");
+		request.add(requestBody);
+		syncRequest.put("requesttime", "2019-02-14T12:40:59.768Z");
+		syncRequest.put("request",request);
+		Response actualResponse=applnMethods.postRequest(syncRequest, prop.getProperty("syncListApi"));
+		logger.info("Response is :: "+ actualResponse.asString());
+	}
+	public void uploadPacket(File file) {
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		Properties prop=new Properties();
+		try {
+			prop.load(new FileReader(new File(propertyFilePath)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Response response=applnMethods.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
+		logger.info("Response from packet upload :: "+ response.asString());
+	}
+	public List<String> getStatusList(String regID) {
+		List<String> regStatus = packetTransaction.readStatus(regID);
 		return regStatus;
 	}
 	

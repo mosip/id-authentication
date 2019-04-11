@@ -265,6 +265,7 @@ public class CommonLibrary {
 	} // end POST_REQUEST
 
 	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader) {
+		logger.info("REST:ASSURED:Sending a data packet to" + url);
 
 		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).when().post(url).then().extract().response();
