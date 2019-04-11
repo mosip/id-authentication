@@ -1,11 +1,14 @@
 {  
    "Create Pre Registration with other DOB format":"",
-   "Create Pre Registration With invalid Postal Code_5 alpha numeric(A-Z0-9)":"",
+   "Create Pre Registration by passing 4 alphanumeric Postal code":"",
    "Create Pre Registration By passing invalid Language Code":"",
-   "Create Pre Registration With invalid Postal Code_7 alpha numeric(A-Z0-9)":"",
+   "Create Pre Registration by passing 6 alphanumeric Postal code":"",
    "Create Pre Registration with invalid phone no_11 digit":"",
    "Create Pre Registration with invalid phone no_09 digit":"",
-   "Create Pre registration With invalid phone no format_^([6-9]{1})([0-9]{9})$" :"",
+   "Create Pre registration By Passing 10 digit mobile no" :"",
    "Create Pre Registration with invalid email format":"",
-   "Create Pre Registration By Passing 31 digit CNIENumber":""  
+   "Create Pre Registration By Passing 31 digit CNIENumber":"" ,
+   "Create Pre Registration By Passing 09 digit CNIENumber":"",
+   "Create Pre Registration by passing 8 digit mobile no":"",
+   "Create Pre Registration with invalid mobile no format":""
 }

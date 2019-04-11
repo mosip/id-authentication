@@ -1,11 +1,14 @@
 package io.mosip.preregistration.tests;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -47,16 +50,22 @@ public class Sample extends BaseTestCase implements ITest {
 	}
 
 	@Test
-	public void updateDemographicDetailsOfPendingAppointmentApplication() {
+	
+	public void updateDemographicDetailsOfPendingAppointmentApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		List preRegistrationId = new ArrayList();
+		/*Response createResponse = lib.CreatePreReg(createPregRequest);
 		preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUploadParm(createResponse,preID);
 		Response avilibityResponse = lib.FetchCentre();
 		String expectedRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
 		String expectedCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]").toString();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response BookAppointment1 = lib.BookAppointment(documentResponse, avilibityResponse, preID);*/
+		preRegistrationId.add("27983986074683");
+		lib.reverseDataSync(preRegistrationId);
+		Response consumedResponse = lib.consumedStatus();
+		
 		
 	}
 

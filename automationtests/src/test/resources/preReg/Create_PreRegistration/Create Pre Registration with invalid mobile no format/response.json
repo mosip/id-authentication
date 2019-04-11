@@ -3,8 +3,8 @@
     "version": null,
     "errors": {
         "errorCode": "PRG_PAM_APP_014",
-        "message": "CNIENumber^([0-9]{10,30})$"
+        "message": "phone^([6-9]{1})([0-9]{9})$"
     },
-    "responsetime": "2019-04-11T09:41:04.551Z",
+    "responsetime": "2019-04-11T10:02:01.596Z",
     "response": null
 }

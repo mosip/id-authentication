@@ -534,9 +534,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				reverseDataSyncRequest.get(key);
 				JSONObject innerKey = (JSONObject) reverseDataSyncRequest.get(key);
 				innerKey.put("preRegistrationIds", preRegistrationIds);
-				innerKey.put("createdBy", userId);
-				innerKey.put("updateBy", userId);
-
 			} catch (ClassCastException e) {
 				continue;
 			}
@@ -762,6 +759,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
 		request = getRequest(testSuite);
+		request.put("requesttime", getCurrentDate());
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file,parm);
 		return response;
 	}
@@ -1188,10 +1186,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				//JSONArray data = (JSONArray) resp.get("response");
-				//JSONObject json = (JSONObject) data.get(0);
-				//json.get("preRegistrationId");
-				object.put("preRegistrationId", preID);
+				JSONArray data = (JSONArray) resp.get("response");
+				JSONObject json = (JSONObject) data.get(0);
+				json.get("preRegistrationId");
+				//object.put("preRegistrationId", preID);
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
@@ -1201,14 +1199,16 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				timeSlotFrom = appointmentDetails.get(2);
 				timeSlotTo = appointmentDetails.get(3);
 
-				innerData.put("registration_center_id", regCenterId);
-				innerData.put("appointment_date", appDate);
-				innerData.put("time_slot_from", timeSlotFrom);
-				innerData.put("time_slot_to", timeSlotTo);
-				object.put("newBookingDetails", innerData);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				object.put("preRegistrationId", preID);
+				//object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
 				request.replace(key, objArr);
+				request.put("requesttime", getCurrentDate());
 
 			}
 		}
@@ -1293,28 +1293,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
 		 */
-		ObjectNode fetchAppDetails = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preID).json();
-		String fetchAppDetStr = fetchAppDetails.toString();
-		JSONObject fetchAppjson = null;
-		try {
-			fetchAppjson = (JSONObject) parser.parse(fetchAppDetStr);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(fetchAppjson);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.getRequest(preReg_FecthAppointmentDetailsURI, GetHeader.getHeader(fetchAppjson));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		request.put("preRegistrationId", preID);
+			response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsURI,request);
+		
 		return response;
 	}
 
@@ -1356,9 +1337,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		response = applnLib.putRequest_WithBody(preReg_CancelAppointmentURI, cancelAppjson);
+		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", preID);
+		response = applnLib.putRequestWithParameter(preReg_CancelAppointmentURI,parm, cancelAppjson);
 		return response;
 	}
+
 
 	/*
 	 * Generic method to Cancel Booking Appointment Details

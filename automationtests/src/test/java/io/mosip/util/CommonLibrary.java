@@ -265,6 +265,18 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
+	public Response postRequestWithParm(String url, Object body, String contentHeader, String acceptHeader,HashMap<String, String> pathValue) {
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body)
+				.contentType(contentHeader).accept(acceptHeader).log().all().when().pathParameters(pathValue).post(url).then().log().all()
+				.extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
 
 	public Response post_RequestWithoutBody(String url, String contentHeader, String acceptHeader) {
 
@@ -374,6 +386,18 @@ public class CommonLibrary extends BaseTestCase {
 		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
 		Response putResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParameters(path_value)
 				.body(body).contentType(contentHeader).accept(acceptHeader).log().all().when().put(url).then().log()
+				.all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
+		return putResponse;
+	}
+	public Response putRequestWithPathParameterWithoutBody(String url, HashMap<String, String> path_value,
+			String contentHeader, String acceptHeader) {
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Response putResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParameters(path_value)
+				.contentType(contentHeader).accept(acceptHeader).log().all().when().put(url).then().log()
 				.all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
