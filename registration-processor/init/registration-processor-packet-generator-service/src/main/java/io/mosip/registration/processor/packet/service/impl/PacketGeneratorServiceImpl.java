@@ -277,10 +277,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getErrorcode(), e);
@@ -328,10 +324,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				machinedto = gsonObj.fromJson(result, MachineResponseDto.class);
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getErrorcode(), e);
