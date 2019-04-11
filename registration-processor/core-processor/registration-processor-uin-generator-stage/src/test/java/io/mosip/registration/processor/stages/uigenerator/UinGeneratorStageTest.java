@@ -192,8 +192,8 @@ public class UinGeneratorStageTest {
 		appDocument.setDocName("POA");
 		appDocument.setDocStore("ProofOfAddress".getBytes());
 		applicantDocument.add(appDocument);
+		
 
-		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
 	}
 
 	@Test
@@ -209,12 +209,15 @@ public class UinGeneratorStageTest {
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);
 
+		File idJsonFile2 = new File(classLoader.getResource("ID.json").getFile());
+		InputStream idJsonStream2 = new FileInputStream(idJsonFile2);
+
 		ClassLoader classLoader1 = getClass().getClassLoader();
 		File idJsonFile1 = new File(classLoader1.getResource("packet_meta_info.json").getFile());
 		InputStream idJsonStream1 = new FileInputStream(idJsonFile1);
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052",
-				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream).thenReturn(idJsonStream2);
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
 		.thenReturn(idJsonStream1);
@@ -252,13 +255,15 @@ public class UinGeneratorStageTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);
+		File idJsonFile2 = new File(classLoader.getResource("ID.json").getFile());
+		InputStream idJsonStream2 = new FileInputStream(idJsonFile2);
 
 		ClassLoader classLoader1 = getClass().getClassLoader();
 		File idJsonFile1 = new File(classLoader1.getResource("packet_meta_info.json").getFile());
 		InputStream idJsonStream1 = new FileInputStream(idJsonFile1);
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052",
-				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream).thenReturn(idJsonStream2);
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
 		.thenReturn(idJsonStream1);

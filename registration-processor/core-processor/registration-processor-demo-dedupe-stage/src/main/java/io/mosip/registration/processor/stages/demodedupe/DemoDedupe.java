@@ -130,20 +130,16 @@ public class DemoDedupe {
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
 			throws ApisResourceAccessException, IOException,ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
+		//TODO Validating Mocked Biometric logic 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "DemoDedupe::authenticateDuplicates()::entry");
 
-		List<String> applicantfingerprintImageNames = packetInfoManager.getApplicantFingerPrintImageNameById(regId);
-		List<String> applicantIrisImageNames = packetInfoManager.getApplicantIrisImageNameById(regId);
 		boolean isDuplicate = false;
 		for (String duplicateUin : duplicateUins) {
 			setAuthDto();
-			if (authenticateFingerBiometric(applicantfingerprintImageNames, PacketFiles.FINGER.name(), duplicateUin,
-					regId)
-					|| authenticateIrisBiometric(applicantIrisImageNames, PacketFiles.IRIS.name(), duplicateUin,
-							regId)) {
-				isDuplicate = true;
-				break;
+			isDuplicate = biometricValidation.validateBiometric(duplicateUin,regId);
+			if(isDuplicate==true) {
+				return isDuplicate;
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

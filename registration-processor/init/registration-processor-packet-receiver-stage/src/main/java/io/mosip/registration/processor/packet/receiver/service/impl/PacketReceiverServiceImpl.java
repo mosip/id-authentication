@@ -207,8 +207,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
 				} finally {
-					registrationStatusService.addRegistrationStatus(dto);
-
+					
 					String eventId = "";
 					String eventName = "";
 					String eventType = "";
