@@ -27,10 +27,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.mortbay.util.ajax.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import io.mosip.dbdto.CryptomanagerDto;
+import io.mosip.dbdto.CryptomanagerRequestDto;
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.service.ApplicationLibrary;
 import io.restassured.response.Response;
@@ -46,8 +51,9 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	private final String decrypterURL="https://qa.mosip.io/cryptomanager/v1.0/decrypt";
-	private final String encrypterURL="https://qa.mosip.io/cryptomanager/v1.0/encrypt";
+	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
+			"";
+	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
 	public void generateHash(byte[] fileByte) {
@@ -72,8 +78,8 @@ public class EncrypterDecrypter {
 		destinationPath=destinationPath+"//"+fileName;
 		Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
 		JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
-
-		byte[] decryptedPacket = CryptoUtil.decodeBase64(data.get("data").toString());
+		JSONObject responseObject=(JSONObject) data.get("response");
+		byte[] decryptedPacket = CryptoUtil.decodeBase64(responseObject.get("data").toString());
 		outstream = new ByteArrayInputStream(decryptedPacket); 
 		logger.info("Outstream is "+ outstream);
 		FileOutputStream fos= new FileOutputStream(destinationPath);
@@ -85,7 +91,34 @@ public class EncrypterDecrypter {
          File extractedFile=new File(destinationPath.substring(0, destinationPath.lastIndexOf('.')));
 		 return extractedFile;
 	}
-	
+	public File extractFromDecryptedPacket(String destinationPath,String fileName) {
+		String temporaryPath=destinationPath+"//"+fileName;
+		destinationPath=destinationPath+"//TemporaryValidPackets";
+		File folder=new File(destinationPath);
+		folder.mkdirs();
+		destinationPath=destinationPath+"//"+fileName;
+		try {
+			FileUtils.copyFile(new File(temporaryPath), new File(destinationPath));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 ZipFile zipFile=null;
+		try {
+			zipFile = new ZipFile(destinationPath);
+		} catch (ZipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 try {
+			zipFile.extractAll(destinationPath.substring(0, destinationPath.lastIndexOf('.')));
+		} catch (ZipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         File extractedFile=new File(destinationPath.substring(0, destinationPath.lastIndexOf('.')));
+		 return extractedFile;
+	}
 	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName) throws ZipException, FileNotFoundException, IOException {
 		sourcePath=sourcePath+"//TemporaryValidPackets";
 		File folder = new File(destinationPath);
@@ -97,8 +130,9 @@ public class EncrypterDecrypter {
 		  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
+			  JSONObject responseObject=(JSONObject) data.get("response");
 			//  String encryptedPacketString= CryptoUtil.encodeBase64(data.get("data").toString().getBytes());
-			byte[] encryptedPacket = data.get("data").toString().getBytes();
+			byte[] encryptedPacket = responseObject.get("data").toString().getBytes();
 			outstream = new ByteArrayInputStream(encryptedPacket); 
 			logger.info("Outstream is "+ outstream);
 			FileOutputStream fos= new FileOutputStream(destinationPath+"/"+fileName+".zip");
@@ -167,9 +201,12 @@ public class EncrypterDecrypter {
 	@SuppressWarnings("unchecked")
 	public JSONObject generateCryptographicData(File file) {
 		JSONObject cryptographicRequest=new JSONObject();
+		JSONObject decryptionRequest=new JSONObject();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 		InputStream encryptedPacket=null;
 		DecrypterDto decrypterDto=new DecrypterDto();
+		CryptomanagerRequestDto cryptoRequest=new CryptomanagerRequestDto();
+		CryptomanagerDto request=new CryptomanagerDto();
 		String centerId=file.getName().substring(0,5);
 		try {
 			encryptedPacket=new FileInputStream(file);
@@ -185,16 +222,25 @@ public class EncrypterDecrypter {
 			Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
 					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
 			LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+			Date currentDate=new Date();
+			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+			
 			decrypterDto.setApplicationId(applicationId);
 			decrypterDto.setReferenceId(centerId);
 			decrypterDto.setData(encryptedPacketString);
 			decrypterDto.setTimeStamp(ldt);
+			request.setRequesttime(requestTime);
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
 			cryptographicRequest.put("referenceId", centerId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+			decryptionRequest.put("id","");
+			decryptionRequest.put("metadata","");
+			decryptionRequest.put("request",cryptographicRequest);
+			decryptionRequest.put("requesttime", request.getRequesttime().atOffset(ZoneOffset.UTC).toString());
+			decryptionRequest.put("version","");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			logger.info("Could Not ");
@@ -206,11 +252,13 @@ public class EncrypterDecrypter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return cryptographicRequest;
+		return decryptionRequest;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public JSONObject generateCryptographicDataEncryption(File file) {
+		JSONObject encryptRequest=new JSONObject();
+		CryptomanagerDto request=new CryptomanagerDto();
 		JSONObject cryptographicRequest=new JSONObject();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 		InputStream encryptedPacket=null;
@@ -230,16 +278,24 @@ public class EncrypterDecrypter {
 			Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
 					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
 			LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+			Date currentDate=new Date();
+			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
 			decrypterDto.setApplicationId(applicationId);
 			decrypterDto.setReferenceId(centerId);
 			decrypterDto.setData(encryptedPacketString);
 			decrypterDto.setTimeStamp(ldt);
+			request.setRequesttime(requestTime);
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
 			cryptographicRequest.put("referenceId", centerId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+			encryptRequest.put("id","");
+			encryptRequest.put("metadata","");
+			encryptRequest.put("request",cryptographicRequest);
+			encryptRequest.put("requesttime", request.getRequesttime().atOffset(ZoneOffset.UTC).toString());
+			encryptRequest.put("version","");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -251,7 +307,7 @@ public class EncrypterDecrypter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return cryptographicRequest;
+		return encryptRequest;
 	}
 	public byte[] generateCheckSum(File[] listOfFiles) throws FileNotFoundException, IOException, ParseException {
 		JSONArray hashSequence1;
