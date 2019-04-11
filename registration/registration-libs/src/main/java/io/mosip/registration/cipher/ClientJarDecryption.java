@@ -42,7 +42,7 @@ import javafx.stage.Stage;
  * @author Omsai Eswar M.
  *
  */
-public class CilentJarDecryption extends Application {
+public class ClientJarDecryption extends Application {
 
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
@@ -115,7 +115,7 @@ public class CilentJarDecryption extends Application {
 		}
 
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		StackPane stackPane = new StackPane();
@@ -146,66 +146,62 @@ public class CilentJarDecryption extends Application {
 					protected String call() throws IOException, InterruptedException {
 						progressBar.setVisible(true);
 						System.out.println("before Decryption");
-						CilentJarDecryption aesDecrypt = new CilentJarDecryption();
+						ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
-						
-						String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+
+						String propsFilePath = new File(System.getProperty("user.dir"))
+								+ "/props/mosip-application.properties";
 
 						FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 						Properties properties = new Properties();
 						properties.load(fileInputStream);
-						
-						String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
+
+						String dbpath = new File(System.getProperty("user.dir")) + SLASH
+								+ properties.getProperty("mosip.dbpath");
 
 						if (!new File(dbpath).exists()) {
 							return "NOTEXISTS";
 						}
-						
+
 						// TODO Check Internet Connectivity
 
 						try {
 							checkForJars();
-						} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-								| SAXException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 
-						File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
+							File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
 
-						File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
+							File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
 
-						String tempPath = FileUtils.getTempDirectoryPath();
-						tempPath = tempPath + UUID.randomUUID();
+							String tempPath = FileUtils.getTempDirectoryPath();
+							tempPath = tempPath + UUID.randomUUID();
 
-						System.out.println(tempPath);
+							System.out.println(tempPath);
 
-						System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
-						byte[] decryptedRegFileBytes = aesDecrypt.decrypt(
-								FileUtils.readFileToByteArray(encryptedClientJar),
-								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+							System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
+							byte[] decryptedRegFileBytes = aesDecrypt.decrypt(
+									FileUtils.readFileToByteArray(encryptedClientJar),
+									Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
-						String clientJar = tempPath + SLASH + UUID.randomUUID();
-						System.out.println("clientJar ---> " + clientJar);
-						FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
+							String clientJar = tempPath + SLASH + UUID.randomUUID();
+							System.out.println("clientJar ---> " + clientJar);
+							FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
 
-						System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
-						byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(
-								FileUtils.readFileToByteArray(encryptedServicesJar),
-								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+							System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+							byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(
+									FileUtils.readFileToByteArray(encryptedServicesJar),
+									Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
-						FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
-								decryptedRegServiceBytes);
-						
-						try {
+							FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
+									decryptedRegServiceBytes);
 
 							String libPath = new File("lib").getAbsolutePath();
+							String javaHomePath = (System.getProperty("java.home").replaceAll("jre", "")
+									.replaceAll("jdk", "jre").replaceAll(" ", "%20") + "lib/ext").replace("\\", "/");
 
 							Process process = Runtime.getRuntime()
-									.exec("java -Dspring.profiles.active=dev -Dmosip.dbpath="
+									.exec("java -Dspring.profiles.active=qa -Dmosip.dbpath="
 											+ properties.getProperty("mosip.dbpath") + " -Djava.ext.dirs=" + libPath
-											+ ";" + tempPath + ";" + "C:/Program%20Files/Java/jre1.8.0_181/lib/ext"
-											+ " -jar " + clientJar + ".jar");
+											+ ";" + tempPath + ";" + javaHomePath + " -jar " + clientJar + ".jar");
 
 							System.out.println("the output stream is " + process.getOutputStream().getClass());
 							BufferedReader bufferedReader = new BufferedReader(
@@ -222,9 +218,14 @@ public class CilentJarDecryption extends Application {
 								FileUtils.deleteDirectory(new File(tempPath));
 
 							}
-						} catch (Exception e2) {
-							e2.printStackTrace();
+						} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
+								| SAXException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch(RuntimeException runtimeException) {
+							runtimeException.printStackTrace();
 						}
+
 						return "";
 					}
 				};

@@ -302,13 +302,11 @@ public class BaseController extends BaseService {
 		}
 		Label label = ((Label) (parentPane
 				.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if (!label.isVisible()) {
 			label.setText(context);
 			Tooltip tool = new Tooltip(context);
 			tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 			label.setTooltip(tool);
 			label.setVisible(true);
-		}
 	
 	}
 
@@ -944,7 +942,7 @@ public class BaseController extends BaseService {
 			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
-			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
+			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
 
 			if (!service.isRunning())
 				service.start();
@@ -953,7 +951,7 @@ public class BaseController extends BaseService {
 				@Override
 				public void handle(WorkerStateEvent t) {
 					service.reset();
-					packetHandlerController.reMapProgressIndicator.setVisible(false);
+					packetHandlerController.getProgressIndicator().setVisible(false);
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
@@ -977,7 +975,7 @@ public class BaseController extends BaseService {
 				@Override
 				protected String call() {
 
-					packetHandlerController.reMapProgressIndicator.setVisible(true);
+					packetHandlerController.getProgressIndicator().setVisible(true);
 					for (int i = 1; i <= 4; i++) {
 						/* starts the remap process */
 						centerMachineReMapService.handleReMapProcess(i);
@@ -1078,10 +1076,8 @@ public class BaseController extends BaseService {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-			fingerPrintCaptureController.clearImage();
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
-			irisCaptureController.clearIrisBasedOnExceptions();
 		} else if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
