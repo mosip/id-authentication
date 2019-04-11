@@ -34,26 +34,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT qcUser FROM QcuserRegistrationIdEntity qcUser WHERE qcUser.id.usrId=:qcuserId")
 	public List<E> findByUserId(@Param("qcuserId") String qcuserId);
 
-	/**
-	 * Gets the applicant info.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant info
-	 */
-	@Query("SELECT ape,ide FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ide"
-			+ " WHERE ide.id.regId=:regId")
-	public List<Object[]> getApplicantInfo(@Param("regId") String regId);
+	
 
-	/**
-	 * Find by reg osi id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the list
-	 */
-	@Query("SELECT osi FROM RegOsiEntity osi WHERE osi.id.regId=:regId")
-	public List<E> findByRegOsiId(@Param("regId") String regId);
 
 	/**
 	 * Find demo by id.
@@ -65,25 +47,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
 	public List<E> findDemoById(@Param("regId") String regId);
 
-	/**
-	 * Gets the applicant iris image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant iris image name by id
-	 */
-	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
-	public List<String> getApplicantIrisImageNameById(@Param("regId") String regId);
+	
 
-	/**
-	 * Gets the applicant finger print image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant finger print image name by id
-	 */
-	@Query("SELECT applicant.imageName FROM ApplicantFingerprintEntity applicant WHERE applicant.id.regId=:regId")
-	public List<String> getApplicantFingerPrintImageNameById(@Param("regId") String regId);
 
 	/**
 	 * This method gets the first created registration record
@@ -176,15 +141,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT demo.uin FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId =:rid")
 	public List<String> getUINByRid(@Param("rid") String rid);
 
-	/**
-	 * Gets the documents by reg id.
-	 *
-	 * @param regId the reg id
-	 * @return the documents by reg id
-	 */
-	@Query("SELECT app FROM ApplicantDocumentEntity app WHERE app.id.regId=:regId")
-	public List<E> getDocumentsByRegId(@Param("regId") String regId);
-
+	
 	/**
 	 * Gets the reference id by rid.
 	 *

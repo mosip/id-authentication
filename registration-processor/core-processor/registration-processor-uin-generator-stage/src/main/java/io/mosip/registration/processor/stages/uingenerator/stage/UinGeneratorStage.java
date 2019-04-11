@@ -57,6 +57,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -150,6 +151,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The demographic identity. */
 	JSONObject demographicIdentity = null;
+	
+	JSONObject idJSON = null;
 
 	/** The registration status service. */
 	@Autowired
@@ -416,71 +419,38 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	private List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
-		Documents documentsInfoDto = null;
-		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
-		applicantDocuments.add(addBiometricDetails(regId));
-		for (ApplicantDocument entity : applicantDocument) {
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(entity.getDocName());
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(entity.getDocStore()));
-			applicantDocuments.add(documentsInfoDto);
-		}
+		
+		idJSON = getDemoIdentity(registrationId);
+		regProcessorIdentityJson = getMappeedJSONIdentity();
+		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
+		String proofOfDateOfBirthLabel =regProcessorIdentityJson.getIdentity().getPob().getValue();
+		String proofOfIdentityLabel = regProcessorIdentityJson.getIdentity().getPoi().getValue();
+		String proofOfRelationshipLabel =regProcessorIdentityJson.getIdentity().getPor().getValue();
+		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
+		
+		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJSON, proofOfAddressLabel);
+		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJSON, proofOfDateOfBirthLabel);
+		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJSON, proofOfIdentityLabel);
+		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJSON, proofOfRelationshipLabel);
+		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJSON, applicantBiometricLabel);
+		
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
 		return applicantDocuments;
 	}
-
-	/**
-	 * Adds the biometric details.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the documents
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 */
-	private Documents addBiometricDetails(String regId) throws IOException {
-		Documents document = new Documents();
-
-		byte[] biometricDocument = getFile(regId);
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
-
-		String individuaBiometricValue = regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
-		document.setCategory(individuaBiometricValue);
-		document.setValue(CryptoUtil.encodeBase64(biometricDocument));
-		return document;
-	}
-
-	/**
-	 * Gets the file.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the file
-	 * @throws IOException
-	 */
-	private byte[] getFile(String registrationId) throws IOException {
-		byte[] file = null;
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-		PacketMetaInfo packetMetaInfo = null;
-		String applicantBiometricFileName = "";
-
-		packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
-
-		List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
-		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
-				JsonConstant.APPLICANTBIOMETRICSEQUENCE);
-		if (hashList != null)
-			applicantBiometricFileName = hashList.get(0);
-		InputStream fileInStream = adapter.getFile(registrationId,
-				PacketStructure.BIOMETRIC + applicantBiometricFileName.toUpperCase());
-		file = IOUtils.toByteArray(fileInStream);
-
-		return file;
+	
+	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
+		Documents documentsInfoDto = new Documents();;
+		InputStream poiStream=null;
+		if(idDocObj!=null) {
+			poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
+		}
+		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
+		documentsInfoDto.setCategory(idDocLabel);
+		return 	documentsInfoDto;
 	}
 
 	/**
@@ -741,9 +711,28 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
-				MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
+	}
+	
+	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+		return regProcessorIdentityJson;
+	}
+	private JSONObject getDemoIdentity(String registrationId) throws IOException{
+		InputStream documentInfoStream = adapter.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+
+		byte[] bytes = IOUtils.toByteArray(documentInfoStream);
+		String demographicJsonString = new String(bytes);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
+		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,utility.getGetRegProcessorDemographicIdentity());
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		return demographicIdentity;
 	}
 }
 
