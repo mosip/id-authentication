@@ -113,9 +113,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private VBox vHolder;
 
 	@FXML
-	public ProgressIndicator reMapProgressIndicator;
-
-	@FXML
 	public GridPane uinUpdateGridPane;
 
 	@Autowired
