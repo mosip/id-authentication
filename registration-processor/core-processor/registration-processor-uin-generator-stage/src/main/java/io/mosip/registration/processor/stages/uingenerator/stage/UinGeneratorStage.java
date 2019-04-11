@@ -246,7 +246,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_ASSIGNED);
 					isTransactionSuccessful = true;
-					description = "UIN updated succesfully for registrationId " + registrationId;
+					description = "UIN updated successfully for registrationId " + registrationId;
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -255,7 +255,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 				} else {
-					String statusComment = idResponseDTO != null && idResponseDTO.getErrors() != null
+					String statusComment =  idResponseDTO.getErrors() != null
 							? idResponseDTO.getErrors().get(0).getMessage()
 							: NULL_IDREPO_RESPONSE;
 					registrationStatusDto.setStatusComment(statusComment);
@@ -265,15 +265,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_UNASSIGNED);
 					isTransactionSuccessful = false;
-					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
-							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getMessage()
-									: NULL_IDREPO_RESPONSE;
-
+					description = UIN_FAILURE + registrationId + "::" +statusComment;
+					String idres=idResponseDTO != null ? idResponseDTO.toString()
+							: NULL_IDREPO_RESPONSE;
+					
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-							idResponseDTO != null ? idResponseDTO.getErrors().get(0).getMessage()
-									: NULL_IDREPO_RESPONSE + "  :  " + idResponseDTO != null ? idResponseDTO.toString()
-											: NULL_IDREPO_RESPONSE);
+							statusComment + "  :  " + idres);
 				}
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
