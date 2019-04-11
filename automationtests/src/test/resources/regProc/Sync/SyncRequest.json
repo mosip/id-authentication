@@ -10,5 +10,16 @@
     "MultipleLangCode":"",
     "MultipleRegIds":"",
     "RegIdAndLangCode":"",
-    "SyncTypeAndLangCode":""  
+    "SyncTypeAndLangCode":"",
+    "name_year" : "",
+    "name_month" : "",
+    "name_date" : "",
+    "name_symbol&number" : "",
+    "name_text&number" :"",
+    "name_text&symbol" : "",
+    "name_second" : "",
+    "name_minute" : "",
+    "name_hour" : "",
+    "name_morethan29" : "",
+    "name_lessthan29" : ""
  }
