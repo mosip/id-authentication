@@ -801,8 +801,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
-							if (notificationResponse.getErrorResponseDTOs() != null
-									|| notificationResponse.getSuccessResponseDTO() == null) {
+							if (notificationResponse.getErrorResponseDTOs() == null
+									|| notificationResponse.getSuccessResponseDTO() != null) {
 								emailSent = true;
 							} else {
 								notificationAlert(notificationResponse, RegistrationUIConstants.EMAIL_ERROR_MSG);
@@ -815,8 +815,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);
-							if (notificationResponse.getErrorResponseDTOs() != null
-									|| notificationResponse.getSuccessResponseDTO() == null) {
+							if (notificationResponse.getErrorResponseDTOs() == null
+									|| notificationResponse.getSuccessResponseDTO() != null) {
 								smsSent = true;
 							} else {
 								notificationAlert(notificationResponse, RegistrationUIConstants.SMS_ERROR_MSG);
