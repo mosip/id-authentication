@@ -132,10 +132,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
-				if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
+			/*	if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
 						&& mainResponseDTO.getErrors().getMessage() != null) {
 					errMsg += " : " + mainResponseDTO.getErrors().getMessage();
-				}
+				}*/
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, errMsg);
 

@@ -54,9 +54,9 @@ public class NotificationController {
 			"multipart/form-data" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Trigger notification")
 	public ResponseEntity<MainResponseDTO<NotificationDTO>> sendNotification(
-			@RequestPart(value = "NotificationDTO", required = true) String jsonbObject,
+			@RequestPart(value = "NotificationRequestDTO", required = true) String jsonbObject,
 			@RequestPart(value = "langCode", required = true) String langCode,
-			@RequestPart(value = "file", required = false) MultipartFile file) {
+			@RequestPart(value = "attachment", required = false) MultipartFile file) {
 		log.info("sessionId", "idType", "id",
 				"In notification controller for send notification with request notification dto " + jsonbObject);
 		return new ResponseEntity<>(notificationService.sendNotification(jsonbObject, langCode, file), HttpStatus.OK);

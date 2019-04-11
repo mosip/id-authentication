@@ -113,7 +113,6 @@ public class UpdateUINController extends BaseController implements Initializable
 
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
-			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
@@ -129,8 +128,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	private void updateUINFieldsConfiguration() {
 
 		List<String> configuredFieldsfromDB = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
-						.split(","));
+				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
 		List<String> configvalues = new ArrayList<>();
 		configvalues.addAll(configuredFieldsfromDB);
@@ -203,25 +201,26 @@ public class UpdateUINController extends BaseController implements Initializable
 
 				if (uinValidatorImpl.validateId(uinId.getText())) {
 
-					SelectionListDTO selectionListDTO = new SelectionListDTO();
-
-					selectionListDTO.setName(name.isSelected());
-					selectionListDTO.setAge(age.isSelected());
-					selectionListDTO.setGender(gender.isSelected());
-					selectionListDTO.setAddress(address.isSelected());
-					selectionListDTO.setPhone(phone.isSelected());
-					selectionListDTO.setEmail(email.isSelected());
-					selectionListDTO.setBiometrics(biometrics.isSelected());
-					selectionListDTO.setCnieNumber(cnieNumber.isSelected());
-					selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
-					selectionListDTO.setForeigner(foreigner.isSelected());
-
-					selectionListDTO.setUinId(uinId.getText());
-
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
 							|| phone.isSelected() || email.isSelected() || biometrics.isSelected()
 							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
 							|| foreigner.isSelected()) {
+
+						SelectionListDTO selectionListDTO = new SelectionListDTO();
+
+						selectionListDTO.setName(name.isSelected());
+						selectionListDTO.setAge(age.isSelected());
+						selectionListDTO.setGender(gender.isSelected());
+						selectionListDTO.setAddress(address.isSelected());
+						selectionListDTO.setPhone(phone.isSelected());
+						selectionListDTO.setEmail(email.isSelected());
+						selectionListDTO.setBiometrics(biometrics.isSelected());
+						selectionListDTO.setCnieNumber(cnieNumber.isSelected());
+						selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
+						selectionListDTO.setForeigner(foreigner.isSelected());
+
+						selectionListDTO.setUinId(uinId.getText());
+
 						registrationController.init(selectionListDTO);
 
 						Parent createRoot = BaseController.load(

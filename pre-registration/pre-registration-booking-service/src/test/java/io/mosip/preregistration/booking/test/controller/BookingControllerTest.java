@@ -248,7 +248,7 @@ public class BookingControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegistrationId", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

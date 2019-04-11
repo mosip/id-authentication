@@ -42,6 +42,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
 
     /** The reg proc logger. */
     private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipBridgeFactory.class);
+    private static String camelRoutesFileName;
 
     /**
      * Gets the event bus.
@@ -53,9 +54,11 @@ public class MosipBridgeFactory extends AbstractVerticle {
         String zone = BridgeUtil.getZone();
         if(zone.equalsIgnoreCase("dmz")) {
             clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
+            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.dmz.file.name");
         }
         else {
             clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.secure.file.name");
         }
         String clusterUrl = BridgeUtil.getCloudConfigUri();
         String eventBusPort = PropertyFileUtil.getProperty(MosipBridgeFactory.class,"bootstrap.properties","eventbus.port");
@@ -95,7 +98,6 @@ public class MosipBridgeFactory extends AbstractVerticle {
         VertxComponent vertxComponent = new VertxComponent();
         vertxComponent.setVertx(vertx);
         RestTemplate restTemplate = new RestTemplate();
-        String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
         String camelRoutesUrl = BridgeUtil.getCloudConfigUri();
         camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
                 + "/" + camelRoutesFileName;
