@@ -19,7 +19,7 @@ public class IdAuthenticationBaseExceptionTest {
 	 * @throws IdAuthenticationBaseException the id authentication base exception
 	 */
 	@Test(expected = IdAuthenticationBaseException.class)
-	public void IdAuthenticationBaseExceptionTest() throws IdAuthenticationBaseException {
+	public void IdAuthenticationBaseExceptionTest1() throws IdAuthenticationBaseException {
 		throw new IdAuthenticationBaseException("abcd");
 	}
 

@@ -3,10 +3,8 @@ package io.mosip.authentication.service.impl.face;
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.spi.faceauth.provider.FaceProvider;
-import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 
 

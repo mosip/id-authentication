@@ -2,7 +2,6 @@ package com.test.demo;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -121,6 +120,7 @@ public class AuthRequestControllerTest {
 	 * @throws InvalidKeyException 
 	 * @throws KeyManagementException 
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void authControllerTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
@@ -160,6 +160,7 @@ public class AuthRequestControllerTest {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void kycControllerTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
@@ -203,6 +204,7 @@ public class AuthRequestControllerTest {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void authControllerAuthTypeTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
@@ -240,6 +242,7 @@ public class AuthRequestControllerTest {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void noRequest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();

@@ -67,6 +67,7 @@ public class FingerprintProviderTest {
 	/** The fp. */
 	MosipFingerprintProvider fp = new FingerprintProvider() {
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 			return null;
@@ -93,6 +94,7 @@ public class FingerprintProviderTest {
 	/** The finger print. */
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 			// TODO Auto-generated method stub
@@ -178,6 +180,7 @@ public class FingerprintProviderTest {
 	/**
 	 * Testmatch minutiea.
 	 */
+	@SuppressWarnings("static-access")
 	@Test
 	public void testmatchMinutiea() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
@@ -220,6 +223,7 @@ public class FingerprintProviderTest {
 	/**
 	 * Testmatc image.
 	 */
+	@SuppressWarnings("static-access")
 	@Test
 	public void testmatcImage() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
@@ -276,6 +280,7 @@ public class FingerprintProviderTest {
 	/**
 	 * Test invalidmatch minutiaewith string.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void TestInvalidmatchMinutiaewithString() {
 		String reqInfo = null;

@@ -80,7 +80,7 @@ public class MatchTest {
 		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
 		assertFalse(authTypeInfoAvailable);
 		IdInfoFetcher languageInfoFetcher = null;
-		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
+		authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -131,9 +131,10 @@ public class MatchTest {
 		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment, languageInfoFetcher);
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void TestMatchtype() throws IdAuthenticationBusinessException {
-		AuthType authType = new AuthType() {
+		new AuthType() {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {

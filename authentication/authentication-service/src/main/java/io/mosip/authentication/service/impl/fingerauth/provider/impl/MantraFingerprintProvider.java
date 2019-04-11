@@ -71,6 +71,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
 	 * MosipFingerprintProvider#segmentFingerprint(byte[])
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 		return Optional.empty();
