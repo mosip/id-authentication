@@ -77,7 +77,11 @@ public class BridgeUtil {
 		if (BridgeUtil.bridgeConfiguration == null) {
 			getConfiguration();
 		}
-		return BridgeUtil.bridgeConfiguration.getString(key);
+		String value = BridgeUtil.bridgeConfiguration.getString(key);
+		if(value==null) {
+			value = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, key);
+		}
+		return value;
 	}
 	
 	public static String getActiveProfile() {
