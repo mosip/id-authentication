@@ -31,6 +31,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException;
 import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
@@ -47,6 +48,7 @@ import sun.security.pkcs11.SunPKCS11;
  * @since 1.0.0
  *
  */
+@SuppressFBWarnings(value="findsecbugs:HARD_CODE_PASSWORD",justification="Password is not hardcoded, reading from a property file")
 @Component
 public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStore, InitializingBean {
 
