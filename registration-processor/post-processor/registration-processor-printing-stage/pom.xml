@@ -83,11 +83,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-message-sender</artifactId>
-			<version>${registration.processor.message.sender.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-print-service-impl</artifactId>
 			<version>${registration.processor.print.service.impl.version}</version>
 		</dependency>
