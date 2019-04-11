@@ -7,6 +7,14 @@ import { BehaviorSubject, merge, fromEvent, timer } from "rxjs";
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as appConstants from 'src/app/app.constants';
 
+/**
+ * @description This class is responsible for auto logging out user when he is inactive for a
+ *  specified period of time.
+ * @author Deepak Choudhary
+ * @export
+ * @class AutoLogoutService
+ */
+
 @Injectable({
   providedIn: "root"
 })
@@ -31,6 +39,12 @@ export class AutoLogoutService {
 
   }
 
+  /**
+   * @description This method gets value of idle,timeout and ping parameter from config file.
+   *
+   * @returns void
+   * @memberof AutoLogoutService
+   */
   getValues() {
 
     /*
@@ -55,13 +69,13 @@ export class AutoLogoutService {
   changeMessage(message: object) {
     this.messageAutoLogout.next(message);
   }
+   /**
+   * @description This method sets value of idle,timeout and ping parameter from config file.
+   *
+   * @returns void
+   * @memberof AutoLogoutService
+   */
   setValues() {
-
-   /*
-          ******Documentation
-          This method is used to set values for idle , timeout and ping which comes from confi data...
-    */
-
     this.timer.idle = this.idle
     this.timer.ping = this.ping
     this.timer.timeout = this.timeout
@@ -70,7 +84,14 @@ export class AutoLogoutService {
   }
 
 
-
+  /**
+   * @description This method is fired when dashboard gets loaded and starts the timer to watch for
+   * user idle. onTimerStart() is fired when user idle has been detected for specified time.
+   * After that onTimeout() is fired.
+   *
+   * @returns void
+   * @memberof AutoLogoutService
+   */
 
 
   public keepWatching() {
@@ -101,6 +122,12 @@ export class AutoLogoutService {
       }
     });
   }
+     /**
+   * @description This methoed is used to logged out the user.
+   *
+   * @returns void
+   * @memberof AutoLogoutService
+   */
 
   onLogOut() {
     this.userIdle.stopWatching();
@@ -109,6 +136,14 @@ export class AutoLogoutService {
     alert("you have been logged out due to inactivity");
     window.location.reload();
  }
+
+      /**
+   * @description This methoed opens a pop up when user idle has been detected for given time...
+   *
+   * @returns void
+   * @memberof AutoLogoutService
+   */
+
 
   openPopUp() {
    // console.log("keepspoping up");
