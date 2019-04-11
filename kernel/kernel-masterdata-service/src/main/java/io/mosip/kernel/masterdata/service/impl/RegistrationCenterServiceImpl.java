@@ -541,10 +541,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			Map<Short, List<Location>> parLocCodeToListOfLocation = locationService
 					.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel);
-			for (String name : names) {
-				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
-				uniqueLocCode.addAll(codes);
-			}
+			Set<String> codes = getListOfLocationCode(parLocCodeToListOfLocation, hierarchyLevel, names);
+			uniqueLocCode.addAll(codes);
 			if (!EmptyCheckUtils.isNullEmpty(uniqueLocCode)) {
 				registrationCentersList = registrationCenterRepository
 						.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
@@ -597,9 +595,41 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return uniqueLocCode;
 	}
 
+	private Set<String> getListOfLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
+			List<String> texts) {
+
+		List<String> validLocationName = validateListOfLocationName(levelToListOfLocationMap, hierarchyLevel, texts);
+		Set<String> uniqueLocCode = new TreeSet<>();
+		if (!validLocationName.isEmpty()) {
+			for (String text : validLocationName) {
+				boolean isParent = false;
+				for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
+					if (!isParent) {
+						for (Location location : data.getValue()) {
+							if (text.trim().equalsIgnoreCase(location.getName().trim())) {
+								uniqueLocCode.add(location.getCode());
+								isParent = true;
+								break;// parent code set
+							}
+						}
+					} else if (data.getKey() > hierarchyLevel) {
+						for (Location location : data.getValue()) {
+							if (uniqueLocCode.contains(location.getParentLocCode())) {
+								uniqueLocCode.add(location.getCode());
+							}
+						}
+					}
+				}
+			}
+		} else {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		return uniqueLocCode;
+	}
+
 	private void validateLocationName(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
-		// bug fix start
 		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
 		boolean isRootLocation = false;
 		for (Location location : rootLocation) {
@@ -611,7 +641,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
-		// bug fix end
+	}
+
+	private List<String> validateListOfLocationName(Map<Short, List<Location>> levelToListOfLocationMap,
+			Short hierarchyLevel, List<String> texts) {
+		List<String> locationNames = new ArrayList<>();
+		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
+		for (String text : texts) {
+			for (Location location : rootLocation) {
+				if (location.getName().trim().equalsIgnoreCase(text)) {
+					locationNames.add(text);
+				}
+			}
+		}
+		return locationNames;
 	}
 
 }
