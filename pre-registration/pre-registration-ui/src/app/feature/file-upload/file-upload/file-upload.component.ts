@@ -49,7 +49,7 @@ export class FileUploadComponent implements OnInit {
   loginId: string;
   documentIndex: number;
   LOD: DocumentCategory[];
-  fileIndex: number = 0;
+  fileIndex: number = -1;
   secondaryLanguagelabels: any;
 
   sameAs: string;
@@ -75,6 +75,7 @@ export class FileUploadComponent implements OnInit {
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
   allowedFiles: string[];
+  firstFile: Boolean = true;
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -126,18 +127,42 @@ export class FileUploadComponent implements OnInit {
       this.viewFirstFile();
     }
     let i = 0;
+    this.allApplicants.push(this.noneApplicant);
+    let noneCount: Boolean = this.isNoneAvailable();
+
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
         this.allApplicants.splice(i, 1);
         this.allApplicants.push(this.noneApplicant);
+        this.removeExtraNone();
       } else {
         i++;
       }
     }
+    i = 0;
 
     console.log('applicants', this.allApplicants);
   }
 
+  removeExtraNone() {
+    let i: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        this.allApplicants.splice(i, 1);
+      }
+      i++;
+    }
+  }
+
+  isNoneAvailable() {
+    let noneCount: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        noneCount++;
+      }
+    }
+    return true;
+  }
   getApplicantsName(applicants) {
     console.log('applicants', applicants);
 
@@ -265,11 +290,14 @@ export class FileUploadComponent implements OnInit {
     let i = 0;
     for (let x of this.users[0].files[0]) {
       if (this.fileName === x.doc_name) {
+        i++;
         break;
       }
-      i++;
     }
-    // this.fileIndex = i - 1;
+    if (this.firstFile) {
+      this.fileIndex = i;
+      this.firstFile = false;
+    }
     console.log('fileINdex check', this.fileIndex);
 
     if (this.fileByteArray) {
@@ -409,7 +437,7 @@ export class FileUploadComponent implements OnInit {
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userrs', this.users);
     // this.sortUserFiles();
-    this.nextFile(this.fileIndex);
+    // this.viewFileByIndex(this.fileIndex);
   }
 
   openFile() {
@@ -482,14 +510,14 @@ export class FileUploadComponent implements OnInit {
 
   nextFile(fileIndex: number) {
     this.fileIndex = fileIndex + 1;
-    console.log(this.fileIndex);
+    console.log('FI', this.fileIndex);
 
     this.viewFileByIndex(this.fileIndex);
   }
 
   previousFile(fileIndex: number) {
     this.fileIndex = fileIndex - 1;
-    console.log(this.fileIndex);
+    console.log('FI', this.fileIndex);
     this.viewFileByIndex(this.fileIndex);
   }
 }

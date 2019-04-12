@@ -68,10 +68,10 @@
       <p>{{ fileName }}</p>
       <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
       <div class="file-buttons">
-        <button class="previousFile" [disabled]="fileIndex < 1 ? true : false" (click)="previousFile(fileIndex)">
+        <button class="previousFile" [disabled]="fileIndex == 0 ? true : false" (click)="previousFile(fileIndex)">
           <img src="assets/left.png" />
         </button>
-        <p>{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
+        <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
         <button
           class="nextFile"
           [disabled]="fileIndex < users[0].files[0].length - 1 ? false : true"
