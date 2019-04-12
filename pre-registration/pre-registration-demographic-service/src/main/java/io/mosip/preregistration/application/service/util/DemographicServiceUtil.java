@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,9 @@ public class DemographicServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
+
+	@Value("${mosip.nonmandatory.field}")
+	private String nonMandatoryField;
 
 	/**
 	 * Logger instance
@@ -220,22 +224,22 @@ public class DemographicServiceUtil {
 		return demographicEntity;
 	}
 
-	 /**
+	/**
 	 * This method is used to add the initial request values into a map for input
 	 * validations.
 	 *
 	 * @param demographicRequestDTO
-	 * pass demographicRequestDTO
+	 *            pass demographicRequestDTO
 	 * @return a map for request input validation
 	 */
-	
+
 	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
 		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Login Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
 		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime",date.toString());
+		requestMap.put("requesttime", date.toString());
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
@@ -304,7 +308,6 @@ public class DemographicServiceUtil {
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		if (identityObj.get(value) != null)
 			return identityObj.get(value).toString();
-
 		return "";
 
 	}
@@ -349,62 +352,6 @@ public class DemographicServiceUtil {
 		}
 	}
 
-	/**
-	 * This method is used for parsing and formatting the fromDate and toDate
-	 * 
-	 * @param dateMap
-	 *            pass dateMap
-	 * @param format
-	 *            pass Date format
-	 * @return map with formatted fromDate and toDate
-	 */
-	// public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap,
-	// String format) {
-	// log.info("sessionId", "idType", "id", "In dateSetter method of
-	// pre-registration service util ");
-	// Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
-	// try {
-	//
-	// Date fromDate = DateUtils
-	// .parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()),
-	// "UTF-8"), format);
-	//
-	// Date toDate;
-	// if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
-	// || isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
-	// toDate = fromDate;
-	// Calendar cal = Calendar.getInstance();
-	// cal.setTime(toDate);
-	// cal.set(Calendar.HOUR_OF_DAY, 23);
-	// cal.set(Calendar.MINUTE, 59);
-	// cal.set(Calendar.SECOND, 59);
-	// toDate = cal.getTime();
-	// } else {
-	// toDate =
-	// DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()),
-	// "UTF-8"),
-	// format);
-	// }
-	// localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(),
-	// DateUtils.parseDateToLocalDateTime(fromDate));
-	// localDateTimeMap.put(RequestCodes.TO_DATE.getCode(),
-	// DateUtils.parseDateToLocalDateTime(toDate));
-	//
-	// } catch (java.text.ParseException |
-	// io.mosip.kernel.core.exception.ParseException ex) {
-	// log.error("sessionId", "idType", "id",
-	// "In dateSetter method of pre-registration service- " + ex.getCause());
-	// throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-	// ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
-	// } catch (UnsupportedEncodingException ex) {
-	// log.error("sessionId", "idType", "id",
-	// "In dateSetter method of pre-registration service- " + ex.getCause());
-	// throw new
-	// SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
-	// ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-	// }
-	// return localDateTimeMap;
-	// }
 
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
@@ -437,11 +384,24 @@ public class DemographicServiceUtil {
 	 */
 
 	public boolean validation(Map<String, String> idValidationFields, JSONObject demoDetails) throws ParseException {
+		List<String> reqParams = new ArrayList<>();
+		String[] nonMandatoryParams = nonMandatoryField.split(",");
+		for (int i = 0; i < nonMandatoryParams.length; i++) {
+			reqParams.add(nonMandatoryParams[i]);
+		}
 		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
-			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails.toJSONString(), entry.getKey()),
-					entry.getValue())) {
-				throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
-						entry.getKey() + entry.getValue());
+			String value = getIdJSONValue(demoDetails.toJSONString(), entry.getKey());
+			if (value != null && !value.isEmpty()) {
+				if (!ValidationUtil.idValidation(value,
+						entry.getValue())) {
+					throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
+							entry.getKey() + " failed for the regex " + entry.getValue());
+				}
+			} else {
+				if (!reqParams.contains(entry.getKey())) {
+					throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
+							entry.getKey() + " failed for the regex " + entry.getValue());
+				}
 			}
 		}
 		return true;
