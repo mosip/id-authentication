@@ -6,81 +6,63 @@ The Registration client application further uses the information to communicate 
 
 There are three major entities are being considered to interact with Bio-metric devices.   
    1. MDM [MOSIP Device Manager - Provided by External third party].  
-   2. DM  [Device Manager - Provided by MOSIP].  
+   2. MDI  [Mosip Bio Device Integrator - Provided by MOSIP].  
    3. Application [Registration client application - Provided by MOSIP].    
 
 **Device Integration Block Diagram:**  
-![Capture Sequence](_images/bio-device-flow-block.png)  
+![Device Integration Block Diagram:](_images/registration_Bio_Device_Integration_block_diagram.png)  
 
 The technical detail of the DM and Registration client application is briefly covered in this document. MDM technical spec is out of this document.  
 
-1. Mainly **TCP protocol** will be used to communicate between DM to MDM and Registration client Application to MDM services.  
-2. DM and MDM services having listener component, it uses 'ServerSocket' from net package to make the communication with its client component.    
-3. MDM internally uses required driver to communicate with the Bio-metric devices.    
-4. Application opens the Socket communication with the defined port of DM and upon confirmation from DM, it makes the communication with MDM through Port.    
-5. All requests and responses carry a requestId, which is a numeric value (128 bit), represented as a 36 character UUID format string in XML.  
-6. MDM only captures the bio-metric images in standard ISO format and provide the same through TCP.  
+1. Mainly **Http protocol** will be used to communicate between Registration client Application, MDI and MDM services.  
+2. The Standard REST call procedure would be followed to make the connection and the request and resposne would follow the standard JSON spec.     
+3. MDM Service internally uses required driver to communicate with the Bio-metric devices.    
+4. Application opens the Http communication with the defined port from MDI.    
+5. All requests and responses carry a requestId, which is a numeric value (128 bit), represented as a 36 character UUID format.  
+
 
 **Out of Scope:** 
    - The MDM technical design is out of scope of this document.  
-   - MDM doesn't provide the Segmentation, Matching, Extraction and quality of images. So it is not covered part of this Spec.  
+     
 
-**DM - Device Manager :** 
-The Device Manager should open the connection with the configured port [from property file] and listen for messages from clients [MDM and Application]  
+**MDI - Mosip Device Integration:** 
+This component should open the connection with the configured port [from property file] and listen for messages from MDM service. 
 
-The MOSIP provided DM service, is responsible for the following:  
-   - Listen on the device arrival and removal events from the vendor-specific device 
-     manager (MDM).  
+The MOSIP provided MDI service, is responsible for the following:  
+   - Identify the MDM service running port by scanning across the configured ports and store the same in cache. 
    - Maintain the list of the all the supported biometric devices available for the
      applications.  
-   - Notify the applications about arrival and removal of the supported devices (
-     PNP).  
-   - The requestId is used to connect requests with the appropriate response.   
-   - DM Listener create a separate Socket thread for each MDM and application.  
-   - The MDM uses the same Socket for all the underlying devices communication. 
-   - The application uses the same Socket for all the communication with DM. 
-
-
-**Device Integration - Class and Sequence Diagram:**  
-![Device Arrival Sequence Flow](_images/registration_Bio_Device_Integration)  
+   - It Notify the applications about arrival and removal of the supported devices .  
+   - Once the request has been triggered to the MDM, the client would wait for certain period to receive the response, if there is no response then terminate the request.
+   - Separate http call would be triggered for each and every requests.   
 
   
-**DM Consuming messages:** 
+**MDI Consuming messages:** 
    1. Connect  
    2. Ping  
-   3. Device Arrival  
-   4. Device Removal  
-
-Refer the request and response xml message from MDM Specification:  
-![MDM Spec](https://github.com/mosip/mosip/wiki/MOSIP-MDM-Specifications)  
-
+   3. Device Discovery   
+   4. Device Info  
 
 **Application :**  
- The Application must connect to the DM to discover the biometric devices.  
-Once discovered, the application must connect to the required devices. These connections   
-are maintained for the **life of the application**, and the application must expect to receive   
-notifications and events about the device arrivals and removals during this time.  
+ The Application must connect to the MDI to discover the biometric devices.  
+Once discovered, the application must connect to the required devices through the respective 'BioDevice' object. 
 
-   - Once the application started then load the DM running ports from property file.  
-   - Span a separate thread to check the connectivity with the DM defined ports.  
-   - If connected then send the 'Connect' message to DM.   
-   - Once send the success response to application then DM will send the available device detail to application.  
-   - Application can use the 'Device A 
-
+   - Once the application started then invoke the init() method in MDI component, to identify the list of configured ports for MDM services.  
+   - Try to connect with the port to identify the running MDM.
+   - If MDM is running in the specified port then it parses the requests and provide response based on the request type.
+   - The JSON structure is followed to send and receive the data from MDM.  
+   - Once the response received from MDM then parse the response and send the required information to the invoking application controller. 
+   - Binary stream would be used to receive the video stream of BIO data and render the same to UI application. 	
   
-**Application consuming XML Messages:** 
-   1. Connect  
-   2. Get Frame  
-   3. Get Sample    
-
-#Refer the request and response xml message from MDM Specification:  
-#![MDM Spec](https://github.com/mosip/mosip/wiki/MOSIP-MDM-Specifications)  
 
 **On click of capture button in application UI:**  
 
-![BIO Capture Block](_images/bio-device-capture-seq-block.png)  
 
-![BIO Capture Sequence](_images/registration_Bio_Device_Integration_block_diagram.png)
+**Device Integration - Class and Sequence Diagram:**  
+![Device Arrival Sequence Flow](_images/registration_Bio_Device_Integration.png)  
+
+
+![BIO Capture Sequence](_images/registration_MOSIP-bio_device_Integration_block_diagram.png)
 
 
 **Device Available:**
@@ -89,21 +71,4 @@ notifications and events about the device arrivals and removals during this time
 	Based on this the flag in the UI would be updated.  
 	This request would regularly update the local cache about the device status, which would be used during capture process.  
 	
-<DeviceManagerEventRequest requestId="">  
-	<Available deviceModality="" />  
-</DeviceManagerEventRequest>  
-
-<DeviceManagerEventResponse requestId="">  
-	<Available value="" failureReason="0"/> 
-</DeviceManagerEventResponse> 
-
-**MDM :**  
-
-  This service only supports the capturing of Bio-metric images from the devices. It doesn't provide the features to segment or match the bio-metric data.  
-  	
-   - deviceURI :The device should reject the connections on the deviceURI, until the existing socket is closed.  
-   - sampleURI : will be provided in the Complete Capture event request message.  
-   - videoURI : will be provided in the response of Start Capture message.    
- 
-  
   
