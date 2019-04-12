@@ -66,6 +66,9 @@ The key solution considerations are -
 3.	**Update MessageDTO**: 
 Add field called isForMatchIdentification boolean field.
 
+1. ABIS API Specification:
+Reference to ABIS API specifiaction can be found from [here](https://github.com/mosip/mosip/wiki/ABIS-APIs "here") which includes INSERT, IDENTIFY, PING request details.
+
 4.	**Create or Update Stage**:
 
 	1. **"DemodedupeStage" :** 
@@ -76,7 +79,7 @@ Add field called isForMatchIdentification boolean field.
 	1. **"BioDedupeStage" :** Upon receiving event check if there is any transaction entry. In case if there is no entry then create transaction entry with status "IN-PROGRESS" and set flag "isForMatchIdentification" in MessageDTO to true. Add camel route to send event to BiometricIdentificationHandlerStage in case flag "isForMatchIdentification" value is true.
 	In case if there is transaction entry in table with status "IN-PROGRESS" go and check if there is any entry in "abis_response_det" table for the registration id. In case of any entry set isValid flag false, change transaction status "SUCCESS" and sent out event (bio-dedupe-bus-out). Configure camel route to send event to ManualVerificationStage for isValid flag false in MessageDTO. In case there is no entry in "abis_response_det" table then sent out event "bio-dedupe-bus-out" without setting any flag which will be passed to UinGeneratorStage.
 
-	1. **"BiometricIdentificationHandlerStage": ** 
+	1. **"BiometricIdentificationHandlerStage":**  
 	Upoon receiving event, check transaction entry, in case if it is IN-PROGRESS for Demo Dedupe then create request data in "abis_request" table with status "IN-PROGRESS" using "reg_demo_dedupe_list" table and in case if transaction entry is for Bio Dedupe then create 1:n entry in "abis_request" table for Bio Dedupe. Below are the various requests to be sent to ABIS system:
 		1. Demo INSERT: Construct and save INSERT request to be send to ABIS
 		1. Demo IDENTIFY: Construct and save IDENTITY request (1:1, 1:2 etc.)  using gallery API and using potential matched records found from  "reg_demo_dedupe_list" table.
@@ -84,7 +87,7 @@ Add field called isForMatchIdentification boolean field.
 		1. Bio IDENTIFY: Construct and save IDENTITY request for 1:n bio match.
 		For earch INSERT, IDENTIFY message, create unique request id and persist in the database under column: "id" from table "abis_request".
 
-	1. **"BiometricIdentificationMiddlewareStage": **
+	1. **"BiometricIdentificationMiddlewareStage":** 
 		This stage registers ABIS queue listener  and senders in deploy verticle method. ABIS queue listener will listen to messages received from ABIS and sender is responsible to send messages to ABIS. ABIS queue details are configured in config server using which BiometricIdentificationMiddlewareStage will connect to ABIS queues.
 
 		Upon receiving event, this stage reads "IN-PROGRESS" requests from "abis_request" table and start sending them to ABIS system.
@@ -101,7 +104,6 @@ Add field called isForMatchIdentification boolean field.
 		Register/deploy jms sender in BiometricIdentificationManagerStage start (deployVerticle) method. 
 		1. PingBiometricIdentificationListener: 
 		Register/deploy jms listener in BiometricIdentificationManagerStage start (deployVerticle) method. ABIS sent reponse for all ping request back on queue - pingInboundQueueName. In case response not received for ping request from any particular ABIS, mark that ABIS system as IN-ACTIVE in "abis_application" table. In case received response from ABIS system then update status form IN-ACTIVE to ACTIVE for ABIS for which we receive ping acknowledgement message from ABIS system.
-
 
 
 **Logical Architecture Diagram**
