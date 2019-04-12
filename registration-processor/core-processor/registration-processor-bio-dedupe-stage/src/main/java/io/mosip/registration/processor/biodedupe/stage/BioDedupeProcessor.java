@@ -191,7 +191,7 @@ public class BioDedupeProcessor {
 
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
-			registrationStatusDto.setStatusComment(e.getMessage());
+			registrationStatusDto.setStatusComment(ex.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();

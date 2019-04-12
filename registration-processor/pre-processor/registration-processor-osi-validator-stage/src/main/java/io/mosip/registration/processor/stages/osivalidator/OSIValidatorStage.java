@@ -185,7 +185,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
-			registrationStatusDto.setStatusComment(e.getMessage());
+			registrationStatusDto.setStatusComment(ex.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
