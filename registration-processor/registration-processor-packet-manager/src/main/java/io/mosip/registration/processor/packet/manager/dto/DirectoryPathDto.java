@@ -72,4 +72,12 @@ public enum DirectoryPathDto {
 		}
 	},
 
+	/** The landing zone. */
+	LANDING_ZONE {
+		@Override
+		public String toString() {
+			return "registration.processor.LANDLING_ZONE";
+		}
+	},
+
 }
