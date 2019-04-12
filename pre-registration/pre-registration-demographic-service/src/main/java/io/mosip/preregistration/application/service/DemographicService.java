@@ -930,7 +930,7 @@ public class DemographicService {
 
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
 					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
-					.queryParam("pre_registration_id", preregId);
+					.queryParam("preRegistrationId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
