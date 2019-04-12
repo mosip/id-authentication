@@ -29,7 +29,10 @@ mosip.kernel.fsadapter.hdfs.authentication-enabled=false
 mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.EXAMPLE.COM
 
 #keytab file path, must be set if authentication-enable is true
-mosip.kernel.fsadapter.hdfs.keytab-file=mosip.keytabe
+#read keytab file both classpath and physical path ,append appropriate prefix
+#for classpath prefix classpath:mosip.keytab
+#for physical path prefix file:/home/keys/mosip.keytab
+mosip.kernel.fsadapter.hdfs.keytab-file=classpath:mosip.keytab
 
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn
