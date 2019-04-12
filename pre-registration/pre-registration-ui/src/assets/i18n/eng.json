@@ -11,12 +11,12 @@
     "select_language": {
       "name": "Select Language",
       "list": {
-       "line1": "On the login page, click Select your Language to see the list of languages",
-       "line2": "Select the language of your preference."
+        "line1": "On the login page, click Select your Language to see the list of languages",
+        "line2": "Select the language of your preference."
       },
       "note": "Note: When you are on the Demographic Details page, data is displayed in your preferred language on the left and the data in the second language on the right side of the screen."
     },
-    "login" : {
+    "login": {
       "name": "Login",
       "list": {
         "line1": "On the Login page, enter your valid email ID or mobile number in the Email ID or mobile number text box.",
@@ -36,7 +36,7 @@
     "demographic": {
       "name": "Fill Demographic Details",
       "list": {
-        "line1": "Fill out all your demographic details, which include Name, Age/DOB, Gender, Residential Status, Address, Mobile Number, Email Id, etc.", 
+        "line1": "Fill out all your demographic details, which include Name, Age/DOB, Gender, Residential Status, Address, Mobile Number, Email Id, etc.",
         "line1_note": "Note: You can either enter your Age or enter your Date of Birth (DOB).",
         "line2": "You can also change or verify your demographic details in the second language on the right side.",
         "line3": "After you have filled and verified your demographic details, click Continue to upload your documents."
@@ -174,8 +174,8 @@
     "Logout": {
       "name": "Logout",
       "list": {
-       "line1": "Click Logout at the top right corner.",
-       "line2": "Click OK to logout from Pre-registration application."
+        "line1": "Click Logout at the top right corner.",
+        "line2": "Click OK to logout from Pre-registration application."
       },
       "line": "Login with the same mobile number or email id to access the saved applications."
     }
@@ -269,7 +269,7 @@
     "action_send": "Send OTP",
     "action_resend": "Resend",
     "action_verify": "Verify",
-    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications",
+    "logout_msg": "Applicant has to login with same Mobile/Email to access the created applications",
     "otp_valid_label": "Valid for",
     "invalidEmail": "Invalid email id Entered",
     "invalidMobile": "Invalid mobile number Entered",
@@ -312,11 +312,21 @@
     "action_back": "BACK",
     "action_continue": "CONTINUE",
     "action_preview": "PREVIEW",
+    "consent": {
+      "title": "Terms and Conditions",
+      "subtitle": "Your Agreement",
+      "message": "To provide consent for storage and utilization of personal information as given",
+      "checkCondition": "Click to accept the terms and conditions",
+      "acceptButton": "Accept",
+      "alertMessageFirst": "You will be logged out due to not accepting Terms & Conditions",
+      "alertMessageSecond": "You will be redirected to ‘Your Application Page’ due to not accepting Terms & Conditions",
+      "alertMessageThird": "You will be redirected to ‘Preview Page’ due to not accepting Terms & Conditions"
+    },
     "validation": {
       "name_required": "Please enter valid name",
       "age_validation": "Age should be less than 150",
       "gender_validation": "Please select gender",
-      "nationality_validation":"Please select nationality",
+      "nationality_validation": "Please select nationality",
       "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
@@ -429,14 +439,19 @@
       "action_view_acknowledgement": "View Acknowledgement"
     },
     "discard": {
-      "title_confirm":"Confirm",
-      "title_success":"Success",
-      "title_error":"Error",
+      "title_confirm": "Confirm",
+      "title_success": "Success",
+      "title_error": "Error",
       "msg_confirm": "The selected application will be deleted. Please confirm.",
       "msg_deleted": "The selected application has been successfully deleted",
       "msg_could_not_deleted": "The selected application could not be deleted",
       "button_confirm": "Confirm",
       "button_cancel": "Cancel"
+    },
+    "status": {
+      "pendingAppointment": "Pending Appointment",
+      "booked": "Booked",
+      "expired": "Expired"
     }
   },
   "timeSelection": {
@@ -446,17 +461,17 @@
     "text_morning": "Morning",
     "text_afternoon": "Afternoon",
     "text_available": "Available Applicants",
-    "text_availability":"Available Bookings",
-    "text_slots":"slots",
+    "text_availability": "Available Bookings",
+    "text_slots": "slots",
     "action_done": "DONE",
     "action_back": "Back",
     "action_bookLater": "Book Later",
     "action_continue": "Continue",
     "booking": {
-      "title_success":"Success",
-      "msg_success":"Appointment Booking Successfully Completed",
-      "title_failure":"Failure",
-      "msg_failure":"Appointment Booking Failed"
+      "title_success": "Success",
+      "msg_success": "Appointment Booking Successfully Completed",
+      "title_failure": "Failure",
+      "msg_failure": "Appointment Booking Failed"
     }
   },
   "appointmentCentreSearch": {
@@ -477,8 +492,8 @@
   "dialog": {
     "title_applicant": "Send Appointment Confirmation",
     "content_applicant": "Email / SMS Acknowledgement",
-    "text_email":"Enter email ID",
-    "text_mobile":"Enter mobile number",
+    "text_email": "Enter email ID",
+    "text_mobile": "Enter mobile number",
     "invalidApplicantNumber": "Invalid Mobile Number",
     "invalidApplicantEmailId": "Invalid Email ID",
     "action_ok": "OK",
@@ -499,32 +514,31 @@
     "text_centers": "centers",
     "text_timing": "Timing",
     "text_open": "Open",
-    "text_select":"Select Location Types",
-    "text_enter":"Enter",
-    "text_search":"Search....",
+    "text_select": "Select Location Types",
+    "text_enter": "Enter",
+    "text_search": "Search....",
     "action_back": "Back",
     "action_book_later": "Book Later",
     "action_continue": "Continue"
   },
-  "helpText":{
+  "helpText": {
     "applicationId": "Application ID for your pre-registration",
-    "status":{
-     "pendingAppointment":"Appointment is yet to be booked",
-     "booked":"Appointment is booked successfully",
-     "expired":"Appointed date has passed"
+    "status": {
+      "pendingAppointment": "Appointment is yet to be booked",
+      "booked": "Appointment is booked successfully",
+      "expired": "Appointed date has passed"
     },
-    "deleteIcon":"You can either discard entire application or cancel the appointment and save the details,Discard entire application and cancels the appointment.Cancel appointment and save the details.",
-    "book/modify_appointment":"You must tick the check box near to pre-registration id for one or multiple applicants to book/modify appointment",
-    "bookAppointment":"First, select the preferred time slot as provided Then select the applicable applicant for the time slot selected.For multiple applications, repeat the same for the remaining applicant ",
-    "send_email/sms":"You may add the additional recipient to receive the notification(s).",
-    "modify_at_DemoPreview":"Click on Modify to correct the demographic details",
-    "modify_at_DocumentPreview":"Click on Modify to correct the uploaded document",
-    "same_as":"If the proof of address is same as already filled applicant POA, you can use the Same As option",
-    "add_applicant":"Click on Add applicant to add more applicant(s).",
-    "recommended_centers":"List of the recommended center as per your postal code",
-    "nearBy":"Registration centers based on your geo-location",
-    "magnifying_glass":"Search based on selection of dropdown.",
+    "deleteIcon": "You can either discard entire application or cancel the appointment and save the details,Discard entire application and cancels the appointment.Cancel appointment and save the details.",
+    "book/modify_appointment": "You must tick the check box near to pre-registration id for one or multiple applicants to book/modify appointment",
+    "bookAppointment": "First, select the preferred time slot as provided Then select the applicable applicant for the time slot selected.For multiple applications, repeat the same for the remaining applicant ",
+    "send_email/sms": "You may add the additional recipient to receive the notification(s).",
+    "modify_at_DemoPreview": "Click on Modify to correct the demographic details",
+    "modify_at_DocumentPreview": "Click on Modify to correct the uploaded document",
+    "same_as": "If the proof of address is same as already filled applicant POA, you can use the Same As option",
+    "add_applicant": "Click on Add applicant to add more applicant(s).",
+    "recommended_centers": "List of the recommended center as per your postal code",
+    "nearBy": "Registration centers based on your geo-location",
+    "magnifying_glass": "Search based on selection of dropdown.",
     "preview_continue": "Upload all files to proceed"
   }
-
 }

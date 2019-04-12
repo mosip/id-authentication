@@ -6,11 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -23,6 +27,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Update the Application
@@ -65,7 +70,6 @@ public class RegistrationUpdate {
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		System.out.println("Getting latest Version");
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
@@ -100,7 +104,6 @@ public class RegistrationUpdate {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
-		System.out.println("Getting current Version  " + currentVersion);
 		return currentVersion;
 	}
 
@@ -167,31 +170,53 @@ public class RegistrationUpdate {
 	}
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
-
+		Long t1=System.currentTimeMillis();
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		for (String jarFile : checkableJars) {
 
-			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+			
 
-			checkForJarFile(version, folder, jarFile);
+			executorService.execute(new Runnable() {
+				public void run() {
 
+					try {
+						System.out.println("Current Thread*****"+Thread.currentThread());
+						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+						checkForJarFile(version, folder, jarFile);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			
 		}
-
+		try {
+			executorService.shutdown();
+			executorService.awaitTermination(500, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Long t2 = System.currentTimeMillis() - t1;
+		System.out.println("Time in Millis-------->>>>"+t2/(1000));
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
 
 		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
 			// Download Jar
 			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
 		}
+
 	}
 
-	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
 		System.out.println("Downloading " + jarName);
-		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
+		return getInputStreamOf(serverRegClientURL + version + SLASH + libFolder + jarName);
 
 	}
 
@@ -240,8 +265,9 @@ public class RegistrationUpdate {
 
 		// Get latest Manifest from server
 
+		// Get latest Manifest from server
 		setServerManifest(
-				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
+				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
 		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
 
 		return serverManifest;
@@ -284,13 +310,47 @@ public class RegistrationUpdate {
 	private boolean checkLocalJars(List<String> jarList) {
 		for (String jarFile : jarList) {
 
-			if (!(jarFile.contains(mosip) ? new File(binFolder + SLASH + jarFile).exists()
-					: new File(libFolder + SLASH + jarFile).exists())) {
+			File jar = jarFile.contains(mosip) ? new File(binFolder + SLASH + jarFile)
+					: new File(libFolder + SLASH + jarFile);
+
+			if (!(jar.exists()) || !isCheckSumValid(jar, localManifest)) {
 				return false;
 			}
+
 		}
 
 		return true;
+	}
+
+	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+		String checkSum;
+		try {
+			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
+			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
+					.get(Attributes.Name.CONTENT_TYPE);
+			return manifestCheckSum.equals(checkSum);
+
+		} catch (IOException ioException) {
+			return false;
+		}
+
+	}
+
+	private boolean hasSpace(int bytes) {
+
+		return bytes < new File("/").getFreeSpace();
+	}
+
+	private InputStream getInputStreamOf(String url) throws IOException {
+		URLConnection connection = new URL(url).openConnection();
+
+		// Space Check
+		if (hasSpace(connection.getContentLength())) {
+			return connection.getInputStream();
+		} else {
+			throw new IOException("No Disk Space");
+		}
+
 	}
 
 }

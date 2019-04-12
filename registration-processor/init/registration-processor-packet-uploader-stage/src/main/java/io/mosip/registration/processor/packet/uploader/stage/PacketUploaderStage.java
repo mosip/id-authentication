@@ -123,7 +123,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				if (object.getIsValid()) {
 					dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					isTransactionSuccessful = true;
-					description = "Packet uploaded to DFS sucessfully for registrationId " + this.registrationId;
+					description = "Packet uploaded to DFS successfully for registrationId " + this.registrationId;
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -205,7 +205,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					this.registrationId, ApiName.DMZAUDIT);
+					this.registrationId, ApiName.AUDIT);
 
 		}
 

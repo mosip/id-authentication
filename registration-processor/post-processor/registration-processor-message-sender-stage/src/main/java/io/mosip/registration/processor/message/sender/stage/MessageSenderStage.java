@@ -242,7 +242,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description = "Internal error occured while processing registrationId " + id + "::" + ex.getMessage();
+			description = "Internal error occurred while processing registrationId " + id + "::" + ex.getMessage();
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()

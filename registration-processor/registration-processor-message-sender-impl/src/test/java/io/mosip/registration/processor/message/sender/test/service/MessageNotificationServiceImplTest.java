@@ -386,5 +386,22 @@ public class MessageNotificationServiceImplTest {
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
 				IdType.UIN, attributes, RegistrationType.DEACTIVATED.name());
 	}
+	
+	@Test(expected=IDRepoResponseNull.class)
+	public void testApisResourceAccessException() throws Exception {
+		
+		
+		smsResponseDto = new SmsResponseDto();
+		smsResponseDto.setMessage("Success");
+
+		String uin = "1234567";
+		List<String> uinList = new ArrayList<>();
+		uinList.add(uin);
+
+		ApisResourceAccessException exp= new ApisResourceAccessException("Error Message");
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any(Class.class))).thenThrow(exp);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
+				IdType.UIN, attributes, RegistrationType.DEACTIVATED.name());
+	}
 
 }

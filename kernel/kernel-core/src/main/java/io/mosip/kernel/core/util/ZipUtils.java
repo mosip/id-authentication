@@ -145,7 +145,7 @@ public class ZipUtils {
 	 * 
 	 */
 
-	public static boolean zipFile(String inputFile, String outputFile) throws IOException {
+	/*public static boolean zipFile(String inputFile, String outputFile) throws IOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputFile));
 				FileInputStream fis = new FileInputStream(new File(inputFile))) {
@@ -163,7 +163,7 @@ public class ZipUtils {
 		}
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * This is inner method to read a file
@@ -204,7 +204,7 @@ public class ZipUtils {
 	 *             when file unable to read
 	 */
 
-	public static boolean zipMultipleFile(String[] inputMultFile, String outputFile) throws IOException {
+	/*public static boolean zipMultipleFile(String[] inputMultFile, String outputFile) throws IOException {
 
 		List<String> srcFiles = new ArrayList<>(Arrays.asList(inputMultFile));
 		for (String srcFile : srcFiles) {
@@ -225,7 +225,7 @@ public class ZipUtils {
 			}
 		}
 		return true;
-	}
+	}*/
 
 	/**
 	 * Method used for zipping a directory
@@ -246,7 +246,7 @@ public class ZipUtils {
 	 * @throws IOException
 	 *             when file unable to read
 	 */
-	public static boolean zipDirectory(String inputDir, String destDirectory) throws IOException {
+	/*public static boolean zipDirectory(String inputDir, String destDirectory) throws IOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(destDirectory))) {
 
@@ -261,7 +261,7 @@ public class ZipUtils {
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 		return true;
-	}
+	}*/
 
 	/**
 	 * Inner method of zipDirectory Method, called for zip all files of the given
@@ -325,7 +325,7 @@ public class ZipUtils {
 	 *             when file unable to read
 	 */
 
-	public static boolean unZipFile(String inputZipFile, String outputUnZip) throws IOException {
+	/*public static boolean unZipFile(String inputZipFile, String outputUnZip) throws IOException {
 
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(inputZipFile))) {
 			ZipEntry zipEntry = zis.getNextEntry();
@@ -347,7 +347,7 @@ public class ZipUtils {
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 		return true;
-	}
+	}*/
 
 	/**
 	 * This is inner method for unZipFile method used for created output folder
@@ -398,7 +398,11 @@ public class ZipUtils {
 	public static boolean unZipDirectory(String zipFilePath, String destDirectory) throws IOException {
 		File destDir = new File(destDirectory);
 		if (!destDir.exists()) {
-			destDir.mkdir();
+			boolean isCreated=destDir.mkdir();
+			if(!isCreated) {
+				throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+						ZipUtilConstants.IO_ERROR_CODE.getMessage());
+			}
 		}
 
 		try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
@@ -406,12 +410,21 @@ public class ZipUtils {
 			ZipEntry entry = zipIn.getNextEntry();
 			while (entry != null) {
 				String filePath = destDirectory + File.separator + entry.getName();
+				
 				if (!entry.isDirectory()) {
-					new File(filePath).getParentFile().mkdirs();
+					boolean isCreated=new File(filePath).getParentFile().mkdirs();
+					if(!isCreated) {
+						throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+								ZipUtilConstants.IO_ERROR_CODE.getMessage());
+					}
 					extractFile(zipIn, filePath);
 				} else {
 					File dir = new File(filePath);
-					dir.mkdirs();
+					boolean isCreated=dir.mkdirs();
+					if(!isCreated) {
+						throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+								ZipUtilConstants.IO_ERROR_CODE.getMessage());
+					}
 				}
 				zipIn.closeEntry();
 				entry = zipIn.getNextEntry();
