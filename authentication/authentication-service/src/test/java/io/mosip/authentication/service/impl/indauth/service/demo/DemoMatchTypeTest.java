@@ -132,9 +132,6 @@ public class DemoMatchTypeTest {
 		List<IdentityInfoDTO> location3list = new ArrayList<>();
 		location3list.add(identityInfoDTO2);
 		demoEntity.put("location3", location3list);
-
-		Optional.of("french");
-
 		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
 		List<String> fullAddress = new ArrayList<>();
 		fullAddress.add(tmpAddress);

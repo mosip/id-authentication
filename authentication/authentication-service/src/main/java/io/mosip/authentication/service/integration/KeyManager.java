@@ -41,7 +41,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.SymmetricKeyRequestDto;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -55,6 +54,9 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
  */
 @Component
 public class KeyManager {
+
+	/** The Constant ERROR_CODE. */
+	private static final String ERROR_CODE = "errorCode";
 
 	/** The Constant SECRET_KEY. */
 	private static final String SECRET_KEY = "secretKey";
@@ -151,7 +153,7 @@ public class KeyManager {
 		Map<String, Object> request;
 		RestRequestDTO restRequestDTO = null;
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto();
-		ResponseWrapper<Map<String,Object>> symmetricKeyResponseDto = null;
+		Map<String,Object> symmetricKeyResponseDto = null;
 		byte[] decryptedSymmetricKey = null;
 		try {
 			symmetricKeyRequestDto.setApplicationId(appId);
@@ -160,9 +162,9 @@ public class KeyManager {
 					DateUtils.getUTCCurrentDateTime());
 			symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
-					RestRequestFactory.createRequest(symmetricKeyRequestDto), ResponseWrapper.class);
+					RestRequestFactory.createRequest(symmetricKeyRequestDto), Map.class);
 			symmetricKeyResponseDto = restHelper.requestSync(restRequestDTO);
-			Object symmetricKeyValue = symmetricKeyResponseDto.getResponse().get("symmetricKey");
+			Object symmetricKeyValue = ((Map<String,Object>) symmetricKeyResponseDto.get("response")).get("symmetricKey");
 			decryptedSymmetricKey = Base64.decodeBase64(symmetricKeyValue instanceof String ? (String) symmetricKeyValue : "");
 			secretKey=new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length, SYMMETRIC_ALGORITHM_NAME);
 				decryptedData=symmetricDecrypt(secretKey, encryptedRequest);
@@ -195,16 +197,20 @@ public class KeyManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleRestError(Object errorBody) throws IdAuthenticationAppException {
-		Map<String, Object> idrepoMap = errorBody instanceof Map ? (Map<String, Object>) errorBody : Collections.emptyMap();
-		if (idrepoMap.containsKey("errors")) {
-			List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap
-					.get("errors");
+		Map<String, Object> responseMap = errorBody instanceof Map ? (Map<String, Object>) errorBody : Collections.emptyMap();
+		if (responseMap.containsKey("errors")) {
+			List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) responseMap.get("errors");
 			String keyExpErrorCode = "KER-KMS-003"; // TODO FIXME integrate with kernel error constant
 			if (!idRepoerrorList.isEmpty()
-					&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
-							&& ((String) map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
+					&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase(keyExpErrorCode))) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED);
+			} if (!idRepoerrorList.isEmpty()
+					&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase("KER-FSE-003"))) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.INVALID_ENCRYPTION);
 			} else {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
