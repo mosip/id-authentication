@@ -135,9 +135,7 @@ public class VIDServiceImpl implements VIDService {
 					vidResponseDTO.setErrors(Collections.emptyList());
 				}
 			}
-		}
-
-		else {
+		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
 		vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));

@@ -1,4 +1,4 @@
-package org.authentication.vid.service;
+package io.mosip.authentication.vid.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
