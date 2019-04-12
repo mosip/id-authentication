@@ -141,7 +141,7 @@ public class AuthStatusInfoBuilder {
 					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
 			} else {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH, name,
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG, name,
 						matchOutput.getLanguage());
 			}
 

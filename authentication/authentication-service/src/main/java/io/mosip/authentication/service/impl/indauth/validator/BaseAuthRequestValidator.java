@@ -83,7 +83,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
 
 	/** The Constant BIO_TYPE. */
-	private static final String BIO_TYPE = "biotype";
+	private static final String BIO_TYPE = "bioType";
 
 	/** The Final Constant For PIN_VALUE */
 	private static final String PIN_VALUE = "pinValue";
@@ -315,9 +315,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 					}
 				} else {
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					/*errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
-							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());*/
+						errors.rejectValue(REQUEST,
+								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { BIO_SUB_TYPE  },
+								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 			}
 		}
@@ -551,8 +555,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
-		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
-				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
+		return bioInfoList.parallelStream()/*.filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())*/
+				.anyMatch(bio ->bio.getBioType() != null && !bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()));
 	}
 
 	/**
