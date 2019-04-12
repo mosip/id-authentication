@@ -211,7 +211,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
 
-		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertEquals(true, successResult.getIsValid());
 	}
@@ -232,7 +232,7 @@ public class PacketReceiverServiceTest {
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 		.thenReturn(RegistrationExternalStatusCode.RESEND);
 
-		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertEquals(true, successResult.getIsValid());
 	}
@@ -253,7 +253,7 @@ public class PacketReceiverServiceTest {
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 		.thenReturn(RegistrationExternalStatusCode.RESEND);
 
-		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
+		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertEquals(true, successResult.getIsValid());
 	}
@@ -276,7 +276,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 
-		packetReceiverService.storePacket(mockMultipartFile, stageName);
+		packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 	}
 
@@ -291,7 +291,7 @@ public class PacketReceiverServiceTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		packetReceiverService.storePacket(invalidPacket, stageName);
+		packetReceiverService.validatePacket(invalidPacket, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -316,7 +316,7 @@ public class PacketReceiverServiceTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		packetReceiverService.storePacket(largerFile, stageName);
+		packetReceiverService.validatePacket(largerFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -340,7 +340,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.when(syncRegistrationService.isPresent(anyString())).thenReturn(false);
 
-		packetReceiverService.storePacket(mockMultipartFile, stageName);
+		packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -358,7 +358,7 @@ public class PacketReceiverServiceTest {
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
-		MessageDTO result = packetReceiverService.storePacket(mockMultipartFile, stageName);
+		MessageDTO result = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertFalse(result.getIsValid());
 	}
