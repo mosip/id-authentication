@@ -499,7 +499,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
-							homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+							getScene(root);
+							//homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 						}
 					}
 				}
@@ -729,7 +730,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
 			
-			homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+			getScene(root);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
