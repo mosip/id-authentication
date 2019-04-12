@@ -49,7 +49,7 @@ export class FileUploadComponent implements OnInit {
   loginId: string;
   documentIndex: number;
   LOD: DocumentCategory[];
-  fileIndex: number = -1;
+  fileIndex: number = 0;
   secondaryLanguagelabels: any;
 
   sameAs: string;
@@ -74,6 +74,7 @@ export class FileUploadComponent implements OnInit {
   step: number = 0;
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
+  allowedFiles: string[];
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -89,6 +90,9 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.allowedFiles = this.config
+      .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
+      .split(',');
     let applicants;
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
@@ -254,16 +258,20 @@ export class FileUploadComponent implements OnInit {
   }
 
   viewFile(file: FileModel) {
+    console.log('file', file);
+
     this.fileName = file.docName;
     this.fileByteArray = file.multipartFile;
     let i = 0;
     for (let x of this.users[0].files[0]) {
-      i++;
       if (this.fileName === x.doc_name) {
         break;
       }
+      i++;
     }
-    this.fileIndex = i - 1;
+    // this.fileIndex = i - 1;
+    console.log('fileINdex check', this.fileIndex);
+
     if (this.fileByteArray) {
       this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
         'data:application/pdf;base64,' + this.fileByteArray
@@ -275,41 +283,48 @@ export class FileUploadComponent implements OnInit {
     this.fileIndex = this.users[0].files[0].length - 1;
     this.viewFile(this.users[0].files[0][this.fileIndex]);
   }
-
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   handleFileInput(event) {
     console.log('event of file upload', event);
+    console.log('allowed files', this.allowedFiles);
+    let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
-    if (
-      event.target.files[0].type ===
-      this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
-    ) {
-      if (
-        event.target.files[0].name.length <
-        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
-      ) {
+    for (let file of this.allowedFiles) {
+      if (event.target.files[0].type === file) {
+        allowedFileUploaded = true;
         if (
-          event.target.files[0].size <
-          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          event.target.files[0].name.length <
+          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
         ) {
-          this.getBase64(event.target.files[0]).then(data => {
-            this.fileByteArray = data;
-            this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-          });
-          this.setJsonString(event);
-          this.sendFile(event);
+          if (
+            event.target.files[0].size <
+            this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          ) {
+            this.getBase64(event.target.files[0]).then(data => {
+              this.fileByteArray = data;
+              this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+            });
+            this.setJsonString(event);
+            this.sendFile(event);
+          } else {
+            alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.disableNavigation = false;
+          }
         } else {
-          alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+          alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
-      } else {
-        alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
-        this.disableNavigation = false;
       }
-    } else {
+    }
+    if (!allowedFileUploaded) {
       alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
-    // this.disableNavigation = false;
   }
 
   getBase64(file) {
@@ -394,7 +409,7 @@ export class FileUploadComponent implements OnInit {
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userrs', this.users);
     // this.sortUserFiles();
-    this.nextFile();
+    this.nextFile(this.fileIndex);
   }
 
   openFile() {
@@ -465,13 +480,16 @@ export class FileUploadComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
-  nextFile() {
-    this.fileIndex++;
+  nextFile(fileIndex: number) {
+    this.fileIndex = fileIndex + 1;
+    console.log(this.fileIndex);
+
     this.viewFileByIndex(this.fileIndex);
   }
 
-  previousFile() {
-    this.fileIndex--;
+  previousFile(fileIndex: number) {
+    this.fileIndex = fileIndex - 1;
+    console.log(this.fileIndex);
     this.viewFileByIndex(this.fileIndex);
   }
 }
