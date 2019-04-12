@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -108,7 +109,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/** The reg entity. */
-	SyncRegistrationEntity regEntity;
+	private SyncRegistrationEntity regEntity;
 
 	/** The virus scanner service. */
 	@Autowired
@@ -119,13 +120,13 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private Decryptor decryptor;
 
 	/** The storage flag. */
-	Boolean storageFlag = false;
+	private Boolean storageFlag = false;
 
 	/** The is encrypted file cleaned. */
 	private boolean isEncryptedFileCleaned;
 
 	/** The description. */
-	String description = "";
+	private String description = "";
 
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
@@ -153,18 +154,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			messageDTO.setRid(registrationId);
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-
-			if (regEntity == null) {
-				description = "PacketNotSync exception in packet receiver for registartionId " + registrationId + "::"
-						+ PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
-				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
-			}
-
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
-
+				vlaidatePacketWithRegEntity();
 				validateHashCode(registrationId, encryptedInputStream);
 				validatePacketFormat(fileOriginalName, registrationId);
 				validatePacketSize(file.length(), registrationId);
@@ -245,6 +236,21 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		}
 
 		return messageDTO;
+	}
+
+	/**
+	 * Vlaidate packet with reg entity.
+	 */
+	private void vlaidatePacketWithRegEntity() {
+		
+		if (regEntity == null) {
+			description = "PacketNotSync exception in packet receiver for registartionId " + regEntity.getRegistrationId() + "::"
+					+ PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), regEntity.getRegistrationId(),
+					PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
+			throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
+		}
 	}
 
 	/**
@@ -406,7 +412,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
 		byte[] hasheSquence = HMACUtils.generateHash(isbytearray);
 		byte[] packetHashSequenceFromEntity = isbytearray;// PacketHashSequesnce
-		if (!(hasheSquence.equals(packetHashSequenceFromEntity))) {
+		if (!(Arrays.equals(hasheSquence,packetHashSequenceFromEntity))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 			throw new UnequalHashSequenceException(
