@@ -440,7 +440,7 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
-	@Test
+	@Test(expected=IdAuthenticationBusinessException.class)
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -494,7 +494,6 @@ public class DemoAuthServiceTest {
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
 				"123456");
-		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test
