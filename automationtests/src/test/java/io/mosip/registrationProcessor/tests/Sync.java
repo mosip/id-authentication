@@ -37,6 +37,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.AuditRequestDto;
@@ -189,28 +190,34 @@ public class Sync extends BaseTestCase implements ITest {
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
-						String errorCode = err.get("status").toString();
+						String errorCode = err.get("errorcode").toString();
 						logger.info("errorCode : "+errorCode);
 						Iterator<Object> iterator1 = expectedError.iterator();
 
 						while(iterator1.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("status").toString().trim();
+							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
 							logger.info("expectedErrorCode: "+expectedErrorCode);
 						}
 						if(expectedErrorCode.matches(errorCode)){
 							finalStatus = "Pass";
-							softAssert.assertTrue(true);
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
 						}
 					}
 				}
 
 			}else {
 				finalStatus="Fail";
-				softAssert.assertTrue(false);
 			}
-			object.put("status", finalStatus);
-			arr.add(object);
+			boolean setFinalStatus=false;
+	        if(finalStatus.equals("Fail"))
+	              setFinalStatus=false;
+	        else if(finalStatus.equals("Pass"))
+	              setFinalStatus=true;
+	        Verify.verify(setFinalStatus);
+	        softAssert.assertAll();
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
 		}
