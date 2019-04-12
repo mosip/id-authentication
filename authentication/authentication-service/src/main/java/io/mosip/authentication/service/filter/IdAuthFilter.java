@@ -331,12 +331,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
-		Optional<BioIdentityInfoDTO> noBioType= listBioInfo.stream().filter(s->s.getData()!=null &&s.getData().getBioType()==null).findAny();
-		if(noBioType.isPresent()) {
+		boolean noBioType= listBioInfo.stream().noneMatch(s->s.getData()!=null &&s.getData().getBioType()==null);
+		if(!noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							"bioType"));
+							BIO_TYPE));
 		}
 			List<String> bioTypeList = listBioInfo.stream()
 					.filter(s ->  s.getData() != null && s.getData().getBioType() != null)

@@ -555,7 +555,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
-		return bioInfoList.parallelStream()/*.filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())*/
+		return bioInfoList.parallelStream()
 				.anyMatch(bio ->bio.getBioType() != null && !bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()));
 	}
 
