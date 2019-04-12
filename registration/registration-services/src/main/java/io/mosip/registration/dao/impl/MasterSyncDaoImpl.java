@@ -55,6 +55,8 @@ import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.mastersync.ScreenAuthorizationDto;
+import io.mosip.registration.dto.mastersync.ScreenDetailDto;
+import io.mosip.registration.dto.mastersync.SyncJobDefDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
@@ -92,7 +94,9 @@ import io.mosip.registration.entity.RegMachineSpec;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.ScreenAuthorization;
+import io.mosip.registration.entity.ScreenDetail;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
@@ -138,7 +142,9 @@ import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationCenterTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterUserRepository;
 import io.mosip.registration.repositories.ScreenAuthorizationRepository;
+import io.mosip.registration.repositories.ScreenDetailRepository;
 import io.mosip.registration.repositories.SyncJobControlRepository;
+import io.mosip.registration.repositories.SyncJobDefRepository;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
@@ -312,7 +318,14 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync screen auth Repository. */
 	@Autowired
 	private ProcessListRepository processListRepository;
-
+	
+	/** Object for screen detail Repository. */
+	@Autowired
+	private ScreenDetailRepository screenDetailRepository;
+	
+	/** Object for Sync screen auth Repository. */
+	@Autowired
+	private SyncJobDefRepository syncJobDefRepository;
 	/**
 	 * logger for logging
 	 */
@@ -401,6 +414,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<AppRolePriorityDto> appRolePriority = masterSyncDto.getAppRolePriorities();
 		List<ScreenAuthorizationDto> screenAuth = masterSyncDto.getScreenAuthorizations();
 		List<ProcessListDto> processLst = masterSyncDto.getProcessList();
+		List<ScreenDetailDto> screenDetailList = masterSyncDto.getScreenDetails();
+		List<SyncJobDefDto> syncJobDefList = masterSyncDto.getSyncJobDefinitions();
 		String sucessResponse = null;
 
 		try {
@@ -769,13 +784,13 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<AppRolePriority> masterAppRolePriority = MetaDataUtils.setCreateMetaData(appRolePriority,
 					AppRolePriority.class);
-			//appRolePriorityRepository.saveAll(masterAppRolePriority);
+			appRolePriorityRepository.saveAll(masterAppRolePriority);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"App details syncing....");
 
 			List<AppDetail> masterAppDetails = MetaDataUtils.setCreateMetaData(appDetails, AppDetail.class);
-			//appDetailRepository.saveAll(masterAppDetails);
+			appDetailRepository.saveAll(masterAppDetails);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"process list details syncing....");
@@ -788,20 +803,32 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<AppAuthenticationMethod> masterAppLoginMethod = MetaDataUtils.setCreateMetaData(appAuthMethods,
 					AppAuthenticationMethod.class);
-			//appAuthenticationRepository.saveAll(masterAppLoginMethod);
+			appAuthenticationRepository.saveAll(masterAppLoginMethod);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"screen autherization details syncing....");
 
 			List<ScreenAuthorization> masterScreenAuth = MetaDataUtils.setCreateMetaData(screenAuth,
 					ScreenAuthorization.class);
-			//screenAuthorizationRepository.saveAll(masterScreenAuth);
+			screenAuthorizationRepository.saveAll(masterScreenAuth);
+			
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"screen detail list syncing....");
+
+			List<ScreenDetail> masterScreenDetailList = MetaDataUtils.setCreateMetaData(screenDetailList,
+					ScreenDetail.class);
+			screenDetailRepository.saveAll(masterScreenDetailList);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"sync control list details syncing....");
+
+			List<SyncJobDef> masterSyncControlList = MetaDataUtils.setCreateMetaData(syncJobDefList,
+					SyncJobDef.class);
+			syncJobDefRepository.saveAll(masterSyncControlList);
 
 			sucessResponse = RegistrationConstants.SUCCESS;
 
 		} catch (Exception runtimeException) {
-
-			runtimeException.printStackTrace();
 
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));

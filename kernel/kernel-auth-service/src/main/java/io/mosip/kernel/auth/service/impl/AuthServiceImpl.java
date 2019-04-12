@@ -140,6 +140,7 @@ public class AuthServiceImpl implements AuthService {
 			authNResponseDto.setUserId(mosipUser.getUserId());
 			authNResponseDto.setRefreshToken(basicTokenDto.getRefreshToken());
 			authNResponseDto.setExpiryTime(basicTokenDto.getExpiryTime());
+			authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
 			authNResponseDto.setMessage(AuthConstant.USERPWD_SUCCESS_MESSAGE);
 		}
 		return authNResponseDto;
@@ -168,6 +169,7 @@ public class AuthServiceImpl implements AuthService {
 		} else if (AuthConstant.APPTYPE_USERID.equals(otpUser.getUseridtype())) {
 			mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId()).authenticateWithOtp(otpUser);
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
+			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		} else {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "Invalid User Id type");
@@ -233,6 +235,7 @@ public class AuthServiceImpl implements AuthService {
 			authNResponseDto.setUserId(mosipUser.getUserId());
 			authNResponseDto.setRefreshToken(basicTokenDto.getRefreshToken());
 			authNResponseDto.setExpiryTime(basicTokenDto.getExpiryTime());
+			authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
 			authNResponseDto.setMessage(AuthConstant.CLIENT_SECRET_SUCCESS_MESSAGE);
 		}
 		return authNResponseDto;

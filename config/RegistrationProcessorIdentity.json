@@ -15,6 +15,9 @@
 		"parentOrGuardianUIN": {
 			"value" : "parentOrGuardianUIN"
 		},
+		"parentOrGuardianName": {
+			"value" : "parentOrGuardianName"
+		},
 		"poa": {
 			"value" : "proofOfAddress"
 		},

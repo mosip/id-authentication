@@ -6,7 +6,7 @@ package io.mosip.kernel.auth.entities;
 import lombok.Data;
 
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 @Data

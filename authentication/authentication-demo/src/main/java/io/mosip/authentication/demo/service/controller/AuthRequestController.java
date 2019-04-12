@@ -51,6 +51,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @RestController
 public class AuthRequestController {
 	
+	private static final String IDENTITY = "Identity";
+
 	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
 
 	/** The Constant TEMPLATE. */
@@ -127,6 +129,7 @@ public class AuthRequestController {
 	 * @throws IdAuthenticationAppException 
 	 * @throws IdAuthenticationBusinessException 
 	 */
+	@SuppressWarnings("unchecked")
 	@PostMapping(path = "/identity/createAuthRequest",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
@@ -145,6 +148,7 @@ public class AuthRequestController {
 		getAuthTypeMap(reqAuth,reqValues, request);
 		StringWriter writer = new StringWriter();
 		InputStream templateValue;
+		if(request!=null && request.size()>0) {
 		templateValue = templateManager
 				.merge(new ByteArrayInputStream(authRequestTemplate.getBytes(StandardCharsets.UTF_8)), reqValues);
 		
@@ -163,6 +167,12 @@ public class AuthRequestController {
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TEMPLATE));
 		}
 		
+	}
+	else {
+		throw new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+	   }	
 	}
 
 	/**

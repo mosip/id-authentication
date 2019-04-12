@@ -353,8 +353,8 @@ public class MessageNotificationServiceImpl
 			setAttributes(jsonString, attributes, regType);
 
 		} catch (ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin.toString(), PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + e.getStackTrace());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),Long.toString(uin),
+					 PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + ExceptionUtils.getStackTrace(e));
 			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
 

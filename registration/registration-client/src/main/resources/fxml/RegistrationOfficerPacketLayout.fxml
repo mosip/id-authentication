@@ -346,7 +346,7 @@
                         <Insets left="40.0" />
                      </GridPane.margin>
                   </Label>
-                  <ProgressIndicator fx:id="reMapProgressIndicator" progress="0.0" visible="false" />
+                  <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false" GridPane.rowIndex="3" />
                </children>
             </GridPane>
             <GridPane alignment="TOP_CENTER" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">

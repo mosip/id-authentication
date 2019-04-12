@@ -14,19 +14,6 @@
 	-fx-border-width : 0 0 1 0;
 	-fx-border-color : #C9C9C9;
 }
-.scroll-bar:vertical {
-		-fx-background-color : white;
-}
-
-.scroll-bar:vertical > .increment-button > .increment-arrow {
-    -fx-background-color: white;
-    -fx-shape: "";
-}
-
-.scroll-bar:vertical > .decrement-button > .decrement-arrow {
-    -fx-background-color: white;
-    -fx-shape: "";
-}
 
 .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: white;
@@ -704,9 +691,13 @@ Working on new Css by taleev
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
-	-fx-font-size: 14px;
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 170px;
+	-fx-font-size: 1.2em;
+}
+
+#docPreviewImgViewPane{
+	-fx-border-width : 1;
+	-fx-border-color: #C9C9C9;
+		
 }
 
 .documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {

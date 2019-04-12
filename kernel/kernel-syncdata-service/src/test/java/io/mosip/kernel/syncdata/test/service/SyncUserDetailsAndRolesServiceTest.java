@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
-import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
@@ -149,7 +149,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
 
-	@Test(expected = AuthManagerServiceException.class)
+	@Test(expected = SyncServiceException.class)
 	public void getAllUserDetailServiceException() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-03-31T11:40:39.847Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-SNC-303\", \"message\": \"Registration center user not found \" } ] }";
 		String regId = "10044";
@@ -182,7 +182,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 		syncRolesService.getAllRoles();
 	}
 	
-	@Test(expected=AuthManagerServiceException.class)
+	@Test(expected=SyncServiceException.class)
 	public void getAllRolesValidationError() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-03-31T11:40:39.847Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-SNC-303\", \"message\": \"Registration center user not found \" } ] }";
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();

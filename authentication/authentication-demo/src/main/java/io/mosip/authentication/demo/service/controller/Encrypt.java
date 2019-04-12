@@ -46,7 +46,6 @@ import io.mosip.authentication.demo.service.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 import io.mosip.authentication.demo.service.helper.CryptoUtility;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -207,6 +206,7 @@ public class Encrypt {
 	 *            the req
 	 * @return the headers
 	 */
+	@SuppressWarnings("unused")
 	private HttpEntity<CryptomanagerRequestDto> getHeaders(CryptomanagerRequestDto req) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);

@@ -23,38 +23,53 @@ import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 
 /**
- * @author Manoj SP
+ * The Class AuditHelperTest.
  *
+ * @author Manoj SP
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @RunWith(SpringRunner.class)
 @WebMvcTest
 public class AuditHelperTest {
 	
+	/** The rest helper. */
 	@Mock
 	RestHelper restHelper;
 	
+	/** The audit helper. */
 	@InjectMocks
 	AuditHelper auditHelper;
 	
+    /** The mock mvc. */
     @Autowired
     MockMvc mockMvc;
 	
+    /** The audit factory. */
     @Mock
 	AuditRequestFactory auditFactory;
 	
+    /** The rest factory. */
     @Mock
 	RestRequestFactory restFactory;
     
+    /** The env. */
     @Autowired
     Environment env;
 	
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 	}
 	
+	/**
+	 * Test audit util.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test
 	public void testAuditUtil() throws IDDataValidationException {
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");

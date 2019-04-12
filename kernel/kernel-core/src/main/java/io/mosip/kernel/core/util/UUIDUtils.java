@@ -57,9 +57,9 @@ public class UUIDUtils {
 	public static UUID getUUIDFromBytes(UUID namespace, byte[] name) {
 		MessageDigest md;
 		try {
-			md = MessageDigest.getInstance("SHA-1");
+			md = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException nsae) {
-			throw new InternalError("SHA-1 not supported");
+			throw new InternalError("SHA-256 not supported");
 		}
 		md.update(toBytes(Objects.requireNonNull(namespace, "namespace is null")));
 		md.update(Objects.requireNonNull(name, "name is null"));

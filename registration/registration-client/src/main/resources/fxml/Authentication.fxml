@@ -67,7 +67,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label fx:id="passwdLabel" text="%registrationofficerverification" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%pwdAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -188,7 +188,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label fx:id="otpLabel" text="%registrationofficerverification" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%otpAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -297,7 +297,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label fx:id="fingerPrintLabel" text="%rofingerprintauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%fpAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -452,7 +452,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label fx:id="irisLabel" text="%roirisauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -545,7 +545,7 @@
 					<children>
 						<GridPane>
 							<children>
-								<Label fx:id="faceLabel" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<Label text="%photoAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
 										<Hyperlink onAction="#exitWindow" GridPane.columnIndex="1">
@@ -583,7 +583,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label fx:id="irisLabel" text="%rofaceauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

@@ -49,6 +49,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
@@ -62,14 +63,11 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  *
  */
 @Service
-public class MasterSyncServiceImpl implements MasterSyncService {
+public class MasterSyncServiceImpl extends BaseService implements MasterSyncService  {
 
 	/** Object for masterSyncDao class. */
 	@Autowired
 	private MasterSyncDao masterSyncDao;
-
-	@Autowired
-	ServiceDelegateUtil serviceDelegateUtil;
 
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);

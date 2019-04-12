@@ -248,7 +248,7 @@ public class RegistrationController extends BaseController {
 		boolean isValid = true;
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			isValid = demographicDetailController.validateThisPane();
-			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				isValid = validateDemographicPane(documentScanController.documentScanPane);
 			}
 		}
@@ -415,14 +415,14 @@ public class RegistrationController extends BaseController {
 	 * This method will show uin update current page
 	 */
 	public void showUINUpdateCurrentPage() {
-		demographicDetail.setVisible(getVisiblity("demographicDetail"));
-		documentScan.setVisible(getVisiblity("documentScan"));
-		fingerPrintCapture.setVisible(getVisiblity("fingerPrintCapture"));
-		biometricException.setVisible(getVisiblity("biometricException"));
-		faceCapture.setVisible(getVisiblity("faceCapture"));
-		irisCapture.setVisible(getVisiblity("irisCapture"));
-		registrationPreview.setVisible(getVisiblity("registrationPreview"));
-		operatorAuthenticationPane.setVisible(getVisiblity("operatorAuthenticationPane"));
+		demographicDetail.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL));
+		documentScan.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN));
+		fingerPrintCapture.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE));
+		biometricException.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION));
+		faceCapture.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_FACECAPTURE));
+		irisCapture.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_IRISCAPTURE));
+		registrationPreview.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW));
+		operatorAuthenticationPane.setVisible(getVisiblity(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE));
 	}
 
 	/**

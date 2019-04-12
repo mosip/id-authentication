@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthNResponse {
-
+	
+	private String status;
+	
 	private String message;
 
 }

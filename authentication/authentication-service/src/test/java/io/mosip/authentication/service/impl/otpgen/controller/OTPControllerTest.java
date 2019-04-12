@@ -102,7 +102,7 @@ public class OTPControllerTest {
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
-		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result, "TEST0000001",
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001",
 				"TEST0000001");
 
 	}

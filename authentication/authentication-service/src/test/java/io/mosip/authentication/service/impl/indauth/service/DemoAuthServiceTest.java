@@ -104,11 +104,7 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 	}
 
-	@Test
-	public void test() {
-		System.err.println(environment.getProperty("mosip.secondary-language"));
-	}
-
+	@SuppressWarnings("unchecked")
 	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -153,13 +149,12 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
-		System.err.println(listMatchInputsExp);
-		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp, listMatchInputsActual);
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -258,13 +253,12 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
-//		System.err.println(listMatchInputsExp);
-//		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void pidMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -330,6 +324,7 @@ public class DemoAuthServiceTest {
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -340,7 +335,6 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPin(false);
 		authRequest.setRequestedAuth(authTypeDTO);
-		List<MatchInput> matchInputs = new ArrayList<>();
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -435,7 +429,7 @@ public class DemoAuthServiceTest {
 	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = generateData();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
+		demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -446,7 +440,7 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
-	@Test
+	@Test(expected=IdAuthenticationBusinessException.class)
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -498,9 +492,8 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
 				"123456");
-		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test
@@ -642,7 +635,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoEntity.put("name", nameList);
-		AuthStatusInfo demoStatus = demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity,
+		demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity,
 				"123456");
 
 	}

@@ -120,18 +120,10 @@ public class AuthResponseBuilder {
 	public AuthResponseDTO build(String staticTokenID) {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		if (status) {
-			ResponseDTO res = new ResponseDTO();
-			res.setAuthStatus(Boolean.TRUE);
-			res.setStaticToken(staticTokenID);
-			responseDTO.setResponse(res);
-		} else {
-			ResponseDTO res = new ResponseDTO();
-			res.setAuthStatus(Boolean.FALSE);
-			res.setStaticToken(null);
-			responseDTO.setResponse(res);
-		}
-
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(status);
+		res.setStaticToken(staticTokenID);
+		responseDTO.setResponse(res);
 		responseDTO.setResponseTime(dateFormat.format(new Date()));
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
