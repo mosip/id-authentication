@@ -151,8 +151,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
-			boolean isTransactionSuccessful = false;
-			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
