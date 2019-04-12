@@ -32,6 +32,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.SyncRegistrationDto;
@@ -67,8 +68,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
 	String rId = null;
-	Properties pro =  new Properties();
-	String testParam = null;
+	Properties prop =  new Properties();
 
 	/**
 	 * This method is used for reading the test data based on the test case name passed
@@ -79,11 +79,12 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "PacketReceiver")
 	public Object[][] readData(ITestContext context){
-
-		testParam = context.getCurrentXmlTest().getParameter("testType");
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder = null;
 		try {
-			switch ("smokeAndRegression") {
+			prop.load(new FileReader(new File(propertyFilePath)));
+			switch (testParam) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -112,7 +113,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		String configPath = "src/test/resources/" + testSuite + "/";
 		File folder = new File(configPath);
 		File[] listOfFolders = folder.listFiles();
@@ -146,7 +146,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 
 
 			//generation of actual response
-			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
+			actualResponse = applicationLibrary.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
@@ -172,7 +172,9 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 						if (expectedStatus.matches(actualStatus)){
 							logger.info("STATUS MATCHED....");
 							finalStatus = "Pass";
-							softAssert.assertTrue(true);
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
 						} 
 					}
 
@@ -190,41 +192,27 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 						}
 						if(expectedErrorCode.matches(errorCode)){
 							finalStatus = "Pass";
-							softAssert.assertTrue(true);
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
 						}
 					}
 				}
 			}else{
 				finalStatus="Fail";
-				softAssert.assertTrue(false);
 			}
-
-			object.put("status", finalStatus);
-			arr.add(object);
+			boolean setFinalStatus=false;
+	        if(finalStatus.equals("Fail"))
+	              setFinalStatus=false;
+	        else if(finalStatus.equals("Pass"))
+	              setFinalStatus=true;
+	        Verify.verify(setFinalStatus);
+	        softAssert.assertAll();
 
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
 		}
 	}
-
-	/**
-	 * This method is used for reading and loading the property file
-	 */
-	@BeforeClass
-	public void setUp(){
-		// Create  FileInputStream object 
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
-			// Load file so we can use into our script 
-			pro.load(fis);
-			fis.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}  
 
 	/**
 	 * This method is used for fetching test case name

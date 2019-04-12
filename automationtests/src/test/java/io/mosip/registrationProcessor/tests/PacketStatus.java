@@ -3,6 +3,7 @@ package io.mosip.registrationProcessor.tests;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -34,6 +35,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
@@ -75,7 +77,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	static String folderPath = "regProc/PacketStatus";
 	static String outputFile = "PacketStatusOutput.json";
 	static String requestKeyFile = "PacketStatusRequest.json";
-	Properties pro =  new Properties();
+	Properties prop =  new Properties();
 
 	/**
 	 * This method is use for reading data for packet status based on test case name
@@ -83,11 +85,15 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	 * @return Object[][]
 	 */
 	@DataProvider(name = "packetStatus")
-	public static Object[][] readDataForPacketStatus(ITestContext context) {
+	public Object[][] readDataForPacketStatus(ITestContext context) {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder= null;
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+
 		try {
-			switch ("regression") {
+			prop.load(new FileReader(new File(propertyFilePath)));
+
+			switch (testParam) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -123,7 +129,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			//generation of actual response
-			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
+			actualResponse = applicationLibrary.getRequestAsQueryParam(prop.getProperty("packetStatusApi"),actualRequest);
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
@@ -200,40 +206,26 @@ public class PacketStatus extends BaseTestCase implements ITest {
 						}
 						if(expectedErrorCode.matches(errorCode)){
 							finalStatus = "Pass";
-							softAssert.assertTrue(true);
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
 						}
 					}
 				}
 
 			}else {
 				finalStatus="Fail";
-				softAssert.assertTrue(false);
 			}		
-			softAssert.assertAll();
-			object.put("status", finalStatus);
-			arr.add(object);
-
+			boolean setFinalStatus=false;
+	        if(finalStatus.equals("Fail"))
+	              setFinalStatus=false;
+	        else if(finalStatus.equals("Pass"))
+	              setFinalStatus=true;
+	        Verify.verify(setFinalStatus);
+	        softAssert.assertAll();
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occurred in Packet Status class in packetStatus method "+e);
 		}
-	}
-
-	/**
-	 * This method is used for reading and loading the property file
-	 */
-	@BeforeClass
-	public void setUp() {
-		// Create  FileInputStream object 
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
-			// Load file so we can use into our script 
-			pro.load(fis);
-			fis.close();
-		} catch (IOException e) {
-			logger.error("Exceptionm occurred in PacketStatus class in setUp method "+e);
-		}
-
 	}
 
 	/**
