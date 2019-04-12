@@ -1,9 +1,11 @@
 package io.mosip.kernel.virusscanner.clamav.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -40,7 +42,7 @@ public class VirusScannerServiceTest {
 	ClamavClient clamavClient;
 
 	@InjectMocks
-	private VirusScanner<Boolean, String> virusScanner = new VirusScannerImpl() {
+	private VirusScanner<Boolean, InputStream> virusScanner = new VirusScannerImpl() {
 		@Override
 		public void createConnection() {
 			this.clamavClient = clamavClient;
@@ -53,11 +55,13 @@ public class VirusScannerServiceTest {
 	private ScanResult virusNotFound;
 	private File doc;
 	private byte[] byteArray;
+	private InputStream is;
 
 	@Before
-	public void setup() {
+	public void setup() throws FileNotFoundException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("files/0000.zip").getFile());
+		is=new FileInputStream(file);
 		folder = new File(classLoader.getResource("files").getFile());
 		virusNotFound = new ScanResult(Status.OK);
 		virusFound = new ScanResult(Status.VIRUS_FOUND);
@@ -71,12 +75,26 @@ public class VirusScannerServiceTest {
 			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
+	@Test
+	public void infectedFileCheckForInputStream() throws ClamavException
+	{
+		Mockito.when(clamavClient.scan(any(InputStream.class))).thenReturn(virusFound);
+		Boolean result = virusScanner.scanFile(is);
+		assertEquals(Boolean.FALSE, result);
+	}
 
 	@Test
 	public void nonInfectedFileCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusNotFound);
 			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
+	}
+	@Test
+	public void nonInfectedFileCheckForInputStream() throws ClamavException
+	{
+		Mockito.when(clamavClient.scan(any(InputStream.class))).thenReturn(virusNotFound);
+		Boolean result = virusScanner.scanFile(is);
+		assertEquals(Boolean.TRUE, result);
 	}
 
 	@Test

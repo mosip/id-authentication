@@ -1,11 +1,12 @@
 package io.mosip.kernel.virusscanner.clamav.test;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import static org.mockito.ArgumentMatchers.any;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class VirusScannerExceptionTest {
 	ClamavClient clamavClient;
 
 	@InjectMocks
-	private VirusScanner<Boolean, String> virusScannerService = new VirusScannerImpl() {
+	private VirusScanner<Boolean, InputStream> virusScannerService = new VirusScannerImpl() {
 		@Override
 		public void createConnection() {
 			this.clamavClient = clamavClient;

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -36,6 +38,8 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
+import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
+import io.mosip.registration.processor.packet.receiver.exception.VirusScanFailedException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -137,6 +141,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
+			boolean isTransactionSuccessful = false;
+			 regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
@@ -254,11 +260,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	}
 
-	private void scanFile(InputStream encryptedInputStream) {
-		// call kernel scan file and throw exception if it fails and handle exception
-		isEncryptedFileCleaned = virusScannerService.scanFile(encryptedInputStream);
-		if (!isEncryptedFileCleaned) {
-			// throw new VirusScanFailedException("");
+	private void scanFile(InputStream inputStream) {
+		//call kernel scan file and throw exception if it fails and handle exception
+		boolean isInputFileClean=virusScannerService.scanFile(inputStream);
+		if(!isInputFileClean)
+		{
+			description = "Packet virus scan failed exception in packet receiver  ::"
+					+ PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage();
+			throw new VirusScanFailedException(PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage());
 		}
 	}
 
@@ -313,9 +322,17 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");
 		return (mappedValue.equals(RESEND));
 	}
-
-	private void validateHashCode(String registrationId, InputStream inputStream) {
-
+	private void validateHashCode(String registrationId,InputStream inputStream) throws IOException {
+		byte[] isbytearray=IOUtils.toByteArray(inputStream);
+		byte[] hasheSquence=HMACUtils.generateHash(isbytearray);
+		byte[] packetHashSequenceFromEntity=isbytearray;//PacketHashSequesnce
+		if(!(hasheSquence.equals(packetHashSequenceFromEntity)))
+		{
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
+			throw new UnequalHashSequenceException(PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
+		}
 	}
 
 	private void validatePacketSize(long length, String regid) {
