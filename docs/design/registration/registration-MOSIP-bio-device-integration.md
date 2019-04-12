@@ -57,3 +57,5 @@ Once discovered, the application must connect to the required devices through th
    - Binary stream would be used to receive the video stream of BIO data and render the same to UI application. 	
   
 
+**Device Integration - Class and Sequence Diagram:**  
+![Device Arrival Sequence Flow](_images/registration_Bio_Device_Integration.png)  
