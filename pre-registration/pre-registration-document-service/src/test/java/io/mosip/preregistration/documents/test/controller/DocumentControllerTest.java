@@ -234,7 +234,7 @@ public class DocumentControllerTest {
 		String preRegistrationId = "1232462566658";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/documents/{preRegistrationId}", preRegistrationId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("catCode", "POA").param("sourcePrId", "48690172097498");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("catCode", "POA").param("sourcePreId", "48690172097498");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

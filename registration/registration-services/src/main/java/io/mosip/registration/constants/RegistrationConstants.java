@@ -901,6 +901,7 @@ public class RegistrationConstants {
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/UserOnboard/thumb/leftThumb/",
 			"/UserOnboard/thumb/rightThumb/" };
 	public static final String COMMA = ",";
+	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
 
 	/** Exception codes **/

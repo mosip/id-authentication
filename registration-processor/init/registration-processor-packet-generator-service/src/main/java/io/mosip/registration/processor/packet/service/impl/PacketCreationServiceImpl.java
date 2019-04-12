@@ -198,7 +198,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		FieldValueArray fieldValueArray = new FieldValueArray();
 
 		// Add Sequence of Applicant Demographic
-		fieldValueArray = new FieldValueArray();
 		fieldValueArray.setLabel("applicantDemographicSequence");
 		fieldValueArray.setValue(hashSequence.getDemographicSequence().getApplicant());
 		hashSequenceList.add(fieldValueArray);

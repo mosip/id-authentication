@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -167,15 +170,34 @@ public class RegistrationUpdate {
 	}
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
-
+		Long t1=System.currentTimeMillis();
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		for (String jarFile : checkableJars) {
 
-			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+			
 
-			checkForJarFile(version, folder, jarFile);
+			executorService.execute(new Runnable() {
+				public void run() {
 
+					try {
+						System.out.println("Current Thread*****"+Thread.currentThread());
+						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+						checkForJarFile(version, folder, jarFile);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			
 		}
-
+		try {
+			executorService.shutdown();
+			executorService.awaitTermination(500, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Long t2 = System.currentTimeMillis() - t1;
+		System.out.println("Time in Millis-------->>>>"+t2/(1000));
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {

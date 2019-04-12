@@ -24,7 +24,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
@@ -119,7 +119,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 		RolesResponseDto rolesDtos = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerServiceException(validationErrorsList);
+			throw new SyncServiceException(validationErrorsList);
 		}
 		ResponseWrapper<?> responseObject = null;
 		try {

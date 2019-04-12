@@ -259,7 +259,7 @@ public class BookingServiceTest {
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		requiredRequestMap.put("id", idUrl);
-		requiredRequestMap.put("ver", versionUrl);
+		requiredRequestMap.put("version", versionUrl);
 
 		cancelRequestdto.setRequesttime(new Date());
 		cancelRequestdto.setRequest(cancelbookingDto);
@@ -270,7 +270,7 @@ public class BookingServiceTest {
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:13");
 		requestMap1.put("id", cancelRequestdto.getId());
-		requestMap1.put("ver", cancelRequestdto.getVersion());
+		requestMap1.put("version", cancelRequestdto.getVersion());
 		requestMap1.put("reqTime",
 				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(cancelRequestdto.getRequesttime()));
 		requestMap1.put("request", cancelRequestdto.getRequest().toString());

@@ -64,10 +64,10 @@ public class BiometricValidation {
 		Object dob=null;
 		Object identityJson = demographicJson.get("identity");
 		
-		if(!(identityJson.equals(null)))
+		if(identityJson!=null)
 		 dobJson =new JSONObject((Map) identityJson);
 		
-		if(!(dobJson.equals(null)))
+		if(dobJson!=null)
 		 dob = dobJson.get("dateOfBirth");
 
 		if(dob != null && dob.toString().trim() != "" ) {

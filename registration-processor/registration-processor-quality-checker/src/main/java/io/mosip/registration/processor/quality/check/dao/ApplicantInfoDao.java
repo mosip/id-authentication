@@ -11,8 +11,6 @@ import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -74,7 +72,8 @@ public class ApplicantInfoDao {
 		if (!assignedPackets.isEmpty()) {
 			assignedPackets.forEach(assignedPacket -> {
 				String regId = assignedPacket.getId().getRegId();
-				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
+				//TODO confirmation Required
+				applicantInfo =new ArrayList<Object[]> (); //qcuserRegRepositary.getApplicantInfo(regId);
 			});
 			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
@@ -84,10 +83,10 @@ public class ApplicantInfoDao {
 						demoDedupeList.add(convertEntityToDemographicDto((IndividualDemographicDedupeEntity) object));
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
 
-					} else if (object instanceof ApplicantPhotographEntity) {
+					}/* else if (object instanceof ApplicantPhotographEntity) {
 						applicantInfoDto.setApplicantPhotograph(
 								convertEntityToPhotographDto((ApplicantPhotographEntity) object));
-					}
+					}*/
 				}
 				applicantInfoDtoList.add(applicantInfoDto);
 			});
@@ -97,52 +96,7 @@ public class ApplicantInfoDao {
 		return applicantInfoDtoList;
 	}
 
-	/**
-	 * Convert entity to photograph dto.
-	 *
-	 * @param object
-	 *            the object
-	 * @return the photograph dto
-	 */
-	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
-		PhotographDto photographDto = new PhotographDto();
-
-		photographDto.setActive(object.isActive());
-		photographDto.setCrBy(object.getCrBy());
-		photographDto.setExcpPhotoName(object.getExcpPhotoName());
-		String docValue = "dGVzdA";
-		byte[] docStore = docValue.getBytes();
-
-		photographDto.setExcpPhotoStore(docStore);
-		photographDto.setHasExcpPhotograph(object.getHasExcpPhotograph());
-		photographDto.setImageName(object.getImageName());
-		photographDto.setImageStore(docStore);
-		photographDto.setNoOfRetry(object.getNoOfRetry());
-		photographDto.setPreRegId(object.getPreRegId());
-		photographDto.setQualityScore(object.getQualityScore());
-		photographDto.setRegId(object.getId().getRegId());
-
-		return photographDto;
-	}
-
-	/**
-	 * private BiometericData
-	 * convertEntityTotBiometericDto(ApplicantFingerprintEntity object) {
-	 * BiometericData bioData = new BiometericData(); FingerprintData
-	 * fingerprintData = new FingerprintData();
-	 * fingerprintData.setExceptionFingerprints(null);
-	 * fingerprintData.setFingerprints(null);
-	 * 
-	 * bioData.setFingerprintData(fingerprintData);
-	 * 
-	 * IrisData irisData = new IrisData(); irisData.setExceptionIris(null);
-	 * irisData.setIris(null); irisData.setNumRetry(0);
-	 * bioData.setIrisData(irisData); return bioData; }
-	 *
-	 * @param object
-	 *            the object
-	 * @return the demographic info dto
-	 */
+	
 
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();

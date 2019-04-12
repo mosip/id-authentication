@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -188,8 +189,16 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			 * enabling all the jobs after all the clean up activities for the previous
 			 * center
 			 */
-			if (!isPacketsPendingForProcessing())
+			if (!isPacketsPendingForProcessing()) {
+				/* disable the remap flag after completing the remap process */
+				GlobalParam globalParam = getRemapFlagValue();
+				if (null != globalParam) {
+					globalParam.setVal("false");
+					globalParamDAO.saveAll(Arrays.asList(globalParam));
+				}
+
 				updateAllSyncJobs(true);
+			}
 		}
 	}
 
@@ -241,11 +250,15 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	 */
 	@Override
 	public Boolean isMachineRemapped() {
+		GlobalParam globalParam = getRemapFlagValue();
+		return globalParam != null ? Boolean.valueOf(globalParam.getVal()) : false;
+	}
+
+	protected GlobalParam getRemapFlagValue() {
 		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG);
 		globalParamId.setLangCode("eng");
-		GlobalParam globalParam = globalParamDAO.get(globalParamId);
-		return globalParam != null ? Boolean.valueOf(globalParam.getVal()) : false;
+		return globalParamDAO.get(globalParamId);
 	}
 
 	private boolean isNotNullNotEmpty(Collection<?> collection) {
