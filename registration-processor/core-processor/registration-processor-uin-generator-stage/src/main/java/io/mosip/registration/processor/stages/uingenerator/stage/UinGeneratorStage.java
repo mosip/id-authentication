@@ -431,21 +431,27 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJSON, proofOfIdentityLabel);
 		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJSON, proofOfRelationshipLabel);
 		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJSON, applicantBiometricLabel);
-		
+		if(proofOfAddress!=null) {
 			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+		}
+		if(proofOfDateOfBirth!=null) {
 			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+		}
+		if(proofOfIdentity!=null) {
 			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+		}
+		if(proofOfRelationship!=null) {
 			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+		}
+		if(applicantBiometric!=null) {
 			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
+		}
 		return applicantDocuments;
 	}
 	
 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
 		Documents documentsInfoDto = new Documents();;
-		InputStream poiStream=null;
-		if(idDocObj!=null) {
-			poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
-		}
+		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
 		documentsInfoDto.setCategory(idDocLabel);
 		return 	documentsInfoDto;
