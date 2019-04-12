@@ -83,7 +83,6 @@ public class NotificationManagerTest {
 	public void testInValidSendNotificationEmail() throws IdAuthenticationBusinessException, RestServiceException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
-		new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IDDataValidationException idDataValidationException = new IDDataValidationException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

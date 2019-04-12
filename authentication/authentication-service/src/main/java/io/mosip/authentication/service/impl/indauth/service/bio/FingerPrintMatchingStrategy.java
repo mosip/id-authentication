@@ -78,7 +78,6 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 
 	@Override
 	public MatchingStrategy getMatchingStrategy() {
-		// TODO Auto-generated method stub
 		return matchingStrategyImpl;
 	}
 

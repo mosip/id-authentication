@@ -103,7 +103,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 */
 	@Override
 	public String createMinutiae(byte[] inputImage) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

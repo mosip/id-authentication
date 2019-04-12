@@ -260,7 +260,6 @@ public class KeyManagerTest {
 			});
 			readValue.put("request", Base64.decodeBase64((String) readValue.get("request")));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return readValue;

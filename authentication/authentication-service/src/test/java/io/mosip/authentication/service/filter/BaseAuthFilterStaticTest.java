@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.filter;
 
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,23 +15,12 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @PrepareForTest(CryptoUtil.class)
 public class BaseAuthFilterStaticTest {
 
-	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
-
-		@Override
-		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
-				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
-			// TODO Auto-generated method stub
-			
-		}
-	};
-	
-	@SuppressWarnings("static-access")
 	@Test(expected=IdAuthenticationAppException.class)
 	public void encodetest() throws IdAuthenticationAppException {
 		PowerMockito.mockStatic(CryptoUtil.class);
 		String stringToDecode = "assad";
 		Mockito.when(CryptoUtil.encodeBase64String(stringToDecode.getBytes())).thenThrow(new IllegalArgumentException());
-		baseAuthFilter.encode(stringToDecode);
+		BaseAuthFilter.encode(stringToDecode);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -42,6 +29,6 @@ public class BaseAuthFilterStaticTest {
 		PowerMockito.mockStatic(CryptoUtil.class);
 		String stringToDecode = "assad";
 		Mockito.when(CryptoUtil.decodeBase64(stringToDecode)).thenThrow(new IllegalArgumentException());
-		baseAuthFilter.decode(stringToDecode);
+		BaseAuthFilter.decode(stringToDecode);
 	}
 }

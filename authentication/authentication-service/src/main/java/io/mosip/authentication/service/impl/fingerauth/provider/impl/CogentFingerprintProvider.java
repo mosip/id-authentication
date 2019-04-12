@@ -55,7 +55,6 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	 */
 	@Override
 	public String createMinutiae(byte[] inputImage) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

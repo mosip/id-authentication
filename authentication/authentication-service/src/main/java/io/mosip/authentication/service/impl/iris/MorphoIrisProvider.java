@@ -15,7 +15,6 @@ public class MorphoIrisProvider extends IrisProvider {
 
 	public MorphoIrisProvider(Environment environment) {
 		super(environment);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -81,7 +81,6 @@ public class BaseAuthFilterTest {
 		@Override
 		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
-			// TODO Auto-generated method stub
 			
 		}};
 	

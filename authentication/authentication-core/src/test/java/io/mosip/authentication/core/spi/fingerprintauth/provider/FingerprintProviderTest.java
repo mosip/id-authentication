@@ -85,7 +85,6 @@ public class FingerprintProviderTest {
 
 		@Override
 		public String createMinutiae(byte[] inputImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -97,25 +96,21 @@ public class FingerprintProviderTest {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public FingerprintDeviceInfo deviceInfo() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String createMinutiae(byte[] inputImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

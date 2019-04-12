@@ -31,13 +31,11 @@ public class MatchTest {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
 			@Override
 			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -48,13 +46,11 @@ public class MatchTest {
 
 			@Override
 			public String getType() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public String getDisplayName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -65,13 +61,11 @@ public class MatchTest {
 
 			@Override
 			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public AuthType getAuthTypeImpl() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};
@@ -101,19 +95,16 @@ public class MatchTest {
 
 			@Override
 			public IdMapping getIdMapping() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Category getCategory() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -138,13 +129,11 @@ public class MatchTest {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-				// TODO Auto-generated method stub
 				return true;
 			}
 
 			@Override
 			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-				// TODO Auto-generated method stub
 				return true;
 			}
 
@@ -170,7 +159,6 @@ public class MatchTest {
 
 			@Override
 			public AuthType getAuthTypeImpl() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};
@@ -194,19 +182,16 @@ public class MatchTest {
 
 			@Override
 			public IdMapping getIdMapping() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Category getCategory() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -248,19 +233,16 @@ public class MatchTest {
 
 			@Override
 			public String getIdname() {
-				// TODO Auto-generated method stub
 				return "name";
 			}
 
 			@Override
 			public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Set<IdMapping> getSubIdMappings() {
-				// TODO Auto-generated method stub
 				return Collections.emptySet();
 			}
 		};
@@ -276,7 +258,6 @@ public class MatchTest {
 
 			@Override
 			public MatchingStrategyType getType() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -311,25 +292,21 @@ public class MatchTest {
 
 			@Override
 			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-				// TODO Auto-generated method stub
 				return Optional.ofNullable("E");
 			}
 
 			@Override
 			public String getDisplayName() {
-				// TODO Auto-generated method stub
 				return "OTP";
 			}
 
 			@Override
 			public Set<MatchType> getAssociatedMatchTypes() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public AuthType getAuthTypeImpl() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};
