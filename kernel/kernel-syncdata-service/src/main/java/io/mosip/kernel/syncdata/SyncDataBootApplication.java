@@ -35,8 +35,8 @@ public class SyncDataBootApplication {
 	@Bean
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(15);
-		executor.setMaxPoolSize(30);
+		executor.setCorePoolSize(20);
+		executor.setMaxPoolSize(40);
 		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
 		executor.initialize();
 		return executor;

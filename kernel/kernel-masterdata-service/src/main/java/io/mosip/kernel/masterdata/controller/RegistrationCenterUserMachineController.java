@@ -56,10 +56,10 @@ public class RegistrationCenterUserMachineController {
 	@PostMapping("/registrationmachineusermappings")
 	public ResponseWrapper<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
-		
+
 		ResponseWrapper<RegistrationCenterMachineUserID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterMachineUserService.createRegistrationCentersMachineUserMapping(
-				registrationCenterUserMachineMappingDto));
+		responseWrapper.setResponse(registrationCenterMachineUserService
+				.createRegistrationCentersMachineUserMapping(registrationCenterUserMachineMappingDto));
 		return responseWrapper;
 	}
 
@@ -81,7 +81,7 @@ public class RegistrationCenterUserMachineController {
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("Machine id to be deleted") @PathVariable String machineId,
 			@ApiParam("User id to be deleted") @PathVariable String userId) {
-		
+
 		ResponseWrapper<RegistrationCenterMachineUserID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterMachineUserService
 				.deleteRegistrationCentersMachineUserMapping(regCenterId, machineId, userId));
@@ -100,7 +100,7 @@ public class RegistrationCenterUserMachineController {
 	@PutMapping("/registrationmachineusermappings")
 	public ResponseWrapper<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
-		
+
 		ResponseWrapper<RegCenterMachineUserResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterMachineUserService
 				.createOrUpdateRegistrationCentersMachineUserMapping(regCenterMachineUserReqDto));

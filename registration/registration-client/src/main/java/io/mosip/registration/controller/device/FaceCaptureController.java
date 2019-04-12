@@ -158,15 +158,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 			defaultExceptionImage = new Image(
 					getClass().getResourceAsStream(RegistrationConstants.DEFAULT_EXCEPTION_IMAGE_PATH));
 			exceptionImage.setImage(defaultExceptionImage);
-			if (getRegistrationDTOFromSession() != null
-					&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
-				if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
-					byte[] photoInBytes = getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
-							.getPhoto();
-					if (photoInBytes != null) {
-						ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
-						applicantImage.setImage(new Image(byteArrayInputStream));
-					}
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getDemographicDTO()
+					.getApplicantDocumentDTO().getPhoto() != null) {
+				byte[] photoInBytes = getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
+						.getPhoto();
+				if (photoInBytes != null) {
+					ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+					applicantImage.setImage(new Image(byteArrayInputStream));
 				}
 				if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
 						.getExceptionPhoto() != null) {
@@ -191,7 +189,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE, Components.REG_BIOMETRICS, SessionContext.userId(),
@@ -313,9 +312,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To set the captured image to the imageView in the Applicant Biometrics page
 	 * 
-	 * @param capturedImage the image that is captured
-	 * @param photoType     the type of image whether exception image or applicant
-	 *                      image
+	 * @param capturedImage
+	 *            the image that is captured
+	 * @param photoType
+	 *            the type of image whether exception image or applicant image
 	 */
 	@Override
 	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType) {
@@ -386,8 +386,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To clear the captured image from the imageView in the Applicant Biometrics
 	 * page
 	 *
-	 * @param photoType the type of image that is to be cleared, whether exception
-	 *                  image or applicant image
+	 * @param photoType
+	 *            the type of image that is to be cleared, whether exception image
+	 *            or applicant image
 	 */
 	@Override
 	public void clearPhoto(String photoType) {
@@ -448,8 +449,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To enable the capture of applicant/exception image upon validating the
 	 * request
 	 *
-	 * @param mouseEvent the event which occurs on mouse click of 'Take Photo'
-	 *                   button
+	 * @param mouseEvent
+	 *            the event which occurs on mouse click of 'Take Photo' button
 	 */
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
@@ -502,9 +503,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To validate biometrics to check if the applicant's biometrics are
 	 * force-captured or not
 	 *
-	 * @param hasBiometricException the boolean variable which has to be returned to
-	 *                              know whether exception photo should be enabled
-	 *                              or not
+	 * @param hasBiometricException
+	 *            the boolean variable which has to be returned to know whether
+	 *            exception photo should be enabled or not
 	 * @return hasBiometricException - the boolean variable which will be returned
 	 *         to know whether exception photo should be enabled or not
 	 */
@@ -648,9 +649,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * To validate the time of last capture to allow re-capture
 	 * 
-	 * @param lastPhoto      the timestamp when last photo is captured
-	 * @param configuredSecs the configured number of seconds for re-capture
-	 * @param photoLabel     the label to show the timer for re-capture
+	 * @param lastPhoto
+	 *            the timestamp when last photo is captured
+	 * @param configuredSecs
+	 *            the configured number of seconds for re-capture
+	 * @param photoLabel
+	 *            the label to show the timer for re-capture
 	 * @return boolean returns true if recapture is allowed
 	 */
 	private boolean validatePhotoTimer(Timestamp lastPhoto, int configuredSecs, Label photoLabel) {
@@ -673,10 +677,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * To set the label that displays time left to re-capture
 	 * 
-	 * @param photoLabel     the label to show the timer for re-capture
-	 * @param configuredSecs the configured number of seconds for re-capture
-	 * @param diffSeconds    the difference between last captured time and present
-	 *                       time
+	 * @param photoLabel
+	 *            the label to show the timer for re-capture
+	 * @param configuredSecs
+	 *            the configured number of seconds for re-capture
+	 * @param diffSeconds
+	 *            the difference between last captured time and present time
 	 */
 	private void setTimeLabel(Label photoLabel, int configuredSecs, int diffSeconds) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

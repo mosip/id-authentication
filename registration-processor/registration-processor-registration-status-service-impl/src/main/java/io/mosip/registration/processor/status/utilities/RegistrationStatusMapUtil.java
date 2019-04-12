@@ -60,6 +60,10 @@ public class RegistrationStatusMapUtil {
 
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED, RegistrationExternalStatusCode.REREGISTER);
+		
+		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_FAILED, RegistrationExternalStatusCode.REREGISTER);
+		
 
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, RegistrationExternalStatusCode.REREGISTER);

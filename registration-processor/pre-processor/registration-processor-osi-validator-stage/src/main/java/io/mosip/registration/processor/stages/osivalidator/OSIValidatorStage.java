@@ -136,7 +136,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 						+ "either UMC(" + isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
 			}
 			registrationStatusDto.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, "OSIValidatorStage::process()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

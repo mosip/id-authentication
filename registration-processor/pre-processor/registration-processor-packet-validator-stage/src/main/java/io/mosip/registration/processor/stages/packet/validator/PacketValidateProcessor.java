@@ -53,12 +53,10 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -105,9 +103,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
@@ -337,7 +332,7 @@ public class PacketValidateProcessor {
 
 		} finally {
 
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -349,8 +344,8 @@ public class PacketValidateProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			}
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
 					: description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -396,8 +391,8 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			// if (!applicantDocumentValidation(identity, registrationStatusDto))
-			// return false;
+			if (!applicantDocumentValidation(identity, registrationStatusDto))
+				return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 

@@ -196,11 +196,6 @@ public class MasterDataValidation {
 					isvalidateIdentity = true;
 			} catch (ApisResourceAccessException ex) {
 				if (ex.getCause() instanceof HttpClientErrorException) {
-					HttpClientErrorException httpClientException = (HttpClientErrorException) ex.getCause();
-					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					statusResponseDto = gsonObj.fromJson(result, StatusResponseDto.class);
-					ErrorDTO error = statusResponseDto.getErrors().get(0);
 					isvalidateIdentity = false;
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",

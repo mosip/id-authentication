@@ -239,7 +239,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
-					ApiName.AUDIT);
+					ApiName.DMZAUDIT);
 
 		}
 

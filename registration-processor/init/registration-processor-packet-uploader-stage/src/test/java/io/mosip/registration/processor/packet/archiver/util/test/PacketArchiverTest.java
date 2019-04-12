@@ -105,7 +105,7 @@ public class PacketArchiverTest {
 		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(null);
 		try {
-			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.AUDIT, "", "",
+			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.DMZAUDIT, "", "",
 					auditRequestDto, AuditResponseDto.class);
 		} catch (ApisResourceAccessException e) {
 			// TODO Auto-generated catch block

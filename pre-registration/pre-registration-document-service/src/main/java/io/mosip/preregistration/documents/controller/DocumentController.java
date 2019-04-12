@@ -108,13 +108,13 @@ public class DocumentController {
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> copyDocument(
 			@Valid @PathVariable(required = true, value = "preRegistrationId") String preRegistrationId,
 			@Valid @RequestParam(required = true) String catCode,
-			@Valid @RequestParam(required = true) String sourcePrId) {
+			@Valid @RequestParam(required = true) String sourcePreId) {
 
 		log.info("sessionId", "idType", "id",
 				"In copyDocument method of document controller to copy the document for request " + catCode + ","
-						+ sourcePrId + "," + preRegistrationId);
+						+ sourcePreId + "," + preRegistrationId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(documentUploadService.copyDocument(catCode, sourcePrId, preRegistrationId));
+				.body(documentUploadService.copyDocument(catCode, sourcePreId, preRegistrationId));
 	}
 
 	/**

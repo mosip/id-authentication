@@ -39,10 +39,8 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -62,9 +60,6 @@ public class UMCValidator {
 	/** The response from masterdata validate api. */
 	private static final String VALID = "Valid";
 
-	/** The packet info manager. */
-	@Autowired
-	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The umc client. */
 
@@ -299,7 +294,6 @@ public class UMCValidator {
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
 				isValidUser = false;
 
 				this.registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
