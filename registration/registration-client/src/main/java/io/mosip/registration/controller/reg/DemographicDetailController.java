@@ -635,6 +635,8 @@ public class DemographicDetailController extends BaseController {
 	private String textFemale;
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
+	private String textMaleCode;
+	private String textFemaleCode;
 
 	/*
 	 * (non-Javadoc)
@@ -689,6 +691,8 @@ public class DemographicDetailController extends BaseController {
 		textFemale = applicationLabelBundle.getString("female");
 		textMaleLocalLanguage = localLabelBundle.getString("male");
 		textFemaleLocalLanguage = localLabelBundle.getString("female");
+		textMaleCode = applicationLabelBundle.getString("maleCode");
+		textFemaleCode = applicationLabelBundle.getString("femaleCode");
 		male(null);
 	}
 
@@ -1577,13 +1581,16 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
-			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
-			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
 			mobileNo.setText(moroccoIdentity.getPhone() + "");
 			emailId.setText(moroccoIdentity.getEmail() + "");
-			if (moroccoIdentity.getAge() != null)
+			if (moroccoIdentity.getAge() != null) {
+				switchedOn.set(true);
 				ageField.setText(moroccoIdentity.getAge() + "");
+			}
+			else {
+				switchedOn.set(false);
+			}
 			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(moroccoIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(moroccoIdentity.getPhone());
@@ -1593,14 +1600,14 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 
 			if (moroccoIdentity.getGender() != null && moroccoIdentity.getGender().size() > 0) {
-				if (moroccoIdentity.getGender().get(0).getValue().equals(textMale)
-						|| moroccoIdentity.getGender().get(0).getValue().equals(textMaleLocalLanguage)) {
+				if (moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMale)
+						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleLocalLanguage)
+						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleCode)) {
 					male(null);
 				} else {
 					female(null);
 				}
 			}
-			if (switchedOn.get()) {
 				if (moroccoIdentity.getDateOfBirth() != null) {
 					String[] date = moroccoIdentity.getDateOfBirth().split("/");
 					if (date.length == 3) {
@@ -1608,7 +1615,6 @@ public class DemographicDetailController extends BaseController {
 						mm.setText(date[1]);
 						dd.setText(date[2]);
 					}
-				}
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
