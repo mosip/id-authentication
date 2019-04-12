@@ -87,6 +87,14 @@ public class RegistrationStatusMapUtil {
 				RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING,
 				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING, RegistrationExternalStatusCode.PROCESSING);
 
 		return unmodifiableMap;

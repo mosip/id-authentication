@@ -142,6 +142,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, description);
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -150,6 +152,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getCode();
@@ -158,6 +162,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
@@ -167,6 +173,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 
 		} catch (IOException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			object.setInternalError(Boolean.TRUE);
@@ -176,6 +184,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
+			registrationStatusDto.setStatusComment(e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
