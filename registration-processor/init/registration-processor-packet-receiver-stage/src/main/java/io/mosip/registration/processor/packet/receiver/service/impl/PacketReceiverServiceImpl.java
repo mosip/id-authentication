@@ -137,7 +137,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * validatePacket( java.lang.Object)
 	 */
 	@Override
-	public MessageDTO validatePacket(File file, String stageName) throws PacketReceiverAppException {
+	public MessageDTO validatePacket(File file, String stageName) {
 
 		MessageDTO messageDTO = new MessageDTO();
 

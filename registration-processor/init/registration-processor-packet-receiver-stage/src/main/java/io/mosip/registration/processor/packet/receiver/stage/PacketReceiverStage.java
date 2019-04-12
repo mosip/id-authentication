@@ -23,6 +23,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
+import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -122,8 +123,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 *
 	 * @param ctx
 	 *            the ctx
+	 * @throws PacketReceiverAppException
 	 */
-	public void processURL(RoutingContext ctx) {
+	public void processURL(RoutingContext ctx) throws PacketReceiverAppException {
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
 		File file = null;
 		try {
@@ -141,7 +143,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 								RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), listObj),
 						APPLICATION_JSON);
 				this.sendMessage(messageDTO);
-			} 
+			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
