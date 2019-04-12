@@ -37,6 +37,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -187,9 +188,9 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 		String resTime = DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(DATETIME_PATTERN),
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
+				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(ZoneOffset.UTC));
 		ResponseDTO res=new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		authResponseDTO.setResponse(res);
@@ -198,8 +199,8 @@ public abstract class BaseIDAFilter implements Filter {
 			ZoneId zone = ZonedDateTime
 					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
 			resTime = DateUtils.formatDate(
-					DateUtils.parseToDate(resTime, env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
-					env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone));
+					DateUtils.parseToDate(resTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
+					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone));
 		}
 
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
@@ -444,8 +445,8 @@ public abstract class BaseIDAFilter implements Filter {
 			responseBody.replace(RES_TIME,
 					DateUtils.formatDate(
 							DateUtils.parseToDate((String) responseBody.get(RES_TIME),
-									env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
-							env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+									env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
+							env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)));
 			return responseBody;
 		} else {
 			return responseBody;
@@ -488,7 +489,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected boolean isDate(String date) {
 		try {
-			DateUtils.parseToDate(date, env.getProperty(DATETIME_PATTERN));
+			DateUtils.parseToDate(date, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
 			return true;
 		} catch (ParseException e) {
 			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));

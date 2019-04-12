@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.policy.AuthPolicy;
 import io.mosip.authentication.common.policy.KYCAttributes;
 import io.mosip.authentication.common.policy.Policies;
@@ -51,15 +52,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	/** The Constant SECRET_KEY. */
 	private static final String SECRET_KEY = "secretKey";
-
-	/** The Constant MISP_PARTNER_MAPPING. */
-	private static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
-
-	/** The Constant PARTNER_KEY. */
-	private static final String PARTNER_KEY = "partner.";
-
-	/** The Constant LICENSE_KEY. */
-	private static final String LICENSE_KEY = "licenseKey.";
 
 	/** The Constant MISPLICENSE_KEY. */
 	private static final String MISPLICENSE_KEY = "misplicenseKey";
@@ -161,7 +153,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
 		String mispId = null;
-		String licensekeyMappingJson = env.getProperty(LICENSE_KEY + licenseKey);
+		String licensekeyMappingJson = env.getProperty(IdAuthenticationProperties.LICENSE_KEY.getkey() + licenseKey);
 		if (Objects.nonNull(licensekeyMappingJson)) {
 			Map<String, Object> licenseKeyMap = null;
 			try {
@@ -192,7 +184,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
+		String partnerIdJson = env.getProperty(IdAuthenticationProperties.PARTNER_KEY.getkey() + partnerId);
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
 		} else {
@@ -225,12 +217,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		Boolean mispPartnerMappingJson = env.getProperty(MISP_PARTNER_MAPPING + mispId + "." + partnerId,
+		Boolean mispPartnerMappingJson = env.getProperty(IdAuthenticationProperties.MISP_PARTNER_MAPPING.getkey()+ mispId + "." + partnerId,
 				boolean.class);
 		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
+		String partnerIdJson = env.getProperty(IdAuthenticationProperties.PARTNER_KEY.getkey() + partnerId);
 		try {
 			partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
 			policyId = partnerIdMap.get(POLICY_ID);
@@ -434,7 +426,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(env.getProperty("mosip.ida.api.ids.ekyc"))).isPresent()) {
+						.filter(id -> id.equals(env.getProperty(IdAuthenticationProperties.MOSIP_IDA_API_IDS.getkey() + "ekyc"))).isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
 		}
@@ -475,7 +467,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the policy
 	 */
 	private String getPolicy(String policyId) {
-		return env.getProperty("policy." + policyId);
+		return env.getProperty(IdAuthenticationProperties.POLICY.getkey() + policyId);
 	}
 
 	/**

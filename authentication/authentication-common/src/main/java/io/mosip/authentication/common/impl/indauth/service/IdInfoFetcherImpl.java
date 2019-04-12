@@ -19,6 +19,7 @@ import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioMatchType;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.integration.MasterDataManager;
 import io.mosip.authentication.common.integration.OTPManager;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -47,12 +48,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
-	/** The Constant PRIMARY_LANG_CODE. */
-	private static final String PRIMARY_LANG_CODE = "mosip.primary-language";
-
-	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary-language";
 
 	/** The BiometricProviderFactory value */
 	@Autowired
@@ -91,9 +86,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public String getLanguageCode(LanguageType langType) {
 		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(PRIMARY_LANG_CODE);
+			return environment.getProperty(IdAuthenticationProperties.MOSIP_PRIMARY_LANGUAGE.getkey());
 		} else {
-			return environment.getProperty(SECONDARY_LANG_CODE);
+			return environment.getProperty(IdAuthenticationProperties.MOSIP_SECONDARY_LANGUAGE.getkey());
 		}
 	}
 
@@ -105,7 +100,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		String languagName = null;
 		String key = null;
 		if (languageCode != null) {
-			key = "mosip.phonetic.lang.".concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
+			key = IdAuthenticationProperties.MOSIP_PHONETIC_LANG.getkey().concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				String[] split = property.split("-");

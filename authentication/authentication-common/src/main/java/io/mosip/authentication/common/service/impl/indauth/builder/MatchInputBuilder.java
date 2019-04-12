@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -149,7 +150,7 @@ public class MatchInputBuilder {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
 							environment);
 					matchValue = matchThresholdOpt
-							.orElseGet(() -> Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
+							.orElseGet(() -> Integer.parseInt(environment.getProperty(IdAuthenticationProperties.DEFAULT_MATCH_VALUE.getkey())));
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);

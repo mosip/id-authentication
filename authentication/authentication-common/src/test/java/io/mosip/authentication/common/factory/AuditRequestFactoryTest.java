@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;
@@ -73,13 +74,13 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setActionTimeStamp(null);
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
-			expectedRequest.setApplicationId(env.getProperty("application.id")); 
-			expectedRequest.setApplicationName(env.getProperty("application.name")); 
+			expectedRequest.setApplicationId(env.getProperty(IdAuthenticationProperties.APPLICATION_ID.getkey())); 
+			expectedRequest.setApplicationName(env.getProperty(IdAuthenticationProperties.APPLICATION_NAME.getkey())); 
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
 			expectedRequest.setIdType(IdType.UIN.name());
-			expectedRequest.setCreatedBy(env.getProperty("user.name")); 
+			expectedRequest.setCreatedBy(env.getProperty(IdAuthenticationProperties.USER_NAME.getkey())); 
 			expectedRequest.setModuleName(AuditModules.FINGERPRINT_AUTH.getModuleName());
 			expectedRequest.setModuleId(AuditModules.FINGERPRINT_AUTH.getModuleId());
 			expectedRequest.setDescription("desc");

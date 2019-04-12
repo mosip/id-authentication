@@ -27,6 +27,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.id.validator.IdAuthValidator;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
@@ -44,6 +45,7 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdAuthValidatorTest {
+
 
 	private static final String INDIVIDUAL_ID_TYPE = "individualIdType";
 
@@ -267,7 +269,7 @@ public class IdAuthValidatorTest {
 	public void testRequestTime_Valid() {
 		String reqTime = null;
 		reqTime = Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString();
 		validator.validateReqTime(reqTime, errors, REQUEST_TIME);
 		assertFalse(errors.hasErrors());
 	}

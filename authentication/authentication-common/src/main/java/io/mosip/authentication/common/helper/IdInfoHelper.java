@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -55,9 +56,6 @@ public class IdInfoHelper {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-
-	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
-	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
 	/** The id mapping config. */
 	@Autowired
@@ -409,7 +407,7 @@ public class IdInfoHelper {
 	 */
 	public Set<String> getAllowedLang() {
 		Set<String> allowedLang;
-		String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+		String languages = environment.getProperty(IdAuthenticationProperties.MOSIP_SUPPORTED_LANGUAGES.getkey());
 		if (null != languages && languages.contains(",")) {
 			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
 		} else {

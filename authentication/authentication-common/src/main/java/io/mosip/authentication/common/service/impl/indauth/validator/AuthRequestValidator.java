@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.auth.validator.BaseAuthRequestValidator;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -65,9 +66,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
-
-	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
 
 	/** The Constant INVALID_AUTH_REQUEST. */
 	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
@@ -147,11 +145,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateRequestTimedOut(String reqTime, Errors errors) {
 		try {
-			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty("datetime.pattern")).toInstant();
+			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
+			Long reqDateMaxTimeLong = env.getProperty(IdAuthenticationProperties.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS.getkey(), Long.class);
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,

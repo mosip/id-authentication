@@ -277,7 +277,6 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
 		authFacadeImpl.authenticateApplicant(authRequestDTO, true, "123456");
 
 	}

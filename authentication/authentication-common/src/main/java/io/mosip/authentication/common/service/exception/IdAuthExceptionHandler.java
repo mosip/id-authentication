@@ -24,6 +24,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
@@ -54,9 +55,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private Environment environment;
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant PREFIX_HANDLING_EXCEPTION. */
 	private static final String PREFIX_HANDLING_EXCEPTION = "Handling exception :";
@@ -210,7 +208,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			}
 		}
 
-		authResp.setResponseTime(DateUtils.getUTCCurrentDateTimeString(environment.getProperty(DATETIME_PATTERN)));
+		authResp.setResponseTime(DateUtils.getUTCCurrentDateTimeString(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())));
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 		return authResp;
 	}

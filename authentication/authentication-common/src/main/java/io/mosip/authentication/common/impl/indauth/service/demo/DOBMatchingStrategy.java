@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -29,8 +30,8 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			try {
 				Environment env = (Environment) props.get("env");
-				String dateFormatReq = env.getProperty("dob.req.date.pattern");
-				String dateFormatEntity = env.getProperty("dob.entity.date.pattern");
+				String dateFormatReq = env.getProperty(IdAuthenticationProperties.DOB_REQ_DATE_PATTERN.getkey());
+				String dateFormatEntity = env.getProperty(IdAuthenticationProperties.DOB_ENTITY_DATE_PATTERN.getkey());
 				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateFormatReq);
 				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateFormatEntity);
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);

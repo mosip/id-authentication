@@ -130,7 +130,7 @@ public class KeyManager {
 				byte[] decryptedSymmetricKey = null;
 				try {
 					symmetricKeyRequestDto.setApplicationId(appId);
-					symmetricKeyRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
+					symmetricKeyRequestDto.setReferenceId(environment.getProperty(IdAuthenticationProperties.MOSIP_IDA_PUBLICKEY.getkey()));
 					symmetricKeyRequestDto.setTimeStamp(
 							DateUtils.getUTCCurrentDateTime());
 					// cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");

@@ -37,10 +37,10 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.factory.IDAMappingFactory;
 import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.integration.MasterDataManager;
 import io.mosip.authentication.common.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.impl.indauth.service.DemoAuthServiceImpl;
@@ -66,6 +66,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })
 public class DemoAuthServiceTest {
+
 
 	@Autowired
 	private Environment environment;
@@ -108,7 +109,7 @@ public class DemoAuthServiceTest {
 
 	@Test
 	public void test() {
-		System.err.println(environment.getProperty("mosip.secondary-language"));
+		System.err.println(environment.getProperty(IdAuthenticationProperties.MOSIP_SECONDARY_LANGUAGE.getkey()));
 	}
 
 	@Test
@@ -470,7 +471,7 @@ public class DemoAuthServiceTest {
 
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
@@ -496,7 +497,7 @@ public class DemoAuthServiceTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.primary-language", "fre");
-		mockenv.setProperty("mosip.secondary-language", "ara");
+		mockenv.setProperty(IdAuthenticationProperties.MOSIP_SECONDARY_LANGUAGE.getkey(), "ara");
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
@@ -626,7 +627,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 //		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");

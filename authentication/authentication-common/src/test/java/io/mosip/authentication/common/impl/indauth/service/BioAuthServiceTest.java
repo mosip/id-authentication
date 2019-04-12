@@ -37,6 +37,7 @@ import io.mosip.authentication.common.impl.face.provider.MorphoFaceProvider;
 import io.mosip.authentication.common.impl.fingerauth.provider.CogentFingerprintProvider;
 import io.mosip.authentication.common.impl.fingerauth.provider.MantraFingerprintProvider;
 import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.impl.indauth.service.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.iris.CogentIrisProvider;
@@ -58,6 +59,7 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 @Import(IDAMappingConfig.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class BioAuthServiceTest {
+
 
 	@InjectMocks
 	private BioAuthServiceImpl bioAuthServiceImpl;
@@ -145,7 +147,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -194,7 +196,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -241,7 +243,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -300,7 +302,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -354,7 +356,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -402,7 +404,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -447,7 +449,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -494,7 +496,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -607,7 +609,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
@@ -719,7 +721,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -767,7 +769,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -814,7 +816,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
@@ -863,7 +865,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
@@ -909,7 +911,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
@@ -949,7 +951,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))).toString());
 		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		List<BioIdentityInfoDTO> faceList = new ArrayList<>();

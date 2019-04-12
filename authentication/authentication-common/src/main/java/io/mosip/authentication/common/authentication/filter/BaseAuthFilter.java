@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -57,12 +58,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
-
-	/** The Constant MOSIP_TSP_ORGANIZATION. */
-	private static final String MOSIP_TSP_ORGANIZATION = "mosip.jws.certificate.organization";
-
-	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
-	private static final String MOSIP_JWS_CERTIFICATE_ALGM = "mosip.jws.certificate.algo";
 
 	/** The public key. */
 	protected PublicKey publicKey;
@@ -166,7 +161,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			jws.setCompactSerialization(signature);
 			List<X509Certificate> certificateChainHeaderValue = jws.getCertificateChainHeaderValue();
 			if (certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE
-					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGM))) {
+					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(IdAuthenticationProperties.MOSIP_JWS_CERTIFICATE_ALGM.getkey()))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
 				KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 				keyStore.load(null);
@@ -220,7 +215,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		String[] subject = certNew.getSubjectDN().getName().split(",");
 		return Stream.of(subject).map(s -> s.split("=")).filter(ar -> ar.length == 2)
 				.filter(ar -> ar[0].trim().equals("O"))
-				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
+				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(IdAuthenticationProperties.MOSIP_TSP_ORGANIZATION.getkey())));
 	}
 
 	/**

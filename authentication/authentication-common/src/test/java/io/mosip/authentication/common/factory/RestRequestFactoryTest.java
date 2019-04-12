@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -86,10 +87,10 @@ public class RestRequestFactoryTest {
 
 		RestRequestDTO testRequest = new RestRequestDTO();
 		String serviceName = RestServicesConstants.AUDIT_MANAGER_SERVICE.getServiceName();
-		String uri = env.getProperty(serviceName.concat(".rest.uri"));
-		String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
-		String mediaType = env.getProperty(serviceName.concat(".rest.headers.mediaType"));
-		String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
+		String uri = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_URI.getkey()));
+		String httpMethod = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HTTP_METHOD.getkey()));
+		String mediaType = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey()));
+		String timeout = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_TIMEOUT.getkey()));
 
 		testRequest.setUri(uri);
 		testRequest.setHttpMethod(HttpMethod.valueOf(httpMethod));

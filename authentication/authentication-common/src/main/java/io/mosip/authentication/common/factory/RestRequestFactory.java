@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -38,12 +39,6 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 public class RestRequestFactory {
-
-    private static final String REST_TIMEOUT = ".rest.timeout";
-
-    private static final String REST_HTTP_METHOD = ".rest.httpMethod";
-
-    private static final String REST_URI = ".rest.uri";
 
     private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 
@@ -81,9 +76,9 @@ public class RestRequestFactory {
 
 	String serviceName = restService.getServiceName();
 
-	String uri = env.getProperty(serviceName.concat(REST_URI));
-	String httpMethod = env.getProperty(serviceName.concat(REST_HTTP_METHOD));
-	String timeout = env.getProperty(serviceName.concat(REST_TIMEOUT));
+	String uri = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_URI.getkey()));
+	String httpMethod = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HTTP_METHOD.getkey()));
+	String timeout = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_TIMEOUT.getkey()));
 
 	HttpHeaders headers = constructHttpHeaders(serviceName);
 
@@ -130,12 +125,12 @@ public class RestRequestFactory {
     private HttpHeaders constructHttpHeaders(String serviceName) throws IDDataValidationException {
 	try {
 	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE))));
+	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey()))));
 	    return headers;
 	} catch (InvalidMediaTypeException e) {
 	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 		    "throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
-			    + env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
+			    + env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey())));
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 			    serviceName.concat(REST_HEADERS_MEDIA_TYPE)));

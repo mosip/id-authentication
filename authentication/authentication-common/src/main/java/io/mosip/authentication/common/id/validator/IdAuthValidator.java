@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
@@ -168,7 +169,7 @@ public abstract class IdAuthValidator implements Validator {
 
 		Date reqDateAndTime = null;
 		try {
-			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
 		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
@@ -192,7 +193,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
-		String allowedIdTypes = env.getProperty("mosip.idtype.allowed");
+		String allowedIdTypes = env.getProperty(IdAuthenticationProperties.MOSIP_IDTYPE_ALLOWED.getkey());
 		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
 		// Checks for null IdType

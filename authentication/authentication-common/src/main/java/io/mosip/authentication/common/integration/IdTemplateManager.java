@@ -34,11 +34,7 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
-	private static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
-
-
 	private static final String BOTH = "BOTH";
-
 
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "Template";
@@ -136,7 +132,7 @@ public class IdTemplateManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty(MOSIP_NOTIFICATION_LANGUAGE_TYPE);
+		String languageRequired = environment.getProperty(IdAuthenticationProperties.MOSIP_NOTIFICATION_LANGUAGE_TYPE.getkey());
 		StringBuilder stringBuilder = new StringBuilder();
 		if (languageRequired.equalsIgnoreCase(BOTH)) {
 			stringBuilder.append(masterDataManager.fetchTemplate(templateName));

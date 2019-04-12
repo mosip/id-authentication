@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.helper.AuditHelper;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -59,20 +60,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
-	/** The Constant STATIC_TOKEN_ENABLE. */
-	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
-
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
-
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
-
-	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant IDA. */
 	private static final String IDA = "IDA";
@@ -152,11 +141,11 @@ public class AuthFacadeImpl implements AuthFacade {
 				authRequestDTO.getRequestedAuth().isBio());
 
 		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
-		Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+		Boolean staticTokenRequired = env.getProperty(IdAuthenticationProperties.STATIC_TOKEN_ENABLE.getkey(), Boolean.class);
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
@@ -423,15 +412,16 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = getUTCTime(reqTime);
-			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+//			String strUTCDate = DateUtils
+//					.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())));
+//			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
 			autnTxn.setStatusComment(comment);
 			// FIXME
-			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANG_CODE));
+			autnTxn.setLangCode(env.getProperty(IdAuthenticationProperties.MOSIP_PRIMARY_LANGUAGE.getkey()));
 			return autnTxn;
 		} catch (ParseException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
@@ -446,7 +436,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @return
 	 */
 	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
+		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
 		String uinAndDate = uin + "-" + currentDate;
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
 	}
@@ -468,9 +458,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @return
 	 */
 	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of("UTC")));
 		return dateFormatter.format(reqDate);
 	}
 

@@ -81,7 +81,7 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			if (environment.getProperty("mosip.kernel.idrepo.status.registered")
+			if (environment.getProperty(IdAuthenticationProperties.MOSIP_KERNEL_IDREPO_STATUS_REGISTERED.getkey())
 					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(STATUS_KEY))) {
 				response.put("uin", uin);
 			} else {

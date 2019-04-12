@@ -15,6 +15,7 @@ import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.common.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.common.impl.indauth.service.pin.PinMatchType;
+import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.common.repository.VIDRepository;
 import io.mosip.authentication.common.service.impl.indauth.builder.AuthStatusInfoBuilder;
@@ -140,7 +141,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		Map<String, String> map = new HashMap<>();
 		String txnID = authReq.getTransactionID();
 		String tspID = partnerId;
-		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
+		String otpKey = OTPUtil.generateKey(env.getProperty(IdAuthenticationProperties.APPLICATION_ID.getkey()), uin, txnID, tspID);
 		String key = Optional.ofNullable(otpKey).orElseThrow(
 				() -> new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		map.put("value", key);
