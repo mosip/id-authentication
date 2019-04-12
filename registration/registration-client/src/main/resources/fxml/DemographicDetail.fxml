@@ -121,7 +121,7 @@
 																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																							</rowConstraints>
 																							<children>
-																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" visible="false" />
+																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" visible="true" />
 																							</children>
 																						</GridPane>
 																					</children>
@@ -137,11 +137,11 @@
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="languageLabelParentPane" prefHeight="30.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="languageLabelParentPane" prefHeight="40.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane GridPane.columnIndex="1">
 																					<children>
-																						<HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="1">
+																						<HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="2">
 																							<children>
 																								<Label styleClass="demographicLangHeader" text="%language-" />
 																								<Label styleClass="demographicLangHeader" text="%language" />
@@ -159,16 +159,15 @@
 																				</GridPane>
 																				<GridPane GridPane.columnIndex="2">
 																					<children>
-																						<HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 																							<children>
 																								<Label fx:id="languageLabelLocalLanguage" styleClass="demographicLangHeader" text="%language" />
 																							</children>
 																						</HBox>
 																					</children>
 																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
 																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
 																					</columnConstraints>
 																					<rowConstraints>
 																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -187,7 +186,7 @@
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="fullNameParentPane" prefHeight="130.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="fullNameParentPane" prefHeight="100.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="fullNameGridPane">
 																					<columnConstraints>
