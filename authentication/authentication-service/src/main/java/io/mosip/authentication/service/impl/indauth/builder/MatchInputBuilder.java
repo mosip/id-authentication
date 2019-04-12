@@ -147,7 +147,7 @@ public class MatchInputBuilder {
 				if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
-							environment);
+							environment, idInfoFetcher);
 					matchValue = matchThresholdOpt
 							.orElseGet(() -> Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
 				}

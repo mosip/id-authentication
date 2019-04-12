@@ -111,10 +111,10 @@ public class OTPManagerTest {
 		otpGeneratorResponsetDto.setStatus("failure");
 		otpGeneratorResponsetDto.setMessage("USER_BLOCKED");
 
-		Map<String, String> valueMap = new HashMap();
+		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put("status", "failure");
 		valueMap.put("message", "USER_BLOCKED");
-		Map<String, Object> wrapperMap = new HashMap();
+		Map<String, Object> wrapperMap = new HashMap<String, Object>();
 		wrapperMap.put("response", valueMap);
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, null,

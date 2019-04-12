@@ -18,11 +18,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,14 +28,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.demo.service.controller.Encrypt;
 import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
-import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 
 
 /**
@@ -94,6 +88,7 @@ public class EncryptTest {
 	 * @throws NoSuchPaddingException 
 	 * @throws InvalidKeyException 
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void encryptTest() throws KeyManagementException, RestClientException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String testData="{\r\n" + 

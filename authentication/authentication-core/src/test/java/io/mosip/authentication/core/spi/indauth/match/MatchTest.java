@@ -31,13 +31,11 @@ public class MatchTest {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
 			@Override
 			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -48,13 +46,11 @@ public class MatchTest {
 
 			@Override
 			public String getType() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public String getDisplayName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -65,7 +61,11 @@ public class MatchTest {
 
 			@Override
 			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
 				return null;
 			}
 		};
@@ -74,10 +74,7 @@ public class MatchTest {
 		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
 		assertFalse(authTypeInfoAvailable);
 		IdInfoFetcher languageInfoFetcher = null;
-		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
-		System.err.println(matchProperties);
-		System.err.println(authType.getDisplayName());
-		System.err.println(authType.getAssociatedMatchTypes());
+		authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -98,19 +95,16 @@ public class MatchTest {
 
 			@Override
 			public IdMapping getIdMapping() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Category getCategory() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -125,22 +119,21 @@ public class MatchTest {
 		assertNotNull(authType.isAssociatedMatchType(matchType));
 		Environment environment = null;
 		String newlanguageInfoFetcher = null;
-		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment);
+		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment, languageInfoFetcher);
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void TestMatchtype() throws IdAuthenticationBusinessException {
-		AuthType authType = new AuthType() {
+		new AuthType() {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-				// TODO Auto-generated method stub
 				return true;
 			}
 
 			@Override
 			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-				// TODO Auto-generated method stub
 				return true;
 			}
 
@@ -163,6 +156,11 @@ public class MatchTest {
 			public Set<MatchType> getAssociatedMatchTypes() {
 				return null;
 			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
+				return null;
+			}
 		};
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
@@ -184,19 +182,16 @@ public class MatchTest {
 
 			@Override
 			public IdMapping getIdMapping() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Category getCategory() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -207,7 +202,7 @@ public class MatchTest {
 		};
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identity);
-		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(requestDTO);
+		matchType.getIdentityInfoList(requestDTO);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);
@@ -238,19 +233,16 @@ public class MatchTest {
 
 			@Override
 			public String getIdname() {
-				// TODO Auto-generated method stub
 				return "name";
 			}
 
 			@Override
 			public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public Set<IdMapping> getSubIdMappings() {
-				// TODO Auto-generated method stub
 				return Collections.emptySet();
 			}
 		};
@@ -266,7 +258,6 @@ public class MatchTest {
 
 			@Override
 			public MatchingStrategyType getType() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -282,7 +273,7 @@ public class MatchTest {
 
 	@Test
 	public void TestAuthtype() {
-		AuthType authType = new AuthType() {
+		new AuthType() {
 
 			@Override
 			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
@@ -301,19 +292,21 @@ public class MatchTest {
 
 			@Override
 			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-				// TODO Auto-generated method stub
 				return Optional.ofNullable("E");
 			}
 
 			@Override
 			public String getDisplayName() {
-				// TODO Auto-generated method stub
 				return "OTP";
 			}
 
 			@Override
 			public Set<MatchType> getAssociatedMatchTypes() {
-				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public AuthType getAuthTypeImpl() {
 				return null;
 			}
 		};

@@ -126,8 +126,6 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		System.err.println("started server");
-
 	}
 
 	/**

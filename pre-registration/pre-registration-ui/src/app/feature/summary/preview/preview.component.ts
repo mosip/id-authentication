@@ -45,6 +45,7 @@ export class PreviewComponent implements OnInit {
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
+    this.previewData.dateOfBirth = this.previewData.dateOfBirth.split('/').reverse().join('/');
     this.setFieldValues();
     this.setResidentStatus();
     console.log(this.previewData);

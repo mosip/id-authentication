@@ -37,9 +37,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate([homeURL]);
   }
 
-  doLogout() {
-    this.showMessage();
-    this.authService.onLogout();
+ async doLogout() {
+   await this.showMessage();
   }
 
   showMessage() {
@@ -54,7 +53,7 @@ export class HeaderComponent implements OnInit {
         this.dialog.open(DialougComponent, {
           width: '350px',
           data: data
-        });
+        }).afterClosed().subscribe(() => this.authService.onLogout());
       });
   }
 
