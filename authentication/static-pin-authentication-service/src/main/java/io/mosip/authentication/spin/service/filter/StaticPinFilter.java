@@ -1,4 +1,4 @@
-package io.mosip.authentication.spin.filter;
+package io.mosip.authentication.spin.service.filter;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedHashMap;

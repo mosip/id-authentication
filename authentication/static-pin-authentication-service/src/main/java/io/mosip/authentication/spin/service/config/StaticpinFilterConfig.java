@@ -4,7 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.authentication.spin.filter.StaticPinFilter;
+import io.mosip.authentication.spin.service.filter.StaticPinFilter;
 
 /**
  * The configuration for adding filters.
