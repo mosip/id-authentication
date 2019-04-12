@@ -33,7 +33,7 @@ This document will describe/provide designing details about ABIS middleware whic
 **Solution**
 
 The key solution considerations are -
-##### 1.	Add and Alter tables:
+1.	**Add and Alter tables**:
 - 	"registration_transaction"
 -	"reg_demo_dedupe_list"
 - 	"abis_request"
@@ -41,7 +41,7 @@ The key solution considerations are -
 - 	"abis_response_det"
 -	"abis_application"
 
-##### 2.	Configuration changes:
+2.	**Configuration changes**:
 - 	Add key registration.processor.abis.details having value 
 ```html
 {
@@ -63,10 +63,10 @@ The key solution considerations are -
 ```
 - Add key registration.processor.abis.ping.schedule.time with expected value: 
 0 0/5 * * * ?  .This triggers scheduler after every 5 minutes.
-##### 3.	Update MessageDTO: 
+3.	**Update MessageDTO**: 
 Add field called isForMatchIdentification boolean field.
 
-##### 4.	Create or Update Stage:
+4.	**Create or Update Stage**:
 
 	1. **"DemodedupeStage" :** 
 	Update this stage to identify potential match based on name, DOB and Gender. In case potential match found make an entry in "registration_transaction" table with status "IN-PROGRESS" and make potential matched records entry in "reg_demo_dedupe_list". Update MessageDTO with true for isForMatchIdentification and send out event (demodedupe-bus-out). Add camel flow to send event to BiometricIdentificationHandlerStage in case if isForMatchIdentification set to true or else to BioDedupeStage.
