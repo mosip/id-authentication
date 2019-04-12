@@ -66,7 +66,7 @@ The key solution considerations are -
 3.	**Update MessageDTO**: 
 Add field called isForMatchIdentification boolean field.
 
-1. ABIS API Specification:
+1. **ABIS API Specification:**
 Reference to ABIS API specifiaction can be found from [here](https://github.com/mosip/mosip/wiki/ABIS-APIs "here") which includes INSERT, IDENTIFY, PING request details.
 
 4.	**Create or Update Stage**:
@@ -110,7 +110,7 @@ Reference to ABIS API specifiaction can be found from [here](https://github.com/
 
 ------------
 
-Behavior of Identification:
+**Behavior of Identification:**
 
 ![abis middleware identification logical diagram](_images/reproc_abis_middleware_logical_arch_diagram.png)
 
@@ -119,7 +119,7 @@ Behavior of Identification:
 - BiometricIdentificationMiddlewareStage: This stage communicate with ABIS systems via queue. This stage creates request object to be send to ABIS and receives asynchronous response from ABIS system.
 
 
-Behavior of Ping:
+**Behavior of Ping:**
 
 ![abis middleware identification logical diagram](_images/reproc_abis_middleware_ping_logical_arch_diagram.png)
 
@@ -129,19 +129,19 @@ Behavior of Ping:
 ------------
 
 
-Demo Failed Sequence Diagram:
+**Demo Failed Sequence Diagram:**
 
 ![ABIS middleware demo match sequence diagram](_images/abis_middleware_demo_match_seq_diagram.png)
 
 
-Demo Success Sequence Diagram:
+**Demo Success Sequence Diagram:**
 
 ![ABIS middleware demo no match sequence diagram](_images/abis_middleware_demo_no_match_seq_diagram.png)
 
-Bio Failed Sequence Diagram:
+**Bio Failed Sequence Diagram:**
 
 ![ABIS middleware bio match sequence diagram](_images/abis_middleware_bio_match_seq_diagram.png)
 
-Bio Success Sequence Diagram:
+**Bio Success Sequence Diagram:**
 
 ![ABIS middleware bio no match sequence diagram](_images/abis_middleware_bio_no_match_seq_diagram.png)
