@@ -14,7 +14,10 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -65,8 +68,15 @@ public class ConnectionUtils {
 	 */
 	private FileSystem configuredFileSystem;
 
+	/**
+	 * Field for {@link ResourceLoader}
+	 */
+	@Autowired
+	private ResourceLoader resourceLoader;
+
 	private static final String HADOOP_HOME = "hadoop-lib";
 	private static final String WIN_UTIL = "winutils.exe";
+	private static final String CLASSPATH_PREFIX = "classpath:";
 
 	/**
 	 * hadoop lib path
@@ -163,10 +173,13 @@ public class ConnectionUtils {
 			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
-				InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream(WIN_UTIL);
-				Path winUtilsPath = Paths.get(binPath.toString(), WIN_UTIL);
-				Files.copy(winUtilsStream, winUtilsPath);
+				Resource resource = resourceLoader.getResource(CLASSPATH_PREFIX + WIN_UTIL);
+				if (resource.exists()) {
+					Path winUtilsPath = Paths.get(binPath.toString(), resource.getFilename());
+					Files.copy(resource.getInputStream(), winUtilsPath);
+				}
 			}
+
 		} catch (IOException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
@@ -184,12 +197,12 @@ public class ConnectionUtils {
 	 * @throws IOException
 	 */
 	private void loginWithKeyTab(String user, String keytabPath) throws IOException {
-		InputStream keytabInputStream = this.getClass().getClassLoader().getResourceAsStream(keytabPath);
-		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
 		Path keyPath = null;
-		if (keytabInputStream != null) {
-			keyPath = Paths.get(dataPath.toString(), keytabPath);
-			Files.copy(keytabInputStream, keyPath, StandardCopyOption.REPLACE_EXISTING);
+		Resource resource = resourceLoader.getResource(keytabPath);
+		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
+		if (resource.exists()) {
+			keyPath = Paths.get(dataPath.toString(), resource.getFilename());
+			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
