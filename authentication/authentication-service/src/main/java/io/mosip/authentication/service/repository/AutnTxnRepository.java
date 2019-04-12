@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 

@@ -202,8 +202,6 @@ public class OTPRequestValidatorTest {
 	/**
 	 * Test time parse error.
 	 */
-	@SuppressWarnings("deprecation")
-
 	@Test
 	public void testTimeParseError() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();

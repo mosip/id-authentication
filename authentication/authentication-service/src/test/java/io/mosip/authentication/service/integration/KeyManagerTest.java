@@ -3,10 +3,8 @@ package io.mosip.authentication.service.integration;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.el.stream.Optional;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,14 +49,6 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, DecryptorImpl.class })
 @WebMvcTest
 public class KeyManagerTest {
-
-	/** The env. */
-	@Autowired
-	private Environment env;
-
-	/** The decryptor. */
-	@Autowired
-	private DecryptorImpl decryptor;
 
 	/** The mapper. */
 	@Autowired
@@ -264,25 +254,6 @@ public class KeyManagerTest {
 				"	\"licenseKey\": \"1873299273\"\r\n" + 
 				"}" + 
 				"}";
-		Map<String, Object> readValue = null;
-		try {
-			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
-			});
-			readValue.put("request", Base64.decodeBase64((String) readValue.get("request")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return readValue;
-	}
-
-	/**
-	 * Creates the response.
-	 *
-	 * @return the map
-	 */
-	private Map<String, Object> createResponse() {
-		String data = "{\\r\\n\\tidentity = {\\r\\n\\t\\tleftIndex = [{\\r\\n\\t\\t\\tvalue = Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT + oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN \\/ QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI + oZECLAG0FZAAA\\r\\n\\t\\t}]\\r\\n\\t}\\r\\n}";
 		Map<String, Object> readValue = null;
 		try {
 			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {

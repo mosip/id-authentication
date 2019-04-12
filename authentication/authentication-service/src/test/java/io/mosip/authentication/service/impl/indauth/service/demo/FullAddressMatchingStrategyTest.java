@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;

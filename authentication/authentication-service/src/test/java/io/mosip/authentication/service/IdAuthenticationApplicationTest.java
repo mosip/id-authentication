@@ -6,6 +6,7 @@ import org.springframework.beans.factory.UnsatisfiedDependencyException;
 
 public class IdAuthenticationApplicationTest {
 
+	@SuppressWarnings("static-access")
 	@Ignore
 	@Test(expected = UnsatisfiedDependencyException.class)
 	public void test() {

@@ -104,6 +104,7 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -153,6 +154,7 @@ public class DemoAuthServiceTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -256,6 +258,7 @@ public class DemoAuthServiceTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void pidMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -321,6 +324,7 @@ public class DemoAuthServiceTest {
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -331,7 +335,6 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPin(false);
 		authRequest.setRequestedAuth(authTypeDTO);
-		List<MatchInput> matchInputs = new ArrayList<>();
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -426,7 +429,7 @@ public class DemoAuthServiceTest {
 	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = generateData();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
+		demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -633,7 +636,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoEntity.put("name", nameList);
-		AuthStatusInfo demoStatus = demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity,
+		demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity,
 				"123456");
 
 	}

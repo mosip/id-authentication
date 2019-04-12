@@ -86,7 +86,6 @@ public class StaticPinRequestValidatorTest {
 	@Test
 	public void testStaticPinValidator() {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String uin = "4950679436";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
@@ -106,7 +105,6 @@ public class StaticPinRequestValidatorTest {
 	@Test
 	public void testStaticPinValidator_pinValuenull() {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String uin = "4950679436";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
@@ -149,7 +147,6 @@ public class StaticPinRequestValidatorTest {
 	@Test
 	public void testStaticPinValidator_pinValueInvalid() {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String uin = "4950679436";
 		staticPinRequestDTO.setIndividualIdType(IdType.VID.getType());
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))

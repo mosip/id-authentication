@@ -67,7 +67,7 @@ public class FingerPrintMatchingStrategyTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put(FingerprintProvider.class.getSimpleName(), "Test");
-		int value3 = matchFunction.match(value, value, matchProperties);
+		matchFunction.match(value, value, matchProperties);
 
 	}
 
