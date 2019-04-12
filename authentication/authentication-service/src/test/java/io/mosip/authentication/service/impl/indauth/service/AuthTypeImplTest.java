@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,14 +15,12 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
-@Import(IDAMappingConfig.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@WebMvcTest
 public class AuthTypeImplTest {
 	
 	@Test
