@@ -235,7 +235,7 @@ export class DashBoardComponent implements OnInit {
   cancelAppointment(element: any) {
     element.regDto.pre_registration_id = element.applicationID;
     this.dataStorageService
-      .cancelAppointment(new RequestModel(appConstants.IDS.cancelAppointment, element.regDto), element.applicationID)
+      .cancelAppointment(new RequestModel(appConstants.IDS.booking, element.regDto), element.applicationID)
       .subscribe(
         response => {
           console.log(response);
