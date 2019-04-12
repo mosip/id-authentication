@@ -10,6 +10,7 @@ There are three major entities are being considered to interact with Bio-metric 
 **Device Integration Block Diagram:**  
 ![Device Integration Block Diagram:](_images/registration_Bio_Device_Integration_block_diagram.png)  
 
+
 The technical detail of the DM and Registration client application is briefly covered in this document. MDM technical spec is out of this document.  
 
 1. Mainly **Http protocol** will be used to communicate between MDI and MDM services.  
