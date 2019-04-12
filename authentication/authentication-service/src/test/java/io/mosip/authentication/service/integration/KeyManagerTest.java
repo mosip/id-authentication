@@ -96,12 +96,15 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		ResponseWrapper<Map<String,Object>> symmetricKeyResponse = new ResponseWrapper<>();
-		Map<String,Object> symResponseMap=new HashMap<>();
-		symResponseMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj2tDM");
-		symmetricKeyResponse.setResponse(symResponseMap);
+		Map<String,Object> symKeyMap=new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj2tDM");
+		Map<String,Object> responseMap=new HashMap<>();
+		responseMap.put("response", symKeyMap);
+		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(
+				Base64.encodeBase64URLSafeString(("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}").getBytes()));
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(symmetricKeyResponse);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
 		Map<String,Object> decryptedReqMap=keyManager.requestData(reqMap, mapper);
 		assertTrue(decryptedReqMap.containsKey("secretKey"));
 	}
@@ -119,13 +122,13 @@ public class KeyManagerTest {
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		ResponseWrapper<Map<String,Object>> symmetricKeyResponse = new ResponseWrapper<>();
-		Map<String,Object> symResponseMap=new HashMap<>();
-		symResponseMap.put("symmetricKey", "dfdfdfgdfgf");
-		symmetricKeyResponse.setResponse(symResponseMap);
+		Map<String,Object> symKeyMap=new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String,Object> responseMap=new HashMap<>();
+		responseMap.put("response", symKeyMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(symmetricKeyResponse);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
 		keyManager.requestData(reqMap, mapper);
 
 	}
@@ -209,6 +212,21 @@ public class KeyManagerTest {
 		keyManager.requestData(reqMap, mapper);
 	}
 	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void requestInvalidDataIOException() throws IDDataValidationException, IdAuthenticationAppException {
+		Map<String, Object> reqMap = createRequest();
+		RestRequestDTO restRequestDTO = getRestRequestDTO();
+		Map<String,Object> symKeyMap=new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String,Object> responseMap=new HashMap<>();
+		responseMap.put("response", symKeyMap);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
+		Mockito.when(keyManager.requestData(reqMap, mapper)).thenThrow(IOException.class);
+	} 
+
+	
 	/*@Test(expected = IdAuthenticationAppException.class)
 	public void TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
 		Map<String, Object> requestBody =
@@ -267,6 +285,7 @@ public class KeyManagerTest {
 			});
 			readValue.put("request", Base64.decodeBase64((String) readValue.get("request")));
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return readValue;

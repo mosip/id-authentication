@@ -311,7 +311,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
-	 * Check allowed auth type for bio.
+	 * Check allowed auth type for bio based on the policies.
 	 *
 	 * @param requestBody the request body
 	 * @param authPolicies the auth policies
@@ -407,7 +407,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
-	 * Validate auth policy.
+	 * Validate auth type allowed through auth policies.
 	 *
 	 * @param requestBody the request body
 	 * @param authType the auth type
