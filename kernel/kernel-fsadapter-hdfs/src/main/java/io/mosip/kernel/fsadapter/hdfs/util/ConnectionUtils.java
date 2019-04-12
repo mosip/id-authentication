@@ -205,7 +205,7 @@ public class ConnectionUtils {
 			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
+					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage()+": "+keytabPath);
 		}
 		try {
 			UserGroupInformation.loginUserFromKeytab(user, keyPath.toString());
