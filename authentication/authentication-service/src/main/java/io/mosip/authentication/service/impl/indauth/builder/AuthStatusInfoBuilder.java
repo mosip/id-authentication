@@ -141,7 +141,7 @@ public class AuthStatusInfoBuilder {
 					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
 			} else {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH, name,
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG, name,
 						matchOutput.getLanguage());
 			}
 
@@ -156,7 +156,7 @@ public class AuthStatusInfoBuilder {
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 
 		if (authTypeForMatchType.isPresent()) {
-			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.INVALID_OTP, null);
+			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.INVALID_OTP, "");
 			statusInfoBuilder.addErrors(errors);
 		}
 	}
@@ -179,7 +179,7 @@ public class AuthStatusInfoBuilder {
 			AuthError errors = null;
 
 			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.PIN_MISMATCH, null);
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.PIN_MISMATCH, "");
 			}
 			statusInfoBuilder.addErrors(errors);
 		}
@@ -211,7 +211,7 @@ public class AuthStatusInfoBuilder {
 	 * @return
 	 */
 	private static AuthError createActionableAuthError(IdAuthenticationErrorConstants idAuthenticationErrorConstants,
-			String... params) {
+			Object... params) {
 		return new ActionableAuthError(idAuthenticationErrorConstants.getErrorCode(),
 				String.format(idAuthenticationErrorConstants.getErrorMessage(), params),
 				idAuthenticationErrorConstants.getActionMessage() != null

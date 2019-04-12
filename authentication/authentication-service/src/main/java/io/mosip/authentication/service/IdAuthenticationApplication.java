@@ -13,6 +13,7 @@ import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -21,8 +22,8 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
  */
 @SpringBootApplication
 @Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		PDFGeneratorImpl.class, DecryptorImpl.class,
-		CbeffImpl.class,VidGeneratorImpl.class,VidFilterUtils.class })
+		PDFGeneratorImpl.class, DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class,
+		PinValidatorImpl.class })
 
 public class IdAuthenticationApplication {
 

@@ -46,11 +46,14 @@ public enum IdAuthenticationErrorConstants {
 	PHONE_EMAIL_NOT_REGISTERED("IDA-MLC-016", "%s not registered. Individual has to register and try again",
 			"Please register your %s and try again"),
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-017", "Identity Type - %s not configured for the country"),
-
-	DEMOGRAPHIC_DATA_MISMATCH("IDA-DEA-001", "Demographic data  %s  in  %s did not match",
-			"Please re-enter your  %s in %s"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "Please provide valid Language"),
-	DEMO_DATA_MISMATCH("IDA-DEA-003", "Demographic data - %s did not match", "Please re-enter your %s"),
+	
+	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
+			"Please re-enter your %s in %s"),
+	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
+	
+	DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
+	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
 
 	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
@@ -62,7 +65,7 @@ public enum IdAuthenticationErrorConstants {
 	IRIS_EXCEEDING("IDA-BIA-008", "Number of IIR should not exceed 2"),
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
 	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
-	BIOMETRIC_MISSING("IDA-BIA-006", "Missing biometric data in MOSIP database for the given UIN/Virtual ID",
+	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
 			"Your Biometric data is not available in MOSIP"),
 	BIOTYPE_MISSING("IDA-BIA-012", "Missing or empty value for bioType"),
 	INVALID_BIOTYPE("IDA-BIA-013", "Invalid bioType - %s"),

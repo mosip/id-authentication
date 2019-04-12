@@ -58,8 +58,9 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
 	 * matchScoreCalculator(byte[], byte[])
 	 */
-	@Override // TODO subject to change
+	@Override
 	public double matchScoreCalculator(byte[] isoImage1, byte[] isoImage2) {
+		// TODO subject to change on device integration.
 		return 0;
 	}
 
@@ -70,8 +71,9 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
 	 * matchScoreCalculator(java.lang.String, java.lang.String)
 	 */
-	@Override // TODO Subject to change
+	@Override
 	public double matchScoreCalculator(String fingerImage1, String fingerImage2) {
+		// TODO subject to change on device integration.
 		return 0;
 	}
 

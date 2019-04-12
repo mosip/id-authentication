@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
