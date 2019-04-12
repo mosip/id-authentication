@@ -14,15 +14,14 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pkr invalid packet size. */
 	RPR_PKR_INVALID_PACKET_SIZE(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "002",
-			"The Registration Packet Size is invalid"),
-	RPR_PKR_PACKET_SIZE_NOT_EQUALS_SYNCED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "008",
-			"The Registration Packet Size is not equal as synced packet size"),
-	
+			"The Registration Packet Size is invalid"), RPR_PKR_PACKET_SIZE_NOT_EQUALS_SYNCED(
+					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "008",
+					"The Registration Packet Size is not equal as synced packet size"),
+
 	/** The rpr pkr packet hash not equals synced hash. */
 	RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "009",
-			"The Registration Packet HashSequence is not equal as synced packet HashSequence"),
-	PRP_PKR_PACKET_VISRUS_SCAN_FAILED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "010",
-			"The Registration Packet virus scan failed"),
+			"The Registration Packet HashSequence is not equal as synced packet HashSequence"), PRP_PKR_PACKET_VISRUS_SCAN_FAILED(
+					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "010", "The Registration Packet virus scan failed"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),
@@ -38,6 +37,11 @@ public enum PlatformErrorMessages {
 	RPR_PKR_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "006", "Packet not avaialble"),
 
 	RPR_PKR_UNKNOWN_EXCEPTION(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "007", "Unknown Exception"),
+
+	RPR_PKR_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "011",
+			"Not able to access the API resource"),
+
+	RPR_PKR_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "012", "Error while adding records"),
 
 	/** The rpr rgs registration table not accessible. */
 	// Registration Status Exception error code and message
@@ -129,7 +133,7 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_REGISTRATION_STATUS_NOT_EXIST(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "025",
 			"RegistrationStatusCode is null"),
-	
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),

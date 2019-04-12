@@ -38,6 +38,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.receiver.exception.VirusScanFailedException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
@@ -132,12 +133,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.id.issuance.packet.handler.service.PacketUploadService#storePacket(
-	 * java.lang.Object)
+	 * @see io.mosip.id.issuance.packet.handler.service.PacketUploadService#
+	 * validatePacket( java.lang.Object)
 	 */
 	@Override
-	public MessageDTO validatePacket(File file, String stageName) {
+	public MessageDTO validatePacket(File file, String stageName) throws PacketReceiverAppException {
 
 		MessageDTO messageDTO = new MessageDTO();
 
@@ -187,19 +187,41 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						+ e.getMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"Error while updating status : " + e.getMessage());
+						PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+						PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			} catch (DataAccessException e) {
 
 				description = "DataAccessException in packet receiver for registrationId" + registrationId + "::"
 						+ e.getMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"Error while updating status : " + e.getMessage());
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "Error while updating status : "
+								+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getCode(),
+						PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
+
 			} catch (PacketDecryptionFailureException e) {
 				description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
 						+ e.getErrorText();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, e.getMessage());
+				throw new PacketReceiverAppException(e.getErrorCode(), e.getMessage());
+
 			} catch (ApisResourceAccessException e) {
-				description = PlatformErrorMessages.RPR_PSJ_API_RESOUCE_ACCESS_FAILED.getMessage();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "API resource not accessible : "
+								+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
+				description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getCode(),
+						PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
+
+			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "Error while updating status : "
+								+ PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getMessage());
+				description = PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getMessage();
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getCode(),
+						PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getMessage());
 
 			} finally {
 
