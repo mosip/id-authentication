@@ -23,7 +23,6 @@ public class BaseAuthFilterStaticTest {
 		BaseAuthFilter.encode(stringToDecode);
 	}
 	
-	@SuppressWarnings("static-access")
 	@Test(expected=IdAuthenticationAppException.class)
 	public void decodetest() throws IdAuthenticationAppException {
 		PowerMockito.mockStatic(CryptoUtil.class);

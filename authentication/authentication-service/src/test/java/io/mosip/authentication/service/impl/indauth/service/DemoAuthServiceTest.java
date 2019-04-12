@@ -492,7 +492,7 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
 				"123456");
 	}
 
