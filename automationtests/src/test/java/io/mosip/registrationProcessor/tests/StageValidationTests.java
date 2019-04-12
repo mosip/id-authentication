@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
@@ -40,6 +41,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	String invalidPacketPath = "";
 	String regID="";
 	RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
+	SoftAssert softAssert=new SoftAssert();
 	@BeforeClass
 	public void readUserStage() {
 		Properties folderPath = new Properties();
@@ -76,7 +78,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		  e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath); 
 		  }
 		 e.osiValidatorPropertyFileReader("packetProperties.properties",validPacketPath, invalidPacketFolderPath);
-		 
+		
 		try {
 			reader.close();
 		} catch (IOException e1) {
@@ -156,9 +158,14 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		dbList=scenario.getStatusCodeListFromDb(statusCodes);
 		logger.info("User list :: "+ userList);
 		logger.info("Db list :: "+ dbList);
+		softAssert.assertTrue(userList.equals(dbList));
+		
 		userList.clear();
 		dbList.clear();
+		softAssert.assertAll();
 		cleanUp.prepareQueryList(regID);
+		regID="";
+	
 	}
 	
 	@Test(dataProvider = "osiValidatorStage")
@@ -189,6 +196,13 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		dbList=scenario.getStatusCodeListFromDb(statusCodes);
 		logger.info("User list :: "+ userList);
 		logger.info("Db list :: "+ dbList);
+		softAssert.assertTrue(userList.equals(dbList));
+		
+		userList.clear();
+		dbList.clear();
+		cleanUp.prepareQueryList(regID);
+		softAssert.assertAll();
+		regID="";
 	}
 	@Test(dataProvider = "demoDedupeStage")
 	public void demoDedupeStage(File[] listOfInvpackets) {
@@ -218,16 +232,23 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		dbList=scenario.getStatusCodeListFromDb(statusCodes);
 		logger.info("User list :: "+ userList);
 		logger.info("Db list :: "+ dbList);
+		softAssert.assertTrue(userList.equals(dbList));
+		
+		userList.clear();
+		dbList.clear();
+		cleanUp.prepareQueryList(regID);
+		softAssert.assertAll();
+		regID="";
 	}
 	
 	
-	@AfterTest
+/*	@AfterTest
 	public void compareList() {
 		Set<String> uniqueDbList = new LinkedHashSet<>(dbList);
 		Assert.assertTrue(userList.equals(uniqueDbList));
 		userList.clear();
 		dbList.clear();
-	}
+	}*/
 
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {

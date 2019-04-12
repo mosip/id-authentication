@@ -15,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 
+import io.mosip.dbaccess.RegProcDBCleanUp;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -30,6 +31,7 @@ public class IntegMethods extends BaseTestCase {
 	public final static String Reg_Proc_PacketLanding_URI="/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets";
 	public final static String Reg_Proc_Get_URI="/registrationstatus/v0.1/registration-processor/registration-status/registrationstatus";
 	final static String folder="regProc/IntegrationScenarios";
+	String registrationID="";
 	JSONParser parser=new JSONParser();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
 	Properties prop=new Properties();
@@ -37,6 +39,7 @@ public class IntegMethods extends BaseTestCase {
 	List<String> innerKeys= new ArrayList<String>();
 	List<String> outerKeys=new ArrayList<String>();
 	AssertResponses assertResponses=new AssertResponses();
+	RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
 	/**
 	 * 
 	 * @param testCase
@@ -70,7 +73,7 @@ public class IntegMethods extends BaseTestCase {
 			Response actualResponse=applnMethods.postRequest(actualRequest, prop.getProperty("syncListApi"));
 			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
 			logger.info("Actual Response is :: "+ actualResponse.asString());
-			outerKeys.add("responseTimestamp");
+			outerKeys.add("responsetime");
 			boolean status=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 			Assert.assertTrue(status);
 			return actualResponse;
@@ -107,17 +110,20 @@ public class IntegMethods extends BaseTestCase {
 			for(File f: folder) {
 				if(f.getName().toLowerCase().contains(responseObject.get("registrationId").toString())) {
 					actualResponse=applnMethods.putMultipartFile(f, prop.getProperty("packetReceiverApi"));
+					registrationID=responseObject.get("registrationId").toString();
 				}
 				else if(f.getName().toLowerCase().contains("response")) {
 					expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 				}
 			}
 			try {
-				outerKeys.add("responseTimestamp");
+				outerKeys.add("responsetime");
 				boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 				Assert.assertTrue(assertStatus);
+		//clearFromDB(responseObject.get("registrationId").toString());
 				return actualResponse;
 			}catch(AssertionError err) {
+				clearFromDB(responseObject.get("registrationId").toString());
 				Assert.fail();
 				err.printStackTrace();
 			}
@@ -136,24 +142,31 @@ public class IntegMethods extends BaseTestCase {
 		String component="GetRequest";
 		JSONObject actualRequest=null;
 		JSONObject expectedResponse=null;
+		JSONObject requestToBeSent=null;
 		String configPath= "src/test/resources/" + folder+"/"+testCase+"/GetStatus";
 		File file=new File(configPath);
 		File[] folder=file.listFiles();
 		for(File f:folder) {
 			if(f.getName().toLowerCase().contains("request")) {
 				actualRequest=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				requestToBeSent=(JSONObject) actualRequest.get("request");
 			}
 			else if(f.getName().toLowerCase().contains("response")) {
 				expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 			}
 		}
-		actualResponse=applnMethods.getRequest( prop.getProperty("packetStatusApi"),actualRequest);
-		outerKeys.add("responseTimestamp");
+		actualResponse=applnMethods.getRequestAsQueryParam(prop.getProperty("packetStatusApi"),actualRequest);
+		outerKeys.add("responsetime");
 		boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+		clearFromDB(registrationID);
 		Assert.assertTrue(assertStatus);
+		
 		try {
 		}catch(AssertionError err) {
 			err.printStackTrace();
 		}
+	}
+	public void clearFromDB(String regID) {
+		cleanUp.prepareQueryList(regID);
 	}
 }
