@@ -80,5 +80,7 @@ public class Identity {
 	private IdentityJsonValues parentOrGuardianRID;
 	
 	private IdentityJsonValues parentOrGuardianUIN;
+	
+	private IdentityJsonValues parentOrGuardianName;
 
 }

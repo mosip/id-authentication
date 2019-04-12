@@ -8,7 +8,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 
 
-public class AuthManagerServiceException extends BaseUncheckedException {
+public class SyncServiceException extends BaseUncheckedException {
 	/**
 	 * Serializable version ID.
 	 */
@@ -23,7 +23,7 @@ public class AuthManagerServiceException extends BaseUncheckedException {
 	 * @param list
 	 *            The error list.
 	 */
-	public AuthManagerServiceException(List<ServiceError> list) {
+	public SyncServiceException(List<ServiceError> list) {
 		this.list = list;
 	}
 

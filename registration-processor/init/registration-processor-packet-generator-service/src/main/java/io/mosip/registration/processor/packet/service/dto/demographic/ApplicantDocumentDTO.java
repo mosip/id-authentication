@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.service.dto.demographic;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 import io.mosip.registration.processor.packet.service.dto.BaseDTO;
@@ -55,5 +56,42 @@ public class ApplicantDocumentDTO extends BaseDTO implements Serializable {
 
 	/** The acknowledge receipt name. */
 	private String acknowledgeReceiptName;
+	
+	public byte[] getExceptionPhoto() {
+		if(exceptionPhoto!=null)
+			return Arrays.copyOf(exceptionPhoto, exceptionPhoto.length);
+		return null;
+	}
+	public void setExceptionPhoto(byte[] exceptionPhoto) {
+		this.exceptionPhoto=exceptionPhoto!=null?exceptionPhoto:null;
+	}
+	
+	public byte[] getAcknowledgeReceipt() {
+		if(acknowledgeReceipt!=null)
+			return Arrays.copyOf(acknowledgeReceipt, acknowledgeReceipt.length);
+		return null;
+	}
+	public void setAcknowledgeReceipt(byte[] acknowledgeReceipt) {
+		this.acknowledgeReceipt=acknowledgeReceipt!=null?acknowledgeReceipt:null;
+	}
+
+	public byte[] getCompressedFacePhoto() {
+		if(compressedFacePhoto!=null)
+			return Arrays.copyOf(compressedFacePhoto, compressedFacePhoto.length);
+		return null;
+	}
+	public void setCompressedFacePhoto(byte[] compressedFacePhoto) {
+		this.compressedFacePhoto=compressedFacePhoto!=null?compressedFacePhoto:null;
+	}
+	
+	public byte[] getPhoto() {
+		if(photo!=null)
+			return Arrays.copyOf(photo, photo.length);
+		return null;
+	}
+	public void setPhoto(byte[] photo) {
+		this.photo=photo!=null?photo:null;
+	}
+
 
 }

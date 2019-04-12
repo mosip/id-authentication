@@ -9,6 +9,9 @@
 		<version>0.10.2</version>
 	</parent>
   <artifactId>kernel-cbeffutil-api</artifactId>
+  <properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
   <dependencies>
   <dependency>
 			<groupId>junit</groupId>

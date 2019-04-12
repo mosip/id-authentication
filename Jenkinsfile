@@ -4,9 +4,11 @@ node{
 	def mvnHome = tool name: 'M2_HOME', type: 'maven'
   def buildInfo
 	def branch = 'master'
+	def gitCredentialsId = env.gitRepoCredentials
+	def gitUrl =env.gitUrl
 
   stage('checkout'){
-	git branch: branch, credentialsId: '4c9741a2-4c15-4aad-a13d-39f4302a0e77', url: 'git@github.com:mosip/mosip.git'
+	git branch: branch, credentialsId: gitCredentialsId, url: env.gitUrl
   }
   stage('--------- Artifactory configuration ----------------') {
   /*
