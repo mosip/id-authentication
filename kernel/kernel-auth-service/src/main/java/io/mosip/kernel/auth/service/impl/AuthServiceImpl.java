@@ -79,9 +79,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		long currentTime = Instant.now().toEpochMilli();
+		//long currentTime = Instant.now().toEpochMilli();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
-		AuthToken authToken = customTokenServices.getTokenDetails(token);
+		/*AuthToken authToken = customTokenServices.getTokenDetails(token);
 		if (authToken == null) {
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,
 					"Auth token has been changed,Please try with new login");
@@ -94,8 +94,8 @@ public class AuthServiceImpl implements AuthService {
 			AuthToken newAuthToken = getAuthToken(mosipUserDtoToken);
 			customTokenServices.StoreToken(newAuthToken);
 			return mosipUserDtoToken;
-		}
-		if (mosipUserDtoToken != null && (currentTime < authToken.getExpirationTime())) {
+		}*/
+		if (mosipUserDtoToken != null /*&& (currentTime < authToken.getExpirationTime())*/) {
 			return mosipUserDtoToken;
 		} else {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
