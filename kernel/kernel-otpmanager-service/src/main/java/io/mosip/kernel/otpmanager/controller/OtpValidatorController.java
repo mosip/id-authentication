@@ -36,7 +36,7 @@ public class OtpValidatorController {
 	 * @param otp the OTP to be validated.
 	 * @return the validation status as DTO response.
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@GetMapping(value = "/otp/validate")
 	public ResponseWrapper<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
