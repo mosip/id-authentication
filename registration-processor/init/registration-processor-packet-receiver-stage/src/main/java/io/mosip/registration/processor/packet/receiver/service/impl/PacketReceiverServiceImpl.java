@@ -163,7 +163,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithRegEntity();
-				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
+				// validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());
 				if (isDuplicatePacket() && !isExternalStatusResend()) {
@@ -283,7 +283,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setRegistrationId(registrationId);
 		dto.setRegistrationType(regEntity.getRegistrationType());
 		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 		dto.setLangCode("eng");
 		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
 		dto.setReProcessRetryCount(0);
@@ -415,11 +415,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void validateHashCode(InputStream inputStream) throws IOException {
-		// TO-DO
+		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		byte[] hasheSquence = HMACUtils.generateHash(isbytearray);
-		byte[] packetHashSequenceFromEntity = isbytearray;// PacketHashSequesnce
-		if (!(Arrays.equals(hasheSquence, packetHashSequenceFromEntity))) {
+		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
+		byte[] packetHashSequenceFromEntity = hashSequence;// PacketHashSequesnce
+		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 			throw new UnequalHashSequenceException(

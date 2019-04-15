@@ -44,7 +44,7 @@ public class RegistrationStatusDaoTest {
 	@Test
 	public void getEnrolmentStatusByStatusCodeTest() {
 		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
-				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 		assertEquals(list, rEntityList);
 	}
 
@@ -76,7 +76,7 @@ public class RegistrationStatusDaoTest {
 		assertEquals(registrationStatusEntity, rEntity);
 
 	}
-	
+
 	@Test
 	public void testgetUnProcessedPackets() {
 		List<String> statusList = new ArrayList<>();
