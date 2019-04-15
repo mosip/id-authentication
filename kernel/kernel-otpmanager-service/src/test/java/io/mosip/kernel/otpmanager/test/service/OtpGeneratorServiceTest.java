@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,10 +23,11 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
+import io.mosip.kernel.otpmanager.test.OtpmanagerTestBootApplication;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = OtpmanagerTestBootApplication.class)
 public class OtpGeneratorServiceTest {
 
 	@Autowired
@@ -37,6 +39,7 @@ public class OtpGeneratorServiceTest {
 	@MockBean
 	OtpRepository repository;
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpGeneratorServicePositiveCase() throws Exception {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
@@ -52,6 +55,7 @@ public class OtpGeneratorServiceTest {
 				.andExpect(status().isOk()).andReturn();
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpGenerationFreezedCase() throws Exception {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();

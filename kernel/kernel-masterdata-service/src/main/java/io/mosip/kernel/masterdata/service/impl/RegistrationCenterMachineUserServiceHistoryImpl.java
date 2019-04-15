@@ -59,13 +59,14 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(registrationCenterId, userId, machineId, lDateAndTime);
+					.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							registrationCenterId, userId, machineId, lDateAndTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
-							.getErrorMessage()+ExceptionUtils.parseException(dataAccessLayerException));
+							.getErrorMessage() + ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (registrationCenterUserMachines == null || registrationCenterUserMachines.isEmpty()) {
 			throw new DataNotFoundException(

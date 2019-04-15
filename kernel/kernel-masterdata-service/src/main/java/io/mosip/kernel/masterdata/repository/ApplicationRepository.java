@@ -19,8 +19,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	/**
 	 * Get all Application types
 	 * 
-	 * @param entityClass
-	 *            of type {@link Application}
+	 * @param entityClass of type {@link Application}
 	 * @return list of {@link Application}
 	 */
 	@Query("FROM Application where (isDeleted is null OR isDeleted = false) AND isActive = true")
@@ -30,8 +29,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * 
 	 * Get all Application types of a specific language using language code
 	 * 
-	 * @param languageCode
-	 *            of type {@link String}
+	 * @param languageCode of type {@link String}
 	 * @return list of {@link Application}
 	 */
 	@Query("FROM Application WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)AND isActive = true")
@@ -40,10 +38,8 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	/**
 	 * Get Application type by specific id and language code
 	 * 
-	 * @param code
-	 *            -code
-	 * @param languageCode
-	 *            - language code
+	 * @param code         -code
+	 * @param languageCode - language code
 	 * @return {@link Application}
 	 */
 	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) AND isActive = true")

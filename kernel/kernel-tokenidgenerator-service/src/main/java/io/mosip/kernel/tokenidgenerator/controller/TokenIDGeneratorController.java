@@ -1,6 +1,7 @@
 package io.mosip.kernel.tokenidgenerator.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +18,10 @@ public class TokenIDGeneratorController {
 	@Autowired
 	private TokenIDGeneratorService vidGeneratorService;
 
+	
 	@ResponseFilter
 	@GetMapping(value = "/{uin}/{partnercode}")
+	@PreAuthorize("hasRole('ID_AUTHENTICATION')")
 	public ResponseWrapper<TokenIDResponseDto> generateTokenID(@ApiParam("uin of user") @PathVariable("uin") String uin,
 			@ApiParam("Partner Code") @PathVariable("partnercode") String partnerCode) {
 		ResponseWrapper<TokenIDResponseDto> response = new ResponseWrapper<>();

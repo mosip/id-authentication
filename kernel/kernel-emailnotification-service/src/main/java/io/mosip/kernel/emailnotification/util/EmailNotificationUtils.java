@@ -34,10 +34,8 @@ public class EmailNotificationUtils {
 	/**
 	 * This method sends the message.
 	 * 
-	 * @param message
-	 *            the message to be sent.
-	 * @param emailSender
-	 *            the EmailSender object.
+	 * @param message     the message to be sent.
+	 * @param emailSender the EmailSender object.
 	 */
 	@Async
 	public void sendMessage(MimeMessage message, JavaMailSender emailSender) {
@@ -47,10 +45,8 @@ public class EmailNotificationUtils {
 	/**
 	 * This method adds the attachments to the mail.
 	 * 
-	 * @param attachments
-	 *            the attachments.
-	 * @param helper
-	 *            the helper object.
+	 * @param attachments the attachments.
+	 * @param helper      the helper object.
 	 */
 	public void addAttachments(MultipartFile[] attachments, MimeMessageHelper helper) {
 		Arrays.asList(attachments).forEach(attachment -> {
@@ -65,12 +61,9 @@ public class EmailNotificationUtils {
 	/**
 	 * This method handles argument validations.
 	 * 
-	 * @param mailTo
-	 *            the to address to be validated.
-	 * @param mailSubject
-	 *            the subject to be validated.
-	 * @param mailContent
-	 *            the content to be validated.
+	 * @param mailTo      the to address to be validated.
+	 * @param mailSubject the subject to be validated.
+	 * @param mailContent the content to be validated.
 	 */
 	public static void validateMailArguments(String[] mailTo, String mailSubject, String mailContent) {
 		Set<ServiceError> validationErrorsList = new HashSet<>();

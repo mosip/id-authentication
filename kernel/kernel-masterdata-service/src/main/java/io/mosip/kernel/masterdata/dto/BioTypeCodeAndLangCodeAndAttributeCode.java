@@ -10,7 +10,6 @@ import lombok.Data;
  */
 @Data
 
-
 public class BioTypeCodeAndLangCodeAndAttributeCode {
 	private String code;
 	private String biometricTypeCode;

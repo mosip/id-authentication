@@ -7,24 +7,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
- *  @author Sabbu Uday Kumar
- *  @since 1.0.0
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests().antMatchers("*").permitAll();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable();
+		http.authorizeRequests().antMatchers("*").permitAll();
 //        http
 //                .httpBasic().and()
 //                .authorizeRequests()
 //                .antMatchers(HttpMethod.GET, "/moderate").hasAnyAuthority("moderator", "admin")
 //                .antMatchers(HttpMethod.POST, "/moderate").hasAnyAuthority("moderator", "admin")
 //                .antMatchers(HttpMethod.POST, "/admin").hasAuthority("admin");
-    }
+	}
 
 }

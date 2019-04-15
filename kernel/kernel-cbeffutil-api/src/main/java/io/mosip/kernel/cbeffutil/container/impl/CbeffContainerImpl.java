@@ -17,7 +17,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.VersionType;
 /**
  * @author Ramadurai Pandian
  * 
- * A Container Class where the BIR is created and updated
+ *         A Container Class where the BIR is created and updated
  *
  */
 public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
@@ -63,7 +63,7 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	/**
 	 * Method to the update of BIR
 	 * 
-	 * @param birList List of BIR data
+	 * @param birList   List of BIR data
 	 * 
 	 * @param fileBytes Cbeff XML data as bytes
 	 * 

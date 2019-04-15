@@ -11,11 +11,11 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  *
  */
 public final class IdRepoLogger {
-	
+
 	private static String uin;
-	
+
 	private static RollingFileAppender mosipRollingFileAppender;
-	
+
 	static {
 		mosipRollingFileAppender = new RollingFileAppender();
 		mosipRollingFileAppender.setAppend(true);
@@ -46,8 +46,7 @@ public final class IdRepoLogger {
 	/**
 	 * Method to get the rolling file logger for the class provided.
 	 *
-	 * @param clazz
-	 *            the clazz
+	 * @param clazz the clazz
 	 * @return the logger
 	 */
 	public static Logger getLogger(Class<?> clazz) {

@@ -34,8 +34,7 @@ public final class HMACUtils {
 	/**
 	 * Performs a digest using the specified array of bytes.
 	 * 
-	 * @param bytes
-	 *            bytes to be hash generation
+	 * @param bytes bytes to be hash generation
 	 * @return byte[] generated hash bytes
 	 */
 	public static synchronized byte[] generateHash(final byte[] bytes) {
@@ -45,8 +44,7 @@ public final class HMACUtils {
 	/**
 	 * Updates the digest using the specified byte
 	 * 
-	 * @param bytes
-	 *            updates the digest using the specified byte
+	 * @param bytes updates the digest using the specified byte
 	 */
 	public static void update(final byte[] bytes) {
 		messageDigest.update(bytes);
@@ -77,8 +75,7 @@ public final class HMACUtils {
 	/**
 	 * Return the digest as a plain text
 	 * 
-	 * @param bytes
-	 *            digest bytes
+	 * @param bytes digest bytes
 	 * @return String converted digest as plain text
 	 */
 	public static synchronized String digestAsPlainText(final byte[] bytes) {
@@ -88,11 +85,9 @@ public final class HMACUtils {
 	/**
 	 * Creates a message digest with the specified algorithm name.
 	 *
-	 * @param algorithm
-	 *            the standard name of the digest algorithm.
+	 * @param algorithm the standard name of the digest algorithm.
 	 * 
-	 * @throws NoSuchAlgorithmException
-	 *             if specified algorithm went wrong
+	 * @throws NoSuchAlgorithmException if specified algorithm went wrong
 	 * @description loaded messageDigest with specified algorithm
 	 */
 	static {
@@ -102,7 +97,7 @@ public final class HMACUtils {
 			throw new NoSuchAlgorithmException(HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), exception.getCause());
 		}
-	} 
+	}
 
 	/*
 	 * No object initialization.

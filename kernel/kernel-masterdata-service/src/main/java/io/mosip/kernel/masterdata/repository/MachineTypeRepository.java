@@ -15,8 +15,8 @@ import io.mosip.kernel.masterdata.entity.MachineType;
  */
 @Repository
 public interface MachineTypeRepository extends BaseRepository<MachineType, String> {
-	
+
 	@Query("FROM MachineType m where m.code = ?1 and m.langCode =?2 and (m.isDeleted = true) AND m.isActive = true")
-	MachineType findMachineTypeByIdAndByLangCodeIsDeletedtrue(String code, String langCode );
+	MachineType findMachineTypeByIdAndByLangCodeIsDeletedtrue(String code, String langCode);
 
 }

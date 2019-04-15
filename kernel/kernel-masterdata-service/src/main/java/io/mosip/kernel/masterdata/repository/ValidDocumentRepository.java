@@ -24,8 +24,7 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	/**
 	 * Method to find valid document based on code provided.
 	 * 
-	 * @param code
-	 *            the document category code.
+	 * @param code the document category code.
 	 * @return list of valid document.
 	 */
 	@Query("FROM ValidDocument WHERE docCategoryCode=?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -34,8 +33,7 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	/**
 	 * Method to find valid document based on code provided.
 	 * 
-	 * @param code
-	 *            the document type code.
+	 * @param code the document type code.
 	 * @return list of valid document.
 	 */
 	@Query("FROM ValidDocument WHERE docTypeCode=?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -45,14 +43,10 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 * Method to delete valid document based on document category and type codes
 	 * provided.
 	 * 
-	 * @param deletedDateTime
-	 *            the Date and time of deletion.
-	 * @param docCategoryCode
-	 *            the document category code.
-	 * @param docTypeCode
-	 *            the document type code.
-	 * @param updatedBy
-	 *            the caller of deletion
+	 * @param deletedDateTime the Date and time of deletion.
+	 * @param docCategoryCode the document category code.
+	 * @param docTypeCode     the document type code.
+	 * @param updatedBy       the caller of deletion
 	 * 
 	 * @return the number of rows affected.
 	 */

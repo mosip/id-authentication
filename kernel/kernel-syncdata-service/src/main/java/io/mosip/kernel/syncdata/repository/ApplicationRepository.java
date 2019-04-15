@@ -22,10 +22,8 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * Method to find list of Application created , updated or deleted time is
 	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            - last updated Time stamp
-	 * @param currentTimeStamp
-	 *            - currentTimestamp
+	 * @param lastUpdated      - last updated Time stamp
+	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link Application} - list of applications
 	 */
 	@Query("FROM Application WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime <=?2)  OR (deletedDateTime > ?1 and deletedDateTime <=?2)")

@@ -3,6 +3,7 @@ package io.mosip.kernel.auditmanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  * AuditManager controller with api to add new {@link Audit}
  * 
  * @author Dharmesh Khandelwal
- * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -40,6 +40,7 @@ public class AuditManagerController {
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
 	@PostMapping(value = "/audits")
 	public ResponseWrapper<AuditResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditRequestDto> requestDto) {

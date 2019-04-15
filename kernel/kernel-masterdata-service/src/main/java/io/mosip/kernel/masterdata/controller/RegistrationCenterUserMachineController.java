@@ -47,8 +47,8 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Create a mapping of registration center,user,and machine
 	 * 
-	 * @param registrationCenterUserMachineMappingDto
-	 *            {@link RegistrationCenterUserMachineMappingDto} request
+	 * @param registrationCenterUserMachineMappingDto {@link RegistrationCenterUserMachineMappingDto}
+	 *                                                request
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
@@ -66,12 +66,9 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Delete a mapping of registration center,user,and machine
 	 * 
-	 * @param regCenterId
-	 *            input from user
-	 * @param machineId
-	 *            input from user
-	 * @param userId
-	 *            input from user
+	 * @param regCenterId input from user
+	 * @param machineId   input from user
+	 * @param userId      input from user
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
@@ -91,8 +88,7 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Create or update a mapping of registration center,user,and machine
 	 * 
-	 * @param regCenterMachineUserReqDto
-	 *            {@link RegCenterMachineUserReqDto} request
+	 * @param regCenterMachineUserReqDto {@link RegCenterMachineUserReqDto} request
 	 * @return {@link RegCenterMachineUserResponseDto} as response
 	 */
 	@ResponseFilter

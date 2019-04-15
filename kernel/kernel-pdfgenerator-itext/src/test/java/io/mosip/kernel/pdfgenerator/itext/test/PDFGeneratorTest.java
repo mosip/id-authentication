@@ -130,7 +130,7 @@ public class PDFGeneratorTest {
 		String inputFile = classLoader.getResource("textcontant.txt").getFile();
 		String generatedPdfFileName = "textcontant";
 		pdfGenerator.generate(inputFile, "", generatedPdfFileName);
-		File tempoutFile = new File( generatedPdfFileName + outputFileExtension);
+		File tempoutFile = new File(generatedPdfFileName + outputFileExtension);
 		assertTrue(tempoutFile.exists());
 	}
 

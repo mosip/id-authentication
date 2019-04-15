@@ -17,14 +17,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceTypeDto extends BaseDto{
+public class DeviceTypeDto extends BaseDto {
 
 	private String code;
 
-	
 	private String name;
 
 	private String description;
-	
-	
+
 }
