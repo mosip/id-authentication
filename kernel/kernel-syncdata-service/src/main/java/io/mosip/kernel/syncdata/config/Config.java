@@ -64,25 +64,25 @@ public class Config {
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
 	}
-
-	@Bean
-	public RestTemplate restTemplateConfig()
-			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-
-		requestFactory.setHttpClient(httpClient);
-		return new RestTemplate(requestFactory);
-
-	}
+//
+//	@Bean
+//	public RestTemplate restTemplateConfig()
+//			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+//
+//		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+//
+//		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+//				.build();
+//
+//		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+//
+//		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+//
+//		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//
+//		requestFactory.setHttpClient(httpClient);
+//		return new RestTemplate(requestFactory);
+//
+//	}
 
 }
