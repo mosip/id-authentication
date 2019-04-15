@@ -397,8 +397,11 @@ export class FileUploadComponent implements OnInit {
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
         console.log('document response', response);
-
-        this.updateUsers(response);
+        if (response['errors'] == null) {
+          this.updateUsers(response);
+        } else {
+          alert(response['errors'].errorCode + ' Invalid document format supported');
+        }
       },
       error => {
         alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
