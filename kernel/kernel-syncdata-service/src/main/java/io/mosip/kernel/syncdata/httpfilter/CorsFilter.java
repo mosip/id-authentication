@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Mindtree Ltd.
  *
  */
+@SuppressWarnings("findsecbugs:PERMISSIVE_CORS")
 public class CorsFilter implements Filter {
 	/**
 	 * Default Constructor
@@ -25,6 +26,7 @@ public class CorsFilter implements Filter {
 		// Default Constructor
 	}
 
+	@SuppressWarnings("findbugs:HRS_REQUEST_PARAMETER_TO_HTTP_HEADER")
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {

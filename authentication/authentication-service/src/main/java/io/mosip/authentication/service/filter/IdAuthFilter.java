@@ -25,9 +25,11 @@ import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.impl.indauth.controller.AuthController;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.policy.AuthPolicy;
 import io.mosip.authentication.service.policy.KYCAttributes;
 import io.mosip.authentication.service.policy.Policies;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -40,6 +42,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+
+	private static final String BIO_TYPE = "bioType";
 
 	/** The Constant UTF_8. */
 	private static final String UTF_8 = "UTF-8";
@@ -157,21 +161,21 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
-		String mispId = null;
+		String mispId;
 		String licensekeyMappingJson = env.getProperty(LICENSE_KEY + licenseKey);
 		if (Objects.nonNull(licensekeyMappingJson)) {
-			Map<String, Object> licenseKeyMap = null;
+			Map<String, Object> licenseKeyMap;
 			try {
 				licenseKeyMap = mapper.readValue(licensekeyMappingJson.getBytes(UTF_8), HashMap.class);
-				mispId = (String) licenseKeyMap.get(MISP_ID);
+				mispId = String.valueOf(licenseKeyMap.get(MISP_ID));
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
-			String lkExpiryDt = (String) licenseKeyMap.get(EXPIRY_DT);
+			String lkExpiryDt =  String.valueOf(licenseKeyMap.get(EXPIRY_DT));
 			if (DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
 			}
-			String lkStatus = (String) licenseKeyMap.get(STATUS);
+			String lkStatus =  String.valueOf(licenseKeyMap.get(STATUS));
 			if (!lkStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED);
 			}
@@ -193,7 +197,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
 		} else {
-			Map<String, String> partnerIdMap = null;
+			Map<String, String> partnerIdMap;
 			try {
 				partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
 			} catch (IOException e) {
@@ -204,7 +208,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED);
 			}
 			String partnerStatus = partnerIdMap.get(STATUS);
-			if (!partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
+			if (partnerStatus != null && !partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
 			}
 		}
@@ -248,8 +252,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			String policyJson = getPolicy(policyId);
-			Policies policies = null;
-			policies = mapper.readValue(policyJson.getBytes(UTF_8), Policies.class);
+			Policies policies = mapper.readValue(policyJson.getBytes(UTF_8), Policies.class);
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 			List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired).map(KYCAttributes::getAttributeName)
@@ -308,7 +311,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
-	 * Check allowed auth type for bio.
+	 * Check allowed auth type for bio based on the policies.
 	 *
 	 * @param requestBody the request body
 	 * @param authPolicies the auth policies
@@ -328,7 +331,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
-
+		boolean noBioType= listBioInfo.stream().anyMatch(s->s.getData()!=null &&s.getData().getBioType()==null);
+		if(noBioType) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+							BIO_TYPE));
+		}
 			List<String> bioTypeList = listBioInfo.stream()
 					.filter(s ->  s.getData() != null && s.getData().getBioType() != null)
 					.map(s -> s.getData().getBioType())
@@ -342,14 +351,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 				}
 			} else {
 				for (String bioType : bioTypeList) {
-					if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
-						bioType = "Finger";
-					} else if (bioType.equalsIgnoreCase("FID")) {
-						bioType = "Face";
-					} else if (bioType.equalsIgnoreCase("IIR")) {
-						bioType = "Iris";
+					if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
+						bioType = SingleType.FINGER.value();
+					} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
+						bioType = SingleType.FACE.value();
+					} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
+						bioType = SingleType.IRIS.value();
 					}
 					if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+						if(!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
+							throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+									String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), BIO_TYPE));
+										} 
 						String bioSubtype=MatchType.Category.BIO.name() + "-" + bioType;
 						throw new IdAuthenticationAppException(
 								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
@@ -394,7 +407,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
-	 * Validate auth policy.
+	 * Validate auth type allowed through auth policies.
 	 *
 	 * @param requestBody the request body
 	 * @param authType the auth type

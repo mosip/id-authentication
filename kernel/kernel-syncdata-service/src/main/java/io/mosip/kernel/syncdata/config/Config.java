@@ -16,6 +16,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
@@ -32,7 +33,6 @@ import io.mosip.kernel.syncdata.httpfilter.ReqResFilter;
 @Configuration
 public class Config {
 
-
 	/**
 	 * Produce Request Logging bean
 	 * 
@@ -48,7 +48,7 @@ public class Config {
 		filter.setAfterMessagePrefix("REQUEST DATA : ");
 		return filter;
 	}
-	
+
 	@Bean
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
 		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
@@ -61,7 +61,7 @@ public class Config {
 	public Filter registerCORSFilter() {
 		return new CorsFilter();
 	}
-	
+
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
 		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -69,12 +69,12 @@ public class Config {
 		filterRegistrationBean.setOrder(2);
 		return filterRegistrationBean;
 	}
-	
+
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
@@ -94,6 +94,5 @@ public class Config {
 		return new RestTemplate(requestFactory);
 
 	}
-
 
 }

@@ -74,6 +74,8 @@ export class FileUploadComponent implements OnInit {
   step: number = 0;
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
+  allowedFiles: string[];
+  firstFile: Boolean = true;
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -89,6 +91,9 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.allowedFiles = this.config
+      .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
+      .split(',');
     let applicants;
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
@@ -122,18 +127,42 @@ export class FileUploadComponent implements OnInit {
       this.viewFirstFile();
     }
     let i = 0;
+    this.allApplicants.push(this.noneApplicant);
+    let noneCount: Boolean = this.isNoneAvailable();
+
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
         this.allApplicants.splice(i, 1);
         this.allApplicants.push(this.noneApplicant);
+        this.removeExtraNone();
       } else {
         i++;
       }
     }
+    i = 0;
 
     console.log('applicants', this.allApplicants);
   }
 
+  removeExtraNone() {
+    let i: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        this.allApplicants.splice(i, 1);
+      }
+      i++;
+    }
+  }
+
+  isNoneAvailable() {
+    let noneCount: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        noneCount++;
+      }
+    }
+    return true;
+  }
   getApplicantsName(applicants) {
     console.log('applicants', applicants);
 
@@ -254,16 +283,23 @@ export class FileUploadComponent implements OnInit {
   }
 
   viewFile(file: FileModel) {
+    console.log('file', file);
+
     this.fileName = file.docName;
     this.fileByteArray = file.multipartFile;
     let i = 0;
     for (let x of this.users[0].files[0]) {
-      i++;
       if (this.fileName === x.doc_name) {
+        i++;
         break;
       }
     }
-    this.fileIndex = i - 1;
+    if (this.firstFile) {
+      this.fileIndex = i;
+      this.firstFile = false;
+    }
+    console.log('fileINdex check', this.fileIndex);
+
     if (this.fileByteArray) {
       this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
         'data:application/pdf;base64,' + this.fileByteArray
@@ -275,41 +311,48 @@ export class FileUploadComponent implements OnInit {
     this.fileIndex = this.users[0].files[0].length - 1;
     this.viewFile(this.users[0].files[0][this.fileIndex]);
   }
-
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   handleFileInput(event) {
     console.log('event of file upload', event);
+    console.log('allowed files', this.allowedFiles);
+    let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
-    if (
-      event.target.files[0].type ===
-      this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
-    ) {
-      if (
-        event.target.files[0].name.length <
-        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
-      ) {
+    for (let file of this.allowedFiles) {
+      if (event.target.files[0].type === file) {
+        allowedFileUploaded = true;
         if (
-          event.target.files[0].size <
-          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          event.target.files[0].name.length <
+          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
         ) {
-          this.getBase64(event.target.files[0]).then(data => {
-            this.fileByteArray = data;
-            this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-          });
-          this.setJsonString(event);
-          this.sendFile(event);
+          if (
+            event.target.files[0].size <
+            this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          ) {
+            this.getBase64(event.target.files[0]).then(data => {
+              this.fileByteArray = data;
+              this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+            });
+            this.setJsonString(event);
+            this.sendFile(event);
+          } else {
+            alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.disableNavigation = false;
+          }
         } else {
-          alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+          alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
-      } else {
-        alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
-        this.disableNavigation = false;
       }
-    } else {
+    }
+    if (!allowedFileUploaded) {
       alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
-    // this.disableNavigation = false;
   }
 
   getBase64(file) {
@@ -354,8 +397,11 @@ export class FileUploadComponent implements OnInit {
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
         console.log('document response', response);
-
-        this.updateUsers(response);
+        if (response['errors'] == null) {
+          this.updateUsers(response);
+        } else {
+          alert(response['errors'].errorCode + ' Invalid document format supported');
+        }
       },
       error => {
         alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
@@ -394,7 +440,7 @@ export class FileUploadComponent implements OnInit {
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userrs', this.users);
     // this.sortUserFiles();
-    this.nextFile();
+    // this.viewFileByIndex(this.fileIndex);
   }
 
   openFile() {
@@ -465,13 +511,16 @@ export class FileUploadComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
-  nextFile() {
-    this.fileIndex++;
+  nextFile(fileIndex: number) {
+    this.fileIndex = fileIndex + 1;
+    console.log('FI', this.fileIndex);
+
     this.viewFileByIndex(this.fileIndex);
   }
 
-  previousFile() {
-    this.fileIndex--;
+  previousFile(fileIndex: number) {
+    this.fileIndex = fileIndex - 1;
+    console.log('FI', this.fileIndex);
     this.viewFileByIndex(this.fileIndex);
   }
 }

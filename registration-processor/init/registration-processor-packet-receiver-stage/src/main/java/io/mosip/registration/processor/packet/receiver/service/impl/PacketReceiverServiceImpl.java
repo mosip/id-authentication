@@ -185,7 +185,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationStatusService.addRegistrationStatus(dto);
 					storageFlag = true;
 					isTransactionSuccessful = true;
-					description = "Packet sucessfully synced for registrationId " + registrationId;
+					description = "Packet successfully synced for registrationId " + registrationId;
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"PacketReceiverServiceImpl::storePacket()::exit");
@@ -207,8 +207,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
 				} finally {
-					registrationStatusService.addRegistrationStatus(dto);
-
+					
 					String eventId = "";
 					String eventName = "";
 					String eventType = "";

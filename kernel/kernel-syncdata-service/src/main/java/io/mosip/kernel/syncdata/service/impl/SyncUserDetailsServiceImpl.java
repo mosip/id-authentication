@@ -30,7 +30,7 @@ import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.UserDetailRequestDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
-import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
@@ -151,7 +151,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		UserDetailResponseDto userDetailResponseDto = null;
 		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerServiceException(validationErrorsList);
+			throw new SyncServiceException(validationErrorsList);
 		}
 		ResponseWrapper<UserDetailResponseDto> responseObject = null;
 		try {
