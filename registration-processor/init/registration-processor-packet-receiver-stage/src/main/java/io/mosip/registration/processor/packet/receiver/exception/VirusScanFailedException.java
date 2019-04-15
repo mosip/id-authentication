@@ -11,21 +11,23 @@ public class VirusScanFailedException extends BaseUncheckedException {
 	/**
 	 * Instantiates a new virus scan failed exception.
 	 *
-	 * @param errorMessage the error message
+	 * @param errorMessage
+	 *            the error message
 	 */
 	public VirusScanFailedException(String message) {
-		super(PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getCode(),message);
+		super(PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getCode(), message);
 	}
 
 	/**
 	 * Instantiates a new virus scan failed exception.
 	 *
-	 * @param message the message
-	 * @param cause the cause
+	 * @param message
+	 *            the message
+	 * @param cause
+	 *            the cause
 	 */
 	public VirusScanFailedException(String message, Throwable cause) {
-		super(PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getCode(),message);
+		super(PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getCode(), message);
 	}
-
 
 }

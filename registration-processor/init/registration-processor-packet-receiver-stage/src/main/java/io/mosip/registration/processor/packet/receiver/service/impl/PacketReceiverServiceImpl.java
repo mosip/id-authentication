@@ -163,7 +163,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithRegEntity();
-				// validateHashCode(new ByteArrayInputStream(encryptedByteArray));
+				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());
 				if (isDuplicatePacket() && !isExternalStatusResend()) {
@@ -325,15 +325,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			boolean isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
 				description = "Packet virus scan failed exception in packet receiver for registrationId ::"
-						+ registrationId + PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage();
-				throw new VirusScanFailedException(
-						PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage());
+						+ registrationId + PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
+				throw new VirusScanFailedException(PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());
 			}
 		} catch (VirusScannerException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
+					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 			throw new VirusScannerServiceException(
-					PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
+					PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 		}
 
 	}
@@ -436,7 +435,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the regid
 	 */
 	private void validatePacketSize(long length) {
-		// TO-DO
+		// TO-DO need to umcomment once we get new columns in sync
 		/*
 		 * if(length > regEntity.getPacketSize()) {
 		 * regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
