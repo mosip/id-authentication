@@ -10,14 +10,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  *
  */
-@SpringBootApplication(scanBasePackages= {"io.mosip.kernel.emailnotification.*"})
-public class NotificationEmailTestBootApplication{
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.emailnotification.*" })
+public class NotificationEmailTestBootApplication {
 
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(NotificationEmailTestBootApplication.class, args);

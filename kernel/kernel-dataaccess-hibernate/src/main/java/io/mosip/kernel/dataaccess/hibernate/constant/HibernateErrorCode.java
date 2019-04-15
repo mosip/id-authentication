@@ -18,8 +18,7 @@ public enum HibernateErrorCode {
 	/**
 	 * Function to set errorcode
 	 * 
-	 * @param errorCode
-	 *            The errorcode
+	 * @param errorCode The errorcode
 	 */
 	private HibernateErrorCode(final String errorCode) {
 		this.errorCode = errorCode;

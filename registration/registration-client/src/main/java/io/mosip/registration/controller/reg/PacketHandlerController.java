@@ -405,7 +405,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			auditFactory.audit(AuditEvent.NAV_APPROVE_REG, Components.NAVIGATION,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
+			GridPane root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
 			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
@@ -413,7 +413,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+				getScene(root);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
@@ -448,7 +448,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(uploadRoot, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+				getScene(uploadRoot);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -499,7 +499,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
-							homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+							getScene(root);
 						}
 					}
 				}
@@ -729,7 +729,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
 			
-			homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+			getScene(root);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,

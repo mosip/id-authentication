@@ -22,8 +22,7 @@ public interface LicenseKeyPermissionRepository extends BaseRepository<LicenseKe
 	/**
 	 * Method to find license key permissions by license key.
 	 * 
-	 * @param licenseKey
-	 *            the license key for which permission needs to be fetched.
+	 * @param licenseKey the license key for which permission needs to be fetched.
 	 * @return the license key entity.
 	 */
 	public LicenseKeyPermission findByLKey(String licenseKey);
@@ -31,14 +30,10 @@ public interface LicenseKeyPermissionRepository extends BaseRepository<LicenseKe
 	/**
 	 * Method to update license key permissions.
 	 * 
-	 * @param updatedPermissionString
-	 *            the updated permission list.
-	 * @param licenseKey
-	 *            the license key.
-	 * @param updationTime
-	 *            the time at which the list is updated.
-	 * @param updatedBy
-	 *            the list updated by.
+	 * @param updatedPermissionString the updated permission list.
+	 * @param licenseKey              the license key.
+	 * @param updationTime            the time at which the list is updated.
+	 * @param updatedBy               the list updated by.
 	 * @return the permission entity response.
 	 */
 	@Modifying

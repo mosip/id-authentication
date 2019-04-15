@@ -15,17 +15,11 @@ public class InValidUinException extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-
-
-
-
 	/**
 	 * Constructor initialize InValidUinException
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public InValidUinException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

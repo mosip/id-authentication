@@ -48,7 +48,8 @@ public class ReqResFilter implements Filter {
 			responseWrapper.copyBodyToResponse();
 
 		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class); mosipLogger.error("", "", "", e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
 

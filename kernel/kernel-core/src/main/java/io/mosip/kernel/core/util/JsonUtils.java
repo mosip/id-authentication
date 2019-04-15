@@ -1,13 +1,10 @@
 package io.mosip.kernel.core.util;
 
 import java.io.File;
-
 import java.util.List;
 import java.util.Map;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -35,17 +32,12 @@ public class JsonUtils {
 	/**
 	 * This function converts a java object and stores the processed JSON in a file
 	 * 
-	 * @param className
-	 *            object of the class to be converted to JSON File
-	 * @param location
-	 *            location where to store the generated JSON file
+	 * @param className object of the class to be converted to JSON File
+	 * @param location  location where to store the generated JSON file
 	 * @return true if file is successfully generated,false if file is not generated
-	 * @throws JsonGenerationException
-	 *             when JSON is not properly generated
-	 * @throws JsonMappingException
-	 *             when JSON is not properly mapped
-	 * @throws IOException
-	 *             when file is not found
+	 * @throws JsonGenerationException when JSON is not properly generated
+	 * @throws JsonMappingException    when JSON is not properly mapped
+	 * @throws IOException             when file is not found
 	 */
 	/*public static boolean javaObjectToJsonFile(Object className, String location)
 			throws JsonGenerationException, JsonMappingException, IOException {
@@ -73,11 +65,9 @@ public class JsonUtils {
 	/**
 	 * This function converts the java object and returns a JSON String
 	 * 
-	 * @param className
-	 *            object of the class to be converted to JSON File
+	 * @param className object of the class to be converted to JSON File
 	 * @return generated JSON String
-	 * @throws JsonProcessingException
-	 *             when JSON is not properly processed
+	 * @throws JsonProcessingException when JSON is not properly processed
 	 */
 	public static String javaObjectToJsonString(Object className) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -99,18 +89,13 @@ public class JsonUtils {
 	/**
 	 * This method converts the JSON String input and maps it to the java object
 	 * 
-	 * @param className
-	 *            class name to which the JSON String is to be mapped
-	 * @param jsonString
-	 *            input JSON String(always in double quotes) (eg."{color=Black,
-	 *            type=FIAT}")
+	 * @param className  class name to which the JSON String is to be mapped
+	 * @param jsonString input JSON String(always in double quotes)
+	 *                   (eg."{color=Black, type=FIAT}")
 	 * @return class object with the JSON string parsed to object
-	 * @throws JsonParseException
-	 *             when JSON is not properly parsed
-	 * @throws JsonMappingException
-	 *             when JSON is not properly mapped
-	 * @throws IOException
-	 *             when location is not found
+	 * @throws JsonParseException   when JSON is not properly parsed
+	 * @throws JsonMappingException when JSON is not properly mapped
+	 * @throws IOException          when location is not found
 	 */
 	public static Object jsonStringToJavaObject(Class<?> className, String jsonString)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -121,7 +106,7 @@ public class JsonUtils {
 
 		try {
 			returnObject = objectMapper.readValue(jsonString, className);
-		} catch ( com.fasterxml.jackson.core.JsonParseException e) {
+		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw new JsonParseException(JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorCode(),
 					JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorMessage(), e.getCause());
 		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
@@ -139,17 +124,12 @@ public class JsonUtils {
 	/**
 	 * This method converts the JSON file input and maps it to the java object
 	 * 
-	 * @param className
-	 *            class name to which the JSON file is to be mapped
-	 * @param fileLocation
-	 *            location of the JSON file
+	 * @param className    class name to which the JSON file is to be mapped
+	 * @param fileLocation location of the JSON file
 	 * @return JSON mapped object
-	 * @throws JsonParseException
-	 *             when JSON is not properly parsed
-	 * @throws JsonMappingException
-	 *             when JSON is not properly mapped
-	 * @throws IOException
-	 *             when file is not found
+	 * @throws JsonParseException   when JSON is not properly parsed
+	 * @throws JsonMappingException when JSON is not properly mapped
+	 * @throws IOException          when file is not found
 	 */
 	/*public static Object jsonFileToJavaObject(Class<?> className, String fileLocation)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -159,7 +139,7 @@ public class JsonUtils {
 		Object returnObject = null;
 		try {
 			returnObject = objectMapper.readValue(new File(fileLocation), className);
-		} catch ( com.fasterxml.jackson.core.JsonParseException e) {
+		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw new JsonParseException(JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorCode(),
 					JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorMessage(), e.getCause());
 		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
@@ -175,14 +155,11 @@ public class JsonUtils {
 	/**
 	 * This function returns the value associated with the label of the input JSON
 	 * 
-	 * @param jsonString
-	 *            input JSON String(always in double quotes) (eg."{color=Black,
-	 *            type=FIAT}")
-	 * @param key
-	 *            label of the JSON String whose value is to be retrieved
+	 * @param jsonString input JSON String(always in double quotes)
+	 *                   (eg."{color=Black, type=FIAT}")
+	 * @param key        label of the JSON String whose value is to be retrieved
 	 * @return value of the corresponding key input
-	 * @throws IOException
-	 *             when file is not found
+	 * @throws IOException when file is not found
 	 */
 	public static String jsonToJacksonJson(String jsonString, String key) throws IOException {
 
@@ -203,16 +180,13 @@ public class JsonUtils {
 	 * This method converts a JSON String containing multiple JSON and stores them
 	 * in a java list
 	 * 
-	 * @param jsonArray
-	 *            input String containing array of JSON string(always in double
-	 *            quotes) (eg."[{color=Black, type=BMW}, {color=Red, type=FIAT}]")
+	 * @param jsonArray input String containing array of JSON string(always in
+	 *                  double quotes) (eg."[{color=Black, type=BMW}, {color=Red,
+	 *                  type=FIAT}]")
 	 * @return list of JSON string
-	 * @throws JsonParseException
-	 *             when JSON is not properly parsed
-	 * @throws JsonMappingException
-	 *             when JSON is not properly mapped
-	 * @throws IOException
-	 *             when file is not found
+	 * @throws JsonParseException   when JSON is not properly parsed
+	 * @throws JsonMappingException when JSON is not properly mapped
+	 * @throws IOException          when file is not found
 	 */
 	public static List<Object> jsonStringToJavaList(String jsonArray)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -223,7 +197,7 @@ public class JsonUtils {
 		try {
 			javaList = objectMapper.readValue(jsonArray, new TypeReference<List<Object>>() {
 			});
-		} catch ( com.fasterxml.jackson.core.JsonParseException e) {
+		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw new JsonParseException(JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorCode(),
 					JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorMessage(), e.getCause());
 		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
@@ -240,16 +214,13 @@ public class JsonUtils {
 	 * This method converts a JSON String containing multiple JSON and stores them
 	 * in a java Map
 	 * 
-	 * @param jsonString
-	 *            input String containing array of JSON string(always in double
-	 *            quotes) (eg."[{color=Black, type=BMW}, {color=Red, type=FIAT}]")
+	 * @param jsonString input String containing array of JSON string(always in
+	 *                   double quotes) (eg."[{color=Black, type=BMW}, {color=Red,
+	 *                   type=FIAT}]")
 	 * @return java map containing JSON inputs
-	 * @throws JsonParseException
-	 *             when JSON is not properly parsed
-	 * @throws JsonMappingException
-	 *             when JSON is not properly mapped
-	 * @throws IOException
-	 *             when file is not found
+	 * @throws JsonParseException   when JSON is not properly parsed
+	 * @throws JsonMappingException when JSON is not properly mapped
+	 * @throws IOException          when file is not found
 	 */
 	public static Map<String, Object> jsonStringToJavaMap(String jsonString)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -260,7 +231,7 @@ public class JsonUtils {
 		try {
 			javaMap = objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
 			});
-		} catch ( com.fasterxml.jackson.core.JsonParseException e) {
+		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw new JsonParseException(JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorCode(),
 					JsonUtilConstants.MOSIP_JSON_PARSE_ERROR_CODE.getErrorMessage(), e.getCause());
 		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {

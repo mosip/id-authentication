@@ -13,8 +13,7 @@ public interface MosipFingerprintProvider<A, R> {
 	/**
 	 * Convert FIR to FMR.
 	 *
-	 * @param listOfBIR
-	 *            the list of BIR
+	 * @param listOfBIR the list of BIR
 	 * @return the list
 	 */
 	List<R> convertFIRtoFMR(List<A> listOfBIR);

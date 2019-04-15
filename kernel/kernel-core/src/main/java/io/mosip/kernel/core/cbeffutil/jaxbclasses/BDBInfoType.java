@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,7 +21,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import io.mosip.kernel.core.cbeffutil.common.Base64Adapter;
 import io.mosip.kernel.core.cbeffutil.common.DateAdapter;
 
 /**
@@ -131,8 +131,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the challengeResponse property.
 	 * 
-	 * @param value
-	 *            allowed object is byte[]
+	 * @param value allowed object is byte[]
 	 */
 	public void setChallengeResponse(byte[] value) {
 		this.challengeResponse = value;
@@ -151,8 +150,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the index property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link String }
+	 * @param value allowed object is {@link String }
 	 * 
 	 */
 	public void setIndex(String value) {
@@ -172,8 +170,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the encryption property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link Boolean }
+	 * @param value allowed object is {@link Boolean }
 	 * 
 	 */
 	public void setEncryption(Boolean value) {
@@ -193,8 +190,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the creationDate property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link Date }
+	 * @param value allowed object is {@link Date }
 	 * 
 	 */
 	public void setCreationDate(LocalDateTime value) {
@@ -214,8 +210,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the notValidBefore property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link Date }
+	 * @param value allowed object is {@link Date }
 	 * 
 	 */
 	public void setNotValidBefore(LocalDateTime value) {
@@ -235,8 +230,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the notValidAfter property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link Date }
+	 * @param value allowed object is {@link Date }
 	 * 
 	 */
 	public void setNotValidAfter(LocalDateTime value) {
@@ -247,10 +241,10 @@ public class BDBInfoType {
 	 * Gets the value of the type property.
 	 * 
 	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the type property.
+	 * This accessor method returns a reference to the live list, not a snapshot.
+	 * Therefore any modification you make to the returned list will be present
+	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+	 * for the type property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
@@ -259,9 +253,9 @@ public class BDBInfoType {
 	 * getType().add(newItem);
 	 * </pre>
 	 * 
-	 *  @return type list of single type
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
+	 * @return type list of single type
+	 *         <p>
+	 *         Objects of the following type(s) are allowed in the list
 	 * 
 	 * 
 	 * 
@@ -277,10 +271,10 @@ public class BDBInfoType {
 	 * Gets the value of the subtype property.
 	 * 
 	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the subtype property.
+	 * This accessor method returns a reference to the live list, not a snapshot.
+	 * Therefore any modification you make to the returned list will be present
+	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+	 * for the subtype property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
@@ -290,8 +284,9 @@ public class BDBInfoType {
 	 * </pre>
 	 * 
 	 * @return list of single type
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list {@link String }
+	 *         <p>
+	 *         Objects of the following type(s) are allowed in the list
+	 *         {@link String }
 	 * 
 	 * 
 	 */
@@ -315,8 +310,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the level property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link ProcessedLevelType }
+	 * @param value allowed object is {@link ProcessedLevelType }
 	 * 
 	 */
 	public void setLevel(ProcessedLevelType value) {
@@ -336,8 +330,7 @@ public class BDBInfoType {
 	/**
 	 * Sets the value of the purpose property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link PurposeType }
+	 * @param value allowed object is {@link PurposeType }
 	 * 
 	 */
 	public void setPurpose(PurposeType value) {
@@ -362,8 +355,7 @@ public class BDBInfoType {
 	}
 
 	/**
-	 * @param formatOwner
-	 *            the formatOwner to set
+	 * @param formatOwner the formatOwner to set
 	 */
 	public void setFormatOwner(Long formatOwner) {
 		this.formatOwner = formatOwner;
@@ -377,8 +369,7 @@ public class BDBInfoType {
 	}
 
 	/**
-	 * @param formatType
-	 *            the formatType to set
+	 * @param formatType the formatType to set
 	 */
 	public void setFormatType(Long formatType) {
 		this.formatType = formatType;
@@ -392,8 +383,7 @@ public class BDBInfoType {
 	}
 
 	/**
-	 * @param productOwner
-	 *            the productOwner to set
+	 * @param productOwner the productOwner to set
 	 */
 	public void setProductOwner(Long productOwner) {
 		this.productOwner = productOwner;
@@ -407,8 +397,7 @@ public class BDBInfoType {
 	}
 
 	/**
-	 * @param productType
-	 *            the productType to set
+	 * @param productType the productType to set
 	 */
 	public void setProductType(Long productType) {
 		this.productType = productType;
@@ -422,8 +411,7 @@ public class BDBInfoType {
 	}
 
 	/**
-	 * @param quality
-	 *            the quality to set
+	 * @param quality the quality to set
 	 */
 	public void setQuality(Integer quality) {
 		this.quality = quality;

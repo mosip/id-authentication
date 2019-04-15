@@ -2,7 +2,8 @@ package io.mosip.kernel.otpmanager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
-/**Exception class when the resource required is not found.
+/**
+ * Exception class when the resource required is not found.
  * 
  * @author Sagar Mahapatra
  * @author Ritesh Sinha
@@ -19,10 +20,8 @@ public class ResourceNotFoundException extends BaseUncheckedException {
 	/**
 	 * Constructor for MosipNullArgumentException class.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	public ResourceNotFoundException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

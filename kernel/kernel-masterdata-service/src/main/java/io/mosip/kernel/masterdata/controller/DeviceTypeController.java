@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.swagger.annotations.Api;
@@ -39,8 +39,7 @@ public class DeviceTypeController {
 	/**
 	 * Save list of device Type details to the Database
 	 * 
-	 * @param deviceTypes
-	 *            input from user Device Type DTO
+	 * @param deviceTypes input from user Device Type DTO
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
@@ -53,11 +52,10 @@ public class DeviceTypeController {
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> createDeviceType(
 			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.createDeviceType(deviceTypes.getRequest()));
 		return responseWrapper;
 	}
-	 
 
 }

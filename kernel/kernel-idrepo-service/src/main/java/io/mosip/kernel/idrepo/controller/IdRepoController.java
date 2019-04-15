@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -103,8 +104,7 @@ public class IdRepoController {
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder
-	 *            the binder
+	 * @param binder the binder
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -124,6 +124,7 @@ public class IdRepoController {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@PostMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> addIdentity(@PathVariable String uin,
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
@@ -197,16 +198,13 @@ public class IdRepoController {
 	/**
 	 * Update identity.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param request
-	 *            the request
-	 * @param errors
-	 *            the errors
+	 * @param uin     the uin
+	 * @param request the request
+	 * @param errors  the errors
 	 * @return the response entity
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@PatchMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin,
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {

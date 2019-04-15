@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -20,7 +21,6 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -202,7 +202,7 @@ public class TemplateServiceImpl implements TemplateService {
 		idResponseDto.setId(id);
 		return idResponseDto;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

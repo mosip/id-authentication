@@ -3,8 +3,8 @@ package io.mosip.kernel.ldap.dto;
 import java.io.Serializable;
 
 /**
- *  @author Sabbu Uday Kumar
- *  @since 1.0.0
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  */
 public class RoleDto implements Serializable {
 
@@ -14,9 +14,9 @@ public class RoleDto implements Serializable {
 	private static final long serialVersionUID = -2706412783263468725L;
 
 	private String roleId;
-	
+
 	private String roleName;
-	
+
 	private String roleDescription;
 
 	public String getRoleId() {
@@ -42,6 +42,5 @@ public class RoleDto implements Serializable {
 	public void setRoleDescription(String roleDescription) {
 		this.roleDescription = roleDescription;
 	}
-	
-	
+
 }

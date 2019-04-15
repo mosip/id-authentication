@@ -13,7 +13,6 @@ import lombok.Data;
  */
 @Data
 
-
 public class RegistrationCenterResponseDto {
 	private List<RegistrationCenterDto> registrationCenters;
 }

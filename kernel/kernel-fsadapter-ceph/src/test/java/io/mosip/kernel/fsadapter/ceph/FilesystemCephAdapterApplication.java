@@ -12,12 +12,10 @@ public class FilesystemCephAdapterApplication {
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(FilesystemCephAdapterApplication.class, args);
 	}
-	
-	
+
 }

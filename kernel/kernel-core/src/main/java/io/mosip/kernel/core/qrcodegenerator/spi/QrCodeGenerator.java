@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 
-
 /**
  * Interface for QR-Code-Generation
  * 
@@ -12,24 +11,20 @@ import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
  *
  * @since 1.0.0
  * 
- * @param <T>
- *            the type of QR-Version
+ * @param <T> the type of QR-Version
  */
 public interface QrCodeGenerator<T> {
 
 	/**
 	 * Method to generate QR Code
 	 * 
-	 * @param data
-	 *            data to encode in the QR code
-	 * @param version
-	 *             QR Code version
+	 * @param data    data to encode in the QR code
+	 * @param version QR Code version
 	 * @return array of byte containing QR Code in PNG format
-	 * @throws QrcodeGenerationException
-	 *             exceptions which may occur when encoding a QRcode using the
-	 *             Writer framework.
-	 * @throws IOException
-	 *             exceptions which may occur when write to the byte stream fail
+	 * @throws QrcodeGenerationException exceptions which may occur when encoding a
+	 *                                   QRcode using the Writer framework.
+	 * @throws IOException               exceptions which may occur when write to
+	 *                                   the byte stream fail
 	 */
 	byte[] generateQrCode(String data, T version) throws QrcodeGenerationException, IOException;
 

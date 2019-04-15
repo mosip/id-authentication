@@ -1,4 +1,5 @@
 package io.mosip.kernel.syncdata.entity.id;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *  
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -24,12 +25,12 @@ public class RegistrationCenterHistoryID implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
-	@Column(name = "id",nullable = false, length = 36)
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
 
-	@Column(name = "eff_dtimes",nullable = false)
+	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 }

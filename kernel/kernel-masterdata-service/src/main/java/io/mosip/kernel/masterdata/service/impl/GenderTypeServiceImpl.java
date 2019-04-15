@@ -181,7 +181,10 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#validateGender(java.lang.String)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#validateGender(java.lang
+	 * .String)
 	 */
 	@Override
 	public StatusResponseDto validateGender(String genderName) {
@@ -201,7 +204,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		}
 
 		return statusResponseDto;
-		
+
 	}
 
 }

@@ -7,11 +7,10 @@ import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentExce
 public interface ApplicantType {
 
 	/**
-	 * @param map
-	 *            contains attribute and its value
+	 * @param map contains attribute and its value
 	 * @return the applicant code for given attribute combination
-	 * @throws InvalidApplicantArgumentException
-	 *             if provided map or its attribute value pairs is null
+	 * @throws InvalidApplicantArgumentException if provided map or its attribute
+	 *                                           value pairs is null
 	 */
 	public String getApplicantType(Map<String, Object> map) throws InvalidApplicantArgumentException;
 

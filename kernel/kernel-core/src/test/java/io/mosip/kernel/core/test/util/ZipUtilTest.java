@@ -3,7 +3,6 @@ package io.mosip.kernel.core.test.util;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,38 +24,38 @@ import io.mosip.kernel.core.util.ZipUtils;
 public class ZipUtilTest {
 
 	public static ZipUtils zip;
-	
+
 	@Test
 	public void zipByteArray() throws FileNotFoundException, IOException, java.io.IOException, URISyntaxException {
- 
-    	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
-    	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
-    	    String outputFile = "compressedByteArray.zip";   
-    	    Files.write(Paths.get(outputFile), returnedzippedByteArray);
-    	    File returnFile= new File(outputFile);
-        
-    	    assertTrue(returnFile.exists());	
-    	    File file = new File(outputFile);
-    		file.delete();
-	}
-	
-	
-	@Test
-	public void unzipByteArray() throws FileNotFoundException, IOException, java.io.IOException, URISyntaxException {
- 
-    	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
-    	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
-    	    String finalPath = "final.txt";
-    	      
-    	    byte[] returnedunzipByteArray =ZipUtils.unzipByteArray(returnedzippedByteArray);
-    	    Files.write(Paths.get(finalPath), returnedunzipByteArray);
-    	    File returnFile= new File(finalPath);
-        
-    	    assertTrue(returnFile.exists());	
-    	    File file = new File(finalPath);
-    		file.delete();
+
+		byte[] data = Files
+				.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI()));
+		byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
+		String outputFile = "compressedByteArray.zip";
+		Files.write(Paths.get(outputFile), returnedzippedByteArray);
+		File returnFile = new File(outputFile);
+
+		assertTrue(returnFile.exists());
+		File file = new File(outputFile);
+		file.delete();
 	}
 
+	@Test
+	public void unzipByteArray() throws FileNotFoundException, IOException, java.io.IOException, URISyntaxException {
+
+		byte[] data = Files
+				.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI()));
+		byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
+		String finalPath = "final.txt";
+
+		byte[] returnedunzipByteArray = ZipUtils.unzipByteArray(returnedzippedByteArray);
+		Files.write(Paths.get(finalPath), returnedunzipByteArray);
+		File returnFile = new File(finalPath);
+
+		assertTrue(returnFile.exists());
+		File file = new File(finalPath);
+		file.delete();
+	}
 
 	/*@Test
 	public void zipFileTest() throws FileNotFoundException, IOException, java.io.IOException {

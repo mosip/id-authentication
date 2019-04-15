@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +36,10 @@ public class OtpGeneratorController {
 	/**
 	 * This method handles the OTP generation.
 	 * 
-	 * @param otpDto
-	 *            The request DTO for OTP generation.
+	 * @param otpDto The request DTO for OTP generation.
 	 * @return The generated OTP as DTO response.
 	 */
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@PostMapping(value = "/otp/generate")
 	public ResponseWrapper<OtpGeneratorResponseDto> generateOtp(@Validated({

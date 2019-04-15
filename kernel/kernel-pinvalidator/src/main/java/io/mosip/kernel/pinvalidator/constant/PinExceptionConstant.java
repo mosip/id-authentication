@@ -9,8 +9,9 @@ package io.mosip.kernel.pinvalidator.constant;
  */
 public enum PinExceptionConstant {
 
-	PIN_INVALID_LENGTH("KER-IDV-501", "Static PIN length Must be "), PIN_INVALID_CHAR("KER-IDV-502",
-			"Static PIN length must be numeric"), PIN_INVALID_NULL("KER-IDV-503", "Input parameter is missing.");
+	PIN_INVALID_LENGTH("KER-IDV-501", "Static PIN length Must be "),
+	PIN_INVALID_CHAR("KER-IDV-502", "Static PIN length must be numeric"),
+	PIN_INVALID_NULL("KER-IDV-503", "Input parameter is missing.");
 
 	/**
 	 * This variable holds the error code.
@@ -25,10 +26,8 @@ public enum PinExceptionConstant {
 	/**
 	 * Constructor for PinExceptionConstant Enum.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	PinExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

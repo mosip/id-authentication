@@ -52,14 +52,10 @@ public class AuditManagerLogger {
 	/**
 	 * Method to get the file logger for the class provided.
 	 * 
-	 * @param sessionId
-	 *            session id
-	 * @param idType
-	 *            id type
-	 * @param id
-	 *            id
-	 * @param description
-	 *            description
+	 * @param sessionId   session id
+	 * @param idType      id type
+	 * @param id          id
+	 * @param description description
 	 */
 	public static void fileLoggerError(String sessionId, String idType, String id, String description) {
 		fileLogger.error(sessionId, idType, id, description);
@@ -68,14 +64,10 @@ public class AuditManagerLogger {
 	/**
 	 * Method to get the console logger for the class provided.
 	 * 
-	 * @param sessionId
-	 *            session id
-	 * @param idType
-	 *            id type
-	 * @param id
-	 *            id
-	 * @param description
-	 *            description
+	 * @param sessionId   session id
+	 * @param idType      id type
+	 * @param id          id
+	 * @param description description
 	 */
 	public static void consoleLoggerError(String sessionId, String idType, String id, String description) {
 		consoleLogger.error(sessionId, idType, id, description);

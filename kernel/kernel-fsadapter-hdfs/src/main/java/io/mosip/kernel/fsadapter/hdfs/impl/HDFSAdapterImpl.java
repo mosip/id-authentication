@@ -43,8 +43,7 @@ public class HDFSAdapterImpl implements FileSystemAdapter {
 	/**
 	 * Constructor to initalize HDFSAdapter by injecting {@link ConnectionUtils}
 	 * 
-	 * @param connectionUtil
-	 *            connectionUtil instanse
+	 * @param connectionUtil connectionUtil instanse
 	 */
 	public HDFSAdapterImpl(ConnectionUtils connectionUtil) {
 		if (fs == null) {
@@ -302,10 +301,8 @@ public class HDFSAdapterImpl implements FileSystemAdapter {
 	/**
 	 * Construct a hadoop path from a String
 	 * 
-	 * @param id
-	 *            the packetId
-	 * @param filePath
-	 *            the filePath
+	 * @param id       the packetId
+	 * @param filePath the filePath
 	 * @return the path
 	 */
 	public Path getHadoopPath(String id, String filePath) {
@@ -315,8 +312,7 @@ public class HDFSAdapterImpl implements FileSystemAdapter {
 	/**
 	 * Get formatted filePath
 	 * 
-	 * @param filePath
-	 *            filePath
+	 * @param filePath filePath
 	 * @return formatted filePath
 	 */
 	public String getFilePath(String filePath) {

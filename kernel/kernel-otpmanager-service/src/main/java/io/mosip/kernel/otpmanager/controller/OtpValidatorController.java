@@ -2,6 +2,7 @@ package io.mosip.kernel.otpmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,12 +32,11 @@ public class OtpValidatorController {
 	/**
 	 * This method validates the OTP against a key.
 	 * 
-	 * @param key
-	 *            the key against which the OTP needs to be validated.
-	 * @param otp
-	 *            the OTP to be validated.
+	 * @param key the key against which the OTP needs to be validated.
+	 * @param otp the OTP to be validated.
 	 * @return the validation status as DTO response.
 	 */
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@GetMapping(value = "/otp/validate")
 	public ResponseWrapper<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
