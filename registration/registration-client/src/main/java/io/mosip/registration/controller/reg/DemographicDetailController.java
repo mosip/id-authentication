@@ -635,6 +635,8 @@ public class DemographicDetailController extends BaseController {
 	private String textFemale;
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
+	private String textMaleCode;
+	private String textFemaleCode;
 
 	/*
 	 * (non-Javadoc)
@@ -689,6 +691,8 @@ public class DemographicDetailController extends BaseController {
 		textFemale = applicationLabelBundle.getString("female");
 		textMaleLocalLanguage = localLabelBundle.getString("male");
 		textFemaleLocalLanguage = localLabelBundle.getString("female");
+		textMaleCode = applicationLabelBundle.getString("maleCode");
+		textFemaleCode = applicationLabelBundle.getString("femaleCode");
 		male(null);
 	}
 
@@ -1123,11 +1127,11 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 180.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 450.00, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 535.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 610.00, keyboardNode);
-			vk.focusListener(parentNameLocalLanguage, 1090.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, 200.00, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, 470.00, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, 555.00, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, 630.00, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, 1110.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -1577,13 +1581,16 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
-			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
-			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
 			mobileNo.setText(moroccoIdentity.getPhone() + "");
 			emailId.setText(moroccoIdentity.getEmail() + "");
-			if (moroccoIdentity.getAge() != null)
+			if (moroccoIdentity.getAge() != null) {
+				switchedOn.set(true);
 				ageField.setText(moroccoIdentity.getAge() + "");
+			}
+			else {
+				switchedOn.set(false);
+			}
 			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(moroccoIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(moroccoIdentity.getPhone());
@@ -1593,14 +1600,14 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 
 			if (moroccoIdentity.getGender() != null && moroccoIdentity.getGender().size() > 0) {
-				if (moroccoIdentity.getGender().get(0).getValue().equals(textMale)
-						|| moroccoIdentity.getGender().get(0).getValue().equals(textMaleLocalLanguage)) {
+				if (moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMale)
+						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleLocalLanguage)
+						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleCode)) {
 					male(null);
 				} else {
 					female(null);
 				}
 			}
-			if (switchedOn.get()) {
 				if (moroccoIdentity.getDateOfBirth() != null) {
 					String[] date = moroccoIdentity.getDateOfBirth().split("/");
 					if (date.length == 3) {
@@ -1608,7 +1615,6 @@ public class DemographicDetailController extends BaseController {
 						mm.setText(date[1]);
 						dd.setText(date[2]);
 					}
-				}
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
@@ -1763,32 +1769,32 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(fullNameGridPane.getWidth());
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth()*1.2);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(450.00);
+				keyboardNode.setLayoutY(470.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(535.00);
+				keyboardNode.setLayoutY(555.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(610.00);
+				keyboardNode.setLayoutY(630.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(180.00);
+				keyboardNode.setLayoutY(200.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(1090.00);
+				keyboardNode.setLayoutY(1110.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 
@@ -1837,11 +1843,8 @@ public class DemographicDetailController extends BaseController {
 		try {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				clearRegistrationData();
-				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
-				homeController.getMainBox().add(uinUpdate, RegistrationConstants.PARAM_ZERO,
-						RegistrationConstants.PARAM_ONE);
-				getScene(root);
+				getScene(uinUpdate);
 			} else {
 				goToHomePageFromRegistration();
 			}

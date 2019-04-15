@@ -335,19 +335,7 @@ public class LoginController extends BaseController implements Initializable {
 							loginList = status ? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
 									: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-							/*
-							 * if (getCenterMachineStatus(userDetail)) {
-							 * sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
-							 * sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-							 * loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(),
-							 * roleList); } else { sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
-							 * true); sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE,
-							 * false);
-							 * 
-							 * loginList =
-							 * loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList); }
-							 */
-
+						
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
 							String irisDisableFlag = getValueFromApplicationContext(
