@@ -145,3 +145,9 @@ Reference to ABIS API specifiaction can be found from [here](https://github.com/
 **Bio Success Sequence Diagram:**
 
 ![ABIS middleware bio no match sequence diagram](_images/abis_middleware_bio_no_match_seq_diagram.png)
+
+**Database Design**
+
+------------
+
+![ABIS middleware database design](_images/abis_middleware_db_design.png)
