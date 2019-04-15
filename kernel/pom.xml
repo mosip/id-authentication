@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.3</version>
 	</parent>
 
 
@@ -106,6 +106,7 @@
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
 		<ignite.version>2.3.0</ignite.version>
+		<findbugs.version>3.0.1</findbugs.version>
 
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>

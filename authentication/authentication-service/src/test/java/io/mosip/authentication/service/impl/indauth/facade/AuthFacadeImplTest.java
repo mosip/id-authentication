@@ -69,8 +69,8 @@ import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.authentication.service.integration.TokenIdManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -110,6 +110,7 @@ public class AuthFacadeImplTest {
 	/** The KycService **/
 	@Mock
 	private KycService kycService;
+	
 	/** The IdInfoHelper **/
 	@Mock
 	private IdInfoHelper idInfoHelper;
@@ -156,9 +157,9 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private PinAuthService pinAuthService;
-
+	
 	@Mock
-	private TokenIdGenerator<String> tokenIdGenerator;
+	private TokenIdManager tokenIdManager;
 
 	/**
 	 * Before.
@@ -166,7 +167,7 @@ public class AuthFacadeImplTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
-		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdGenerator", tokenIdGenerator);
+		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdManager", tokenIdManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
@@ -186,7 +187,7 @@ public class AuthFacadeImplTest {
 	}
 
 	/**
-	 * This class tests the authenticateApplicant method where it checks the IdType
+	 * This class tests the authenticateIndividual method where it checks the IdType
 	 * and DemoAuthType.
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business
@@ -201,7 +202,7 @@ public class AuthFacadeImplTest {
 	 */
 
 	@Test
-	public void authenticateApplicantTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException,
+	public void authenticateIndividualTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException,
 			NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, IOException {
 
@@ -278,7 +279,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
@@ -286,8 +287,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
-		authFacadeImpl.authenticateApplicant(authRequestDTO, true, "123456");
+		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 
 	}
 
@@ -409,7 +409,6 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", true, "247334310780728918141754192454591343", "123456");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
@@ -442,7 +441,6 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", false, "247334310780728918141754192454591343", "123456");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
@@ -753,9 +751,8 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
@@ -841,9 +838,8 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId())
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
@@ -874,7 +870,6 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -921,7 +916,6 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -968,7 +962,6 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();

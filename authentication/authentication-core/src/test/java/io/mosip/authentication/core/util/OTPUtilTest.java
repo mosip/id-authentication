@@ -9,8 +9,16 @@ import org.junit.Test;
 
 import io.mosip.authentication.core.util.OTPUtil;
 
+/**
+ * The Class OTPUtilTest.
+ *
+ * @author Manoj SP
+ */
 public class OTPUtilTest {
 
+	/**
+	 * Test generate key.
+	 */
 	@Test
 	public void testGenerateKey() {
 		String actualKey = OTPUtil.generateKey("IDA", "uin", "txnId", "auaCode");
@@ -19,6 +27,9 @@ public class OTPUtilTest {
 		assertEquals(expectedKey, actualKey);
 	}
 	
+	/**
+	 * Test generate key fail.
+	 */
 	@Test
 	public void testGenerateKeyFail() {
 		String actualKey = OTPUtil.generateKey("IDA", "ref", "txnId", "auaCode");

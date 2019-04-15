@@ -59,6 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 
+	@SuppressWarnings("findsecbugs:SPRING_CSRF_PROTECTION_DISABLED")
+	//will be removed after auth integration
 	@Override
 	protected void configure(final HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests().anyRequest().authenticated().and()

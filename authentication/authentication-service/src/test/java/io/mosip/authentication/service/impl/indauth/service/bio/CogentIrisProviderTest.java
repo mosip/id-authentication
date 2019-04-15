@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
 
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 

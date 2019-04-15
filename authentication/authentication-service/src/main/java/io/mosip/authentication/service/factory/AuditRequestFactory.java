@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * A factory for creating and building AuditRequest objects from
- * audit.properties
+ * properties
  *
  * @author Manoj SP
  */
@@ -37,16 +37,11 @@ public class AuditRequestFactory {
     /**
      * Builds the request.
      *
-     * @param module
-     *            the module
-     * @param event
-     *            the event
-     * @param id
-     *            the id
-     * @param idType
-     *            the id type
-     * @param desc
-     *            the desc
+     * @param module the module
+     * @param event the event
+     * @param id the id
+     * @param idType the id type
+     * @param desc the desc
      * @return the audit request dto
      */
     public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
