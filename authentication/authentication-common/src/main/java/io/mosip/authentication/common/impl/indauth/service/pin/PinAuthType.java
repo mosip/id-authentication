@@ -6,13 +6,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
-import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeImpl;
 
 /**
  * The Enum PinAuthType - used to construct the Auth type

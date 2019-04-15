@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.bio;
+package io.mosip.authentication.common.impl.indauth.match;
 
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;

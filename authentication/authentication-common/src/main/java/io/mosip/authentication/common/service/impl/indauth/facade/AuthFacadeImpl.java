@@ -3,15 +3,12 @@
  */
 package io.mosip.authentication.common.service.impl.indauth.facade;
 
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,9 +17,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.helper.AuditHelper;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.integration.TokenIdManager
 import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.impl.indauth.builder.AuthResponseBuilder;
+import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -44,7 +41,6 @@ import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -124,7 +120,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private PinAuthService pinAuthService;
 
 	/** The TokenId manager */
-	@Autowired
+	@Autowired	
 	private TokenIdManager tokenIdManager;
 
 

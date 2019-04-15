@@ -1,12 +1,12 @@
 package io.mosip.authentication.common.impl.indauth.service.demo;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;

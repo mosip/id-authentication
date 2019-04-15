@@ -39,7 +39,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-	
+
 	/** The Constant STATIC PIN. */
 	private static final String STATIC_PIN = "staticPin";
 
@@ -53,7 +53,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(StaticPinRequestValidator.class);
-	
+
 	@Autowired
 	PinValidatorImpl pinvalidator;
 
@@ -103,6 +103,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 						new Object[] { STATIC_PIN },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
+		}
 
 	}
 

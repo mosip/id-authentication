@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.2</version>
 	</parent>
 	<artifactId>static-pin-service</artifactId>
 	<name>static-pin-service</name>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
-			<version>0.10.1</version>
+			<version>0.10.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -36,6 +36,11 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pinvalidator</artifactId>
+			<version>${kernel.version}</version>
 		</dependency>
 	</dependencies>
 </project>

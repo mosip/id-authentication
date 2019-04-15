@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.common.service.impl;
 
 import java.util.Collections;
 import java.util.Set;

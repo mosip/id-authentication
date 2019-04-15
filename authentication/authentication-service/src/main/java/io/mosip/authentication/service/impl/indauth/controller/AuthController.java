@@ -80,7 +80,7 @@ public class AuthController {
 
 		try {
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true,partnerId);
+			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -93,4 +93,4 @@ public class AuthController {
 
 		return authResponsedto;
 	}
-
+}

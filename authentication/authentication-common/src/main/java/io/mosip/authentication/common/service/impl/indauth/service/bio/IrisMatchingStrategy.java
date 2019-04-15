@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.indauth.service.bio;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import io.mosip.authentication.common.impl.indauth.match.MatchingStrategyImpl;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;

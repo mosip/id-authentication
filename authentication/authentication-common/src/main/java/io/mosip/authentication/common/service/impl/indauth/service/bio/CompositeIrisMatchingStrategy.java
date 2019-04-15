@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.indauth.service.bio;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import io.mosip.authentication.common.impl.indauth.match.MatchingStrategyImpl;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -12,8 +13,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 /**
- * The Enum CompositeIrisMatchingStrategy - used to compare and
- * evaluate the IRIS value received from the request and entity
+ * The Enum CompositeIrisMatchingStrategy - used to compare and evaluate the
+ * IRIS value received from the request and entity
  * 
  * @author Sanjay Murali
  */
@@ -44,7 +45,6 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	/** The matching strategy impl. */
 	private MatchingStrategyImpl matchingStrategyImpl;
 
-
 	/**
 	 * Instantiates a new composite iris matching strategy.
 	 *
@@ -55,28 +55,6 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
-	 */
-	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
-	 * getMatchFunction()
-	 */
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
-	}
-
 	/**
 	 * Gets the idvid.
 	 *
@@ -85,13 +63,15 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	public static String getIdvid() {
 		return IDVID;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchingStrategy()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
+	 * getMatchingStrategy()
 	 */
 	public MatchingStrategy getMatchingStrategy() {
 		return matchingStrategyImpl;
-    }
-
+	}
 
 }

@@ -1,13 +1,9 @@
 package io.mosip.authentication.internal.service.filter;
 
 import java.util.Map;
-import java.util.Objects;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import io.mosip.authentication.common.authentication.filter.BaseAuthFilter;
+import io.mosip.authentication.common.authentication.filter.IdAuthFilter;
 import io.mosip.authentication.common.authentication.filter.ResettableStreamHttpServletRequest;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.internal.service.impl.indauth.controller.InternalAuthController;
 

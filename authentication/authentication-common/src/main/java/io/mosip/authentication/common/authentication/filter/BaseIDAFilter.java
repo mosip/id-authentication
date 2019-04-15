@@ -2,6 +2,7 @@ package io.mosip.authentication.common.authentication.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -64,7 +65,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/** The Constant MOSIP_IDA_API_IDS. */
 	private static final String MOSIP_IDA_API_ID = "mosip.ida.api.id.";
-	
+
 	/** The Constant MOSIP_IDA_API_VERSION. */
 	private static final String MOSIP_IDA_API_VERSION = "mosip.ida.api.version.";
 
@@ -100,12 +101,12 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/** The Constant EMPTY_JSON_OBJ_STRING. */
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
-	
+
 	/** The Constant VERSION_REGEX. */
 	private static final String VERSION_REGEX = "\\d\\.\\d(\\.\\d)?";
-	
+
 	/** The Constant VERSION_PATTERN. */
-	private static final  Pattern VERSION_PATTERN = Pattern.compile(VERSION_REGEX);
+	private static final Pattern VERSION_PATTERN = Pattern.compile(VERSION_REGEX);
 
 	/** The env. */
 	protected Environment env;
@@ -163,22 +164,24 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * sendErrorResponse method is used to construct error response
-	 * when any exception is thrown while deciphering or validating
-	 * the authenticating partner 
+	 * sendErrorResponse method is used to construct error response when any
+	 * exception is thrown while deciphering or validating the authenticating
+	 * partner
 	 *
 	 * @param response        where the response are written
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param chain           the chain used to link the request wrapper and response wrapper
+	 * @param chain           the chain used to link the request wrapper and
+	 *                        response wrapper
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
-	 * @param authError 	  the AUTH error is used to set the error details if any
-	 * @param requestTime 
+	 * @param authError       the AUTH error is used to set the error details if any
+	 * @param requestTime
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException      Signals that an I/O exception has occurred.
 	 * @throws ServletException the servlet exception
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
-			ResettableStreamHttpServletRequest requestWrapper, AuthError authError, Temporal requestTime) throws IOException {
+			ResettableStreamHttpServletRequest requestWrapper, AuthError authError, Temporal requestTime)
+			throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setErrors(Collections.singletonList(authError));
 		Map<String, Object> requestMap = null;
@@ -191,18 +194,20 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 		String resTime = DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+						env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(ZoneOffset.UTC));
-		ResponseDTO res=new ResponseDTO();
+				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+				TimeZone.getTimeZone(ZoneOffset.UTC));
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		authResponseDTO.setResponse(res);
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
 					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
-			resTime = DateUtils.formatDate(
-					DateUtils.parseToDate(resTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
+			resTime = DateUtils.formatDate(DateUtils.parseToDate(resTime,
+					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
 					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone));
 		}
 
@@ -225,8 +230,8 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * removeNullOrEmptyFieldsInResponse method is used to remove
-	 * all the empty and null values present in the response
+	 * removeNullOrEmptyFieldsInResponse method is used to remove all the empty and
+	 * null values present in the response
 	 *
 	 * @param responseMap the response got after the authentication
 	 * @return the map consists of filter response without null or empty
@@ -239,8 +244,7 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * logDataSize method is used to log the size of the
-	 * request and response data
+	 * logDataSize method is used to log the size of the request and response data
 	 *
 	 * @param data the request or response boby
 	 * @param type wither request or response
@@ -252,23 +256,22 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * logTime method is used to log the response time
-	 * between the request and response processed
+	 * logTime method is used to log the response time between the request and
+	 * response processed
 	 *
-	 * @param time the response time
-	 * @param type the type is response
-	 * @param requestTime 
+	 * @param time        the response time
+	 * @param type        the type is response
+	 * @param requestTime
 	 */
 	private void logTime(String time, String type, Temporal requestTime) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
-			long duration = Duration
-					.between(
-							requestTime,
-							LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))))
-					.toMillis();
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-					"Time difference between request and response in millis:" + duration
-					+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
+		long duration = Duration
+				.between(requestTime,
+						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))))
+				.toMillis();
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+				"Time difference between request and response in millis:" + duration
+						+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
 
 	/**
@@ -289,9 +292,9 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * consumeRequest method is used to manipulate the request
-	 * where the request is first reached and along this all 
-	 * validation are done further after successful decipher
+	 * consumeRequest method is used to manipulate the request where the request is
+	 * first reached and along this all validation are done further after successful
+	 * decipher
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @throws IdAuthenticationAppException the id authentication app exception
@@ -311,32 +314,34 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * validateRequest method is used to validate the version and
-	 * the ID passed for the each request 
+	 * validateRequest method is used to validate the version and the ID passed for
+	 * the each request
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
-	 * @param requestBody    the request body is the request body fetched from input stream
+	 * @param requestBody    the request body is the request body fetched from input
+	 *                       stream
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		
-			String id = fetchId(requestWrapper, MOSIP_IDA_API_ID);
-			requestWrapper.resetInputStream();
-			if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
-				validateId(requestBody, id);
-				validateVersion(requestBody);
-			}
-		
+
+		String id = fetchId(requestWrapper, MOSIP_IDA_API_ID);
+		requestWrapper.resetInputStream();
+		if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
+			validateId(requestBody, id);
+			validateVersion(requestBody);
+		}
+
 	}
-	
+
 	/**
 	 * fetchId used to fetch and determine the id of request
 	 *
 	 * @param requestWrapper the {@link ResettableStreamHttpServletRequest}
 	 * @return the string
 	 */
-	private String fetchId(ResettableStreamHttpServletRequest requestWrapper) {private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+
+	private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
 		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
@@ -345,21 +350,22 @@ public abstract class BaseIDAFilter implements Filter {
 			id = attribute + splitedUrlByContext[1].split("/")[1];
 		}
 		return id;
+
 	}
 
 	/**
-	 * validateVersion method is used to validate the version
-	 * present in the request body and URL
+	 * validateVersion method is used to validate the version present in the request
+	 * body and URL
 	 *
-	 * @param requestBody the request body is the request body fetched from input stream
-	 * @param id the id present in the request in the request
-	 * @param verFromUrl the version from URL
+	 * @param requestBody the request body is the request body fetched from input
+	 *                    stream
+	 * @param id          the id present in the request in the request
+	 * @param verFromUrl  the version from URL
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateVersion(Map<String, Object> requestBody)
-			throws IdAuthenticationAppException {
+	private void validateVersion(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		String verFromRequest = requestBody.containsKey(VERSION) ? (String) requestBody.get(VERSION) : null;
-		if(StringUtils.isEmpty(verFromRequest)) {
+		if (StringUtils.isEmpty(verFromRequest)) {
 			handleException(VERSION, false);
 		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches()) {
@@ -371,13 +377,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * validateId is used to validate the id present in the request
 	 *
 	 * @param requestBody the request body
-	 * @param id the id
+	 * @param id          the id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
 		String idFromRequest = requestBody.containsKey(ID) ? (String) requestBody.get(ID) : null;
 		String property = env.getProperty(id);
-		if(StringUtils.isEmpty(idFromRequest)) {
+		if (StringUtils.isEmpty(idFromRequest)) {
 			handleException(ID, false);
 		}
 		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
@@ -386,20 +392,20 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * exceptionHandling used to handle the exception when validation
-	 * of version and ID fails
+	 * exceptionHandling used to handle the exception when validation of version and
+	 * ID fails
 	 *
 	 * @param type the type is either ID or Version
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void handleException(String type, boolean isPresent) throws IdAuthenticationAppException {
-		if(!isPresent) {
+		if (!isPresent) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), type));
-		} else {			
+		} else {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			throw new IdAuthenticationAppException(
@@ -409,17 +415,17 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * mapResponse method is used to construct the response
-	 * for the successful authentication
+	 * mapResponse method is used to construct the response for the successful
+	 * authentication
 	 *
-	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest} 
+	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param requestTime 
+	 * @param requestTime
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, Temporal requestTime)
-			throws IdAuthenticationAppException {
+	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper,
+			Temporal requestTime) throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
@@ -439,8 +445,8 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * setResponseParams method is set the transaction ID and
-	 * response time based on the request time zone
+	 * setResponseParams method is set the transaction ID and response time based on
+	 * the request time zone
 	 *
 	 * @param requestBody  the request body
 	 * @param responseBody the response body
@@ -456,11 +462,16 @@ public abstract class BaseIDAFilter implements Filter {
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
 				&& isDate((String) requestBody.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
-			responseBody.replace(RES_TIME,
-					DateUtils.formatDate(
-							DateUtils.parseToDate((String) responseBody.get(RES_TIME),
-									env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
-							env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)));
+			responseBody
+					.replace(RES_TIME,
+							DateUtils
+									.formatDate(
+											DateUtils.parseToDate((String) responseBody.get(RES_TIME),
+													env.getProperty(
+															IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+													TimeZone.getTimeZone(zone)),
+											env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+											TimeZone.getTimeZone(zone)));
 			return responseBody;
 		} else {
 			return responseBody;
@@ -482,14 +493,15 @@ public abstract class BaseIDAFilter implements Filter {
 	/**
 	 * getRequestBody used to get the request body from the raw input stream
 	 *
-	 * @param requestBody {@link ResettableStreamHttpServletRequest} get request as input stream
+	 * @param requestBody {@link ResettableStreamHttpServletRequest} get request as
+	 *                    input stream
 	 * @return the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
 			String reqStr = IOUtils.toString(requestBody, Charset.defaultCharset());
-			//requestBody empty for service like VID
+			// requestBody empty for service like VID
 			return reqStr.isEmpty() ? null : mapper.readValue(reqStr, new TypeReference<Map<String, Object>>() {
 			});
 		} catch (IOException | ClassCastException e) {
@@ -515,8 +527,8 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * authenticateRequest method used to validate the JSON signature
-	 * pay load and the certificate
+	 * authenticateRequest method used to validate the JSON signature pay load and
+	 * the certificate
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @throws IdAuthenticationAppException the id authentication app exception

@@ -11,9 +11,9 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.impl.indauth.match.MatchingStrategyImpl;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.impl.indauth.service.bio.MatchingStrategyImpl;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

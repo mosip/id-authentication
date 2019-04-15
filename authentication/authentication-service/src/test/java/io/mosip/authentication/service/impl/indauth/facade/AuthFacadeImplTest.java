@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -69,7 +70,6 @@ import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.authentication.service.integration.TokenIdManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 

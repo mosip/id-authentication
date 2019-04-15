@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**

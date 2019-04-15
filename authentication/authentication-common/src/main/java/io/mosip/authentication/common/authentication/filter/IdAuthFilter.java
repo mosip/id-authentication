@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.policy.AuthPolicy;
 import io.mosip.authentication.common.policy.KYCAttributes;
@@ -30,8 +31,7 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -44,7 +44,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
-	
+
 	private static final String BIO_TYPE = "bioType";
 
 	/** The Constant UTF_8. */
@@ -165,11 +165,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
-			String lkExpiryDt =  String.valueOf(licenseKeyMap.get(EXPIRY_DT));
+			String lkExpiryDt = String.valueOf(licenseKeyMap.get(EXPIRY_DT));
 			if (DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
 			}
-			String lkStatus =  String.valueOf(licenseKeyMap.get(STATUS));
+			String lkStatus = String.valueOf(licenseKeyMap.get(STATUS));
 			if (!lkStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED);
 			}
@@ -220,8 +220,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		Boolean mispPartnerMappingJson = env.getProperty(IdAuthenticationProperties.MISP_PARTNER_MAPPING.getkey()+ mispId + "." + partnerId,
-				boolean.class);
+		Boolean mispPartnerMappingJson = env.getProperty(
+				IdAuthenticationProperties.MISP_PARTNER_MAPPING.getkey() + mispId + "." + partnerId, boolean.class);
 		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
@@ -326,13 +326,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 		List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<BioIdentityInfoDTO>>() {
 				});
-		
-		boolean noBioType= listBioInfo.stream().anyMatch(s->s.getData()!=null &&s.getData().getBioType()==null);
-		if(noBioType) {
+
+		boolean noBioType = listBioInfo.stream().anyMatch(s -> s.getData() != null && s.getData().getBioType() == null);
+		if (noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							BIO_TYPE));
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), BIO_TYPE));
 		}
 
 		List<String> bioTypeList = listBioInfo.stream()
@@ -346,12 +345,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else {
 			for (String bioType : bioTypeList) {
-				if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
-						bioType = SingleType.FINGER.value();
-					} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
-						bioType = SingleType.FACE.value();
-					} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
-						bioType = SingleType.IRIS.value();
+				if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
+						|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
+					bioType = SingleType.FINGER.value();
+				} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
+					bioType = SingleType.FACE.value();
+				} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
+					bioType = SingleType.IRIS.value();
 				}
 				if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
 					throw new IdAuthenticationAppException(
@@ -364,9 +364,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
 								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
 			}
-			}
 		}
-
 	}
 
 	/**
@@ -441,7 +439,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(env.getProperty(IdAuthenticationProperties.MOSIP_IDA_API_IDS.getkey() + "ekyc"))).isPresent()) {
+						.filter(id -> id.equals(
+								env.getProperty(IdAuthenticationProperties.MOSIP_IDA_API_IDS.getkey() + "ekyc")))
+						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
 		}

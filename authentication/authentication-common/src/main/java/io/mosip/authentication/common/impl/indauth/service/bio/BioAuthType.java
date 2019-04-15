@@ -1,16 +1,15 @@
 package io.mosip.authentication.common.impl.indauth.service.bio;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
@@ -31,10 +30,10 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 public enum BioAuthType implements AuthType {
 
 	FGR_MIN("FMR",
-			AuthType.setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX, BioMatchType.FGRMIN_LEFT_MIDDLE,
-					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
-					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
-					BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
+			AuthType.setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX,
+					BioMatchType.FGRMIN_LEFT_MIDDLE, BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE,
+					BioMatchType.FGRMIN_RIGHT_THUMB, BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE,
+					BioMatchType.FGRMIN_RIGHT_RING, BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
 			getFingerprint(), 1) {
 
 		@Override
@@ -63,10 +62,10 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	FGR_IMG("FIR",
-			AuthType.setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
-					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
-					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
-					BioMatchType.FGRIMG_RIGHT_LITTLE),
+			AuthType.setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX,
+					BioMatchType.FGRIMG_LEFT_MIDDLE, BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE,
+					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
+					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE),
 			getFingerprint(), 1) {
 
 		@Override
@@ -142,7 +141,8 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris", 1) {
+	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris",
+			1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -188,7 +188,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 			long entries = 0;
-			for(MatchType matchType : AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
+			for (MatchType matchType : AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
 				entries += (long) helper.getIdentityRequestInfo(matchType, reqDTO.getRequest(), null).size();
 			}
 			return entries;
@@ -289,14 +289,6 @@ public enum BioAuthType implements AuthType {
 	}
 
 	/*
-	 * Get Associated Matchtypes
-	 */
-	@Override
-	public Set<MatchType> getAssociatedMatchTypes() {
-		return Collections.unmodifiableSet(associatedMatchTypes);
-	}
-
-	/*
 	 * Checks is Authtype information available based on authreqest
 	 */
 	@Override
@@ -323,7 +315,7 @@ public enum BioAuthType implements AuthType {
 		return Stream.of(values)
 				.filter(authType -> authType.getType().equalsIgnoreCase(type) && authType.getCount() == 1).findAny();
 	}
-	
+
 	@Override
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;
