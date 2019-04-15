@@ -2,12 +2,15 @@
 	"identity": {
 		"name": {
 			"value": "fullName"
+			"isMandatory" : true
 		},
 		"gender": {
 			"value": "gender"
+			"isMandatory" : true
 		},
 		"dob": {
 			"value": "dateOfBirth"
+			"isMandatory" : true
 		},
 		"parentOrGuardianRID": {
 			"value" : "parentOrGuardianRID"
