@@ -143,7 +143,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			}
 		} catch (TablenotAccessibleException e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING.toString());
-			dto.setStatusComment(e.getMessage());
+			dto.setStatusComment(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 			object.setInternalError(true);
@@ -157,7 +157,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		} catch (PacketNotFoundException ex) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
-			dto.setStatusComment(ex.getMessage());
+			dto.setStatusComment(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getMessage());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_NOT_FOUND_EXCEPTION));
 			object.setInternalError(true);
@@ -168,7 +168,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			description = "Packet not found in DFS for registrationId " + registrationId + "::" + ex.getMessage();
 		} catch (FSAdapterException e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING.toString());
-			dto.setStatusComment(e.getMessage());
+			dto.setStatusComment(PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			object.setInternalError(true);
@@ -179,7 +179,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			description = "DFS not accessible for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
-			dto.setStatusComment(e.getMessage());
+			dto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			object.setIsValid(false);
@@ -192,7 +192,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
-			dto.setStatusComment(e.getMessage());
+			dto.setStatusComment(PlatformErrorMessages.PACKET_UPLOAD_FAILED.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			object.setInternalError(true);
