@@ -145,7 +145,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 		} else if (fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-		} else if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)) {
+		} else if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 		} else {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, true);

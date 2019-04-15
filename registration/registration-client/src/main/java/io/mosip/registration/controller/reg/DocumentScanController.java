@@ -1007,8 +1007,8 @@ public class DocumentScanController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		biometricExceptionController.disableNextBtn();
-		fingerPrintCaptureController.populateException();
-		irisCaptureController.populateException();
+		fingerPrintCaptureController.clearImage();
+		irisCaptureController.clearIrisBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
