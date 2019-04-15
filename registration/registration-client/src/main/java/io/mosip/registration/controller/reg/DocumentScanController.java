@@ -613,8 +613,6 @@ public class DocumentScanController extends BaseController {
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
-		((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
-				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 		if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 				|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
@@ -642,6 +640,9 @@ public class DocumentScanController extends BaseController {
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
+		
+		((ImageView) (((HBox) vboxElement.getParent()).getChildren().get(0))).setImage(new Image(
+					this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");

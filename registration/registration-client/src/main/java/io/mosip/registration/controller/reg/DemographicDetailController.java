@@ -1866,7 +1866,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
 		} else {
 			if (validateThisPane()) {
-				if (!switchedOn.get()) {
+				if (switchedOn.get()) {
 
 					if (dd.getText().matches(RegistrationConstants.NUMBER_REGEX)
 							&& mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
