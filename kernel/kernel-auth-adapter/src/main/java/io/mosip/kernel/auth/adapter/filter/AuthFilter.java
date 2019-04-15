@@ -44,8 +44,8 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/" 
-				};
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/",
+				"**/authenticate/**", "/**/emailnotifier/**", "/**/smsnotifier/**", "/**/otpmanager/**" };
 	}
 
 	public AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
@@ -93,8 +93,6 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 		return getAuthenticationManager().authenticate(authToken);
 	}
 
-	
-
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
@@ -141,8 +139,5 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 		mapper.registerModule(new JavaTimeModule());
 		return mapper.writeValueAsString(object);
 	}
-
-	 
-
 
 }
