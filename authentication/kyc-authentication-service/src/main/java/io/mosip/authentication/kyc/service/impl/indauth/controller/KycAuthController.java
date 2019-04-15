@@ -88,20 +88,20 @@ public class KycAuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true, partnerId);
+			authResponseDTO = authFacade.authenticateIndividual(kycAuthRequestDTO, true,partnerId);
 			if (authResponseDTO != null) {
-				kycAuthResponseDTO = kycService.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
+				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO,partnerId);
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "processKyc",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID,this.getClass().getSimpleName(),"processKyc", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		return kycAuthResponseDTO;
 	}
+
 
 }

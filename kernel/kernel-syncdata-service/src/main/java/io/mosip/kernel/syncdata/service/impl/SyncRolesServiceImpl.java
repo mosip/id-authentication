@@ -24,11 +24,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
-
 
 /**
  * This class handles fetching of everey roles that is in the server. The flow
@@ -80,7 +79,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange(uriBuilder.toString()+ "/registrationclient", HttpMethod.GET, httpRequest,
+			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
@@ -110,7 +109,8 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	/**
 	 * Gets the roles from response.
 	 *
-	 * @param response the response
+	 * @param response
+	 *            the response
 	 * @return {@link RolesResponseDto}
 	 */
 	private RolesResponseDto getRolesFromResponse(ResponseEntity<String> response) {
@@ -119,7 +119,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 		RolesResponseDto rolesDtos = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerServiceException(validationErrorsList);
+			throw new SyncServiceException(validationErrorsList);
 		}
 		ResponseWrapper<?> responseObject = null;
 		try {
@@ -131,7 +131,6 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 					exception);
 		}
-
 		return rolesDtos;
 	}
 

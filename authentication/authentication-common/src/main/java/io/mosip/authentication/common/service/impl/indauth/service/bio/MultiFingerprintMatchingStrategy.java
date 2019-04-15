@@ -35,39 +35,16 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
-	/** The Final for MatchingStatergyType */
-	private final MatchingStrategyType matchStrategyType;
-
-	/** The Final for MatchFunction */
-	private final MatchFunction matchFunction;
+	/** The matching strategy impl. */
+	private MatchingStrategyImpl matchingStrategyImpl;
 
 	/** The Constructor for MultiFingerprintMatchingStrategy */
 	private MultiFingerprintMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
-		this.matchStrategyType = matchStrategyType;
-		this.matchFunction = matchFunction;
+		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
-	 */
-	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	/*
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
-	 * getMatchFunction()
-	 */
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
-	}
+	public MatchingStrategy getMatchingStrategy() {
+		return matchingStrategyImpl;
+ 	}
 
 }

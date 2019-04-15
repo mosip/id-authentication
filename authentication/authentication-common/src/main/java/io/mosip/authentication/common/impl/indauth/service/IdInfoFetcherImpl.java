@@ -326,5 +326,23 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getMatchingThreshold(java.lang.String)
+	 */
+	@Override
+	public Optional<Integer> getMatchingThreshold(String key) {
+		Integer threshold = null;
+		if (Objects.nonNull(key)) {
+			String property = environment.getProperty(key);
+			if (property != null && !property.isEmpty()) {
+				threshold = Integer.parseInt(property);
+			} 
+		}
+		return Optional.ofNullable(threshold);
+	}
+
+
+
 
 }

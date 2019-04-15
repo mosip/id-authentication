@@ -27,7 +27,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
- * The Class IdAuthValidator.
+ * The Class IdAuthValidator - abstract class containing common validations.
  *
  * @author Manoj SP
  */
@@ -155,7 +155,7 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
-			checkFutureReqTime(reqTime, errors);
+			checkFutureReqTime(reqTime, errors, paramName);
 		}
 	}
 
@@ -165,8 +165,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 */
-	private void checkFutureReqTime(String reqTime, Errors errors) {
-
+	private void checkFutureReqTime(String reqTime, Errors errors, String paramName) {
 		Date reqDateAndTime = null;
 		try {
 			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
@@ -174,14 +173,15 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQ_TIME },
+					new Object[] { paramName },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { paramName },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

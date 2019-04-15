@@ -119,6 +119,9 @@ public enum PlatformErrorMessages {
 	RPR_RGS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "024",
 			"Invalid Input Parameter - id"),
 
+	RPR_RGS_REGISTRATION_STATUS_NOT_EXIST(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "025",
+			"RegistrationStatusCode is null"),
+	
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
@@ -225,6 +228,9 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "005",
 			"The Packet store set by the System is not accessible"),
 
+	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
+			"Not able to access the API resource"),
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
@@ -272,6 +278,9 @@ public enum PlatformErrorMessages {
 	/** The rpr psj ftp folder not accessible. */
 	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007",
 			"The FTP folder set by the System is not accessible"),
+
+	RPR_PSJ_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "008",
+			"Not able to access the API resource"),
 
 	/** The rpr pdj packet not available. */
 	// packet decryption job Exception error code and message
@@ -332,7 +341,7 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 
-	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id can not empty"),
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id cannot be empty"),
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -502,8 +511,7 @@ public enum PlatformErrorMessages {
 			"Error while getting response from Print and Postal Service Provider"),
 
 	/** The print validation failed. */
-	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
-			"Error while print data validation"),
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
@@ -559,7 +567,12 @@ public enum PlatformErrorMessages {
 			"Invalid Input Parameter - %s"),
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
-			"Input Data Validation Failed");
+			"Input Data Validation Failed"),
+
+	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
+
+	EXTERNAL_STAGE_FAILED("", "External Stage Failed");
+
 	/** The error message. */
 	private final String errorMessage;
 

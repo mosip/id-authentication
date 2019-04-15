@@ -3,7 +3,6 @@
  */
 package io.mosip.kernel.auth.factory;
 
-
 import lombok.Data;
 
 /**
@@ -12,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class DataBaseConfig {
-	
+
 	private String url;
 	private String port;
 	private String username;

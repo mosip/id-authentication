@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.WordAndLanguageCodeID;
 
 /**
- * Entity class for blacklisted words.
+ * The Entity Class for blacklisted words.
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

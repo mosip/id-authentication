@@ -1,16 +1,12 @@
 package io.mosip.registration.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
- * PreRegistrationDataSync RequestDTO
+ * The DTO Class PreRegistration Data Sync Request.
+ *
  * @author YASWANTH S
  * @since 1.0.0
  */
@@ -21,15 +17,15 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/** The Registration-client-Id. */
-	@JsonProperty("registration-client-id")
+	@JsonProperty("registrationCenterId")
 	private String regClientId;
 	
 	/** The from-date. */
-	@JsonProperty("from-date")
+	@JsonProperty("fromDate")
 	private String fromDate;
 	
 	/** The To-date. */
-	@JsonProperty("to-date")
+	@JsonProperty("toDate")
 	private String toDate;
 	
 	/** The UserId. */

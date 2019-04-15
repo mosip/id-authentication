@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * AppAuthenticationMethod entity details
+ * The Entity Class for AppAuthenticationMethod
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -25,7 +25,7 @@ public class AppAuthenticationMethod extends RegistrationCommonFields {
 	private AppAuthenticationMethodId appAuthenticationMethodId;
 
 	@Column(name = "method_seq")
-	private int methodSeq;
+	private Integer methodSequence;
 	
 	@Column(name = "lang_code")
 	private String langCode;

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.helper.AuditHelper;
 import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.integration.TokenIdManager
 import io.mosip.authentication.common.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -71,6 +72,13 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
+ 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
+
+ 	/** The Constant DATETIME_PATTERN. */
+ 	private static final String DATETIME_PATTERN = "datetime.pattern";
+
 
 	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
@@ -115,9 +123,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private PinAuthService pinAuthService;
 
-	/** The TokenId Generator */
+	/** The TokenId manager */
 	@Autowired
-	private TokenIdGenerator<String> tokenIdGenerator;
+	private TokenIdManager tokenIdManager;
+
 
 	/** The Id Info Fetcher */
 	@Autowired
@@ -131,7 +140,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		IdType idType = idInfoFetcher.getUinOrVidType(authRequestDTO);
@@ -149,9 +158,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			// FIXME temporary fix for the api change
-//			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
-			staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
+			staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
+
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -412,9 +420,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-//			String strUTCDate = DateUtils
-//					.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())));
-//			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+			String strUTCDate = DateUtils
+					.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
+			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
 			autnTxn.setRequestTrnId(txnID);
@@ -449,19 +457,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private AuditEvents getAuditEvent(boolean isAuth) {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
-	}
-
-	/**
-	 * This method Accepts the time in String and returns utcTime in String.
-	 * 
-	 * @param reqTime
-	 * @return
-	 */
-	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of("UTC")));
-		return dateFormatter.format(reqDate);
 	}
 
 }

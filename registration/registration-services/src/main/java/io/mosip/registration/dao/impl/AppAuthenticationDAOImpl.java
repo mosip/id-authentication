@@ -1,5 +1,6 @@
 package io.mosip.registration.dao.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.AppAuthenticationDetails;
@@ -48,17 +50,21 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		LOGGER.info("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetching list of login modes");
 		
-		String role = null;
+		Set<String> role = new HashSet<>();
 		
 		if(roleList.size() == RegistrationConstants.PARAM_ONE) {
-			role = roleList.iterator().next();
+			role.add(roleList.iterator().next());
 		} else if(roleList.size() > RegistrationConstants.PARAM_ONE){
 			List<AppRolePriorityDetails> appRolePriorityDetails = appRolePriorityRepository.findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority(authType, roleList);
-			role = !appRolePriorityDetails.isEmpty() ? String.valueOf(appRolePriorityDetails.get(RegistrationConstants.PARAM_ZERO).getAppRolePriorityId().getRoleCode()) : null;
+			role.add(!appRolePriorityDetails.isEmpty() ? String.valueOf(appRolePriorityDetails.get(RegistrationConstants.PARAM_ZERO).getAppRolePriorityId().getRoleCode()) : "");
+		}
+		
+		if(!authType.equalsIgnoreCase(ProcessNames.LOGIN.getType())) {
+			role.add("*");
 		}
 
 		List<AppAuthenticationDetails> loginList = appAuthenticationRepository
-				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(authType, role);
+				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence(authType, role);
 		
 		LOGGER.info("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");

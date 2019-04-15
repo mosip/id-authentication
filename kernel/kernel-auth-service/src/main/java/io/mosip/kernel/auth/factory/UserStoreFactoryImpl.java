@@ -4,7 +4,6 @@
 package io.mosip.kernel.auth.factory;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +29,14 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 	private Map<String, IDataStore> dataStoreMap = null;
 
 	UserStoreFactoryImpl() {
-		
+
 	}
 
 	@PostConstruct
 	private void init() {
 		buildDataStoreMap();
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,9 +64,7 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 				if (ds.contains(AuthConstant.LDAP)) {
 					IDataStore idatastore = new ILdapDataStore(dataBaseConfig);
 					dataStoreMap.put(ds, idatastore);
-				}
-				else
-				{
+				} else {
 					IDataStore idatastore = new DBDataStore(dataBaseConfig);
 					dataStoreMap.put(ds, idatastore);
 				}
@@ -78,10 +76,9 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 
 	@Override
 	public IDataStore getDataStoreBasedOnApp(String appId) {
-		String datasource=null;
-		if(appId!=null)
-		{
-			datasource = mosipEnvironment.getDataStore(appId.toLowerCase()+AuthConstant.DATASOURCE);
+		String datasource = null;
+		if (appId != null) {
+			datasource = mosipEnvironment.getDataStore(appId.toLowerCase() + AuthConstant.DATASOURCE);
 		}
 		return dataStoreMap.get(datasource);
 	}

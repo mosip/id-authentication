@@ -16,6 +16,13 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.JobManager;
 
+/**
+ * Implementation of {@link JobManager}
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ *
+ */
 @Component
 public class JobManagerImpl implements JobManager {
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,9 +22,14 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.SMSRequestDTO;
+import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -95,7 +101,7 @@ public class NotificationUtil {
 		    HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
 
 
-		ResponseEntity<NotificationResponseDTO> resp = null;
+		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		String merseTemplate = null;
 			String fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
@@ -109,12 +115,12 @@ public class NotificationUtil {
 			emailMap.add("mailTo", acknowledgementDTO.getEmailID());
 			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 			log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service emailResourseUrl: "+emailResourseUrl);
-			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, NotificationResponseDTO.class);
+			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 			
 			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
-			notifierResponse.setMessage(resp.getBody().getMessage());
-			notifierResponse.setStatus(resp.getBody().getStatus());
+			notifierResponse.setMessage(resp.getBody().getResponse().getMessage());
+			notifierResponse.setStatus(resp.getBody().getResponse().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
 			response.setResponsetime(getCurrentResponseTime());
@@ -146,24 +152,26 @@ public class NotificationUtil {
 			String langCode) throws IOException {
 		log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service");
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
-		ResponseEntity<NotificationResponseDTO> resp = null;
+		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 
 			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
 					acknowledgementDTO);
 			SMSRequestDTO smsRequestDTO = new SMSRequestDTO();
 			smsRequestDTO.setMessage(mergeTemplate);
 			smsRequestDTO.setNumber(acknowledgementDTO.getMobNum());
+			RequestWrapper<SMSRequestDTO> req=new RequestWrapper<>();
+			req.setRequest(smsRequestDTO);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<SMSRequestDTO> httpEntity = new HttpEntity<>(smsRequestDTO, headers);
+			HttpEntity<RequestWrapper<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
 			log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service smsResourseUrl: "+smsResourseUrl);
-			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, NotificationResponseDTO.class);
+			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 
 			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
-			notifierResponse.setMessage(resp.getBody().getMessage());
-			notifierResponse.setStatus(resp.getBody().getStatus());
+			notifierResponse.setMessage(resp.getBody().getResponse().getMessage());
+			notifierResponse.setStatus(resp.getBody().getResponse().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
 			response.setResponsetime(getCurrentResponseTime());

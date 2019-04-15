@@ -3,7 +3,6 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
-import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
@@ -12,6 +11,7 @@ import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.ValidDocument;
 
 /**
  * The Interface MasterSyncDao.
@@ -58,6 +58,7 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the all reason catogery.
 	 *
+	 * @param langCode the lang code
 	 * @return the all reason catogery
 	 */
 	List<ReasonCategory> getAllReasonCatogery(String langCode);
@@ -65,6 +66,7 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the reason list.
 	 *
+	 * @param langCode the lang code
 	 * @param reasonCat the reason cat
 	 * @return the reason list
 	 */
@@ -98,10 +100,10 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the valid documets.
 	 *
-	 * @param langCode the lang code
+	 * @param docCategoryCode the doc category code
 	 * @return the valid documets
 	 */
-	List<ApplicantValidDocument> getValidDocumets(String docCategoryCode,String langCode);
+	List<ValidDocument> getValidDocumets(String docCategoryCode);
 	
 	/**
 	 * Gets the individul type.

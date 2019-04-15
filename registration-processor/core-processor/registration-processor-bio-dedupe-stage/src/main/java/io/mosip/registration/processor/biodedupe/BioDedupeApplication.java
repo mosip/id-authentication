@@ -23,15 +23,9 @@ public class BioDedupeApplication {
 				"io.mosip.registration.processor.core.kernel.beans");
 
 		configApplicationContext.refresh();
-
 		BioDedupeStage bioDedupeStage = configApplicationContext.getBean(BioDedupeStage.class);
-
 		bioDedupeStage.deployVerticle();
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("10011100110015620190305172945");
-		//dto.setRid("10011100110015620190305172000");
-		dto.setIsValid(false);
-		bioDedupeStage.process(dto);
+		
 	}
 
 }

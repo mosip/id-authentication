@@ -31,6 +31,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -44,7 +45,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		IdRepoManager.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class,
 		BiometricProviderFactory.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class,
-		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class })
+		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class,
+		PinValidatorImpl.class })
 
 public class IdAuthenticationApplication {
 

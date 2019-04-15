@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.ApplicantValidDocument;
 
 /**
+ * Interface of ValidDocument
  * 
  * @author Brahmananda Reddy
  *

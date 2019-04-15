@@ -153,15 +153,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 		String hashedPin = hashStaticPin(pinValue.getBytes());
 		Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);
 		if (!entityValues.isPresent()) {
-			StaticPin staticPin = new StaticPin();
-			staticPin.setUin(uinValue);
-			staticPin.setPin(hashedPin);
-			staticPin.setCreatedBy(IDA);
-			staticPin.setCreatedOn(now());
-			staticPin.setUpdatedBy(IDA);
-			staticPin.setUpdatedOn(now());
-			staticPin.setActive(true);
-			staticPin.setDeleted(false);
+			StaticPin staticPin = new StaticPin(hashedPin, uinValue, true, IDA, now(), IDA, now(), false, now());
 			staticPinRepo.save(staticPin);
 		} else {
 			StaticPin staticPinEntity = entityValues.get();
@@ -205,16 +197,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private StaticPinHistory getPinHistory(String uinValue, String hashedPin) throws IdAuthenticationBusinessException {
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(uinValue);
-		staticPinHistory.setPin(hashedPin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(hashedPin,uinValue,true,IDA,now(),IDA,now(),false,now(),now());
 		return staticPinHistory;
 	}
 

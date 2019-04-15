@@ -3,6 +3,12 @@ package io.mosip.registration.util.checksum;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for CheckSum
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ */
 public class CheckSumUtil {
 	
 	private CheckSumUtil() {

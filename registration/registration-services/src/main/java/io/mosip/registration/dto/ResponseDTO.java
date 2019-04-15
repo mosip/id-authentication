@@ -2,6 +2,12 @@ package io.mosip.registration.dto;
 
 import java.util.List;
 
+/**
+ * The DTO Class ResponseDTO.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0.0
+ */
 public class ResponseDTO {
 	private List<ErrorResponseDTO> errorResponseDTOs;
 	private SuccessResponseDTO successResponseDTO;

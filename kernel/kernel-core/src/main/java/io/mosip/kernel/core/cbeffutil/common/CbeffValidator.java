@@ -175,10 +175,10 @@ public class CbeffValidator {
 		return savedData;
 	}
 
-	private static byte[] readXSD(String name) throws IOException {
+	/*private static byte[] readXSD(String name) throws IOException {
 		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xsd"));
 		return fileContent;
-	}
+	}*/
 
 	/**
 	 * Method used for BIR Type

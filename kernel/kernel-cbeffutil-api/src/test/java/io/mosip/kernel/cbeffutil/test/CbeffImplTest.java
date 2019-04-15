@@ -69,7 +69,7 @@ public class CbeffImplTest {
 	private static final String localpath = "./src/main/resources";
 
 	//@Before
-	public void setUp() throws Exception {
+	/*public void setUp() throws Exception {
 		byte[] fingerImg = CbeffISOReader.readISOImage(localpath + "/images/" + "ISOImage.iso", "Finger");
 		byte[] irisImg = CbeffISOReader.readISOImage(localpath + "/images/" + "Sample_IRIS.iso", "Iris");
 		JAXBElement<String> jaxbElementUnique = new JAXBElement<String>(new QName("testschema","TestFinger"),String.class,"Unique");
@@ -153,7 +153,7 @@ public class CbeffImplTest {
 		updateList.add(fingerMinutiae2);
 
 	}
-
+*/
 	//@Test
 	public void testCreateXML() throws Exception {
 		byte[] createXml = cbeffUtilImpl.createXML(createList);

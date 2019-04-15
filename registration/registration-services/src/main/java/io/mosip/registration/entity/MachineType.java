@@ -10,9 +10,10 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
+ * The Entity Class for MachineType.
+ *
  * @author Sreekar chukka
  * @since 1.0.0
- *
  */
 @Entity
 @Table(name = "machine_type", schema = "reg")

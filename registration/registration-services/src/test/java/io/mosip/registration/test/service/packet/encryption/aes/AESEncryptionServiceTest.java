@@ -15,11 +15,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
@@ -33,6 +37,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RSAEncryptionService;
 import io.mosip.registration.service.impl.AESEncryptionServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class AESEncryptionServiceTest {
 
 	@InjectMocks
@@ -51,10 +57,12 @@ public class AESEncryptionServiceTest {
 	private String keySplitter = "#Key_Splitter#";
 
 	@Before
-	public void initialize() throws RegBaseCheckedException {
+	public void initialize() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.KEY_SPLITTER, keySplitter);
-		ApplicationContext.getInstance().setApplicationMap(appMap);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 	}
 
 	@Test

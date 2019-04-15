@@ -86,39 +86,43 @@ spec:
         backend:
           serviceName: kernel-admin-service
           servicePort: 8099    
-      - path: /pre-registration/v1.0/auth
+      - path: /preregistration/v1/login
         backend:
-          serviceName: pre-registration-auth-service
+          serviceName: pre-registration-login-service
           servicePort: 9090
-      - path: /pre-registration/v1.0/demographic
+      - path: /preregistration/v1/applications
         backend:
           serviceName: pre-registration-demographic-service
           servicePort: 9092
-      - path: /pre-registration/v1.0/document
+      - path: /preregistration/v1/documents
         backend:
           serviceName: pre-registration-document-service
           servicePort: 9093
-      - path: /pre-registration/v1.0/sync
+      - path: /preregistration/v1/sync
         backend:
           serviceName: pre-registration-datasync-service
           servicePort: 9094
-      - path: /pre-registration/v1.0/booking
+      - path: /preregistration/v1/appointment
         backend:
           serviceName: pre-registration-booking-service
           servicePort: 9095
-      - path: /pre-registration/v1.0/batchjob
+      - path: /preregistration/v1/batch
         backend:
           serviceName: pre-registration-batchjob-service
           servicePort: 9096
-      - path: /pre-registration/v1.0/transliteration
+      - path: /preregistration/v1/transliteration
         backend:
           serviceName: pre-registration-translitration-service
           servicePort: 9098
-      - path: /pre-registration/v1.0/notification
+      - path: /preregistration/v1/notification
         backend:
           serviceName: pre-registration-notification-service
           servicePort: 9099
-      - path: /identity
+      - path: /preregistration/v1/qrCode
+        backend:
+          serviceName: pre-registration-generateqrcode-service
+          servicePort: 9091
+      - path: /v1/identity
         backend:
           serviceName: authentication-service
           servicePort: 8090
@@ -146,6 +150,10 @@ spec:
         backend:
           serviceName: registration-processor-external-integration-service
           servicePort: 8201
+      - path: /print
+        backend:
+          serviceName: registration-processor-print-service
+          servicePort: 9099
       - path: /config
         backend:
           serviceName: kernel-config-server

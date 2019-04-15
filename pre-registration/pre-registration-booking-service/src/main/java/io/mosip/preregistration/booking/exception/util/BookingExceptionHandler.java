@@ -63,7 +63,7 @@ public class BookingExceptionHandler {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	@Value("${id}")

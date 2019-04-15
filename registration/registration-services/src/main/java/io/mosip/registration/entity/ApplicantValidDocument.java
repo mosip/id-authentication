@@ -27,7 +27,7 @@ public class ApplicantValidDocument extends RegistrationCommonFields implements 
 	private static final long serialVersionUID = -3111581667845281498L;
 
 	@EmbeddedId
-	private ApplicantValidDocumentID validDocumentId;
+	private ApplicantValidDocumentID validDocument;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -40,18 +40,14 @@ public class ApplicantValidDocument extends RegistrationCommonFields implements 
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	DocumentType documentType;
 
-	/**
-	 * @return the validDocumentId
-	 */
-	public ApplicantValidDocumentID getValidDocumentId() {
-		return validDocumentId;
+	
+
+	public ApplicantValidDocumentID getValidDocument() {
+		return validDocument;
 	}
 
-	/**
-	 * @param validDocumentId the validDocumentId to set
-	 */
-	public void setValidDocumentId(ApplicantValidDocumentID validDocumentId) {
-		this.validDocumentId = validDocumentId;
+	public void setValidDocument(ApplicantValidDocumentID validDocument) {
+		this.validDocument = validDocument;
 	}
 
 	@Column(name = "lang_code")

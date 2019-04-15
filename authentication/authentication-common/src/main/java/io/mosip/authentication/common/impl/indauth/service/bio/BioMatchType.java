@@ -114,21 +114,35 @@ public enum BioMatchType implements MatchType {
 			setOf(CompositeIrisMatchingStrategy.PARTIAL)),
 
 	FACE(IdaIdMapping.FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null),
-	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null);
+	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, CbeffDocType.FACE, null, null, setOf(FaceMatchingStrategy.PARTIAL));
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
+	/** The identity info function. */
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
-
+	
+	/** The id mapping. */
 	private IdMapping idMapping;
 
+	/** The cbeff doc type. */
 	private CbeffDocType cbeffDocType;
 
+	/** The sub type. */
 	private SingleAnySubtypeType subType;
 
+	/** The single any subtype. */
 	private SingleAnySubtypeType singleAnySubtype;
 
+	/**
+	 * Instantiates a new bio match type.
+	 *
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param cbeffDocType the cbeff doc type
+	 * @param subType the sub type
+	 * @param singleAnySubtype the single any subtype
+	 */
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
 		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
@@ -140,12 +154,33 @@ public enum BioMatchType implements MatchType {
 		}
 	}
 
+	/**
+	 * Instantiates a new bio match type for UNKNOWN scenarios
+	 *
+	 * @param idMapping the id mapping
+	 * @param cbeffDocType the cbeff doc type
+	 * @param subType the sub type
+	 * @param singleAnySubtype the single any subtype
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 */
+
 	private BioMatchType(IdMapping idMapping, CbeffDocType cbeffDocType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
 		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
 		this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 	}
 
+	
+	/**
+	 * Instantiates a new bio match type.
+	 *
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param cbeffDocType the cbeff doc type
+	 * @param subType the sub type
+	 * @param singleAnySubtype the single any subtype
+	 * @param identityInfoFunction the identity info function
+	 */
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
 			Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction) {
@@ -157,13 +192,18 @@ public enum BioMatchType implements MatchType {
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 	}
 
+	/**
+	 * Gets the id info from bio id info.
+	 *
+	 * @param biometrics the biometrics
+	 * @return the id info from bio id info
+	 */
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
 		AtomicInteger count = new AtomicInteger(0);
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
 			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
-				return bioId.getData().getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()) ? true
-						: bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
+				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
 			}
 			return false;
 		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue)
@@ -176,11 +216,27 @@ public enum BioMatchType implements MatchType {
 				}, value -> value));
 	}
 
+	
+	/**
+	 * Gets the id info from sub id mappings.
+	 *
+	 * @param identityDto the identity dto
+	 * @param subIdMappings the sub id mappings
+	 * @return the id info from sub id mappings
+	 */
+
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromSubIdMappings(RequestDTO identityDto,
 			Set<IdMapping> subIdMappings) {
 		BioMatchType[] subMatchTypes = getMatchTypesForSubIdMappings(subIdMappings);
 		return getIdValuesMap(identityDto, subMatchTypes);
 	}
+
+	/**
+	 * Gets the match types for sub id mappings.
+	 *
+	 * @param subIdMappings the sub id mappings
+	 * @return the match types for sub id mappings
+	 */
 
 	public BioMatchType[] getMatchTypesForSubIdMappings(Set<IdMapping> subIdMappings) {
 		return Arrays.stream(BioMatchType.values())
@@ -208,30 +264,55 @@ public enum BioMatchType implements MatchType {
 		return Function.identity();
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getIdMapping()
+	 */
 	public IdMapping getIdMapping() {
 		return idMapping;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getIdentityInfoFunction()
+	 */
 	@Override
 	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getCategory()
+	 */
 	@Override
 	public Category getCategory() {
 		return Category.BIO;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#mapEntityInfo(java.util.Map, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
+	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
 			IdInfoFetcher idinfoFetcher) throws IdAuthenticationBusinessException {
 		return idinfoFetcher.getCbeffValues(idEntity, cbeffDocType, this);
 	}
 
+	/**
+	 * Gets the cbeff doc type.
+	 *
+	 * @return the cbeff doc type
+	 */
+
 	public CbeffDocType getCbeffDocType() {
 		return cbeffDocType;
 	}
 
+	/**
+	 * Gets the id values map.
+	 *
+	 * @param identityDto the identity dto
+	 * @param bioMatchTypes the bio match types
+	 * @return the id values map
+	 */
 	public static Map<String, List<IdentityInfoDTO>> getIdValuesMap(RequestDTO identityDto,
 			BioMatchType... bioMatchTypes) {
 		return Stream.of(bioMatchTypes)
@@ -240,10 +321,20 @@ public enum BioMatchType implements MatchType {
 						(list1, list2) -> Stream.concat(list1.stream(), list1.stream()).collect(Collectors.toList())));
 	}
 
+	/**
+	 * Gets the sub type.
+	 *
+	 * @return the sub type
+	 */
 	public SingleAnySubtypeType getSubType() {
 		return subType;
 	}
 
+	/**
+	 * Gets the single any subtype.
+	 *
+	 * @return the single any subtype
+	 */
 	public SingleAnySubtypeType getSingleAnySubtype() {
 		return singleAnySubtype;
 	}

@@ -183,8 +183,9 @@ public class KycAuthFilter extends IdAuthFilter {
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
 		if (!isAllowedAuthType(KYC, authPolicies)) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-					String.format(KYC, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage()));
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNAUTHORISED_PARTNER.getErrorCode(),
+					IdAuthenticationErrorConstants.UNAUTHORISED_PARTNER.getErrorMessage());
+
 		}
 		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 	}

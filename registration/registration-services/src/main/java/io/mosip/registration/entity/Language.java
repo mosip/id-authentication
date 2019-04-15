@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * 
- * Entity for language
+ * The Entity Class for language
  * 
  * @author Sreekar chukka
  * @since 1.0.0

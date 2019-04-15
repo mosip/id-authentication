@@ -45,6 +45,7 @@ public class OTPFilter extends IdAuthFilter {
 	 * @param responseMap the response map
 	 * @return the map
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Map<String, Object> removeNullOrEmptyFieldsInResponse(Map<String, Object> responseMap) {
 		return responseMap.entrySet().stream().filter(map -> Objects.nonNull(map.getValue()))

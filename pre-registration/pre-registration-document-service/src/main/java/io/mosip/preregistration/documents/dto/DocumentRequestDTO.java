@@ -31,28 +31,23 @@ public class DocumentRequestDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
 
-	/**
-	 * PreRegistration Id
-	 */
-	@JsonProperty("pre_registartion_id")
-	private String preregId;
 
 	/**
 	 * Document Category
 	 */
-	@JsonProperty("doc_cat_code")
+	@JsonProperty("docCatCode")
 	private String docCatCode;
 
 	/**
 	 * Document type
 	 */
-	@JsonProperty("doc_typ_code")
-	private String docTypeCode;
+	@JsonProperty("docTypCode")
+	private String docTypCode;
 
 	/**
 	 * Uploaded lang code
 	 */
-	@JsonProperty("lang_code")
+	@JsonProperty("langCode")
 	private String langCode;
 
 }

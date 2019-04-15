@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor
 import lombok.Data;
 
 /**
@@ -22,6 +23,7 @@ import lombok.Data;
 @Entity
 @IdClass(StaticPinHistory.IdClass.class)
 @Table(name = "static_pin_h", schema = "ida")
+@AllArgsConstructor
 public class StaticPinHistory {
 	/** The variable to hold StaticPin. */
 	@Column(name = "pin", nullable = false)
@@ -36,11 +38,11 @@ public class StaticPinHistory {
 	@Column(name = "is_active")
 	private boolean isActive;
 
-	/** The variable to hold corrected by. */
+	/** The variable to hold created by. */
 	@Column(name = "cr_by")
 	private String createdBy;
 
-	/** The variable to hold corrected date. */
+	/** The variable to hold created date. */
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createdOn;
 

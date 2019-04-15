@@ -73,6 +73,7 @@ public class TransliterationExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -89,9 +90,10 @@ public class TransliterationExceptionHandler {
 	 */
 	@ExceptionHandler(IllegalParamException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final IllegalParamException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -107,9 +109,10 @@ public class TransliterationExceptionHandler {
 	 */
 	@ExceptionHandler(UnSupportedLanguageException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final UnSupportedLanguageException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -126,9 +129,10 @@ public class TransliterationExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final InvalidRequestParameterException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);

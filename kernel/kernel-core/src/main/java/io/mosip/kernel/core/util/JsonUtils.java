@@ -47,7 +47,7 @@ public class JsonUtils {
 	 * @throws IOException
 	 *             when file is not found
 	 */
-	public static boolean javaObjectToJsonFile(Object className, String location)
+	/*public static boolean javaObjectToJsonFile(Object className, String location)
 			throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -68,7 +68,7 @@ public class JsonUtils {
 		}
 		return (file.exists());
 
-	}
+	}*/
 
 	/**
 	 * This function converts the java object and returns a JSON String
@@ -151,7 +151,7 @@ public class JsonUtils {
 	 * @throws IOException
 	 *             when file is not found
 	 */
-	public static Object jsonFileToJavaObject(Class<?> className, String fileLocation)
+	/*public static Object jsonFileToJavaObject(Class<?> className, String fileLocation)
 			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -171,7 +171,7 @@ public class JsonUtils {
 		}
 		return returnObject;
 	}
-
+*/
 	/**
 	 * This function returns the value associated with the label of the input JSON
 	 * 

@@ -23,6 +23,7 @@ public interface MasterSyncService {
 	 * Gets the master sync.
 	 *
 	 * @param masterSyncDetails the master sync details
+	 * @param triggerPoint the trigger point
 	 * @return the master sync
 	 */
 	ResponseDTO getMasterSync(String masterSyncDetails,String triggerPoint);
@@ -64,6 +65,7 @@ public interface MasterSyncService {
 	/**
 	 * Gets all the document categories.
 	 *
+	 * @param docCode the doc code
 	 * @param langCode the lang code
 	 * @return all the document categories
 	 */

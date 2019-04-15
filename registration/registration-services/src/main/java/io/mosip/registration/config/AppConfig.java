@@ -1,12 +1,7 @@
 package io.mosip.registration.config;
 
-import java.util.Properties;
-import java.util.ResourceBundle;
-
 import javax.sql.DataSource;
 
-import org.quartz.JobListener;
-import org.quartz.TriggerListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +11,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
@@ -26,9 +20,6 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
-import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.jobs.JobProcessListener;
-import io.mosip.registration.jobs.JobTriggerListener;
 
 /**
  * Spring Configuration class for Registration-Service Module
@@ -45,38 +36,31 @@ import io.mosip.registration.jobs.JobTriggerListener;
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
 		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
-		"io.mosip.kernel.cbeffutil" })
+		"io.mosip.kernel.cbeffutil","io.mosip.kernel.core.pdfgenerator.spi","io.mosip.kernel.pdfgenerator.itext.impl" })
 @PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
-
-	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("reg_application");
 
 	@Autowired
 	@Qualifier("dataSource")
 	private DataSource datasource;
 
 	static {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
+		
 		MOSIP_ROLLING_APPENDER.setAppend(true);
-		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
-		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
-		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
-		MOSIP_ROLLING_APPENDER.setMaxFileSize(resourceBundle.getString("log4j.appender.Appender.maxFileSize"));
-		MOSIP_ROLLING_APPENDER.setTotalCap(resourceBundle.getString("log4j.appender.Appender.totalCap"));
-		MOSIP_ROLLING_APPENDER
-				.setMaxHistory(Integer.valueOf(resourceBundle.getString("log4j.appender.Appender.maxBackupIndex")));
+		MOSIP_ROLLING_APPENDER.setAppenderName("org.apache.log4j.RollingFileAppender");
+		MOSIP_ROLLING_APPENDER.setFileName("logs/registration.log");
+		MOSIP_ROLLING_APPENDER.setFileNamePattern("logs/registration-%d{yyyy-MM-dd-HH}-%i.log");
+		MOSIP_ROLLING_APPENDER.setMaxFileSize("5MB");
+		MOSIP_ROLLING_APPENDER.setTotalCap("50MB");
+		MOSIP_ROLLING_APPENDER.setMaxHistory(10);
 		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
 		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
 
 	public static Logger getLogger(Class<?> className) {
 		return Logfactory.getDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
-	}
-
-	public static String getApplicationProperty(String property) {
-		return applicationProperties.getString(property);
 	}
 
 	@Bean

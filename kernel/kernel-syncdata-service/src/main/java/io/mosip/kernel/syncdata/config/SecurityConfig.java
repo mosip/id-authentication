@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
-import io.mosip.kernel.syncdata.filter.SecurityFilter;
+import io.mosip.kernel.syncdata.httpfilter.SecurityFilter;
 
 /**
  * @author Abhishek Kumar
@@ -42,6 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				"/*/configuration/security", "/*/swagger-resources/**", "/*/swagger-ui.html" };
 	}
 
+	@SuppressWarnings("findsecbugs:SPRING_CSRF_PROTECTION_DISABLED")
+	//will be removed after auth integration
 	@Override
 	protected void configure(final HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests().anyRequest().authenticated().and()
