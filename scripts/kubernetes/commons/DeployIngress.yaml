@@ -154,6 +154,10 @@ spec:
         backend:
           serviceName: registration-processor-print-service
           servicePort: 9099
+      - path: /print-stage
+        backend:
+          serviceName: registration-processor-printing-stage
+          servicePort: 8099
       - path: /config
         backend:
           serviceName: kernel-config-server
