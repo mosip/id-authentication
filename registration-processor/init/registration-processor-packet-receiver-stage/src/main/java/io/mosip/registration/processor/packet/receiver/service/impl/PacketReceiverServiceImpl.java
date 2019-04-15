@@ -155,7 +155,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
-				vlaidatePacketWithRegEntity();
+				validatePacketWithRegEntity();
 				validateHashCode(registrationId, encryptedInputStream);
 				validatePacketFormat(fileOriginalName, registrationId);
 				validatePacketSize(file.length(), registrationId);
@@ -239,16 +239,16 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	/**
-	 * Vlaidate packet with reg entity.
+	 * validate packet with reg entity.
 	 */
-	private void vlaidatePacketWithRegEntity() {
-		
+	private void validatePacketWithRegEntity() {
+
 		if (regEntity == null) {
-			description = "PacketNotSync exception in packet receiver for registartionId " + regEntity.getRegistrationId() + "::"
+			description = "PacketNotSync exception in packet receiver for registartionId "
+					+ regEntity.getRegistrationId() + "::"
 					+ PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), regEntity.getRegistrationId(),
-					PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regEntity.getRegistrationId(), PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 			throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 		}
 	}
@@ -412,7 +412,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
 		byte[] hasheSquence = HMACUtils.generateHash(isbytearray);
 		byte[] packetHashSequenceFromEntity = isbytearray;// PacketHashSequesnce
-		if (!(Arrays.equals(hasheSquence,packetHashSequenceFromEntity))) {
+		if (!(Arrays.equals(hasheSquence, packetHashSequenceFromEntity))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 			throw new UnequalHashSequenceException(
