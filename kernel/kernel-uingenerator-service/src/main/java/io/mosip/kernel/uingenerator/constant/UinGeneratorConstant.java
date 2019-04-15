@@ -151,4 +151,6 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String NINE = "9";
 
+	public static final String ZERO_TO_NINE = "1234567890";
+
 }
