@@ -197,10 +197,10 @@ public class IrisCaptureController extends BaseController {
 	/**
 	 * Populate exception.
 	 */
-	public void populateException() {
+	private void populateException() {
 		
 		leftIrisException.setText(RegistrationConstants.HYPHEN);
-		leftIrisException.setText(RegistrationConstants.HYPHEN);
+		rightIrisException.setText(RegistrationConstants.HYPHEN);
 		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
@@ -218,6 +218,9 @@ public class IrisCaptureController extends BaseController {
 						.stream().forEach(bio -> setExceptionIris(bio));
 			}
 		}
+		
+		singleBiometricCaptureCheck();
+
 	}
 
 	private void setExceptionIris(BiometricExceptionDTO bio) {
@@ -754,7 +757,7 @@ public class IrisCaptureController extends BaseController {
 		if (anyIrisException(RegistrationConstants.LEFT) && anyIrisException(RegistrationConstants.RIGHT)) {
 			continueBtn.setDisable(false);
 		}
-		singleBiometricCaptureCheck();
+
 		populateException();
 	}
 

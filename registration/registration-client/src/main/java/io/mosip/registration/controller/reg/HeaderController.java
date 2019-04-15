@@ -69,7 +69,7 @@ import javafx.scene.layout.VBox;
 @Controller
 public class HeaderController extends BaseController {
 
-	/**
+	/**o
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(HeaderController.class);

@@ -60,7 +60,7 @@
               <transformers>
                 <transformer>
                   <manifestEntries>
-                    <Main-Class>io.mosip.registration.cipher.CilentJarDecryption</Main-Class>
+                    <Main-Class>io.mosip.registration.cipher.ClientJarDecryption</Main-Class>
                   </manifestEntries>
                 </transformer>
               </transformers>
