@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.kernel.auth.service.impl;
 
 import java.time.LocalDateTime;

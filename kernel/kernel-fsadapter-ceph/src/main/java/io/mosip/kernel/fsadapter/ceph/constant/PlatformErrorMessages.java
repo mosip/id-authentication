@@ -27,10 +27,8 @@ public enum PlatformErrorMessages {
 	/**
 	 * Instantiates a new platform error messages.
 	 *
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMsg
-	 *            the error msg
+	 * @param errorCode the error code
+	 * @param errorMsg  the error msg
 	 */
 	private PlatformErrorMessages(String errorCode, String errorMsg) {
 		this.errorCode = errorCode;

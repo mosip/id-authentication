@@ -6,7 +6,7 @@ package io.mosip.kernel.core.cbeffutil.constant;
 /**
  * @author Ramadurai Pandian
  *
- * A Constant Class to hold all the default identifier values
+ *         A Constant Class to hold all the default identifier values
  */
 public class CbeffConstant {
 

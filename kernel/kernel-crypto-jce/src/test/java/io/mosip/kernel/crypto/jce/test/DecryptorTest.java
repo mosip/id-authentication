@@ -24,7 +24,6 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DecryptorTest {
@@ -34,12 +33,10 @@ public class DecryptorTest {
 
 	@Autowired
 	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptorImpl;
-	
+
 	private KeyPair rsaPair;
 
 	private byte[] data;
-
-	
 
 	@Before
 	public void setRSAUp() throws java.security.NoSuchAlgorithmException {
@@ -58,65 +55,54 @@ public class DecryptorTest {
 	}
 
 	@Test
-	public void testRSAPKS1AsymmetricPrivateDecrypt(){
+	public void testRSAPKS1AsymmetricPrivateDecrypt() {
 		byte[] encryptedData = encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(), data);
 		assertThat(decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), encryptedData), isA(byte[].class));
 	}
 
-	
-
 	@Test
-	public void testRSAPKS1AsymmetricPublicDecrypt()
-			{
+	public void testRSAPKS1AsymmetricPublicDecrypt() {
 		byte[] encryptedData = encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data);
 		assertThat(decryptorImpl.asymmetricPublicDecrypt(rsaPair.getPublic(), encryptedData), isA(byte[].class));
 	}
- 
+
 	@Test
-	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException
-			{
+	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
 		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
 		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData), isA(byte[].class));
 	}
-	
-	
 
-
- 
-	@Test(expected=InvalidKeyException.class)
-	public void testAESSymmetricDecryptInvalidKey() throws java.security.NoSuchAlgorithmException
-			{
+	@Test(expected = InvalidKeyException.class)
+	public void testAESSymmetricDecryptInvalidKey() throws java.security.NoSuchAlgorithmException {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
 		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
 		decryptorImpl.symmetricDecrypt(null, encryptedData);
 	}
-	
-	@Test(expected=InvalidDataException.class)
-	public void testAESSymmetricDecryptInvalidDataArrayIndexOutOfBounds() throws java.security.NoSuchAlgorithmException
-			{
+
+	@Test(expected = InvalidDataException.class)
+	public void testAESSymmetricDecryptInvalidDataArrayIndexOutOfBounds()
+			throws java.security.NoSuchAlgorithmException {
 		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes());
 	}
 
-	@Test(expected=InvalidDataException.class)
-	public void testAESSymmetricDecryptInvalidDataIllegalBlockSize() throws java.security.NoSuchAlgorithmException
-			{
+	@Test(expected = InvalidDataException.class)
+	public void testAESSymmetricDecryptInvalidDataIllegalBlockSize() throws java.security.NoSuchAlgorithmException {
 		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[121]);
 	}
-	
-	//@Test(expected=InvalidDataException.class)
-	public void testAESSymmetricDecryptInvalidDataBadPadding() throws java.security.NoSuchAlgorithmException
-			{
+
+	// @Test(expected=InvalidDataException.class)
+	public void testAESSymmetricDecryptInvalidDataBadPadding() throws java.security.NoSuchAlgorithmException {
 		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[32]);
 	}
-	
-	@Test(expected=InvalidDataException.class)
-	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataIllegalBlockSize(){
+
+	@Test(expected = InvalidDataException.class)
+	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataIllegalBlockSize() {
 		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[121]);
 	}
-	
-	@Test(expected=InvalidDataException.class)
-	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataBadPadding(){
+
+	@Test(expected = InvalidDataException.class)
+	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataBadPadding() {
 		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[32]);
 	}
 }

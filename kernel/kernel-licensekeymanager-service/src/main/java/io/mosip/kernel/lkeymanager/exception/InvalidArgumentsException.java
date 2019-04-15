@@ -26,8 +26,7 @@ public class InvalidArgumentsException extends BaseUncheckedException {
 	/**
 	 * Constructor with list as the argument.
 	 * 
-	 * @param list
-	 *            the error list.
+	 * @param list the error list.
 	 */
 	public InvalidArgumentsException(List<ServiceError> list) {
 		this.list = list;

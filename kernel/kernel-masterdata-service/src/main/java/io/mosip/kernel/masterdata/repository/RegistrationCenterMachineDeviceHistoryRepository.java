@@ -7,7 +7,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 
 /**
- * Repository to perform CRUD operations on RegistrationCenterMachineDeviceHistory.
+ * Repository to perform CRUD operations on
+ * RegistrationCenterMachineDeviceHistory.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0

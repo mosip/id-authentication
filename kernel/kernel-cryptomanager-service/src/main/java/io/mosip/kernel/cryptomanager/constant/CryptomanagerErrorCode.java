@@ -49,9 +49,8 @@ public enum CryptomanagerErrorCode {
 	/**
 	 * 
 	 */
-	DATE_TIME_PARSE_EXCEPTION("KER-CRY-007",
-			"timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ"), INTERNAL_SERVER_ERROR("KER-CRY-500",
-					"Internal server error");
+	DATE_TIME_PARSE_EXCEPTION("KER-CRY-007", "timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ"),
+	INTERNAL_SERVER_ERROR("KER-CRY-500", "Internal server error");
 
 	/**
 	 * The errorCode
@@ -65,10 +64,8 @@ public enum CryptomanagerErrorCode {
 	/**
 	 * {@link CryptomanagerErrorCode} constructor
 	 * 
-	 * @param errorCode
-	 *            error code
-	 * @param errorMessage
-	 *            error message
+	 * @param errorCode    error code
+	 * @param errorMessage error message
 	 */
 	private CryptomanagerErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

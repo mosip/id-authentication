@@ -1,7 +1,5 @@
 package io.mosip.kernel.datavalidator.phone.impl;
 
-
-
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
@@ -27,22 +25,22 @@ import io.mosip.kernel.datavalidator.phone.constant.PhoneConstant;
 public class PhoneValidatorImpl implements PhoneValidator<String> {
 
 	/**
-	 * This variable to hold the maximum length of the phone number and
-	 * Reading maximum length of the phone number from property file
+	 * This variable to hold the maximum length of the phone number and Reading
+	 * maximum length of the phone number from property file
 	 * 
 	 */
 	@Value("${mosip.kernel.phone.max-length}")
 	private int phoneMaxLength;
 	/**
-	 * This variable to hold the minimum length of the phone number and 
-	 * Reading minimum length of the phone number from property file
+	 * This variable to hold the minimum length of the phone number and Reading
+	 * minimum length of the phone number from property file
 	 * 
 	 */
 	@Value("${mosip.kernel.phone.min-length}")
 	private int phoneMinLength;
 	/**
-	 * This variable to hold the special characters of the phone number and 
-	 * Reading special characters for the phone number from property file
+	 * This variable to hold the special characters of the phone number and Reading
+	 * special characters for the phone number from property file
 	 * 
 	 */
 	@Value("${mosip.kernel.phone.special-char}")
@@ -57,27 +55,24 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 	@PostConstruct
 	private void phoneValidatorImplPostConstruct() {
 		phoneRegex = "[\\d" + phoneSpecialChar + "]{" + phoneMinLength + "," + phoneMaxLength + "}";
-		
+
 	}
 
 	/**
 	 * Method used for Validate Phone number against acceptance Criteria
 	 * 
-	 * @param phoneNum
-	 *            pass a Phone number in String format
+	 * @param phoneNum pass a Phone number in String format
 	 * 
 	 * @return return boolean value true or false
 	 * 
-	 * @throws InvalidPhoneNumberException
-	 *             If entered Phone number is empty or null.
+	 * @throws InvalidPhoneNumberException If entered Phone number is empty or null.
 	 * 
-	 * @throws InvalidPhoneNumberException
-	 *             If entered Phone number length is not in a specified number of
-	 *             digits.
+	 * @throws InvalidPhoneNumberException If entered Phone number length is not in
+	 *                                     a specified number of digits.
 	 * 
-	 * @throws InvalidPhoneNumberException
-	 *             If entered phone number contain any special characters which are
-	 *             not specified .
+	 * @throws InvalidPhoneNumberException If entered phone number contain any
+	 *                                     special characters which are not
+	 *                                     specified .
 	 * 
 	 */
 	public boolean validatePhone(String phoneNum) {
@@ -88,8 +83,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 		 * 
 		 */
 		if (StringUtils.isEmpty(phoneNum)) {
-			throw new InvalidPhoneNumberException(
-					PhoneConstant.PHONE_NUM_INVALID_NULL.getErrorCode(),
+			throw new InvalidPhoneNumberException(PhoneConstant.PHONE_NUM_INVALID_NULL.getErrorCode(),
 					PhoneConstant.PHONE_NUM_INVALID_NULL.getErrorMessage());
 		}
 
@@ -99,8 +93,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 		 * 
 		 */
 		if (phoneNum.length() < phoneMinLength || phoneNum.length() > phoneMaxLength) {
-			throw new InvalidPhoneNumberException(
-					PhoneConstant.PHONE_NUM_INVALID_MIN_MAX_LENGTH.getErrorCode(),
+			throw new InvalidPhoneNumberException(PhoneConstant.PHONE_NUM_INVALID_MIN_MAX_LENGTH.getErrorCode(),
 					PhoneConstant.PHONE_NUM_INVALID_MIN_MAX_LENGTH.getErrorMessage());
 		}
 
@@ -113,8 +106,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 		 * 
 		 */
 		if (!Pattern.matches(phoneRegex, phoneNum)) {
-			throw new InvalidPhoneNumberException(
-					PhoneConstant.PHONE_NUM_INVALID_DIGITS.getErrorCode(),
+			throw new InvalidPhoneNumberException(PhoneConstant.PHONE_NUM_INVALID_DIGITS.getErrorCode(),
 					PhoneConstant.PHONE_NUM_INVALID_DIGITS.getErrorMessage());
 		}
 

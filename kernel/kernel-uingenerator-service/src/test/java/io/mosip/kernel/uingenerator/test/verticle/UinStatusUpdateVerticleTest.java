@@ -7,8 +7,6 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,7 +15,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -30,11 +27,9 @@ import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 //@RunWith(VertxUnitRunner.class)
 public class UinStatusUpdateVerticleTest {
@@ -62,7 +57,7 @@ public class UinStatusUpdateVerticleTest {
 		vertx.close(context.asyncAssertSuccess());
 	}
 
-	//@Test
+	// @Test
 	public void updateVerticle(TestContext context) throws JsonProcessingException {
 		Async async = context.async();
 		ObjectMapper mapper = new ObjectMapper();
@@ -72,25 +67,23 @@ public class UinStatusUpdateVerticleTest {
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
 
 		RestTemplate restTemplate = new RestTemplateBuilder().defaultMessageConverters()
-				.additionalMessageConverters(converter)
-				.build();
+				.additionalMessageConverters(converter).build();
 
-		ResponseWrapper<UinResponseDto> uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
-		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(),UinResponseDto.class);
-		
-		
-		
+		ResponseWrapper<UinResponseDto> uinResp = restTemplate
+				.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
+		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
 		requestDto.setUin(dto.getUin());
 		requestDto.setStatus("ASSIGNED");
-		
+
 		RequestWrapper<UinStatusUpdateReponseDto> requestWrp = new RequestWrapper<>();
 		requestWrp.setId("mosip.kernel.uinservice");
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
 		String reqJson = mapper.writeValueAsString(requestWrp);
-				
+
 		final String length = Integer.toString(reqJson.length());
 		vertx.createHttpClient().put(port, "localhost", "/uingenerator/uin")
 				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
@@ -100,7 +93,6 @@ public class UinStatusUpdateVerticleTest {
 						async.complete();
 					});
 				}).write(reqJson).end();
-		 
 
 	}
 

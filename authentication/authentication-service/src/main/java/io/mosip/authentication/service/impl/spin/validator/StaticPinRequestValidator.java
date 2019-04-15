@@ -1,8 +1,8 @@
 package io.mosip.authentication.service.impl.spin.validator;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -12,6 +12,8 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * 
@@ -29,9 +31,6 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "individualIdType";
 
-	/** The Constant STATIC_PIN_PATTERN. */
-	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -41,11 +40,11 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
+	/** The Constant STATIC PIN. */
+	private static final String STATIC_PIN = "staticPin";
+
 	/** The Constant INDIVIDUAL_ID. */
 	private static final String INDIVIDUAL_ID = "individualId";
-
-	/** The Constant PINVALUE. */
-	private static final String PINVALUE = "pinValue";
 
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "requestTime";
@@ -54,6 +53,9 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(StaticPinRequestValidator.class);
+
+	@Autowired
+	PinValidatorImpl pinvalidator;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -88,16 +90,22 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	private void validateStaticPin(String pinValue, Errors errors) {
 		if (Objects.isNull(pinValue) || pinValue.isEmpty()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
-					MISSING_INPUT_PARAMETER + PINVALUE);
+					MISSING_INPUT_PARAMETER + STATIC_PIN);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 					new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
-		} else if (!STATIC_PIN_PATTERN.matcher(pinValue).matches()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
-					"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { PINVALUE },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		} else {
+			try {
+				pinvalidator.validatePin(pinValue);
+			} catch (InvalidPinException e) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
+						"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { STATIC_PIN },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
+
 		}
+
 	}
 
 	/**

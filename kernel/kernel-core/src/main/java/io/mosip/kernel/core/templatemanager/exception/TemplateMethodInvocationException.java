@@ -17,10 +17,8 @@ public class TemplateMethodInvocationException extends BaseUncheckedException {
 	/**
 	 * Constructor for set error code and message
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	public TemplateMethodInvocationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

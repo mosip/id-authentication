@@ -89,25 +89,20 @@ public class EmailValidatorImpl implements EmailValidator<String> {
 	/**
 	 * Method used for Validate Email ID against acceptance Criteria
 	 * 
-	 * @param email
-	 *            pass a Email ID in String format
+	 * @param email pass a Email ID in String format
 	 * 
 	 * @return return boolean value true or false for valid and invalid email
 	 * 
-	 * @throws InvalideEmailException
-	 *             If entered Email Id is empty or null.
+	 * @throws InvalideEmailException If entered Email Id is empty or null.
 	 * 
-	 * @throws InvalideEmailException
-	 *             If entered Email Id whole length is not in a specified number of
-	 *             characters.
+	 * @throws InvalideEmailException If entered Email Id whole length is not in a
+	 *                                specified number of characters.
 	 * 
-	 * @throws InvalideEmailException
-	 *             If entered Email Id contain any special characters which are not
-	 *             specified .
+	 * @throws InvalideEmailException If entered Email Id contain any special
+	 *                                characters which are not specified .
 	 * 
-	 * @throws InvalideEmailException
-	 *             If entered Email Id Domain Extensions length is not in a
-	 *             specified number of characters.
+	 * @throws InvalideEmailException If entered Email Id Domain Extensions length
+	 *                                is not in a specified number of characters.
 	 * 
 	 */
 	public boolean validateEmail(String email) {
@@ -147,8 +142,7 @@ public class EmailValidatorImpl implements EmailValidator<String> {
 		 * 
 		 */
 		if (domainLen < domainExtMinLength || domainLen > domainExtMaxLength) {
-			throw new InvalideEmailException(
-					EmailConstant.EMAIL_INVALID_DOMAIN_LENGTH.getErrorCode(),
+			throw new InvalideEmailException(EmailConstant.EMAIL_INVALID_DOMAIN_LENGTH.getErrorCode(),
 					EmailConstant.EMAIL_INVALID_DOMAIN_LENGTH.getErrorMessage());
 		}
 		/**

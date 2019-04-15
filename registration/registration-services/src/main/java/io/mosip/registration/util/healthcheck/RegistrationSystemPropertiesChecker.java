@@ -76,8 +76,8 @@ public class RegistrationSystemPropertiesChecker {
 				}
 			}
 			for (String device : devices) {
-				try (FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
-					if (device.equals("eno1")) {
+				try(FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
+					if (!device.equals("lo")) {
 						BufferedReader in1 = new BufferedReader(reader1);
 						linuxMachineId = in1.readLine();
 						in1.close();

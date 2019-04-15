@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   inputContactDetails = '';
   secondaryLangCode = 'ar';
   secondaryDir = 'rtl';
-  selectedLanguage = '';
+  selectedLanguage = 'Arabic';
   langCode = 'ara';
   dir = 'ltr';
   primaryLangFromConfig = '';

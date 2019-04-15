@@ -19,9 +19,9 @@ public class HistoryPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1124172782509039861L;
-	
+
 	private String uinRefId;
-	
+
 	/** The effective date time. */
 	private LocalDateTime effectiveDateTime;
 

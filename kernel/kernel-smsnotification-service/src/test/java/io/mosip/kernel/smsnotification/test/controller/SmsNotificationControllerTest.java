@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,15 +23,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.smsnotification.SmsNotificationBootApplication;
 import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotification.service.impl.SmsNotificationServiceImpl;
+import io.mosip.kernel.smsnotification.test.SmsNotificationTestBootApplication;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@ContextConfiguration(classes = { SmsNotificationBootApplication.class })
+@ContextConfiguration(classes = { SmsNotificationTestBootApplication.class })
 public class SmsNotificationControllerTest {
 
 	@Autowired
@@ -42,6 +43,7 @@ public class SmsNotificationControllerTest {
 	@MockBean
 	SmsNotificationServiceImpl service;
 
+	@WithUserDetails("individual")
 	@Test
 	public void controllerTest() throws Exception {
 

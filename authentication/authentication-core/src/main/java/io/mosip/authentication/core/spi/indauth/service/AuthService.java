@@ -16,7 +16,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface AuthService {
 	
 	/**
-	 *  This method is used to authenticate the indvidual based on the auth type.
+	 *  This method is used to authenticate the individual based on the auth type.
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param uin the uin

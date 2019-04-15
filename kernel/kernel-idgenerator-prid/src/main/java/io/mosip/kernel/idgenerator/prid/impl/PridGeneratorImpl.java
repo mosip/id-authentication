@@ -189,12 +189,9 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	/**
 	 * Appends a checksum to generated id
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id
-	 * @param generatedVId
-	 *            The generated id
-	 * @param verhoeffDigit
-	 *            The checksum to append
+	 * @param generatedIdLength The length of id
+	 * @param generatedVId      The generated id
+	 * @param verhoeffDigit     The checksum to append
 	 */
 	private String appendChecksum(String generatedVId, String verhoeffDigit) {
 		StringBuilder vidSb = new StringBuilder();

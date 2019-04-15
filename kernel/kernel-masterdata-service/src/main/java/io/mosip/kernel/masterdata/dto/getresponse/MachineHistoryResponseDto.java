@@ -13,8 +13,6 @@ import lombok.Data;
  */
 @Data
 
-
 public class MachineHistoryResponseDto {
 	private List<MachineHistoryDto> machineHistoryDetails;
 }
-

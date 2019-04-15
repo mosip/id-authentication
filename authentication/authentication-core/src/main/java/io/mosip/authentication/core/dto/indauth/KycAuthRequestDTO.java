@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The Class For KycAuthRequestDTO extending BaseAuthRequestDTO
@@ -12,6 +13,7 @@ import lombok.Data;
  * 
  */
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class KycAuthRequestDTO extends AuthRequestDTO {
 
 	/** The value for secondary language code. */

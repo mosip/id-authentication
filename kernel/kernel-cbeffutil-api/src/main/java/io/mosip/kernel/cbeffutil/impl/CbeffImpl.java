@@ -43,13 +43,11 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for creating Cbeff XML
 	 * 
-	 * @param birList
-	 *            pass List of BIR for creating Cbeff data
+	 * @param birList pass List of BIR for creating Cbeff data
 	 * 
 	 * @return return byte array of XML data
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 	@Override
@@ -64,15 +62,12 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for creating Cbeff XML with xsd
 	 * 
-	 * @param birList
-	 *            pass List of BIR for creating Cbeff data
-	 * @param xsd
-	 *            byte array of XSD data
+	 * @param birList pass List of BIR for creating Cbeff data
+	 * @param xsd     byte array of XSD data
 	 * 
 	 * @return return byte array of XML data
 	 *
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 * 
 	 */
 
@@ -108,12 +103,10 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for updating Cbeff XML
 	 * 
-	 * @param birList
-	 *            pass List of BIR for creating Cbeff data
+	 * @param birList pass List of BIR for creating Cbeff data
 	 * 
 	 * @return return byte array of XML data
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 * 
 	 */
 	@Override
@@ -128,15 +121,12 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for validating XML against XSD
 	 * 
-	 * @param xmlBytes
-	 *            byte array of XML data
+	 * @param xmlBytes byte array of XML data
 	 * 
-	 * @param xsdBytes
-	 *            byte array of XSD data
+	 * @param xsdBytes byte array of XSD data
 	 * 
 	 * @return boolean if data is valid or not
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 * 
 	 */
 	@Override
@@ -148,18 +138,14 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for validating XML against XSD
 	 * 
-	 * @param fileBytes
-	 *            byte array of XML data
+	 * @param fileBytes byte array of XML data
 	 * 
-	 * @param type
-	 *            to be searched
+	 * @param type      to be searched
 	 * 
-	 * @param subType
-	 *            to be searched
+	 * @param subType   to be searched
 	 * 
 	 * @return bdbMap Map of type and String of encoded biometric data
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 * 
 	 */
 	@Override
@@ -172,12 +158,10 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for getting list of BIR from XML bytes
 	 * 
-	 * @param xmlBytes
-	 *            byte array of XML data
+	 * @param xmlBytes byte array of XML data
 	 * 
 	 * @return List of BIR data extracted from XML
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<BIRType> getBIRDataFromXML(byte[] xmlBytes) throws Exception {
@@ -188,19 +172,15 @@ public class CbeffImpl implements CbeffUtil {
 	/**
 	 * Method used for getting Map of BIR from XML bytes with type and subType
 	 * 
-	 * @param xmlBytes
-	 *            byte array of XML data
+	 * @param xmlBytes byte array of XML data
 	 * 
-	 * @param type
-	 *            type
+	 * @param type     type
 	 * 
-	 * @param subType
-	 *            subType
+	 * @param subType  subType
 	 * 
 	 * @return bdbMap Map of BIR data extracted from XML
 	 * 
-	 * @throws Exception
-	 *             Exception
+	 * @throws Exception Exception
 	 * 
 	 */
 	@Override

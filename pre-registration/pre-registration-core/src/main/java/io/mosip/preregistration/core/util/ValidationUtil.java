@@ -66,10 +66,8 @@ public class ValidationUtil {
 	public static boolean idValidation(String value, String regex) {
 		if (!isNull(value)) {
 			return value.matches(regex);
-		} else if (value == "")
-			return true;
-		else
-			return false;	
+		} 
+			return false;
 	}
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {

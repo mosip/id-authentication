@@ -39,7 +39,7 @@ public class SymmetricKeyRequestDto {
 	/**
 	 * The string reference id
 	 */
-	
+
 	@ApiModelProperty(notes = "Reference Id", example = "REF01")
 	private String referenceId;
 

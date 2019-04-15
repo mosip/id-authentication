@@ -54,10 +54,10 @@ public class AbisServiceImpl implements AbisService {
 	private static final String DUPLICATE = "duplicate";
 
 	/** The Constant INSERT. */
-	private static final String INSERT = "mosip.abis.insert";
+	private static final String ABIS_INSERT = "mosip.abis.insert";
 
 	/** The Constant IDENTIFY. */
-	private static final String IDENTIFY = "mosip.abis.identify";
+	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
@@ -98,7 +98,7 @@ public class AbisServiceImpl implements AbisService {
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
 		try {
-			response.setId(INSERT);
+			response.setId(ABIS_INSERT);
 			response.setRequestId(abisInsertRequestDto.getRequestId());
 			response.setTimestamp(abisInsertRequestDto.getTimestamp());
 
@@ -213,7 +213,7 @@ public class AbisServiceImpl implements AbisService {
 		String referenceId = identifyRequest.getReferenceId();
 
 		try {
-			response.setId(IDENTIFY);
+			response.setId(ABIS_IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
 			response.setTimestamp(identifyRequest.getTimestamp());
 

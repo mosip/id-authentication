@@ -284,13 +284,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 					if (fingerPrintExceptionCount == 10 && irisExceptionCount == 2) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
-					} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0
-							|| irisExceptionCount > 0) {
+					} else if (RegistrationConstants.ENABLE
+							.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
+							|| irisCount > 0 || irisExceptionCount > 0) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
-					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG) || fingerPrintCount > 0
-							|| fingerPrintExceptionCount > 0) {
+					} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+							|| fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-					} else if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)) {
+					} else if (RegistrationConstants.ENABLE
+							.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 					} else {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, true);

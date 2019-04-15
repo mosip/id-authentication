@@ -12,10 +12,10 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum RegistrationCenterDeviceHistoryErrorCode {
 	REGISTRATION_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION("KER-MSD-132",
-			"Error occured while fetching registration center device history details"), REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION(
-					"KER-MSD-133",
-					" registration center device history not found"), INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION(
-							"KER-MSD-033", "Invalid date format");
+			"Error occured while fetching registration center device history details"),
+	REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION("KER-MSD-133",
+			" registration center device history not found"),
+	INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-MSD-033", "Invalid date format");
 
 	private final String errorCode;
 	private final String errorMessage;

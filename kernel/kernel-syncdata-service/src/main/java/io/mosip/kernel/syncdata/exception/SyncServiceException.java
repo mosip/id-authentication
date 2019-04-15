@@ -1,7 +1,5 @@
 package io.mosip.kernel.syncdata.exception;
 
-
-
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -20,8 +18,7 @@ public class SyncServiceException extends BaseUncheckedException {
 	private final List<ServiceError> list;
 
 	/**
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public SyncServiceException(List<ServiceError> list) {
 		this.list = list;

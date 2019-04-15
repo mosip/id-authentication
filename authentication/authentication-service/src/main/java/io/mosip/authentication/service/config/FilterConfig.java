@@ -71,7 +71,7 @@ public class FilterConfig {
     public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
 	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new InternalAuthFilter());
-	registrationBean.addUrlPatterns("/auth/internal/*");
+	registrationBean.addUrlPatterns("/internal/auth/*");
 
 	return registrationBean;
     }

@@ -28,8 +28,7 @@ public class MosipNullKeyException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionCodeConstants
-	 *            exception code constant
+	 * @param exceptionCodeConstants exception code constant
 	 */
 	public MosipNullKeyException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
 		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());
