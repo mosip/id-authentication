@@ -1891,9 +1891,12 @@ public class DemographicDetailController extends BaseController {
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
-					if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)
-							|| (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-									|| updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+					if (RegistrationConstants.ENABLE
+							.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))
+							|| (RegistrationConstants.ENABLE.equalsIgnoreCase(
+									getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+									|| RegistrationConstants.ENABLE.equalsIgnoreCase(
+											getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 					} else {
 						updateUINMethodFlow();

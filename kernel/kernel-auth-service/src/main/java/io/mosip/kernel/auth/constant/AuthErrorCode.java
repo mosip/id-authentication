@@ -36,7 +36,16 @@ public enum AuthErrorCode {
 	/**
 	 * PASSWORD VALIDATION ERROR
 	 */
-	PASSWORD_VALIDATION_ERROR("KER-ATH-004", "Incorrect Password");
+	PASSWORD_VALIDATION_ERROR("KER-ATH-004", "Incorrect Password"),
+	
+	/**
+	 * Empty Cookie error
+	 */
+	COOKIE_NOTPRESENT_ERROR("KER-ATH-005", "Cookies are empty"),
+	/**
+	 * Empty Cookie error
+	 */
+	TOKEN_NOTPRESENT_ERROR("KER-ATH-005", "Token is not present in cookies");
 
 	/**
 	 * The error code

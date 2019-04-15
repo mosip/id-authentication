@@ -281,6 +281,7 @@ public class AuthServiceImpl implements AuthService {
 		AuthNResponse authNResponse = null;
 		customTokenServices.revokeToken(token);
 		authNResponse = new AuthNResponse();
+		authNResponse.setStatus(AuthConstant.SUCCESS_STATUS);
 		authNResponse.setMessage(AuthConstant.TOKEN_INVALID_MESSAGE);
 		return authNResponse;
 	}

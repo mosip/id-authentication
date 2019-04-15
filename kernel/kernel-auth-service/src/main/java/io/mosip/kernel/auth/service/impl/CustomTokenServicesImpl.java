@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -161,11 +162,13 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	@Override
 	public void revokeToken(String token) {
 		AuthToken authToken = getTokenDetails(token);
-		if (authToken != null) {
-			removeAccessToken(authToken.getUserId());
-		} else {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
-					"Token is not present in datastore,Please try with new token");
+		if(authToken!=null)
+		{
+		removeAccessToken(authToken.getUserId());
+		}
+		else
+		{
+			throw new AuthManagerException(String.valueOf(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode()),"Token is not present in datastore,Please try with new token");
 		}
 	}
 
