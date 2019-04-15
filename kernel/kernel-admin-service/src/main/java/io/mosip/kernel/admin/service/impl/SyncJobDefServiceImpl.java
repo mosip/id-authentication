@@ -1,6 +1,7 @@
 package io.mosip.kernel.admin.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,8 @@ import io.mosip.kernel.admin.service.SyncJobDefService;
 import io.mosip.kernel.admin.utils.MapperUtils;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 
-
 /**
- *  Class SyncJobDefServiceImpl.
+ * Class SyncJobDefServiceImpl.
  */
 @Service
 public class SyncJobDefServiceImpl implements SyncJobDefService {
@@ -28,8 +28,12 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 	@Autowired
 	SyncJobDefRepository syncJobDefRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.admin.service.SyncJobDefService#getLatestSyncJobDefDetails(java.time.LocalDateTime, java.time.LocalDateTime)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.admin.service.SyncJobDefService#getLatestSyncJobDefDetails(
+	 * java.time.LocalDateTime, java.time.LocalDateTime)
 	 */
 	@Override
 	public SyncJobDefResponseDto getLatestSyncJobDefDetails(LocalDateTime lastUpdatedTime,
@@ -37,6 +41,9 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 		List<SyncJobDefDto> syncJobDefDtos = null;
 		List<SyncJobDef> syncJobDefs = null;
 		SyncJobDefResponseDto syncJobResponseDto = null;
+		if (lastUpdatedTime == null) {
+			lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+		}
 		try {
 			syncJobDefs = syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
@@ -44,10 +51,10 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if(syncJobDefs!=null && !syncJobDefs.isEmpty()) {
-		syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
-		syncJobResponseDto = new SyncJobDefResponseDto();
-		syncJobResponseDto.setSyncJobDefinitions(syncJobDefDtos);
+		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
+			syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
+			syncJobResponseDto = new SyncJobDefResponseDto();
+			syncJobResponseDto.setSyncJobDefinitions(syncJobDefDtos);
 		}
 		return syncJobResponseDto;
 	}

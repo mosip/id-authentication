@@ -38,53 +38,71 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
+ * The Class OTPRequestValidatorTest.
+ *
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
- *
  */
 @RunWith(SpringRunner.class)
-
 @WebMvcTest
-
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPRequestValidatorTest {
 
+	/** The error. */
 	@Mock
 	Errors error;
 
+	/** The env. */
 	@Autowired
 	Environment env;
 
+	/** The uin validator. */
 	@Mock
 	UinValidatorImpl uinValidator;
 
+	/** The vid validator. */
 	@Mock
 	VidValidatorImpl vidValidator;
 
+	/** The ida rolling file appender. */
 	@InjectMocks
 	RollingFileAppender idaRollingFileAppender;
 
+	/** The otp request validator. */
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;
 
+	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthServiceImpl otpAuthServiceImpl;
 
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
 	}
 
+	/**
+	 * Test support true.
+	 */
 	@Test
 	public void testSupportTrue() {
 		assertTrue(otpRequestValidator.supports(OtpRequestDTO.class));
 	}
 
+	/**
+	 * Test support false.
+	 */
 	@Test
 	public void testSupportFalse() {
 		assertFalse(otpRequestValidator.supports(AuthRequestValidator.class));
 	}
 
+	/**
+	 * Test valid uin.
+	 */
 	@Test
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -103,6 +121,9 @@ public class OTPRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid uin.
+	 */
 	@Test
 	public void testInvalidUin() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -118,6 +139,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test valid vid.
+	 */
 	@Test
 	public void testValidVid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -136,6 +160,9 @@ public class OTPRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid vid.
+	 */
 	@Test
 	public void testInvalidVid() {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -151,6 +178,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test timeout.
+	 */
 	@SuppressWarnings("deprecation")
 
 	@Test
@@ -169,8 +199,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@SuppressWarnings("deprecation")
-
+	/**
+	 * Test time parse error.
+	 */
 	@Test
 	public void testTimeParseError() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -186,6 +217,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid ver.
+	 */
 	@Ignore
 
 	@Test
@@ -200,6 +234,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid txn id.
+	 */
 	@Test
 	public void testInvalidTxnId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -213,6 +250,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test null id.
+	 */
 	@Test
 	public void testNullId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -229,17 +269,22 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid time.
+	 */
 	@Test
 	public void TestInvalidTime() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		otpRequestDTO.setTransactionID("TXN0000001");
 		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		System.err.println(Instant.now() + toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 	}
 
+	/**
+	 * Test otp channel.
+	 */
 	@Test
 	public void TestOtpChannel() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -258,6 +303,9 @@ public class OTPRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid otp channel type.
+	 */
 	@Test
 	public void TestInvalidOtpChannelType() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -275,6 +323,9 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test otp channelis null.
+	 */
 	@Test
 	public void TestOtpChannelisNull() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -289,6 +340,9 @@ public class OTPRequestValidatorTest {
 		otpRequestValidator.validate(otpRequestDTO, errors);
 	}
 
+	/**
+	 * Test otp channelis empty.
+	 */
 	@Test
 	public void TestOtpChannelisEmpty() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -303,6 +357,9 @@ public class OTPRequestValidatorTest {
 		otpRequestValidator.validate(otpRequestDTO, errors);
 	}
 
+	/**
+	 * Testparse exception.
+	 */
 	@Test
 	public void TestparseException() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();

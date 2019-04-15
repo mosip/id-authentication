@@ -2,20 +2,12 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 
 public class TextMatchingStrategyTest {
 

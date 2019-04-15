@@ -93,6 +93,10 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	
+	private static final String ABIS_INSERT = "mosip.abis.insert";
+	
+	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	/*
 	 * (non-Javadoc)
@@ -108,7 +112,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
-		abisInsertRequestDto.setId("insert");
+		abisInsertRequestDto.setId(ABIS_INSERT);
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
 		abisInsertRequestDto.setReferenceURL(url + registrationId);
@@ -182,7 +186,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		String referenceId = packetInfoManager.getReferenceIdByRid(registrationId).get(0);
 
-		identifyRequestDto.setId("Identify");
+		identifyRequestDto.setId(ABIS_IDENTIFY);
 		identifyRequestDto.setVer("1.0");
 		identifyRequestDto.setRequestId(requestId);
 		identifyRequestDto.setReferenceId(referenceId);

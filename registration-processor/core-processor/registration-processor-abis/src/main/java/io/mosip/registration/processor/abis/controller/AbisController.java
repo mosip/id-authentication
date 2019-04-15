@@ -38,6 +38,10 @@ public class AbisController {
 	/** The abis service. */
 	@Autowired
 	private AbisService abisService;
+	
+	private static final String ABIS_INSERT = "mosip.abis.insert";
+	
+	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	/**
 	 * Insert.
@@ -59,7 +63,7 @@ public class AbisController {
 
 		AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
 
-		if (abisInsertRequestDto.getId().equalsIgnoreCase("insert")) {
+		if (abisInsertRequestDto.getId().equalsIgnoreCase(ABIS_INSERT)) {
 			return ResponseEntity.status(HttpStatus.OK).body(abisInsertResponseDto);
 		} else {		
 			return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(abisInsertResponseDto);
@@ -86,7 +90,7 @@ public class AbisController {
 
 		AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
 
-		if (identifyRequestDto.getId().equalsIgnoreCase("identify")) {
+		if (identifyRequestDto.getId().equalsIgnoreCase(ABIS_IDENTIFY)) {
 			return ResponseEntity.status(HttpStatus.OK).body(identifyResponseDto);
 		} else {
 			identifyResponseDto.setCandidateList(null);

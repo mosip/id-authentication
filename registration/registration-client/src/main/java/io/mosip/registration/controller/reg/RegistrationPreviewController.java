@@ -72,7 +72,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private RadioButton yesRadio;
-	
+
 	@FXML
 	private Button nextButton;
 
@@ -89,17 +89,21 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			nextButton.setDisable(false);
 		});
 
-		String key = "mosip.registration.consent_" + applicationContext.getApplicationLanguage();
+		String key = RegistrationConstants.REG_CONSENT + applicationContext.getApplicationLanguage();
 
-		consent.setText((String) applicationContext.getApplicationMap().get(key));
+		consent.setText(getValueFromApplicationContext(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
 		if (getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+
+			registrationNavlabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 	}
 
@@ -108,7 +112,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("registrationPreview", false);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 
 			updateUINFlowMethod();
 
@@ -123,19 +127,29 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 				.getBiometricExceptionDTO().stream()
-				.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT.toLowerCase()))
+				.count();
 
 		long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 				.getBiometricExceptionDTO().stream()
 				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
 
-		if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-			SessionContext.getInstance().getMapObject().put("faceCapture", true);
-		} else if (irisCount > 0) {
-			SessionContext.map().put("irisCapture", true);
-		} else if (fingerPrintCount > 0) {
-			SessionContext.map().put("fingerPrintCapture", true);
+		long fingerPrintExceptionCount = biomerticExceptionCount(RegistrationConstants.FINGERPRINT);
+
+		long irisExceptionCount = biomerticExceptionCount(RegistrationConstants.IRIS);
+
+		if (!RegistrationConstants.DISABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
+		} else if (irisCount > 0 || irisExceptionCount > 0) {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
+		} else if (fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
+		} else if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+		} else {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, true);
 		}
 	}
 
@@ -146,15 +160,15 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		if (yesRadio.isSelected() || noRadio.isSelected()) {
 			if (yesRadio.isSelected()) {
 				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+						.setConsentOfApplicant(RegistrationConstants.YES);
 			} else {
 				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+						.setConsentOfApplicant(RegistrationConstants.NO);
 			}
 
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				SessionContext.map().put("registrationPreview", false);
-				SessionContext.map().put("operatorAuthenticationPane", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE, true);
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
@@ -239,8 +253,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("registrationPreview", false);
-			SessionContext.map().put("demographicDetail", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, true);
 			registrationController.showUINUpdateCurrentPage();
 		} else {
 			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
@@ -257,12 +271,13 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("registrationPreview", false);
-			if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-				SessionContext.map().put("documentScan", true);
+
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
+			if (!RegistrationConstants.DISABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 			} else {
-				SessionContext.map().put("registrationPreview", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
@@ -280,7 +295,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("registrationPreview", false);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 
 			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.getFingerprintDetailsDTO().stream().count();
@@ -288,16 +303,17 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.getIrisDetailsDTO().stream().count();
 			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-				SessionContext.map().put("biometricException", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 			} else if (fingerPrintCount > 0) {
-				SessionContext.map().put("fingerPrintCapture", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 			} else if (irisCount > 0) {
-				SessionContext.map().put("irisCapture", true);
-			} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-				SessionContext.map().put("faceCapture", true);
+
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
+			} else if (!RegistrationConstants.DISABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 			} else {
-				SessionContext.map().put("registrationPreview", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {

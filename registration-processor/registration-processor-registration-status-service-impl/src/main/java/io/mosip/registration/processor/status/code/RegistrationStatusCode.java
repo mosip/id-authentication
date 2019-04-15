@@ -67,8 +67,6 @@ public enum RegistrationStatusCode {
 	/** The packet demo dedupe failed. */
 	DEMO_DEDUPE_FAILED,
 
-	DEMO_POTENTIAL_MATCH,
-
 	/** The packet bio dedupe successful. */
 	PACKET_BIO_DEDUPE_SUCCESS,
 

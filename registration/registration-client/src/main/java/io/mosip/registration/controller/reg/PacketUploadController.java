@@ -268,7 +268,8 @@ public class PacketUploadController extends BaseController implements Initializa
 						displayStatus(populateTableData(tableMap));
 					} else {
 						loadInitialPage();
-						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
 					}
 					selectedPackets.clear();
 					return status;
@@ -290,7 +291,9 @@ public class PacketUploadController extends BaseController implements Initializa
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getFileName(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
-		displayStatus(populateTableData(exportedPacketMap));
+		if (!exportedPacketMap.isEmpty()) {
+			displayStatus(populateTableData(exportedPacketMap));
+		}
 	}
 
 	/**
@@ -400,7 +403,8 @@ public class PacketUploadController extends BaseController implements Initializa
 			statusCol.setCellValueFactory(new PropertyValueFactory<>("clientStatusComments"));
 			statusTable.getColumns().addAll(fileNameCol, statusCol);
 			Scene scene = new Scene(new StackPane(statusTable), 800, 800);
-			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);

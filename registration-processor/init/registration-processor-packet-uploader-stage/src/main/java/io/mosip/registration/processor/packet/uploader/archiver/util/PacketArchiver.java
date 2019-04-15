@@ -98,7 +98,7 @@ public class PacketArchiver {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId, ApiName.DMZAUDIT);
+					registrationId, ApiName.AUDIT);
 		}
 	}
 

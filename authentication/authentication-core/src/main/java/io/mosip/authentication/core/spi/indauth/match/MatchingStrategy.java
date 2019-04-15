@@ -15,13 +15,19 @@ public interface MatchingStrategy {
 	 *
 	 * @return the type
 	 */
-	MatchingStrategyType getType();
+	public default MatchingStrategyType getType() {
+		return getMatchingStrategy().getType();
+	}
+	
 	/**
 	 * gets the MatchFunction
 	 * 
 	 * @return MatchFunction
 	 */
-	public MatchFunction getMatchFunction();
+	public default MatchFunction getMatchFunction() {
+		return getMatchingStrategy().getMatchFunction();
+	}
+	
 	/**
 	 * this method matches the request Values with entity values
 	 * @param reqValues
@@ -33,6 +39,15 @@ public interface MatchingStrategy {
 	public default int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
 		return getMatchFunction().match(reqValues, entityValues, matchProperties);
+	}
+	
+	/**
+	 * Gets the matching strategy.
+	 *
+	 * @return the matching strategy
+	 */
+	public default MatchingStrategy getMatchingStrategy() {
+		return null;
 	}
 	
 }

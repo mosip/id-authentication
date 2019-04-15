@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -63,6 +64,8 @@ import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.mastersync.ScreenAuthorizationDto;
+import io.mosip.registration.dto.mastersync.ScreenDetailDto;
+import io.mosip.registration.dto.mastersync.SyncJobDefDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
@@ -95,7 +98,9 @@ import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.RegistrationCommonFields;
 import io.mosip.registration.entity.ScreenAuthorization;
+import io.mosip.registration.entity.ScreenDetail;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
@@ -144,7 +149,9 @@ import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationCenterTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterUserRepository;
 import io.mosip.registration.repositories.ScreenAuthorizationRepository;
+import io.mosip.registration.repositories.ScreenDetailRepository;
 import io.mosip.registration.repositories.SyncJobControlRepository;
+import io.mosip.registration.repositories.SyncJobDefRepository;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
@@ -269,6 +276,14 @@ public class MasterSyncDaoImplTest {
 	/** Object for Sync language Repository. */
 	@Mock
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+	
+	/** Object for screen detail Repository. */
+	@Mock
+	private ScreenDetailRepository screenDetailRepository;
+	
+	/** Object for Sync screen auth Repository. */
+	@Mock
+	private SyncJobDefRepository syncJobDefRepository;
 
 	@Mock
 	private MasterSyncDao masterSyncDao;
@@ -751,6 +766,22 @@ public class MasterSyncDaoImplTest {
 		List<AppAuthenticationMethod> masterAppLoginMethod = new ArrayList<>();
 
 		List<ScreenAuthorization> masterScreenAuth = new ArrayList<>();
+		
+		List<ScreenDetailDto> screenDetailList = new ArrayList<>();
+
+		masterSyncDto.setScreenDetails(screenDetailList);
+
+		List<SyncJobDefDto> syncJobDefList = new ArrayList<>();
+
+		masterSyncDto.setSyncJobDefinitions(syncJobDefList);
+		
+		List<SyncJobDef> masterSyncJob = new ArrayList<>();
+		SyncJobDef syncJobDef = new SyncJobDef();
+		masterSyncJob.add(syncJobDef);
+		
+		List<ScreenDetail> masterScreenDetail = new ArrayList<>();
+		ScreenDetail screenDetail=new ScreenDetail();
+		masterScreenDetail.add(screenDetail);
 
 		// Reg Center
 		List<RegistrationCenter> registrationCenters = new ArrayList<>();

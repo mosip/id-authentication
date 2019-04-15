@@ -202,11 +202,11 @@ public class BaseController extends BaseService {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param T 
+	 * @param <T> 
 	 * 				the generic type
 	 * @param url 
 	 * 				the url
-	 * @return the t
+	 * @return T
 	 * @throws IOException 
 	 * 				Signals that an I/O exception has occurred.
 	 */
@@ -220,13 +220,13 @@ public class BaseController extends BaseService {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param T 
+	 * @param <T> 
 	 * 				the generic type
 	 * @param url 
 	 * 				the url
 	 * @param resource 
 	 * 				the resource
-	 * @return the t
+	 * @return T
 	 * @throws IOException 
 	 * 				Signals that an I/O exception has occurred.
 	 */
@@ -253,7 +253,7 @@ public class BaseController extends BaseService {
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
@@ -275,7 +275,7 @@ public class BaseController extends BaseService {
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -283,7 +283,7 @@ public class BaseController extends BaseService {
 	}
 
 	/**
-	 * /* Alert creation with specified context.
+	 * Alert creation with specified context.
 	 *
 	 * @param parentPane 
 	 * 				the parent pane
@@ -291,33 +291,23 @@ public class BaseController extends BaseService {
 	 * 				the id
 	 * @param context   
 	 * 				alert context
-	 * @param isConsolidated 
-	 * 				the is consolidated
-	 * @param validationMessage 
-	 * 				the validation message
 	 */
-	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
-			StringBuilder validationMessage) {
+	protected void generateAlert(Pane parentPane, String id, String context) {
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
-		if (id.contains("ontype")) {
-			id = id.replaceAll("_ontype", "");
+		if (id.contains(RegistrationConstants.ONTYPE)) {
+			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
 		}
-		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
-			Label label = ((Label) (parentPane
-					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-			if (!label.isVisible()) {
-				label.setText(context);
-				Tooltip tool = new Tooltip(context);
-				tool.getStyleClass().add("toolTip");
-				label.setTooltip(tool);
-				label.setVisible(true);
-			}
-		} else {
-			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));
-		}
+		Label label = ((Label) (parentPane
+				.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
+			label.setText(context);
+			Tooltip tool = new Tooltip(context);
+			tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
+			label.setTooltip(tool);
+			label.setVisible(true);
+	
 	}
 
 	/**
@@ -381,7 +371,6 @@ public class BaseController extends BaseService {
 	 * {@code globalParams} is to retrieve required global config parameters for
 	 * login from config table.
 	 *
-	 * @return the global params
 	 */
 	protected void getGlobalParams() {
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
@@ -465,18 +454,18 @@ public class BaseController extends BaseService {
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_DATA);
 		SessionContext.map().remove(RegistrationConstants.IS_Child);
-		SessionContext.map().remove("dd");
-		SessionContext.map().remove("mm");
-		SessionContext.map().remove("yyyy");
-		SessionContext.map().remove("toggleAgeOrDob");
-		SessionContext.map().remove("demographicDetail");
-		SessionContext.map().remove("documentScan");
-		SessionContext.map().remove("fingerPrintCapture");
-		SessionContext.map().remove("biometricException");
-		SessionContext.map().remove("faceCapture");
-		SessionContext.map().remove("irisCapture");
-		SessionContext.map().remove("registrationPreview");
-		SessionContext.map().remove("operatorAuthenticationPane");
+		SessionContext.map().remove(RegistrationConstants.DD);
+		SessionContext.map().remove(RegistrationConstants.MM);
+		SessionContext.map().remove(RegistrationConstants.YYYY);
+		SessionContext.map().remove(RegistrationConstants.DOB_TOGGLE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_FACECAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_IRISCAPTURE);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW);
+		SessionContext.map().remove(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
@@ -516,7 +505,6 @@ public class BaseController extends BaseService {
 	/**
 	 * Gets the finger print status.
 	 *
-	 * @return the finger print status
 	 */
 	public void updateAuthenticationStatus() {
 
@@ -525,7 +513,8 @@ public class BaseController extends BaseService {
 	/**
 	 * Scans documents.
 	 *
-	 * @param popupStage the stage
+	 * @param popupStage
+	 *            the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -767,6 +756,15 @@ public class BaseController extends BaseService {
 	protected RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 	}
+	
+	/**
+	 * Gets the biometric DTO from session.
+	 *
+	 * @return the biometric DTO from session
+	 */
+	protected BiometricDTO getBiometricDTOFromSession() {
+		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
+	}
 
 	/**
 	 * to return to the next page based on the current page and action for User
@@ -880,7 +878,7 @@ public class BaseController extends BaseService {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Redirecting to Home page after success onboarding");
-				returnPage = "";
+				returnPage = RegistrationConstants.EMPTY;
 			}			
 		}
 
@@ -894,20 +892,23 @@ public class BaseController extends BaseService {
 	/**
 	 * to navigate to the next page based on the current page.
 	 *
-	 * @param pageId     - Parent Anchorpane where other panes are included
-	 * @param notTosShow - Id of Anchorpane which has to be hidden
-	 * @param show       - Id of Anchorpane which has to be shown
-	 * @return the current page
+	 * @param pageId
+	 *            - Parent Anchorpane where other panes are included
+	 * @param notTosShow
+	 *            - Id of Anchorpane which has to be hidden
+	 * @param show
+	 *            - Id of Anchorpane which has to be shown
+	 * 
 	 */
 	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigating to next page");
 
 		if (notTosShow != null) {
-			((Pane) pageId.lookup("#" + notTosShow)).setVisible(false);
+			((Pane) pageId.lookup(RegistrationConstants.HASH + notTosShow)).setVisible(false);
 		}
 		if (show != null) {
-			((Pane) pageId.lookup("#" + show)).setVisible(true);
+			((Pane) pageId.lookup(RegistrationConstants.HASH + show)).setVisible(true);
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigated to next page");
@@ -936,12 +937,12 @@ public class BaseController extends BaseService {
 			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
 			if (isPacketsPendingForEOD()) {
-				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
+				message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
-			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
+			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
-			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
+			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
 
 			if (!service.isRunning())
 				service.start();
@@ -950,7 +951,7 @@ public class BaseController extends BaseService {
 				@Override
 				public void handle(WorkerStateEvent t) {
 					service.reset();
-					packetHandlerController.reMapProgressIndicator.setVisible(false);
+					packetHandlerController.getProgressIndicator().setVisible(false);
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
@@ -974,7 +975,7 @@ public class BaseController extends BaseService {
 				@Override
 				protected String call() {
 
-					packetHandlerController.reMapProgressIndicator.setVisible(true);
+					packetHandlerController.getProgressIndicator().setVisible(true);
 					for (int i = 1; i <= 4; i++) {
 						/* starts the remap process */
 						centerMachineReMapService.handleReMapProcess(i);
@@ -1018,7 +1019,7 @@ public class BaseController extends BaseService {
 		label.setLayoutX(60);
 		label.setLayoutY(9);
 		label.getStyleClass().clear();
-		label.getStyleClass().addAll(styleClass, "label");
+		label.getStyleClass().addAll(styleClass, RegistrationConstants.LABEL_SMALL_CASE);
 		Image img = new Image(imageUrl);
 		ImageView imageView = new ImageView();
 		imageView.setImage(img);
@@ -1075,12 +1076,10 @@ public class BaseController extends BaseService {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-			fingerPrintCaptureController.clearImage();
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
-			irisCaptureController.clearIrisBasedOnExceptions();
-		} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+		} else if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 		} else {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
@@ -1095,9 +1094,29 @@ public class BaseController extends BaseService {
 	 * @return true, if successful
 	 */
 	protected boolean updateUINNextPage(String pageFlag) {
-		return RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(pageFlag)))
+		return RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(pageFlag))
 				&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 	}
 
+	/**
+	 * Biomertic exception count.
+	 *
+	 * @param biometric the biometric
+	 * @return the long
+	 */
+	protected long biomerticExceptionCount(String biometric) {
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO().stream()
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(biometric)).count();
+	}
+	
+	/**
+	 * Gets the value from application context.
+	 *
+	 * @param key the key
+	 * @return the value from application context
+	 */
+	protected String getValueFromApplicationContext(String key) {
+		return (String) applicationContext.getApplicationMap().get(key);
+	}
 }

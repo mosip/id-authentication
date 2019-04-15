@@ -60,8 +60,6 @@ public class AuditLogRequestBuilder {
 		RequestWrapper<AuditRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		try {
-			
-			auditRequestDto= new AuditRequestDto();
 			auditRequestDto.setDescription(description);
 			auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 			auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
@@ -99,7 +97,7 @@ public class AuditLogRequestBuilder {
 	public ResponseWrapper<AuditResponseDto> createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,
 			String registrationId) {
 
-		AuditRequestDto auditRequestDto=new AuditRequestDto();
+		AuditRequestDto auditRequestDto;
 		RequestWrapper<AuditRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 

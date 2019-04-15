@@ -150,6 +150,10 @@ spec:
         backend:
           serviceName: registration-processor-external-integration-service
           servicePort: 8201
+      - path: /print
+        backend:
+          serviceName: registration-processor-print-service
+          servicePort: 9099
       - path: /config
         backend:
           serviceName: kernel-config-server

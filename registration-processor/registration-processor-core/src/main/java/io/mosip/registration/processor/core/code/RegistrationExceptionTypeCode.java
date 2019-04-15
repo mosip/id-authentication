@@ -14,17 +14,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The packet not found exception. */
 	PACKET_NOT_FOUND_EXCEPTION,
 
-	/** The abis internal error. */
-	ABIS_INTERNAL_ERROR,
-
-	/** The abis abort exception. */
-	ABIS_ABORT_EXCEPTION,
-
 	/** The unexcepted error. */
 	UNEXCEPTED_ERROR,
-
-	/** The unable to serve request abis exception. */
-	UNABLE_TO_SERVE_REQUEST_ABIS_EXCEPTION,
 
 	/** The fsadapter exception. */
 	FSADAPTER_EXCEPTION,

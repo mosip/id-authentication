@@ -37,6 +37,10 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-rid</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -35,9 +35,9 @@
 					<children>
 						<GridPane>
 							<columnConstraints>
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -61,11 +61,11 @@
 											<children>
 												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}" styleClass="demographicScrollpane">
 													<content>
-														<AnchorPane fx:id="keyboardPane" prefHeight="200.0" prefWidth="200.0">
+														<AnchorPane fx:id="keyboardPane">
 															<children>
-																<FlowPane fx:id="parentFlowPane" prefHeight="700.0" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
+																<FlowPane fx:id="parentFlowPane" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
 																	<children>
-																		<GridPane fx:id="preRegParentPane" prefHeight="60.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="preRegParentPane" prefHeight="80.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane GridPane.columnIndex="1">
 																					<children>
@@ -121,7 +121,7 @@
 																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																							</rowConstraints>
 																							<children>
-																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" />
+																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" visible="false" />
 																							</children>
 																						</GridPane>
 																					</children>
@@ -134,14 +134,14 @@
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
-																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="languageLabelParentPane" prefHeight="30.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="languageLabelParentPane" prefHeight="40.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane GridPane.columnIndex="1">
 																					<children>
-																						<HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="1">
+																						<HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="2">
 																							<children>
 																								<Label styleClass="demographicLangHeader" text="%language-" />
 																								<Label styleClass="demographicLangHeader" text="%language" />
@@ -159,16 +159,15 @@
 																				</GridPane>
 																				<GridPane GridPane.columnIndex="2">
 																					<children>
-																						<HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 																							<children>
 																								<Label fx:id="languageLabelLocalLanguage" styleClass="demographicLangHeader" text="%language" />
 																							</children>
 																						</HBox>
 																					</children>
 																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
 																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
 																					</columnConstraints>
 																					<rowConstraints>
 																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -187,7 +186,7 @@
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="fullNameParentPane" prefHeight="120.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="fullNameParentPane" prefHeight="100.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="fullNameGridPane">
 																					<columnConstraints>
@@ -210,7 +209,7 @@
 																						</VBox>
 																					</children>
 																				</GridPane>
-																				<GridPane GridPane.columnIndex="1">
+																				<GridPane GridPane.columnIndex="2">
 																					<children>
 																						<VBox fx:id="localFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 																							<children>
@@ -242,8 +241,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -251,7 +251,7 @@
 																		</GridPane>
 																		<GridPane fx:id="dobParentPane" prefHeight="60.0" prefWidth="${scrollParentPane.width}">
 																			<children>
-																				<GridPane fx:id="applicationAge">
+																				<GridPane fx:id="applicationAge" GridPane.valignment="BOTTOM">
 																					<children>
 																						<VBox spacing="5.0" GridPane.columnIndex="1">
 																							<children>
@@ -342,105 +342,105 @@
 																					</columnConstraints>
 																					<rowConstraints>
 																						<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																						<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																					</rowConstraints>
 																				</GridPane>
-																				<GridPane fx:id="localAge" GridPane.columnIndex="1">
-																					<children>
-																						<VBox spacing="5.0" GridPane.columnIndex="1">
-																							<children>
-																								<HBox fx:id="dobLocallanguage" spacing="10.0">
-																									<children>
-																										<VBox spacing="5.0">
-																											<children>
-																												<Label fx:id="ddLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="false" />
-																												<TextField fx:id="ddLocalLanguage" promptText="%dd" styleClass="demoGraphicTextFieldTypThree" />
-																											</children>
-																										</VBox>
-																										<VBox spacing="20.0">
-																											<children>
-																												<Label text=" " />
-																												<Label text="/" />
-																											</children>
-																										</VBox>
-																										<VBox spacing="5.0">
-																											<children>
-																												<Label fx:id="mmLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="false" />
-																												<TextField fx:id="mmLocalLanguage" promptText="%mm" styleClass="demoGraphicTextFieldTypThree" />
-																											</children>
-																										</VBox>
-																										<VBox spacing="20.0">
-																											<children>
-																												<Label text=" " />
-																												<Label text="/" />
-																											</children>
-																										</VBox>
-																										<VBox spacing="5.0">
-																											<children>
-																												<Label fx:id="yyyyLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="false" />
-																												<TextField fx:id="yyyyLocalLanguage" promptText="%yyyy" styleClass="demoGraphicTextFieldTypThree" />
-																											</children>
-																										</VBox>
-																									</children>
-																								</HBox>
-																								<Label styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
-																							</children>
-																						</VBox>
-																						<GridPane GridPane.columnIndex="2">
-																							<children>
-																								<VBox spacing="5.0" GridPane.columnIndex="1">
-																									<children>
-																										<Label fx:id="ageFieldLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
-																										<TextField fx:id="ageFieldLocalLanguage" prefWidth="20.0" promptText="%ageField" styleClass="demoGraphicTextFieldTypThree" />
-																										<Label fx:id="ageFieldLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="false" />
-																									</children>
-																								</VBox>
-																								<GridPane>
-																									<children>
-																										<AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
-																											<children>
-																												<Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="0.0" layoutY="2.0" text="" />
-																												<Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" layoutX="0.0" layoutY="0.0" text="" />
-																											</children>
-																										</AnchorPane>
-																									</children>
-																									<columnConstraints>
-																										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-																										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-																										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-																										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-																									</columnConstraints>
-																									<rowConstraints>
-																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																									</rowConstraints>
-																								</GridPane>
-																							</children>
-																							<columnConstraints>
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																							</columnConstraints>
-																							<rowConstraints>
-																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																							</rowConstraints>
-																						</GridPane>
-																					</children>
-																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-																					</columnConstraints>
-																					<rowConstraints>
-																						<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																					</rowConstraints>
-																				</GridPane>
+                                                            <GridPane fx:id="localAge" GridPane.columnIndex="2">
+                                                               <children>
+                                                                  <VBox spacing="5.0" GridPane.columnIndex="1">
+                                                                     <children>
+                                                                        <HBox fx:id="dobLocallanguage" spacing="10.0">
+                                                                           <children>
+                                                                              <VBox spacing="5.0">
+                                                                                 <children>
+                                                                                    <Label fx:id="ddLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="false" />
+                                                                                    <TextField fx:id="ddLocalLanguage" promptText="%dd" styleClass="demoGraphicTextFieldTypThree" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox spacing="20.0">
+                                                                                 <children>
+                                                                                    <Label text=" " />
+                                                                                    <Label text="/" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox spacing="5.0">
+                                                                                 <children>
+                                                                                    <Label fx:id="mmLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="false" />
+                                                                                    <TextField fx:id="mmLocalLanguage" promptText="%mm" styleClass="demoGraphicTextFieldTypThree" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox spacing="20.0">
+                                                                                 <children>
+                                                                                    <Label text=" " />
+                                                                                    <Label text="/" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox spacing="5.0">
+                                                                                 <children>
+                                                                                    <Label fx:id="yyyyLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="false" />
+                                                                                    <TextField fx:id="yyyyLocalLanguage" promptText="%yyyy" styleClass="demoGraphicTextFieldTypThree" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                           </children>
+                                                                        </HBox>
+                                                                        <Label styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <GridPane GridPane.columnIndex="2">
+                                                                     <children>
+                                                                        <VBox spacing="5.0" GridPane.columnIndex="1">
+                                                                           <children>
+                                                                              <Label fx:id="ageFieldLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
+                                                                              <TextField fx:id="ageFieldLocalLanguage" prefWidth="20.0" promptText="%ageField" styleClass="demoGraphicTextFieldTypThree" />
+                                                                              <Label fx:id="ageFieldLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="false" />
+                                                                           </children>
+                                                                        </VBox>
+                                                                        <GridPane>
+                                                                           <children>
+                                                                              <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                                                 <children>
+                                                                                    <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="0.0" layoutY="2.0" text="" />
+                                                                                    <Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" layoutX="0.0" layoutY="0.0" text="" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                     </children>
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                  </GridPane>
+                                                               </children>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                            </GridPane>
 																			</children>
 																			<columnConstraints>
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -502,9 +502,9 @@
 																						</GridPane>
 																					</children>
 																				</GridPane>
-																				<GridPane fx:id="localGender" GridPane.columnIndex="1">
+																				<GridPane fx:id="localGender" GridPane.columnIndex="2">
 																					<children>
-																						<GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<GridPane GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
 																							<children>
 																								<GridPane fx:id="genderHolder1" alignment="TOP_CENTER" GridPane.columnIndex="2">
 																									<children>
@@ -557,8 +557,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -566,8 +567,9 @@
 																		</GridPane>
 																		<GridPane fx:id="residenceParentpane" prefHeight="50.0" prefWidth="${scrollParentPane.width}">
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -626,7 +628,7 @@
 																						</GridPane>
 																					</children>
 																				</GridPane>
-																				<GridPane fx:id="localResidence" GridPane.columnIndex="1">
+																				<GridPane fx:id="localResidence" GridPane.columnIndex="2">
 																					<columnConstraints>
 																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
 																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
@@ -637,7 +639,7 @@
 																						<RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																					</rowConstraints>
 																					<children>
-																						<GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<GridPane GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
 																							<children>
 																								<GridPane fx:id="residenceHolder" alignment="TOP_CENTER" GridPane.columnIndex="2">
 																									<children>
@@ -804,7 +806,7 @@
 																						<RowConstraints minHeight="10.0" percentHeight="98.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																					</rowConstraints>
 																				</GridPane>
-																				<GridPane fx:id="localAddressPane" GridPane.columnIndex="1">
+																				<GridPane fx:id="localAddressPane" GridPane.columnIndex="2">
 																					<children>
 																						<VBox prefHeight="632.0" prefWidth="223.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 																							<children>
@@ -943,8 +945,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -967,7 +970,7 @@
 																									<children>
 																										<Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
 																										<TextField fx:id="cniOrPinNumber" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
-																										<Label fx:id="cniOrPinNumberMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
+																										<Label fx:id="cniOrPinNumberMessage" pickOnBounds="false" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
 																									</children>
 																								</VBox>
 																							</children>
@@ -990,7 +993,7 @@
 																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																					</rowConstraints>
 																				</GridPane>
-																				<GridPane GridPane.columnIndex="1">
+																				<GridPane GridPane.columnIndex="2">
 																					<children>
 																						<GridPane prefHeight="100.0" GridPane.columnIndex="1">
 																							<children>
@@ -1030,8 +1033,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -1061,7 +1065,7 @@
 																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																					</rowConstraints>
 																				</GridPane>
-																				<GridPane GridPane.columnIndex="1">
+																				<GridPane GridPane.columnIndex="2">
 																					<children>
 																						<VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
 																							<children>
@@ -1102,8 +1106,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

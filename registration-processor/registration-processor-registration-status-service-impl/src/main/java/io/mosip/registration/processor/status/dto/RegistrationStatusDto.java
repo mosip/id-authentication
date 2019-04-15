@@ -22,7 +22,5 @@ public class RegistrationStatusDto implements Serializable {
 	/** The status code. */
 	private String statusCode;
 
-	@JsonIgnore
-	private Integer retryCount;
 
 }

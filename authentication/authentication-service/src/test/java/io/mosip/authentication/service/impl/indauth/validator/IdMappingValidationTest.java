@@ -107,7 +107,6 @@ public class IdMappingValidationTest {
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -177,7 +176,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -196,7 +194,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors.hasErrors());
 		assertTrue(errors.hasErrors());
 	}
 
@@ -269,6 +266,7 @@ public class IdMappingValidationTest {
 		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FID");
+		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTOFace);
 
@@ -331,8 +329,6 @@ public class IdMappingValidationTest {
 		identity.setLocation1(addressLine1List);
 		identity.setLocation2(addressLine1List);
 		identity.setLocation3(addressLine1List);
-		/* Age */
-		List<IdentityInfoDTO> age = new ArrayList<>();
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");

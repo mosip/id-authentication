@@ -413,7 +413,6 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
