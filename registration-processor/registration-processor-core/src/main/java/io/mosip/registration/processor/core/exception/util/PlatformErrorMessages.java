@@ -20,8 +20,10 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pkr packet hash not equals synced hash. */
 	RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "009",
-			"The Registration Packet HashSequence is not equal as synced packet HashSequence"), PRP_PKR_PACKET_VISRUS_SCAN_FAILED(
+			"The Registration Packet HashSequence is not equal as synced packet HashSequence"), 
+	PRP_PKR_PACKET_VISRUS_SCAN_FAILED(
 					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "010", "The Registration Packet virus scan failed"),
+	PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013", "Virus scanner service failed"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),

@@ -29,8 +29,10 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncEx
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketSizeNotInSyncException;
+import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.VirusScanFailedException;
+import io.mosip.registration.processor.packet.receiver.exception.VirusScannerServiceException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -176,19 +178,72 @@ public class PacketReceiverExceptionHandler {
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
 
+	/**
+	 * Unknown exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
 	public String unknownExceptionHandler(Exception e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Unknow Exception",e.getMessage());
 		PacketReceiverAppException packetReceiverAppException=new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION,e);
 		return buildPacketReceiverExceptionResponse((Exception)packetReceiverAppException);
 	}
 
+	/**
+	 * Packet size not synced exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
 	private String packetSizeNotSyncedExceptionHandler(final PacketSizeNotInSyncException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Uploaded packet sized not synced",e.getMessage());
 		return buildPacketReceiverExceptionResponse(e);
 	}
+	
+	/**
+	 * Virus scan failed exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
 	private String virusScanFailedExceptionHandler(final VirusScanFailedException e ) 
 	{
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Virus scan failed",e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+	
+	/**
+	 * Unequal hash sequence exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
+	private String unequalHashSequenceExceptionHandler(UnequalHashSequenceException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Unequal Hash Sequence",e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+	
+	/**
+	 * Packet size not in sync exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
+	private String packetSizeNotInSyncExceptionHandler(PacketSizeNotInSyncException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Synced packet size not equals",e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
+
+	/**
+	 * Virus scanner service exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
+	private String virusScannerServiceExceptionHandler(VirusScannerServiceException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Virus Scanner Service Failed",e.getMessage());
 		return buildPacketReceiverExceptionResponse(e);
 	}
 
@@ -263,6 +318,12 @@ public class PacketReceiverExceptionHandler {
 			return packetSizeNotSyncedExceptionHandler((PacketSizeNotInSyncException)exe);
 		if(exe instanceof VirusScanFailedException)
 			return virusScanFailedExceptionHandler((VirusScanFailedException) exe); 
+		if(exe instanceof UnequalHashSequenceException)
+		    return unequalHashSequenceExceptionHandler((UnequalHashSequenceException)exe);
+		if(exe instanceof PacketSizeNotInSyncException)
+			return packetSizeNotInSyncExceptionHandler((PacketSizeNotInSyncException)exe);
+		if(exe instanceof VirusScannerServiceException)
+			return virusScannerServiceExceptionHandler((VirusScannerServiceException)exe);
 		else
 			return unknownExceptionHandler((Exception) exe);
 
