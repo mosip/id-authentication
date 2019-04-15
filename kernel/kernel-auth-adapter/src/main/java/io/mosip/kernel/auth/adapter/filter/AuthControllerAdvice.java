@@ -1,6 +1,8 @@
 package io.mosip.kernel.auth.adapter.filter;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -20,6 +22,7 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
  **********************************************************************************************************************/
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 
 	private AuthUserDetails getAuthUserDetails() {
