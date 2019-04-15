@@ -1,5 +1,6 @@
 package io.mosip.kernel.uingenerator.generator;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +117,7 @@ public class UinGeneratorImpl implements UinGenerator {
 	 * @return the uin with checksum
 	 */
 	private String generateSingleId(int generatedIdLength, long lowerBound, long upperBound) {
-		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
+		String generatedID = RandomStringUtils.random(generatedIdLength, UinGeneratorConstant.ZERO_TO_NINE);
 		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
 		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
 	}
@@ -129,11 +130,10 @@ public class UinGeneratorImpl implements UinGenerator {
 	 * @param verhoeffDigit     The checksum to append
 	 * @return uin with checksum
 	 */
-	private String appendChecksum(int generatedIdLength, Long generatedID, String verhoeffDigit) {
+	private String appendChecksum(int generatedIdLength, String generatedID, String verhoeffDigit) {
 		StringBuilder uinStringBuilder = new StringBuilder();
 		uinStringBuilder.setLength(uinLength);
-		String id = String.valueOf(generatedID).trim();
-		return uinStringBuilder.insert(0, id).insert(id.length(), verhoeffDigit).toString().trim();
+		return uinStringBuilder.insert(0, generatedID).insert(generatedID.length(), verhoeffDigit).toString().trim();
 	}
 
 }
