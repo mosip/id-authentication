@@ -76,7 +76,7 @@ public enum DirectoryPathDto {
 	LANDING_ZONE {
 		@Override
 		public String toString() {
-			return "registration.processor.LANDLING_ZONE";
+			return "registration.processor.LANDING_ZONE";
 		}
 	},
 

@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.receiver.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -132,9 +133,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
-    
-    /** The registration id. */
-    private String registrationId;
+
+	/** The registration id. */
+	private String registrationId;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -159,8 +161,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithRegEntity();
-				validateHashCode(encryptedInputStream);
+				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());
 				if (isDuplicatePacket() && !isExternalStatusResend()) {
@@ -168,13 +171,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 
-				scanFile(encryptedInputStream);
+				scanFile(new ByteArrayInputStream(encryptedByteArray));
 
-				InputStream decryptedData = decryptor.decrypt(encryptedInputStream, registrationId);
+				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
+						registrationId);
 
 				scanFile(decryptedData);
 
-				storePacket(encryptedInputStream, stageName);
+				storePacket(new ByteArrayInputStream(encryptedByteArray), stageName);
 
 			} catch (IOException e) {
 
@@ -210,7 +214,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getCode(),
 						PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
 
-			}  finally {
+			} finally {
 
 				String eventId = "";
 				String eventName = "";
@@ -240,8 +244,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void validatePacketWithRegEntity() {
 
 		if (regEntity == null) {
-			description = "PacketNotSync exception in packet receiver for registartionId "
-					+ registrationId + "::"
+			description = "PacketNotSync exception in packet receiver for registartionId " + registrationId + "::"
 					+ PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
@@ -261,8 +264,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void storePacket(InputStream encryptedInputStream, String stageName)
-			throws IOException {
+	private void storePacket(InputStream encryptedInputStream, String stageName) throws IOException {
 		InternalRegistrationStatusDto dto;
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
@@ -319,22 +321,21 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the input stream
 	 */
 	private void scanFile(InputStream inputStream) {
-		try
-		{
+		try {
 			boolean isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
-				description = "Packet virus scan failed exception in packet receiver for registrationId ::"+registrationId
-						+ PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage();
-				throw new VirusScanFailedException(PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage());
+				description = "Packet virus scan failed exception in packet receiver for registrationId ::"
+						+ registrationId + PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage();
+				throw new VirusScanFailedException(
+						PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage());
 			}
-		}
-		catch(VirusScannerException e) 
-		{
+		} catch (VirusScannerException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
-			throw new VirusScannerServiceException(PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
+			throw new VirusScannerServiceException(
+					PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
 		}
-		
+
 	}
 
 	/**
@@ -435,19 +436,20 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the regid
 	 */
 	private void validatePacketSize(long length) {
-		//TO-DO
-		/* if(length > regEntity.getPacketSize())
-		{
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regid, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
-			throw new PacketSizeNotInSyncException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
-		}*/
+		// TO-DO
+		/*
+		 * if(length > regEntity.getPacketSize()) {
+		 * regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+		 * LoggerFileConstant.REGISTRATIONID.toString(), regid,
+		 * PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage()); throw
+		 * new PacketSizeNotInSyncException(PlatformErrorMessages.
+		 * RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage()); }
+		 */
 		if (length > getMaxFileSize()) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		}
-		
 
 	}
 
