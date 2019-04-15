@@ -373,7 +373,9 @@ public class TweakRegProcPackets {
 		Properties prop = new Properties();
 		String propertyFilePath = System.getProperty("user.dir") + "/src/config/" + propertyFiles;
 		try {
-			prop.load(new FileReader(new File(propertyFilePath)));
+			FileReader reader=new FileReader(new File(propertyFilePath) );
+			prop.load(reader);
+			reader.close();
 		} catch (IOException e1) {
 			logger.info("Could not find property file with name :: " + propertyFiles + "at location :: "
 					+ propertyFilePath);
@@ -414,6 +416,7 @@ public class TweakRegProcPackets {
 		try {
 			FileReader readFile = new FileReader(new File(propertyFilePath));
 			prop.load(readFile);
+			
 			for (String property : prop.stringPropertyNames()) {
 				logger.info("invalid" + property);
 				logger.info(prop.getProperty(property));

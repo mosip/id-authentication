@@ -1,0 +1,87 @@
+{
+  "identity" : {
+    "fullName" : [ {
+      "language" : "eng",
+      "value" : "Ragavendran V"
+    }, {
+      "language" : "ara",
+      "value" : "رَگَڤِندرَن ڤ"
+    } ],
+    "dateOfBirth" : "1986/01/01",
+    "age" : 33,
+    "gender" : [ {
+      "language" : "eng",
+      "value" : "Female"
+    }, {
+      "language" : "ara",
+      "value" : "إناثا"
+    } ],
+    "residenceStatus" : [ {
+      "language" : "eng",
+      "value" : "Non-Foreigner"
+    }, {
+      "language" : "ara",
+      "value" : "غير أجنبي"
+    } ],
+    "addressLine1" : [ {
+      "language" : "eng",
+      "value" : "Address Line 1"
+    }, {
+      "language" : "ara",
+      "value" : "َددرِسس لِنِ ١"
+    } ],
+    "region" : [ {
+      "language" : "eng",
+      "value" : "Rabat Sale Kenitra"
+    }, {
+      "language" : "ara",
+      "value" : "جهة الرباط سلا القنيطرة"
+    } ],
+    "province" : [ {
+      "language" : "eng",
+      "value" : "Kenitra"
+    }, {
+      "language" : "ara",
+      "value" : "القنيطرة"
+    } ],
+    "city" : [ {
+      "language" : "eng",
+      "value" : "Kenitra"
+    }, {
+      "language" : "ara",
+      "value" : "القنيطرة"
+    } ],
+    "postalCode" : "90087",
+    "phone" : "9663597798",
+    "email" : "Ranjitha.Siddegowda@mindtree.com",
+    "localAdministrativeAuthority" : [ {
+      "language" : "eng",
+      "value" : "Ben Mansour"
+    }, {
+      "language" : "ara",
+      "value" : "بن منصور"
+    } ],
+    "proofOfAddress" : {
+      "value" : "POA_Certificate of residence",
+      "type" : "Certificate of residence",
+      "format" : "pdf"
+    },
+    "proofOfIdentity" : {
+      "value" : "POI_CNIE card",
+      "type" : "CNIE card",
+      "format" : "pdf"
+    },
+    "proofOfRelationship" : {
+      "value" : "POR_Certificate of Relationship",
+      "type" : "Certificate of Relationship",
+      "format" : "pdf"
+    },
+    "individualBiometrics" : {
+      "format" : "cbeff",
+      "version" : 1.0,
+      "value" : "applicant_bio_CBEFF"
+    },
+    "IDSchemaVersion" : 1.0,
+    "CNIENumber" : "1234566778"
+  }
+}

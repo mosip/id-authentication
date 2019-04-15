@@ -46,9 +46,10 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	public void readUserStage() {
 		Properties folderPath = new Properties();
 		try {
-			folderPath.load(
-					new FileReader(new File(System.getProperty("user.dir") + "/src/config/folderPaths.properties")));
-		} catch (IOException e1) {
+			FileReader reader=new FileReader(new File(System.getProperty("user.dir") + "/src/config/folderPaths.properties"));
+			folderPath.load(reader);
+			reader.close();
+			} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -66,6 +67,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		try {
 			property.load(reader);
+			reader.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -135,7 +137,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties")));
+			FileReader reader=new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties"));
+			prop.load(reader);
+			reader.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,7 +178,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileReader(new File(invalidPacketPath + "/DemoDedupe/StageBits.properties")));
+			FileReader reader=new FileReader(new File(invalidPacketPath + "/DemoDedupe/StageBits.properties"));
+			prop.load(reader);
+			reader.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -210,7 +216,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties")));
+			FileReader reader=new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties"));
+			prop.load(reader);
+			reader.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

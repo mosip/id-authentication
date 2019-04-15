@@ -1,0 +1,2941 @@
+[ {
+  "eventId" : "REG-EVT-110",
+  "eventName" : "PACKET_META_JSON_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 598000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet Meta-Data JSON created successfully",
+  "uuid" : "457b84eb-b48d-4667-ac1f-c04e8e0790fc",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 605000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-109",
+  "eventName" : "PACKET_HMAC_FILE_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 624000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet HMAC File created successfully",
+  "uuid" : "422eee73-75ee-456a-9bc4-ffec7c30cfae",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 631000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-110",
+  "eventName" : "PACKET_META_JSON_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 636000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet Meta-Data JSON created successfully",
+  "uuid" : "befa63b7-b7b0-4970-86e6-3a6549b0d12f",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 645000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-110",
+  "eventName" : "PACKET_META_JSON_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 721000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet Meta-Data JSON created successfully",
+  "uuid" : "b4ec52ee-b913-45ff-91de-a25eb58523eb",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 728000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-107",
+  "eventName" : "PACKET_INTERNAL_ZIP",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 775000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet internally zipped successfully",
+  "uuid" : "e5ad9366-0d58-4cde-ae0f-b36cb97e3f0e",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 781000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-112",
+  "eventName" : "PACKET_AES_ENCRYPTED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 791000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet AES Encryptor",
+  "moduleId" : "REG-MOD-121",
+  "description" : "Packet Encrypted Sucessfully",
+  "uuid" : "4ba9bb9d-f24f-4bff-8d95-3e9ac777baf3",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 798000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-099",
+  "eventName" : "PACKET_ENCRYPTED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 820000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011020190415065234",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Encryptor",
+  "moduleId" : "REG-MOD-120",
+  "description" : "Packet Encrypted Sucessfully",
+  "uuid" : "f11f511f-697a-4b81-bcf3-b958dd092cfe",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 828000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 37,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-137",
+  "eventName" : "NOTIFICATION_SERVICE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 136000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 38,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Notification",
+  "moduleId" : "REG-MOD-137",
+  "description" : "Notification request status",
+  "uuid" : "656550b0-8c9d-4778-92a8-9946fffaca6a",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 142000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 38,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-137",
+  "eventName" : "NOTIFICATION_SERVICE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 450000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 38,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Notification",
+  "moduleId" : "REG-MOD-137",
+  "description" : "Notification request status",
+  "uuid" : "26ea1b5b-a6f8-4bf4-981e-acea18a68d95",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 457000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 38,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-137",
+  "eventName" : "NOTIFICATION_SERVICE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 55,
+    "nano" : 395000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 39,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Notification",
+  "moduleId" : "REG-MOD-137",
+  "description" : "Notification request status",
+  "uuid" : "2c22ef10-ac9b-42bd-8321-39fe8c9ff70a",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 25,
+    "nano" : 403000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 39,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 527000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "b8e17d13-5e6f-43ca-99b2-39fe9207dd66",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 534000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 550000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "5fa5a6c5-9e6b-4829-84b0-fe86dfb5b706",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 557000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-021",
+  "eventName" : "NAV_HOME",
+  "eventType" : "SYSTEM",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 583000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Navigation",
+  "moduleId" : "REG-MOD-102",
+  "description" : "Navigation link: Home",
+  "uuid" : "0611728c-94c6-45dc-8729-3e90a59c08f9",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 590000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 40,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-012",
+  "eventName" : "NAV_APPROVE_REG",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 727000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Navigation",
+  "moduleId" : "REG-MOD-102",
+  "description" : "Navigation link: Approve Registration",
+  "uuid" : "79aa0a2a-c908-4363-b567-0b6d92a43da2",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 731000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 755000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "65109c53-5d2b-4ff0-ad28-80585e67840c",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 759000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 772000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "fd458e6b-97e9-43c5-b865-6e291bf7d32f",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 780000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 41,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 531000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "2197755b-6800-47f8-b699-d7adc73d013c",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 536000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 544000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "c110f793-e5a8-4a6c-a63b-24d1e745b963",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 548000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 554000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "37ee956c-7ffc-4b5d-a38d-2218af9b3349",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 558000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 45,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-067",
+  "eventName" : "REG_SUPERVISOR_AUTH_PASSWORD",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 837000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: OS Authentication",
+  "moduleId" : "REG-MOD-107",
+  "description" : "Supervisor authentication with password: Click of Submit",
+  "uuid" : "d336b319-6089-4e8f-9b94-042fe9f04033",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 842000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-117",
+  "eventName" : "FETCH_USER_DETAILS",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 848000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "User Detail",
+  "moduleId" : "REG-MOD-126",
+  "description" : "Fetching User Details",
+  "uuid" : "8551f585-fe1f-4983-b07c-2fb5c4c9a61c",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 852000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-117",
+  "eventName" : "FETCH_USER_DETAILS",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 864000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "User Detail",
+  "moduleId" : "REG-MOD-126",
+  "description" : "Fetching User Details",
+  "uuid" : "14e1a7be-1a84-4bfb-af15-6c8f8753aa58",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 869000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-126",
+  "eventName" : "PACKET_UPDATE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 880000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Update Packet",
+  "moduleId" : "REG-MOD-132",
+  "description" : "Packets which are in created state are updated",
+  "uuid" : "711cf6b4-d2dd-47be-97be-1caa3c57eac3",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 885000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 49,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 88000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "72ec513a-7a44-4b04-bf65-2e8316bf66da",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 98000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 131000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "01c33d4b-d196-40f7-bf6d-793aa6568098",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 138000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-079",
+  "eventName" : "UPLOAD_PACKET",
+  "eventType" : "SYSTEM",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 545000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Upload Packets",
+  "moduleId" : "REG-MOD-110",
+  "description" : "Upload packets",
+  "uuid" : "14d30c20-2ddb-4036-9f89-a672948c7aa8",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 558000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 739000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "e17738aa-9e28-4561-b076-2ca63ed4d8a8",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 743000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-125",
+  "eventName" : "PACKET_RETRIVE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 757000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Retrive for Approval",
+  "moduleId" : "REG-MOD-131",
+  "description" : "Packets which are in created state for approval are retrived",
+  "uuid" : "accb6564-88d5-45f4-973e-b93aa7ec6a45",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 764000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-021",
+  "eventName" : "NAV_HOME",
+  "eventType" : "SYSTEM",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 788000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Navigation",
+  "moduleId" : "REG-MOD-102",
+  "description" : "Navigation link: Home",
+  "uuid" : "65c2f416-dc3b-489b-8ae0-2f95977bf497",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 796000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 53,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-010",
+  "eventName" : "NAV_NEW_REG",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 832000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 54,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Navigation",
+  "moduleId" : "REG-MOD-102",
+  "description" : "Click of navigation link: New Registration",
+  "uuid" : "8feb6725-fda3-4208-ba75-2f75c54518f3",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 837000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 54,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-128",
+  "eventName" : "PENDING_PKT_COUNT_VALIDATION",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 344000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Sync service",
+  "moduleId" : "REG-MOD-133",
+  "description" : "Validating the Pending packets count",
+  "uuid" : "bec14f3b-e37e-4eb3-959a-e4fb9a7ccdbe",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 350000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-129",
+  "eventName" : "PENDING_PKT_DURATION_VALIDATION",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 353000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Sync service",
+  "moduleId" : "REG-MOD-133",
+  "description" : "Validating the Pending packets Duration",
+  "uuid" : "f3718043-f757-4add-bef5-4f0a9455ab59",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 357000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-122",
+  "eventName" : "SYNC_JOB_INFO_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 392000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Sync service",
+  "moduleId" : "REG-MOD-133",
+  "description" : "SyncJobInfo containing the sync control list and yet to export packet count fetched successfully",
+  "uuid" : "3a9443c2-5293-46de-b369-bdc65f505a74",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 400000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-127",
+  "eventName" : "SYNC_GEO_VALIDATE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 407000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Sync service",
+  "moduleId" : "REG-MOD-133",
+  "description" : "Validating the geo information ended successfully",
+  "uuid" : "8f0dab96-cdb7-470e-a5ab-6d98b248fb40",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 413000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-123",
+  "eventName" : "SYNC_INFO_VALIDATION",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 57,
+    "nano" : 417000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Sync service",
+  "moduleId" : "REG-MOD-133",
+  "description" : "Validating the sync status ended successfully",
+  "uuid" : "6099ca5d-949d-449c-8208-0d1b16584c66",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 27,
+    "nano" : 423000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 55,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-024",
+  "eventName" : "REG_DEMO_PRE_REG_DATA_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 808000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 2,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: DemographicsDetails",
+  "moduleId" : "REG-MOD-103",
+  "description" : "Pre-registration: Fetch data for selected Pre-registration",
+  "uuid" : "bf6ed5d1-8fc1-44d5-b39a-1d20d6c17582",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 816000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 2,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-139",
+  "eventName" : "SAVE_DETAIL_TO_DTO",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 713000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "UserID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration initialization",
+  "moduleId" : "REG-MOD-140",
+  "description" : "Saving the details to DTO",
+  "uuid" : "93bbff13-fb6a-4710-93d3-4206842c7a95",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 720000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-025",
+  "eventName" : "REG_DEMO_NEXT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 761000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: DemographicsDetails",
+  "moduleId" : "REG-MOD-103",
+  "description" : "Click of Next after capturing demographic details",
+  "uuid" : "532e8201-5503-4c55-9d8b-3f4637bcf867",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 765000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 51,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-026",
+  "eventName" : "REG_DOC_POA_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 196000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 54,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Documents",
+  "moduleId" : "REG-MOD-104",
+  "description" : "PoA: Click of Scan",
+  "uuid" : "4b55df75-68f7-4ea9-aca5-fe63299bd89d",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 200000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 54,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-029",
+  "eventName" : "REG_DOC_POI_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 109000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 57,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Documents",
+  "moduleId" : "REG-MOD-104",
+  "description" : "PoI: Click of Scan",
+  "uuid" : "745b7d38-3b6e-4d70-9106-5f35f23150ff",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 113000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 57,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-032",
+  "eventName" : "REG_DOC_POR_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 58,
+    "nano" : 708000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 59,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Documents",
+  "moduleId" : "REG-MOD-104",
+  "description" : "PoR: Click of Scan",
+  "uuid" : "db53ff21-bc23-4999-8b56-168681a1fcf6",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 28,
+    "nano" : 714000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 59,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-038",
+  "eventName" : "REG_DOC_NEXT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 84000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 5,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Documents",
+  "moduleId" : "REG-MOD-104",
+  "description" : "Click of Next after uploading documents",
+  "uuid" : "29223e61-44a4-44fe-9964-f8278ad22214",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 91000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 5,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-043",
+  "eventName" : "REG_BIO_LEFT_SLAP_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 604000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 6,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Fingerprints: Scan of left slap",
+  "uuid" : "be034a9a-7402-4666-a689-9aed166e6c8f",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 608000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 6,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-044",
+  "eventName" : "REG_BIO_RIGHT_SLAP_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 165000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 9,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Fingerprints: Scan of right slap",
+  "uuid" : "0656ea4b-5e18-4bce-86d7-c72621c5df14",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 169000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 9,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-045",
+  "eventName" : "REG_BIO_THUMBS_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 293000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 11,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Fingerprints: Scan of thumbs",
+  "uuid" : "58a8d42a-37cd-4409-938a-60aef7b8195c",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 296000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 11,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-046",
+  "eventName" : "REG_BIO_FINGERPRINT_NEXT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 435000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 13,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Click of Next after capturing fingerprints",
+  "uuid" : "10c0d294-9f83-44a8-adeb-21c48c9f4106",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 439000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 13,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-048",
+  "eventName" : "REG_BIO_IRIS_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 132000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 15,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Iris: Scan of both irises",
+  "uuid" : "c5c74e3d-70e5-4a08-9a0e-920a911d03f3",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 137000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 15,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-048",
+  "eventName" : "REG_BIO_IRIS_SCAN",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 725000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 17,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Iris: Scan of both irises",
+  "uuid" : "6018dc3f-245c-40b7-a21a-bed352bb99d0",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 728000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 17,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-049",
+  "eventName" : "REG_BIO_IRIS_NEXT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 388000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 19,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Click of Next after capturing irises",
+  "uuid" : "e371ee30-85d3-4e48-bf43-61c363bcb9c4",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 392000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 19,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-051",
+  "eventName" : "REG_BIO_FACE_CAPTURE",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 731000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 20,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Photo: Face capture",
+  "uuid" : "93e86626-feb1-4097-ae07-b62b0c3d2c0f",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 735000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 20,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-052",
+  "eventName" : "REG_BIO_FACE_CAPTURE_NEXT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 596000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 26,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Biometrics",
+  "moduleId" : "REG-MOD-105",
+  "description" : "Click of Next after capturing face photo",
+  "uuid" : "dedc1dc3-bc8c-4c95-b698-49578eab046e",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 601000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 26,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-139",
+  "eventName" : "SAVE_DETAIL_TO_DTO",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 424000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 27,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "UserID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration initialization",
+  "moduleId" : "REG-MOD-140",
+  "description" : "Saving the details to DTO",
+  "uuid" : "6fdb0d66-6172-4111-bb50-3602585ba342",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 429000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 27,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-057",
+  "eventName" : "REG_PREVIEW_SUBMIT",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 876000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: Preview",
+  "moduleId" : "REG-MOD-106",
+  "description" : "Submit",
+  "uuid" : "09468085-41fd-4296-bf06-39549f116736",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 880000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 887000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "8fd96359-37b4-4ec3-81a1-dad49dc82c3c",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 891000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 896000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "ce15c11e-8b3b-4c4c-aa16-d8c85579fe78",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 902000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-114",
+  "eventName" : "LOGIN_MODES_FETCH",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 910000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Login Modes",
+  "moduleId" : "REG-MOD-123",
+  "description" : "Fetching Login Modes",
+  "uuid" : "754b6add-8459-4452-be04-91f8d222af09",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 915000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 31,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-058",
+  "eventName" : "REG_OPERATOR_AUTH_PASSWORD",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 668000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "110003",
+  "idType" : "USER_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Registration: OS Authentication",
+  "moduleId" : "REG-MOD-107",
+  "description" : "Operator authentication with password: Click of Submit",
+  "uuid" : "48557f81-d3cb-4457-bfd3-2768f20354cf",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 672000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-117",
+  "eventName" : "FETCH_USER_DETAILS",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 675000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "REGISTRATION",
+  "idType" : "APPLICATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "User Detail",
+  "moduleId" : "REG-MOD-126",
+  "description" : "Fetching User Details",
+  "uuid" : "dba0cb97-b0ad-473d-b0b1-66c2675aea42",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 680000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-109",
+  "eventName" : "PACKET_HMAC_FILE_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 907000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011220190415065802",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet HMAC File created successfully",
+  "uuid" : "255b4589-ac0f-4d95-9e73-75e723028089",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 911000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+}, {
+  "eventId" : "REG-EVT-108",
+  "eventName" : "PACKET_DEMO_JSON_CREATED",
+  "eventType" : "USER",
+  "actionTimeStamp" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 6,
+    "minute" : 59,
+    "nano" : 933000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  },
+  "hostName" : "B2ML13213",
+  "hostIp" : "172.23.134.82",
+  "applicationId" : "REG",
+  "applicationName" : "REGISTRATION",
+  "sessionUserId" : "110003",
+  "sessionUserName" : "Bong Bragan",
+  "id" : "10003100030011220190415065802",
+  "idType" : "REGISTRATION_ID",
+  "createdBy" : "Bong Bragan",
+  "moduleName" : "Packet Creator",
+  "moduleId" : "REG-MOD-119",
+  "description" : "Packet Demographic JSON created successfully",
+  "uuid" : "5ab6c3e7-4179-492d-83ad-fee9226823a3",
+  "createdAt" : {
+    "dayOfMonth" : 15,
+    "dayOfWeek" : "MONDAY",
+    "dayOfYear" : 105,
+    "monthValue" : 4,
+    "hour" : 12,
+    "minute" : 29,
+    "nano" : 940000000,
+    "month" : "APRIL",
+    "year" : 2019,
+    "second" : 35,
+    "chronology" : {
+      "id" : "ISO",
+      "calendarType" : "iso8601"
+    }
+  }
+} ]
