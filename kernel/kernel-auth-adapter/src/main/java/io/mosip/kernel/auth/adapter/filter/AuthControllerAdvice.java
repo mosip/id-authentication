@@ -22,7 +22,6 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
  **********************************************************************************************************************/
 
 @RestControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 
 	private AuthUserDetails getAuthUserDetails() {
