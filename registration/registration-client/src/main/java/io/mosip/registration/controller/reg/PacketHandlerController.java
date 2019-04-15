@@ -448,7 +448,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(uploadRoot, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
+				getScene(uploadRoot);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -500,7 +500,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 						} else {
 							getScene(root);
-							//homeController.getMainBox().add(root, RegistrationConstants.PARAM_ZERO, RegistrationConstants.PARAM_ONE);
 						}
 					}
 				}
