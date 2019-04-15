@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -118,25 +119,24 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		ValidDocCategoryAndDocTypeResponseDto validDocCategoryAndDocTypeResponseDto = new ValidDocCategoryAndDocTypeResponseDto();
 		List<ValidDocCategoryDto> categoryDtos = new ArrayList<>();
 		
-		List<DocumentCategory> documentCategories = documentCategoryRepository
-				.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		for (DocumentCategory documentCategory : documentCategories) {
-			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(documentCategory.getCode());
-			List<DocumentType> documentTypes = new ArrayList<>();
-			
-			for (ValidDocument validDocument : validDocuments) {
-				DocumentType documentType = documentTypeRepository
-						.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(validDocument.getDocTypeCode(),
-								langCode);
-				documentTypes.add(documentType);
+		try {
+			List<DocumentCategory> documentCategories = documentCategoryRepository
+					.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+			for (DocumentCategory documentCategory : documentCategories) {
+				List<DocumentType> documentTypes = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategory.getCode(), langCode);
+				List<DocumentTypeDto> documentTypeDtos = MapperUtils.mapAll(documentTypes, DocumentTypeDto.class);
+				ValidDocCategoryDto validDocCategoryDto = MapperUtils.map(documentCategory, ValidDocCategoryDto.class);
+				validDocCategoryDto.setDocumenttypes(documentTypeDtos);
+				categoryDtos.add(validDocCategoryDto);
 			}
-
-			List<DocumentTypeDto> documenttypes = MapperUtils.mapAll(documentTypes, DocumentTypeDto.class);
-			ValidDocCategoryDto validDocCategoryDto = MapperUtils.map(documentCategory, ValidDocCategoryDto.class);
-			validDocCategoryDto.setDocumenttypes(documenttypes);
-			categoryDtos.add(validDocCategoryDto);
+		} catch(DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
+					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
-		
+		if(EmptyCheckUtils.isNullEmpty(categoryDtos) || EmptyCheckUtils.isNullEmpty(validDocCategoryAndDocTypeResponseDto)) {
+			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
+					ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
 		validDocCategoryAndDocTypeResponseDto.setDocumentcategories(categoryDtos);
 		return validDocCategoryAndDocTypeResponseDto;
 	}
