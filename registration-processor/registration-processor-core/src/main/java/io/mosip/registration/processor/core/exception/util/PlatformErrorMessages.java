@@ -486,6 +486,12 @@ public enum PlatformErrorMessages {
 	/** The rpr sys illegal access exception*/
 	RPR_SYS_ILLEGAL_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "015", "ILLEGAL ACCESS Exception"),
 
+	/** The rpr sys Invocation target exception*/
+	RPR_SYS_INVOCATION_TARGET_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "016", "Invocation target Exception"),
+
+	/** The rpr sys Invocation target exception*/
+	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
+
 	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions
 	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
