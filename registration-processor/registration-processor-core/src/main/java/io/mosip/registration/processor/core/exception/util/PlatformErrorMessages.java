@@ -42,6 +42,8 @@ public enum PlatformErrorMessages {
 			"Not able to access the API resource"),
 
 	RPR_PKR_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "012", "Error while adding records"),
+	
+	RPR_PKR_INVALID_PACKET_SIZE_SYNCED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013", "Synced packet size not same as uploaded packet"),
 
 	/** The rpr rgs registration table not accessible. */
 	// Registration Status Exception error code and message

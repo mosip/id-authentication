@@ -9,8 +9,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -26,7 +28,9 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvaila
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketSizeNotInSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
+import io.mosip.registration.processor.packet.receiver.exception.VirusScanFailedException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -178,6 +182,16 @@ public class PacketReceiverExceptionHandler {
 		return buildPacketReceiverExceptionResponse((Exception)packetReceiverAppException);
 	}
 
+	private String packetSizeNotSyncedExceptionHandler(final PacketSizeNotInSyncException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Uploaded packet sized not synced",e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+	private String virusScanFailedExceptionHandler(final VirusScanFailedException e ) 
+	{
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Virus scan failed",e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
 	/**
 	 * Builds the packet receiver exception response.
 	 *
@@ -245,11 +259,12 @@ public class PacketReceiverExceptionHandler {
 			return handlePacketNotAvailableException((MissingServletRequestPartException)exe);
 		if(exe instanceof DataIntegrityViolationException)
 			return dataExceptionHandler((DataIntegrityViolationException)exe);
+		if(exe instanceof PacketSizeNotInSyncException)
+			return packetSizeNotSyncedExceptionHandler((PacketSizeNotInSyncException)exe);
+		if(exe instanceof VirusScanFailedException)
+			return virusScanFailedExceptionHandler((VirusScanFailedException) exe); 
 		else
 			return unknownExceptionHandler((Exception) exe);
 
 	}
-
-
-
 }

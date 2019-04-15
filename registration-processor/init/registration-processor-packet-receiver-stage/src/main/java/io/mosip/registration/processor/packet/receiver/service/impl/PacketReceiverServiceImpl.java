@@ -429,11 +429,19 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the regid
 	 */
 	private void validatePacketSize(long length, String regid) {
+		//TO-DO
+		/* if(length > regEntity.getPacketSize())
+		{
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regid, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
+			throw new PacketSizeNotInSyncException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
+		}*/
 		if (length > getMaxFileSize()) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regid, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		}
+		
 
 	}
 
