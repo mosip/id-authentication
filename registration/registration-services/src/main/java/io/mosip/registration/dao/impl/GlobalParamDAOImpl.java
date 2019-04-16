@@ -141,4 +141,13 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag ended.");
 		return globalParamRepository.update(globalParam);
 	}
+
+	@Override
+	public GlobalParam update(GlobalParam globalParam) {
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating global param");
+		
+		return globalParamRepository.update(globalParam);
+		
+	}
 }
