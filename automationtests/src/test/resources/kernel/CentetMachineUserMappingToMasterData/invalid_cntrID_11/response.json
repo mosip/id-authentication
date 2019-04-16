@@ -1,13 +1,13 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-10T12:16:22.989Z",
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:23:01.780Z",
   "metadata": null,
   "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-999",
-      "errorMessage": "request[0].cntrId: size must be between 1 and 10"
+      "message": "request[0].cntrId: size must be between 1 and 10"
     }
   ]
 }

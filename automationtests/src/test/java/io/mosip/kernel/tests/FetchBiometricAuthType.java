@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -88,7 +89,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -152,9 +153,11 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 
 			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
 
-
+			
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			
+			
 			// fetching json array of objects from response
 			JSONArray dataFromGet = (JSONArray) responseJson.get("biometrictypes");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
@@ -185,7 +188,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-			listOfElementToRemove.add("timestamp");
+			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 

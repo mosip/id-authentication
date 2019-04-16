@@ -1,13 +1,13 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-10T12:10:25.752Z",
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:30:19.786Z",
   "metadata": null,
-  "response": null
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-999",
-      "errorMessage": "request[0].usrId: size must be between 1 and 36"
+      "message": "request[0].usrId: size must be between 1 and 36"
     }
   ]
 }

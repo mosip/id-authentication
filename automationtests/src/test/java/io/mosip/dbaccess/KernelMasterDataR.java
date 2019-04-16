@@ -39,12 +39,12 @@ public class KernelMasterDataR {
 		switch(env) 
 		{
 		case "dev": 
-			factory = new Configuration().configure("masterdatadev.cfg.xml")
+			factory = new Configuration().configure("kerneldev.cfg.xml")
 					.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		break;
 		
 		case "qa":
-				factory = new Configuration().configure("masterdataqa.cfg.xml")
+				factory = new Configuration().configure("kernelqa.cfg.xml")
 			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		
 		break;
@@ -232,7 +232,7 @@ public class KernelMasterDataR {
 			
 			try {
 				if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-					factory = new Configuration().configure("masterdatainteg.cfg.xml").buildSessionFactory();
+					factory = new Configuration().configure("masterdatadev.cfg.xml").buildSessionFactory();
 				else 
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 						factory = new Configuration().configure("masterdataqa.cfg.xml").buildSessionFactory();

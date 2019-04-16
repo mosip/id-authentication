@@ -91,9 +91,11 @@ public class BaseTestCase extends KernelMasterDataR {
 				ApplnURI="https://dev.mosip.io";
 			if (environment.equalsIgnoreCase("qa"))
 
+
 				ApplnURI="https://qa.mosip.io";*/
 			/*else
 				ApplnURI="https://qa.mosip.io";*/
+
 
 			/*environment ="integration";
 			ApplnURI="https://integ.mosip.io";*/

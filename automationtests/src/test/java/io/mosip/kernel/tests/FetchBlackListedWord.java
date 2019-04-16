@@ -71,11 +71,11 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
-
+		logger.info("Test Case Name is :: "+testCaseName);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -147,7 +147,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 		
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		if (status) {

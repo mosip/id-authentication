@@ -110,7 +110,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 */
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
 		
-		 String uin = res.jsonPath().get("uin").toString();
+		 String uin = res.jsonPath().getMap("response").get("uin").toString();
 		 
 		 int uin_length=uin.length();
 		 String first_half=uin.substring(0, uin_length/2);

@@ -129,9 +129,8 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		
 		
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
-		
-		String uin_number=res.getBody().jsonPath().get("uin");
-		
+		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
+				
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
 		
 		List<String> status_list = dbConnection.getData(query1);

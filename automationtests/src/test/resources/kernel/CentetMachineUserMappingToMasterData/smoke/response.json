@@ -1,17 +1,17 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-10T12:08:20.854Z",
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:30:50.329Z",
   "metadata": null,
   "response": {
-    "mapped": [
+    "mapped": [],
+    "notmapped": [
       {
         "cntrId": "10001",
         "usrId": "110001",
         "machineId": "10001"
       }
-    ],
-    "notmapped": []
+    ]
   },
   "errors": null
 }

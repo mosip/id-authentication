@@ -185,7 +185,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-			listOfElementToRemove.add("timestamp");
+			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 

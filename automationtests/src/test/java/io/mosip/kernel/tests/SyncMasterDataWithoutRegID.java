@@ -38,6 +38,7 @@ import io.mosip.dbentity.BlacklistedWords;
 import io.mosip.dbentity.UinEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
+import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -90,7 +91,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 	
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -134,7 +135,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		
 		innerKeys.add("timestamp");	
-	 //   outerKeys.add("responsetime");
+	    outerKeys.add("responsetime");
 		//outerKeys.add("licenseKey");
 		innerKeys.add("lastSyncTime");
 		
@@ -145,12 +146,12 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 		/*
 		 * Comparing expected and actual response
 		 */
-	//	status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
 		
-		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		//	status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
 		
 //		String query1="select m.word from master.blacklisted_words m";
-		HashMap<String, String> tableCount=new HashMap();
+		/*HashMap<String, String> tableCount=new HashMap();
 		
 		 tableCount=res.jsonPath().get("response");
 		List<String> status_list=null;
@@ -166,7 +167,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 			Class ent = Dbentity.get("blackListedWords");
 			 status_list = dbConnection.getDataFromDB(ent,query1);
 			 System.out.println("black------------------------>"+status_list.size());
-		}
+		}*/
 		
 		
 		

@@ -50,7 +50,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetDeviceHistory.class);
+	private static Logger logger = Logger.getLogger(GetAllTemplateByTemplateTypeCode.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
@@ -177,7 +177,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetDeviceHistory.testCaseName);
+				f.set(baseTestMethod, GetAllTemplateByTemplateTypeCode.testCaseName);
 
 				
 			} catch (Exception e) {

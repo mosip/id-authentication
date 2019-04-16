@@ -84,7 +84,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -121,14 +121,14 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		   Removing of unstable attributes from response
 		*/
 		
-		outerKeys.add("timestamp");
+		outerKeys.add("responsetime");
 		innerKeys.add("errorMessage");
 		
 		/*
 		  Comparing expected and actual response
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
     	  
