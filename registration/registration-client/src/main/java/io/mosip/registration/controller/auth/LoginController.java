@@ -59,6 +59,7 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -184,6 +185,9 @@ public class LoginController extends BaseController implements Initializable {
 	private Service<String> taskService;
 
 	private List<String> loginList = new ArrayList<>();
+	
+	@Autowired
+	JobConfigurationService jobConfigurationService;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -195,6 +199,12 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					responseDTO.getSuccessResponseDTO().getMessage());
 
+			//TODO Get Value from Local DB -> Global Param Is Initial SetUp
+			boolean isInitialSetUp = true;
+			if(!isInitialSetUp) {
+				jobConfigurationService.startScheduler();
+			}
+			
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
 			int minutes = otpExpirySeconds / 60;
