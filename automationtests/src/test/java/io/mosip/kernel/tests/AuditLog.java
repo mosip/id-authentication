@@ -92,7 +92,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("testParam") {
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -151,7 +151,8 @@ public class AuditLog extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
+		
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
 		if (status) {
@@ -159,12 +160,11 @@ public class AuditLog extends BaseTestCase implements ITest {
 			logger.info("Status Code is : " + statusCode);
 
 			if (statusCode == 201) {
-				// varible part
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
-				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.masterDataDBConnection( DeviceDto.class,queryStr);
-				if (valid) {
+				String queryStr = "SELECT count(*) FROM master.machine_spec WHERE id='" + id + "'";
+				long count = KernelMasterDataR.validateDBCount(queryStr);
+				if (count==1) {
 					finalStatus = "Pass";
 				} else {
 					finalStatus = "Fail";
