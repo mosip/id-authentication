@@ -13,13 +13,13 @@ import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.core.spi.faceauth.provider.FaceProvider;
-import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
+import io.mosip.authentication.core.spi.provider.bio.FaceProvider;
+import io.mosip.authentication.core.spi.provider.bio.FingerprintProvider;
 
 /**
  * The Enum BioAuthType.

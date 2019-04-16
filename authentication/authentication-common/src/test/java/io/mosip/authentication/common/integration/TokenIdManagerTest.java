@@ -29,10 +29,10 @@ import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 
 /**
  * Test class for Tokenid Manager.

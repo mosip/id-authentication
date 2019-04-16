@@ -23,9 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;

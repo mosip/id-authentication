@@ -100,7 +100,7 @@ public class IdAuthServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdRepoByVidNumberVIDExpired() throws Throwable {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", "232343234", false);
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdByVid", "232343234", false);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -168,7 +168,7 @@ public class IdAuthServiceImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
@@ -185,7 +185,7 @@ public class IdAuthServiceImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 

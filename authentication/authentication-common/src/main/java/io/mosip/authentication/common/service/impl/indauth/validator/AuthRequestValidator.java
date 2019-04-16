@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.auth.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.common.integration.IdAuthenticationProperties;
+import io.mosip.authentication.common.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;

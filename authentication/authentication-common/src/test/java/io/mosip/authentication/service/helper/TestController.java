@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 
 @RestController
 public class TestController {

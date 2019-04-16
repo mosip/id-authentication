@@ -263,7 +263,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
@@ -735,7 +735,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
@@ -822,7 +822,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
@@ -877,7 +877,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
@@ -923,7 +923,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
@@ -969,7 +969,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();

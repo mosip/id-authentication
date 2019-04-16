@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.factory;
 
-import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
+import io.mosip.authentication.core.spi.provider.bio.FingerprintProvider;
 
 /**
  * A factory for providing the proper FingerprintProvider class using make and

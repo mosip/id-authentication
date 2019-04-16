@@ -33,10 +33,10 @@ import io.mosip.authentication.common.service.integration.dto.CryptomanagerReque
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 // 

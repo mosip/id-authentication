@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.core.dto.AuditRequestDto;
+import io.mosip.authentication.core.dto.AuditResponseDto;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.AuditResponseDto;
 
 @RestController
 public class AuditTestController {

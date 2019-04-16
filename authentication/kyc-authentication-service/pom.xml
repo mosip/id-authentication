@@ -10,7 +10,7 @@
 		<version>0.10.2</version>
 	</parent>
 	<artifactId>kyc-authentication-service</artifactId>
-	<name>kyc-authentication-service</name>
+	<name>kyc-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -24,6 +24,8 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.AuditRequestDto;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -32,8 +34,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -87,7 +87,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdRepoByUIN(String uin, boolean isBio) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = idRepoManager.getIdenity(uin, isBio);
 		auditData();
 		return idRepo;
@@ -101,7 +101,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdRepoByVID(String vid, boolean isBio) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid, isBio);
 		auditData();
 		return idRepo;
@@ -158,14 +158,14 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdRepoByUIN(idvId, isBio);
+				idResDTO = getIdByUin(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else {
 			try {
-				idResDTO = getIdRepoByVID(idvId, isBio);
+				idResDTO = getIdByVid(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);

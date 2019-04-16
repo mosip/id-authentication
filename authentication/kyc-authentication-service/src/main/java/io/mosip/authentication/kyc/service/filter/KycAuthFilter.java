@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import io.mosip.authentication.common.authentication.filter.IdAuthFilter;
+import io.mosip.authentication.common.filter.IdAuthFilter;
 import io.mosip.authentication.common.policy.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;

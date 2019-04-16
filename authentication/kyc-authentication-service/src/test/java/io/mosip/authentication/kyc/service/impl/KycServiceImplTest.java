@@ -39,7 +39,7 @@ import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
-import io.mosip.authentication.kyc.service.impl.indauth.service.KycServiceImpl;
+import io.mosip.authentication.kyc.service.indauth.service.KycServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**

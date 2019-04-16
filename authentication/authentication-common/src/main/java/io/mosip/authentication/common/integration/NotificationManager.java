@@ -10,10 +10,10 @@ import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.SmsRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**

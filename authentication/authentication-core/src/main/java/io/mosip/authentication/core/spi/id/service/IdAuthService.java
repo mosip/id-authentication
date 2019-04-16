@@ -22,7 +22,7 @@ public interface IdAuthService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByUIN(String uin, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID.
@@ -32,7 +32,7 @@ public interface IdAuthService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByVID(String vid, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id

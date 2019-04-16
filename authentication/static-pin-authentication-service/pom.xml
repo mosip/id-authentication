@@ -9,8 +9,8 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.10.2</version>
 	</parent>
-	<artifactId>static-pin-service</artifactId>
-	<name>static-pin-service</name>
+	<artifactId>staticpin-service</artifactId>
+	<name>staticpin-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

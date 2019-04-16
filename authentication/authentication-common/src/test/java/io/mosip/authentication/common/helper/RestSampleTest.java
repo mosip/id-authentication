@@ -28,10 +28,10 @@ import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.AuditRequestDto;
+import io.mosip.authentication.core.dto.AuditResponseDto;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.AuditResponseDto;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 @Ignore

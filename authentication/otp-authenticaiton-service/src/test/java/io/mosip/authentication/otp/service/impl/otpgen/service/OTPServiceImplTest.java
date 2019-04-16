@@ -37,13 +37,13 @@ import io.mosip.authentication.common.integration.OTPManager;
 import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.otp.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.kernel.core.http.ResponseWrapper;
 

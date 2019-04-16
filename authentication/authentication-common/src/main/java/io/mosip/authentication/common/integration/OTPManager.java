@@ -19,11 +19,11 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorReques
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
