@@ -11,14 +11,6 @@ public class PacketDecryptionFailureException extends BaseCheckedException{
 
 	/** Serializable version Id. */
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * Instantiates a new packet decryption failure exception.
-	 */
-	public PacketDecryptionFailureException()
-	{
-		super();
-	}
 
 	/**
 	 * @param code
@@ -28,7 +20,6 @@ public class PacketDecryptionFailureException extends BaseCheckedException{
 	 * @param cause
 	 *            Throwable cause for the specific exception
 	 */
-	
 	public PacketDecryptionFailureException(String code, String message, Throwable cause) {
 		super(code, message, cause);
 

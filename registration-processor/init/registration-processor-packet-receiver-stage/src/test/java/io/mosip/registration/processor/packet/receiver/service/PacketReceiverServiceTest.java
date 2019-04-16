@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -35,6 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -368,12 +368,25 @@ public class PacketReceiverServiceTest {
 	}
 	
 	@Test(expected=PacketReceiverAppException.class)
-	@Ignore
-	public void testDecrypterException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
+	public void testApisResourceAccessException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
 	{
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
-		Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenThrow(new PacketDecryptionFailureException());
+		Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenThrow(new ApisResourceAccessException());
+
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+        Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
+		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
+
+		assertEquals(false, successResult.getIsValid());
+	}
+	
+	@Test(expected=PacketReceiverAppException.class)
+	public void testDataAccessException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
+	{
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenThrow(new IncorrectResultSizeDataAccessException(2));
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
         Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
