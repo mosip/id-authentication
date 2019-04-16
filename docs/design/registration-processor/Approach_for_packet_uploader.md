@@ -36,7 +36,8 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 }
 ```
 2.	A rest endpoint using vertx web to send an event to "registration-processor-packet-uploader-stage" from dmz camel-bridge instance. All the stages present in secure network will form a single cluster to communicate with each other. The DMZ stages will not be part of this cluster and will form separate cluster. Hence the communication between DMZ stage and the secure network stage will happen through rest call. Click -> [API spec for connector](https://github.com/mosip/mosip/wiki/Registration-Processor-APIs#1-packet-receiver-service) to see the api specifications..
-		1. server.servlet.path = v1/connector
+		1. server.servlet.path = v1/uploader
+		
 		2. URI : /securezone
 3. New methods in io.mosip.registration.processor.core.spi.filesystem.manager.FileManager.java
 	1. getFile(directoryPath, fileName) method to get the file from LANDING_ZONE.
