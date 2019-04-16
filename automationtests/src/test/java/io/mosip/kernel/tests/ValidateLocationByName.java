@@ -82,7 +82,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	@DataProvider(name = "ValidateLocationByName")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -117,7 +117,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
 		/*
 		 * Getting the response time in milliseconds	

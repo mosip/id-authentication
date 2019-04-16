@@ -82,7 +82,7 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

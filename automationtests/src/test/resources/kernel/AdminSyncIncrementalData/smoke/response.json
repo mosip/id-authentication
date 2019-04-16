@@ -1,13 +1,24 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-04-09T09:31:54.713Z",
+  "responsetime": "2019-04-16T09:30:17.613Z",
   "metadata": null,
   "response": {
     "syncJobDefinitions": [
       {
         "id": "LCS_J00002",
         "name": "Login Credentials Sync",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "LER_J00009",
+        "name": "Last Export Registration",
         "apiName": null,
         "parentSyncJobId": "NULL",
         "syncFreq": "0 0 11 * * ?",
@@ -94,17 +105,6 @@
         "langCode": "eng"
       },
       {
-        "id": "User",
-        "name": "Pre Reg Manual Sync",
-        "apiName": null,
-        "parentSyncJobId": "NULL",
-        "syncFreq": "0 0 11 * * ?",
-        "lockDuration": "NULL",
-        "isActive": false,
-        "isDeleted": false,
-        "langCode": "eng"
-      },
-      {
         "id": "DEL_J00013",
         "name": "Pre Registration Packet Deletion Job",
         "apiName": "preRegistrationPacketDeletionJob",
@@ -138,6 +138,17 @@
         "langCode": "eng"
       },
       {
+        "id": "ADJ_J00012",
+        "name": "Audit Log Deletion Job",
+        "apiName": "deleteAuditLogsJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
         "id": "RSJ_J00014",
         "name": "Registration Packet Sync",
         "apiName": "registrationPacketSyncJob",
@@ -160,24 +171,13 @@
         "langCode": "eng"
       },
       {
-        "id": "ADJ_J00012",
-        "name": "Audit Log Deletion Job",
-        "apiName": "deleteAuditLogsJob",
-        "parentSyncJobId": "NULL",
-        "syncFreq": "0 0 11 * * ?",
-        "lockDuration": "NULL",
-        "isActive": true,
-        "isDeleted": false,
-        "langCode": "eng"
-      },
-      {
-        "id": "LER_J00009",
-        "name": "Last Export Registration",
+        "id": "User",
+        "name": "Pre Reg Manual Sync",
         "apiName": null,
         "parentSyncJobId": "NULL",
         "syncFreq": "0 0 11 * * ?",
         "lockDuration": "NULL",
-        "isActive": false,
+        "isActive": true,
         "isDeleted": false,
         "langCode": "eng"
       }

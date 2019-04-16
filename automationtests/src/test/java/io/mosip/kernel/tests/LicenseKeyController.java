@@ -94,7 +94,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	@DataProvider(name = "LicenseKeyGenerator")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -125,8 +125,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 if(testCaseName.equals("smoke_generateLicenceKey"))
 			{
 			 tspId=((JSONObject)actualRequest1.get("request")).get("tspId").toString();
-			 licenseKey=res.getBody().jsonPath().getString("$.response.licenseKey");
-			 System.out.println("lk-------------"+licenseKey);
+			 licenseKey=res.jsonPath().getMap("response").get("licenseKey").toString();
+			
 			}
 		/*
 		 *  Removing of unstable attributes from response
@@ -187,7 +187,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public static Object[][] readData3(ITestContext context) throws Exception {
 	
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "smoke");
 		case "regression":
@@ -273,7 +273,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public static Object[][] readData(ITestContext context) throws Exception {
 		
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smoke");
 		case "regression":
@@ -298,7 +298,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		LicenseKeyController lc=new LicenseKeyController();
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		 outerKeys.add("timestamp");
+		 outerKeys.add("responsetime");
 
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		if(testCaseName.equalsIgnoreCase("smoke_FetchLicenseKeyPermissions"))

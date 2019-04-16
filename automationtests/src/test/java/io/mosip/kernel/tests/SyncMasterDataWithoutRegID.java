@@ -90,7 +90,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 	
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
