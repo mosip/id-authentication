@@ -73,10 +73,10 @@ public class PacketReceiverConfig {
 	 *
 	 * @return the virus scanner
 	 */
-	@Bean
+	/*@Bean
 	public VirusScanner<Boolean, InputStream> virusScannerService() {
 		return new VirusScannerImpl();
-	}
+	}*/
 
 	/**
 	 * Decryptor.

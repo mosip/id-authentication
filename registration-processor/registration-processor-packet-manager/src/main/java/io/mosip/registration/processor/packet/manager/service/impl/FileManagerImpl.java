@@ -16,6 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -295,5 +296,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				"FileManagerImpl::getFile()::exit");
 		return file;
 	}
+	
+	public byte[] getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto) throws IOException{
+	
+		
+		
+		return null;
+		
+	}
+
 
 }
