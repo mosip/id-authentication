@@ -17,8 +17,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -60,6 +63,7 @@ import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -191,18 +195,26 @@ public class LoginController extends BaseController implements Initializable {
 
 	private boolean isInitialSetUp;
 
+	@Autowired
+	RegistrationUpdate registrationUpdate;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
-			// TODO to replace false with registrationUpdate.hasUpdate() method.
-			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				boolean hasUpdate = registrationUpdate.hasUpdate();
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+			}
 
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					responseDTO.getSuccessResponseDTO().getMessage());
+		} catch (IOException | ParserConfigurationException | SAXException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		}
 
-			// TODO Get Value from Local DB -> Global Param Is Initial SetUp
-			isInitialSetUp = true;
+		try {
+			isInitialSetUp = RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.isInitialSetUp));
+
 			if (!isInitialSetUp) {
 				jobConfigurationService.startScheduler();
 			}
@@ -800,10 +812,11 @@ public class LoginController extends BaseController implements Initializable {
 
 					if (isInitialSetUp) {
 						globalParamService.update(RegistrationConstants.isInitialSetUp, RegistrationConstants.DISABLE);
-						//TODO Update DB of is InitialSetUp in Global Param as false
+
+						// Start Scheduler if it was first Login
 						jobConfigurationService.startScheduler();
 					}
-					
+
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 					// to add events to the stage
 					getStage();
