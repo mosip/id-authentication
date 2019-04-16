@@ -57,7 +57,6 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -104,10 +103,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Value("${registration.processor.max.file.size}")
 	private String fileSize;
 
-	/** The registration status map util. */
-	@Autowired
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
-
 	/** The registration exception mapper util. */
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
@@ -124,9 +119,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The storage flag. */
 	private Boolean storageFlag = false;
-
-	/** The is encrypted file cleaned. */
-	private boolean isEncryptedFileCleaned;
 
 	/** The description. */
 	private String description = "";
@@ -179,6 +171,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				scanFile(decryptedData);
 
 				storePacket(new ByteArrayInputStream(encryptedByteArray), stageName);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PacketReceiverServiceImpl::validatePacket()::exit");
 
 			} catch (IOException e) {
 
@@ -285,7 +280,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setReferenceRegistrationId(null);
 		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 		dto.setLangCode("eng");
-		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
+		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 		dto.setReProcessRetryCount(0);
 		dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dto.setIsActive(true);
