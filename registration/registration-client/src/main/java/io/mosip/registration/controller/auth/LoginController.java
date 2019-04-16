@@ -185,9 +185,11 @@ public class LoginController extends BaseController implements Initializable {
 	private Service<String> taskService;
 
 	private List<String> loginList = new ArrayList<>();
-	
+
 	@Autowired
-	JobConfigurationService jobConfigurationService;
+	private JobConfigurationService jobConfigurationService;
+
+	private boolean isInitialSetUp;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -199,12 +201,12 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					responseDTO.getSuccessResponseDTO().getMessage());
 
-			//TODO Get Value from Local DB -> Global Param Is Initial SetUp
-			boolean isInitialSetUp = true;
-			if(!isInitialSetUp) {
+			// TODO Get Value from Local DB -> Global Param Is Initial SetUp
+			isInitialSetUp = true;
+			if (!isInitialSetUp) {
 				jobConfigurationService.startScheduler();
 			}
-			
+
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
 			int minutes = otpExpirySeconds / 60;
@@ -254,9 +256,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setX(bounds.getMinX());
 			primaryStage.setY(bounds.getMinY());
 			primaryStage.setWidth(bounds.getWidth());
-			primaryStage.setHeight(bounds.getHeight());	
+			primaryStage.setHeight(bounds.getHeight());
 			primaryStage.setResizable(false);
-					primaryStage.setScene(scene);
+			primaryStage.setScene(scene);
 			primaryStage.show();
 
 			executePreLaunchTask(loginRoot);
@@ -345,7 +347,6 @@ public class LoginController extends BaseController implements Initializable {
 							loginList = status ? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
 									: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-						
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
 							String irisDisableFlag = getValueFromApplicationContext(
@@ -796,6 +797,13 @@ public class LoginController extends BaseController implements Initializable {
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading Home screen");
 					schedulerUtil.startSchedulerUtil();
 					loginList.clear();
+
+					if (isInitialSetUp) {
+						globalParamService.update(RegistrationConstants.isInitialSetUp, RegistrationConstants.DISABLE);
+						//TODO Update DB of is InitialSetUp in Global Param as false
+						jobConfigurationService.startScheduler();
+					}
+					
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 					// to add events to the stage
 					getStage();
