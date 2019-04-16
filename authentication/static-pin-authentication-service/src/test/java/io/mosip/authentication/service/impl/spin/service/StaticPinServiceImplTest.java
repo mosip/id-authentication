@@ -111,20 +111,9 @@ public class StaticPinServiceImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = null;
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = null;
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin("123456", uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),
+				now());
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
@@ -148,20 +137,9 @@ public class StaticPinServiceImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = null;
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = null;
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin("123456", uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),
+				now());
 		Optional<StaticPin> entity1 = Optional.empty();
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
@@ -177,7 +155,6 @@ public class StaticPinServiceImplTest {
 
 	@Test
 	public void testStorePin_Failure() throws IdAuthenticationBusinessException {
-
 		String uin = "794138547620";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
@@ -188,20 +165,9 @@ public class StaticPinServiceImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = null;
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = null;
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(null);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin("123456", uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),
+				now());
 		Optional<StaticPin> entity1 = Optional.empty();
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
