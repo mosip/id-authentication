@@ -60,8 +60,8 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	private static final String apiName = "FetchGenderType";
 	private static final String requestJsonName = "fetchGenderTypeRequest";
 	private static final String outputJsonName = "fetchGenderTypeOutput";
-	private static final String service_URI = "/masterdata/v1.0/gendertypes";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/gendertypes/{langcode}";
+	private static final String service_URI = "/v1/masterdata/gendertypes";
+	private static final String service_id_lang_URI = "/v1/masterdata/gendertypes/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

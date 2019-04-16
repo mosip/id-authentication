@@ -53,7 +53,7 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getIndividualType = "/masterdata/v1.0/individualtypes";
+	private static final String getIndividualType = "/v1/masterdata/individualtypes";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetIndividualType";
@@ -110,12 +110,12 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(getIndividualType);
+		Response res=applicationLibrary.getRequestNoParameter(getIndividualType);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */

@@ -36,6 +36,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements ITest{
 
 	public GetAllTemplateByTemplateTypeCode() {
@@ -52,7 +56,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String fetchAllTemplate = "/masterdata/v1.0/templates/templatetypecodes/{code}";
+	private static final String fetchAllTemplate = "/v1/masterdata/templates/templatetypecodes/{code}";
 	static String dest = "";
 	static String folderPath = "kernel/GetAllTemplateByTemplateTypeCode";
 	static String outputFile = "GetAllTemplateByTemplateTypeCodeOutput.json";
@@ -116,7 +120,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */

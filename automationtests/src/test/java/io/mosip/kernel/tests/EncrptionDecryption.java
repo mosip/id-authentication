@@ -54,8 +54,8 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	private static final String apiName = "EncrptionDecryption";
 	private static final String requestJsonName = "encryptdecryptRequest";
 	private static final String outputJsonName = "encryptdecryptOutput";
-	private static final String encrypt_URI = "/cryptomanager/v1.0/encrypt";
-	private static final String decrypt_URI = "/cryptomanager/v1.0/decrypt";
+	private static final String encrypt_URI = "/v1/cryptomanager/encrypt";
+	private static final String decrypt_URI = "/v1/cryptomanager/decrypt";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

@@ -50,7 +50,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String uingenerator = "/uingenerator/v1.0/uin";
+	private static final String uingenerator = "/v1/uingenerator/uin";
 	static String dest = "";
 	static String folderPath = "kernel/UINGeneration";
 	static String outputFile = "UINGenerationOutput.json";
@@ -108,7 +108,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		/*
 		 * Calling the GET method with no parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
 		
 		 String uin = res.jsonPath().get("uin").toString();
 		 

@@ -5,7 +5,7 @@
 	<groupId>customlib</groupId>
 	<artifactId>automationtests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	 <packaging>jar</packaging> 
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
@@ -137,11 +137,8 @@
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
 
-	<!-- 	<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>testing</artifactId>
-			<version>demoApp</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>testing</artifactId> 
+			<version>demoApp</version> </dependency> -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -186,8 +183,8 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-
+		<pluginManagement>
+			<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -197,21 +194,19 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<inherited>true</inherited>
-				<configuration>
-					<suiteXmlFiles>
-					<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
-
-			</suiteXmlFiles>
-				</configuration>
-
-			</plugin>
-		</plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.19.1</version>
+					<inherited>true</inherited>
+					<configuration>
+						<suiteXmlFiles>
+							<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
+						</suiteXmlFiles>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 

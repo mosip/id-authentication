@@ -57,7 +57,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchRegCenter = "/masterdata/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}";
+	private static final String fetchRegCenter = "/v1/masterdata/registrationcenters/validate/{id}/{langCode}/{timestamp}";
 	static String dest = "";
 	static String folderPath = "kernel/GetRegCenterByID_timestamp";
 	static String outputFile = "GetRegCenterByreg_timeOutput.json";
@@ -129,6 +129,8 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
+		
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {

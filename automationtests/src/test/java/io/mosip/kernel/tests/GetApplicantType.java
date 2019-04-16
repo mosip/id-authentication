@@ -55,7 +55,7 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getApplicantType = "/applicanttype/v1.0/applicanttype/getApplicantType";
+	private static final String getApplicantType = "/v1/applicanttype/applicanttype/getApplicantType";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetApplicantType";
@@ -82,7 +82,7 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

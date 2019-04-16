@@ -53,7 +53,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateGenderByName = "/masterdata//v1.0/gendertypes/validate/{gendername}";
+	private static final String validateGenderByName = "/v1/masterdata/gendertypes/validate/{gendername}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/ValidateGenderByName";

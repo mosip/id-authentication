@@ -51,7 +51,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	private static final String apiName = "SmsNotification";
 	private static final String requestJsonName = "SmsNotificationRequest";
 	private static final String outputJsonName = "SmsNotificationOutput";
-	private static final String service_URI = "/smsnotifier/v1.0/sms/send";
+	private static final String service_URI = "/v1/smsnotifier/sms/send";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

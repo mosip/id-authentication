@@ -57,8 +57,8 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchDocumentCategories";
 	private static final String requestJsonName = "fetchDocumentCategoriesRequest";
 	private static final String outputJsonName = "fetchDocumentCategoriesOutput";
-	private static final String service_URI = "/masterdata/v1.0/documentcategories/{langcode}";
-	private static final String service_URI_withcodeAndLangCode = "/masterdata/v1.0/documentcategories/{code}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/documentcategories/{langcode}";
+	private static final String service_URI_withcodeAndLangCode = "/v1/masterdata/documentcategories/{code}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

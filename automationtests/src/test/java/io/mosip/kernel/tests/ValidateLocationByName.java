@@ -56,7 +56,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateLocationByName = "/masterdata/v1.0/locations/validate/{locationname}";
+	private static final String validateLocationByName = "/v1/masterdata/locations/validate/{locationname}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/ValidateLocationByName";

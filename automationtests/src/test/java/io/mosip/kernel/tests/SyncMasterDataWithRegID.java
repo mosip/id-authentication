@@ -32,6 +32,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 
 	public SyncMasterDataWithRegID() {
@@ -49,7 +53,7 @@ public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchmasterdata = "/syncdata/v1.0/masterdata/{regcenterId}";
+	private static final String fetchmasterdata = "/v1/syncdata/masterdata/{regcenterId}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/SyncMasterDataWithRegID";

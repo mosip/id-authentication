@@ -54,9 +54,9 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	private static final String apiName = "FetchHolidays";
 	private static final String requestJsonName = "FetchHolidaysRequest";
 	private static final String outputJsonName = "FetchHolidaysOutput";
-	private static final String service_URI = "/masterdata/v1.0/holidays";
-	private static final String service_id_URI = "/masterdata/v1.0/holidays/{holidayid}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/holidays/{holidayid}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/holidays";
+	private static final String service_id_URI = "/v1/masterdata/holidays/{holidayid}";
+	private static final String service_id_lang_URI = "/v1/masterdata/holidays/{holidayid}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

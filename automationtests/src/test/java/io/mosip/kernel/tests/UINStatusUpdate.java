@@ -36,6 +36,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class UINStatusUpdate extends BaseTestCase implements ITest {
 
 	public UINStatusUpdate() {
@@ -52,7 +56,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String updateUIN = "/uingenerator/v1.0/uin";
+	private static final String updateUIN = "/v1/uingenerator/uin";
 	static String dest = "";
 	static String folderPath = "kernel/UINStatusUpdate";
 	static String outputFile = "UINStatusUpdateOutput.json";
@@ -138,7 +142,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		switch(testCaseName)
 		{
 		case "smoke_IssuedToUnused": 
-			res=applicationLibrary.GetRequestNoParameter(updateUIN);
+			res=applicationLibrary.getRequestNoParameter(updateUIN);
 			uin=res.getBody().jsonPath().get("uin");
 			actualRequest.put("uin", uin);
 			Expectedresponse.put("uin", uin);
@@ -153,7 +157,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			break;
 			
 		case "IssuedToAssigned" :
-			res1=applicationLibrary.GetRequestNoParameter(updateUIN);
+			res1=applicationLibrary.getRequestNoParameter(updateUIN);
 			uin1=res1.getBody().jsonPath().get("uin");
 			actualRequest.put("uin", uin1);
 			Expectedresponse.put("uin", uin1);
@@ -167,7 +171,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		/*
 		 * Comparing expected and actual response
 		 */
-		Response response=applicationLibrary.putRequest_WithBody(updateUIN, actualRequest);
+		Response response=applicationLibrary.putRequestWithBody(updateUIN, actualRequest);
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		

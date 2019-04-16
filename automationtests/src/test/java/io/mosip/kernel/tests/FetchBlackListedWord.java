@@ -52,7 +52,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchBlackListedWord";
 	private static final String requestJsonName = "fetchBlackListedWordRequest";
 	private static final String outputJsonName = "fetchBlackListedWordOutput";
-	private static final String service_URI = "/masterdata/v1.0/blacklistedwords/{langcode}";
+	private static final String service_URI = "/v1/masterdata/blacklistedwords/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

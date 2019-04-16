@@ -53,7 +53,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	private static final String apiName = "EmailNotification";
 	private static final String requestJsonName = "EmailNotificationRequest";
 	private static final String outputJsonName = "EmailNotificationOutput";
-	private static final String service_URI = "/emailnotifier/v1.0/email/send";
+	private static final String service_URI = "/v1/emailnotifier/email/send";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

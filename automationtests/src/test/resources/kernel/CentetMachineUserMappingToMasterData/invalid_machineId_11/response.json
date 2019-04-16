@@ -1,6 +1,9 @@
 {
-  "timestamp": 1549280499101,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T12:13:29.924Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-999",

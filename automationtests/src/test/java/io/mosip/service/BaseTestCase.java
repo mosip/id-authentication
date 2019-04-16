@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeSuite;
 
 import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
@@ -33,7 +34,7 @@ import io.restassured.RestAssured;
  *
  */
 
-public class BaseTestCase {
+public class BaseTestCase extends KernelMasterDataR {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();

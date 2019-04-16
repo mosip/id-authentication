@@ -1,0 +1,187 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-09T09:31:54.713Z",
+  "metadata": null,
+  "response": {
+    "syncJobDefinitions": [
+      {
+        "id": "LCS_J00002",
+        "name": "Login Credentials Sync",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "MDS_J00001",
+        "name": "Master Data Sync",
+        "apiName": "masterSyncJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "PDS_J00003",
+        "name": "Pre-registration Data Sync",
+        "apiName": "preRegistrationDataSyncJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "POS_J00008",
+        "name": "Policy Sync",
+        "apiName": "keyPolicySyncJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RCS_J00005",
+        "name": "Registration Client Config Sync",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RPS_J00006",
+        "name": "Registration Packet Status Reader",
+        "apiName": "packetSyncStatusJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RSS_J00004",
+        "name": "Registration Client Setup Sync",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "URS_J00007",
+        "name": "User Detail/Role Setup Sync",
+        "apiName": "userDetailServiceJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "User",
+        "name": "Pre Reg Manual Sync",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "DEL_J00013",
+        "name": "Pre Registration Packet Deletion Job",
+        "apiName": "preRegistrationPacketDeletionJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RDJ_J00010",
+        "name": "Registration Packet Deletion Job",
+        "apiName": "registrationDeletionJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "UDM_J00012",
+        "name": "User Machine Mapping Job",
+        "apiName": "regUserMappingSyncJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RSJ_J00014",
+        "name": "Registration Packet Sync",
+        "apiName": "registrationPacketSyncJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "PVS_J00015",
+        "name": "Registration Packet Virus Scan",
+        "apiName": "registrationPacketVirusScanJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "ADJ_J00012",
+        "name": "Audit Log Deletion Job",
+        "apiName": "deleteAuditLogsJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": true,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "LER_J00009",
+        "name": "Last Export Registration",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      }
+    ]
+  },
+  "errors": null
+}

@@ -55,7 +55,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getDocType_DocCatByAppID = "/masterdata/v1.0/applicanttype/{applicantId}/languages";
+	private static final String getDocType_DocCatByAppID = "/v1/masterdata/applicanttype/{applicantId}/languages";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetDocType_DocCatByAppID";
@@ -82,7 +82,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -129,6 +129,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */

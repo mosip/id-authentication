@@ -55,8 +55,8 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	private static final String apiName = "FetchDevice";
 	private static final String requestJsonName = "fetchDeviceRequest";
 	private static final String outputJsonName = "fetchDeviceOutput";
-	private static final String service_lang_URI = "/masterdata/v1.0/devices/{languagecode}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/devices/{languagecode}/{deviceType}";
+	private static final String service_lang_URI = "/v1/masterdata/devices/{languagecode}";
+	private static final String service_id_lang_URI = "/v1/masterdata/devices/{languagecode}/{deviceType}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

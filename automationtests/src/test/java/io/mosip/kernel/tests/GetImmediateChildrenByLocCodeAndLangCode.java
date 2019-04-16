@@ -58,7 +58,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchImmediateChildLocation = "/masterdata/v1.0/locations/immediatechildren/{locationcode}/{langcode}";
+	private static final String fetchImmediateChildLocation = "/v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}";
 	static String dest = "";
 	static String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
 	static String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
@@ -84,7 +84,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

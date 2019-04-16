@@ -58,7 +58,7 @@ import io.restassured.response.Response;
 	       private static final String apiName = "SyncPublicKeyToRegClient";
 	       private static final String requestJsonName = "syncPublicKeyRequest";
 	       private static final String outputJsonName = "syncPublicKeyOutput";
-	       private static final String service_URI = "/keymanager/v1.0/publickey/";
+	       private static final String service_URI = "/v1/keymanager/publickey/";
 	
 	       protected static String testCaseName = "";
 	       static SoftAssert softAssert = new SoftAssert();

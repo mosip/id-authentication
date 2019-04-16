@@ -52,7 +52,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchBiometricAuthType";
 	private static final String requestJsonName = "fetchBiometricAuthTypeRequest";
 	private static final String outputJsonName = "fetchBiometricAuthTypeOutput";
-	private static final String service_URI = "/masterdata/v1.0/biometrictypes/{langcode}";
+	private static final String service_URI = "/v1/masterdata/biometrictypes/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

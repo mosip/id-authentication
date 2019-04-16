@@ -23,40 +23,36 @@ import io.mosip.service.BaseTestCase;
  * @author Arunakumar.Rati
  *
  */
-public class KernelMasterDataR  extends BaseTestCase {
+public class KernelMasterDataR {
 	public static SessionFactory factory;
 	static Session session;
-	Session session1;
+	public static Session session1;
 	public static List<Object> objs = null;
 	private static Logger logger = Logger.getLogger(KernelMasterDataR.class);
 	
-	//public static String env=System.getProperty("env.user");
-	public  String env=System.getProperty("env.user");
+	public static String env=System.getProperty("env.user");
 	
 	
 	@BeforeClass
-	public Session DB()
+	public static Session dbCheck()
 	{
-		
 		switch(env) 
 		{
 		case "dev": 
-			factory = new Configuration().configure("kerneldev.cfg.xml")
+			factory = new Configuration().configure("masterdatadev.cfg.xml")
 					.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		break;
 		
 		case "qa":
-				factory = new Configuration().configure("kernelqa.cfg.xml")
+				factory = new Configuration().configure("masterdataqa.cfg.xml")
 			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		
 		break;
 		}
 		session1 = factory.getCurrentSession();
 		session1.beginTransaction();
-		System.out.println("----------------session has began----------------");
+		logger.info("----------------session has began----------------");
 		return session1;
-	
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -70,11 +66,24 @@ public class KernelMasterDataR  extends BaseTestCase {
 		size=objs.size();
 		logger.info("Size is : " +size);
 			// commit the transaction
-					session.getTransaction().commit();
+		//session1.getTransaction().commit();
 						
-						
-
+		return objs;
+			
+	}
 	
+	public List<String[]> getArrayData(String queryString)
+	{
+	  int size;
+		Query query = session1.createSQLQuery(queryString); 
+		
+	
+		List<String[]> objs = (List<String[]>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+			// commit the transaction
+		//session1.getTransaction().commit();
+						
 		return objs;
 			
 	}
@@ -112,28 +121,28 @@ public class KernelMasterDataR  extends BaseTestCase {
 	
 	
 
-/*	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	public static List<String> getDataFromDB(Class dtoClass,String query)
 	{
 		List<String> flag=null;
 
 		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-			factory = new Configuration().configure("kerneldev.cfg.xml")
+			factory = new Configuration().configure("masterdatadev.cfg.xml")
 		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-						factory = new Configuration().configure("kernelqa.cfg.xml")
+						factory = new Configuration().configure("masterdataqa.cfg.xml")
 					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
-		flag=getData(session, query);
+		flag=getDbData(session, query);
 		//logger.info("flag is : " +flag);
 		return flag;
 		
 		
-	}*/
+	}
 	
 	
 
@@ -195,7 +204,7 @@ public class KernelMasterDataR  extends BaseTestCase {
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterdatainteg.cfg.xml")
+							factory = new Configuration().configure("masterdataqa.cfg.xml")
 						.addAnnotatedClass(dtoClass).buildSessionFactory();	
 
 					}
@@ -247,12 +256,64 @@ public class KernelMasterDataR  extends BaseTestCase {
 			return flag;
 			
 	}
+		public Session dbCheck1(String qaConfig,String devConig, Class entity)
+		{
+			switch(env) 
+			{
+			case "dev": 
+				factory = new Configuration().configure(devConig)
+						.addAnnotatedClass(entity).buildSessionFactory();
+			break;
+			
+			case "qa":
+					factory = new Configuration().configure(qaConfig)
+				.addAnnotatedClass(entity).buildSessionFactory();
+			
+			break;
+			}
+			session1 = factory.getCurrentSession();
+			session1.beginTransaction();
+			logger.info("----------------session has began----------------");
+			return session1;
+		}
+		
+		public List<String> getData(Session session1,String queryString)
+		{
+		  int size;
+			Query query = session1.createSQLQuery(queryString); 
+			
+		
+			List<String> objs = (List<String>) query.list();
+			size=objs.size();
+			logger.info("Size is : " +size);
+				// commit the transaction
+			//session1.getTransaction().commit();
+							
+			return objs;
+				
+		}
+		public static List<String> getDbData(Session session1,String queryString)
+		{
+		  int size;
+			Query query = session1.createSQLQuery(queryString); 
+			
+		
+			List<String> objs = (List<String>) query.list();
+			size=objs.size();
+			logger.info("Size is : " +size);
+				// commit the transaction
+			//session1.getTransaction().commit();
+							
+			return objs;
+				
+		}
 
-/*@AfterClass
+@AfterClass
 public void closingSession()
 {
+	session1.getTransaction().commit();
 	factory.close();
-	session.close();
-}*/
+	session1.close();
+}
 
 }

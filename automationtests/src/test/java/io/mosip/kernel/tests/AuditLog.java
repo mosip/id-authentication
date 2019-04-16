@@ -56,7 +56,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	private static final String apiName = "AuditLog";
 	private static final String requestJsonName = "AuditLogRequest";
 	private static final String outputJsonName = "AuditLogOutput";
-	private static final String auditLog_URI = "/auditmanager/v1.0/audits";
+	private static final String auditLog_URI = "/v1/auditmanager/audits";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

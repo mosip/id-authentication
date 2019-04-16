@@ -53,7 +53,7 @@ public class SyncMasterdataController extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchmasterdata = "/syncdata/v1.0/masterdata/{machineId}";
+	private static final String fetchmasterdata = "/v1/syncdata/masterdata/{machineId}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/SNCMasterdataController";

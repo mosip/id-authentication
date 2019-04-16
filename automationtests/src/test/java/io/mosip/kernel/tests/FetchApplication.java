@@ -55,9 +55,9 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	private static final String apiName = "FetchApplication";
 	private static final String requestJsonName = "FetchApplicationRequest";
 	private static final String outputJsonName = "FetchApplicationOutput";
-	private static final String service_URI = "/masterdata/v1.0/applicationtypes";
-	private static final String service_lang_URI = "/masterdata/v1.0/applicationtypes/{langcode}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/applicationtypes/{code}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/applicationtypes";
+	private static final String service_lang_URI = "/v1/masterdata/applicationtypes/{langcode}";
+	private static final String service_id_lang_URI = "/v1/masterdata/applicationtypes/{code}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();

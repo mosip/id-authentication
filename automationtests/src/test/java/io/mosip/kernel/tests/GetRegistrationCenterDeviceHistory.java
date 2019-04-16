@@ -56,7 +56,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchRegistrationCenterDeviceHistory = "/masterdata/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}";
+	private static final String fetchRegistrationCenterDeviceHistory = "/v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}";
 	static String dest = "";
 	static String folderPath = "kernel/GetRegistrationCenterDeviceHistory";
 	static String outputFile = "GetRegistrationCenterDeviceHistoryOutput.json";
@@ -82,7 +82,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -120,7 +120,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {          

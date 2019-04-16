@@ -55,7 +55,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String fetchDeviceHistory = "/masterdata/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}";
+	private static final String fetchDeviceHistory = "/v1/masterdata/deviceshistories/{id}/{langcode}/{effdatetimes}";
 	static String dest = "";
 	static String folderPath = "kernel/GetDeviceHistory";
 	static String outputFile = "GetDeviceHistoryOutput.json";
@@ -119,6 +119,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 		/*
 		 * Comparing expected and actual response
@@ -128,7 +129,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
     	  if(testCaseName.equals("smoke_1"))
     	  {
     		        String id = actualRequest.get("id").toString();
-	                String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
+	                String queryStr = "SELECT h.* FROM master.device_master_h h WHERE h.id='"+id+"'";
 					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
 			if(valid)
 					{

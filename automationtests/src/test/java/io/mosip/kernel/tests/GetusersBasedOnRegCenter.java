@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -28,11 +29,16 @@ import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
+import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 
 	public GetusersBasedOnRegCenter() {
@@ -49,7 +55,7 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getusersBasedOnRegCenter = "/syncdata/v1.0/userdetails/{regid}";
+	private static final String getusersBasedOnRegCenter = "/v1/syncdata/userdetails/{regid}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetusersBasedOnRegCenter";
@@ -76,7 +82,7 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -111,12 +117,17 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
-		listOfElementToRemove.add("lastSyncTime");
+		listOfElementToRemove.add("responsetime");
+		listOfElementToRemove.add("$.response.lastSyncTime");
+		
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		outerKeys.add("responsetime");
+		innerKeys.add("lastSyncTime");
 		/*
 		 * Comparing expected and actual response
 		 */
-		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
 	            
 				finalStatus = "Pass";

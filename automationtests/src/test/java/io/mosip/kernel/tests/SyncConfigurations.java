@@ -31,6 +31,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class SyncConfigurations extends BaseTestCase implements ITest {
 
 	public SyncConfigurations() {
@@ -47,7 +51,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String syncConf = "/syncdata/v1.0/configs";
+	private static final String syncConf = "/v1/syncdata/configs";
 	static String dest = "";
 	static String folderPath = "kernel/SyncConfigurations";
 	static String outputFile = "SyncConfigurationsrOutput.json";
@@ -104,7 +108,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		/*
 		 * Calling GET mathod with no parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(syncConf);
+		Response res=applicationLibrary.getRequestNoParameter(syncConf);
 		
 		 
 		

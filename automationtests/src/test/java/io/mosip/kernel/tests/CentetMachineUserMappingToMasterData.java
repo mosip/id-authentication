@@ -57,7 +57,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String CentetMachineUserMappingToMasterData_uri = "/masterdata/v1.0/registrationmachineusermappings";
+	private static final String CentetMachineUserMappingToMasterData_uri = "/v1/masterdata/registrationmachineusermappings";
 	static String dest = "";
 	static String folderPath = "kernel/CentetMachineUserMappingToMasterData";
 	static String outputFile = "CentetMachineUserMappingToMasterDataOutput.json";
@@ -83,7 +83,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders("kernel/CentetMachineUserMappingToMasterData", "CentetMachineUserMappingToMasterDataOutput.json","CentetMachineUserMappingToMasterDataInput.json","smoke");
 			
@@ -99,7 +99,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	 * @throws IOException
 	 * @throws ParseException
 	 * centetMachineUserMappingToMasterData
-	 * Given input Json as per defined folders When PUT request is sent to /masterdata/v1.0/registrationmachineusermappings
+	 * Given input Json as per defined folders When PUT request is sent to v1/masterdata/registrationmachineusermappings
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	@Test(dataProvider = "CentetMachineUserMappingToMasterData",alwaysRun=true)
@@ -125,6 +125,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 		 */
 	
 		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
+	
       if (status) {
     	  if(testParam.equals("smoke"))
     	  {

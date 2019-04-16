@@ -52,7 +52,7 @@ public class FetchDocumentTypes extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchDocumentTypes";
 	private static final String requestJsonName = "fetchDocumentTypesRequest";
 	private static final String outputJsonName = "fetchDocumentTypesOutput";
-	private static final String service_URI = "/masterdata/v1.0/documenttypes/{documentcategorycode}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/documenttypes/{documentcategorycode}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
