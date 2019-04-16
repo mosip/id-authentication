@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,17 +70,15 @@ public class Validations extends BaseController {
 	public Validations() {
 		try {
 			noAlert = new ArrayList<>();
-			noAlert.add(RegistrationConstants.AGE_FIELD);
 			noAlert.add(RegistrationConstants.DD);
 			noAlert.add(RegistrationConstants.MM);
 			noAlert.add(RegistrationConstants.YYYY);
-			noAlert.add(RegistrationConstants.DD+RegistrationConstants.LOCAL_LANGUAGE);
-			noAlert.add(RegistrationConstants.MM+RegistrationConstants.LOCAL_LANGUAGE);
-			noAlert.add(RegistrationConstants.YYYY+RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.DD + RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.MM + RegistrationConstants.LOCAL_LANGUAGE);
+			noAlert.add(RegistrationConstants.YYYY + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.MOBILE_NUMBER);
 			noAlert.add(RegistrationConstants.POSTAL_CODE);
 			noAlert.add(RegistrationConstants.CNI_OR_PIN);
-			noAlert.add(RegistrationConstants.UIN_ID);
 			validationMessage = new StringBuilder();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -118,11 +117,9 @@ public class Validations extends BaseController {
 				if (!validateTheFields((Pane) node, notTovalidate, isValid)) {
 					isValid = false;
 				}
-			} else if (nodeToValidate(notTovalidate, node)) {
-					if (!validateTheNode(pane, node, node.getId())) {
-						isValid = false;
-					}
-				}
+			} else if (nodeToValidate(notTovalidate, node) && !validateTheNode(pane, node, node.getId(), isValid)) {
+					isValid = false;
+			}
 		}
 		return isValid;
 	}
@@ -152,8 +149,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for application
-	 * specific and secondary specific languages.
+	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for
+	 * application specific and secondary specific languages.
 	 *
 	 * @param pane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -168,16 +165,16 @@ public class Validations extends BaseController {
 	 */
 	public boolean validate(Pane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
 		this.applicationLanguageblackListedWords = masterSync
-				.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream().map(BlacklistedWordsDto :: getWord)
-				.collect(Collectors.toList());
+				.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
+				.map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
 		this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
-				.stream().map(BlacklistedWordsDto :: getWord).collect(Collectors.toList());
+				.stream().map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
 		return validateTheFields(pane, notTovalidate, isValid);
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method will be
-	 * called for each field.
+	 * Pass the node to check for the validation, specific validation method
+	 * will be called for each field.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -189,13 +186,13 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	public boolean validateTheNode(Pane parentPane, Node node, String id) {
+	public boolean validateTheNode(Pane parentPane, Node node, String id, boolean isPreviousValid) {
 		if (node instanceof ComboBox<?>) {
-			return validateComboBox(parentPane, (ComboBox<?>) node, id);
+			return validateComboBox(parentPane, (ComboBox<?>) node, id, isPreviousValid);
 		}
-			return validateTextField(parentPane, (TextField) node, id);
+		return validateTextField(parentPane, (TextField) node, id, isPreviousValid);
 	}
-	
+
 	/**
 	 * Validate for the TextField.
 	 *
@@ -209,15 +206,16 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	public boolean validateTextField(Pane parentPane, TextField node, String id) {
+	public boolean validateTextField(Pane parentPane, TextField node, String id, boolean isPreviousValid) {
 		if (node.getId().contains(RegistrationConstants.LOCAL_LANGUAGE)) {
-			return languageSpecificValidation(parentPane, node, id, localLabelBundle,
-					localMessageBundle, localLanguageblackListedWords);
+			return languageSpecificValidation(parentPane, node, id, localLabelBundle, localMessageBundle,
+					localLanguageblackListedWords, isPreviousValid);
 		} else {
-			return languageSpecificValidation(parentPane, node, id, applicationLabelBundle,
-					applicationMessageBundle, applicationLanguageblackListedWords);
+			return languageSpecificValidation(parentPane, node, id, applicationLabelBundle, applicationMessageBundle,
+					applicationLanguageblackListedWords, isPreviousValid);
 		}
 	}
+
 	/**
 	 * Language specific validation of text field
 	 *
@@ -231,8 +229,8 @@ public class Validations extends BaseController {
 	 *            the flag to indicate for displaying consolidated message
 	 * @return true, if successful
 	 */
-	private boolean languageSpecificValidation(Pane parentPane, TextField node, String id,
-			ResourceBundle labelBundle, ResourceBundle messageBundle, List<String> blackListedWords) {
+	private boolean languageSpecificValidation(Pane parentPane, TextField node, String id, ResourceBundle labelBundle,
+			ResourceBundle messageBundle, List<String> blackListedWords, boolean isPreviousValid) {
 		boolean isInputValid = false;
 
 		try {
@@ -242,23 +240,39 @@ public class Validations extends BaseController {
 			String regex = validationProperty[0];
 			boolean isMandatory = RegistrationConstants.TRUE.equalsIgnoreCase(validationProperty[1]);
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
-
 			String inputText = node.getText();
 
 			if (node.isDisabled() || (!isMandatory && inputText.isEmpty())) {
 				isInputValid = true;
-			} else if (!id.contains(RegistrationConstants.ON_TYPE) && isMandatory && inputText.isEmpty()) {
-				generateInvalidValueAlert(parentPane, id, labelBundle.getString(label).concat(RegistrationConstants.SPACE)
-						.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), showAlert);
+			} else if (isMandatory && inputText.isEmpty()) {
+				generateInvalidValueAlert(parentPane, id,
+						labelBundle.getString(label).concat(RegistrationConstants.SPACE)
+								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+						showAlert);
+				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
+					node.requestFocus();
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicTextField");
+					});
+					node.getStyleClass().add("demoGraphicTextFieldFocused");
+				}
 			} else if (inputText.matches(regex)) {
-				isInputValid = validateBlackListedWords(parentPane, node, id, blackListedWords,
-						showAlert,
+				isInputValid = validateBlackListedWords(parentPane, node, id, blackListedWords, showAlert,
 						String.format("%s %s %s", messageBundle.getString(RegistrationConstants.BLACKLISTED_1),
 								labelBundle.getString(label),
 								messageBundle.getString(RegistrationConstants.BLACKLISTED_2)));
 			} else {
 				generateInvalidValueAlert(parentPane, id,
-						messageBundle.getString(label + RegistrationConstants.UNDER_SCORE + RegistrationConstants.REG_DDC_004), showAlert);
+						messageBundle.getString(
+								label + RegistrationConstants.UNDER_SCORE + RegistrationConstants.REG_DDC_004),
+						showAlert);
+				if (isPreviousValid &&  !id.contains(RegistrationConstants.ON_TYPE)) {
+					node.requestFocus();
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicTextField");
+					});
+					node.getStyleClass().add("demoGraphicTextFieldFocused");
+				}
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -268,15 +282,14 @@ public class Validations extends BaseController {
 		return isInputValid;
 	}
 
-	private boolean validateBlackListedWords(Pane parentPane, TextField node, String id,
-			List<String> blackListedWords, boolean showAlert, String errorMessage) {
+	private boolean validateBlackListedWords(Pane parentPane, TextField node, String id, List<String> blackListedWords,
+			boolean showAlert, String errorMessage) {
 		boolean isInputValid = false;
 		if (blackListedWords != null && !id.contains(RegistrationConstants.ON_TYPE)) {
 			String bWords = String.join(", ", Stream.of(node.getText().split("\\s+")).collect(Collectors.toList())
 					.stream().filter(word -> blackListedWords.contains(word)).collect(Collectors.toList()));
 			if (bWords.length() > 0) {
-				generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage),
-						showAlert);
+				generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage), showAlert);
 			} else {
 				isInputValid = true;
 			}
@@ -286,8 +299,7 @@ public class Validations extends BaseController {
 		return isInputValid;
 	}
 
-	private void generateInvalidValueAlert(Pane parentPane, String id, String message,
-			boolean showAlert) {
+	private void generateInvalidValueAlert(Pane parentPane, String id, String message, boolean showAlert) {
 		if (!showAlert)
 			generateAlert(parentPane, id, message);
 	}
@@ -295,7 +307,7 @@ public class Validations extends BaseController {
 	/**
 	 * Validate for the ComboBox type of node
 	 */
-	private boolean validateComboBox(Pane parentPane, ComboBox<?> node, String id) {
+	private boolean validateComboBox(Pane parentPane, ComboBox<?> node, String id, boolean isPreviousValid) {
 		boolean isComboBoxValueValid = false;
 		try {
 			if (id.matches(RegistrationConstants.POR_DOCUMENTS) && !isChild)
@@ -305,12 +317,24 @@ public class Validations extends BaseController {
 			if (isLostUIN) {
 				return true;
 			}
-			
+
 			if (node.getValue() == null) {
-				generateAlert(parentPane, id,
-						applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
-								.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
+				generateAlert(parentPane, id, applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
+						.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
+				if (isPreviousValid) {
+					node.requestFocus();
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demographicCombobox");
+					});
+					node.getStyleClass().add("demographicComboboxFocused");
+				}
+				
 			} else {
+				node.getStyleClass().removeIf((s) -> {
+					return s.equals("demographicComboboxFocused");
+				});
+				node.getStyleClass().add("demographicCombobox");
+
 				isComboBoxValueValid = true;
 			}
 		} catch (RuntimeException runtimeException) {
@@ -326,11 +350,14 @@ public class Validations extends BaseController {
 	 * @param field
 	 *            the {@link TextField} to be validated
 	 * @param isChild
-	 *            the flag to determine whether the individual or applicant is child
+	 *            the flag to determine whether the individual or applicant is
+	 *            child
 	 * @param uinValidator
-	 *            the instance of {@link UinValidator} required to validate the UIN
+	 *            the instance of {@link UinValidator} required to validate the
+	 *            UIN
 	 * @param ridValidator
-	 *            the instance of {@link RidValidator} required to validate the RID
+	 *            the instance of {@link RidValidator} required to validate the
+	 *            RID
 	 * @return <code>true</code> if UIN or RID is valid, else <code>false</code>
 	 */
 	public boolean validateUinOrRid(TextField field, boolean isChild, UinValidator<String> uinValidator,
@@ -356,7 +383,7 @@ public class Validations extends BaseController {
 						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 					}
-				}else {
+				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
 				}
 			}
@@ -394,7 +421,8 @@ public class Validations extends BaseController {
 	/**
 	 * Set for child.
 	 *
-	 * @param isChild the new child
+	 * @param isChild
+	 *            the new child
 	 */
 	public void setChild(boolean isChild) {
 		this.isChild = isChild;

@@ -293,12 +293,12 @@ public class BaseController extends BaseService {
 	 * 				alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
+		if (id.contains(RegistrationConstants.ONTYPE)) {
+			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
+		}
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
 			parentPane = (Pane) parentPane.getParent().getParent();
-		}
-		if (id.contains(RegistrationConstants.ONTYPE)) {
-			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
 		}
 		Label label = ((Label) (parentPane
 				.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));

@@ -107,6 +107,11 @@ public class FXUtils {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				field.setText(oldValue);
+			}else {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
 			}
 		});
 	}
@@ -125,7 +130,7 @@ public class FXUtils {
 	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
 	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
-		return validation.validateTextField(parentPane, field, fieldId);
+		return validation.validateTextField(parentPane, field, fieldId,true);
 	}
 
 	/**
@@ -190,10 +195,15 @@ public class FXUtils {
 	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
 		
-		focusUnfocusListener(parentPane, field, localField);
-		
+		focusAction(parentPane, field);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			showLabel(parentPane, field);
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				hideErrorMessageLabel(parentPane, field);
 				if (localField != null) {
 					if (haveToTransliterate) {
 						try {
@@ -208,12 +218,11 @@ public class FXUtils {
 					}
 				}
 			} else {
-				field.setText(oldValue);
+				if(!field.getText().equals(RegistrationConstants.EMPTY))
+					field.setText(oldValue);
 			}
-			field.requestFocus();
 		});
 
-		onTypeFocusUnfocusListener(parentPane, localField);
 	}
 
 	/**
@@ -238,7 +247,11 @@ public class FXUtils {
 
 		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (oldValue) {
-				if (isInputTextValid(parentPane, field, field.getId(), validation)) {
+				if (isInputTextValid(parentPane, field, field.getId()+"_ontype", validation)) {
+					field.getStyleClass().removeIf((s)->{
+						return s.equals("demoGraphicTextFieldFocus");
+					});
+					field.getStyleClass().add("demoGraphicTextField");
 					hideLabel(parentPane, field);
 					hideErrorMessageLabel(parentPane, field);
 					if (localField != null) {
@@ -279,6 +292,10 @@ public class FXUtils {
 	public void onTypeFocusUnfocusListener(Pane parentPane, TextField field) {
 		if(field!=null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
 				if(newValue.isEmpty()) {
 					hideLabel(parentPane, field);
 				} else {
@@ -310,7 +327,6 @@ public class FXUtils {
 	private void focusAction(Pane parentPane, TextField field) {
 		if (field != null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-				hideErrorMessageLabel(parentPane, field);
 				if (newValue) {
 					showLabel(parentPane, field);
 				} else {
