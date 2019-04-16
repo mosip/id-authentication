@@ -1,7 +1,8 @@
-package io.mosip.registration.processor.virus.scanner.job.decryptor;
+package io.mosip.registration.processor.packet.receiver.decrypter;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +27,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.receiver.dto.CryptomanagerResponseDto;
+import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
-import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerResponseDto;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DecryptorTest.class })
@@ -46,11 +46,8 @@ public class DecryptorTest {
 	private String data;
 	private File encrypted;
 	private InputStream inputStream;
-
 	@Mock
 	private Environment env;
-	private static final String DECRYPT_SERVICE_ID = "mosip.registration.processor.crypto.decrypt.id";
-	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	@Before
 	public void setup() throws FileNotFoundException {
@@ -61,9 +58,11 @@ public class DecryptorTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		encrypted = new File(classLoader.getResource("84071493960000320190110145452.zip").getFile());
 		inputStream = new FileInputStream(encrypted);
-		Mockito.when(env.getProperty(DECRYPT_SERVICE_ID)).thenReturn("mosip.cryptomanager.decrypt");
-		Mockito.when(env.getProperty(DATETIME_PATTERN)).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
+		when(env.getProperty("mosip.registration.processor.crypto.decrypt.id"))
+				.thenReturn("mosip.cryptomanager.decrypt");
+		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
+		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 	@Test

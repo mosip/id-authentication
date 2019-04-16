@@ -20,10 +20,10 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pkr packet hash not equals synced hash. */
 	RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "009",
-			"The Registration Packet HashSequence is not equal as synced packet HashSequence"), 
-	PRP_PKR_PACKET_VISRUS_SCAN_FAILED(
-					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "010", "The Registration Packet virus scan failed"),
-	PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013", "Virus scanner service failed"),
+			"The Registration Packet HashSequence is not equal as synced packet HashSequence"), PRP_PKR_PACKET_VIRUS_SCAN_FAILED(
+					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "010",
+					"The Registration Packet virus scan failed"), PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED(
+							PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013", "Virus scanner service failed"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),
@@ -44,8 +44,9 @@ public enum PlatformErrorMessages {
 			"Not able to access the API resource"),
 
 	RPR_PKR_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "012", "Error while adding records"),
-	
-	RPR_PKR_INVALID_PACKET_SIZE_SYNCED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013", "Synced packet size not same as uploaded packet"),
+
+	RPR_PKR_INVALID_PACKET_SIZE_SYNCED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013",
+			"Synced packet size not same as uploaded packet"),
 
 	/** The rpr rgs registration table not accessible. */
 	// Registration Status Exception error code and message

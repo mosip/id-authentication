@@ -13,8 +13,8 @@ public enum RegistrationStatusCode {
 
 	DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
 
-	/** The packet uploaded to virus scan. */
-	PACKET_UPLOADED_TO_VIRUS_SCAN,
+	/** The packet uploaded to LANDING ZONE. */
+	PACKET_UPLOADED_TO_LANDING_ZONE,
 
 	/** The virus scan failed. */
 	VIRUS_SCAN_FAILED,

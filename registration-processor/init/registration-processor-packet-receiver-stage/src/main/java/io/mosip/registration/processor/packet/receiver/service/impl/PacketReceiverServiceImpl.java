@@ -57,7 +57,6 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -104,10 +103,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Value("${registration.processor.max.file.size}")
 	private String fileSize;
 
-	/** The registration status map util. */
-	@Autowired
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
-
 	/** The registration exception mapper util. */
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
@@ -124,9 +119,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The storage flag. */
 	private Boolean storageFlag = false;
-
-	/** The is encrypted file cleaned. */
-	private boolean isEncryptedFileCleaned;
 
 	/** The description. */
 	private String description = "";
@@ -179,6 +171,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				scanFile(decryptedData);
 
 				storePacket(new ByteArrayInputStream(encryptedByteArray), stageName);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PacketReceiverServiceImpl::validatePacket()::exit");
 
 			} catch (IOException e) {
 
@@ -283,9 +278,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setRegistrationId(registrationId);
 		dto.setRegistrationType(regEntity.getRegistrationType());
 		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 		dto.setLangCode("eng");
-		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
+		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 		dto.setReProcessRetryCount(0);
 		dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dto.setIsActive(true);
@@ -325,15 +320,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			boolean isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
 				description = "Packet virus scan failed exception in packet receiver for registrationId ::"
-						+ registrationId + PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage();
-				throw new VirusScanFailedException(
-						PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCAN_FAILED.getMessage());
+						+ registrationId + PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
+				throw new VirusScanFailedException(PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());
 			}
 		} catch (VirusScannerException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
+					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 			throw new VirusScannerServiceException(
-					PlatformErrorMessages.PRP_PKR_PACKET_VISRUS_SCANNER_SERVICE_FAILED.getMessage());
+					PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 		}
 
 	}
@@ -415,11 +409,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void validateHashCode(InputStream inputStream) throws IOException {
-		// TO-DO
+		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		byte[] hasheSquence = HMACUtils.generateHash(isbytearray);
-		byte[] packetHashSequenceFromEntity = isbytearray;// PacketHashSequesnce
-		if (!(Arrays.equals(hasheSquence, packetHashSequenceFromEntity))) {
+		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
+		byte[] packetHashSequenceFromEntity = hashSequence;// PacketHashSequesnce
+		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 			throw new UnequalHashSequenceException(
@@ -436,7 +430,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the regid
 	 */
 	private void validatePacketSize(long length) {
-		// TO-DO
+		// TO-DO need to umcomment once we get new columns in sync
 		/*
 		 * if(length > regEntity.getPacketSize()) {
 		 * regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
