@@ -18,26 +18,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "module_detail", schema = "master")
-public class ModuleDetail  extends BaseEntity implements Serializable {
-	
+public class ModuleDetail extends BaseEntity implements Serializable {
 
-	  
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3084280743182524889L;
 
-		@Id
-	  	@Column(name = "id", nullable = false, length = 36)
-		private String id;
-		
-		@Column(name = "lang_code", nullable = false, length = 3)
-		private String langCode;
+	@Id
+	@Column(name = "id", nullable = false, length = 36)
+	private String id;
 
-		@Column(name = "name", nullable = false, length = 64)
-		private String name;
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 
-		@Column(name = "descr", length = 128)
-		private String description;
+	@Column(name = "name", nullable = false, length = 64)
+	private String name;
+
+	@Column(name = "descr", length = 128)
+	private String description;
 
 }

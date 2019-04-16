@@ -17,7 +17,6 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -61,7 +60,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	/** The allowed bio types. */
 	private List<String> allowedBioAttributes;
-	
+
 	private List<String> bioAttributes;
 
 	private List<String> allowedTypes;
@@ -81,8 +80,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the db.
 	 *
-	 * @param db
-	 *            the db
+	 * @param db the db
 	 */
 	public void setDb(Map<String, Map<String, String>> db) {
 		this.db = db;
@@ -91,8 +89,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the status.
 	 *
-	 * @param status
-	 *            the status
+	 * @param status the status
 	 */
 	public void setStatus(List<String> status) {
 		this.status = status;
@@ -101,8 +98,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the id.
 	 *
-	 * @param id
-	 *            the id
+	 * @param id the id
 	 */
 	public void setId(Map<String, String> id) {
 		this.id = id;
@@ -111,8 +107,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the allowed bio types.
 	 *
-	 * @param allowedBioAttributes
-	 *            the new allowed bio types
+	 * @param allowedBioAttributes the new allowed bio types
 	 */
 	public void setAllowedBioAttributes(List<String> allowedBioAttributes) {
 		this.allowedBioAttributes = allowedBioAttributes;
@@ -157,7 +152,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public Map<String, String> id() {
 		return Collections.unmodifiableMap(id);
 	}
-	
+
 	/**
 	 * Allowed bio types.
 	 *
@@ -167,7 +162,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public List<String> allowedBioAttributes() {
 		return Collections.unmodifiableList(allowedBioAttributes);
 	}
-	
+
 	@Bean
 	public List<String> bioAttributes() {
 		return Collections.unmodifiableList(bioAttributes);
@@ -187,12 +182,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public List<String> status() {
 		return Collections.unmodifiableList(status);
 	}
-	
+
 	/**
 	 * Entity manager factory.
 	 *
-	 * @param dataSource
-	 *            the data source
+	 * @param dataSource the data source
 	 * @return the local container entity manager factory bean
 	 */
 	@Bean
@@ -211,8 +205,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Transaction manager.
 	 *
-	 * @param emf
-	 *            the emf
+	 * @param emf the emf
 	 * @return the platform transaction manager
 	 */
 	@Bean
@@ -240,8 +233,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Builds the data source.
 	 *
-	 * @param dataSourceValues
-	 *            the data source values
+	 * @param dataSourceValues the data source values
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {

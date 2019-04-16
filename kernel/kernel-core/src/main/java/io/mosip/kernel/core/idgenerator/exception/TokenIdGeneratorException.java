@@ -20,11 +20,9 @@ public class TokenIdGeneratorException extends BaseUncheckedException {
 	 * Constructor for TokenIdGeneratorException with errorCode and errorMessage as
 	 * the arguments.
 	 * 
-	 * @param errorCode
-	 *            the error code.
+	 * @param errorCode    the error code.
 	 * 
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorMessage the error message.
 	 */
 	public TokenIdGeneratorException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

@@ -18,8 +18,7 @@ public interface DataMapperBuilder<S, D> {
 	/**
 	 * Configure map null in mapping
 	 * 
-	 * @param mapNulls
-	 *            map null true or not
+	 * @param mapNulls map null true or not
 	 * @return {@link DataMapperBuilder}
 	 */
 	DataMapperBuilder<S, D> mapNulls(boolean mapNulls);
@@ -27,8 +26,7 @@ public interface DataMapperBuilder<S, D> {
 	/**
 	 * Configure byDefault in mapping
 	 * 
-	 * @param byDefault
-	 *            byDefault true or not
+	 * @param byDefault byDefault true or not
 	 * @return {@link DataMapperBuilder}
 	 */
 	DataMapperBuilder<S, D> byDefault(boolean byDefault);
@@ -36,8 +34,7 @@ public interface DataMapperBuilder<S, D> {
 	/**
 	 * Configure included field in mapping
 	 * 
-	 * @param includeFields
-	 *            list of included fields
+	 * @param includeFields list of included fields
 	 * @return {@link DataMapperBuilder}
 	 */
 	DataMapperBuilder<S, D> includeFields(List<IncludeDataField> includeFields);
@@ -45,8 +42,7 @@ public interface DataMapperBuilder<S, D> {
 	/**
 	 * Configure excluded fields in mapping
 	 * 
-	 * @param excludeFields
-	 *            list of excluded fields
+	 * @param excludeFields list of excluded fields
 	 * @return {@link DataMapperBuilder}
 	 */
 	DataMapperBuilder<S, D> excludeFields(List<String> excludeFields);

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * Class AppAuthenticationMethodDto.
  *
@@ -23,12 +22,12 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new app authentication method dto.
  *
- * @param appId the app id
- * @param processId the process id
- * @param roleCode the role code
+ * @param appId          the app id
+ * @param processId      the process id
+ * @param roleCode       the role code
  * @param authMethodCode the auth method code
  * @param methodSequence the method sequence
- * @param langCode the lang code
+ * @param langCode       the lang code
  */
 @AllArgsConstructor
 public class AppAuthenticationMethodDto extends BaseDto {

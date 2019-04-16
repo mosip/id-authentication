@@ -36,18 +36,22 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @Component
 public class OTPGenerateServiceImpl implements OTPGenerateService {
-	
+
 	@Autowired
 	RestTemplate restTemplate;
 
 	@Autowired
 	MosipEnvironment mosipEnvironment;
-	
+
 	@Autowired
 	private ObjectMapper mapper;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.kernel.auth.entities.MosipUserDto, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.kernel.
+	 * auth.entities.MosipUserDto, java.lang.String)
 	 */
 	@Override
 	public OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto, String token) {
@@ -72,10 +76,10 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			ResponseWrapper<?> responseObject;
 			try {
 				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-				otpGenerateResponseDto= mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpGenerateResponseDto.class);
-			}catch(Exception e)
-			{
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+				otpGenerateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						OtpGenerateResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 			}
 			return otpGenerateResponseDto;
 		} catch (Exception exp) {

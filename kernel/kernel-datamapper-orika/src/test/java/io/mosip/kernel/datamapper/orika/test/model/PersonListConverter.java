@@ -12,14 +12,13 @@ public class PersonListConverter implements DataConverter<List<Person>, List<Per
 	public void convert(List<Person> source, List<Personne> destination) {
 		source.forEach((p) -> {
 			Personne personne = new Personne();
-			LocalDate date=p.getDob();
-			LocalDate now= LocalDate.now();
+			LocalDate date = p.getDob();
+			LocalDate now = LocalDate.now();
 			Period period = Period.between(date, now);
 			personne.setAge(period.getYears());
-         
+
 			destination.add(personne);
 		});
 	}
-
 
 }

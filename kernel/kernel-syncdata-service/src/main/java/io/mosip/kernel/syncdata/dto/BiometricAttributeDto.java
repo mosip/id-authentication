@@ -50,7 +50,5 @@ public class BiometricAttributeDto extends BaseDto {
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "Biometric Type code", required = true, dataType = "java.lang.String")
 	private String biometricTypeCode;
-	
-	
 
 }

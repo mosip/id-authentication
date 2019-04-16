@@ -14,7 +14,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
-
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;

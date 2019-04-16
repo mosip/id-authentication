@@ -11,9 +11,10 @@ package io.mosip.kernel.masterdata.constant;
 public enum RegistrationCenterUserMappingHistoryErrorCode {
 
 	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION("KER-MSD-037",
-			"Error occured while fetching Registration Center, Machine, User mappings"), REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND(
-					"KER-MSD-038", "Registration Center, Machine, User not found"), DATE_TIME_PARSE_EXCEPTION(
-							"KER-MSD-039", "Invalid date format");
+			"Error occured while fetching Registration Center, Machine, User mappings"),
+	REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_NOT_FOUND("KER-MSD-038",
+			"Registration Center, Machine, User not found"),
+	DATE_TIME_PARSE_EXCEPTION("KER-MSD-039", "Invalid date format");
 
 	/**
 	 * The error code
@@ -27,10 +28,8 @@ public enum RegistrationCenterUserMappingHistoryErrorCode {
 	/**
 	 * Constructor to set error code and message
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	private RegistrationCenterUserMappingHistoryErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

@@ -25,17 +25,19 @@ public interface RegistrationCenterDeviceRepository
 	/**
 	 * 
 	 * @param registrationCenterId - registration center id
-	 * @return list of {@link RegistrationCenterDevice} -list of registration center device 
+	 * @return list of {@link RegistrationCenterDevice} -list of registration center
+	 *         device
 	 */
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 ")
 	List<RegistrationCenterDevice> findAllByRegistrationCenter(String registrationCenterId);
 
 	/**
 	 * 
-	 * @param regId - registration center id
-	 * @param lastUpdated - last updated time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time stamp
 	 * @param currentTimeStamp - current time stamp
-	 * @return list of {@link RegistrationCenterDevice} -list of registration center device 
+	 * @return list of {@link RegistrationCenterDevice} -list of registration center
+	 *         device
 	 */
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 AND ((rd.createdDateTime > ?2 AND rd.createdDateTime<=?3) OR (rd.updatedDateTime > ?2 AND rd.updatedDateTime <=?3) OR (rd.deletedDateTime > ?2 AND rd.deletedDateTime<=?3))")
 	List<RegistrationCenterDevice> findAllLatestByRegistrationCenterCreatedUpdatedDeleted(String regId,

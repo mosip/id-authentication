@@ -18,6 +18,7 @@ import io.vertx.core.VertxOptions;
  * Uin Generator vertx application
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @author Megha Tanga
  * @since 1.0.0
  *
@@ -32,8 +33,7 @@ public class UinGeneratorVertxApplication {
 	/**
 	 * The main function to start vertx app
 	 * 
-	 * @param args
-	 *            args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);

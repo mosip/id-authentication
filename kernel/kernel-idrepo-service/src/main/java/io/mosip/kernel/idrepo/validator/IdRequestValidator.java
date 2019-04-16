@@ -3,7 +3,6 @@ package io.mosip.kernel.idrepo.validator;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -117,7 +116,7 @@ public class IdRequestValidator implements Validator {
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
-	
+
 	/** The validation. */
 	private Map<String, String> validation;
 
@@ -192,10 +191,8 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate ver.
 	 *
-	 * @param ver
-	 *            the ver
-	 * @param errors
-	 *            the errors
+	 * @param ver    the ver
+	 * @param errors the errors
 	 */
 	private void validateVersion(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
@@ -210,8 +207,8 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate status.
 	 *
-	 * @param status            the status
-	 * @param errors            the errors
+	 * @param status the status
+	 * @param errors the errors
 	 * @param method the method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
@@ -224,10 +221,8 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate reg id.
 	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param errors
-	 *            the errors
+	 * @param registrationId the registration id
+	 * @param errors         the errors
 	 */
 	private void validateRegId(String registrationId, Errors errors) {
 		if (Objects.isNull(registrationId)) {
@@ -248,9 +243,9 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate request.
 	 *
-	 * @param request            the request
-	 * @param errors            the errors
-	 * @param method the method
+	 * @param request the request
+	 * @param errors  the errors
+	 * @param method  the method
 	 */
 	@SuppressWarnings("rawtypes")
 	private void validateRequest(Object request, Errors errors, String method) {
@@ -286,11 +281,11 @@ public class IdRequestValidator implements Validator {
 				| JsonIOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							IdRepoConstants.ROOT_PATH.getValue() + " - "
-									+ (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
-											? "/" + IdRepoConstants.ROOT_PATH.getValue()
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
+					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+					IdRepoConstants.ROOT_PATH.getValue() + " - "
+							+ (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
+									? "/" + IdRepoConstants.ROOT_PATH.getValue()
 									: StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""))));
 		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
@@ -309,7 +304,7 @@ public class IdRequestValidator implements Validator {
 	 * Validate documents.
 	 *
 	 * @param requestMap the request map
-	 * @param errors            the errors
+	 * @param errors     the errors
 	 */
 	@SuppressWarnings("unchecked")
 	private void validateDocuments(Map<String, Object> requestMap, Errors errors) {
@@ -317,13 +312,11 @@ public class IdRequestValidator implements Validator {
 			if (requestMap.containsKey(DOCUMENTS) && requestMap.containsKey(IdRepoConstants.ROOT_PATH.getValue())
 					&& Objects.nonNull(requestMap.get(IdRepoConstants.ROOT_PATH.getValue()))) {
 				Map<String, Object> identityMap = convertToMap(requestMap.get(IdRepoConstants.ROOT_PATH.getValue()));
-				if (Objects.nonNull(requestMap.get(DOCUMENTS))
-						&& requestMap.get(DOCUMENTS) instanceof List
+				if (Objects.nonNull(requestMap.get(DOCUMENTS)) && requestMap.get(DOCUMENTS) instanceof List
 						&& !((List<Map<String, String>>) requestMap.get(DOCUMENTS)).isEmpty()) {
 					checkForDuplicates(requestMap, errors);
-					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream()
-							.filter(doc -> !errors.hasErrors() && doc.containsKey(DOC_CAT)
-									&& Objects.nonNull(doc.get(DOC_CAT)))
+					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream().filter(
+							doc -> !errors.hasErrors() && doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
 							.forEach(doc -> {
 								if (!identityMap.containsKey(doc.get(DOC_CAT))) {
 									mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
@@ -354,12 +347,12 @@ public class IdRequestValidator implements Validator {
 							IdRepoConstants.ROOT_PATH.getValue()));
 		}
 	}
-	
+
 	/**
 	 * Validate json attributes.
 	 *
 	 * @param request the request
-	 * @param errors the errors
+	 * @param errors  the errors
 	 */
 	private void validateJsonAttributes(String request, Errors errors) {
 		validation.entrySet().parallelStream().forEach(entry -> {
@@ -375,14 +368,14 @@ public class IdRequestValidator implements Validator {
 							.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), entry.getKey()));
 				} else if (data instanceof JSONArray) {
 					IntStream.range(0, ((JSONArray) data).size())
-					.filter(index -> !pattern.matcher((CharSequence) ((JSONArray) data).get(index)).matches())
-					.forEach(index -> {
+							.filter(index -> !pattern.matcher((CharSequence) ((JSONArray) data).get(index)).matches())
+							.forEach(index -> {
 								mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 										(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 												StringUtils.replace(entry.getKey(), "*", String.valueOf(index))));
-					});
+							});
 				}
 			}
 		});
@@ -392,7 +385,7 @@ public class IdRequestValidator implements Validator {
 	 * Check for duplicates.
 	 *
 	 * @param requestMap the request map
-	 * @param errors the errors
+	 * @param errors     the errors
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkForDuplicates(Map<String, Object> requestMap, Errors errors) {
@@ -411,10 +404,8 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param reqTime
-	 *            the timestamp
-	 * @param errors
-	 *            the errors
+	 * @param reqTime the timestamp
+	 * @param errors  the errors
 	 */
 	private void validateReqTime(LocalDateTime reqTime, Errors errors) {
 		if (Objects.isNull(reqTime)) {
@@ -431,19 +422,16 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Convert to map.
 	 *
-	 * @param identity
-	 *            the identity
+	 * @param identity the identity
 	 * @return the map
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private Map<String, Object> convertToMap(Object identity) throws IdRepoAppException {
 		try {
 			return mapper.readValue(mapper.writeValueAsBytes(identity), new TypeReference<Map<String, Object>>() {
 			});
 		} catch (IOException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "convertToMap",
-					"\n" + e.getMessage());
+			mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "convertToMap", "\n" + e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST), e);
 		}

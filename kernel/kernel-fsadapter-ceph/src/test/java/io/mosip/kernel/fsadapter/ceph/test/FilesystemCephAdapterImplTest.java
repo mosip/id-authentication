@@ -74,8 +74,7 @@ public class FilesystemCephAdapterImplTest {
 	 * This method sets up the required configuration before execution of test
 	 * cases.
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Before
 	public void setup() throws IOException {
@@ -101,8 +100,7 @@ public class FilesystemCephAdapterImplTest {
 	/**
 	 * This method tests uploading of a packet to DFS.
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testUploadPacketSuccess() throws IOException {
@@ -117,8 +115,7 @@ public class FilesystemCephAdapterImplTest {
 	 * This method tests getting a packet successfully from DFS.
 	 *
 	 * @return the packet success test
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testGetPacketSuccess() throws IOException {
@@ -147,8 +144,7 @@ public class FilesystemCephAdapterImplTest {
 	 * This method tests getting a packet which is not present in DFS.
 	 *
 	 * @return the packet failure test
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test(expected = FSAdapterException.class)
 	public void testGetPacketFailure() throws IOException {
@@ -158,8 +154,7 @@ public class FilesystemCephAdapterImplTest {
 	/**
 	 * This method checks unpacking of a packet in DFS.
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void testUnpackPacketFailure() throws IOException {
