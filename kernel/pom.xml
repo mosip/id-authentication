@@ -163,7 +163,6 @@
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
 		<module>kernel-cryptomanager-service</module>
-		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
 		<module>kernel-auth-service</module>
 		<module>kernel-licensekeymanager-service</module>
@@ -273,3 +272,5 @@
 		</plugins>
 	</build>
 </project>
+
+
