@@ -220,7 +220,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 					+ e.getErrorText();
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 

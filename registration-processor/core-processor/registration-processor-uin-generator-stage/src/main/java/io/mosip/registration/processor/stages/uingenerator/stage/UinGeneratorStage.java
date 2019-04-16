@@ -323,7 +323,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					+ e.getMessage();
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.name());
-			registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_FAILURE_MSG);
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

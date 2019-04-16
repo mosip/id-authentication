@@ -278,7 +278,7 @@ public class DemodedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();

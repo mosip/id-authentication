@@ -192,7 +192,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
-			dto.setStatusComment(PlatformErrorMessages.PACKET_UPLOAD_FAILED.getMessage());
+			dto.setStatusComment(ExceptionUtils.getMessage(e));
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			object.setInternalError(true);

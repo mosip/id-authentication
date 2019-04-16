@@ -1,10 +1,6 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -230,6 +226,16 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+
+			String outputPath = System.getProperty("user.dir");
+			String fileSepetator = System.getProperty("file.separator");
+			File OutPutPdfFile = new File(outputPath + fileSepetator + "html.pdf");
+			FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+			op.write(pdf.toByteArray());
+			op.flush();
+			if (op != null) {
+				op.close();
+			}
 
 			byte[] pdfbytes = pdf.toByteArray();
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
