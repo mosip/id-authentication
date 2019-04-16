@@ -4,18 +4,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -64,6 +70,7 @@ import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
+import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -103,10 +110,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-
-	@Autowired
-	RegistrationProcessorIdentity regProcessorIdentityJson;
-
 	@Autowired
 	private Environment env;
 
@@ -141,10 +144,6 @@ public class PacketValidateProcessor {
 	/** The flag check for reg_type. */
 	private boolean regTypeCheck;
 
-	JSONObject identityJson = null;
-
-	JSONObject demographicIdentity = null;
-
 	private static final String VALIDATESCHEMA = "registration.processor.validateSchema";
 
 	private static final String VALIDATEFILE = "registration.processor.validateFile";
@@ -154,6 +153,8 @@ public class PacketValidateProcessor {
 	private static final String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
 
 	private static final String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
+	
+	private static final String VALIDATEMANDATORY= "registration-processor.validatemandotary";
 
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
@@ -189,8 +190,12 @@ public class PacketValidateProcessor {
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
-
-			if (isValid) {
+			Boolean mandatoryValidationResult=true;
+			if(RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())) {
+				mandatoryValidationResult =  mandatoryValidation(registrationStatusDto);
+			}
+			
+			if (isValid && mandatoryValidationResult) {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				object.setIsValid(Boolean.TRUE);
@@ -238,7 +243,6 @@ public class PacketValidateProcessor {
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
-			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -350,6 +354,7 @@ public class PacketValidateProcessor {
 
 	}
 
+
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
 			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
@@ -387,6 +392,18 @@ public class PacketValidateProcessor {
 		return true;
 
 	}
+
+	
+	
+
+
+	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto) throws IOException {
+		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
+			return true;
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto,utility);
+		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+	}
+
 
 	private boolean schemaValidation(String jsonString)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
@@ -532,10 +549,4 @@ public class PacketValidateProcessor {
 
 	}
 
-	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
-		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
-		registrationStatusDto.setApplicantType(applicantType);
-
-	}
 }
