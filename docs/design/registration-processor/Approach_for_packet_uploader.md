@@ -58,9 +58,10 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 ------------
 
-
+![packet_uploader class diagram](_images/packet_uploader_class_diagram.png)
 
 **Sequence Diagram**
 
 ------------
 
+![packet_uploader seq diagram](_images/packet_uploader_seq_diagram.png)
