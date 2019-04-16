@@ -60,7 +60,7 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	private Map<String, Object> applicationMap;
+	protected Map<String, Object> applicationMap;
 
 	/**
 	 * create error response.

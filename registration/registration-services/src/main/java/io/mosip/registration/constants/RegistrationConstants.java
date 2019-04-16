@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class RegistrationConstants {
 
+	
 	/**
 	 * private constructor
 	 */
@@ -1274,4 +1275,8 @@ public class RegistrationConstants {
 	public static final String USER_DETAILS="userDetails";
 	
 	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
+	
+	//TODO Need to discuss with Sravya about code
+	public static String isInitialSetUp="mosip.registration.isInitialSetUp";
+
 }
