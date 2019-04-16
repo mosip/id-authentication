@@ -34,19 +34,19 @@ public class AppAuthenticationMethod extends BaseEntity implements Serializable 
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1289945821993829289L;
-	
+
 	/** The app id. */
 	@Id
 	private String appId;
-	
+
 	/** The process id. */
 	@Id
 	private String processId;
-	
+
 	/** The role code. */
 	@Id
 	private String roleCode;
-	
+
 	/** The auth method code. */
 	@Id
 	private String authMethodCode;

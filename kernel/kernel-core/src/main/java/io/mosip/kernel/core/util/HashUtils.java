@@ -3,8 +3,6 @@
  */
 package io.mosip.kernel.core.util;
 
-import java.security.MessageDigest;
-
 import io.mosip.kernel.core.util.constant.HashUtilConstants;
 import io.mosip.kernel.core.util.exception.HashUtilException;
 
@@ -55,12 +53,9 @@ public class HashUtils {
 	 * HashCodeBuilder object is initialized with the given initializing odd number
 	 * and multiplying odd number .
 	 * 
-	 * @param initialOddNumber
-	 *            an odd number used as the initial value
-	 * @param multiplierOddNumber
-	 *            an odd number used as the multiplier
-	 * @throws HashUtilException
-	 *             if the number is even
+	 * @param initialOddNumber    an odd number used as the initial value
+	 * @param multiplierOddNumber an odd number used as the multiplier
+	 * @throws HashUtilException if the number is even
 	 */
 	public HashUtils(final long initialOddNumber, final long multiplierOddNumber) throws HashUtilException {
 		if (initialOddNumber % 2 == 0) {
@@ -85,8 +80,7 @@ public class HashUtils {
 	 * instances that represent true or 1237 for java.lang.Boolean instances that
 	 * represent false. This is in accordance with the Effective Java design.
 	 * 
-	 * @param value
-	 *            the boolean to add to the hashCode
+	 * @param value the boolean to add to the hashCode
 	 * @return this
 	 */
 	public HashUtils append(boolean value) {
@@ -97,8 +91,7 @@ public class HashUtils {
 	/**
 	 * Append a hashCode for a boolean array.
 	 * 
-	 * @param array
-	 *            the array to add to the hashCode
+	 * @param array the array to add to the hashCode
 	 * @return this
 	 */
 	public HashUtils append(boolean[] array) {
@@ -115,8 +108,7 @@ public class HashUtils {
 	/**
 	 * Append a hashCode for a byte.
 	 * 
-	 * @param value
-	 *            the byte to add to the hashcode
+	 * @param value the byte to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(byte value) {
@@ -127,8 +119,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a byte array
 	 * 
-	 * @param array
-	 *            array to add to the hashcode
+	 * @param array array to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(byte[] array) {
@@ -145,8 +136,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a character
 	 * 
-	 * @param value
-	 *            the character to add to the hashcode
+	 * @param value the character to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(char value) {
@@ -157,8 +147,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a character array
 	 * 
-	 * @param array
-	 *            array to add to the hashcode
+	 * @param array array to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(char[] array) {
@@ -175,8 +164,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a double
 	 * 
-	 * @param value
-	 *            double to add to the hash code
+	 * @param value double to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(double value) {
@@ -186,8 +174,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a double array
 	 * 
-	 * @param array
-	 *            array to add to the hash code
+	 * @param array array to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(double[] array) {
@@ -204,8 +191,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a float
 	 * 
-	 * @param value
-	 *            float to add to the hash code
+	 * @param value float to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(float value) {
@@ -216,8 +202,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a float array
 	 * 
-	 * @param array
-	 *            array to add to the hash code
+	 * @param array array to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(float[] array) {
@@ -234,8 +219,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a integer
 	 * 
-	 * @param value
-	 *            integer to add to the hash code
+	 * @param value integer to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(int value) {
@@ -246,8 +230,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a integer array
 	 * 
-	 * @param array
-	 *            array to add to the hash code
+	 * @param array array to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(int[] array) {
@@ -264,8 +247,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a long
 	 * 
-	 * @param value
-	 *            long to add to the hash code
+	 * @param value long to add to the hash code
 	 * @return this
 	 */
 	public HashUtils append(long value) {
@@ -277,8 +259,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a long array
 	 * 
-	 * @param array
-	 *            array to add to the hashcode
+	 * @param array array to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(long[] array) {
@@ -295,8 +276,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a object
 	 * 
-	 * @param value
-	 *            object to add to the hashcode
+	 * @param value object to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(Object value) {
@@ -321,8 +301,7 @@ public class HashUtils {
 	 * 
 	 * Append a <code>hashCode</code> for an array.
 	 * 
-	 * @param object
-	 *            the array to add to the <code>hashCode</code>
+	 * @param object the array to add to the <code>hashCode</code>
 	 */
 	private void appendArray(final Object object) {
 		// 'Switch' on type of array, to dispatch to the correct handler
@@ -352,8 +331,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a object array
 	 * 
-	 * @param array
-	 *            array to add to the hashcode
+	 * @param array array to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(Object[] array) {
@@ -370,8 +348,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a short
 	 * 
-	 * @param value
-	 *            value to add to the hashcode
+	 * @param value value to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(short value) {
@@ -382,8 +359,7 @@ public class HashUtils {
 	/**
 	 * Append a hashcode for a short array
 	 * 
-	 * @param array
-	 *            array to add to the hashcode
+	 * @param array array to add to the hashcode
 	 * @return this
 	 */
 	public HashUtils append(short[] array) {
@@ -414,18 +390,4 @@ public class HashUtils {
 	public long toHashCode() {
 		return total;
 	}
-
-	/**
-	 * This method checks whether two digest are equal or not.
-	 * 
-	 * @param source
-	 *            the digest to be compared.
-	 * @param target
-	 *            the digest to be compared with.
-	 * @return true if they are equal.
-	 */
-	public boolean isDigestEqual(byte[] source, byte[] target) {
-		return MessageDigest.isEqual(source, target);
-	}
-
 }

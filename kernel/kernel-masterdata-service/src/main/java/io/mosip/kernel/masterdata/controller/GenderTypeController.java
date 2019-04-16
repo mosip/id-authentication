@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -45,6 +46,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
 	@ResponseFilter
 	@GetMapping("/gendertypes")
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
@@ -56,14 +58,14 @@ public class GenderTypeController {
 	/**
 	 * Get API to fetch all gender types for a particular language code
 	 * 
-	 * @param langCode
-	 *            the language code whose gender is to be returned
+	 * @param langCode the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
 	@ResponseFilter
 	@GetMapping(value = "/gendertypes/{langcode}")
 	public ResponseWrapper<GenderTypeResponseDto> getGenderBylangCode(@PathVariable("langcode") String langCode) {
-		
+
 		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.getGenderTypeByLangCode(langCode));
 		return responseWrapper;
@@ -72,13 +74,13 @@ public class GenderTypeController {
 	/**
 	 * Post API to enter a new Gender Type Data
 	 * 
-	 * @param gender
-	 *            input dto to enter a new gender data
+	 * @param gender input dto to enter a new gender data
 	 * @return primary key of entered row of gender
 	 */
 	@ResponseFilter
 	@PostMapping("/gendertypes")
-	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
+	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(
+			@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.saveGenderType(gender.getRequest()));
 		return responseWrapper;
@@ -88,8 +90,7 @@ public class GenderTypeController {
 	/**
 	 * Update a Gender Type
 	 * 
-	 * @param gender
-	 *            input dto to update a gender data
+	 * @param gender input dto to update a gender data
 	 * @return key of updated row
 	 */
 	@ResponseFilter
@@ -105,8 +106,7 @@ public class GenderTypeController {
 	/**
 	 * Delete a Gender Type
 	 * 
-	 * @param code
-	 *            the code whose gender is to be deleted
+	 * @param code the code whose gender is to be deleted
 	 * @return code of deleted rows
 	 */
 	@ResponseFilter
@@ -122,13 +122,13 @@ public class GenderTypeController {
 	/**
 	 * Validate Gender name
 	 * 
-	 * @param genderName
-	 *            gender Name
+	 * @param genderName gender Name
 	 * @return {@link StatusResponseDto } StatusResponseDto
 	 */
 	@ResponseFilter
-	@ApiOperation(value="validate gender name")
+	@ApiOperation(value = "validate gender name")
 	@GetMapping("/gendertypes/validate/{gendername}")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.validateGender(genderName));

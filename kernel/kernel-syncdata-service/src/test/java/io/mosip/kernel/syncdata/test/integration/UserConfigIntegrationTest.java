@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,6 +49,7 @@ public class UserConfigIntegrationTest {
 		private static final String JSON_SYNC_JOB_DEF = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-02T07:49:18.454Z\", \"metadata\": null, \"response\": { \"syncJobDefinitions\": [ { \"id\": \"LCS_J00002\", \"name\": \"Login Credentials Sync\", \"apiName\": null, \"parentSyncJobId\": \"NULL\", \"syncFreq\": \"0 0 11 * * ?\", \"lockDuration\": \"NULL\" } ] }, \"errors\": null } ";
 		// ###########################CONFIG END#########################
 	
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGetConfig() throws Exception {
 		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
@@ -59,6 +61,7 @@ public class UserConfigIntegrationTest {
 		mockMvc.perform(get("/configs")).andExpect(status().isOk());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGlobalConfig() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
@@ -70,6 +73,7 @@ public class UserConfigIntegrationTest {
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGlobalConfigExceptionTest() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
@@ -80,6 +84,7 @@ public class UserConfigIntegrationTest {
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGlobalConfigServiceExceptionTest() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
@@ -88,6 +93,7 @@ public class UserConfigIntegrationTest {
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 
+	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testRegistrationConfig() throws Exception {
 		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");

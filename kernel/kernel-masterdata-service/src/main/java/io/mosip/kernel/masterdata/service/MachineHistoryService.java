@@ -18,12 +18,9 @@ public interface MachineHistoryService {
 	 * This abstract method to fetch machine history details for given Machine ID
 	 * and language code
 	 * 
-	 * @param id
-	 *            Machine id given by user
-	 * @param langCode
-	 *            Language code given by user
-	 * @param effDateTime
-	 *            Effective date and time given by user
+	 * @param id          Machine id given by user
+	 * @param langCode    Language code given by user
+	 * @param effDateTime Effective date and time given by user
 	 * @return MachineHistoryResponseDto Return Machine History Detail for given
 	 *         machine id and language code
 	 *
@@ -33,14 +30,13 @@ public interface MachineHistoryService {
 	/**
 	 * Abstract method to save Machine History to the Database
 	 * 
-	 * @param entityHistory
-	 *            machine History entity
+	 * @param entityHistory machine History entity
 	 * 
 	 * @return IdResponseDto returning machine History id which is inserted
 	 *         successfully {@link IdResponseDto}
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine History
+	 * @throws MasterDataServiceException if any error occurred while saving Machine
+	 *                                    History
 	 */
 	IdResponseDto createMachineHistory(MachineHistory entityHistory);
 

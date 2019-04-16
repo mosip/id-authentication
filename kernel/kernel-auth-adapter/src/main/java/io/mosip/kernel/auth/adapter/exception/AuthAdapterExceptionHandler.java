@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +27,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AuthAdapterExceptionHandler {
 
 	@Autowired
@@ -43,7 +46,7 @@ public class AuthAdapterExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> onAccessDeniedException(
 			final HttpServletRequest httpServletRequest, final AccessDeniedException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(), e.getMessage());
+		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}

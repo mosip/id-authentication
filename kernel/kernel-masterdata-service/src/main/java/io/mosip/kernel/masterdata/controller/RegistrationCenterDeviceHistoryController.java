@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,17 +37,15 @@ public class RegistrationCenterDeviceHistoryController {
 	 * Get API to fetch a Registration Center Device History based on given
 	 * registration center id, device id and effective date time
 	 * 
-	 * @param regCenterId
-	 *            input Registration Center Id from User
-	 * @param deviceId
-	 *            input Device Id from user
-	 * @param effectiveTimes
-	 *            input effective date and time from user
+	 * @param regCenterId    input Registration Center Id from User
+	 * @param deviceId       input Device Id from user
+	 * @param effectiveTimes input effective date and time from user
 	 * 
 	 * @return RegistrationCenterDeviceHistoryResponseDto returning registration
 	 *         center device history based on given regCenterId, deviceId and
 	 *         effective date time
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time")

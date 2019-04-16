@@ -18,25 +18,19 @@ public class IllegalConfigurationException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode and errorMessage
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
-	public IllegalConfigurationException(String errorCode,String errorMessage) {
+	public IllegalConfigurationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
-	
-	
+
 	/**
 	 * Constructor with errorCode, errorMessage, and rootCause
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param cause
-	 *            Cause of this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
+	 * @param cause        Cause of this exception
 	 */
 	public IllegalConfigurationException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);

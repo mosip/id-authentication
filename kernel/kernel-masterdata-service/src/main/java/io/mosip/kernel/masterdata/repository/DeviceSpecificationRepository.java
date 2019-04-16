@@ -23,8 +23,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * This method trigger query to fetch the Device Specification detail for the
 	 * given language code.
 	 *
-	 * @param langCode
-	 *            languageCode provided by user
+	 * @param langCode languageCode provided by user
 	 * 
 	 * @return List Device specific Details fetched from database
 	 */
@@ -35,10 +34,8 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * This method trigger query to fetch the Device Specification detail for the
 	 * given language code and device Type Code.
 	 *
-	 * @param langCode
-	 *            LanguageCode provided by user
-	 * @param deviceTypeCode
-	 *            Device Type Code provided by user
+	 * @param langCode       LanguageCode provided by user
+	 * @param deviceTypeCode Device Type Code provided by user
 	 * @return List Device specific Details fetched from database
 	 */
 	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
@@ -49,8 +46,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * This method trigger query to fetch the Device Specification detail for the
 	 * given device specification id.
 	 *
-	 * @param id
-	 *            id provided by user
+	 * @param id id provided by user
 	 * 
 	 * @return List Device specific Details fetched from database
 	 */
@@ -62,11 +58,9 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * This method trigger query to fetch the Device Specification detail for the
 	 * given device specification id.
 	 *
-	 * @param id
-	 *            id provided by user
+	 * @param id       id provided by user
 	 * 
-	 * @param langCode
-	 *            langCode provided by user
+	 * @param langCode langCode provided by user
 	 * 
 	 * @return List Device specific Details fetched from database
 	 */

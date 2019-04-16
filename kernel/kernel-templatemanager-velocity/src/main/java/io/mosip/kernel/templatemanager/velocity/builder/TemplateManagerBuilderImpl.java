@@ -31,9 +31,11 @@ public class TemplateManagerBuilderImpl implements TemplateManagerBuilder {
 	private boolean cache = Boolean.TRUE;
 	private String defaultEncoding = StandardCharsets.UTF_8.name();
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#resourceLoader(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#
+	 * resourceLoader(java.lang.String)
 	 */
 	@Override
 	public TemplateManagerBuilder resourceLoader(String resourceLoader) {
@@ -41,8 +43,12 @@ public class TemplateManagerBuilderImpl implements TemplateManagerBuilder {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#resourcePath(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#resourcePath(
+	 * java.lang.String)
 	 */
 	@Override
 	public TemplateManagerBuilder resourcePath(String templatePath) {
@@ -50,8 +56,12 @@ public class TemplateManagerBuilderImpl implements TemplateManagerBuilder {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#enableCache(boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#enableCache(
+	 * boolean)
 	 */
 	@Override
 	public TemplateManagerBuilder enableCache(boolean cache) {
@@ -59,8 +69,12 @@ public class TemplateManagerBuilderImpl implements TemplateManagerBuilder {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#encodingType(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#encodingType(
+	 * java.lang.String)
 	 */
 	@Override
 	public TemplateManagerBuilder encodingType(String defaultEncoding) {
@@ -68,7 +82,9 @@ public class TemplateManagerBuilderImpl implements TemplateManagerBuilder {
 		return this;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder#build()
 	 */
 	@Override

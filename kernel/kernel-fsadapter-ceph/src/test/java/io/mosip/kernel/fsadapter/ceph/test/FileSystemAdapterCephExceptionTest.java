@@ -207,7 +207,7 @@ public class FileSystemAdapterCephExceptionTest {
 		when(amazonS3.getObject(Mockito.any())).thenThrow(amzException);
 		this.fileSystemAdapter.getFile("test", "test-key");
 	}
-	
+
 	@Test(expected = FSAdapterException.class)
 	public void testGetPacketException() {
 		AmazonServiceException amzException = new AmazonServiceException("test");

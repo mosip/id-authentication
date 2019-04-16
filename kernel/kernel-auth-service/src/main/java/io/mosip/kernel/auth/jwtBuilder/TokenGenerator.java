@@ -16,6 +16,9 @@ import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.exception.AuthManagerException;
+import io.mosip.kernel.auth.entities.BasicTokenDto;
+import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.TimeToken;
 
 @Component
 public class TokenGenerator {

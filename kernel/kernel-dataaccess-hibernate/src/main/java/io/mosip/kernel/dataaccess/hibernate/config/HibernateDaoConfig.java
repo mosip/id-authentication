@@ -167,12 +167,9 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 * If the map previously contained a mapping for the key, the old value is
 	 * replaced.
 	 * 
-	 * @param jpaProperties
-	 *            The map of jpa properties
-	 * @param property
-	 *            The property whose value is to be set
-	 * @param defaultValue
-	 *            The default value to set
+	 * @param jpaProperties The map of jpa properties
+	 * @param property      The property whose value is to be set
+	 * @param defaultValue  The default value to set
 	 * @return The map of jpa properties with properties set
 	 */
 	private HashMap<String, Object> getProperty(HashMap<String, Object> jpaProperties, String property,
@@ -188,7 +185,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
-				 * We can add a default interceptor whenever we require here. 
+				 * We can add a default interceptor whenever we require here.
 				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
 				LOGGER.error("Error while configuring Interceptor.");

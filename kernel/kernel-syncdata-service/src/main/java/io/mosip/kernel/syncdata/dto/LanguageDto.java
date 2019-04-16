@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ApiModel(value = "Language", description = "Language resource representation")
 @JsonIgnoreProperties("langCode")
-public class LanguageDto extends BaseDto{
+public class LanguageDto extends BaseDto {
 
 	/**
 	 * Field for language code
@@ -55,7 +55,5 @@ public class LanguageDto extends BaseDto{
 	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "Language Native Name", dataType = "java.lang.String")
 	private String nativeName;
-
-	
 
 }

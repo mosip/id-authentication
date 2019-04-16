@@ -39,17 +39,14 @@ public class SwaggerConfig {
 	String host = "localhost";
 	int port = -1;
 	String hostWithPort = "localhost:8080";
-	
+
 	/**
 	 * Gets the api info.
 	 *
 	 * @return the api info
 	 */
 	ApiInfo getApiInfo() {
-		return new ApiInfoBuilder()
-				.title("Kernel Id Repo Service")
-				.description("Kernel Id Repo Service")
-				.build();
+		return new ApiInfoBuilder().title("Kernel Id Repo Service").description("Kernel Id Repo Service").build();
 	}
 
 	@Bean
@@ -72,8 +69,7 @@ public class SwaggerConfig {
 		}
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.kernel.idrepo.controller"))
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
-				.build().apiInfo(getApiInfo());
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build().apiInfo(getApiInfo());
 
 		if (targetSwagger) {
 			docket.protocols(protocols()).host(hostWithPort);

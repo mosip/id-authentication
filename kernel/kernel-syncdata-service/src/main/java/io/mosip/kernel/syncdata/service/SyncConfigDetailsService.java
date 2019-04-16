@@ -16,8 +16,7 @@ import net.minidev.json.JSONObject;
  */
 public interface SyncConfigDetailsService {
 	/**
-	 * This service will fetch all  Configaration details available from
-	 * server
+	 * This service will fetch all Configaration details available from server
 	 * 
 	 * @return JSONObject - config synced data
 	 */
@@ -35,25 +34,20 @@ public interface SyncConfigDetailsService {
 	 * This service will fetch all Registration center specific config details from
 	 * server
 	 *
-	 * @param regId
-	 *            - registration Id
+	 * @param regId - registration Id
 	 * @return JSONObject - registration center config synced data
 	 */
 	public JSONObject getRegistrationCenterConfigDetails(String regId);
 
 	ConfigDto getConfiguration(String registrationCenterId);
-	
+
 	/**
 	 * Function to get public key
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param referenceId
-	 *            referenceId
+	 * @param applicationId applicationId
+	 * @param timeStamp     timeStamp
+	 * @param referenceId   referenceId
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
-			Optional<String> referenceId);
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 }

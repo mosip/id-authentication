@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -52,8 +52,7 @@ public class BiometricTypeController {
 	/**
 	 * API to fetch all Biometric types details based on language code
 	 * 
-	 * @param langCode
-	 *            The language code
+	 * @param langCode The language code
 	 * 
 	 * @return All Biometric type details
 	 */
@@ -70,10 +69,8 @@ public class BiometricTypeController {
 	/**
 	 * API to fetch Biometric type details based on code and language code
 	 * 
-	 * @param code
-	 *            the code
-	 * @param langCode
-	 *            the language code
+	 * @param code     the code
+	 * @param langCode the language code
 	 * @return Biometric type
 	 */
 	@ResponseFilter
@@ -89,8 +86,7 @@ public class BiometricTypeController {
 	/**
 	 * API to insert Biometric type
 	 * 
-	 * @param biometricType
-	 *            is of type {@link BiometricType}
+	 * @param biometricType is of type {@link BiometricType}
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */

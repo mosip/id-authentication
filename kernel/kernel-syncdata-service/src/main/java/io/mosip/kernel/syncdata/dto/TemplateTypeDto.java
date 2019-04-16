@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TemplateTypeDto extends BaseDto{
+public class TemplateTypeDto extends BaseDto {
 
 	/**
 	 * Field for code
@@ -27,13 +27,11 @@ public class TemplateTypeDto extends BaseDto{
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-
 	/**
 	 * Field for description
 	 */
 	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "Biometric Attribute desc", required = false, dataType = "java.lang.String")
 	private String description;
-
 
 }

@@ -100,8 +100,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	/**
 	 * Generates a id and then generate checksum
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id to generate
+	 * @param generatedIdLength The length of id to generate
 	 * @return the VId with checksum
 	 */
 	private String generateRandomId() {
@@ -181,12 +180,9 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	/**
 	 * Appends a checksum to generated id
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id
-	 * @param generatedID
-	 *            The generated id
-	 * @param verhoeffDigit
-	 *            The checksum to append
+	 * @param generatedIdLength The length of id
+	 * @param generatedID       The generated id
+	 * @param verhoeffDigit     The checksum to append
 	 * @return VId with checksum
 	 */
 	private String appendChecksum(String generatedVId, String verhoeffDigit) {

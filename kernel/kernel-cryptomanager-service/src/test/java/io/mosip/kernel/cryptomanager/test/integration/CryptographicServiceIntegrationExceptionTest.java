@@ -27,6 +27,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -120,7 +121,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidSpecEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
@@ -145,7 +146,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testMethodArgumentNotValidException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -161,7 +162,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidFormatException() throws Exception {
 		String requestBody = "{\r\n" + "\"id\":\"\",\r\n" + "\"version\":\"\",\r\n" + "\"requesttime\":\"\",\r\n"
@@ -172,7 +173,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testIllegalArgumentException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -188,7 +189,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testEncryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
@@ -212,7 +213,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	// @WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testDecryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
@@ -236,6 +237,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isInternalServerError()).andReturn();
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void encryptDataExceptionTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
@@ -255,6 +257,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isInternalServerError()).andReturn();
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void encryptParseException() throws Exception {
 		String response = " \"id\": \"string\",  \"version\": \"string\", \"responsetime\": \"2019-04-05T09:03:20.165Z\",\"metadata\": null,\"response\": { \"encryptedData\": \"UmtKDehMwCVj3BK64hlcu0xL_7vl47WM2yZLdXssLzGM0FZ2W4mCqPM_zxcpKSw2Qvj-exti0igFDWZejpYTzwCaA1FT2Z57C0tI1t2-wFuS083zQ_Vn9i--cQKSBXgTl7iCLEvNVbp_X7c9W4tUoIYdKNHw18t9Leq7MyOGOqj1_JFmTqV1dh3Okl6WG7qhq3jDd6gOkWMrtmv0qes-AH5u8eYjixMRzDD8uLhLjdMEgzfhPzk_ph4WCH7G1JjioPZ-FMD80QwlsWnWNiorB5xsdJyMwb8WU_woFakN1T3eYelGHIf9shQm0zeu9pdjVMsSSDif0a3imiYkMev8KQ\"}, \"errors\": null}";

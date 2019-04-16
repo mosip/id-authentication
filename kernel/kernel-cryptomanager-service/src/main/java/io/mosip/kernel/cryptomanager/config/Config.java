@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
 
-
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
 		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
@@ -30,4 +29,3 @@ public class Config {
 		return new ReqResFilter();
 	}
 }
-
