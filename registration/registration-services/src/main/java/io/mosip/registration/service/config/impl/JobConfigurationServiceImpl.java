@@ -195,8 +195,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
 
-				/* Start Scheduler */
-				startScheduler();
+				//Will be launch post successful LOGIN
+				/* Start Scheduler 
+				startScheduler();*/
 
 			}
 
