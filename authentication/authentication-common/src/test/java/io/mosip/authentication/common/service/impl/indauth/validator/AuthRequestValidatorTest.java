@@ -35,7 +35,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.common.integration.MasterDataManager;
-import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
@@ -100,6 +99,7 @@ public class AuthRequestValidatorTest {
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
 	}
+
 
 	@Test
 	public void testValidUin() {
@@ -407,7 +407,6 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 

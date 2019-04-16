@@ -1,9 +1,13 @@
 package io.mosip.authetication.service.impl.spin.facade;
 
+
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.entity.StaticPin;
 import io.mosip.authentication.common.entity.StaticPinHistory;
+import io.mosip.authentication.common.entity.VIDEntity;
 import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.AuditHelper;
 import io.mosip.authentication.common.helper.RestHelper;
@@ -40,9 +45,11 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
+import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.VIDService;
 import io.mosip.authentication.spin.service.impl.spin.service.StaticPinServiceImpl;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -106,6 +113,9 @@ public class StaticPinFacadeImplTest {
 	@Mock
 	private VidGeneratorImpl vidGenerator;
 
+	@InjectMocks
+	private VIDService vidService;
+
 	/** The Constant for IDA */
 	private static final String IDA = "IDA";
 
@@ -119,6 +129,7 @@ public class StaticPinFacadeImplTest {
 		ReflectionTestUtils.setField(staticPinServiceImpl, "staticPinHistoryRepo", staticPinHistoryRepo);
 		ReflectionTestUtils.setField(staticPinServiceImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
+		ReflectionTestUtils.setField(vidService, "env", env);
 
 	}
 
@@ -136,20 +147,10 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),
+				now());
+
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
@@ -187,20 +188,10 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(vid);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(vid);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, vid, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, vid, true, IDA, now(), IDA, now(), false, now(),
+				now());
+
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "284169042058");
@@ -238,20 +229,10 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(vid);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(vid);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, vid, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, vid, true, IDA, now(), IDA, now(), false, now(),
+				now());
+
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", null);
@@ -295,42 +276,47 @@ public class StaticPinFacadeImplTest {
 		}
 	}
 
-	/*
-	 * @Test public void generateVIDTest() throws IdAuthenticationBusinessException
-	 * { Map<String, Object> uinMap = new HashMap<>(); uinMap.put("uin",
-	 * "2342342344"); Mockito.when(idAuthService.processIdType(Mockito.any(),
-	 * Mockito.any(), Mockito.anyBoolean())) .thenReturn(uinMap);
-	 * Mockito.when(vidRepository.findByUIN(Mockito.anyString(),
-	 * Mockito.any())).thenReturn(Collections.emptyList()); VIDResponseDTO
-	 * vidResponseDTO = vidService.generateVID("2342342344");
-	 * assertEquals("mosip.identity.vid", vidResponseDTO.getId()); }
-	 * 
-	 * // (expected = IdAuthenticationBusinessException.class)
-	 * 
-	 * @Test public void generateVIDAlreadyexists() throws
-	 * IdAuthenticationBusinessException { Map<String, Object> uinMap = new
-	 * HashMap<>(); uinMap.put("uin", "2342342344");
-	 * Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(),
-	 * Mockito.anyBoolean())) .thenReturn(uinMap); VIDEntity vidEntity = new
-	 * VIDEntity(); vidEntity.setExpiryDate(LocalDateTime.of(2050, 9, 12, 9, 54));
-	 * vidEntity.setActive(true); List<VIDEntity> vidEntityList = new ArrayList<>();
-	 * vidEntityList.add(vidEntity);
-	 * Mockito.when(vidRepository.findByUIN(Mockito.anyString(),
-	 * Mockito.any())).thenReturn(vidEntityList);
-	 * vidService.generateVID("2342342344"); }
-	 * 
-	 * @Test public void generateVIDExpired() throws
-	 * IdAuthenticationBusinessException { Map<String, Object> uinMap = new
-	 * HashMap<>(); uinMap.put("uin", "2342342344");
-	 * Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(),
-	 * Mockito.anyBoolean())) .thenReturn(uinMap); VIDEntity vidEntity = new
-	 * VIDEntity(); vidEntity.setExpiryDate(LocalDateTime.of(2019, 2, 12, 9, 54, 54,
-	 * 567)); vidEntity.setActive(true); List<VIDEntity> vidEntityList = new
-	 * ArrayList<>(); vidEntityList.add(vidEntity);
-	 * Mockito.when(vidRepository.findByUIN(Mockito.anyString(),
-	 * Mockito.any())).thenReturn(vidEntityList); VIDResponseDTO vidResponseDTO =
-	 * vidService.generateVID("2342342344"); assertEquals("mosip.identity.vid",
-	 * vidResponseDTO.getId()); }
-	 */
+	@Test
+	public void generateVIDTest() throws IdAuthenticationBusinessException {
+		Map<String, Object> uinMap = new HashMap<>();
+		uinMap.put("uin", "2342342344");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(uinMap);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(Collections.emptyList());
+		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
+		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
+	}
+
+//	(expected = IdAuthenticationBusinessException.class)
+	@Test
+	public void generateVIDAlreadyexists() throws IdAuthenticationBusinessException {
+		Map<String, Object> uinMap = new HashMap<>();
+		uinMap.put("uin", "2342342344");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(uinMap);
+		VIDEntity vidEntity = new VIDEntity();
+		vidEntity.setExpiryDate(LocalDateTime.of(2050, 9, 12, 9, 54));
+		vidEntity.setActive(true);
+		List<VIDEntity> vidEntityList = new ArrayList<>();
+		vidEntityList.add(vidEntity);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
+		vidService.generateVID("2342342344");
+	}
+
+	@Test
+	public void generateVIDExpired() throws IdAuthenticationBusinessException {
+		Map<String, Object> uinMap = new HashMap<>();
+		uinMap.put("uin", "2342342344");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(uinMap);
+		VIDEntity vidEntity = new VIDEntity();
+		vidEntity.setExpiryDate(LocalDateTime.of(2019, 2, 12, 9, 54, 54, 567));
+		vidEntity.setActive(true);
+		List<VIDEntity> vidEntityList = new ArrayList<>();
+		vidEntityList.add(vidEntity);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
+		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
+		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
+	}
 
 }

@@ -26,7 +26,7 @@ import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MantraFingerprintProviderTest {
-	
+
 	/** The fp device. */
 	@Mock
 	MFS100 fpDevice;
@@ -106,6 +106,7 @@ public class MantraFingerprintProviderTest {
 	/**
 	 * Test segment fingerprint.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testSegmentFingerprint() {
 		Optional<Map> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
@@ -127,7 +128,7 @@ public class MantraFingerprintProviderTest {
 	public void testOnCaptureCompleted() {
 		fp.OnCaptureCompleted(false, 0, null, null);
 	}
-	
+
 	/**
 	 * Test create minutiae.
 	 */

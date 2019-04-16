@@ -128,7 +128,7 @@ public class KycControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenThrow(new IdAuthenticationBusinessException());
 		kycauthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
@@ -198,7 +198,7 @@ public class KycControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(KycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
 				.thenReturn(kycAuthResponseDTO);
@@ -269,7 +269,7 @@ public class KycControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(KycService.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));

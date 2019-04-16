@@ -34,8 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.authentication.filter.BaseAuthFilter;
-import io.mosip.authentication.common.authentication.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.integration.KeyManager;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
@@ -83,7 +81,6 @@ public class BaseAuthFilterTest {
 		@Override
 		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
-			// TODO Auto-generated method stub
 
 		}
 	};

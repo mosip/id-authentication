@@ -1,10 +1,10 @@
 package io.mosip.authentication.common.impl.indauth.service;
 
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +32,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.authentication.common.integration.OTPManager;
 import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.common.repository.VIDRepository;
@@ -66,6 +65,7 @@ public class OTPAuthServiceTest {
 
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
+
 
 	@Autowired
 	Environment env;
@@ -307,7 +307,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setIndividualId("426789089018");
-		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
@@ -337,7 +336,6 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
@@ -349,3 +347,4 @@ public class OTPAuthServiceTest {
 	}
 
 }
+
