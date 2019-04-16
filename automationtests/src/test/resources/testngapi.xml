@@ -56,6 +56,7 @@
                            <class name="io.mosip.kernel.tests.LicenseKeyController" />
                            <class name="io.mosip.kernel.tests.OtpGenerate" />
                            <class name="io.mosip.kernel.tests.OTP" />    
+                           <class name="io.mosip.kernel.tests.RIDGenerator" />   
                           <!--  <class name="io.mosip.kernel.tests.OtpNotificationController" /> -->
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
