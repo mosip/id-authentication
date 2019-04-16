@@ -14,9 +14,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pkr invalid packet size. */
 	RPR_PKR_INVALID_PACKET_SIZE(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "002",
-			"The Registration Packet Size is invalid"), RPR_PKR_PACKET_SIZE_NOT_EQUALS_SYNCED(
-					PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "008",
-					"The Registration Packet Size is not equal as synced packet size"),
+			"The Registration Packet Size is invalid"),
 
 	/** The rpr pkr packet hash not equals synced hash. */
 	RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "009",

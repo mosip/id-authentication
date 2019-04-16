@@ -10,33 +10,33 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 public class PacketSizeNotInSyncException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-   /**
-    * Instantiates a new packet size not in sync exception.
-    */
-   public PacketSizeNotInSyncException()
-   {
-	   super();
-   }
-   
-   /**
-    * Instantiates a new packet size not in sync exception.
-    *
-    * @param message the message
-    */
-   public PacketSizeNotInSyncException(String message)
-   {
-	   super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_NOT_EQUALS_SYNCED.getCode(),message);
-   }
-   
-   /**
-    * Instantiates a new packet size not in sync exception.
-    *
-    * @param message the message
-    * @param cause the cause
-    */
-   public PacketSizeNotInSyncException(String message,Throwable cause)
-   {
-	   super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_NOT_EQUALS_SYNCED.getCode()+EMPTY_SPACE,message,cause);
-   }
+
+	/**
+	 * Instantiates a new packet size not in sync exception.
+	 */
+	public PacketSizeNotInSyncException() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new packet size not in sync exception.
+	 *
+	 * @param message
+	 *            the message
+	 */
+	public PacketSizeNotInSyncException(String message) {
+		super(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getCode(), message);
+	}
+
+	/**
+	 * Instantiates a new packet size not in sync exception.
+	 *
+	 * @param message
+	 *            the message
+	 * @param cause
+	 *            the cause
+	 */
+	public PacketSizeNotInSyncException(String message, Throwable cause) {
+		super(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getCode() + EMPTY_SPACE, message, cause);
+	}
 }
