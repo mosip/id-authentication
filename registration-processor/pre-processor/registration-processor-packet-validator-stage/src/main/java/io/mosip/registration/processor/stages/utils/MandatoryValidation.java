@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 
@@ -33,40 +32,46 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
  *
  */
 public class MandatoryValidation {
-	
+
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MandatoryValidation.class);
-	
+
 	/** The adapter. */
 	private FileSystemAdapter adapter;
-	
+
 	private Utilities utility;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
-	
+
 	public static final String FILE_SEPARATOR = "\\";
-	
-	public MandatoryValidation(FileSystemAdapter adapter,InternalRegistrationStatusDto registrationStatusDto,Utilities utility) {
-		this.adapter=adapter;
-		this.registrationStatusDto=registrationStatusDto;
-		this.utility=utility;
+
+	public MandatoryValidation(FileSystemAdapter adapter, InternalRegistrationStatusDto registrationStatusDto,
+			Utilities utility) {
+		this.adapter = adapter;
+		this.registrationStatusDto = registrationStatusDto;
+		this.utility = utility;
 	}
-	
+
 	public boolean mandatoryFieldValidation(String regId) throws IOException, JSONException {
-		io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity  identiy=	getMappeedJSONIdentity().getIdentity();
+		io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity identiy = getMappeedJSONIdentity()
+				.getIdentity();
 		JSONObject idJsonObj = getDemoIdentity(regId);
 		Map<String, Boolean> fieldValidationMap = new HashMap<>();
 		fieldValidationMap.put(identiy.getName().getValue(), identiy.getName().getIsMandatory());
 		fieldValidationMap.put(identiy.getDob().getValue(), identiy.getDob().getIsMandatory());
 		fieldValidationMap.put(identiy.getGender().getValue(), identiy.getGender().getIsMandatory());
-		fieldValidationMap.put(identiy.getParentOrGuardianRID().getValue(), identiy.getParentOrGuardianRID().getIsMandatory());
-		fieldValidationMap.put(identiy.getParentOrGuardianUIN().getValue(), identiy.getParentOrGuardianUIN().getIsMandatory());
-		fieldValidationMap.put(identiy.getParentOrGuardianName().getValue(), identiy.getParentOrGuardianName().getIsMandatory());
+		fieldValidationMap.put(identiy.getParentOrGuardianRID().getValue(),
+				identiy.getParentOrGuardianRID().getIsMandatory());
+		fieldValidationMap.put(identiy.getParentOrGuardianUIN().getValue(),
+				identiy.getParentOrGuardianUIN().getIsMandatory());
+		fieldValidationMap.put(identiy.getParentOrGuardianName().getValue(),
+				identiy.getParentOrGuardianName().getIsMandatory());
 		fieldValidationMap.put(identiy.getPoa().getValue(), identiy.getPoa().getIsMandatory());
 		fieldValidationMap.put(identiy.getPoi().getValue(), identiy.getPoi().getIsMandatory());
 		fieldValidationMap.put(identiy.getPor().getValue(), identiy.getPor().getIsMandatory());
 		fieldValidationMap.put(identiy.getPob().getValue(), identiy.getPob().getIsMandatory());
-		fieldValidationMap.put(identiy.getIndividualBiometrics().getValue(), identiy.getIndividualBiometrics().getIsMandatory());
+		fieldValidationMap.put(identiy.getIndividualBiometrics().getValue(),
+				identiy.getIndividualBiometrics().getIsMandatory());
 		fieldValidationMap.put(identiy.getAge().getValue(), identiy.getAge().getIsMandatory());
 		fieldValidationMap.put(identiy.getAddressLine1().getValue(), identiy.getAddressLine1().getIsMandatory());
 		fieldValidationMap.put(identiy.getAddressLine2().getValue(), identiy.getAddressLine2().getIsMandatory());
@@ -76,48 +81,52 @@ public class MandatoryValidation {
 		fieldValidationMap.put(identiy.getPostalCode().getValue(), identiy.getPostalCode().getIsMandatory());
 		fieldValidationMap.put(identiy.getPhone().getValue(), identiy.getPhone().getIsMandatory());
 		fieldValidationMap.put(identiy.getEmail().getValue(), identiy.getEmail().getIsMandatory());
-		fieldValidationMap.put(identiy.getLocalAdministrativeAuthority().getValue(), identiy.getLocalAdministrativeAuthority().getIsMandatory());
+		fieldValidationMap.put(identiy.getLocalAdministrativeAuthority().getValue(),
+				identiy.getLocalAdministrativeAuthority().getIsMandatory());
 		fieldValidationMap.put(identiy.getIdschemaversion().getValue(), identiy.getIdschemaversion().getIsMandatory());
 		fieldValidationMap.put(identiy.getCnienumber().getValue(), identiy.getCnienumber().getIsMandatory());
 		fieldValidationMap.put(identiy.getCity().getValue(), identiy.getCity().getIsMandatory());
-		
-		List<String> list =fieldValidationMap.entrySet()
-				.stream().filter(map -> map.getValue()==Boolean.TRUE).map(map->map.getKey()).collect(Collectors.toList());
-		
-		for(String keyLabel:list) {
-			if (JsonUtil.getJSONValue(idJsonObj, keyLabel) == null || checkEmptyString(JsonUtil.getJSONValue(idJsonObj, keyLabel))) {
+
+		List<String> list = fieldValidationMap.entrySet().stream().filter(map -> map.getValue() == Boolean.TRUE)
+				.map(map -> map.getKey()).collect(Collectors.toList());
+
+		for (String keyLabel : list) {
+			if (JsonUtil.getJSONValue(idJsonObj, keyLabel) == null
+					|| checkEmptyString(JsonUtil.getJSONValue(idJsonObj, keyLabel))) {
 				registrationStatusDto.setStatusComment(StatusMessage.MANDATORY_FIELD_MISSING);
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId, PlatformErrorMessages.RPR_PVM_MANDATORY_FIELD_MISSING.getCode(),
-						PlatformErrorMessages.RPR_PVM_MANDATORY_FIELD_MISSING.getMessage()+keyLabel);
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
+						PlatformErrorMessages.RPR_PVM_MANDATORY_FIELD_MISSING.getCode(),
+						PlatformErrorMessages.RPR_PVM_MANDATORY_FIELD_MISSING.getMessage() + keyLabel);
 				return false;
 			}
 		}
-		
-		
+
 		return true;
 	}
-	
+
 	private boolean checkEmptyString(Object obj) throws JSONException {
 		ArrayList<HashMap> objArray;
-		if(obj instanceof String)
-			return ((String)obj).trim().isEmpty()?true:false;
-		if(obj instanceof ArrayList) {
-			objArray = (ArrayList<HashMap>)obj;
-			for(int i=0;i<objArray.size();i++) {
+		if (obj instanceof String)
+			return ((String) obj).trim().isEmpty() ? true : false;
+		if (obj instanceof ArrayList) {
+			objArray = (ArrayList<HashMap>) obj;
+			for (int i = 0; i < objArray.size(); i++) {
 				Map jObj = objArray.get(i);
-				return jObj.get("value")==null || jObj.get("language")==null;
+				return jObj.get("value") == null || jObj.get("language") == null;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws  IOException {
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+
+	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 	}
-	private JSONObject getDemoIdentity(String registrationId) throws IOException{
+
+	private JSONObject getDemoIdentity(String registrationId) throws IOException {
 		InputStream documentInfoStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 
@@ -125,7 +134,7 @@ public class MandatoryValidation {
 		String demographicJsonString = new String(bytes);
 		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
 				JSONObject.class);
-		JSONObject idJsonObj = JsonUtil.getJSONObject(demographicJson,"identity");
+		JSONObject idJsonObj = JsonUtil.getJSONObject(demographicJson, "identity");
 		if (idJsonObj == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 		return idJsonObj;

@@ -4,25 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -54,7 +47,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
@@ -154,8 +146,8 @@ public class PacketValidateProcessor {
 	private static final String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
 
 	private static final String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
-	
-	private static final String VALIDATEMANDATORY= "registration-processor.validatemandotary";
+
+	private static final String VALIDATEMANDATORY = "registration-processor.validatemandotary";
 
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
@@ -191,12 +183,7 @@ public class PacketValidateProcessor {
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
-			Boolean mandatoryValidationResult=true;
-			if(RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())) {
-				mandatoryValidationResult =  mandatoryValidation(registrationStatusDto);
-			}
-			
-			if (isValid && mandatoryValidationResult) {
+			if (isValid) {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				object.setIsValid(Boolean.TRUE);
@@ -323,7 +310,6 @@ public class PacketValidateProcessor {
 
 		} finally {
 
-			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -355,10 +341,9 @@ public class PacketValidateProcessor {
 
 	}
 
-
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -390,21 +375,22 @@ public class PacketValidateProcessor {
 
 		}
 
+		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
+				&& !mandatoryValidation(registrationStatusDto)) {
+			return false;
+		}
+
 		return true;
 
 	}
 
-	
-	
-
-
-	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto) throws IOException, JSONException {
+	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
+			throws IOException, JSONException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto,utility);
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
 		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 	}
-
 
 	private boolean schemaValidation(String jsonString)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
