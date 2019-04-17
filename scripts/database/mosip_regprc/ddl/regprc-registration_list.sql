@@ -24,9 +24,9 @@ create table regprc.registration_list (
 	lang_code character varying(3) not null,		-- no fk.  data populate.
 	
 	is_active boolean not null,
-	cr_by character varying (32) not null,
+	cr_by character varying (256) not null,
 	cr_dtimes timestamp not null,
-	upd_by  character varying (32),
+	upd_by  character varying (256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
