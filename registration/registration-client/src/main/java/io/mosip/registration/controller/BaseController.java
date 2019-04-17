@@ -1027,7 +1027,7 @@ public class BaseController extends BaseService {
 		imageView.setLayoutY(8);
 		imageView.setFitHeight(25);
 		imageView.setFitWidth(25);
-		primaryStage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		fXComponents.getStage().addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (primaryStage.isShowing()) {
@@ -1041,8 +1041,8 @@ public class BaseController extends BaseService {
 		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 		scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.initModality(Modality.WINDOW_MODAL);
-		primaryStage.initOwner(fXComponents.getStage());
+		//primaryStage.initModality(Modality.WINDOW_MODAL);
+		//primaryStage.initOwner(fXComponents.getStage());
 		primaryStage.show();
 	}
 

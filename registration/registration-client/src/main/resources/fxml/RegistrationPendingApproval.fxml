@@ -108,14 +108,17 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="3.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerLabel" text="%/pendingapproval" />
                      </children>
                      <GridPane.margin>
-                        <Insets left="50.0" />
+                        <Insets left="3.0" />
                      </GridPane.margin>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>

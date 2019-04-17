@@ -416,13 +416,13 @@
                               				</ImageView>
                                     		<Label layoutX="38.0" layoutY="-2.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="38.0" layoutY="50.0" styleClass="completedPage" text="%fingerPrintTracker" />
-                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="currentPage" text="%irisTracker" />
-                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="pendingPage" text="%photoTracker" />
-		                                    <Label layoutX="51.0" layoutY="90.0" styleClass="subPageCurrent" text="%leftHandTracker" />
+                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="completedPage" text="%irisTracker" />
+                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="currentPage" text="%photoTracker" />
+		                                    <Label layoutX="51.0" layoutY="90.0" styleClass="subPageCompleted" text="%leftHandTracker" />
 		                                    <Label layoutX="51.0" layoutY="130.0" styleClass="subPageCompleted" text="%rightHandTracker" />
 		                                    <Label layoutX="51.0" layoutY="170.0" styleClass="subPageCompleted" text="%thumbTracker" />
-		                                    <Label layoutX="51.0" layoutY="256.0" styleClass="subPageCurrent" text="%leftIrisTracker" />
-		                                    <Label layoutX="51.0" layoutY="296.0" styleClass="subPageUncompleted" text="%rightIrisTracker" />
+		                                    <Label layoutX="51.0" layoutY="256.0" styleClass="subPageCompleted" text="%leftIrisTracker" />
+		                                    <Label layoutX="51.0" layoutY="296.0" styleClass="subPageCompleted" text="%rightIrisTracker" />
 		                                    <Label layoutX="51.0" layoutY="383.0" styleClass="subPageUncompleted" text="%exceptionPhotoTracker" />
                                 		 </children>
                              		 </AnchorPane>
@@ -436,14 +436,14 @@
                               				</ImageView>
                                     		<Label layoutX="38.0" layoutY="-2.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="38.0" layoutY="50.0" styleClass="completedPage" text="%fingerPrintTracker" />
-                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="currentPage" text="%irisTracker" />
-                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="pendingPage" text="%photoTracker" />
+                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="completedPage" text="%irisTracker" />
+                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="currentPage" text="%photoTracker" />
                                     		<Label layoutX="52.0" layoutY="90.0" styleClass="subPageCompleted" text="%leftHandTracker" />
                                     		<Label layoutX="51.0" layoutY="130.0" styleClass="subPageCompleted" text="%rightHandTracker" />
                                     		<Label layoutX="51.0" layoutY="170.0" styleClass="subPageCompleted" text="%thumbTracker" />
                                     		<Label layoutX="51.0" layoutY="256.0" styleClass="subPageCompleted" text="%leftIrisTracker" />
-                                    		<Label layoutX="51.0" layoutY="296.0" styleClass="subPageCurrent" text="%rightIrisTracker" />
-                                    		<Label layoutX="51.0" layoutY="383.0" styleClass="subPageUncompleted" text="%exceptionPhotoTracker" />
+                                    		<Label layoutX="51.0" layoutY="296.0" styleClass="subPageCompleted" text="%rightIrisTracker" />
+                                    		<Label layoutX="51.0" layoutY="383.0" styleClass="subPageCurrent" text="%exceptionPhotoTracker" />
                                 		 </children>
                              		 </AnchorPane>                                
                                 </children>
