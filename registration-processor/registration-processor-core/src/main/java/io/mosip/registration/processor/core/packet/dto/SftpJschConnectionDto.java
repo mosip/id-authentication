@@ -23,6 +23,9 @@ public class SftpJschConnectionDto implements Serializable{
 	/** The ppk file location. */
 	private String ppkFileLocation;
 	
+	/** The ppk file location. */
+	private String protocal;
+	
 	
 	/**
 	 * Gets the host.
@@ -94,6 +97,24 @@ public class SftpJschConnectionDto implements Serializable{
 	 */
 	public void setPpkFileLocation(String ppkFileLocation) {
 		this.ppkFileLocation = ppkFileLocation;
+	}
+
+	/**
+	 * Gets the protocal.
+	 *
+	 * @return the protocal
+	 */
+	public String getProtocal() {
+		return protocal;
+	}
+
+	/**
+	 * Sets the protocal.
+	 *
+	 * @param protocal the new protocal
+	 */
+	public void setProtocal(String protocal) {
+		this.protocal = protocal;
 	}
 	
 	

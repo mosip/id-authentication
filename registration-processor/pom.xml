@@ -100,6 +100,9 @@
 		<!-- joda-time -->
 		<jodatime.version>2.8.1</jodatime.version>
 
+      <!-- jsch.version -->
+		<jsch.version>0.1.55</jsch.version>
+		
 		<!-- local -->
 		<registration.status.service.version>0.10.2</registration.status.service.version>
 		<registration.processor.core.version>0.10.2</registration.processor.core.version>

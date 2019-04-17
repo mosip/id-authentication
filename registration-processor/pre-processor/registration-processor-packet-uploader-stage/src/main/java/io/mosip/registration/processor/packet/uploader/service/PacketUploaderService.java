@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  *            Return type of operations
  */
 @Service
-public interface PacketUploaderService<T, U> {
+public interface PacketUploaderService<U> {
 
 	/**
 	 * Stores registration packets to virus scanner zone.
@@ -21,6 +21,6 @@ public interface PacketUploaderService<T, U> {
 	 *            the file
 	 * @return the u
 	 */
-	public U validatePacket(T file, String stageName);
+	public U validatePacket(String regId);
 
 }
