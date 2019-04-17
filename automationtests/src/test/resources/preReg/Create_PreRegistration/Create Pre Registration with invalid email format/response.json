@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$\" does not match input string \"omsaieswar@gmail@gmail.com\" at \"/identity/email\""
-  },
-  "status": false,
-  "resTime": "2019-02-19T10:07:33.519Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "errors": {
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "email failed for the regex ^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
+    },
+    "responsetime": "2019-04-17T06:22:13.145Z",
+    "response": null
 }

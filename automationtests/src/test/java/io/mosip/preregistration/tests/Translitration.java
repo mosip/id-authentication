@@ -66,7 +66,7 @@ public class Translitration extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * Batch job service for expired application
+	 * Translitration
 	 */
 	@Test
 	public void translitrationFromArabicToFranch() {
@@ -96,7 +96,7 @@ public class Translitration extends BaseTestCase implements ITest {
 		translitrationRequest=lib.translitrationRequest(testSuite, toLang, to_field_value,fromLang );
 		translitrationResponse=lib.translitration(translitrationRequest);
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
-		lib.compareValues(from_value, expectedto_field_value);
+		lib.compareValues(expectedto_field_value, from_value);
 	}
 
 	@Override

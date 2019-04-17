@@ -77,7 +77,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public GetPreRegistartionData() {
 		super();
 	}
-	PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	/**
 	 * Data Prividers to read the input json files from the folders
 	 * 
@@ -126,7 +126,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
+				Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
 
 			} catch (Exception e) {
 				logger.info(e);
@@ -183,6 +183,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
+		lib.logOut();
 	}
 
 	@BeforeMethod
@@ -190,6 +191,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		 preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
+		  authToken = lib.getToken();
 	}
 
 	@Override

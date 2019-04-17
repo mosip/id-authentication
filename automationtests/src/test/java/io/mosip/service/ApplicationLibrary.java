@@ -47,6 +47,11 @@ public class ApplicationLibrary extends BaseTestCase {
 	public Response getRequestParm(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_pathParameters(ApplnURI + Resource_URI, valueMap);
 	}
+	public Response put_Request_pathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
+        return commonLibrary.put_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
+
+  }
+
 	public Response getRequestDataSync(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParamDataSync(ApplnURI + Resource_URI, valueMap);
 	}
@@ -79,6 +84,9 @@ public class ApplicationLibrary extends BaseTestCase {
 	}
 	public Response deleteRequestWithParm(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.deleteRequest(ApplnURI + Resource_URI, valueMap);
+	}
+	public Response deleteRequestWithParmAndQuerry(String Resource_URI, HashMap<String, String> valueMap,HashMap<String, String> query) {
+		return commonLibrary.deleteRequestWithPathAndQuery(ApplnURI + Resource_URI, valueMap,query);
 	}
 
 	// public Response PutRequest(String Resource_URI, String )

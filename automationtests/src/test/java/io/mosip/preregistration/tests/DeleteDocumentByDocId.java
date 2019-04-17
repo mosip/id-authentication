@@ -126,7 +126,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		String docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
 		
 		//Delete All Document by Document Id
-		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId);
+		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId,preId);
 		
 		
 		outerKeys.add("responsetime");

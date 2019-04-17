@@ -17,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 import org.testng.ITest;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -63,12 +64,17 @@ public class IntegrationScenarios extends BaseTestCase {
 	@BeforeTest
 	public void readPropertiesFile() {
 		initialize();
-		// lib.intialize1();
 	}
-
-	/*
-	 * @BeforeMethod public void intializ() { lib.intialize(); }
-	 */
+	@BeforeMethod
+	public void getAuthToken()
+	{
+		  authToken=lib.getToken(); 
+	}
+	@AfterMethod
+	public void logOut()
+	{
+		lib.logOut();
+	}
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUpdateGetPreRegData() {
 
@@ -76,7 +82,6 @@ public class IntegrationScenarios extends BaseTestCase {
 		try {
 			response = lib.CreatePreReg();
 			preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
-			createdBy = response.jsonPath().get("response[0].createdBy").toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
@@ -88,7 +93,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(response.jsonPath().get("response[0].preRegistrationId").toString(), preRegID);
 		// Update PreReg
 		try {
-			response = lib.updatePreReg(preRegID, createdBy);
+			response = lib.updatePreReg(preRegID);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
@@ -106,46 +111,28 @@ public class IntegrationScenarios extends BaseTestCase {
 	public void createAppUploadDocDeleteDocByDocId() {
 
 		// Create PreReg
-		try {
-			response = lib.CreatePreReg();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
-
+		response = lib.CreatePreReg();
+		String PrId = response.jsonPath().get("response[0].preRegistrationId").toString();
 		// Upload document
-		try {
-			response = lib.documentUpload(response);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
 
+		response = lib.documentUpload(response);
 		String documentId = response.jsonPath().get("response[0].documentId").toString();
-		logger.info("Document ID: " + documentId);
 
 		// Delete document by document Id
-		try {
-			response = lib.deleteAllDocumentByDocId(documentId);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
 
-		String actualMessage = response.jsonPath().get("response[0].resMsg").toString();
-		lib.compareValues(actualMessage, expectedMessageDeleteDoc);
+		response = lib.deleteAllDocumentByDocId(documentId,PrId);
+
+		String actualMessage = response.jsonPath().get("response[0].message").toString();
+		lib.compareValues(actualMessage, "Document successfully deleted");
 
 		// Check if document is deleted successfully
-		try {
-			response = lib.deleteAllDocumentByDocId(documentId);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
+		response = lib.deleteAllDocumentByDocId(documentId,PrId);
 
-		actualMessage = response.jsonPath().get("err.message").toString();
+		actualMessage = response.jsonPath().get("errors.message").toString();
 		lib.compareValues(actualMessage, "DOCUMENT_IS_MISSING");
+		
 	}
+
 
 
 	@Test(groups = { "IntegrationScenarios" })
@@ -167,19 +154,19 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.deleteAllDocumentByPreId(preRegID);
 
-		String actualMessage = response.jsonPath().get("response[0].resMsg").toString();
-		lib.compareValues(actualMessage, expectedMessageDeleteDoc);
+		String actualMessage = response.jsonPath().get("response[0].message").toString();
+		lib.compareValues(actualMessage, "All documents assosiated with requested pre-registration id deleted sucessfully");
 
 		// Check if document is deleted successfully
 
 		response = lib.getAllDocumentForPreId(preRegID);
 
-		actualMessage = response.jsonPath().get("err.message").toString();
+		actualMessage = response.jsonPath().get("errors.message").toString();
 		lib.compareValues(actualMessage, "DOCUMENT_IS_MISSING");
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppDiscardUploadDoc() throws FileNotFoundException, IOException, ParseException {
+	public void createAppDiscardUploadDoc()  {
 
 		// Create PreReg
 
@@ -195,9 +182,9 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String errMessage = response.jsonPath().get("err.message").toString();
+		String errMessage = response.jsonPath().get("errors.message").toString();
 		logger.info("Error message: " + errMessage);
-		lib.compareValues(errMessage, "PRG_PAM_APP_005 --> UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		lib.compareValues(errMessage, "No data found for the requested pre-registration id");
 
 	}
 	@Test(groups = { "IntegrationScenarios" })
@@ -206,12 +193,9 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.CreatePreReg();
 		preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
-		createdBy = response.jsonPath().get("response[0].createdBy").toString();
-
 		// Update PreReg
 
-		response = lib.updatePreReg(preRegID, createdBy);
-
+		response = lib.updatePreReg(preRegID);
 		// Discard App
 		response = lib.discardApplication(preRegID);
 		lib.compareValues(response.jsonPath().getString("response[0].preRegistrationId").toString(), preRegID);
@@ -241,31 +225,23 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Cancel Appointment
 		response = lib.CancelBookingAppointment(lib.FetchAppointmentDetails(preRegID), preRegID);
-		lib.compareValues(response.jsonPath().get("response.message"), "APPOINTMENT_SUCCESSFULLY_CANCELED");
+		lib.compareValues(response.jsonPath().get("response.message"), "Appointment cancelled successfully");
 		lib.compareValues(fetchCenterResponse.jsonPath().get("response").toString(),
 				lib.FetchCentre(regCenterId).jsonPath().get("response").toString());
 	}
+
+
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUploadBookUpdate() {
 
 		// Create PreReg
-		try {
-			response = lib.CreatePreReg();
-			preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
-			createdBy = response.jsonPath().get("response[0].createdBy").toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
+		response = lib.CreatePreReg();
+		preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
 
 		// Upload document
-		try {
-			response = lib.documentUpload(response);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
+
+		response = lib.documentUpload(response);
 
 		String documentId = response.jsonPath().get("response[0].documentId").toString();
 		logger.info("Document ID: " + documentId);
@@ -275,19 +251,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Book Appointment
 		response = lib.BookAppointment(response, fetchCenterResponse, preRegID);
-		lib.compareValues(response.jsonPath().getString("response[0].bookingMessage"), "APPOINTMENT_SUCCESSFULLY_BOOKED");
+		lib.compareValues(response.jsonPath().getString("response.bookingMessage"), "Appointment booked successfully");
 
 		// Update PreReg
-		try {
-			response = lib.updatePreReg(preRegID, createdBy);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
-		Assert.assertNotNull(response.jsonPath().get("response[0].updatedBy"));
+		response = lib.updatePreReg(preRegID);
+		Assert.assertNotNull(response.jsonPath().get("response[0].updatedDateTime"));
 
 	}
-
 	@SuppressWarnings("unchecked")
 	@Test(groups = { "IntegrationScenarios" })
 	public void createMultipleAppDeleteFewFetchAllAppsByUserId() {
@@ -314,31 +284,16 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUploadFetchBookAppFetchApp() {
-		List<String> appointmentDetails = new ArrayList<>();
-
 		String regCenterId = null;
 		String appDate = null;
 		String timeSlotFrom = null;
 		String timeSlotTo = null;
 
 		// Create PreReg
-		try {
 			response = lib.CreatePreReg();
 			preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
-			createdBy = response.jsonPath().get("response[0].createdBy").toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
-
 		// Upload document
-		try {
 			response = lib.documentUpload(response);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
-
 		String documentId = response.jsonPath().get("response[0].documentId").toString();
 		logger.info("Document ID: " + documentId);
 
@@ -347,19 +302,12 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Book Appointment
 		response = lib.BookAppointment(response, fetchCenterResponse, preRegID);
-		lib.compareValues(response.jsonPath().getString("response[0].bookingMessage"), bookingSuccessMessage);
+		lib.compareValues(response.jsonPath().getString("response.bookingMessage"),"Appointment booked successfully");
 
 		// Update PreReg
-		try {
-			response = lib.updatePreReg(preRegID, createdBy);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
-		Assert.assertNotNull(response.jsonPath().get("response[0].updatedBy"));
-
+			response = lib.updatePreReg(preRegID);
+		Assert.assertNotNull(response.jsonPath().get("response[0].updatedDateTime"));
 	}
-
 	@Test(groups = { "IntegrationScenarios" })
 	public void uploadMultipleDocsForSameCategory() {
 
@@ -484,7 +432,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
 				preID);
 		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
-				"APPOINTMENT_SUCCESSFULLY_CANCELED");
+				"Appointment cancelled successfully");
 		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		Assert.assertEquals(
 				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response[0].preRegistrationId").toString(),
@@ -493,6 +441,7 @@ public class IntegrationScenarios extends BaseTestCase {
 				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response[0].bookingRegistrationDTO"));
 
 	}
+
 
 
 	/**
@@ -517,9 +466,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
 				preID);
 		String msg = CancelBookingAppointmentResponse.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(msg, "APPOINTMENT_CANNOT_BE_CANCELED");
+		lib.compareValues(msg, "Appointment cannot be canceled");
 
 	}
+
 
 	/**
 	 * @author Ashish Update pre Registration data for expired application
@@ -540,7 +490,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		lib.expiredStatus();
-		Response updateResponse = lib.updatePreReg(preID, createdBy);
+		Response updateResponse = lib.updatePreReg(preID);
 		String updatePreId = updateResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.compareValues(updatePreId, preID);
 		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
@@ -554,7 +504,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	@Test(groups = { "IntegrationScenarios" })
+	/*@Test(groups = { "IntegrationScenarios" })
 	public void copyDocumentForDiscardApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -568,7 +518,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(copyUploadedDocuments.jsonPath().get("err.errorCode").toString(), "PRG_PAM_APP_005");
 		lib.compareValues(copyUploadedDocuments.jsonPath().get("err.message").toString(),
 				"PRG_PAM_APP_005 --> UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
-	}
+	}*/
 
 	/**
 	 * @author Ashish Book appointment for expired application
@@ -591,10 +541,8 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString(),
 				"Expired");
-		Response reBookAnAppointmentResponse = lib.ReBookAnAppointment(preID, FetchAppointmentDetailsResponse,
-				avilibityResponse);
-		lib.compareValues(reBookAnAppointmentResponse.jsonPath().get("response[0].bookingStatus").toString(), "Booked");
-
+		Response reBookAnAppointmentResponse = lib.ReBookAnAppointment(avilibityResponse, preID);
+		lib.compareValues(reBookAnAppointmentResponse.jsonPath().get("response.bookingStatus").toString(), "Booked");
 	}
 
 	/**
@@ -611,10 +559,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		lib.compareValues(fetchResponse.jsonPath().get("err.message").toString(), "NO_RECORD_FOUND_FOR_USER_ID");
+		lib.compareValues(fetchResponse.jsonPath().get("errors.message").toString(), "No record found for the requested user id");
 
 	}
-
 	/**
 	 * @author Ashish Fetch appointment details for discarded Booked
 	 *         Appointment(done)
@@ -634,14 +581,15 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response discardResponse = lib.discardApplication(preID);
 			Response fetchAppointmentResponse = lib.FetchAppointmentDetails(preID);
 			Assert.assertEquals(fetchAppointmentResponse.jsonPath().get("errors[0].message").toString(),
-					"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+					"No data found for the requested pre-registration id");
 			avilibityResponse = lib.FetchCentre(expectedRegCenterId);
 			String actualRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
 			lib.compareValues(actualRegCenterId, expectedRegCenterId);
 			String actualCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]").toString();
-			lib.compareValues(expectedCenterDetails, actualCenterDetails);
+			lib.compareValues(actualCenterDetails, expectedCenterDetails);
 			
 	}
+
 	/**
 	 * @author M9010713 update demographic data after booking an appointment
 	 */
@@ -656,7 +604,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response updatePreRegResponse = lib.updatePreReg(preID, createdBy);
+		Response updatePreRegResponse = lib.updatePreReg(preID);
 		String preIDAfterUpdate = updatePreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.compareValues(preIDAfterUpdate, preID);
 	}
@@ -728,13 +676,12 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
+	
 		Response discardResponse = lib.discardApplication(preID);
 		Assert.assertEquals(preID, discardResponse.jsonPath().get("response[0].preRegistrationId").toString());
-		Assert.assertEquals(createdBy, discardResponse.jsonPath().get("response[0].deletedBy").toString());
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		Assert.assertEquals(getPreRegistrationDataResponse.jsonPath().get("err.message").toString(),
-				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		Assert.assertEquals(getPreRegistrationDataResponse.jsonPath().get("errors.message").toString(),
+				"No data found for the requested pre-registration id");
 	}
 
 	/**
@@ -831,11 +778,11 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response discardResponse = lib.discardApplication(preID);
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.message"),
-				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.errorCode"), "PRG_PAM_APP_005");
-
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message"),
+				"No data found for the requested pre-registration id");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode"), "PRG_PAM_APP_005");
 	}
+
 		
 
 	/**
@@ -858,8 +805,8 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
 		lib.CancelBookingAppointment(FetchAppointmentDetails, preID);
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.message"), "BOOKING_DATA_NOT_FOUND");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.errorCode"), "PRG_BOOK_RCI_013");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message"), "Booking data not found");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode"), "PRG_BOOK_RCI_013");
 
 	}
 
@@ -878,12 +825,13 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.message").toString(),
-				"BOOKING_DATA_NOT_FOUND");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.errorCode").toString(),
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message").toString(),
+				"Booking data not found");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode").toString(),
 				"PRG_BOOK_RCI_013");
 
 	}
+
 
 	/**
 	 * @author Ashish create,discard,get application data
@@ -900,8 +848,8 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		lib.compareValues(getPreRegistrationDataResponse.jsonPath().get("err.message").toString(),
-				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		Assert.assertEquals(getPreRegistrationDataResponse.jsonPath().get("errors.message").toString(),
+				"No data found for the requested pre-registration id");
 	}
 
 	/**
@@ -924,7 +872,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		String errorCode = BookAppointmentResponse.jsonPath().get("errors[0].errorCode").toString();
 		String message = BookAppointmentResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "PRG_PAM_APP_005");
-		lib.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		lib.compareValues(message, "No data found for the requested pre-registration id");
 
 	}
 
@@ -943,12 +891,19 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentUpload = lib.documentUpload(createResponse);
 		Response FetchCentreResponse = lib.FetchCentre();
+		String actualRegCenterId = FetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 		lib.BookAppointment(documentUpload, FetchCentreResponse, preID);
+		Response fetch = lib.FetchAppointmentDetails(preID);
 		Response FetchCentreResponse1 = lib.FetchCentre();
 		Response responsed = lib.BookAppointment(documentUpload, FetchCentreResponse1, preID);
-		lib.compareValues(responsed.jsonPath().get("message").toString(),
-				"PRG_CORE_REQ_005 --> APPOINTMENT_CANNOT_BE_BOOKED_FOR_BOOKED");
-
+		Response FetchCentreResponse2 = lib.FetchCentre(actualRegCenterId);
+		String expectedRegCenterId = FetchCentreResponse1.jsonPath().get("response.regCenterId").toString();
+		if(!(actualRegCenterId.equals(expectedRegCenterId)))
+		{
+			String actualCenterDetails = FetchCentreResponse.jsonPath().get("response.centerDetails").toString();
+			String expectedCenterDetails = FetchCentreResponse2.jsonPath().get("response.centerDetails").toString();
+			lib.compareValues(actualCenterDetails, expectedCenterDetails);
+		}
 	}
 
 	/**
@@ -988,12 +943,13 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
 		Response documentResponse = lib.documentUpload(createResponse);
-		String errorCode = documentResponse.jsonPath().get("err.errorCode").toString();
-		String message = documentResponse.jsonPath().get("err.message").toString();
-		lib.compareValues(message, "PRG_PAM_APP_005 --> UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		String errorCode = documentResponse.jsonPath().get("errors.errorCode").toString();
+		String message = documentResponse.jsonPath().get("errors.message").toString();
+		lib.compareValues(message, "No data found for the requested pre-registration id");
 		lib.compareValues(errorCode, "PRG_PAM_APP_005");
 
 	}
+	
 
 	/**
 	 * @author Ashish Retrive Pre Registration After uploading document
@@ -1011,9 +967,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.documentUpload(createResponse);
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.message").toString(),
-				"BOOKING_DATA_NOT_FOUND");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("err.errorCode").toString(),
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message").toString(),
+				"Booking data not found");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode").toString(),
 				"PRG_BOOK_RCI_013");
 
 	}
@@ -1022,7 +978,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	 * @author Ashish create application,u[pload document[parent],create
 	 *         application[child],copy document from source to dest
 	 */
-	@Test(groups = { "IntegrationScenarios" })
+	/*@Test(groups = { "IntegrationScenarios" })
 	public void copyDocument() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -1032,7 +988,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response createResponseDestination = lib.CreatePreReg(createPregRequest);
 		String preIDDestination = createResponseDestination.jsonPath().get("response[0].preRegistrationId").toString();
 		Response copyUploadedDocumentsResponse = lib.copyUploadedDocuments(preIDSource, preIDDestination);
-	}
+	}*/
 	/**@author Ashish
 	 * Consumed booked appointment
 	 */
@@ -1149,9 +1105,8 @@ public class IntegrationScenarios extends BaseTestCase {
 			preRegistrationIds.add(PreID);
 			lib.reverseDataSync(preRegistrationIds);
 			lib.consumedStatus();
-			Response getPreRegistrationStatusResposne = lib.getPreRegistrationStatus(PreID);
-			String massege = getPreRegistrationStatusResposne.jsonPath().get("err.message").toString();
-			lib.compareValues(massege, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+			Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(PreID);
+			lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message").toString(), "No data found for the requested pre-registration id");
 			
 		}
 	
@@ -1179,12 +1134,11 @@ public class IntegrationScenarios extends BaseTestCase {
 		for(String PreRegId:preRegistrationIds)
 		{
 			Response getPreRegistrationStatusResposne = lib.getPreRegistrationStatus(PreRegId);
-			lib.compareValues(getPreRegistrationStatusResposne.jsonPath().get("err.message").toString(), "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+			lib.compareValues(getPreRegistrationStatusResposne.jsonPath().get("errors.message").toString(), "No data found for the requested pre-registration id");
 		}
 		
 	
 	}
-	
 	
 	
 	/**@author Ashish
@@ -1203,7 +1157,6 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(PreID);
 			lib.fetchDocs(retrivePreRegistrationDataResponse, "PreRegDocs");
 		}
-	
 	/**
 	 * @author Ashish Consumed multiple pre registration ids with some invalid PRID
 	 */
@@ -1220,20 +1173,22 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response fetchCentreResponse = lib.FetchCentre();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
 			preRegistrationIds.add(PreID);
-
 		}
-		preRegistrationIds.add("invalid");
+		String invalid = "847699012982";
+		preRegistrationIds.add(invalid);
 		lib.reverseDataSync(preRegistrationIds);
 		lib.consumedStatus();
 		int count=0;
 		for (String PreRegId : preRegistrationIds) {
-			Response getPreRegistrationStatusResposne = lib.getPreRegistrationStatus(PreRegId);
-			lib.compareValues(getPreRegistrationStatusResposne.jsonPath().get("err.message").toString(), "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
-			count++;
-			
+			if(PreRegId!=invalid)
+			{
+				Response getPreRegistrationStatusResposne = lib.getPreRegistrationStatus(PreRegId);
+				lib.compareValues(getPreRegistrationStatusResposne.jsonPath().get("errors.message").toString(), "No data found for the requested pre-registration id");
+				count++;
+			}
 		}
 		String actualCount = Integer.toString(count);
-		lib.compareValues(actualCount, "4");
+		lib.compareValues(actualCount, "3");
 
 	
 	}
@@ -1244,7 +1199,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	// one application to another application Status Of Canceled Appointment
 	// Appointment
 
-	@Test(groups = { "IntegrationScenarios" })
+	/*@Test(groups = { "IntegrationScenarios" })
 	public void copyUploadedDocument() {
 
 		// Creating the Pre-Registration Application
@@ -1275,7 +1230,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			e.printStackTrace();
 		}
 
-	}
+	}*/
 
 	// Integration scenario - Create application, document upload for diff cat
 	// codes,get all document for pre id
@@ -1467,19 +1422,14 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preRegID = null;
 		String createdBy = null;
 		Response createApplicationResponse = null;
-
 		try {
 			createApplicationResponse = lib.CreatePreReg();
 			preRegID = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			createdBy = createApplicationResponse.jsonPath().get("response[0].createdBy").toString();
-
 			Response uploadDoc = lib.documentUpload(createApplicationResponse);
-
 			String docId = uploadDoc.jsonPath().get("response[0].documentId").toString();
-
 			Response discardApp = lib.discardApplication(preRegID);
-			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId);
-
+			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId,preRegID);
 			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");
 			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "DOCUMENT_IS_MISSING");
 

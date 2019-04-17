@@ -91,8 +91,8 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
-		case "smoke":
+		switch ("smoke") {
+		case "smokeAndRegression":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
 		case "regression":
@@ -127,8 +127,6 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		preId = (Actualresponse.jsonPath().get("response[0].preRegistrationId")).toString();
-
 		outerKeys.add("responsetime");
 		outerKeys.add("timestamp");
 		outerKeys.add("message");

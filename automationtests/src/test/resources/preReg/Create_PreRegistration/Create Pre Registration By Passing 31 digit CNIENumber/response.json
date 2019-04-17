@@ -3,8 +3,8 @@
     "version": null,
     "errors": {
         "errorCode": "PRG_PAM_APP_014",
-        "message": "CNIENumber^([0-9]{10,30})$"
+        "message": "CNIENumber failed for the regex ^([0-9]{10,30})$"
     },
-    "responsetime": "2019-04-11T09:41:04.551Z",
+    "responsetime": "2019-04-17T05:04:48.162Z",
     "response": null
 }

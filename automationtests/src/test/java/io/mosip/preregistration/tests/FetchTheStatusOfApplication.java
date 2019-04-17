@@ -72,6 +72,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	static String folderPath = "preReg/Fetch_the_status_of_a_application";
 	static String outputFile = "Fetch_the_status_of_a_applicationOutput.json";
 	static String requestKeyFile = "Fetch_the_status_of_a_applicationRequest.json";
+	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	FetchTheStatusOfApplication() {
 		super();
@@ -129,7 +130,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 			status = true;
 		}
 		else {
-			Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
+			Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
 
 			outerKeys.add("responsetime");
 			outerKeys.add("timestamp");
@@ -183,6 +184,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
+		lib.logOut();
 	}
 
 	@BeforeMethod
@@ -191,6 +193,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 		
          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
+         authToken = lib.getToken();
 	}
 
 	@Override

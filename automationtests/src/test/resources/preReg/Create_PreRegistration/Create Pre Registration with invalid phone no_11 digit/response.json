@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^([6-9]{1})([0-9]{9})$\" does not match input string \"93656257066\" at \"/identity/phone\""
-  },
-  "status": false,
-  "resTime": "2019-02-19T07:45:23.262Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "errors": {
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "phone failed for the regex ^([6-9]{1})([0-9]{9})$"
+    },
+    "responsetime": "2019-04-17T05:05:44.027Z",
+    "response": null
 }

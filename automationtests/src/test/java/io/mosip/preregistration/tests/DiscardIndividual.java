@@ -95,7 +95,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smoke") {
+		 switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -121,7 +121,6 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			//Response createPregResponse = prl.CreatePreReg();
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = prl.createRequest(testSuite);
 			Response createPregResponse = prl.CreatePreReg(createPregRequest);
@@ -129,14 +128,14 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			Actualresponse=prl.discardApplication(preReg_Id);
 			preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
-			String message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
-			prl.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+			String message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
+			prl.compareValues(message, "No data found for the requested pre-registration id");
 			Assert.assertEquals(preId, preReg_Id);
 			status=true;
 		}
 		else {
 			outerKeys.add("responsetime");
-			Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
+			Actualresponse = applicationLibrary.deleteRequestWithParm(preReg_URI, actualRequest);
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
 				if (status) {

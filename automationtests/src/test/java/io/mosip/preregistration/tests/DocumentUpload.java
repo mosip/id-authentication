@@ -125,7 +125,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		if(testCase.contains("smoke"))
 		{
 			//Creating the Pre-Registration Application
-			Response createApplicationResponse = PreRegistrationLibrary.CreatePreReg();
+			Response createApplicationResponse = preRegLib.CreatePreReg();
 			
 			String preRegIdCreateAPI=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			//Document Upload for created application

@@ -53,9 +53,9 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		String otp = otpData.get(0).toString();
-		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
+		lib.compareValues(response.jsonPath().get("response.message").toString(), "Email Request submitted");
 	}
-	/*@Test
+	@Test
 	public void sendOtpToMobile() {
 		testSuite = "SendOtp/SendOtpMobile";
 		JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
@@ -65,7 +65,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		String otp = otpData.get(0).toString();
-		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
+		lib.compareValues(response.jsonPath().get("response.message").toString(), "Sms Request Sent");
 	}
 	@Test
 	public void sendOtpToInvalidEmailId() {
@@ -74,10 +74,10 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		Response generateOTPResponse = lib.generateOTP(sendOtpRequest);
-		String errorCode=generateOTPResponse.jsonPath().get("response[0].errorCode").toString();
-		String message=generateOTPResponse.jsonPath().get("response[0].message").toString();
-		lib.compareValues(errorCode, "PRG_AUTH_008");
-		lib.compareValues(message, "INVALID_REQUEST_USERID");
+		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
+		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
+		lib.compareValues(message, "Invlaid Request userId recieved");
 	}
 	@Test
 	public void sendOtpToInvalidMobileNo() {
@@ -86,10 +86,10 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		Response generateOTPResponse = lib.generateOTP(sendOtpRequest);
-		String errorCode=generateOTPResponse.jsonPath().get("response[0].errorCode").toString();
-		String message=generateOTPResponse.jsonPath().get("response[0].message").toString();
-		lib.compareValues(errorCode, "PRG_AUTH_008");
-		lib.compareValues(message, "INVALID_REQUEST_USERID");
+		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
+		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
+		lib.compareValues(message, "Invlaid Request userId recieved");
 	}
 	@Test
 	public void sendOtpWithoutGivingUserId() {
@@ -98,10 +98,10 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		Response generateOTPResponse = lib.generateOTP(sendOtpRequest);
-		String errorCode=generateOTPResponse.jsonPath().get("response[0].errorCode").toString();
-		String message=generateOTPResponse.jsonPath().get("response[0].message").toString();
-		lib.compareValues(errorCode, "PRG_AUTH_008");
-		lib.compareValues(message, "INVALID_REQUEST_USERID");
+		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
+		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
+		lib.compareValues(message, "Invlaid Request userId recieved");
 	}
 	@Test
 	public void sendOtpToBlockedUser() {
@@ -123,7 +123,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Response generateOTP  = lib.generateOTP(sendOtpRequest);
 		String message = generateOTP.jsonPath().get("response.message").toString();
 		lib.compareValues(message, "USER_BLOCKED");
-	}*/
+	}
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

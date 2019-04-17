@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Mosip Kernel API Suite">
+	<listeners>
+		<listener class-name="io.mosip.util.CustomTestNGReporter" />
+	</listeners> 
+
+<!--   Passing Group as parmeter unsing "testType"
+  Possible Groups are:
+  						smoke
+  						regression
+  						smokeAndRegression -->
+ 
+  		   <test name="Pre Registration Tests">
+			<parameter name="testType" value="smokeandregression" />
+			<classes>
+				<class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />
+                           <class name="io.mosip.preregistration.tests.CreatePreRegistration" />
+			</classes>
+		</test> 
+			
+</suite> <!-- Suite -->

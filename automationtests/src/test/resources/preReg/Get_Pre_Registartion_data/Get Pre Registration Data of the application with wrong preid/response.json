@@ -1,10 +1,10 @@
 {
     "id": null,
     "version": null,
-    "err": {
+    "errors": {
         "errorCode": "PRG_PAM_APP_005",
-        "message": "UNABLE_TO_FETCH_THE_PRE_REGISTRATION"
+        "message": "No data found for the requested pre-registration id"
     },
-    "responsetime": "2019-03-26T06:42:19.202Z",
+    "responsetime": "2019-04-12T09:07:23.786Z",
     "response": null
 }

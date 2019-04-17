@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^([6-9]{1})([0-9]{9})$\" does not match input string \"93656257066\" at \"/identity/phone\""
-  },
-  "status": false,
-  "resTime": "2019-02-21T12:03:02.727Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "errors": {
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "postalCode failed for the regex ^[(?i)A-Z0-9]{5}$"
+    },
+    "responsetime": "2019-04-17T06:21:02.495Z",
+    "response": null
 }

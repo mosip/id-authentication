@@ -128,7 +128,7 @@ public class ReBookingAnAppointment extends BaseTestCase implements ITest {
 		
 		 
 		//Re-book an Appointment
-		 Response rebookAppRes = preRegLib.ReBookAnAppointment(preId, fetchAppointmentDetailsResponse, fetchCenResponse);
+		 Response rebookAppRes = preRegLib.ReBookAnAppointment(fetchCenter, preId);
 			
 		 
 		 

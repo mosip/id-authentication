@@ -129,8 +129,9 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		Response createApplicationRes = preRegLib.CreatePreReg();
 		String destPreId = createApplicationRes.jsonPath().get("response[0].preRegistrationId").toString();
 		
+		String docCatCode = null;
 		//Copy uploaded document from Source PreId to Destination PreId
-		 Response copyDocresponse=preRegLib.copyUploadedDocuments(srcPreID, destPreId);
+		 Response copyDocresponse=preRegLib.copyUploadedDocuments(srcPreID, destPreId,docCatCode);
 		 
 		
 		 

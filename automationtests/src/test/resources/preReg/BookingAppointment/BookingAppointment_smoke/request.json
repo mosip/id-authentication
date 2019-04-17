@@ -2,11 +2,10 @@
   "id": "mosip.pre-registration.booking.book",
   "version": "1.0",
   "requesttime": "2019-04-10T10:31:32.957Z",
-  "request": [{
-  	"preRegistrationId":"51348293560287",
+  "request": {
         "registration_center_id": "10008",
         "appointment_date": "2019-04-12",
         "time_slot_from": "10:30:00",
         "time_slot_to": "10:45:00"
-   }]
+   }
 } 

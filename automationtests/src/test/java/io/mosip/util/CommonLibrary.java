@@ -270,7 +270,7 @@ public class CommonLibrary extends BaseTestCase {
 		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
 
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body)
-				.contentType(contentHeader).accept(acceptHeader).log().all().when().pathParameters(pathValue).post(url).then().log().all()
+				.contentType(contentHeader).accept(acceptHeader).log().all().when().pathParams(pathValue).post(url).then().log().all()
 				.extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
@@ -442,7 +442,7 @@ public class CommonLibrary extends BaseTestCase {
 		PreRegistrationLibrary lib = new PreRegistrationLibrary();
 		String regClientAdminAuthToken = lib.regClientAdminToken();
 		Cookie.Builder builder = new Cookie.Builder("Authorization", regClientAdminAuthToken);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap).log()
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(valueMap).log()
 				.all().when().get(url).then().log().all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
@@ -467,6 +467,31 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	} // end GET_REQUEST
+	public Response put_Request_pathAndMultipleQueryParam(String url, HashMap<String, String> map) {
+        logger.info("REST-ASSURED: Sending a Put request to " + url);
+
+        Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+        
+        Response getResponse = null;
+        
+        int i=0;
+               
+                     getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParam(map.keySet().toArray()[i].toString(), map.get(map.keySet().toArray()[i]).toString())
+                     .queryParam(map.keySet().toArray()[i+1].toString(), map.get(map.keySet().toArray()[i+1]).toString()).log()
+                     .all().when().put(url).then().log().all().extract().response();
+                     
+        
+        
+        
+        
+        
+        // log then response
+        logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+        logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+  } // end GET_REQUEST
+  
+
 
 	public Response GET_REQUEST_withoutParameters(String url) {
 		logger.info("REST-ASSURED: Sending a GET request to " + url);
@@ -505,6 +530,14 @@ public class CommonLibrary extends BaseTestCase {
 		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(valueMap).log().all()
 				.when().delete(url).then().log().all().extract().response();
+		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
+		return getResponse;
+	}
+	public Response deleteRequestWithPathAndQuery(String url, HashMap<String, String> valueMap, HashMap<String, String> query) {
+		logger.info("REST-ASSURED: Sending a DELETE request to   " + url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(valueMap).queryParams(query).log().all().when().delete(url).then().log().all().extract().response();
 		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
 		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
 		return getResponse;
