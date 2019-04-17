@@ -276,6 +276,8 @@ public class FXUtils {
 		});
 
 		onTypeFocusUnfocusListener(parentPane, localField);
+		onTypeFocusUnfocusForLabel(parentPane, field);
+
 	}
 
 	/**
@@ -307,6 +309,32 @@ public class FXUtils {
 		}
 	}
 
+	/**
+	 * Display the {@link Label}, {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} in which secondary or local language's Label,
+	 *            Field and Error Message Label is present
+	 * @param field
+	 *            the secondary or local {@link TextField}
+	 */
+	public void onTypeFocusUnfocusForLabel(Pane parentPane, TextField field) {
+		if(field!=null) {
+			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				if(newValue.isEmpty()) {
+					hideLabel(parentPane, field);
+				} else {
+					showLabel(parentPane, field);
+				}
+			});
+
+		}
+	}
+	
 	/**
 	 * Display the secondary or local language's Label, Field's Prompt Text and
 	 * Error Message Label based on the focus in or focus out event.
