@@ -11,8 +11,6 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
  * @description This class is responsible for sending or receiving data to the service.
  *
  * @author Shashank Agrawal
- * @author Agnitra Banerjee
- * @author Gurdayal Dhillon
  * @export
  * @class DataStorageService
  */
@@ -36,19 +34,13 @@ export class DataStorageService {
 
   //need to remove
   // BASE_URL2 = 'https://dev.mosip.io/';
+  // BASE_URL2 = 'https://qa.mosip.io/';
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   // BASE_URL = 'https://dev.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
-  /**
-   * @description This method returns the list of users
-   *
-   * @param {string} userId
-   * @returns an `Observable` of the body as an `Object`
-   * @memberof DataStorageService
-   */
   getUsers(userId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
     return this.httpClient.get<Applicant[]>(url);
@@ -118,14 +110,6 @@ export class DataStorageService {
     return this.httpClient.post(url, obj);
   }
 
-  /**
-   * @description This method update the user for the given pre-registration-id
-   *
-   * @param {*} identity - `Object`
-   * @param {string} preRegId - pre-registartion-id
-   * @returns an `Observable` of the body as an `Object`
-   * @memberof DataStorageService
-   */
   updateUser(identity: any, preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     const obj = new RequestModel(appConstants.IDS.updateUser, identity);
@@ -209,13 +193,13 @@ export class DataStorageService {
   /**
    * @description This method return the list of list of countries.
    *
-   * @param {string} value
-   * @return an `Observable` of the body as an `Object`
+   * @return String
    * @memberof DataStorageService
    */
-  getLocationMetadataHirearchy(value: string) {
-    const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
-    return this.httpClient.get(url);
+  getLocationMetadataHirearchy() {
+    // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    // return this.httpClient.get(url);
+    return this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_country_code);
   }
 
   /**

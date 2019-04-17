@@ -739,12 +739,12 @@ public class DemographicServiceTest {
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
-		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainResponseDTO<>();
 		DeleteBookingDTO deleteBookingDTO = new DeleteBookingDTO();
 		deleteBookingDTO.setPreRegistrationId("98746563542672");
 		List<DeleteBookingDTO> list = new ArrayList<>();
 		list.add(deleteBookingDTO);
-		delBookingResponseDTO.setResponse(list);
+		delBookingResponseDTO.setResponse(deleteBookingDTO);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		exceptionJSONInfoDTOs.add(err);
@@ -755,7 +755,7 @@ public class DemographicServiceTest {
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
 				HttpStatus.OK);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -763,7 +763,7 @@ public class DemographicServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(0);
@@ -778,12 +778,12 @@ public class DemographicServiceTest {
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
-		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainResponseDTO<>();
 		DeleteBookingDTO deleteBookingDTO = new DeleteBookingDTO();
 		deleteBookingDTO.setPreRegistrationId("98746563542672");
 		List<DeleteBookingDTO> list = new ArrayList<>();
 		list.add(deleteBookingDTO);
-		delBookingResponseDTO.setResponse(list);
+		delBookingResponseDTO.setResponse(deleteBookingDTO);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		exceptionJSONInfoDTOs.add(err);
@@ -794,7 +794,7 @@ public class DemographicServiceTest {
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
 				HttpStatus.OK);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -802,7 +802,7 @@ public class DemographicServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
 				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(1);
@@ -816,6 +816,8 @@ public class DemographicServiceTest {
 	public void deleteRecordRestCallException() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
+		List<ExceptionJSONInfoDTO> errlist=new ArrayList<>();
+		errlist.add(err);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
@@ -827,13 +829,13 @@ public class DemographicServiceTest {
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
-		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainResponseDTO<>();
 		DeleteBookingDTO deleteBookingDTO = new DeleteBookingDTO();
 		deleteBookingDTO.setPreRegistrationId("98746563542672");
 		List<DeleteBookingDTO> list = new ArrayList<>();
 		list.add(deleteBookingDTO);
-		delBookingResponseDTO.setResponse(list);
-		delBookingResponseDTO.setErrors(err);
+		delBookingResponseDTO.setResponse(deleteBookingDTO);
+		delBookingResponseDTO.setErrors(errlist);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 
 		delResponseDto.setErrors(null);
@@ -842,7 +844,7 @@ public class DemographicServiceTest {
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
 				HttpStatus.OK);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -850,7 +852,7 @@ public class DemographicServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
 				}),Mockito.anyMap())).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(1);
@@ -876,12 +878,12 @@ public class DemographicServiceTest {
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
-		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainResponseDTO<>();
 		DeleteBookingDTO deleteBookingDTO = new DeleteBookingDTO();
 		deleteBookingDTO.setPreRegistrationId("98746563542672");
 		List<DeleteBookingDTO> list = new ArrayList<>();
 		list.add(deleteBookingDTO);
-		delBookingResponseDTO.setResponse(list);
+		delBookingResponseDTO.setResponse(deleteBookingDTO);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		// delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErrors(null);
@@ -892,7 +894,7 @@ public class DemographicServiceTest {
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> res1 = new ResponseEntity<>(delBookingResponseDTO,
 				HttpStatus.OK);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -900,7 +902,7 @@ public class DemographicServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
 				}))).thenReturn(res);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 				}))).thenReturn(res1);
 		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
 				.thenReturn(1);

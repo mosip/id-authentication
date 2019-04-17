@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
     localStorage.clear();
     localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
-//    this.showMessage();
+    //    this.showMessage();
   }
 
   ngOnInit() {
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
   loadValidationMessages() {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.validationMessages = response['login'];
-    })
+    });
   }
 
   loginIdValidator() {
@@ -277,21 +277,22 @@ export class LoginComponent implements OnInit {
       this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
         response => {
           console.log(response);
-          if (!response['errors']) {
-            clearInterval(this.timer);
-            localStorage.setItem('loggedIn', 'true');
-            this.authService.setToken();
+           if (!response['errors']) {
+          clearInterval(this.timer);
+          localStorage.setItem('loggedIn', 'true');
+          this.authService.setToken();
 
-            this.regService.setLoginId(this.inputContactDetails);
-            this.router.navigate(['dashboard']);
-          } else {
+          this.regService.setLoginId(this.inputContactDetails);
+          this.router.navigate(['dashboard']);
+          }
+           else {
             console.log(response['error']);
             this.showOtpMessage();
           }
         },
 
         error => {
-          this.showOtpMessage();
+           this.showOtpMessage();
           // clearInterval(this.timer);
           // localStorage.setItem('loggedIn', 'true');
           // this.authService.setToken();
