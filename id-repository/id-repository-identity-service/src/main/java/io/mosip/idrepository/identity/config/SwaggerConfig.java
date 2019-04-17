@@ -68,7 +68,7 @@ public class SwaggerConfig {
 			}
 		}
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.kernel.idrepo.controller"))
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.idrepository.identity.controller"))
 				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build().apiInfo(getApiInfo());
 
 		if (targetSwagger) {
