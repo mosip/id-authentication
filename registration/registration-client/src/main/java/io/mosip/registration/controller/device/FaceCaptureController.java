@@ -121,6 +121,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	private boolean hasBiometricException = false;
 	
+	private boolean hasLowBiometrics;
+	
 	private int counter;
 
 	@Override
@@ -158,6 +160,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 		} else {
 			counter = 0;
+			hasLowBiometrics = false;
+			
 			defaultExceptionImage = new Image(
 					getClass().getResourceAsStream(RegistrationConstants.DEFAULT_EXCEPTION_IMAGE_PATH));
 			exceptionImage.setImage(defaultExceptionImage);
@@ -471,7 +475,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			boolean hasMissingBiometrics = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-			boolean hasLowBiometrics = false;
+			
 			if (counter == 1) {
 				hasLowBiometrics = validateBiometrics(hasBiometricException);
 			}
