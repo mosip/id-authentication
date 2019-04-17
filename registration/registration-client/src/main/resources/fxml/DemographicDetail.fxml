@@ -683,11 +683,11 @@
 																				</GridPane>
 																			</children>
 																		</GridPane>
-																		<GridPane fx:id="addressParentPane" prefHeight="550.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="addressParentPane" prefHeight="650.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="applicatoinAddressPane">
 																					<children>
-																						<VBox fx:id="addressVBox" prefHeight="632.0" prefWidth="223.0" spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<VBox fx:id="addressVBox" prefHeight="632.0" prefWidth="223.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 																							<children>
 																								<VBox fx:id="applicationLanguageAddressPane">
 																									<children>
@@ -793,6 +793,32 @@
 																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																									</rowConstraints>
 																								</GridPane>
+                                                                        <GridPane prefHeight="100.0">
+                                                                           <children>
+                                                                              <VBox fx:id="applicationemailIdPane" spacing="5.0">
+                                                                                 <children>
+                                                                                    <Label fx:id="emailIdLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
+                                                                                    <TextField fx:id="emailId" promptText="%emailId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="emailIdMessage" styleClass="demoGraphicFieldMessageLabel" text="emaild Id Message" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox fx:id="applicationCniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
+                                                                                 <children>
+                                                                                    <Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
+                                                                                    <TextField fx:id="cniOrPinNumber" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="cniOrPinNumberMessage" pickOnBounds="false" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="47.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
 																							</children>
 																						</VBox>
 																					</children>
@@ -808,7 +834,7 @@
 																				</GridPane>
 																				<GridPane fx:id="localAddressPane" GridPane.columnIndex="2">
 																					<children>
-																						<VBox prefHeight="632.0" prefWidth="223.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+																						<VBox prefHeight="632.0" prefWidth="223.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 																							<children>
 																								<VBox fx:id="localLanguageAddressPane">
 																									<children>
@@ -911,6 +937,32 @@
 																										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																									</rowConstraints>
 																								</GridPane>
+                                                                        <GridPane prefHeight="100.0">
+                                                                           <children>
+                                                                              <VBox fx:id="localEmailIdPane" spacing="5.0">
+                                                                                 <children>
+                                                                                    <Label fx:id="emailIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
+                                                                                    <TextField fx:id="emailIdLocalLanguage" promptText="%emailId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="emailIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="emaidl id message" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox fx:id="localCniOrPinPane" spacing="5.0" GridPane.columnIndex="2">
+                                                                                 <children>
+                                                                                    <Label fx:id="cniOrPinNumberLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
+                                                                                    <TextField fx:id="cniOrPinNumberLocalLanguage" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="cniOrPinNumberLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="47.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
 																							</children>
 																						</VBox>
 																						<AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
@@ -950,170 +1002,82 @@
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
-																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-																		<GridPane fx:id="emailIdCniParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
-																			<children>
-																				<GridPane fx:id="emailIdCni">
-																					<children>
-																						<GridPane prefHeight="100.0" GridPane.columnIndex="1">
-																							<children>
-																								<VBox fx:id="applicationemailIdPane" spacing="5.0">
-																									<children>
-																										<Label fx:id="emailIdLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
-																										<TextField fx:id="emailId" promptText="%emailId" styleClass="demoGraphicTextField" />
-																										<Label fx:id="emailIdMessage" styleClass="demoGraphicFieldMessageLabel" text="emaild Id Message" visible="false" />
-																									</children>
-																								</VBox>
-																								<VBox fx:id="applicationCniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
-																									<children>
-																										<Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
-																										<TextField fx:id="cniOrPinNumber" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextField" />
-																										<Label fx:id="cniOrPinNumberMessage" pickOnBounds="false" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
-																									</children>
-																								</VBox>
-																							</children>
-																							<columnConstraints>
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="47.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
-																							</columnConstraints>
-																							<rowConstraints>
-																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																							</rowConstraints>
-																						</GridPane>
-																					</children>
-																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																					</columnConstraints>
-																					<rowConstraints>
-																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																					</rowConstraints>
-																				</GridPane>
-																				<GridPane GridPane.columnIndex="2">
-																					<children>
-																						<GridPane prefHeight="100.0" GridPane.columnIndex="1">
-																							<children>
-																								<VBox fx:id="localEmailIdPane" spacing="5.0">
-																									<children>
-																										<Label fx:id="emailIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
-																										<TextField fx:id="emailIdLocalLanguage" promptText="%emailId" styleClass="demoGraphicTextField" />
-																										<Label fx:id="emailIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="emaidl id message" visible="false" />
-																									</children>
-																								</VBox>
-																								<VBox fx:id="localCniOrPinPane" spacing="5.0" GridPane.columnIndex="2">
-																									<children>
-																										<Label fx:id="cniOrPinNumberLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
-																										<TextField fx:id="cniOrPinNumberLocalLanguage" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextField" />
-																										<Label fx:id="cniOrPinNumberLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
-																									</children>
-																								</VBox>
-																							</children>
-																							<columnConstraints>
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="47.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
-																							</columnConstraints>
-																							<rowConstraints>
-																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																							</rowConstraints>
-																						</GridPane>
-																					</children>
-																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																					</columnConstraints>
-																					<rowConstraints>
-																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																					</rowConstraints>
-																				</GridPane>
-																			</children>
-																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                      <GridPane fx:id="parentDetailPane" prefHeight="200.0" prefWidth="${scrollParentPane.width}" visible="false">
+                                                         <children>
+                                                            <GridPane fx:id="childParentDetail">
+                                                               <children>
+                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
+                                                                     <children>
+                                                                        <Label fx:id="parentNameLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
+                                                                        <TextField fx:id="parentName" prefWidth="${childParentDetail.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                        <Label fx:id="parentNameMessage" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                        <Label fx:id="uinIdLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
+                                                                        <TextField fx:id="uinId" promptText="%uinId" styleClass="demoGraphicTextField" />
+                                                                        <Label fx:id="uinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
+                                                                     </children>
+                                                                  </VBox>
+                                                               </children>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                            </GridPane>
+                                                            <GridPane GridPane.columnIndex="2">
+                                                               <children>
+                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
+                                                                     <children>
+                                                                        <VBox spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="parentNameLocalLanguageLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
+                                                                              <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                           </children>
+                                                                        </VBox>
+                                                                        <VBox fx:id="localUinIdPane" spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
+                                                                              <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
+                                                                           </children>
+                                                                        </VBox>
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                     <children>
+                                                                        <ImageView id="parentName" fx:id="parentNameKeyboardImage" fitHeight="21.0" fitWidth="34.0" layoutX="14.0" layoutY="41.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                                                           <image>
+                                                                              <Image url="@../images/keyboard.png" />
+                                                                           </image>
+                                                                        </ImageView>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </children>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                            </GridPane>
+                                                         </children>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-																			</columnConstraints>
-																			<rowConstraints>
-																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																			</rowConstraints>
-																		</GridPane>
-																		<GridPane fx:id="parentDetailPane" prefHeight="200.0" prefWidth="${scrollParentPane.width}" visible="false">
-																			<children>
-																				<GridPane fx:id="childParentDetail">
-																					<children>
-																						<VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
-																							<children>
-																								<Label fx:id="parentNameLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
-																								<TextField fx:id="parentName" prefWidth="${childParentDetail.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
-																								<Label fx:id="parentNameMessage" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
-																								<Label fx:id="uinIdLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
-																								<TextField fx:id="uinId" promptText="%uinId" styleClass="demoGraphicTextField" />
-																								<Label fx:id="uinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
-																							</children>
-																						</VBox>
-																					</children>
-																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																					</columnConstraints>
-																					<rowConstraints>
-																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																					</rowConstraints>
-																				</GridPane>
-																				<GridPane GridPane.columnIndex="2">
-																					<children>
-																						<VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
-																							<children>
-																								<VBox spacing="5.0">
-																									<children>
-																										<Label fx:id="parentNameLocalLanguageLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
-																										<TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
-																										<Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
-																									</children>
-																								</VBox>
-																								<VBox fx:id="localUinIdPane" spacing="5.0">
-																									<children>
-																										<Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
-																										<TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
-																										<Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
-																									</children>
-																								</VBox>
-																							</children>
-																						</VBox>
-																						<AnchorPane prefHeight="200.0" prefWidth="200.0">
-																							<children>
-																								<ImageView id="parentName" fx:id="parentNameKeyboardImage" fitHeight="21.0" fitWidth="34.0" layoutX="14.0" layoutY="41.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
-																									<image>
-																										<Image url="@../images/keyboard.png" />
-																									</image>
-																								</ImageView>
-																							</children>
-																						</AnchorPane>
-																					</children>
-																					<columnConstraints>
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
-																						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-																					</columnConstraints>
-																					<rowConstraints>
-																						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																					</rowConstraints>
-																				</GridPane>
-																			</children>
-																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-																			</columnConstraints>
-																			<rowConstraints>
-																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-																			</rowConstraints>
-																		</GridPane>
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                      </GridPane>
 																	</children>
 																</FlowPane>
 															</children>

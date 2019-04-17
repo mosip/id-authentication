@@ -321,10 +321,6 @@ public class FXUtils {
 	public void onTypeFocusUnfocusForLabel(Pane parentPane, TextField field) {
 		if(field!=null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				field.getStyleClass().removeIf((s)->{
-					return s.equals("demoGraphicTextFieldFocus");
-				});
-				field.getStyleClass().add("demoGraphicTextField");
 				if(newValue.isEmpty()) {
 					hideLabel(parentPane, field);
 				} else {

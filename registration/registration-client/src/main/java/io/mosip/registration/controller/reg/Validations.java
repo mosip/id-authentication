@@ -76,8 +76,6 @@ public class Validations extends BaseController {
 			noAlert.add(RegistrationConstants.DD + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.MM + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.YYYY + RegistrationConstants.LOCAL_LANGUAGE);
-			noAlert.add(RegistrationConstants.MOBILE_NUMBER);
-			noAlert.add(RegistrationConstants.POSTAL_CODE);
 			noAlert.add(RegistrationConstants.CNI_OR_PIN);
 			validationMessage = new StringBuilder();
 		} catch (RuntimeException runtimeException) {
