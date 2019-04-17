@@ -1054,44 +1054,31 @@ public Response copyUploadedDocuments(String destPreId,String sourcePreId,String
 	 * 
 	 */
 
-	public Response FetchCentre() {
-/*		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-<<<<<<< HEAD
-		String regCenterId = randomRegistrationCenterId();
-=======
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
-		ObjectNode fetchAvailabilityrequest = null;
-		
->>>>>>> 70dca8c4df8fd3054b43f2f2568bd23c25be9a4a
+public Response FetchCentre() {
+	testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
+	String configPath = "src/test/resources/" + folder + "/" + testSuite;
+	String regCenterId = randomRegistrationCenterId();
 
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					request.put("registrationCenterId", regCenterId);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	File folder = new File(configPath);
+	File[] listOfFiles = folder.listFiles();
+	for (File f : listOfFiles) {
+		if (f.getName().toLowerCase().contains("request")) {
+			try {
+				request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				request.put("registrationCenterId", regCenterId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		try {
-			response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
-		String regCenterId = randomRegistrationCenterId();		
-		
-		preReg_FetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
-		response = applnLib.getRequestWithoutParm(preReg_FetchCenterIDURI);
-		
-		
-		
-		return response;
 	}
+	try {
+		response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return response;
+}
 
 	public Response fetchCentreWithCerterId(String regCenterId) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";

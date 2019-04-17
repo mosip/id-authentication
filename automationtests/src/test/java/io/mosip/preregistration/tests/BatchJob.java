@@ -68,7 +68,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
-	/*@Test
+	@Test
 	public void batchJobForExpiredApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -81,7 +81,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
-	}*/
+	}
 	/**
 	 * Batch Job service Consumed Application
 	 */
@@ -94,17 +94,16 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
-	//	lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
 		Response consumedResponse = lib.consumedStatus();
 		String message = consumedResponse.jsonPath().get("response").toString();
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
-		lib.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
+		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
