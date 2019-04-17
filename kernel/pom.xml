@@ -117,10 +117,10 @@
 	</properties>
 
 	<modules>
-<!-- 		<module>kernel-core</module>
-		<module>kernel-logger-logback</module>
+		<!-- <module>kernel-core</module>
+		<module>kernel-logger-logback</module> -->
 		<module>kernel-auth-adapter</module>
-		<module>kernel-dataaccess-hibernate</module>
+		<!-- <module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
 
 		<module>kernel-idgenerator-prid</module>
@@ -165,7 +165,7 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module> -->
 		<module>kernel-syncdata-service</module>
-<!-- 		<module>kernel-auth-service</module>
+		<!-- <module>kernel-auth-service</module>
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-applicanttype-service</module>
 		<module>kernel-ridgenerator-service</module>
@@ -174,7 +174,7 @@
 		<module>kernel-config-server</module> -->
 
 
-		<module>kernel-otpnotification-service</module>
+		<!-- <module>kernel-otpnotification-service</module> -->
 		<!-- <module>kernel-ldap-service</module> -->
 
 
