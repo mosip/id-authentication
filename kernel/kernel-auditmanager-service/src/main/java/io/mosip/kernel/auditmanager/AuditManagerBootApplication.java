@@ -10,14 +10,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.auditmanager.*", "io.mosip.kernel.auth.*" })
 public class AuditManagerBootApplication {
 
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(AuditManagerBootApplication.class, args);

@@ -29,6 +29,4 @@ public class BiometricTypeDto extends BaseDto {
 
 	private String description;
 
-	
-
 }

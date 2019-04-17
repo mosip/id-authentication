@@ -2,15 +2,10 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -49,15 +44,6 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 	private final MatchFunction matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
-
-	/** The mosipLogger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(FullAddressMatchingStrategy.class);
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
-
-	/** The Constant AGE Matching strategy. */
-	private static final String TYPE = "FullAddressMatchingStrategy";
 
 	/**
 	 * Constructor for Full Address Matching Strategy

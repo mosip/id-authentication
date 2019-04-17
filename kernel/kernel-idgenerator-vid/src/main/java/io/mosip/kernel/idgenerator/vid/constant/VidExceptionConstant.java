@@ -25,10 +25,8 @@ public enum VidExceptionConstant {
 	/**
 	 * Constructor for PridExceptionConstant.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	VidExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

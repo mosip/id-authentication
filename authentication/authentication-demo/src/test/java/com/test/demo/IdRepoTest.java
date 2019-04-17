@@ -1,6 +1,5 @@
 package com.test.demo;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.mosip.authentication.demo.service.controller.FingerPrint;
 import io.mosip.authentication.demo.service.controller.IdRepo;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
@@ -138,7 +136,7 @@ public class IdRepoTest {
 	public void jsonValidateSuccess() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(true);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenReturn(report);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(report);
 		ObjectNode objectNode=new ObjectNode(null);
 		idRepoMock.jsonSchemaValidator(objectNode);
 	}
@@ -155,7 +153,7 @@ public class IdRepoTest {
 	public void jsonValidateFailure() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(false);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenReturn(report);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(report);
 		ObjectNode objectNode=new ObjectNode(null);
 		idRepoMock.jsonSchemaValidator(objectNode);
 	}
@@ -172,21 +170,9 @@ public class IdRepoTest {
 	public void jsonValidateException() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(false);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenThrow(JsonSchemaIOException.class);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenThrow(JsonSchemaIOException.class);
 		ObjectNode objectNode=new ObjectNode(null);
 		assertNull(idRepoMock.jsonSchemaValidator(objectNode));
 	}
 	
-	/**
-	 * Multi part resolver test.
-	 *
-	 * @throws JsonValidationProcessingException the json validation processing exception
-	 * @throws JsonIOException the json IO exception
-	 * @throws JsonSchemaIOException the json schema IO exception
-	 * @throws FileIOException the file IO exception
-	 */
-	@Test
-	public void multiPartResolverTest() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		idRepoMock.multipartResolver();
-	}
 }

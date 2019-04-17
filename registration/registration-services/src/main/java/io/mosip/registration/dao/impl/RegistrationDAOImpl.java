@@ -66,9 +66,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Registration registration = new Registration();
 			registration.setId(registrationDTO.getRegistrationId());
 			registration.setRegType(RegistrationType.NEW.getCode());
-			registration.setRefRegId("12345");
 			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-			registration.setLangCode("ENG");
+			registration.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
@@ -85,7 +84,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
 			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-			registrationTxn.setLangCode("ENG");
+			registrationTxn.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy(SessionContext.userContext().getUserId());
 			registrationTxn.setCrDtime(time);
@@ -131,7 +130,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
 			registrationTxn.setRegId(registrationID);
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
-			registrationTxn.setLangCode("ENG");
+			registrationTxn.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
 			registrationTxn.setCrBy(SessionContext.userContext().getUserId());
@@ -213,7 +212,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
 		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
 		reg.setUpdDtimes(timestamp);
-		reg.setUploadCount((short)(reg.getUploadCount()+1));
+		reg.setUploadCount((short) (reg.getUploadCount() + 1));
 		reg.setUpdBy(SessionContext.userContext().getUserId());
 		reg.setServerStatusCode(registrationPacket.getPacketServerStatus());
 		return registrationRepository.update(reg);
@@ -243,7 +242,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	/**
 	 * Builds the registration transaction.
 	 *
-	 * @param registrationPacket the registration packet
+	 * @param registrationPacket
+	 *            the registration packet
 	 * @return the list
 	 */
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
@@ -256,9 +256,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setRegId(registrationPacket.getId());
 		regTransaction.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
-		regTransaction.setLangCode("ENG");
-		regTransaction.setCrBy(SessionContext.isSessionContextAvailable() ? SessionContext.userContext().getUserId() : 
-			RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+		regTransaction.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		regTransaction.setCrBy(SessionContext.isSessionContextAvailable() ? SessionContext.userContext().getUserId()
+				: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 		regTransaction.setCrDtime(time);
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
@@ -318,10 +318,10 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 
-		return registrationRepository.findByCrDtimeBeforeAndClientStatusCode(crDtimes, clientStatus);
+		return registrationRepository.findByCrDtimeBeforeAndServerStatusCode(crDtimes, clientStatus);
 
 	}
-	
+
 	@Override
 	public List<Registration> findByServerStatusCodeIn(List<String> serverStatusCodes) {
 
@@ -331,7 +331,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByServerStatusCodeIn(serverStatusCodes);
 
 	}
-	
+
 	@Override
 	public List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes) {
 
@@ -341,12 +341,13 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByServerStatusCodeNotIn(serverStatusCodes);
 
 	}
-	
-	public List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus){
-		
+
+	public List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus) {
+
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on client and server status codes");
-		
-		return registrationRepository.findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(clientStatus, serverStatus);
+
+		return registrationRepository.findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(clientStatus,
+				serverStatus);
 	}
 }

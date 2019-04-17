@@ -54,6 +54,12 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * Implementation for {@link PreRegistrationDataSyncService}
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ */
 @Service
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
@@ -118,15 +124,18 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				/* Get Packets Using pre registration ID's */
 				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
 
+					if (!preRegDetail.getValue().contains("Z")) {
+						preRegDetail.setValue(preRegDetail.getValue() + "Z");
+					}
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
-				if (mainResponseDTO != null && mainResponseDTO.getErr() != null
-						&& mainResponseDTO.getErr().getMessage() != null) {
-					errMsg += " : " + mainResponseDTO.getErr().getMessage();
-				}
+			/*	if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
+						&& mainResponseDTO.getErrors().getMessage() != null) {
+					errMsg += " : " + mainResponseDTO.getErrors().getMessage();
+				}*/
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, errMsg);
 
@@ -228,7 +237,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			try {
 				/* REST call to get packet */
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false,syncJobId);
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, true, syncJobId);
 
 				if (isPacketNotEmpty(mainResponseDTO)) {
 
@@ -377,7 +386,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
 
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
@@ -413,7 +422,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	private String formatDate(Calendar cal) {
-		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");// dd/MM/yyyy
 		Date toDate = cal.getTime();
 
 		/** To-Date */

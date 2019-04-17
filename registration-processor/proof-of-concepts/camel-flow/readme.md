@@ -21,8 +21,8 @@ Members {size:6, ver:6} [
 ```
 ## Initiating the flow
 Verticle 1 is the stage with a rest endpoint attached to it. This end point is to be used to initiate the flow. Below mentioned steps can be followed to initiate the flow.
-* Swagger can be accessed for Verticle1 on http://localhost:8080/swagger-ui.html
-* Trigger the flow by using POST method for rest endpoint http://localhost:8080/initiate, or by using swagger with the request,
+* Check health of verticle one using the URL http://localhost:8080
+* Trigger the flow by using POST method for rest endpoint http://localhost:8080/initiate with the request
 New UIN : 
 ```
 {

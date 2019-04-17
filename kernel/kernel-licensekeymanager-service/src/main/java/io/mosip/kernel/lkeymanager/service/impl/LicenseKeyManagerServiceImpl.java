@@ -94,7 +94,7 @@ public class LicenseKeyManagerServiceImpl
 		licenseKeyTspMapEntity.setLKey(generatedLicense);
 		licenseKeyTspMapEntity.setActive(true);
 		licenseKeyTspMapEntity.setCreatedDateTimes(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
-		licenseKeyTspMapEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+		licenseKeyTspMapEntity.setCreatedBy("SYSTEM");
 
 		licenseKeyListRepository.save(licenseKeyListEntity);
 		licenseKeyTspMapRepository.save(licenseKeyTspMapEntity);

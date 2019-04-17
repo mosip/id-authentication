@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 
 /**
  * The builder class of AuthResponseDTO.
@@ -18,20 +19,17 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
-	
-	/**  The date format to use*/
+
+	/** The date format to use */
 	private SimpleDateFormat dateFormat;
 
 	/** The built flag. */
 	private boolean built;
 
-	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
-	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
-	
 	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
-	
-	/** The auth status infos. */ 
+
+	/** The auth status infos. */
 	private List<AuthStatusInfo> authStatusInfos;
 
 	/**
@@ -41,8 +39,6 @@ public class AuthResponseBuilder {
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
-		/*AuthResponseInfo authResponseInfo = new AuthResponseInfo();
-		responseDTO.setInfo(authResponseInfo);*/
 		authStatusInfos = new ArrayList<>();
 		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
@@ -87,40 +83,21 @@ public class AuthResponseBuilder {
 		return this;
 	}
 
-	/**
-	 * Sets the id type.
-	 *
-	 * @param idType the id type
-	 * @return the auth response builder
-	 */
-	/*public AuthResponseBuilder setIdType(String idType) {
-		responseDTO.getInfo().setIdType(idType);
-		return this;
-	}*/
-	
 	public AuthResponseBuilder setId(String idType) {
-	responseDTO.setId("mosip.identity.auth");
-	return this;
-}
-
-
-	/**
-	 * Sets the req time.
-	 *
-	 * @param reqTime the req time
-	 * @return the auth response builder
-	 */
-	/*public AuthResponseBuilder setReqTime(String reqTime) {
-		responseDTO.getInfo().setReqTime(reqTime);
+		responseDTO.setId("mosip.identity.auth");
 		return this;
-	}*/
+	}
+
 	/**
 	 * Sets the Static Token Id
+	 * 
 	 * @param staticTokenId
 	 * @return
 	 */
 	public AuthResponseBuilder setStaticTokenId(String staticTokenId) {
-		responseDTO.setStaticToken(staticTokenId);
+		ResponseDTO res = new ResponseDTO();
+		res.setStaticToken(staticTokenId);
+		responseDTO.setResponse(res);
 		return this;
 	}
 
@@ -140,43 +117,17 @@ public class AuthResponseBuilder {
 	 *
 	 * @return the auth response DTO
 	 */
-	public AuthResponseDTO build() {
+	public AuthResponseDTO build(String staticTokenID) {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		if(status) {
-			responseDTO.setStatus(Boolean.TRUE);
-		} else {
-			responseDTO.setStatus(Boolean.FALSE);
-		}
-
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(status);
+		res.setStaticToken(staticTokenID);
+		responseDTO.setResponse(res);
 		responseDTO.setResponseTime(dateFormat.format(new Date()));
-	    AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
+		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		addErrors(authErrors);
-
-		/*List<MatchInfo> matchInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
-				.ofNullable(statusInfo.getMatchInfos())
-				.map(List<MatchInfo>::stream)
-				.orElseGet(Stream::empty))
-				.collect(Collectors.toList());
-		responseDTO.getInfo().setMatchInfos(matchInfos);
-		
-		List<BioInfo> bioInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
-				.ofNullable(statusInfo.getBioInfos())
-				.map(List<BioInfo>::stream)
-				.orElseGet(Stream::empty))
-				.collect(Collectors.toList());
-		responseDTO.getInfo().setBioInfos(bioInfos);
-
-		BitwiseInfo bitwiseInfo = new BitwiseInfo(DEFAULT_USAGE_DATA_HEX_COUNT);
-
-		authStatusInfos.stream()
-				.flatMap(statusInfo -> Optional.ofNullable(statusInfo.getUsageDataBits())
-						.map(List<AuthUsageDataBit>::stream).orElseGet(Stream::empty))
-				.collect(Collectors.toList())
-				.forEach(usageDataBit -> bitwiseInfo.setBit(usageDataBit.getHexNum(), usageDataBit.getBitIndex()));
-
-		responseDTO.getInfo().setUsageData(bitwiseInfo.toString());*/
 
 		built = true;
 		return responseDTO;

@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author Srinivasan
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class LocationDto extends BaseDto{
+public class LocationDto extends BaseDto {
 
 	private String code;
 
@@ -23,5 +24,5 @@ public class LocationDto extends BaseDto{
 	private String hierarchyName;
 
 	private String parentLocCode;
-		
+
 }

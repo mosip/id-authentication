@@ -21,7 +21,7 @@ import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
  * The IdInfoFetcher interface that provides the helper methods invoked by the
  * classes involved in ID Info matching.
  *
- * @author Loganathan.Sekaran
+ * @author Loganathan.Sekar
  */
 public interface IdInfoFetcher {
 
@@ -60,7 +60,7 @@ public interface IdInfoFetcher {
 	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language);
 
 	/**
-	 * Gets the iris provider for the BioInfo value.
+	 * Gets the iris provider for the DataDTO value.
 	 *
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the iris provider
@@ -68,17 +68,27 @@ public interface IdInfoFetcher {
 	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue);
 
 	/**
-	 * Gets the finger print provider for the BioInfo value.
+	 * Gets the finger print provider for the DataDTO value.
 	 *
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the finger print provider
 	 */
 	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue);
+	
+	
+	
+	/**
+	 * Gets the face provider for the DataDTO value.
+	 *
+	 * @param bioinfovalue the bioinfovalue
+	 * @return the face provider
+	 */
+	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue);
 
 	/**
-	 * Validate Otp function
+	 * Get the Validate Otp function
 	 * 
-	 * @return
+	 * @return the ValidateOtpFunction
 	 */
 	public ValidateOtpFunction getValidateOTPFunction();
 
@@ -109,17 +119,28 @@ public interface IdInfoFetcher {
 	public MasterDataFetcher getTitleFetcher();
 
 	/**
-	 * 
+	 *  Get UIN/VID from the request 
+	 *  
 	 * @param authRequestDTO
 	 * @return
 	 */
 	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
 
 	/**
+	 * Get ID type from the request 
 	 * 
 	 * @param authRequestDTO
 	 * @return
 	 */
 	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
+	
+	
+	/**
+	 * Gets the matching threshold.
+	 *
+	 * @param key the key
+	 * @return the matching threshold
+	 */
+	public Optional<Integer> getMatchingThreshold(String key);
 
 }

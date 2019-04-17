@@ -7,7 +7,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 
 /**
- * This class contains the Registration details.
+ * This DTO class contains the Registration details.
  * 
  * @author Dinesh Asokan
  * @author Balaji Sridharan

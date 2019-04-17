@@ -200,11 +200,13 @@
 					<version>2.19.1</version>
 					<inherited>true</inherited>
 					<configuration>
-						<suiteXmlFiles>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				    	<suiteXmlFiles>
 							<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
 						</suiteXmlFiles>
 					</configuration>
 				</plugin>
+				
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -214,5 +216,6 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 </project>

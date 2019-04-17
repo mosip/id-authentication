@@ -10,7 +10,6 @@ import lombok.Data;
 
 @Data
 
-
 public class TemplateTypeDto {
 
 	/**

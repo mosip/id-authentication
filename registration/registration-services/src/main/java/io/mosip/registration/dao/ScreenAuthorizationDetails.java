@@ -11,6 +11,8 @@ public interface ScreenAuthorizationDetails {
 	
 	/**
 	 * To fetch only selected columns from Embeddable
+	 *
+	 * @return {@link ScreenAuthorization}
 	 */
 	ScreenAuthorization getScreenAuthorizationId();
 	

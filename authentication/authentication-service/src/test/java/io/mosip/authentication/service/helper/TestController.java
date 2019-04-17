@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.helper;
 
-import java.util.function.Supplier;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

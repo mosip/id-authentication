@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 
 /**
+ * Service class for Documents
  * 
  * @author balamurugan.ramamoorthy
  *
@@ -16,9 +17,12 @@ public interface ValidDocumentService {
 	 * specific applicant type,document category code and lancode
 	 * 
 	 * @param applicantType
-	 * @param docCategoryCode
+	 *            - applicant type
+	 * @param docCode
+	 *            - document category code
 	 * @param langCode
-	 * @return
+	 *            - language code
+	 * @return List - list of doc categories
 	 */
 	List<DocumentCategoryDto> getDocumentCategories(String applicantType, String docCode, String langCode);
 

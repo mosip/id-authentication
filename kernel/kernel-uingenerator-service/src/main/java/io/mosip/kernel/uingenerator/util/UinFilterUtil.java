@@ -142,8 +142,7 @@ public class UinFilterUtil {
 	/**
 	 * Checks if the input id is valid by passing the id through the filters
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the input id is valid
 	 */
 	public boolean isValidId(String id) {
@@ -157,8 +156,7 @@ public class UinFilterUtil {
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {
@@ -168,8 +166,7 @@ public class UinFilterUtil {
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
@@ -182,10 +179,8 @@ public class UinFilterUtil {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #repeatingPattern}, {@link #repeatingBlockPattern})
 	 * 
-	 * @param id
-	 *            The input id to validate
-	 * @param pattern
-	 *            The input regex Pattern
+	 * @param id      The input id to validate
+	 * @param pattern The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private static boolean regexFilter(String id, Pattern pattern) {
@@ -196,10 +191,8 @@ public class UinFilterUtil {
 	 * Checks whether the first x digits are different from the last x digits
 	 * reversed
 	 * 
-	 * @param id
-	 *            The input UIN id to validate
-	 * @param reverseDigitsGroupLimit
-	 *            reverseDigitsGroupLimit
+	 * @param id                      The input UIN id to validate
+	 * @param reverseDigitsGroupLimit reverseDigitsGroupLimit
 	 * @return true if the filter matches
 	 */
 	private boolean firstAndLastDigitsReverseValidation(String id, int reverseDigitsGroupLimit) {
@@ -213,10 +206,8 @@ public class UinFilterUtil {
 	 * Check whether the first x digits are different from the last x digits
 	 * 
 	 * 
-	 * @param id
-	 *            The input UIN id to validate
-	 * @param digitsGroupLimit
-	 *            digitsGroupLimit
+	 * @param id               The input UIN id to validate
+	 * @param digitsGroupLimit digitsGroupLimit
 	 * @return true if filter matches
 	 */
 
@@ -228,8 +219,7 @@ public class UinFilterUtil {
 	 * Method to validate that the prid should not contains the specified digit at
 	 * first index
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {
@@ -245,8 +235,7 @@ public class UinFilterUtil {
 	/**
 	 * to check whether the generated id is same as configured length
 	 * 
-	 * @param id
-	 *            generated uin
+	 * @param id generated uin
 	 * @return true if generated uin length is same as configured length ,otherwise
 	 *         false
 	 */

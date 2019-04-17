@@ -3,7 +3,6 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +31,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -47,14 +47,16 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.integration.TokenIdManager;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
- * This class provides the implementation of AuthFacade.
+ * This class provides the implementation of AuthFacade, provides the
+ * authentication for individual by calling the respective Service
+ * Classes{@link AuthFacade}.
  *
  * @author Arun Bose
  * 
@@ -63,15 +65,14 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
+	/** The Constant STATIC_TOKEN_ENABLE. */
 	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 
+	/** The Constant FAILED. */
 	private static final String FAILED = "N";
 
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
-
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -102,12 +103,15 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Kyc Service */
 	@Autowired
 	private KycService kycService;
+
 	/** The Environment */
 	@Autowired
 	private Environment env;
+
 	/** The Id Info Service */
 	@Autowired
 	private IdAuthService<AutnTxn> idInfoService;
+
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
@@ -128,24 +132,23 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private PinAuthService pinAuthService;
 
-	/** The TokenId Generator */
-	@Autowired
-	private TokenIdGenerator<String, String> tokenIdGenerator;
-
+	/** The Id Info Fetcher */
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
-	/**
-	 * Process the authorization type and authorization response is returned.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param isAuth         boolean i.e is auth type request.
-	 * @return AuthResponseDTO the auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception.
+	/** The TokenId manager */
+	@Autowired
+	private TokenIdManager tokenIdManager;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.facade.AuthFacade#
+	 * authenticateApplicant(io.mosip.authentication.core.dto.indauth.
+	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		IdType idType = idInfoFetcher.getUinOrVidType(authRequestDTO);
@@ -158,23 +161,28 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		String tspId = partnerId;
+		String staticTokenId = null;
+		Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
-			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
+			staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
+
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+
+		} finally {
 			// Set static token
 			if (staticTokenRequired) {
-				authResponseBuilder.setStaticTokenId(staticTokenId);
+				authResponseDTO = authResponseBuilder.build(staticTokenId);
+			} else {
+				authResponseDTO = authResponseBuilder.build(null);
 			}
-		} finally {
-			authResponseDTO = authResponseBuilder.build();
+
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
-					"authenticateApplicant status : " + authResponseDTO.isStatus());
+					"authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
 		if (idInfo != null && uin != null) {
@@ -421,7 +429,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = getUTCTime(reqTime);
+			String strUTCDate = DateUtils
+					.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
@@ -459,18 +468,18 @@ public class AuthFacadeImpl implements AuthFacade {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
 	}
 
-	/**
-	 * Process the KycAuthRequestDTO to integrate with KycService.
-	 *
-	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
-	 * @param authResponseDTO   the auth response DTO
-	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.facade.AuthFacade#processKycAuth(io.
+	 * mosip.authentication.core.dto.indauth.KycAuthRequestDTO,
+	 * io.mosip.authentication.core.dto.indauth.AuthResponseDTO, java.lang.String)
 	 */
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId) throws IdAuthenticationBusinessException {
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		Map<String, Object> idResDTO = null;
 		String resTime = null;
 		IdType idType = null;
@@ -500,33 +509,22 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 		KycResponseDTO response = null;
-		if (idResDTO != null && authResponseDTO.isStatus()) {
+		ResponseDTO authResponse = authResponseDTO.getResponse();
+		if (idResDTO != null && authResponse != null && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
+
+			response.setKycStatus(authResponse.isAuthStatus());
+			response.setStaticToken(authResponse.getStaticToken());
+			kycAuthResponseDTO.setResponse(response);
+			kycAuthResponseDTO.setId(authResponseDTO.getId());
+			kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
+			kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
+			kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
+			kycAuthResponseDTO.setResponseTime(resTime);
 		}
-
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		kycAuthResponseDTO.setResponse(response);
-		kycAuthResponseDTO.setId(authResponseDTO.getId());
-		kycAuthResponseDTO.setStaticToken(authResponseDTO.getStaticToken());
-		kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
-		kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
-		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-		kycAuthResponseDTO.setStatus(authResponseDTO.isStatus());
-		kycAuthResponseDTO.setResponseTime(resTime);
 		return kycAuthResponseDTO;
-	}
-
-	/**
-	 * @param reqTime
-	 * @return
-	 */
-	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-		return dateFormatter.format(reqDate);
 	}
 
 }

@@ -8,6 +8,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 
 import javax.net.ssl.SSLContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,8 +28,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -38,6 +41,7 @@ import io.mosip.kernel.auth.adapter.filter.AuthFilter;
 import io.mosip.kernel.auth.adapter.filter.ClientInterceptor;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
+import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -77,13 +81,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public AuthFilter authFilter() {
-		RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
-		AuthFilter filter = new AuthFilter(requestMatcher);
-		filter.setAuthenticationManager(authenticationManager());
-		return filter;
-	}
-
+    public AuthFilter authFilter() {
+          RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
+          AuthFilter filter = new AuthFilter(requestMatcher);
+           filter.setAuthenticationManager(authenticationManager());
+          filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+        return filter;
+    }
+	
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
@@ -117,4 +122,7 @@ class AuthEntryPoint implements AuthenticationEntryPoint {
 			AuthenticationException e) throws IOException {
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
 	}
+
+	
+
 }

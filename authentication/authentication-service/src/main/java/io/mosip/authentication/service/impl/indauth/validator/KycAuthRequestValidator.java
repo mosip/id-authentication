@@ -1,8 +1,11 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,20 +22,26 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class KycAuthRequestValidator.
+ * The Class For KycAuthRequestValidator extending the
+ * BaseAuthRequestValidator{@link BaseAuthRequestValidator}}
  *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
  * 
- *         The Class For KycAuthRequestValidator extending the
- *         BaseAuthRequestValidator
+ * 
  */
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
+	
+	/** The Constant SECONDARY_LANG_CODE. */
+	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
+	
+	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
+	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
-
-	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
+	/** The Constant EKYC_ALLOWED_AUTH_TYPE. */
+	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 
 	/** The auth request validator. */
 	@Autowired
@@ -53,12 +62,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-
-
 	/** The Constant eKycAuthType. */
 	private static final String REQUESTEDAUTH = "requestedAuth";
 
-	/** The env. */
+	/** The environment. */
 	@Autowired
 	private Environment environment;
 
@@ -73,11 +80,12 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
 
-	/**
-	 * Validates the KycAuthRequest.
-	 *
-	 * @param target the target
-	 * @param errors the errors
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.impl.indauth.validator.
+	 * BaseAuthRequestValidator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
@@ -95,6 +103,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateAuthType(errors, kycAuthRequestDTO);
+				validateSecondayLangCode(kycAuthRequestDTO, errors);
 			}
 
 		} else {
@@ -104,6 +113,36 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), AUTH_REQUEST));
 		}
 
+	}
+	
+	/**
+	 * validateSecondayLangCode method used to validate secondaryLangCode 
+	 * for kyc request
+	 *
+	 * @param kycAuthRequestDTO the {@link KycAuthRequestDTO}
+	 * @param errors the errors
+	 */
+	private void validateSecondayLangCode(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
+		String secLangCode = kycAuthRequestDTO.getSecondaryLangCode();
+		if(Objects.nonNull(secLangCode)) {
+			Set<String> allowedLang;
+			String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+			if (null != languages && languages.contains(",")) {
+				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+			} else {
+				allowedLang = new HashSet<>();
+				allowedLang.add(languages);
+			}
+			
+			if(!allowedLang.contains(secLangCode)) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						INVALID_INPUT_PARAMETER + SECONDARY_LANG_CODE);
+				errors.rejectValue(SECONDARY_LANG_CODE, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
+						new Object[] { SECONDARY_LANG_CODE.concat(" : " + secLangCode) },
+						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
+			}
+		}
+		
 	}
 
 	/**
@@ -128,8 +167,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (!isValidAuthtype) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
-			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), REQUESTEDAUTH));
+			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(at -> at.getType()).collect(Collectors.joining(","));
+			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage(), notAllowedAuthTypesStr));
 		}
 
 	}

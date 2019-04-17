@@ -43,7 +43,7 @@ public class DataSyncExceptionHandler {
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -61,7 +61,7 @@ public class DataSyncExceptionHandler {
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -78,7 +78,7 @@ public class DataSyncExceptionHandler {
 	public ResponseEntity<MainListResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
@@ -94,7 +94,7 @@ public class DataSyncExceptionHandler {
 	public ResponseEntity<MainListResponseDTO> databaseerror(final TableNotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
@@ -110,7 +110,7 @@ public class DataSyncExceptionHandler {
 	public ResponseEntity<MainListResponseDTO> zipNotCreated(final ZipFileCreationException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -126,7 +126,7 @@ public class DataSyncExceptionHandler {
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -141,7 +141,7 @@ public class DataSyncExceptionHandler {
 	public ResponseEntity<MainListResponseDTO> docGetDetails(final DocumentGetDetailsException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -157,7 +157,7 @@ public class DataSyncExceptionHandler {
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
@@ -172,7 +172,7 @@ public class DataSyncExceptionHandler {
 	public ResponseEntity<MainListResponseDTO> fileIOException(final SystemFileIOException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
-		responseDto.setErr(errorDetails);
+		responseDto.setErrors(errorDetails);
 		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 

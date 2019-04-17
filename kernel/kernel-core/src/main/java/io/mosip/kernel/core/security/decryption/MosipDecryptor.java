@@ -36,17 +36,13 @@ public class MosipDecryptor {
 	/**
 	 * Asymmetric Decrypt with private key
 	 * 
-	 * @param privateKey
-	 *            key for decryption
-	 * @param data
-	 *            data for decryption
-	 * @param mosipSecurityMethod
-	 *            {@link MosipSecurityMethod} for processing
+	 * @param privateKey          key for decryption
+	 * @param data                data for decryption
+	 * @param mosipSecurityMethod {@link MosipSecurityMethod} for processing
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             if data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException if data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  if key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] asymmetricPrivateDecrypt(byte[] privateKey, byte[] data,
 			MosipSecurityMethod mosipSecurityMethod) throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -83,17 +79,13 @@ public class MosipDecryptor {
 	/**
 	 * Asymmetric Decrypt with public key
 	 * 
-	 * @param publicKey
-	 *            key for decryption
-	 * @param data
-	 *            data for decryption
-	 * @param mosipSecurityMethod
-	 *            {@link MosipSecurityMethod} for processing
+	 * @param publicKey           key for decryption
+	 * @param data                data for decryption
+	 * @param mosipSecurityMethod {@link MosipSecurityMethod} for processing
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             if data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException if data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  if key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] asymmetricPublicDecrypt(byte[] publicKey, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -128,17 +120,13 @@ public class MosipDecryptor {
 	/**
 	 * Symmetric Decrypt with key
 	 * 
-	 * @param key
-	 *            key for decryption
-	 * @param data
-	 *            data for decryption
-	 * @param mosipSecurityMethod
-	 *            {@link MosipSecurityMethod} for processing
+	 * @param key                 key for decryption
+	 * @param data                data for decryption
+	 * @param mosipSecurityMethod {@link MosipSecurityMethod} for processing
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             if data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException if data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  if key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] symmetricDecrypt(byte[] key, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {

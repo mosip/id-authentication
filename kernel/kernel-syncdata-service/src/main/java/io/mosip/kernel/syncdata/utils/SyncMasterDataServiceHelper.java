@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.utils;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -7,10 +8,22 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -50,11 +63,14 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
+import io.mosip.kernel.syncdata.dto.response.SyncJobDefResponseDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
@@ -93,12 +109,15 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
+import io.mosip.kernel.syncdata.entity.ScreenDetail;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
+import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -137,6 +156,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryR
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
+import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -147,6 +167,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  * Sync handler masterData service helper
  * 
  * @author Abhishek Kumar
+ * @author Srinivasan
  * @since 1.0.0
  */
 @Component
@@ -240,17 +261,22 @@ public class SyncMasterDataServiceHelper {
 	private ScreenAuthorizationRepository screenAuthorizationRepository;
 	@Autowired
 	private ProcessListRepository processListRepository;
-	
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private ScreenDetailRepository screenDetailRepository;
+
+	@Value("${mosip.kernel.syncdata.admin-base-url}")
+	private String baseUri;
 
 	/**
 	 * Method to fetch machine details by regCenter id
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            lastUpdated time-stamp
-	 * @param currentTimeStamp
-	 *            current time stamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      lastUpdated time-stamp
+	 * @param currentTimeStamp current time stamp
 	 * 
 	 * @return list of {@link MachineDto} list of machine dto
 	 */
@@ -282,12 +308,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch machine type
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            lastupdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      lastupdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link MachineType}
 	 */
 	@Async
@@ -318,12 +341,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch machine specification
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            lastupdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      lastupdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link MachineSpecificationDto}
 	 */
 	@Async
@@ -356,12 +376,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch registration center detail.
 	 *
-	 * @param machineId
-	 *            machine id
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            the current time stamp
+	 * @param machineId        machine id
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp the current time stamp
 	 * @return list of {@link RegistrationCenterDto}
 	 */
 	@Async
@@ -390,12 +407,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch registration center type
 	 * 
-	 * @param machineId
-	 *            machine id
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param machineId        machine id
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterTypeDto}
 	 */
 	@Async
@@ -424,10 +438,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch applications
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link ApplicationDto}
 	 */
 	@Async
@@ -454,10 +466,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch templates
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TemplateDto}
 	 */
 	@Async
@@ -485,10 +495,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch template format types
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TemplateFileFormatDto}
 	 */
 	@Async
@@ -514,10 +522,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch reason-category
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link PostReasonCategoryDto}
 	 */
 	@Async
@@ -544,10 +550,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch Reason List
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link ReasonListDto}
 	 */
 	@Async
@@ -575,12 +579,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch Holidays
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
-	 * @param machineId
-	 *            machine id
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
+	 * @param machineId        machine id
 	 * @return list of {@link HolidayDto}
 	 */
 	@Async
@@ -609,10 +610,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch blacklisted words
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link BlacklistedWordsDto}
 	 */
 	@Async
@@ -641,10 +640,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch biometric types
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link BiometricTypeDto}
 	 */
 	@Async
@@ -672,10 +669,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch biometric attributes
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link BiometricAttributeDto}
 	 */
 	@Async
@@ -704,10 +699,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch titles
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TitleDto}
 	 */
 	@Async
@@ -735,10 +728,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch languages
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link LanguageDto}
 	 */
 	@Async
@@ -765,10 +756,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch genders
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link GenderDto}
 	 */
 	@Async
@@ -795,12 +784,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch devices
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link DeviceDto}
 	 */
 	@Async
@@ -827,10 +813,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch document category
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link DocumentCategoryDto}
 	 */
 	@Async
@@ -859,10 +843,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch document type
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link DocumentTypeDto}
 	 */
 	@Async
@@ -890,10 +872,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch id types
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link IdTypeDto}
 	 */
 	@Async
@@ -918,12 +898,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch device specification
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link DeviceSpecificationDto}}
 	 */
 	@Async
@@ -950,10 +927,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch locations
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link LocationDto}
 	 */
 	@Async
@@ -981,10 +956,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch template types
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TemplateTypeDto}
 	 */
 	@Async
@@ -1012,12 +985,9 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Gets the device type.
 	 *
-	 * @param regCenterId
-	 *            the reg center id
-	 * @param lastUpdated
-	 *            the last updated
-	 * @param currentTimeStamp
-	 *            the current time stamp
+	 * @param regCenterId      the reg center id
+	 * @param lastUpdated      the last updated
+	 * @param currentTimeStamp the current time stamp
 	 * @return {@link DeviceTypeDto}
 	 */
 	@Async
@@ -1046,10 +1016,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch document mapping
 	 * 
-	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link ValidDocumentDto}
 	 */
 	@Async
@@ -1076,12 +1044,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param machineId
-	 *            - machine id
-	 * @param lastUpdated
-	 *            - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param machineId        - machine id
+	 * @param lastUpdated      - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterMachineDto}
 	 */
 	@Async
@@ -1109,12 +1074,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterDeviceDto}
 	 */
 	@Async
@@ -1142,12 +1104,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            -registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            -registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterMachineDeviceDto} - list of
 	 *         registration center machine device dto
 	 */
@@ -1176,12 +1135,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterUserMachineMappingDto} - list of
 	 *         RegistrationCenterUserMachineMappingDto
 	 */
@@ -1210,12 +1166,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterUserDto} - list of
 	 *         RegistrationCenterUserDto
 	 */
@@ -1243,12 +1196,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterUserHistoryDto} - list of
 	 *         RegistrationCenterUserHistoryDto
 	 */
@@ -1280,12 +1230,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterUserMachineMappingHistoryDto} - list
 	 *         of RegistrationCenterUserMachineMappingHistoryDto
 	 */
@@ -1317,12 +1264,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterMachineDeviceHistoryDto} - list of
 	 *         RegistrationCenterMachineDeviceHistoryDto
 	 */
@@ -1355,12 +1299,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterDeviceHistoryDto} - list of
 	 *         RegistrationCenterDeviceHistoryDto
 	 */
@@ -1392,12 +1333,9 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link RegistrationCenterMachineHistoryDto} - list of
 	 *         RegistrationCenterMachineHistoryDto
 	 */
@@ -1429,10 +1367,8 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param lastUpdatedTime
-	 *            - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdatedTime  - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link ApplicantValidDocumentDto}
 	 */
 	@Async
@@ -1459,10 +1395,8 @@ public class SyncMasterDataServiceHelper {
 
 	/**
 	 * 
-	 * @param lastUpdatedTime
-	 *            - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdatedTime  - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link IndividualTypeDto}
 	 */
 	@Async
@@ -1499,7 +1433,8 @@ public class SyncMasterDataServiceHelper {
 			appAuthenticationMethods = appAuthenticationMethodRepository
 					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (appAuthenticationMethods != null && !appAuthenticationMethods.isEmpty()) {
@@ -1551,7 +1486,7 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(appRolePriorityDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<ScreenAuthorizationDto>> getScreenAuthorizationDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1561,8 +1496,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			screenAuthorizationList = screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
-					currentTimeStamp);
+			screenAuthorizationList = screenAuthorizationRepository
+					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
 		} catch (DataAccessException ex) {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
@@ -1572,7 +1507,7 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(screenAuthorizationDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<ProcessListDto>> getProcessList(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1593,10 +1528,73 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(processListDtos);
 	}
-	
-	
-	
-	
-	
+
+	@Async
+	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+
+		ResponseEntity<String> response = null;
+		List<SyncJobDefDto> syncJobDefDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			// Query parameters
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromUriString(baseUri)
+					// Add query parameter
+					.queryParam("lastupdatedtimestamp", DateUtils.formatToISOString(lastUpdatedTime));
+
+			response = restTemplate.getForEntity(builder.toUriString(), String.class);
+		} catch (RestClientException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
+		}
+		String responseBody = response.getBody();
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new SyncServiceException(validationErrorsList);
+		}
+		ResponseWrapper<SyncJobDefResponseDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody,
+					new TypeReference<ResponseWrapper<SyncJobDefResponseDto>>() {
+					});
+			if (responseObject.getResponse() != null) {
+				syncJobDefDtos = responseObject.getResponse().getSyncJobDefinitions();
+			}
+
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(MasterDataErrorCode.SYNC_JOB_DEF_PARSE_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SYNC_JOB_DEF_PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(),
+					exception);
+		}
+
+		return CompletableFuture.completedFuture(syncJobDefDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<ScreenDetailDto>> getScreenDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<ScreenDetail> screenDetails = null;
+		List<ScreenDetailDto> screenDetailDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			screenDetails = screenDetailRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (screenDetails != null && !screenDetails.isEmpty()) {
+			screenDetailDtos = MapperUtils.mapAll(screenDetails, ScreenDetailDto.class);
+		}
+		return CompletableFuture.completedFuture(screenDetailDtos);
+	}
 
 }

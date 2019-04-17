@@ -24,6 +24,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
@@ -115,7 +116,15 @@ public class NotificationServiceImpl implements NotificationService {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
+		
+		String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+		String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+		values.put(NAME, namePri);
+		values.put(NAME + "_" + priLang, namePri);
+		String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+		String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
+		values.put(NAME + "_" + secLang, nameSec);
+
 		String resTime = authResponseDTO.getResponseTime();
 
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getRequestTime());
@@ -145,7 +154,7 @@ public class NotificationServiceImpl implements NotificationService {
 				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.isStatus()) {
+		if (authResponseDTO.getResponse().isAuthStatus()) {
 			values.put(STATUS, "Passed");
 		} else {
 			values.put(STATUS, "Failed");
@@ -157,14 +166,19 @@ public class NotificationServiceImpl implements NotificationService {
 		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
-			notificationType = env.getProperty("auth.notification.type");
+			notificationType = env.getProperty("mosip.notificationtype");
 		} else {
-			notificationType = env.getProperty("internal.auth.notification.type");
+			// For internal auth no notification is done
+			notificationType = NotificationType.NONE.getName();
 		}
 
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
 	}
 
+	/*
+	 * Send Otp Notification
+	 * 
+	 */
 	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
@@ -182,13 +196,21 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
-			values.put("validTime", env.getProperty("otp.expiring.time"));
+			Integer timeInSeconds = env.getProperty("mosip.kernel.otp.expiry-time", Integer.class);
+			int timeInMinutes = (timeInSeconds % 3600) / 60;
+			values.put("validTime", String.valueOf(timeInMinutes));
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
+			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+			String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+			values.put(NAME, namePri);
+			values.put(NAME + "_" + priLang, namePri);
+			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
+			values.put(NAME + "_" + secLang, nameSec);
 
-			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
+			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("mosip.notificationtype"));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
@@ -214,8 +236,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		if (isNotNullorEmpty(notificationtypeconfig)
 				&& !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
-			if (notificationtypeconfig.contains(",")) {
-				String value[] = notificationtypeconfig.split(",");
+			if (notificationtypeconfig.contains("|")) {
+				String value[] = notificationtypeconfig.split("\\|");
 				for (int i = 0; i < 2; i++) {
 					String nvalue = "";
 					nvalue = value[i];
@@ -290,7 +312,7 @@ public class NotificationServiceImpl implements NotificationService {
 			Objects.requireNonNull(templateName);
 			return idTemplateManager.applyTemplate(templateName, values);
 		} catch (IOException e) {
-			//FIXME change the error code
+			// FIXME change the error code
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -337,7 +359,7 @@ public class NotificationServiceImpl implements NotificationService {
 		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
 		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
 		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
-		
+
 		String contentTemplate = "";
 		String subjectTemplate = "";
 		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {

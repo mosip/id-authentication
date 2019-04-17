@@ -9,8 +9,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -18,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +47,6 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -56,12 +58,13 @@ import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 
 /**
  * This class provides the utility methods for DocumentService
  * 
  * @author Rajath KR
+ * @author Tapaswini
  * @since 1.0.0
  */
 @Component
@@ -70,20 +73,21 @@ public class DocumentServiceUtil {
 	/**
 	 * Autowired reference for {@link #VirusScanner}
 	 */
-	@Autowired private VirusScanner<Boolean, String> virusScan;
+	@Autowired
+	private VirusScanner<Boolean, String> virusScan;
 
 	/**
 	 * Reference for ${max.file.size} from property file
 	 */
 	@Value("${max.file.size}")
 	private int maxFileSize;
-	
+
 	/**
 	 * Reference for ${file.extension} from property file
 	 */
 	@Value("${preregistration.document.extention}")
-	private List<String> fileExtension;
-	
+	private String fileExtension;
+
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
@@ -98,7 +102,7 @@ public class DocumentServiceUtil {
 	 */
 	@Value("${demographic.resource.url}")
 	private String demographicResourceUrl;
-	
+
 	@Autowired
 	private FileSystemAdapter fs;
 
@@ -106,8 +110,6 @@ public class DocumentServiceUtil {
 	 * Logger configuration for DocumentServiceUtil
 	 */
 	private static Logger log = LoggerConfiguration.logConfig(DocumentServiceUtil.class);
-
-
 
 	/**
 	 * This method is used to assign the input JSON values to DTO
@@ -126,17 +128,20 @@ public class DocumentServiceUtil {
 	 * @throws ParseException
 	 *             on parsing error
 	 */
-	public MainRequestDTO<DocumentRequestDTO> createUploadDto(String documentJsonString)
+	public MainRequestDTO<DocumentRequestDTO> createUploadDto(String documentJsonString, String preRegistrationId)
 			throws JSONException, JsonParseException, JsonMappingException, IOException, ParseException {
 		log.info("sessionId", "idType", "id", "In createUploadDto method of document service util");
 		MainRequestDTO<DocumentRequestDTO> uploadReqDto = new MainRequestDTO<>();
 		JSONObject documentData = new JSONObject(documentJsonString);
 		JSONObject docDTOData = (JSONObject) documentData.get("request");
+		System.out.println("docDTOData " + docDTOData);
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
+		System.out.println("documentDto " + documentDto);
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
-		uploadReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
+		uploadReqDto.setRequesttime(
+				new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
@@ -148,25 +153,25 @@ public class DocumentServiceUtil {
 	 *            pass the document dto
 	 * @return DocumentEntity
 	 */
-	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto,String userId) {
+	public DocumentEntity dtoToEntity(MultipartFile file, DocumentRequestDTO dto, String userId,
+			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
-		documentEntity.setDocId("");
-		documentEntity.setPreregId(dto.getPreregId());
+		documentEntity.setDocId(preRegistrationId + "/" + dto.getDocCatCode() + "_" + documentEntity.getDocumentId());
+		documentEntity.setPreregId(preRegistrationId);
 		documentEntity.setDocCatCode(dto.getDocCatCode());
-		documentEntity.setDocTypeCode(dto.getDocTypeCode());
-		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getName()));
+		documentEntity.setDocTypeCode(dto.getDocTypCode());
+		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getOriginalFilename()));
 		documentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
 		documentEntity.setCrBy(userId);
 		documentEntity.setUpdBy(userId);
 		documentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
-		documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		// documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return documentEntity;
 	}
-
 
 	/**
 	 * This method is used to check whether the key is null
@@ -191,7 +196,6 @@ public class DocumentServiceUtil {
 
 	}
 
-	
 	/**
 	 * @return maximum file size defined.
 	 */
@@ -203,10 +207,10 @@ public class DocumentServiceUtil {
 	/**
 	 * @return defined document extension.
 	 *//*
-	public String getFileExtension() {
-		log.info("sessionId", "idType", "id", "In getFileExtension method of document service util");
-		return this.fileExtension;
-	}*/
+		 * public String getFileExtension() { log.info("sessionId", "idType", "id",
+		 * "In getFileExtension method of document service util"); return
+		 * this.fileExtension; }
+		 */
 
 	public String getCurrentResponseTime() {
 		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of document service util");
@@ -226,8 +230,8 @@ public class DocumentServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In parseDocumentId method of document service util- " + ex.getMessage());
 
-			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
-					ErrorMessages.INVALID_DOCUMENT_ID.toString());
+			throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
+					ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 		}
 
 	}
@@ -238,23 +242,23 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.toString());
+					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage());
 		}
 	}
 
-	public DocumentEntity documentEntitySetter(String destinationPreId, DocumentEntity sourceEntity,DocumentEntity destEntity) throws java.io.IOException {
+	public DocumentEntity documentEntitySetter(String destinationPreId, DocumentEntity sourceEntity,
+			DocumentEntity destEntity) throws java.io.IOException {
 		log.info("sessionId", "idType", "id", "In documentEntitySetter method of document service util");
 		DocumentEntity copyDocumentEntity = new DocumentEntity();
-		if(destEntity!=null) {
+		if (destEntity != null) {
 			copyDocumentEntity.setDocumentId(destEntity.getDocumentId());
-		}
-		else {
+		} else {
 			copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		}
 		copyDocumentEntity.setPreregId(destinationPreId);
-		copyDocumentEntity.setDocId("");
+		copyDocumentEntity.setDocId(sourceEntity.getDocId());
 		String key = sourceEntity.getDocCatCode() + "_" + sourceEntity.getDocumentId();
-		InputStream file=fs.getFile(sourceEntity.getPreregId(), key);
+		InputStream file = fs.getFile(sourceEntity.getPreregId(), key);
 
 		copyDocumentEntity.setDocHash(HashUtill.hashUtill(IOUtils.toByteArray(file)));
 		copyDocumentEntity.setDocName(sourceEntity.getDocName());
@@ -285,7 +289,7 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
-					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.getMessage());
 		}
 	}
 
@@ -299,30 +303,37 @@ public class DocumentServiceUtil {
 	 */
 	public boolean fileExtensionCheck(MultipartFile file) {
 		log.info("sessionId", "idType", "id", "In fileExtensionCheck method of document service util");
-		if (fileExtension.contains(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase())) {
+		List<String> fileExtensionList = Arrays.asList(fileExtension.split("\\s*,\\s*"));
+		if (fileExtensionList.contains(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase())) {
 			return true;
 		} else {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
-					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
+					ErrorMessages.DOCUMENT_INVALID_FORMAT.getMessage());
 		}
 
 	}
+
 	/**
-	 *  
-	 * @param dto  DocumentRequestDTO
+	 * 
+	 * @param dto
+	 *            DocumentRequestDTO
 	 * @return boolean
 	 */
-	
-	public boolean isValidRequest(DocumentRequestDTO dto) {
+
+	public boolean isValidRequest(DocumentRequestDTO dto, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In isValidRequest method of document service util");
-		if(isNull(dto.getPreregId())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.toString());
-		}else if(isNull(dto.getDocCatCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.toString());
-		}else if(isNull(dto.getDocTypeCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
-		}else if(isNull(dto.getLangCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());
+		if (isNull(preRegistrationId)) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
+					ErrorMessages.INVALID_PRE_ID.getMessage());
+		} else if (isNull(dto.getDocCatCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
+					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage());
+		} else if (isNull(dto.getDocTypCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
+					ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage());
+		} else if (isNull(dto.getLangCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
+					ErrorMessages.INVALID_LANG_CODE.getMessage());
 
 		}
 		return true;
@@ -337,40 +348,45 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean isVirusScanSuccess(MultipartFile file) {
-		 try {
+		try {
 			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
 			return virusScan.scanDocument(file.getBytes());
 		} catch (java.io.IOException e) {
-           log.error("sessionId", "idType", "id", e.getMessage());
-           throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+			log.error("sessionId", "idType", "id", e.getMessage());
+			throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
+					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 		}
 	}
 
 	public boolean callGetPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
-//			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/details")
-					.queryParam("pre_registration_id", preId);
+			// RestTemplate restTemplate = restTemplateBuilder.build();
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util url "+uriBuilder);
-			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
-					,new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {});
-			if (respEntity.getBody().getErr()!=null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
-			} 
-			
+			uriBuilder += "{preRegistrationId}";
+			log.info("sessionId", "idType", "id",
+					"In callGetPreRegInfoRestService method of document service util url " + uriBuilder);
+			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+					}, params);
+			if (respEntity.getBody().getErrors() != null) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().getErrorCode(),
+						respEntity.getBody().getErrors().getMessage());
+			}
+
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), ex.getCause());
 		}
 		return true;
 	}

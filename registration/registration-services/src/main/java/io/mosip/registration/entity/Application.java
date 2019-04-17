@@ -13,10 +13,10 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * 
+ * The Entity Class for Application.
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
- *
  */
 
 @Entity

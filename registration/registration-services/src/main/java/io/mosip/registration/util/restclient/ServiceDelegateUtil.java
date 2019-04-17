@@ -56,16 +56,16 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 public class ServiceDelegateUtil {
 
 	@Autowired
-	RestClientUtil restClientUtil;
+	private RestClientUtil restClientUtil;
 
 	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	@Value("${HTTP_API_READ_TIMEOUT}")
-	int readTimeout;
+	private int readTimeout;
 
 	@Value("${HTTP_API_WRITE_TIMEOUT}")
-	int connectTimeout;
+	private int connectTimeout;
 
 	@Value("${AUTH_CLIENT_ID:}")
 	private String clientId;
@@ -84,15 +84,23 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param serviceName   service to be invoked
-	 * @param requestParams parameters along with url
-	 * @param hasPathParams the has path params
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            parameters along with url
+	 * @param hasPathParams
+	 *            the has path params
+	 * @param triggerPoint
+	 *            system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
@@ -145,15 +153,23 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request.
 	 *
-	 * @param serviceName service to be invoked
-	 * @param object      request type
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
+	 * @param triggerPoint
+	 *            system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws ResourceAccessException  the resource access exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws ResourceAccessException
+	 *             the resource access exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
@@ -441,8 +457,8 @@ public class ServiceDelegateUtil {
 			properties.load(new StringReader(cookie.replaceAll(";", "\n")));
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
 			authTokenDTO.setCookie(cookie);
-			authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
-			authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
+			//authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
+			//authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
 			if (loginMode.equals(LoginMode.CLIENTID)) {
@@ -480,6 +496,13 @@ public class ServiceDelegateUtil {
 				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
+				if (isTokenValid) {
+					Map<String, Object> responseBody = (Map<String, Object>) responseMap
+							.get(RegistrationConstants.REST_RESPONSE_BODY);
+					if (responseBody != null && responseBody.get("errors") != null) {
+						isTokenValid = false;
+					}
+				}
 			}
 		} catch (URISyntaxException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| SocketTimeoutException | RegBaseCheckedException restException) {

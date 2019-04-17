@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
@@ -92,6 +93,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
@@ -131,6 +133,7 @@ public class AuthController {
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
 		if (authResponseDto != null) {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 		}
 		responseWrapper.setResponse(authNResponse);
@@ -155,6 +158,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			if (token != null && token.getUserId() != null) {
@@ -162,6 +166,7 @@ public class AuthController {
 			}
 		} else {
 			authNResponse = new AuthNResponse();
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(
 					authResponseDto.getMessage() != null ? authResponseDto.getMessage() : "Otp validation failed");
 		}
@@ -188,6 +193,7 @@ public class AuthController {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
+			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
@@ -209,12 +215,20 @@ public class AuthController {
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
+		if(cookies==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
 		MosipUserDtoToken mosipUserDtoToken = null;
 		try {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
 					authToken = cookie.getValue();
 				}
+			}
+			if(authToken==null)
+			{
+				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
 			if (mosipUserDtoToken != null) {
@@ -223,10 +237,10 @@ public class AuthController {
 			Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
 			res.addCookie(cookie);
 		} catch (NonceExpiredException exp) {
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, exp.getMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
 		} catch (AuthManagerException e) {
 
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, e.getMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		}
 		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
 		return responseWrapper;
@@ -270,10 +284,18 @@ public class AuthController {
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
+		if(cookies==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
 				authToken = cookie.getValue();
 			}
+		}
+		if(authToken==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 		}
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		responseWrapper.setResponse(authNResponse);

@@ -16,7 +16,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.RegistrationDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,8 +40,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private PacketHandlerController packetController;
 
-	private RegistrationDTO registrationData;
-
 	private Writer stringWriter;
 
 	@FXML
@@ -58,9 +55,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private Button print;
 
 	@FXML
-	private Button back;
-
-	@FXML
 	private Text registrationNavLabel;
 
 	@FXML
@@ -68,14 +62,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Autowired
 	private SendNotificationController sendNotificationController;
-
-	public RegistrationDTO getRegistrationData() {
-		return registrationData;
-	}
-
-	public void setRegistrationData(RegistrationDTO registrationData) {
-		this.registrationData = registrationData;
-	}
 
 	public void setStringWriter(Writer stringWriter) {
 		this.stringWriter = stringWriter;
@@ -86,18 +72,25 @@ public class AckReceiptController extends BaseController implements Initializabl
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
-		if (String.valueOf(
-				applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION)) != null
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String
-						.valueOf(ApplicationContext.map().get(RegistrationConstants.NOTIFICATION_DISABLE_FLAG)))) {
+		if (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION) != null
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
+
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);
 		}
 
-		if (getRegistrationData().getSelectionListDTO() != null) {
-			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			newRegistration.setVisible(false);
+		}
+		
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 
 		WebEngine engine = webView.getEngine();
@@ -110,6 +103,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	/**
 	 * To print the acknowledgement receipt after packet creation when the user
 	 * clicks on print button.
+	 * 
+	 * @param event
+	 *            - the event that happens on click of print button
 	 */
 	@FXML
 	public void printReceipt(ActionEvent event) {
@@ -118,11 +114,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		PrinterJob job = PrinterJob.createPrinterJob();
 		if (job != null) {
-			job.getJobSettings().setJobName(getRegistrationData().getRegistrationId() + "_Ack");
+			job.getJobSettings().setJobName(getRegistrationDTOFromSession().getRegistrationId() + "_Ack");
 			webView.getEngine().print(job);
 			job.endJob();
 		}
-		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
 		goToHomePageFromRegistration();
 	}
 

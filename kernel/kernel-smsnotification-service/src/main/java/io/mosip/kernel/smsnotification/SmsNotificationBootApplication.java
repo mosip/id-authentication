@@ -17,15 +17,14 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.smsnotification.*", "io.mosip.kernel.auth.*" })
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 public class SmsNotificationBootApplication {
 
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            params
+	 * @param args params
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SmsNotificationBootApplication.class, args);

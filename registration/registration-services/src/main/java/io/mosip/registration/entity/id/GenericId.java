@@ -7,6 +7,12 @@ import javax.persistence.Embeddable;
 
 import org.hibernate.annotations.Type;
 
+/**
+ * Composite key for GenericId.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Embeddable
 public class GenericId implements Serializable {
 	/**
@@ -27,8 +33,7 @@ public class GenericId implements Serializable {
 	}
 
 	/**
-	 * @param code
-	 *            the code to set
+	 * @param code the code to set
 	 */
 	public void setCode(String code) {
 		this.code = code;
@@ -42,8 +47,7 @@ public class GenericId implements Serializable {
 	}
 
 	/**
-	 * @param isActive
-	 *            the isActive to set
+	 * @param isActive the isActive to set
 	 */
 	public void setActive(Boolean isActive) {
 		this.isActive = isActive;

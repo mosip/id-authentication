@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterDeviceDto extends BaseDto{
+public class RegistrationCenterDeviceDto extends BaseDto {
 
 	@NotNull
 	@Size(min = 1, max = 36)

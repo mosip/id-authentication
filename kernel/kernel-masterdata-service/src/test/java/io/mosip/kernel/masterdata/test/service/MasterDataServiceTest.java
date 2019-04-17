@@ -99,6 +99,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceHistory
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -113,7 +114,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 
-@SpringBootTest
+@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class MasterDataServiceTest {
@@ -1551,28 +1552,30 @@ public class MasterDataServiceTest {
 
 	// ---------------------RegistrationCenterIntegrationTest-validatetimestamp----------------//
 
-	/*@Test
-	public void getStatusOfWorkingHoursRejectedTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(true);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(18, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-		
-		 * mockMvc.perform(get(
-		 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 
-
-		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
-
-	}*/
+	/*
+	 * @Test public void getStatusOfWorkingHoursRejectedTest() throws Exception {
+	 * Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any
+	 * (), Mockito.any())) .thenReturn(true);
+	 * Mockito.when(registrationCenterRepository.findById(Mockito.any(),
+	 * Mockito.anyString())) .thenReturn(registrationCenter); LocalTime startTime =
+	 * LocalTime.of(10, 00, 000); LocalTime endTime = LocalTime.of(18, 00, 000);
+	 * registrationCenter.setCenterStartTime(startTime);
+	 * registrationCenter.setCenterEndTime(endTime);
+	 * 
+	 * mockMvc.perform(get(
+	 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+	 * .andExpect(status().isOk());
+	 * 
+	 * 
+	 * ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto =
+	 * registrationCenterService .validateTimeStampWithRegistrationCenter("1",
+	 * "eng", "2017-12-12T17:59:59.999Z");
+	 * 
+	 * Assert.assertEquals(MasterDataConstant.INVALID,
+	 * resgistrationCenterStatusResponseDto.getStatus());
+	 * 
+	 * }
+	 */
 
 	@Test
 	public void getStatusOfWorkingHoursTest() throws Exception {
@@ -1597,7 +1600,7 @@ public class MasterDataServiceTest {
 		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
-	
+
 	@Test(expected = DataNotFoundException.class)
 	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))

@@ -34,6 +34,9 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
@@ -50,11 +53,11 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -100,9 +103,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
@@ -165,8 +165,9 @@ public class PacketValidateProcessor {
 	boolean isApplicantDocumentValidation = false;
 	boolean isFilesValidated = false;
 	boolean isMasterDataValidation = false;
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
-	public MessageDTO process(MessageDTO object) {
+	public MessageDTO process(MessageDTO object, String stageName) {
 		String preRegId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
@@ -181,12 +182,17 @@ public class PacketValidateProcessor {
 			isTransactionSuccessful = false;
 
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+			registrationStatusDto
+					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
+			registrationStatusDto.setRegistrationStageName(stageName);
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
 
 			if (isValid) {
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
@@ -206,6 +212,8 @@ public class PacketValidateProcessor {
 						LoggerFileConstant.REGISTRATIONID.toString(), code + " -- " + registrationId, description);
 
 			} else {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.PACKET_STRUCTURAL_VALIDATION_FAILED));
 				object.setIsValid(Boolean.FALSE);
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
@@ -231,9 +239,10 @@ public class PacketValidateProcessor {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
 			code = PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -242,7 +251,17 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
+		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
+			code = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode();
+			description = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
 			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
@@ -252,7 +271,9 @@ public class PacketValidateProcessor {
 							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
-		} catch (IOException exc) {
+		} catch (IdentityNotFoundException | IOException exc) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
 			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
@@ -263,6 +284,8 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (TablenotAccessibleException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 			object.setInternalError(Boolean.TRUE);
 			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
 			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
@@ -270,7 +293,8 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (BaseUncheckedException e) {
-
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getMessage();
 			code = PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getCode();
@@ -281,6 +305,8 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (Exception ex) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
 			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
@@ -291,6 +317,8 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} finally {
+
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -302,8 +330,8 @@ public class PacketValidateProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			}
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
 					: description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -324,7 +352,7 @@ public class PacketValidateProcessor {
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -417,7 +445,8 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto) {
+	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto)
+			throws ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 

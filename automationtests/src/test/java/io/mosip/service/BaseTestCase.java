@@ -86,6 +86,7 @@ public class BaseTestCase extends KernelMasterDataR {
 		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
+
 			ApplnURI="https://" +environment+ ".mosip.io";
 			/*if (environment.equalsIgnoreCase("dev"))
 				ApplnURI="https://dev.mosip.io";
@@ -99,6 +100,10 @@ public class BaseTestCase extends KernelMasterDataR {
 
 			/*environment ="integration";
 			ApplnURI="https://integ.mosip.io";*/
+
+
+			ApplnURI=System.getProperty("env.endpoint");
+			logger.info("Application URI ======" +ApplnURI);
 
 			logger.info("Configs from properties file are set.");
 			

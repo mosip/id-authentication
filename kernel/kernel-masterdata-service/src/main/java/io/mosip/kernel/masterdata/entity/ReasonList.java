@@ -34,10 +34,10 @@ public class ReasonList extends BaseEntity implements Serializable {
 	@Id
 	@Column(name = "rsncat_code", nullable = false, length = 36)
 	private String rsnCatCode;
-    @Id
+	@Id
 	@Column(name = "code", nullable = false, length = 36)
 	private String code;
-    @Id
+	@Id
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
@@ -52,7 +52,5 @@ public class ReasonList extends BaseEntity implements Serializable {
 			@JoinColumn(name = "rsncat_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private ReasonCategory reasonCategory;
-
-	
 
 }

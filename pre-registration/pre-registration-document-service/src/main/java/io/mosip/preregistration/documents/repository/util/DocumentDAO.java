@@ -45,7 +45,8 @@ public class DocumentDAO {
 		try {
 			entityList = documentRepository.findBypreregId(preId);
 			if (serviceUtil.isNull(entityList)) {
-				throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
+						DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findBydocumentId method of DocumnetDAO - " + ex);

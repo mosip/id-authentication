@@ -24,5 +24,11 @@ public class RequestDto {
 	
 	/** The documents. */
 	private List<Documents> documents;
+	
+	/** The registration id. */
+	private String registrationId;
+	
+	private String status;
+
 
 }

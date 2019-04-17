@@ -1,5 +1,11 @@
 package io.mosip.registration.dto;
 
+/**
+ * The DTO Class ApplicantValidDocumentDto.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 public class ApplicantValidDocumentDto {
 
 	private String appTypeCode;

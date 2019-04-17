@@ -18,16 +18,28 @@ import MFS100.FingerData;
 import MFS100.MFS100;
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 
+/**
+ * The Class MantraFingerprintProviderTest.
+ *
+ * @author Manoj SP
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class MantraFingerprintProviderTest {
+	
+	/** The fp device. */
 	@Mock
 	MFS100 fpDevice;
 
+	/** The info. */
 	@Mock
 	DeviceInfo info;
 
+	/** The fp. */
 	MantraFingerprintProvider fp = new MantraFingerprintProvider();
 
+	/**
+	 * Device info test.
+	 */
 	@Test
 	public void deviceInfoTest() {
 		Mockito.when(info.Make()).thenReturn("Mantra");
@@ -47,6 +59,9 @@ public class MantraFingerprintProviderTest {
 		assertEquals(dInfo, fp.deviceInfo());
 	}
 
+	/**
+	 * Test capture.
+	 */
 	@Test
 	public void testCapture() {
 		Mockito.when(fpDevice.IsConnected()).thenReturn(true);
@@ -60,6 +75,9 @@ public class MantraFingerprintProviderTest {
 		assertFalse(captureFingerprint.isPresent());
 	}
 
+	/**
+	 * Test capture fail.
+	 */
 	@Test
 	public void testCaptureFail() {
 		Mockito.when(fpDevice.IsConnected()).thenReturn(false);
@@ -69,6 +87,9 @@ public class MantraFingerprintProviderTest {
 		assertFalse(captureFingerprint.isPresent());
 	}
 
+	/**
+	 * Test capture fail with error.
+	 */
 	@Test
 	public void testCaptureFailWithError() {
 		Mockito.when(fpDevice.IsConnected()).thenReturn(true);
@@ -81,22 +102,35 @@ public class MantraFingerprintProviderTest {
 		assertFalse(captureFingerprint.isPresent());
 	}
 
+	/**
+	 * Test segment fingerprint.
+	 */
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testSegmentFingerprint() {
 		Optional<Map> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
 		assertFalse(segmentFingerprint.isPresent());
 	}
 
+	/**
+	 * Test on preview.
+	 */
 	@Test
 	public void testOnPreview() {
 		fp.OnPreview(null);
 	}
 
+	/**
+	 * Test on capture completed.
+	 */
 	@Test
 	public void testOnCaptureCompleted() {
 		fp.OnCaptureCompleted(false, 0, null, null);
 	}
 	
+	/**
+	 * Test create minutiae.
+	 */
 	@Test
 	public void testCreateMinutiae() {
 		fp.createMinutiae(null);

@@ -5,14 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
 import io.mosip.registration.processor.stages.demodedupe.DemodedupeProcessor;
-import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
+import io.mosip.registration.processor.stages.demodedupe.DemoDedupeStage;
 
 @Configuration
 public class DemoDedupeConfig {
 
 	@Bean
-	public DemodedupeStage getDemoDedupeStage() {
-		return new DemodedupeStage();
+	public DemoDedupeStage getDemoDedupeStage() {
+		return new DemoDedupeStage();
 	}
 
 	@Bean

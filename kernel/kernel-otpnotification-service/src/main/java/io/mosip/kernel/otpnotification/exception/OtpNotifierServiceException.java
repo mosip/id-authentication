@@ -2,7 +2,7 @@ package io.mosip.kernel.otpnotification.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
-public class OtpNotifierServiceException extends BaseUncheckedException{
+public class OtpNotifierServiceException extends BaseUncheckedException {
 
 	/**
 	 * 
@@ -11,12 +11,12 @@ public class OtpNotifierServiceException extends BaseUncheckedException{
 
 	public OtpNotifierServiceException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
-		
+
 	}
 
 	public OtpNotifierServiceException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		
+
 	}
 
 }

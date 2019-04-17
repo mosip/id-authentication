@@ -81,27 +81,27 @@ describe('FileUploadComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  // it('sameAsselected defaults to: false', () => {
-  //   expect(component.sameAsselected).toEqual(false);
-  // });
-  // it('users defaults to: []', () => {
-  //   expect(component.users).toEqual([]);
-  // });
+  it('sameAsselected defaults to: false', () => {
+    expect(component.sameAsselected).toEqual(false);
+  });
+  it('users defaults to: []', () => {
+    expect(component.users).toEqual([]);
+  });
   // it('JsonString defaults to: appConstants.DOCUMENT_UPLOAD_REQUEST_DTO', () => {
   //   expect(component.JsonString).toEqual(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO);
   // });
-  // it('browseDisabled defaults to: true', () => {
-  //   expect(component.browseDisabled).toEqual(true);
-  // });
-  // it('step defaults to: 0', () => {
-  //   expect(component.step).toEqual(0);
-  // });
-  // it('multipleApplicants defaults to: false', () => {
-  //   expect(component.multipleApplicants).toEqual(false);
-  // });
-  // it('allApplicants defaults to: []', () => {
-  //   expect(component.allApplicants).toEqual([]);
-  // });
+  it('browseDisabled defaults to: true', () => {
+    expect(component.browseDisabled).toEqual(true);
+  });
+  it('step defaults to: 0', () => {
+    expect(component.step).toEqual(0);
+  });
+  it('multipleApplicants defaults to: false', () => {
+    expect(component.multipleApplicants).toEqual(false);
+  });
+  it('allApplicants defaults to: []', () => {
+    expect(component.allApplicants).toEqual([]);
+  });
   // describe('ngOnInit', () => {
   //   it('makes expected calls', () => {
   //     const registrationServiceStub: RegistrationService = fixture.debugElement.injector.get(RegistrationService);
@@ -150,45 +150,45 @@ describe('FileUploadComponent', () => {
   //     expect(component.viewFile).toHaveBeenCalled();
   //   });
   // });
-  // describe('removeFilePreview', () => {
-  //   it('makes expected calls', () => {
-  //     const domSanitizerStub: DomSanitizer = fixture.debugElement.injector.get(DomSanitizer);
-  //     spyOn(domSanitizerStub, 'bypassSecurityTrustResourceUrl');
-  //     component.removeFilePreview();
-  //     expect(domSanitizerStub.bypassSecurityTrustResourceUrl).toHaveBeenCalled();
-  //   });
-  // });
-  // describe('onBack', () => {
-  //   it('makes expected calls', () => {
-  //     const routerStub: Router = fixture.debugElement.injector.get(Router);
-  //     const registrationServiceStub: RegistrationService = fixture.debugElement.injector.get(RegistrationService);
-  //     spyOn(routerStub, 'navigateByUrl');
-  //     spyOn(registrationServiceStub, 'changeMessage');
-  //     component.onBack();
-  //     expect(routerStub.navigateByUrl).toHaveBeenCalled();
-  //     expect(registrationServiceStub.changeMessage).toHaveBeenCalled();
-  //   });
-  // });
-  // describe('onNext', () => {
-  //   it('makes expected calls', () => {
-  //     const routerStub: Router = fixture.debugElement.injector.get(Router);
-  //     spyOn(routerStub, 'navigateByUrl');
-  //     component.onNext();
-  //     expect(routerStub.navigateByUrl).toHaveBeenCalled();
-  //   });
-  // });
-  // describe('nextFile', () => {
-  //   it('makes expected calls', () => {
-  //     spyOn(component, 'viewFileByIndex');
-  //     component.nextFile();
-  //     expect(component.viewFileByIndex).toHaveBeenCalled();
-  //   });
-  // });
-  // describe('previousFile', () => {
-  //   it('makes expected calls', () => {
-  //     spyOn(component, 'viewFileByIndex');
-  //     component.previousFile();
-  //     expect(component.viewFileByIndex).toHaveBeenCalled();
-  //   });
-  // });
+  describe('removeFilePreview', () => {
+    it('makes expected calls', () => {
+      const domSanitizerStub: DomSanitizer = fixture.debugElement.injector.get(DomSanitizer);
+      spyOn(domSanitizerStub, 'bypassSecurityTrustResourceUrl');
+      component.removeFilePreview();
+      expect(domSanitizerStub.bypassSecurityTrustResourceUrl).toHaveBeenCalled();
+    });
+  });
+  describe('onBack', () => {
+    it('makes expected calls', () => {
+      const routerStub: Router = fixture.debugElement.injector.get(Router);
+      const registrationServiceStub: RegistrationService = fixture.debugElement.injector.get(RegistrationService);
+      spyOn(routerStub, 'navigateByUrl');
+      spyOn(registrationServiceStub, 'changeMessage');
+      component.onBack();
+      expect(routerStub.navigateByUrl).toHaveBeenCalled();
+      expect(registrationServiceStub.changeMessage).toHaveBeenCalled();
+    });
+  });
+  describe('onNext', () => {
+    it('makes expected calls', () => {
+      const routerStub: Router = fixture.debugElement.injector.get(Router);
+      spyOn(routerStub, 'navigateByUrl');
+      component.onNext();
+      expect(routerStub.navigateByUrl).toHaveBeenCalled();
+    });
+  });
+  describe('nextFile', () => {
+    it('makes expected calls', () => {
+      spyOn(component, 'viewFileByIndex');
+      component.nextFile();
+      expect(component.viewFileByIndex).toHaveBeenCalled();
+    });
+  });
+  describe('previousFile', () => {
+    it('makes expected calls', () => {
+      spyOn(component, 'viewFileByIndex');
+      component.previousFile();
+      expect(component.viewFileByIndex).toHaveBeenCalled();
+    });
+  });
 });

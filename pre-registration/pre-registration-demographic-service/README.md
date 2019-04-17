@@ -8,6 +8,7 @@ This Api can be use to store the demographic details of the citizen for a pre-re
 
 ```
 mvn javadoc:javadoc
+
 ```
 
 ####  POST Operation

@@ -17,122 +17,138 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_APP_001
 	 */
-	UNABLE_TO_CREATE_THE_PRE_REGISTRATION,
+	UNABLE_TO_CREATE_THE_PRE_REGISTRATION("Failed to create the pre-registration with demographic data provided"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_002
 	 */
-	PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE,
+	PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE("unable to access the pre-registration table"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_003
 	 */
-	DELETE_OPERATION_NOT_ALLOWED,
+	DELETE_OPERATION_NOT_ALLOWED("delete operation is not allowed"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_004
 	 */
-	FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD,
+	FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD("failed to delete the pre-registration data"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
-	UNABLE_TO_FETCH_THE_PRE_REGISTRATION,
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("No data found for the requested pre-registration id"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
-	NO_RECORD_FOUND_FOR_USER_ID,
+	NO_RECORD_FOUND_FOR_USER_ID("No record found for the requested user id"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_006
 	 */
-	INVAILD_STATUS_CODE,
+	INVAILD_STATUS_CODE("status code is invalid"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_VALIDATION_FAILED,
+	JSON_VALIDATION_FAILED("json validation is failed"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_PARSING_FAILED,
+	JSON_PARSING_FAILED("json parsing is failed"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_HTTP_REQUEST_EXCEPTION,
+	JSON_HTTP_REQUEST_EXCEPTION("json Http request exception"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_VALIDATION_PROCESSING_EXCEPTION,
+	JSON_VALIDATION_PROCESSING_EXCEPTION("json validation processing exception"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_IO_EXCEPTION,
+	JSON_IO_EXCEPTION("json IO exception"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_007
 	 */
-	JSON_SCHEMA_IO_EXCEPTION,
+	JSON_SCHEMA_IO_EXCEPTION("json schema IO exception"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_008
 	 */
-	UNABLE_TO_UPDATE_THE_PRE_REGISTRATION,
+	UNABLE_TO_UPDATE_THE_PRE_REGISTRATION("Failed to update the requested preregistration data"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_009
 	 */
-	FILE_IO_EXCEPTION,
+	FILE_IO_EXCEPTION("file IO exception"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_009
 	 */
-	UNSUPPORTED_ENCODING_CHARSET,
+	UNSUPPORTED_ENCODING_CHARSET("unsupported encoding charset"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_015
 	 */
-	DOCUMENT_FAILED_TO_DELETE,
+	DOCUMENT_FAILED_TO_DELETE("failed to delete the document"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_016
 	 */
-	BOOKING_FAILED_TO_DELETE,
+	BOOKING_FAILED_TO_DELETE("failed to delete the booking"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_011
 	 */
-	UNSUPPORTED_DATE_FORMAT,
+	UNSUPPORTED_DATE_FORMAT("date format is not supported"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_012
 	 */
-	MISSING_REQUEST_PARAMETER,
+	MISSING_REQUEST_PARAMETER("request parameter is missing"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
-	INVALID_STATUS_CODE,
+	INVALID_STATUS_CODE("status code is invalid"),
 
 	/**
 	 * PRG_PAM_APP_005
 	 */
-	RECORD_NOT_FOUND_FOR_DATE_RANGE,
+	RECORD_NOT_FOUND_FOR_DATE_RANGE("no record found for the requested date range"),
 
 	/**
 	 * PRG_PAM_APP_013
 	 */
-	RECORD_NOT_FOUND,
-	
+	RECORD_NOT_FOUND("no record found"),
+
 	/**
 	 * PRG_PAM_APP_014
 	 */
-	DOCUMENT_SERVICE_FAILED_TO_CALL,
-	
-	DOCUMENT_IS_MISSING;
+	DOCUMENT_SERVICE_FAILED_TO_CALL("Document service rest call failed"),
+
+	/**
+	 * PRG_PAM_DOC_005
+	 */
+	DOCUMENT_IS_MISSING("no document found for the requested pre-registration id");
+
+	private ErrorMessages(String message) {
+		this.message = message;
+	}
+
+	private final String message;
+
+	/**
+	 * @return message
+	 */
+	public String getMessage() {
+		return message;
+	}
 }

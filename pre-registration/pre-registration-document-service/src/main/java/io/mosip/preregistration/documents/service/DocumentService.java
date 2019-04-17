@@ -7,7 +7,9 @@ package io.mosip.preregistration.documents.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -33,6 +36,7 @@ import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
+import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
@@ -40,12 +44,12 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.HashingException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -56,6 +60,7 @@ import io.mosip.preregistration.documents.exception.DocumentFailedToUploadExcept
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FSServerException;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -79,18 +84,48 @@ public class DocumentService {
 	private DocumentDAO documnetDAO;
 
 	/**
-	 * Reference for ${id} from property file
+	 * Reference for ${mosip.preregistration.document.upload.id} from property file
 	 */
-	@Value("${id}")
-	private String id;
+	@Value("${mosip.preregistration.document.upload.id}")
+	private String uploadId;
 
 	/**
-	 * Reference for ${ver} from property file
+	 * Reference for ${mosip.preregistration.document.copy.id} from property file
 	 */
-	@Value("${ver}")
-	private String ver;
+	@Value("${mosip.preregistration.document.copy.id}")
+	private String copyId;
 
-	private boolean responseStatus = true;
+	/**
+	 * Reference for ${mosip.preregistration.document.fetch.metadata.id} from
+	 * property file
+	 */
+	@Value("${mosip.preregistration.document.fetch.metadata.id}")
+	private String fetchMetaDataId;
+
+	/**
+	 * Reference for ${mosip.preregistration.document.fetch.content.id} from
+	 * property file
+	 */
+	@Value("${mosip.preregistration.document.fetch.content.id}")
+	private String fetchContentId;
+
+	/**
+	 * Reference for ${mosip.preregistration.document.delete.id} from property file
+	 */
+	@Value("${mosip.preregistration.document.delete.id}")
+	private String deleteId;
+
+	/**
+	 * Reference for ${mosip.preregistration.document.delete.specific.id} from
+	 * property file
+	 */
+	@Value("${mosip.preregistration.document.delete.specific.id}")
+	private String deleteSpecificId;
+	/**
+	 * Reference for ${version} from property file
+	 */
+	@Value("${version}")
+	private String ver;
 
 	/**
 	 * Autowired reference for {@link #FileSystemAdapter}
@@ -123,7 +158,6 @@ public class DocumentService {
 	 * Logger configuration for document service
 	 */
 	private static Logger log = LoggerConfiguration.logConfig(DocumentService.class);
-	
 
 	/**
 	 * This method acts as a post constructor to initialize the required request
@@ -131,13 +165,14 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-		requiredRequestMap.put("id", id);
-		requiredRequestMap.put("ver", ver);
+		requiredRequestMap.put("id", uploadId);
+		requiredRequestMap.put("version", ver);
 	}
 
-	 public AuthUserDetails  authUserDetails() {
-			return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
+
 	/**
 	 * This method is used to upload the document by accepting the JsonString and
 	 * MultipartFile
@@ -149,27 +184,31 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString) {
+	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
+			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
 		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
+		MainRequestDTO<DocumentRequestDTO> docReqDto = new MainRequestDTO<>();
 		boolean isUploadSuccess = false;
 		try {
-			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString);
-			if (ValidationUtil.requestValidator(docReqDto)) {
+			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
+			responseDto.setId(docReqDto.getId());
+			responseDto.setVersion(docReqDto.getVersion());
+			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto),requiredRequestMap)) {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
-					serviceUtil.isValidRequest(docReqDto.getRequest());
-					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file);
+					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
+					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file,
+							preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
 				} else {
 					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 				}
 			}
 			isUploadSuccess = true;
-			responseDto.setId(docReqDto.getId());
-			responseDto.setVersion(docReqDto.getVersion());
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex);
@@ -178,14 +217,16 @@ public class DocumentService {
 			if (isUploadSuccess) {
 				setAuditValues(EventId.PRE_404.toString(), EventName.UPLOAD.toString(), EventType.BUSINESS.toString(),
 						"Document uploaded & the respective Pre-Registration data is saved in the document table",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document upload failed & the respective Pre-Registration data save unsuccessfull ",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
-		
+
 		return responseDto;
 	}
 
@@ -201,18 +242,22 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file,
+			String preRegistrationId) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
-		if (serviceUtil.callGetPreRegInfoRestService(document.getPreregId())) {
-			DocumentEntity getentity = documnetDAO.findSingleDocument(document.getPreregId(), document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,authUserDetails().getUserId());
+		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
+			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
+					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
-			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
+			LocalDateTime encryptedTimestamp = DateUtils.getUTCCurrentDateTime();
+			documentEntity.setEncryptedDateTime(encryptedTimestamp);
+			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), encryptedTimestamp);
 			documentEntity.setDocHash(HashUtill.hashUtill(encryptedDocument));
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
@@ -223,18 +268,18 @@ public class DocumentService {
 
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
-				docResponseDto.setDocumentName(documentEntity.getDocName());
-				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
-				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());
-				docResponseDto.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+				docResponseDto.setDocName(documentEntity.getDocName());
+				docResponseDto.setDocCatCode(documentEntity.getDocCatCode());
+				docResponseDto.setDocTypCode(documentEntity.getDocTypeCode());
+				docResponseDto.setDocFileFormat(FilenameUtils.getExtension(documentEntity.getDocName()));
 				docResponseDtos.add(docResponseDto);
 			} else {
 				throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 			}
 		}
 		return docResponseDtos;
@@ -253,17 +298,23 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentCopyResponseDTO> copyDocument(String catCode, String sourcePreId,
+	public MainListResponseDTO<DocumentResponseDTO> copyDocument(String catCode, String sourcePreId,
 			String destinationPreId) {
 		log.info("sessionId", "idType", "id", "In copyDocument method of document service");
 		String sourceBucketName;
 		String sourceKey;
-		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = new MainListResponseDTO<>();
-		List<DocumentCopyResponseDTO> copyDocumentList = new ArrayList<>();
+		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
+		responseDto.setId(copyId);
+		responseDto.setVersion(ver);
+		List<DocumentResponseDTO> copyDocumentList = new ArrayList<>();
 		boolean isCopySuccess = false;
 		try {
-			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
-					&& serviceUtil.isValidCatCode(catCode)) {
+			if (sourcePreId == null || sourcePreId.isEmpty() || destinationPreId == null
+					|| destinationPreId.isEmpty()) {
+				throw new InvalidRequestParameterException(
+						io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
+						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage());
+			} else if (serviceUtil.isValidCatCode(catCode)) {
 				boolean sourceStatus = serviceUtil.callGetPreRegInfoRestService(sourcePreId);
 				boolean destinationStatus = serviceUtil.callGetPreRegInfoRestService(destinationPreId);
 
@@ -275,21 +326,22 @@ public class DocumentService {
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
-					DocumentCopyResponseDTO copyDcoResDto = new DocumentCopyResponseDTO();
-					copyDcoResDto.setSourcePreRegId(sourcePreId);
-					copyDcoResDto.setSourceDocumnetId(String.valueOf(documentEntity.getDocumentId()));
-					copyDcoResDto.setDestPreRegId(destinationPreId);
-					copyDcoResDto.setDestDocumnetId(String.valueOf(copyDocumentEntity.getDocumentId()));
-					copyDocumentList.add(copyDcoResDto);
+					DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO();
+					documentResponseDTO.setPreRegistrationId(destinationPreId);
+					documentResponseDTO.setDocumentId(copyDocumentEntity.getDocumentId());
+					documentResponseDTO.setDocName(copyDocumentEntity.getDocName());
+					documentResponseDTO.setDocCatCode(copyDocumentEntity.getDocCatCode());
+					documentResponseDTO.setDocTypCode(copyDocumentEntity.getDocTypeCode());
+					documentResponseDTO.setDocFileFormat(copyDocumentEntity.getDocFileFormat());
+					copyDocumentList.add(documentResponseDTO);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
 				} else {
-					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
 				}
 			}
 			isCopySuccess = true;
-			responseDto.setId(id);
-			responseDto.setVersion(ver);
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex);
@@ -297,11 +349,13 @@ public class DocumentService {
 			if (isCopySuccess) {
 				setAuditValues(EventId.PRE_409.toString(), EventName.COPY.toString(), EventType.BUSINESS.toString(),
 						"Document copied from source PreId to destination PreId is successfully saved in the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document failed to copy from source PreId to destination PreId ",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -324,12 +378,12 @@ public class DocumentService {
 			boolean isStoreSuccess = fs.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			if (!isStoreSuccess) {
 				throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 			}
 
 		} else {
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
+					ErrorMessages.DOCUMENT_FAILED_TO_COPY.getMessage());
 		}
 	}
 
@@ -343,16 +397,19 @@ public class DocumentService {
 	public MainListResponseDTO<DocumentMultipartResponseDTO> getAllDocumentForPreId(String preId) {
 		log.info("sessionId", "idType", "id", "In getAllDocumentForPreId method of document service");
 		MainListResponseDTO<DocumentMultipartResponseDTO> responseDto = new MainListResponseDTO<>();
+		responseDto.setId(fetchMetaDataId);
+		responseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			if (ValidationUtil.isvalidPreRegId(preId)) {
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(dtoSetter(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			}
 			isRetrieveSuccess = true;
-			responseDto.setId(id);
-			responseDto.setVersion(ver);
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
@@ -360,10 +417,12 @@ public class DocumentService {
 		} finally {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
-						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -381,24 +440,19 @@ public class DocumentService {
 		try {
 			for (DocumentEntity doc : entityList) {
 				DocumentMultipartResponseDTO allDocDto = new DocumentMultipartResponseDTO();
-				allDocDto.setDoc_cat_code(doc.getDocCatCode());
-				allDocDto.setDoc_file_format(doc.getDocFileFormat());
-				allDocDto.setDoc_name(doc.getDocName());
-				allDocDto.setDoc_id(doc.getDocumentId());
-				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
+				allDocDto.setDocCatCode(doc.getDocCatCode());
+				allDocDto.setDocName(doc.getDocName());
+				allDocDto.setDocumentId(doc.getDocumentId());
+				allDocDto.setDocTypCode(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
 				InputStream file = fs.getFile(doc.getPreregId(), key);
 				if (file == null) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.getMessage());
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
 				if (doc.getDocHash().equals(HashUtill.hashUtill(cephBytes))) {
-
-					LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
-
-					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
-					allDocDto.setPrereg_id(doc.getPreregId());
+					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, doc.getEncryptedDateTime()));
 					allDocRes.add(allDocDto);
 				} else {
 					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - "
@@ -423,28 +477,32 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId) {
+	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
+		delResponseDto.setId(deleteSpecificId);
+		delResponseDto.setVersion(ver);
 		try {
 			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
+			if (!documentEntity.getPreregId().equals(preRegistrationId)) {
+				throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+						ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
+			}
 			if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
 				if (!isDeleted) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
 				}
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setDocumnet_Id(documentId);
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteDocList.add(deleteDTO);
 				delResponseDto.setResponse(deleteDocList);
 			}
 			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-			delResponseDto.setId(id);
-			delResponseDto.setVersion(ver);
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex);
@@ -464,13 +522,16 @@ public class DocumentService {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		boolean isDeleteSuccess = false;
 		MainListResponseDTO<DocumentDeleteResponseDTO> deleteRes = new MainListResponseDTO<>();
+		deleteRes.setId(deleteId);
+		deleteRes.setVersion(ver);
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			if (ValidationUtil.isvalidPreRegId(preregId)) {
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preregId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
 				deleteRes = deleteFile(documentEntityList, preregId);
 			}
-			deleteRes.setId(id);
-			deleteRes.setVersion(ver);
+
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -480,10 +541,12 @@ public class DocumentService {
 			if (isDeleteSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
 						"Document successfully deleted from the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Document deletion failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Document deletion failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return deleteRes;
@@ -491,8 +554,7 @@ public class DocumentService {
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
-		log.info("sessionId", "idType", "id",
-				"In pre-registration service inside delete File method "+ preregId);
+		log.info("sessionId", "idType", "id", "In pre-registration service inside delete File method " + preregId);
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
@@ -500,8 +562,7 @@ public class DocumentService {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				fs.deleteFile(documentEntity.getPreregId(), key);
-				deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDTO.setMessage(DocumentStatusMessages.ALL_DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteAllList.add(deleteDTO);
 			}
 
@@ -521,7 +582,8 @@ public class DocumentService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -531,5 +593,23 @@ public class DocumentService {
 		auditRequestDto.setModuleId(AuditLogVariables.DOC.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.DOCUMENT_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
+	}
+
+	/**
+	 * This method is used to add the initial request values into a map for input
+	 * validations.
+	 * 
+	 * @param MainRequestDTO
+	 *            pass requestDTO
+	 * @return a map for request input validation
+	 */
+	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DocumentRequestDTO> requestDTO) {
+		Map<String, String> inputValidation = new HashMap<>();
+		inputValidation.put(RequestCodes.ID.toString(), requestDTO.getId());
+		inputValidation.put(RequestCodes.VER.toString(), requestDTO.getVersion());
+		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+		inputValidation.put(RequestCodes.REQ_TIME.toString(), date.toString());
+		inputValidation.put(RequestCodes.REQUEST.toString(), requestDTO.getRequest().toString());
+		return inputValidation;
 	}
 }

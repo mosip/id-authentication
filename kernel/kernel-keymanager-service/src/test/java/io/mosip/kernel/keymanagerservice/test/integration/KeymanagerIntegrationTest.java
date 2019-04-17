@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -40,15 +41,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
+import io.mosip.kernel.keymanagerservice.test.KeymanagerTestBootApplication;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
 /**
@@ -56,7 +60,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
  * @since 1.0.0
  *
  */
-@SpringBootTest
+@SpringBootTest(classes = { KeymanagerTestBootApplication.class })
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class KeymanagerIntegrationTest {
@@ -78,6 +82,9 @@ public class KeymanagerIntegrationTest {
 
 	@MockBean
 	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+
+	@MockBean
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	@Mock
 	private PublicKey publicKey;
@@ -145,6 +152,7 @@ public class KeymanagerIntegrationTest {
 		key = keyGen.generateKeyPair();
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMMultipleAlias() throws Exception {
 		setupMultipleKeyAlias();
@@ -155,6 +163,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMMultipleAliasReference() throws Exception {
 		setupMultipleKeyAlias();
@@ -165,6 +174,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMSingleAlias() throws Exception {
 		setupSingleKeyAlias();
@@ -175,6 +185,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAliasException() throws Exception {
 		when(keyStore.getPublicKey(Mockito.any())).thenReturn(publicKey);
@@ -185,6 +196,7 @@ public class KeymanagerIntegrationTest {
 
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAlias() throws Exception {
 		setupExpiryPolicy();
@@ -198,6 +210,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAliasNotOverlapping() throws Exception {
 		setupExpiryPolicy();
@@ -211,6 +224,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBMultipleAlias() throws Exception {
 		setupMultipleKeyAlias();
@@ -221,6 +235,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBSingleAliasException() throws Exception {
 		setupSingleKeyAlias();
@@ -232,6 +247,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBSingleAlias() throws Exception {
 		setupSingleKeyAlias();
@@ -244,6 +260,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBEmptyAliasCryptoException() throws Exception {
 		setupExpiryPolicy();
@@ -256,6 +273,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBEmptyAlias() throws Exception {
 		setupExpiryPolicy();
@@ -270,6 +288,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyException() throws Exception {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
@@ -283,6 +302,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKey() throws Exception {
 		setupSingleKeyAlias();
@@ -297,6 +317,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdException() throws Exception {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
@@ -312,6 +333,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdMultipleAliasException() throws Exception {
 		setupMultipleKeyAlias();
@@ -327,6 +349,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdDBException() throws Exception {
 		setupSingleKeyAlias();
@@ -342,6 +365,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdCryptoException() throws Exception {
 		setupSingleKeyAlias();
@@ -360,6 +384,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceId() throws Exception {
 		setupSingleKeyAlias();
@@ -375,6 +400,34 @@ public class KeymanagerIntegrationTest {
 		requestWrapper.setRequest(symmetricKeyRequestDto);
 		String content = mapper.writeValueAsString(requestWrapper);
 		MvcResult result = mockMvc.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().is(200)).andReturn();
+		// System.out.println(result.getResponse().getContentAsString());
+	}
+
+
+	@WithUserDetails("reg-processor")
+	@Test
+	public void encryptWithReferenceId() throws Exception {
+		
+		setupDBKeyStore();
+		
+		getPublicKeyFromDBEmptyAlias();
+		setupSingleKeyAlias();
+		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
+		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
+		EncryptDataRequestDto encryptDataRequestDto = new EncryptDataRequestDto();
+		encryptDataRequestDto.setApplicationId("applicationId");
+		encryptDataRequestDto.setHashedData("AMert334-edrtda");
+		encryptDataRequestDto.setReferenceId("referenceId");
+		encryptDataRequestDto.setTimeStamp("2010-05-01T12:00:00.00Z");
+		RequestWrapper<EncryptDataRequestDto> encryptRequestWrapper = new RequestWrapper<>();
+		encryptRequestWrapper.setId(ID);
+		encryptRequestWrapper.setVersion(VERSION);
+		encryptRequestWrapper.setRequest(encryptDataRequestDto);
+
+		String content = mapper.writeValueAsString(encryptRequestWrapper);
+		MvcResult result = mockMvc.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		// System.out.println(result.getResponse().getContentAsString());
 	}

@@ -22,12 +22,16 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.syncdata.utils.SigningUtil;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private SigningUtil hashUtil;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -62,10 +66,14 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				body.setVersion(requestWrapper.getVersion());
 			}
 			body.setErrors(null);
-			return body;
+			  	
+			
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());
+		}
+		if(body!=null) {
+		response.getHeaders().add("Response-Signature", hashUtil.signResponseData(body.toString()));
 		}
 		return body;
 	}

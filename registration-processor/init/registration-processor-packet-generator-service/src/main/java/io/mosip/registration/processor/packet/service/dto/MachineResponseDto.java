@@ -17,5 +17,4 @@ public class MachineResponseDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -4266319575132486164L;
 	private List<MachineDto> machines;
-	private List<ErrorDTO> errors;
 }

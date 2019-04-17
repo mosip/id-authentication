@@ -74,7 +74,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();

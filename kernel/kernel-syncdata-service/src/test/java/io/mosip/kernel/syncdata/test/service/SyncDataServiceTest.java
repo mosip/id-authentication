@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.test.service;
 
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
@@ -45,27 +42,23 @@ import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
-import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.test.TestBootApplication;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import net.minidev.json.JSONObject;
 
-@SpringBootTest
+@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 public class SyncDataServiceTest {
 
 	@MockBean
 	private SyncMasterDataServiceHelper masterDataServiceHelper;
-
-	@Autowired
-	private SyncMasterDataService masterDataService;
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -76,16 +69,11 @@ public class SyncDataServiceTest {
 	@MockBean
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private SyncUserDetailsService syncUserDetailsService;
-
 	@MockBean
 	MachineRepository machineRespository;
 
 	@Autowired
 	private SyncRolesService syncRolesService;
-	
-	
 
 	/**
 	 * Environment instance
@@ -203,7 +191,60 @@ public class SyncDataServiceTest {
 
 	}
 
-	
+	/*
+	 * @Test(expected = SyncDataServiceException.class) public void
+	 * syncDataFailure() throws InterruptedException, ExecutionException { Machine
+	 * machine = new Machine(); machine.setId("10001"); machine.setLangCode("eng");
+	 * List<Machine> machines = new ArrayList<>(); machines.add(machine);
+	 * when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).
+	 * thenReturn(machines);
+	 * when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any(),
+	 * Mockito.any())) .thenThrow(SyncDataServiceException.class);
+	 * masterDataService.syncData("1001", null, null);
+	 * 
+	 * }
+	 */
+
+	// @Test
+	public void globalConfigsyncSuccess() {
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
+		syncConfigDetailsService.getGlobalConfigDetails();
+
+	}
+
+	// @Test
+	public void registrationConfigsyncSuccess() {
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
+		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
+	}
+
+	// @Test(expected = SyncDataServiceException.class)
+	public void registrationConfigsyncFailure() {
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withBadRequest());
+		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
+	}
+
+	// @Test(expected = SyncDataServiceException.class)
+	public void globalConfigsyncFailure() {
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
+		syncConfigDetailsService.getGlobalConfigDetails();
+	}
+
+	// @Test(expected = SyncDataServiceException.class)
+	public void globalConfigsyncFileNameNullFailure() {
+
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
+		syncConfigDetailsService.getGlobalConfigDetails();
+	}
 
 	// @Test
 	public void getConfigurationSuccess() {
@@ -217,7 +258,7 @@ public class SyncDataServiceTest {
 	}
 
 	// ------------------------------------------UserDetails--------------------------//
-	//@Test
+	/*// @Test
 	public void getAllUserDetail() {
 		String response = "{ \"mosipUserDtoList\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\"  } ] }";
 		String regId = "10044";
@@ -234,12 +275,12 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
-	}
+	}*/
 
-	//@Test(expected = SyncDataServiceException.class)
+/*	// @Test(expected = SyncDataServiceException.class)
 	public void getAllUserDetailExcp() {
 		String response = "{ \"userDetails\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"roles\": [ \"REGISTRATION_ADMIN\", \"INDIVIDUAL\" ] } ] }";
 		String regId = "10044";
@@ -248,7 +289,7 @@ public class SyncDataServiceTest {
 		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
 		registrationCenterUserDto.setIsActive(true);
 		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");   
+		registrationCenterUserDto.setUserId("M10411022");
 		registrationCenterUserDtos.add(registrationCenterUserDto);
 		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
 
@@ -256,12 +297,12 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
 				.andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
-
-	//@Test
+*/
+	/*// @Test
 	public void getAllUserDetailNoDetail() {
 		// String response = "{ \"userDetails\": [] }";
 		String regId = "10044";
@@ -278,26 +319,27 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient")).andRespond(withSuccess());
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
+				.andRespond(withSuccess());
 		assertNull(syncUserDetailsService.getAllUserDetail(regId));
-	}
+	}*/
 
 	// ------------------------------------------AllRolesSync--------------------------//
 
-	//@Test
+	// @Test
 	public void getAllRoles() {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
-		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withSuccess());
+		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient")).andRespond(withSuccess());
 		syncRolesService.getAllRoles();
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
+	// @Test(expected = SyncDataServiceException.class)
 	public void getAllRolesException() {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withServerError());
+		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient")).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
 
@@ -324,7 +366,7 @@ public class SyncDataServiceTest {
 		publicKeyResp.setIssuedAt(LocalDateTime.parse("2019-09-09T09:00:00"));
 		publicKeyResp.setPublicKey("sdfsfsdfsadfdsfsdfasf");
 
-		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(publicKeyResp);
+		Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(publicKeyResp);
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
 
@@ -347,7 +389,7 @@ public class SyncDataServiceTest {
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
 
-	//@Test()
+	// @Test()
 	public void getPublicIoException() throws IOException {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
@@ -381,10 +423,10 @@ public class SyncDataServiceTest {
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
 				.andRespond(withSuccess().body(
 						"{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
-		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenThrow(new IOException());
+		Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class)))
+				.thenThrow(new IOException());
 
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
 
 }
-

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
@@ -18,7 +19,6 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -51,7 +51,9 @@ public class LanguageServiceImpl implements LanguageService {
 			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException), dataAccessException);
+					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(dataAccessException),
+					dataAccessException);
 		}
 
 		if (languages != null && !languages.isEmpty()) {
@@ -65,10 +67,9 @@ public class LanguageServiceImpl implements LanguageService {
 		return languageResponseDto;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see LanguageService#saveLanguage(RequestWrapper)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LanguageService#saveLanguage(io.mosip.kernel.masterdata.dto.LanguageDto)
 	 */
 	public CodeResponseDto saveLanguage(LanguageDto requestDto) {
 
@@ -78,8 +79,7 @@ public class LanguageServiceImpl implements LanguageService {
 			return MapperUtils.map(savedLanguage, CodeResponseDto.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 	}
 
@@ -105,8 +105,7 @@ public class LanguageServiceImpl implements LanguageService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return code;
 	}
@@ -133,8 +132,7 @@ public class LanguageServiceImpl implements LanguageService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		return response;

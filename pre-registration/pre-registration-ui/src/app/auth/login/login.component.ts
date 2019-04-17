@@ -8,7 +8,6 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as appConstants from '../../app.constants';
-// import { UserIdleService } from "angular-user-idle";
 
 @Component({
   selector: 'app-login',
@@ -26,7 +25,7 @@ export class LoginComponent implements OnInit {
   inputContactDetails = '';
   secondaryLangCode = 'ar';
   secondaryDir = 'rtl';
-  selectedLanguage = '';
+  selectedLanguage = 'Arabic';
   langCode = 'ara';
   dir = 'ltr';
   primaryLangFromConfig = '';
@@ -44,6 +43,7 @@ export class LoginComponent implements OnInit {
   minutes: string;
   seconds: string;
   showSpinner = true;
+  validationMessages = {};
 
   constructor(
     private authService: AuthService,
@@ -52,14 +52,14 @@ export class LoginComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private regService: RegistrationService,
-    private configService: ConfigService // private userIdle: UserIdleService
+    private configService: ConfigService
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
     localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
-    this.showMessage();
+//    this.showMessage();
   }
 
   ngOnInit() {
@@ -74,18 +74,13 @@ export class LoginComponent implements OnInit {
     }
     localStorage.setItem('loggedIn', 'false');
     this.loadConfigs();
-    //     this.userIdle.startWatching();
-    //     this.userIdle.onTimerStart().subscribe(count => console.log(count));
-    //     this.userIdle.onTimeout().subscribe(
-    //       res =>{
-    //         this.doLogOut();
-    //       },
-    //       err =>{},
-    //       () => console.log('Time is up!'));
+    this.loadValidationMessages();
+  }
 
-    // }
-    // doLogOut(){
-    //   alert('you have been logged out due to inactivity');
+  loadValidationMessages() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.validationMessages = response['login'];
+    })
   }
 
   loginIdValidator() {
@@ -95,15 +90,15 @@ export class LoginComponent implements OnInit {
     const phoneRegex = new RegExp(this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_regex_phone));
     if (modes === 'email,mobile') {
       if (!(emailRegex.test(this.inputContactDetails) || phoneRegex.test(this.inputContactDetails))) {
-        this.errorMessage = 'Invalid Email or Mobile Number entered';
+        this.errorMessage = this.validationMessages['invalidInput'];
       }
     } else if (modes === 'email') {
       if (!emailRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
+        this.errorMessage = this.validationMessages['invalidEmail'];
       }
     } else if (modes === 'mobile') {
       if (!phoneRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
+        this.errorMessage = this.validationMessages['invalidMobile'];
       }
     }
     console.log('errorMessage', this.errorMessage);
@@ -124,6 +119,11 @@ export class LoginComponent implements OnInit {
   }
 
   loadLanguagesWithConfig() {
+    console.log(
+      'mosip.id.validation.identity.fullName.[*].value',
+      this.configService.getConfigByKey('mosip.id.validation.identity.fullName.[*].value')
+    );
+
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
@@ -186,24 +186,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  showMessage() {
-    if (this.loggedOutLang) {
-      this.dataService.getSecondaryLanguageLabels(this.loggedOutLang).subscribe(async response => {
-        this.secondaryLanguagelabels = response['login']['logout_msg'];
-        localStorage.removeItem('loggedOutLang');
-        localStorage.removeItem('loggedOut');
-        const data = {
-          case: 'MESSAGE',
-          message: this.secondaryLanguagelabels
-        };
-        this.dialog.open(DialougComponent, {
-          width: '350px',
-          data: data
-        });
-      });
-    }
-  }
-
   changeLanguage(): void {
     if (this.selectedLanguage !== appConstants.languageMapping[this.primaryLangFromConfig].langName) {
       this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
@@ -222,28 +204,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.translate.use(localStorage.getItem('langCode'));
-
-    // if (this.selectedLanguage === 'English') {
-    //   this.langCode = 'eng';
-    //   this.secondaryLangCode = 'ara';
-    //   this.dir = 'ltr';
-    //   this.secondaryDir = 'rtl';
-    // } else if (this.selectedLanguage === 'French') {
-    //   this.langCode = 'fra';
-    //   this.dir = 'ltr';
-    //   this.secondaryLangCode = 'ara';
-    //   this.secondaryDir = 'rtl';
-    // } else if (this.selectedLanguage === 'Arabic') {
-    //   this.langCode = 'ara';
-    //   this.dir = 'rtl';
-    //   this.secondaryLangCode = 'fra';
-    //   this.secondaryDir = 'ltr';
-    // }
-    // this.translate.use(this.langCode);
-    // localStorage.setItem('langCode', this.langCode);
-    // localStorage.setItem('secondaryLangCode', this.secondaryLangCode);
-    // localStorage.setItem('dir', this.dir);
-    // localStorage.setItem('secondaryDir', this.secondaryDir);
+    this.loadValidationMessages();
   }
 
   showVerifyBtn() {

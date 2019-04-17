@@ -7,12 +7,12 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.3</version>
 	</parent>
 	<artifactId>registration-processor-core</artifactId>
 
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>${vertx.version}</version>
@@ -116,6 +116,7 @@
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 		</dependency>
+	
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

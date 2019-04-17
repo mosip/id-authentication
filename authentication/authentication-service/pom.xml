@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.3</version>
 	</parent>
 
 	<artifactId>authentication-service</artifactId>
@@ -19,7 +19,13 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.10.1</version>
+			<version>0.10.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 
 		<!-- Kernel Template -->
@@ -83,6 +89,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${kernel.core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pinvalidator</artifactId>
+			<version>${kernel.version}</version>
 		</dependency>
 
 		<!-- Postgres -->

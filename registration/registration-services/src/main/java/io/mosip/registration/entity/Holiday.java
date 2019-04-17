@@ -11,6 +11,12 @@ import javax.persistence.Table;
 
 import io.mosip.registration.entity.id.HolidayID;
 
+/**
+ * The Entity Class for Holiday.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Entity
 @Table(name = "loc_holiday", schema = "reg")
 public class Holiday extends RegistrationCommonFields implements Serializable {

@@ -4,9 +4,9 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
-<!-- 	<listeners>
+ 	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners> -->
+	</listeners> 
 
 <!-- 
   Passing Group as parmeter unsing "testType"
@@ -18,7 +18,7 @@
                   <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
-                         <class name="io.mosip.kernel.tests.AuditLog" />
+          <!--                  <class name="io.mosip.kernel.tests.AuditLog" />
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -42,7 +42,7 @@
                            <class name="io.mosip.kernel.tests.FetchRegcentMachUserMaping" /> 
                            <class name="io.mosip.kernel.tests.FetchRejectionReason" />
                            <class name="io.mosip.kernel.tests.FetchTemplate" />        
-                           <class name="io.mosip.kernel.tests.FetchTitle" /> 
+                           <class name="io.mosip.kernel.tests.FetchTitle" />  
                            <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />   
                            <class name="io.mosip.kernel.tests.GetApplicantType" />
                            <class name="io.mosip.kernel.tests.GetDeviceHistory" />
@@ -52,12 +52,12 @@
                            <class name="io.mosip.kernel.tests.GetListOfRoles" />
                            <class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />         
                            <class name="io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory" />
-                           <class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" />
+                           <class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" /> -->
                            <class name="io.mosip.kernel.tests.LicenseKeyController" />
-                           <class name="io.mosip.kernel.tests.OtpGenerate" />
+                        <!--    <class name="io.mosip.kernel.tests.OtpGenerate" />
                            <class name="io.mosip.kernel.tests.OTP" />    
                            <class name="io.mosip.kernel.tests.RIDGenerator" />   
-                          <!--  <class name="io.mosip.kernel.tests.OtpNotificationController" /> -->
+  
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
                            <class name="io.mosip.kernel.tests.SyncIncrementalData" />
@@ -67,7 +67,7 @@
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />                        
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  -->                        
                            
                      </classes>
               </test> 

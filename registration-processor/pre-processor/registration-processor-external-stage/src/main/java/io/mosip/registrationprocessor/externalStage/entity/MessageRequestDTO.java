@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.externalStage.entity;
+package io.mosip.registrationprocessor.externalstage.entity;
 
 import java.util.List;
 

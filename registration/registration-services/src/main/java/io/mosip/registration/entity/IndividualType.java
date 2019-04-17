@@ -10,9 +10,10 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.IndividualTypeId;
 
 /**
- * 
- * @author Sreekar Chukka
+ * The Entity Class for IndividualType.
  *
+ * @author Sreekar Chukka
+ * @since 1.0.0
  */
 @Entity
 @Table(name = "individual_type", schema = "reg")

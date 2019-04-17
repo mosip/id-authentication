@@ -68,7 +68,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -82,7 +82,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	@DataProvider(name = "GetAllTemplateByTemplateTypeCode")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

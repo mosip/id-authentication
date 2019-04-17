@@ -20,4 +20,9 @@ public class ResponseDto implements Serializable{
 	 * The status.
 	 */
 	private String status;
+	
+	/**
+	 * The message.
+	 */
+	private String message;
 }
