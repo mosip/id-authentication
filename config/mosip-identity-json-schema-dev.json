@@ -117,8 +117,7 @@
 				"additionalProperties": false,
 				"properties": {
 					"language": {
-						"type": "string",
-						"pattern": "^[(?i)a-z]{3}$"
+						"type": "string"
 					},
 					"value": {
 						"type": "string"

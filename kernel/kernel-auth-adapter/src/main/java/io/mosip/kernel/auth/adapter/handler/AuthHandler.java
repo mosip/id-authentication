@@ -102,6 +102,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getResponseEntity(String token) {
 		HttpHeaders headers = new HttpHeaders();
+		System.out.println("Token details "+System.currentTimeMillis()+" : "+token);
+		System.out.println("Validate Url "+validateUrl);
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {

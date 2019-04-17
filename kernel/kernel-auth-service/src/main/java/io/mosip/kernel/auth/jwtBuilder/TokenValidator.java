@@ -89,6 +89,7 @@ public class TokenValidator {
 	}
 
 	public MosipUserDtoToken validateToken(String token) throws Exception {
+		System.out.println("Test token at "+System.currentTimeMillis()+" : "+token);
 		Claims claims = getClaims(token);
 		MosipUserDto mosipUserDto = buildDto(claims);
 		return new MosipUserDtoToken(mosipUserDto, token, null, 0, null, null);
