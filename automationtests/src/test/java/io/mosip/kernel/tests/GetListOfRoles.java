@@ -109,7 +109,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(getRoles);
+		Response res=applicationLibrary.getRequestNoParameter(getRoles);
 		/*
 		 * Removing the unstable attributes from response	
 		 */

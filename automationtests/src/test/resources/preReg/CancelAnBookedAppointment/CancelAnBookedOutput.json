@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"testType":"smoke","testCaseName":"CancelAnBookedAppointment_smoke","jiraId":"MOS-1001","request":"valid","ver":"valid","requesttime":"valid","id":"valid","status":""}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

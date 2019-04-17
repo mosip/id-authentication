@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"Jira ID":"MOS-8888","langcode":"valid","code":"invalid","Test case Name":"invalid_code_unexisting","status":"Pass"},{"Jira ID":"MOS-8888","langcode":"invalid","code":"valid","Test case Name":"invalid_langcode_blank_with_code","status":"Pass"},{"Jira ID":"MOS-8888","langcode":"invalid","code":"valid","Test case Name":"invalid_langcode_unexisting","status":"Pass"},{"Jira ID":"MOS-8888","langcode":"invalid","code":"valid","Test case Name":"invalid_langcode_unexisting_with_code","status":"Pass"}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

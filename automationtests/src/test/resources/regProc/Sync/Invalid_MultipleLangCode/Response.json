@@ -1,16 +1,21 @@
-[
-  {
-    "registrationId": "499965123002521234508094000",
-    "status": "FAILURE",
-    "message": "Language Code must be of three character",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-004"
-  },
-  {
-    "registrationId": "499965123002521234508094000",
-    "status": "FAILURE",
-    "message": "Language Code must be of three character",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-004"
-  }
-]
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-10T09:12:32.723Z",
+  "errors": [
+    {
+      "registrationId": "20916100110014920190218154630",
+      "status": "FAILURE",
+      "message": "Language Code must be of three character",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-004"
+    },
+    {
+      "registrationId": "20916100110014920190218154630",
+      "status": "FAILURE",
+      "message": "Language Code must be of three character",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-004"
+    }
+  ]
+}

@@ -619,7 +619,7 @@ public class Expired extends BaseTestCase {
 			e.printStackTrace();
 		}
 		try {
-			response = applnLib.postModifiedGETRequest(copyDocuments_URI, GetHeader.getHeader(copyDocRes));
+			response = applnLib.postModifiedGetRequest(copyDocuments_URI, GetHeader.getHeader(copyDocRes));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -868,7 +868,7 @@ public class Expired extends BaseTestCase {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		response = applnLib.putRequest_WithBody(cancelBookAppointment_URI, cancelAppjson);
+		response = applnLib.putRequestWithBody(cancelBookAppointment_URI, cancelAppjson);
 		return response;
 	}
 

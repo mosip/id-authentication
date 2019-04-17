@@ -115,7 +115,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		int total=list.size();
 		
 		
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
 		
 		String uin_number=res.getBody().jsonPath().get("uin");
 		

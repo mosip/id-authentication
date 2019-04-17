@@ -138,7 +138,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		switch(testCaseName)
 		{
 		case "smoke_IssuedToUnused": 
-			res=applicationLibrary.GetRequestNoParameter(updateUIN);
+			res=applicationLibrary.getRequestNoParameter(updateUIN);
 			uin=res.getBody().jsonPath().get("uin");
 			actualRequest.put("uin", uin);
 			Expectedresponse.put("uin", uin);
@@ -153,7 +153,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			break;
 			
 		case "IssuedToAssigned" :
-			res1=applicationLibrary.GetRequestNoParameter(updateUIN);
+			res1=applicationLibrary.getRequestNoParameter(updateUIN);
 			uin1=res1.getBody().jsonPath().get("uin");
 			actualRequest.put("uin", uin1);
 			Expectedresponse.put("uin", uin1);
@@ -167,7 +167,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		/*
 		 * Comparing expected and actual response
 		 */
-		Response response=applicationLibrary.putRequest_WithBody(updateUIN, actualRequest);
+		Response response=applicationLibrary.putRequestWithBody(updateUIN, actualRequest);
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		

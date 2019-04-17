@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"Jira ID":"MOS-8270","langcode":"valid","Test case Name":"invalid_documentcategorycode_notpresent","documentcategorycode":"invalid","status":"Pass"},{"Jira ID":"MOS-8270","langcode":"invalid","Test case Name":"invalid_langcode_notpresent","documentcategorycode":"valid","status":"Pass"},{"Jira ID":"MOS-8270","langcode":"valid","Test case Name":"valid_smoke","documentcategorycode":"valid","status":"Pass"}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

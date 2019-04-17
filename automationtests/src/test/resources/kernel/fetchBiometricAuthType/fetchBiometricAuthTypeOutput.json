@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"Jira ID":"MOS-8245","langcode":"invalid","Test case Name":"invalid_langcode","status":"Pass"},{"Jira ID":"MOS-8245","langcode":"invalid","Test case Name":"invalid_langcode_empty","status":"Pass"},{"Jira ID":"MOS-8245","langcode":"valid","Test case Name":"valid_smoke","status":"Fail"}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

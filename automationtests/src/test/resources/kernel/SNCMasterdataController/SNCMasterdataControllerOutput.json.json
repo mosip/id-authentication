@@ -1,1 +1,0 @@
-[{"machineId":"valid","jiraId":"MOS-1001","testType":"smoke","testCaseName":"smoke","status":"Fail"},{"machineId":"invalid","jiraId":"MOS-1000","testType":"regression","testCaseName":"invalid_machineId","status":"Fail"}]

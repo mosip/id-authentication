@@ -1,18 +1,24 @@
-[
-  {
-    "langCode": "eng",
-    "parentRegistrationId": null,
-    "registrationId": "499965123002500004508094000",
-    "statusComment": "test",
-    "syncStatus": "PRE_SYNC",
-    "syncType": "NEW"
-  },
-  {
-    "langCode": "eng",
-    "parentRegistrationId": null,
-    "registrationId": "600000000fgbm190123211111ghjk",
-    "statusComment": "test",
-    "syncStatus": "PRE_SYNC",
-    "syncType": "NEW"
-  }
-]
+{
+  "id" : "mosip.registration.sync",
+  "version" : "1.0",
+  "requesttime": "2019-02-14T12:40:59.768Z",
+  "request" : [
+	  {
+		"langCode": "eng",
+		"parentRegistrationId": null,
+		"registrationId": "20916100110014abcde0218154630",
+		"statusComment": "string",
+		"syncStatus": "PRE_SYNC",
+		"syncType": "NEW"
+	  },
+{
+		"langCode": "eng",
+		"parentRegistrationId": null,
+		"registrationId": "209161000190218154630",
+		"statusComment": "string",
+		"syncStatus": "PRE_SYNC",
+		"syncType": "NEW"
+	  }
+	  
+	]
+}

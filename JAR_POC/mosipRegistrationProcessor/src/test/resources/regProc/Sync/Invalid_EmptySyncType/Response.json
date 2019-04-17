@@ -1,0 +1,9 @@
+[
+  {
+    "registrationId": "49996555530002520181208094000",
+    "status": "FAILURE",
+    "message": "Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN",
+    "parentRegistrationId": null,
+    "errorCode": "RPR-RGS-003"
+  }
+]

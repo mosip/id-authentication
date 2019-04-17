@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorcode": "RPR-RGS-014",
+      "message": "Invalid Input Parameter - id"
+    },
+    {
+      "errorcode": "RPR-RGS-015",
+      "message": "Input Data Validation Failed"
+    }
+  ],
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-12T06:19:58.023Z"
+}

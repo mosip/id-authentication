@@ -110,7 +110,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		/*
 		 * Calling the GET method with no parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
 		
 		 String uin = res.jsonPath().get("uin").toString();
 		 char[] list = uin.toCharArray();

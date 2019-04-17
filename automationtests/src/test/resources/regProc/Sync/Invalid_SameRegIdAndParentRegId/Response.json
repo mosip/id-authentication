@@ -1,9 +1,14 @@
-[
-  {
-    "registrationId": "49996555530002520181208094000",
-    "status": "FAILURE",
-    "message": "RegistrationId and Parent RegistrationId cannot be same",
-    "parentRegistrationId": "49996555530002520181208094000",
-    "errorCode": "RPR-RGS-005"
-  }
-]
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-10T09:10:14.184Z",
+  "errors": [
+    {
+      "registrationId": "20916100110014920190218154630",
+      "status": "FAILURE",
+      "message": "RegistrationId and Parent RegistrationId cannot be same",
+      "parentRegistrationId": "20916100110014920190218154630",
+      "errorcode": "RPR-RGS-005"
+    }
+  ]
+}

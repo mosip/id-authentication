@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"testType":"smoke","testCaseName":"smoke","jiraId":"MOS-1003","regid":"valid","status":""}, {"testType":"regression","regid":"invalid","testCaseName":"invalid_regid","jiraId":"MOS-1002","status":""}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

@@ -134,7 +134,7 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 		 * calling the uin generator rest api and storing as JSON object
 		 */
 		JSONObject uin = (JSONObject) new JSONParser()
-				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
+				.parse(applicationLibrary.getRequestNoParameter(service_URI_uin).asString());
 		logger.info("Uin generated:" + uin);
 
 		/**

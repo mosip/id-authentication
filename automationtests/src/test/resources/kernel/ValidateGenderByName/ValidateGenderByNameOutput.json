@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"invalid_Female":"valid","jiraId":"MOS-1003","testType":"smoke","testCaseName":"smoke_Male","invalid_Male_responseTime":"valid","gendername":"valid","status":"Pass"},{"invalid_Female":"invalid","jiraId":"MOS-1000","testType":"regression","testCaseName":"invalid_Female","invalid_Male_responseTime":"valid","gendername":"valid","status":"Pass"},{"invalid_Female":"valid","jiraId":"MOS-1002","testType":"regression","invalid_Male_responseTime":"invalid","testCaseName":"invalid_Male_responseTime","gendername":"valid","status":"Pass"},{"invalid_Female":"valid","jiraId":"MOS-1001","testType":"regression","invalid_Male_responseTime":"valid","testCaseName":"invalid_gendername","gendername":"invalid","status":"Pass"}]
+=======
+[]
+>>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

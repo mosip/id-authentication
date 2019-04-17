@@ -11,14 +11,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import io.mosip.regProc.tests.Sync;
 import io.restassured.response.Response;
 
 public class AssertResponses {

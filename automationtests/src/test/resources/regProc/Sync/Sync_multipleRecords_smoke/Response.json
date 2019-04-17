@@ -1,14 +1,19 @@
-[
-  {
-    "registrationId": "69896555530002520181208094000",
-    "status": "SUCCESS",
-    "message": "Registartion Id's are successfully synched in Sync table",
-    "parentRegistrationId": null
-  },
-  {
-    "registrationId": "69886555530002520181208094000",
-    "status": "SUCCESS",
-    "message": "Registartion Id's are successfully synched in Sync table",
-    "parentRegistrationId": null
-  }
-]
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-10T06:51:23.354Z",
+  "response": [
+    {
+      "registrationId": "10031100114021320190410121250",
+      "status": "SUCCESS",
+      "message": "Registartion Id's are successfully synched in Sync table",
+      "parentRegistrationId": null
+    },
+    {
+      "registrationId": "10001100010000220190402085215",
+      "status": "SUCCESS",
+      "message": "Registartion Id's are successfully synched in Sync table",
+      "parentRegistrationId": null
+    }
+  ]
+}
