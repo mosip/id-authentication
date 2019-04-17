@@ -199,7 +199,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	 * Declaring the Booking Appointment Resource URI and getting the test case name
 	 * @param result
 	 */
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();

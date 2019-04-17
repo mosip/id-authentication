@@ -72,7 +72,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	static String requestKeyFile = "TriggerNotificationRequest.json";
 	String testParam=null;
 	boolean status_val = false;
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
 	public TriggerNotification() {
 
@@ -230,7 +230,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
                 Reporter.log("Exception : " + e.getMessage());
           }
     }
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
@@ -241,7 +241,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
            */
           
           preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
-          
+          authToken=preRegLib.getToken();
     }
 	@Override
     public String getTestName() {

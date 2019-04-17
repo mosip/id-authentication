@@ -1,0 +1,10 @@
+{
+   "id": null,
+   "version": "1.0",
+   "errors":    {
+      "errorCode": "PRG_PAM_DOC_005",
+      "message": "DOCUMENT_IS_MISSING"
+   },
+   "responsetime": "2019-04-16T13:23:57.331Z",
+   "response": null
+}

@@ -118,7 +118,7 @@ public class ReBookingAnAppointment extends BaseTestCase implements ITest {
 		Response fetchCenter = preRegLib.FetchCentre();
 		
 		//Book An Appointment for the available data
-		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId);
+		//Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId);
 		
 		//Fetch Appointment Details
 		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
@@ -160,7 +160,7 @@ public class ReBookingAnAppointment extends BaseTestCase implements ITest {
 		
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	

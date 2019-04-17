@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +119,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_AdminTokenURI;
 	private static String preReg_translitrationRequestURI;
 	private static String invalidateToken_URI;
+	private static String preReg_GetDocByDocId;
+	private static String preReg_RetriveBookedPreIdsByRegId;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -131,6 +135,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public static Response CreatePreReg() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		request = getRequest(testSuite);
+		
+		request.put("requesttime", getCurrentDate());
 		createPregResponse = applnLib.postRequest(request, preReg_CreateApplnURI);
 		/*
 		 * preReg_Id =
@@ -758,9 +764,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 		JSONObject parm = getRequest(testSuite);
 		parm.put("preRegistrationId", PreRegistrationId);
+		
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File file = new File(configPath + "/AadhaarCard_POA.pdf");
+		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file,parm);
 		return response;
@@ -909,49 +916,46 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response getAllDocumentForPreId(String preId) {
 
 		testSuite = "GetAllDocumentForPreRegId/GetAllDocumentForPreRegId_smoke";
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchAllDocumentURI");
-		request = getRequest(testSuite);
-
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-
-		ObjectNode getAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preId).json();
-		String getAllDocForPreId = getAllDocForPreIdReq.toString();
-		JSONObject getAlldocJson = null;
-		try {
-			getAlldocJson = (JSONObject) parser.parse(getAllDocForPreId);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(getAlldocJson);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.getRequest(preReg_FetchAllDocumentURI, GetHeader.getHeader(getAlldocJson));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		HashMap<String, String> parm= new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		
+		
+		response = applnLib.getRequestPathParam(preReg_FetchAllDocumentURI, parm);
+			
 		return response;
 	}
 
+	
+	
+	
+	/*
+	 * Generic method to Get All Documents For Pre-Registration Id
+	 * 
+	 */
+	public Response getAllDocumentForDocId(String preId,String DocId) 
+	{
+
+		testSuite = "GetAllDocumentForDocId/GetAllDocumentForDocId_smoke";
+		
+		HashMap<String, String> parm= new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		
+		preReg_GetDocByDocId=preReg_GetDocByDocId+DocId;
+		response = applnLib.getRequestPathAndQueryParam(preReg_GetDocByDocId, parm);	
+		return response;
+	}
+	
 	/*
 	 * Generic method to Delete All Document by Pre-RegistrationId
 	 * 
 	 */
 	public Response deleteAllDocumentByPreId(String preId) {
 
-		testSuite = "DeleteAllDocumentsByPreRegID/DeleteAllDocumentForPreRegId_smoke";
+		/*testSuite = "DeleteAllDocumentsByPreRegID/DeleteAllDocumentForPreRegId_smoke";
 		request = getRequest(testSuite);
+		
+		*/
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -960,7 +964,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
 		 */
-		ObjectNode deleteAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
+		/*ObjectNode deleteAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
 				.set("$.pre_registration_id", preId).json();
 		String delDocForPreId = deleteAllDocForPreIdReq.toString();
 		JSONObject delDocByPreId = null;
@@ -976,6 +980,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+		preReg_DeleteAllDocumentByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
+		response = applnLib.deleteRequestWithPathParam(preReg_DeleteAllDocumentByPreIdURI);
+		
+		
+		
 		return response;
 	}
 
@@ -984,10 +994,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response deleteAllDocumentByDocId(String documentId) {
+	public Response deleteAllDocumentByDocId(String docId,String preId) {
 
-		testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke";
-		request = getRequest(testSuite);
+		/*testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke";
+		request = getRequest(testSuite);*/
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -997,7 +1007,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 *
 		 */
 
-		ObjectNode deleteAllDocForDocIdReq = JsonPath.using(config).parse(request.toString())
+		/*ObjectNode deleteAllDocForDocIdReq = JsonPath.using(config).parse(request.toString())
 				.set("$.documentId", documentId).json();
 
 		String delDocForDocId = deleteAllDocForDocIdReq.toString();
@@ -1012,8 +1022,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			response = applnLib.deleteRequest(prereg_DeleteDocumentByDocIdURI, GetHeader.getHeader(delDocByDocIdRes));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
+		HashMap<String, String> parm= new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		
+		prereg_DeleteDocumentByDocIdURI=prereg_DeleteDocumentByDocIdURI+docId;
+		response = applnLib.deleteRequestPathAndQueryParam(prereg_DeleteDocumentByDocIdURI, parm);
+		
 		return response;
 	}
 
@@ -1044,9 +1060,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response copyUploadedDocuments(String sourcePreId, String destPreId) {
-		testSuite = "CopyUploadedDocument/CopyUploadedDocument_smoke";
-		request = getRequest(testSuite);
+	public Response copyUploadedDocuments(String destPreId,String sourcePreId,String docCatCode) {
+		
+		/*testSuite = "CopyUploadedDocument/CopyUploadedDocument_smoke";
+		request = getRequest(testSuite);*/
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -1055,7 +1072,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
 		 */
-		ObjectNode copyDocForSrcPreId = JsonPath.using(config).parse(request.toString())
+		/*ObjectNode copyDocForSrcPreId = JsonPath.using(config).parse(request.toString())
 				.set("$.sourcePrId", sourcePreId).json();
 		ObjectNode copyDocForDestPreId = JsonPath.using(config).parse(copyDocForSrcPreId.toString())
 				.set("$.destinationPreId", destPreId).json();
@@ -1063,19 +1080,26 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		JSONObject copyDocRes = null;
 		try {
 			copyDocRes = (JSONObject) parser.parse(copyDoc);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
+		
 			GetHeader.getHeader(request);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
 			response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
-		} catch (IOException e) {
+		} catch (ParseException | IOException e) {
 			e.printStackTrace();
-		}
+		} 
+		*/
+		
+		preReg_CopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
+		
+		System.out.println("MY URL:"+preReg_CopyDocumentsURI);
+		
+		HashMap<String, String> parm= new HashMap<>();
+		parm.put("catCode", docCatCode);
+		parm.put("sourcePreId", sourcePreId);
+		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_CopyDocumentsURI, parm);
+		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, );
+		
+		
 		return response;
 	}
 
@@ -1086,11 +1110,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response FetchCentre() {
-		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
+/*		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
 		ObjectNode fetchAvailabilityrequest = null;
-		String regCenterId = randomRegistrationCenterId();
+		
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
@@ -1120,7 +1144,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
+		String regCenterId = randomRegistrationCenterId();		
+		
+		preReg_FetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preReg_FetchCenterIDURI);
+		
+		
+		
 		return response;
 	}
 
@@ -1164,7 +1195,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Book An Appointment
 	 * 
 	 */
-
+/*
 	@SuppressWarnings("unchecked")
 	public Response BookAppointment(Response DocumentUploadresponse, Response FetchCentreResponse, String preID) {
 		List<String> appointmentDetails = new ArrayList<>();
@@ -1205,7 +1236,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				innerData.put("appointment_date", appDate);
 				innerData.put("time_slot_from", timeSlotFrom);
 				innerData.put("time_slot_to", timeSlotTo);
-				object.put("newBookingDetails", innerData);
+				
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
 				request.replace(key, objArr);
@@ -1215,7 +1246,83 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
 		return response;
 	}
+*/
+	
+	/*
+	 * Generic method to Book An Appointment
+	 * 
+	 */
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public Response BookAppointment(Response FetchCentreResponse, String preID) {
+		List<String> appointmentDetails = new ArrayList<>();
 
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
+		testSuite = "BookingAppointment/BookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		for (Object key : request.keySet()) {
+			if (key.toString().toLowerCase().equals("request")) {
+				object = new JSONObject();
+				/*JSONObject resp = null;
+
+				try {
+					resp = (JSONObject) new JSONParser().parse(DocumentUploadresponse.asString());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				JSONArray data = (JSONArray) resp.get("response");
+				JSONObject json = (JSONObject) data.get(0);
+				json.get("preRegistrationId");*/
+				//object.put("preRegistrationId", preID);
+				JSONObject innerData = new JSONObject();
+
+				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
+
+				regCenterId = appointmentDetails.get(0);
+				appDate = appointmentDetails.get(1);
+				timeSlotFrom = appointmentDetails.get(2);
+				timeSlotTo = appointmentDetails.get(3);
+
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				object.put("preRegistrationId", preID);
+				//object.put("newBookingDetails", innerData);
+				JSONArray objArr = new JSONArray();
+				objArr.add(object);
+				request.replace(key, objArr);
+				request.put("requesttime", getCurrentDate());
+
+			}
+		}
+		
+		System.out.println("Request::Value Of book App::"+request.toString());
+		
+		preReg_BookingAppointmentURI=preReg_BookingAppointmentURI+preID;
+		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
+		return response;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 * Generic method to Book An Appointment with invalid date
 	 * 
@@ -1283,16 +1390,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response FetchAppointmentDetails(String preID) {
+		
+		/*
 		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
 		request = getRequest(testSuite);
-		/*
+		
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
 		 * string to parse method which will return the parsed JSON. Then we pass the
 		 * json path of the value that needs to be updated and the new value that we
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
-		 */
+		 
 		ObjectNode fetchAppDetails = JsonPath.using(config).parse(request.toString())
 				.set("$.pre_registration_id", preID).json();
 		String fetchAppDetStr = fetchAppDetails.toString();
@@ -1315,6 +1424,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+		
+		
+		preReg_FecthAppointmentDetailsURI=preReg_FecthAppointmentDetailsURI+preID;
+		response = applnLib.get_RequestWithoutBody(preReg_FecthAppointmentDetailsURI);
+		
+		
 		return response;
 	}
 
@@ -1323,9 +1439,21 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
+	public Response CancelBookingAppointment(String preID,Response FetchAppDet) {
 		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment_smoke";
-		request = getRequest(testSuite);
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().toLowerCase().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -1334,9 +1462,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
 		 */
-		ObjectNode cancelAppPreRegId = JsonPath.using(config).parse(request.toJSONString())
+		/*ObjectNode cancelAppPreRegId = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.pre_registration_id", preID).json();
-		ObjectNode cancelAppRegCenterId = JsonPath.using(config).parse(cancelAppPreRegId.toString())
+		
+		*/
+		ObjectNode cancelAppRegCenterId = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.registration_center_id ",
 						FetchAppDet.jsonPath().get("response.registration_center_id").toString())
 				.json();
@@ -1350,13 +1480,20 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				.set("$.request.time_slot_to", FetchAppDet.jsonPath().get("response.time_slot_to").toString()).json();
 
 		String cancelAppDetStr = cancelAppRequest.toString();
+		
+		
+		System.out.println("PreRegg Request::"+cancelAppRequest);
+		
 		JSONObject cancelAppjson = null;
 		try {
 			cancelAppjson = (JSONObject) parser.parse(cancelAppDetStr);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
+		preReg_CancelAppointmentURI=preReg_CancelAppointmentURI+preID;
 		response = applnLib.putRequest_WithBody(preReg_CancelAppointmentURI, cancelAppjson);
+		
 		return response;
 	}
 
@@ -1478,9 +1615,27 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response retriveAllPreIdByRegId(String regCenterId, String preId)
+	public Response retriveAllPreIdByRegId(Response fetchAppDet, String preId)
 			throws FileNotFoundException, IOException, ParseException {
-		testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
+		
+		  String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
+		  String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
+		  //String fromDate=getCurrentDate();
+		  
+		  LocalDateTime currentTime = LocalDateTime.now();
+		  LocalDate fromDate = currentTime.toLocalDate();
+			
+			
+			System.out.println("Local Date:"+fromDate.toString());
+		  
+		  System.out.println("Form Date:"+fromDate);
+		  HashMap<String, String> parm= new HashMap<>();
+		  /*parm.put("fromDate", "2019-04-12");
+		  parm.put("toDate", toDate);*/
+		  parm.put("from_date", fromDate.toString());
+		  parm.put("to_date", toDate);
+		  
+		/*testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
 		request = getRequest(testSuite);
 		ObjectNode setRegCenterId = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.registartion_center_id", regCenterId).json();
@@ -1493,6 +1648,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		JSONObject retriveAllPreIdByRegIdjson = (JSONObject) parser.parse(retPreIdDetStr);
 
 		response = applnLib.postRequest(retriveAllPreIdByRegIdjson, preReg_FetchBookedPreIdByRegIdURI);
+		*/
+		  
+		  preReg_RetriveBookedPreIdsByRegId=preReg_RetriveBookedPreIdsByRegId+regCenterId;
+		 // preReg_RetriveBookedPreIdsByRegId=preReg_RetriveBookedPreIdsByRegId+preId+"/"+regCenterId;
+		  response = applnLib.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegId, parm);
+		  
+		  System.out.println("My Response:::"+response.asString());
+		  
 		return response;
 	}
 
@@ -1603,21 +1766,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				}
 			}
 		}
-
+		String value = null;
 		JSONObject object = null;
 		for (Object key : request.keySet()) {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
+				 value = (String) object.get(langCodeKey);
 				// object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
 				// request.replace(key, object);
-				// object.remove(langCodeKey);
+				object.remove(langCodeKey);
 			}
 		}
-
-		String value = (String) request.get(langCodeKey);
-
-		request.remove(langCodeKey);
-
+		
 		response = applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
 
 		return response;
@@ -1799,6 +1959,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
+	
+	
+	
 
 	/*
 	 * Generic method for sync master data
@@ -1815,7 +1978,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		return syncMasterDataRes;
 	}
-	public String getCurrentDate() {
+	public static String getCurrentDate() {
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(Calendar.getInstance().getTime());
 		return timeStamp;
 	}
@@ -1853,7 +2016,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_AdminTokenURI = commonLibrary.fetch_IDRepo().get("preReg_AdminTokenURI");
 		preReg_translitrationRequestURI = commonLibrary.fetch_IDRepo().get("preReg_translitrationRequestURI");
 		invalidateToken_URI = commonLibrary.fetch_IDRepo().get("invalidateToken_URI");
-
+		preReg_GetDocByDocId = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
+		preReg_RetriveBookedPreIdsByRegId = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 	}
 
 }

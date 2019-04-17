@@ -72,7 +72,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	static String requestKeyFile = "DocumentUploadRequest.json";
 	String testParam=null;
 	boolean status_val = false;
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
 	public DocumentUpload() {
 
@@ -127,10 +127,14 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			//Creating the Pre-Registration Application
 			Response createApplicationResponse = PreRegistrationLibrary.CreatePreReg();
 			
+			
 			String preRegIdCreateAPI=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			//Document Upload for created application
-			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+			//Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 			
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preRegIdCreateAPI); 
+		
+			System.out.println("Doc Upload:"+docUploadResponse.asString());
 			
 			//PreId of Uploaded document
 			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
@@ -214,7 +218,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		CommonLibrary.backUpFiles(source, folderPath);
 		
 		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-		preIds.add(preId);
+		//preIds.add(preId);
 	}
 	/**
 	 * Writing test case name into testng
@@ -234,7 +238,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
                 Reporter.log("Exception : " + e.getMessage());
           }
     }
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
@@ -245,7 +249,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
            */
           
           preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
-          
+          authToken=preRegLib.getToken(); 
     }
 	@Override
     public String getTestName() {

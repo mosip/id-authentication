@@ -56,7 +56,7 @@ public class Sample extends BaseTestCase implements ITest {
 		Response avilibityResponse = lib.FetchCentre();
 		String expectedRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
 		String expectedCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]").toString();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		//lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		
 	}
 

@@ -1,11 +1,11 @@
 {
 "id":null,
 "version":null,
-"responsetime":"2019-04-01T06:01:01.169Z",
+"responsetime":"2019-04-15T12:05:02.047Z",
 "response":
 {
-"transactionId":"86bdfa97-5443-11e9-b170-0792e7531b66",
-"message":"APPOINTMENT_SUCCESSFULLY_CANCELED"
+"transactionId":"b2b421c3-5f76-11e9-9ecd-0bb594e0c2b0",
+"message":"Appointment cancelled successfully"
 },
 "errors":null
 }

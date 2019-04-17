@@ -1,12 +1,11 @@
 {
-"requesttime": "2019-01-22T07:22:57.086Z",
-"id": "mosip.pre-registration.booking.book",
-"version": "1.0",
-"request":
-{
-"pre_registration_id": "65130694261297",
-"registration_center_id": "10006",
-"appointment_date": "2019-01-30",
-"time_slot_from": "03:45",
-"time_slot_to": "04:00" }
+  "id": "mosip.pre-registration.booking.book",
+  "version": "1.0",
+  "requesttime": "2019-04-15T10:31:32.957Z",
+  "request": {
+        "registration_center_id": "10008",
+        "appointment_date": "2019-04-18",
+        "time_slot_from": "12:30:00",
+        "time_slot_to": "12:45:00"
 }
+} 

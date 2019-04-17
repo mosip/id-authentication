@@ -1,1 +1,1 @@
-[{"DeleteAllDocumentByPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1007","testType":"smoke","DeleteAllDocumentByPassingInvalidDocumentId_Alphabets":"valid","testCaseName":"DeleteDocumentByDocmentId_smoke","DeleteAllDocumentByPassingInvalidDocumentId_EmptyValue":"valid","DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumeric":"valid","status":"Pass"}]
+[]

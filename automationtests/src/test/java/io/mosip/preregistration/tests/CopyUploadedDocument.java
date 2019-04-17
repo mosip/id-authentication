@@ -71,7 +71,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	static String folderPath = "preReg/CopyUploadedDocument";
 	static String outputFile = "CopyUploadedDocumentRequestOutput.json";
 	static String requestKeyFile = "CopyUploadedDocumentRequest.json";
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_URI ;
 	
@@ -96,7 +96,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	@DataProvider(name = "CopyUploadedDocument")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -116,23 +116,29 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
 		//Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		//Response createApplicationResponse = preRegLib.CreatePreReg();
+		//preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+		//Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
+		
+		//System.out.println("Doc Upload respose::"+docUploadResponse.asString());
 		
 		//PreId of Uploaded document
-		String srcPreID=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		//String srcPreID=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		
+		//String docCatCode=docUploadResponse.jsonPath().get("response[0].docCatCode").toString();
 		
 		//Creating the Pre-Registration Application for Destination PreId
-		Response createApplicationRes = preRegLib.CreatePreReg();
-		String destPreId = createApplicationRes.jsonPath().get("response[0].preRegistrationId").toString();
+		//Response createApplicationRes = preRegLib.CreatePreReg();
+		//String destPreId = createApplicationRes.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Copy uploaded document from Source PreId to Destination PreId
-		 Response copyDocresponse=preRegLib.copyUploadedDocuments(srcPreID, destPreId);
+		// Response copyDocresponse=preRegLib.copyUploadedDocuments(destPreId,srcPreID,docCatCode);
 		 
-		
+		 Response copyDocresponse=preRegLib.copyUploadedDocuments("35967213496392","26417486459782","POA");
+		 
+		System.out.println("Copy Doc REs::"+copyDocresponse.asString());
 		 
 		outerKeys.add("responsetime");
 		innerKeys.add("sourcePreRegId");
@@ -162,7 +168,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		
 	}
 
-	@BeforeMethod
+	
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	
@@ -172,7 +179,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
          * Copy Uploaded document Resource URI          
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
+        authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -209,8 +217,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		String source =  "src/test/resources/" + folderPath + "/";
 		
 		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-				preIds.add(preId);
-				preIds.add(destPreId);
+				//preIds.add(preId);
+				//preIds.add(destPreId);
 	}
 
 	@Override

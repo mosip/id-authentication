@@ -74,7 +74,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	static String requestKeyFile = "BookingAppointmentRequest.json";
 	String testParam = null;
 	boolean status_val = false;
-	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	JSONParser parser = new JSONParser();
 
 	/* implement,IInvokedMethodListener */
@@ -96,7 +96,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -119,22 +119,24 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		/* Creating the Pre-Registration Application */
+		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
-		/* Document Upload for created application */
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+		// Document Upload for created application
+
+		//Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 		/* PreId of Uploaded document */
-		preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		//preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 
 		/* Book An Appointment for the available data */
-		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
+		Response bookAppointmentResponse = preRegLib.BookAppointment( fetchCenter, preId.toString());
 
-	
+		System.out.println("Book app:"+bookAppointmentResponse.asString());
 		
 		switch (testCase) {
 
@@ -276,7 +278,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	 * 
 	 * @param result
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
@@ -286,7 +288,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
-
+		authToken=preRegLib.getToken();
 	}
 
 	@Override

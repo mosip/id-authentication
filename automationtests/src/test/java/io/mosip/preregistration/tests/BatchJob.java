@@ -93,7 +93,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+	//	lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
 		Response consumedResponse = lib.consumedStatus();

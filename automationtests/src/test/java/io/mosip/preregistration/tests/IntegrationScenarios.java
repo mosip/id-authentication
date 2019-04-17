@@ -1,4 +1,4 @@
-
+/*
 package io.mosip.preregistration.tests;
 
 import java.io.File;
@@ -29,10 +29,10 @@ import io.mosip.service.BaseTestCase;
 import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
-/**
+*//**
  * @author Vidya Shankar N S
  *
- */
+ *//*
 
 public class IntegrationScenarios extends BaseTestCase {
 	Logger logger = Logger.getLogger(IntegrationScenarios.class);
@@ -66,9 +66,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		// lib.intialize1();
 	}
 
-	/*
+	
 	 * @BeforeMethod public void intializ() { lib.intialize(); }
-	 */
+	 
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUpdateGetPreRegData() {
 
@@ -126,7 +126,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Delete document by document Id
 		try {
-			response = lib.deleteAllDocumentByDocId(documentId);
+			//response = lib.deleteAllDocumentByDocId(documentId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
@@ -137,7 +137,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Check if document is deleted successfully
 		try {
-			response = lib.deleteAllDocumentByDocId(documentId);
+		//	response = lib.deleteAllDocumentByDocId(documentId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
@@ -400,29 +400,29 @@ public class IntegrationScenarios extends BaseTestCase {
 		}
 	}
 
-	/**
+	*//**
 	 * @author Ashish Fetch Pending appointment created by(done) user
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchMultipleApplicationCreatedByUser() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		/**
+		*//**
 		 * creating preRegistration and fetching created pre registration by user id.
-		 */
+		 *//*
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		/**
+		*//**
 		 * adding assertion
-		 */
+		 *//*
 		lib.compareValues((createPreRegResponse.jsonPath().get("response[0].preRegistrationId")).toString(),
 				fetchResponse.jsonPath().get("response[0].preRegistrationId").toString());
 	
 	}
 
-	/**
+	*//**
 	 * @author Ashish fetch multiple pre registration created by user(done)
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchMultipleUserCreatedByUser() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -445,10 +445,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		}
 	}
 
-	/**
+	*//**
 	 * @author Ashish Fetch booked appointment created by user(done)
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchBookedAppointmentCreatedByUser() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -467,10 +467,10 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 
-	/**
+	*//**
 	 * @author Ashish Scenario Fetch canceled appointment created by user(done)
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchCanceledAppointmentCreatedByUser() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -495,13 +495,13 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 
-	/**
+	*//**
 	 * @author Ashish cancel appointment for expired Application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void cancelAppointmentForExpiredApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -521,13 +521,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Update pre Registration data for expired application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void updatePreRegistrationDataForExpiredApplication()
 			throws FileNotFoundException, IOException, ParseException {
@@ -546,14 +546,14 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
 	}
 
-	/**
+	*//**
 	 * @author Ashish Copy document for discarded application.(discard source pre
 	 *         id)
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void copyDocumentForDiscardApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -564,19 +564,19 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.documentUpload(sourceResponse);
 		lib.discardApplication(desResponse.jsonPath().get("response[0].preRegistrationId").toString());
 		String desPreId = desResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response copyUploadedDocuments = lib.copyUploadedDocuments(sourcePreId, desPreId);
-		lib.compareValues(copyUploadedDocuments.jsonPath().get("err.errorCode").toString(), "PRG_PAM_APP_005");
-		lib.compareValues(copyUploadedDocuments.jsonPath().get("err.message").toString(),
-				"PRG_PAM_APP_005 --> UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		//Response copyUploadedDocuments = lib.copyUploadedDocuments(sourcePreId, desPreId);
+		//lib.compareValues(copyUploadedDocuments.jsonPath().get("err.errorCode").toString(), "PRG_PAM_APP_005");
+		//lib.compareValues(copyUploadedDocuments.jsonPath().get("err.message").toString(),
+			//	"PRG_PAM_APP_005 --> UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 	}
 
-	/**
+	*//**
 	 * @author Ashish Book appointment for expired application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void bookAppointmentForExpiredApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -597,16 +597,16 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Fetch discarded pre registration created by user
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		/**
+		*//**
 		 * creating preRegistration and fetching created pre registration by user id.
-		 */
+		 *//*
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
 		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
@@ -615,11 +615,11 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Fetch appointment details for discarded Booked
 	 *         Appointment(done)
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void discardBookedAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -642,9 +642,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(expectedCenterDetails, actualCenterDetails);
 			
 	}
-	/**
+	*//**
 	 * @author M9010713 update demographic data after booking an appointment
-	 */
+	 *//*
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void updateDemographicDataAfterBookingAppointMent()
@@ -661,10 +661,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(preIDAfterUpdate, preID);
 	}
 
-	/**
+	*//**
 	 * @author Ashish Fetch get Pre Registration data for Booked Appointment
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getPreRegistrationDataForBookedAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -680,9 +680,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		Assert.assertEquals(getPreRegistrationResponse.jsonPath().get("response[0].statusCode"), "Booked");
 	}
 
-	/**
+	*//**
 	 * Book an appointment giving invalid date
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void bookAppForInvalidDate() {
 
@@ -718,10 +718,10 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish get pre registration data for discarded application
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getPreRegistrationDataForDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -737,11 +737,11 @@ public class IntegrationScenarios extends BaseTestCase {
 				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 	}
 
-	/**
+	*//**
 	 * @author Ashish get pre registration data for pending appointment application
 	 *         application
 	 * 
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getPreRegistrationDataForPendingApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -752,9 +752,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(getPreRegistrationDataResponse.jsonPath().getString("response[0].preRegistrationId"), preID);
 	}
 
-	/**
+	*//**
 	 * @author Ashish get Status Of Booked Appointment Appointment
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getStatusOfBookedAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -769,9 +769,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response[0].preRegistartionId"), preID);
 	}
 
-	/**
+	*//**
 	 * @author Ashish get Status Of Canceled Appointment Appointment
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getStatusOfCanceledAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -790,9 +790,9 @@ public class IntegrationScenarios extends BaseTestCase {
 				"Pending_Appointment");
 	}
 
-	/**
+	*//**
 	 * @author Ashish retrivePreRegistrationDataAfterBookingAppointment
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataAfterBookingAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -812,13 +812,13 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("response.zip-filename").toString(), preID);
 	}
 
-	/**
+	*//**
 	 * @author Ashish Retrive Pre Registration of discarded application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataOfDiscardedApplication() {
@@ -838,13 +838,13 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 		
 
-	/**
+	*//**
 	 * @author Ashish Retrive Pre Registration cancel appointment
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataForCancelAppointment() {
@@ -863,13 +863,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Retrive Pre Registration After uploading demographic details
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataAfterUploadingDemographicDetails() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -885,13 +885,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish create,discard,get application data
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void getPreRegistrationDataOfDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -904,13 +904,13 @@ public class IntegrationScenarios extends BaseTestCase {
 				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 	}
 
-	/**
+	*//**
 	 * @author Ashish Book Appointment for discarded application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void bookAppointmentForDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -928,13 +928,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Book multiple appointment for same PRID
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void bookMultipleAppointmentForSamePRID() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -951,13 +951,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish get data for discarded application
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void dataOfDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -973,13 +973,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * Create,Discard,upload document
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void uploadDocumentForDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -995,13 +995,13 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish Retrive Pre Registration After uploading document
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 */
+	 *//*
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataAfterUploadingDocument() {
@@ -1018,10 +1018,10 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	/**
+	*//**
 	 * @author Ashish create application,u[pload document[parent],create
 	 *         application[child],copy document from source to dest
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void copyDocument() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1031,11 +1031,11 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.documentUpload(createResponseSource);
 		Response createResponseDestination = lib.CreatePreReg(createPregRequest);
 		String preIDDestination = createResponseDestination.jsonPath().get("response[0].preRegistrationId").toString();
-		Response copyUploadedDocumentsResponse = lib.copyUploadedDocuments(preIDSource, preIDDestination);
+		//Response copyUploadedDocumentsResponse = lib.copyUploadedDocuments(preIDSource, preIDDestination);
 	}
-	/**@author Ashish
+	*//**@author Ashish
 	 * Consumed booked appointment
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void cosumedBookedAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1058,9 +1058,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(status, "Consumed");
 			lib.compareValues(actualRegCenterId, expectedRegCenterId);
 		}
-	/**@author Ashish
+	*//**@author Ashish
 	 * Consumed Expired appointment
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void cosumedExpiredAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1087,9 +1087,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(status, "Consumed");
 			lib.compareValues(actualRegCenterId, expectedRegCenterId);
 		}
-	/**@author Ashish
+	*//**@author Ashish
 	 * Changing status to expired using batch job service
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void expiredBatchJobService() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1106,9 +1106,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			
 		}
 	
-	/**@author Ashish
+	*//**@author Ashish
 	 * Changing status to Consumed using batch job service
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void consumedBatchJobService() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1132,9 +1132,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(actualRegCenterId, expectedRegCenterId);
 		}
 	
-	/**@author Ashish
+	*//**@author Ashish
 	 * retrive PreRegistration data for consumed Application
-	 */
+	 *//*
 	
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegDataConsumedApplication() {
@@ -1155,10 +1155,10 @@ public class IntegrationScenarios extends BaseTestCase {
 			
 		}
 	
-	/**
+	*//**
 	 * @author Ashish 
 	 * Consumed multiple pre registration ids
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void consumedMultiplePRID() {
 		List<String> preRegistrationIds = new ArrayList<String>();
@@ -1187,9 +1187,9 @@ public class IntegrationScenarios extends BaseTestCase {
 	
 	
 	
-	/**@author Ashish
+	*//**@author Ashish
 	 * Book an Appointment Delete all document then retrive PreRegistration data
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegDataAfterDeletingDocument() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -1204,9 +1204,9 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.fetchDocs(retrivePreRegistrationDataResponse, "PreRegDocs");
 		}
 	
-	/**
+	*//**
 	 * @author Ashish Consumed multiple pre registration ids with some invalid PRID
-	 */
+	 *//*
 	@Test(groups = { "IntegrationScenarios" })
 	public void consumedMultiplePRIDWithInvalidPRID() {
 		List<String> preRegistrationIds = new ArrayList<String>();
@@ -1478,10 +1478,10 @@ public class IntegrationScenarios extends BaseTestCase {
 			String docId = uploadDoc.jsonPath().get("response[0].documentId").toString();
 
 			Response discardApp = lib.discardApplication(preRegID);
-			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId);
+			//Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId);
 
-			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");
-			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "DOCUMENT_IS_MISSING");
+			//lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");
+			//lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "DOCUMENT_IS_MISSING");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1517,7 +1517,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 			}
 
-		/*	Response retriveAllPreregId = lib.retriveAllPreIdByRegId();
+			Response retriveAllPreregId = lib.retriveAllPreIdByRegId();
 
 			// Assertion for Retrieve PreId By Reg Center Id
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].preRegistrationId").toString(), preRegID);
@@ -1528,7 +1528,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].pre_registration_ids[1]").toString(),
 					"65180632596528");
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].pre_registration_ids[2]").toString(),
-					"82378490340132");*/
+					"82378490340132");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1539,3 +1539,4 @@ public class IntegrationScenarios extends BaseTestCase {
 
 }
 
+*/

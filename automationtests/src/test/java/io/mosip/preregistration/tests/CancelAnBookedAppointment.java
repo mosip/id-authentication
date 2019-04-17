@@ -38,7 +38,8 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Cancel An Booked Appointment related Positive and Negative test cases
+ * Test Class to perform Cancel An Booked Appointment related Positive and
+ * Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
@@ -46,12 +47,11 @@ import io.restassured.response.Response;
 
 public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	
-	
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
+
+	static String preId = "";
+	static SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(CancelAnBookedAppointment.class);
 	boolean status = false;
@@ -64,17 +64,18 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	static String folderPath = "preReg/CancelAnBookedAppointment";
 	static String outputFile = "CancelAnBookedOutput.json";
 	static String requestKeyFile = "CancelAnBookedAppointmentRequest.json";
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI ;
-	
-	/*implement,IInvokedMethodListener*/
+	private static String preReg_URI;
+
+	/* implement,IInvokedMethodListener */
 	public CancelAnBookedAppointment() {
 
 	}
-	
+
 	/**
 	 * Data Providers to read the input json files from the folders
+	 * 
 	 * @param context
 	 * @return input request file
 	 * @throws JsonParseException
@@ -82,13 +83,12 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	
+
 	@DataProvider(name = "CancelAnBookedAppointment")
 	public static Object[][] readData(ITestContext context) throws Exception {
-		
-		
+
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -100,82 +100,79 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 	@Test(dataProvider = "CancelAnBookedAppointment")
 	public void cancelAnBookedAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
-		
+
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
-		//Creating the Pre-Registration Application
+
+		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		
-		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-		
-		//PreId of Uploaded document
-		String preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		
-		//Fetch availability[or]center details
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+
+		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 		
-		//Book An Appointment for the available data
-		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId);
 		
 		
-		//Fetch Appointment Details
-		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
+
+		/* Book An Appointment for the available data */
+		Response bookAppointmentResponse = preRegLib.BookAppointment( fetchCenter, preId.toString());
 		
-	
-		//Cancel Booked Appointment Details
-		Response CancelBookingApp = preRegLib.CancelBookingAppointment(fetchAppointmentDetailsResponse, preId);
+		/* Fetch Appointment Details for specific PreId */
+		Response fetchCenterRes = preRegLib.FetchAppointmentDetails(preId);
 		
+		System.out.println("Fetch Center:"+fetchCenterRes.asString());
 		
-		//removing the keys for assertion
+		// Cancel Booked Appointment Details
+		Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId,fetchCenterRes);
+
+		
+		System.out.println("Cancel::"+CancelBookingApp.asString());
+		
+		// removing the keys for assertion
 		outerKeys.add("responsetime");
 		innerKeys.add("transactionId");
-		
-		
-		
+
 		status = AssertResponses.assertResponses(CancelBookingApp, Expectedresponse, outerKeys, innerKeys);
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
-		
+
 	}
 
-	
 	/**
-	 * Declaring the Cancel Appointment Appointment Resource URI and getting the test case name
+	 * Declaring the Cancel Appointment Appointment Resource URI and getting the
+	 * test case name
+	 * 
 	 * @param result
 	 */
-	@BeforeMethod
+	
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
+
 		testCaseName = object.get("testCaseName").toString();
-		
+
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
+		authToken = preRegLib.getToken();
 	}
 
-	
 	/**
 	 * Writing test case name into testng
+	 * 
 	 * @param result
 	 */
 	@AfterMethod(alwaysRun = true)
@@ -193,9 +190,9 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		}
 	}
 
-	
 	/**
 	 * Writing output into configpath
+	 * 
 	 * @throws IOException
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
@@ -205,15 +202,14 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath =  "src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		
-		
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
+
+		// Add generated PreRegistrationId to list to be Deleted from DB
+		// AfterSuite
 		preIds.add(preId);
 	}
 
@@ -221,6 +217,5 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }

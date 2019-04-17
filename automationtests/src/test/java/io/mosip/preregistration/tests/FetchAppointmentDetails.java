@@ -76,7 +76,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	static String outputFile = "FetchAppointmentDetailsOutput.json";
 	static String requestKeyFile = "FetchAppointmentDetailsRequest.json";
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	/**
 	 * Reading data from file
 	 * @param context
@@ -88,7 +88,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		//testParam="smoke";
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -114,25 +114,22 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
-		//Creating the Pre-Registration Application
+		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-		
-		//PreId of Uploaded document
-		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Fetch availability[or]center details
 		Response fetchCenter = preRegLib.FetchCentre();
 		
 		//Book An Appointment for the available data
-		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
+		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 		
 		
 		//Fetch Appointment Details
 		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
+		
+		
+		System.out.println("Fetch App:"+fetchAppointmentDetailsResponse.asString());
 		
 		outerKeys.add("responsetime");
 		innerKeys.add("registration_center_id");
@@ -207,7 +204,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 	
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	
@@ -217,7 +214,8 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
          * Fetch Appointment Details Resource URI            
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+        authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)
