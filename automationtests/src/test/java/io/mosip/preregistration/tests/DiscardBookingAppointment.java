@@ -130,7 +130,7 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
 			Response fetchCenter = preRegLib.FetchCentre();
 			
 			/*Book An Appointment for the available data*/
-			Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
+			//Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
 			
 			/*Discard Book Appointment*/
 			Response discardBookAppointmentResponse =preRegLib.discardBooking(preId);
@@ -235,7 +235,9 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
 	 * Declaring the Booking Appointment Resource URI and getting the test case name
 	 * @param result
 	 */
-    @BeforeMethod
+	
+	
+    @BeforeMethod(alwaysRun = true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();

@@ -72,7 +72,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	static String outputFile = "GetAllDocumentForPreRegIdOutput.json";
 	static String requestKeyFile = "GetAllDocumentForPreRegIdRequest.json";
 	
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 
 	//implement,IInvokedMethodListener
 		public GetAllDocumentForPreRegId() {
@@ -93,7 +93,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -117,7 +117,10 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+		//Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
+		
+		System.out.println("Doc Uploa res::"+docUploadResponse.asString());
 		
 		//Get PreId from Document upload response
 		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
@@ -127,8 +130,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		outerKeys.add("responsetime");
-		innerKeys.add("prereg_id");
-		innerKeys.add("doc_id");
+		innerKeys.add("documentId");
 		innerKeys.add("multipartFile");
 		
 		
@@ -153,11 +155,12 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	
 		testCaseName = object.get("testCaseName").toString();
+		 authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -187,7 +190,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		String source =  "src/test/resources/" + folderPath + "/";
 
 		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-		preIds.add(preId);
+		//preIds.add(preId);
 	}
 
 	@Override

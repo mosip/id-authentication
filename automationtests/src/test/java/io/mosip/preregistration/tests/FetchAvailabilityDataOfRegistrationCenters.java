@@ -76,7 +76,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 	private static String preReg_URI ;
 	
 
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
 	
 	//implement,IInvokedMethodListener
@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -122,7 +122,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		Response fetchCenter = preRegLib.FetchCentre();
 		
-		
+		System.out.println("Get request ::"+fetchCenter.asString());
 		outerKeys.add("responsetime");
 		innerKeys.add("regCenterId");
 		innerKeys.add("centerDetails");
@@ -149,14 +149,13 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
         softAssert.assertAll();
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	
 		testCaseName = object.get("testCaseName").toString();
-		
-		
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+		authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)

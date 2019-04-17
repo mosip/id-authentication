@@ -57,6 +57,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	 *  Declaration of all variables
 	 **/
 	static 	String preId="";
+	static 	String docId="";
 	static SoftAssert softAssert=new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(DeleteDocumentByDocId.class);
@@ -70,7 +71,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	static String folderPath = "preReg/DeleteDocumentByDocId";
 	static String outputFile = "DeleteDocumentByDocIdRequestOutput.json";
 	static String requestKeyFile = "DeleteDocumentByDocIdRequest.json";
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_URI ;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
@@ -92,7 +93,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	@DataProvider(name = "DeleteDocumentByDocId")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -115,18 +116,25 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		if(testCaseName.contains("smoke"))
 		{
 		
-		//Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			//Creating the Pre-Registration Application
+			Response createApplicationResponse = preRegLib.CreatePreReg();
+			preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			
+			//Document Upload for created application
+			
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
+			
+			
+			//Get PreId from Document upload response
+			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			
+			//Get docId from Document upload response
+			docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
 		
-		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-		
-		//Document Id of Uploaded document
-		String docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
 		
 		//Delete All Document by Document Id
-		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId,preId);
+		
+		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId( docId, preId);
 		
 		
 		outerKeys.add("responsetime");
@@ -165,7 +173,8 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		
 	}
 
-	@BeforeMethod
+	
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 	
@@ -176,7 +185,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
          */
         
         preReg_URI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
-		
+        authToken=preRegLib.getToken();
 		
 	}
 

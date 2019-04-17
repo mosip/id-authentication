@@ -126,7 +126,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 			String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response documentResponse = lib.documentUpload(createResponse);
 			Response avilibityResponse = lib.FetchCentre();
-			lib.BookAppointment(documentResponse, avilibityResponse, preID);
+			//lib.BookAppointment(documentResponse, avilibityResponse, preID);
 			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
 			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse, preID, createResponse);
 		} else {

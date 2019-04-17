@@ -55,16 +55,17 @@ public class Sample extends BaseTestCase implements ITest {
 	public void fetchDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		/**
-		 * creating preRegistration and fetching created pre registration by user id.
-		 */
-		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
-		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		lib.discardApplication(preID);
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		lib.compareValues(fetchResponse.jsonPath().get("errors.message").toString(), "No record found for the requested user id");
-
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		Response documentResponse = lib.documentUploadParm(createResponse,preID);
+		Response avilibityResponse = lib.FetchCentre();
+		String expectedRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
+		String expectedCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]").toString();
+		//lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		
 	}
+
+
 	@BeforeMethod
 	public void getAuthToken() {
 		authToken = lib.getToken();

@@ -34,9 +34,14 @@ public class ApplicationLibrary extends BaseTestCase {
 	}
 	
 	
+	public Response getRequestPathAndQueryParam(String Resource_URI, HashMap<String, String> temp) {
+		return commonLibrary.get_Request_pathAndQueryParam(ApplnURI + Resource_URI, temp);
+	}
+	
 
-
-
+	public Response getRequestPathParam(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.get_Request_pathParam(ApplnURI + Resource_URI, valueMap);
+	}
 	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParam(ApplnURI + Resource_URI, valueMap);
 	}
@@ -47,10 +52,6 @@ public class ApplicationLibrary extends BaseTestCase {
 	public Response getRequestParm(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_pathParameters(ApplnURI + Resource_URI, valueMap);
 	}
-	public Response put_Request_pathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
-        return commonLibrary.put_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
-
-  }
 
 	public Response getRequestDataSync(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParamDataSync(ApplnURI + Resource_URI, valueMap);
@@ -82,11 +83,23 @@ public class ApplicationLibrary extends BaseTestCase {
 	public Response deleteRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.delete_Request(ApplnURI + Resource_URI, valueMap);
 	}
+	
+	public Response deleteRequestWithPathParam(String Resource_URI) {
+		return commonLibrary.deleteRequestWithPathParam(ApplnURI + Resource_URI);
+	}
+	
 	public Response deleteRequestWithParm(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.deleteRequest(ApplnURI + Resource_URI, valueMap);
 	}
+
 	public Response deleteRequestWithParmAndQuerry(String Resource_URI, HashMap<String, String> valueMap,HashMap<String, String> query) {
 		return commonLibrary.deleteRequestWithPathAndQuery(ApplnURI + Resource_URI, valueMap,query);
+	}
+
+	
+	public Response deleteRequestPathAndQueryParam(String Resource_URI, HashMap<String, String> temp) {
+		return commonLibrary.deleteRequestPathAndQueryParam(ApplnURI + Resource_URI, temp);
+
 	}
 
 	// public Response PutRequest(String Resource_URI, String )
@@ -111,6 +124,14 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 
+	public Response put_Request_pathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.put_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
+
+	}
+	
+	
+	
+	
 	/**
 	 * Author Arjun
 	 * 
@@ -138,6 +159,13 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.GET_REQUEST_withoutParameters(ApplnURI + Resource_URI);
 
 	}
+	
+	
+	public Response get_Request_multiplePathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.get_Request_multiplePathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
+
+	}
+	
 
 	public Response deleteRequestPathParam(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.delete_RequestPathParameters(ApplnURI + Resource_URI, valueMap);
@@ -166,13 +194,18 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.put_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
+	
+	
+	
 	public Response adminputRequest_WithoutBody(String Resource_URI) {
 		return commonLibrary.adminPut_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
-	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
+	public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
 	        return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
+	
+	
 	 public Response getRequestPathQueryParaString(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value) {
 	        return commonLibrary.get_Request_Path_queryParamString(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
