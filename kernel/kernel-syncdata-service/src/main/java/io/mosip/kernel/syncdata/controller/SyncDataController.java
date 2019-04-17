@@ -74,7 +74,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
@@ -92,7 +92,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
@@ -110,7 +110,7 @@ public class SyncDataController {
 	 * @param regId registration Id
 	 * @return JSONObject
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
@@ -122,7 +122,7 @@ public class SyncDataController {
 		return response;
 	}
 
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@GetMapping("/configuration/{registrationCenterId}")
@@ -142,7 +142,7 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/masterdata")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
@@ -174,7 +174,7 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/masterdata/{regcenterId}")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterDataWithRegCenterId(
@@ -201,7 +201,7 @@ public class SyncDataController {
 	 * 
 	 * @return RolesResponseDto
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/roles")
 	public ResponseWrapper<RolesResponseDto> getAllRoles() {
@@ -220,7 +220,7 @@ public class SyncDataController {
 	 * 
 	 * @return UserDetailResponseDto - user detail response
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/userdetails/{regid}")
 	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regid") String regId) {
@@ -240,7 +240,7 @@ public class SyncDataController {
 	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
