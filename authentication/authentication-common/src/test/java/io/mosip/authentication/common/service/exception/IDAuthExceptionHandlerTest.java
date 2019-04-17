@@ -33,15 +33,15 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
+import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
-import io.mosip.authentication.core.util.DataValidationUtil;
+import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
+import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 
 /**
  * @author Manoj SP

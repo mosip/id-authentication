@@ -48,23 +48,23 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
@@ -106,7 +106,7 @@ public class AuthFacadeImplTest {
 	private OTPAuthService otpAuthServiceImpl;
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 	/** The KycService **/
 	@Mock
 	private KycService kycService;
@@ -120,7 +120,7 @@ public class AuthFacadeImplTest {
 
 	/** The IdRepoService **/
 	@Mock
-	private IdAuthService<?> idInfoService;
+	private IdService<?> idInfoService;
 	/** The DemoAuthService **/
 	@Mock
 	private DemoAuthService demoAuthService;

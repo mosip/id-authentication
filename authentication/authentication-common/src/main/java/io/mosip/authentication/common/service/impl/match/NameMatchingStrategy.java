@@ -2,11 +2,11 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
-import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * 

@@ -8,9 +8,9 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;

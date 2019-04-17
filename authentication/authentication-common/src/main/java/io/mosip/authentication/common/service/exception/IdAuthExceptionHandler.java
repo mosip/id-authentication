@@ -26,14 +26,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
+import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
+import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;

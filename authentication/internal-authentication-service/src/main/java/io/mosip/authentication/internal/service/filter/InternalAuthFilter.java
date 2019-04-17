@@ -5,7 +5,7 @@ import java.util.Map;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.internal.service.impl.indauth.controller.InternalAuthController;
+import io.mosip.authentication.internal.service.controller.InternalAuthController;
 
 /**
  * The Class InternalAuthFilter - used to authenticate the

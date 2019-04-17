@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
+import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.core.util.DataValidationUtil;
-import io.mosip.authentication.kyc.service.impl.indauth.validator.KycAuthRequestValidator;
+import io.mosip.authentication.kyc.service.facade.KycFacade;
+import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -51,7 +51,7 @@ public class KycAuthController {
 
 	/** The auth facade. */
 	@Autowired
-	private AuthFacade authFacade;
+	private KycFacade kycFacade;
 
 	@Autowired
 	private KycService kycService;
@@ -88,7 +88,7 @@ public class KycAuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId);
+			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = kycService.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}

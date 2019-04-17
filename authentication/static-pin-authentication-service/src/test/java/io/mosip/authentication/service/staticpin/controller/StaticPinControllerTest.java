@@ -17,11 +17,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.staticpin.service.StaticPinService;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 import io.mosip.authentication.staticpin.service.controller.StaticPinController;
 import io.mosip.authentication.staticpin.service.validator.StaticPinRequestValidator;
 

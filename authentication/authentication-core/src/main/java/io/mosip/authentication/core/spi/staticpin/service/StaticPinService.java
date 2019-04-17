@@ -1,8 +1,8 @@
 package io.mosip.authentication.core.spi.staticpin.service;
 
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 
 /**
  * This StaticPinService provides Storing of Static Pin into the DataBase.

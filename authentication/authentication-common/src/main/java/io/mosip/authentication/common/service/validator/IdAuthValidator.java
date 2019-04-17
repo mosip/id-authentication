@@ -15,8 +15,8 @@ import org.springframework.validation.Validator;
 
 import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;

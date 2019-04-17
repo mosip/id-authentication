@@ -24,15 +24,15 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.internal.service.impl.indauth.controller.InternalAuthController;
-import io.mosip.authentication.internal.service.impl.indauth.validator.InternalAuthRequestValidator;
+import io.mosip.authentication.internal.service.controller.InternalAuthController;
+import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

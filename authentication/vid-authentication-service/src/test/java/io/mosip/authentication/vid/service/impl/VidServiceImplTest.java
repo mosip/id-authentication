@@ -40,7 +40,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
@@ -58,7 +58,7 @@ public class VidServiceImplTest {
 	private VIDServiceImpl vidServiceImpl;
 
 	@Mock
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	@Mock
 	private AuditHelper auditHelper;

@@ -12,8 +12,8 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.RestRequestDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 /**

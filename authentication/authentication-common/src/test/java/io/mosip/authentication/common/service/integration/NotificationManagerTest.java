@@ -32,10 +32,10 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.dto.MailRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)

@@ -19,13 +19,13 @@ import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.vid.ResponseDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.id.service.VIDService;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -58,7 +58,7 @@ public class VIDServiceImpl implements VIDService {
 
 	/** The id auth service. */
 	@Autowired
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	/** The AuditHelper */
 	@Autowired

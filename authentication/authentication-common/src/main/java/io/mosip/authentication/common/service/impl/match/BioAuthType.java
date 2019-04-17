@@ -10,9 +10,9 @@ import java.util.stream.Stream;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;

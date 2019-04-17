@@ -40,23 +40,23 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.kyc.service.controller.KycAuthController;
-import io.mosip.authentication.kyc.service.impl.indauth.validator.KycAuthRequestValidator;
-import io.mosip.authentication.kyc.service.indauth.service.KycServiceImpl;
+import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
+import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 
 /**
  * @author M1047697
@@ -84,7 +84,7 @@ public class KycControllerTest {
 	private AuthFacadeImpl authFacade;
 
 	@Mock
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	@InjectMocks
 	private KycAuthController kycauthController;

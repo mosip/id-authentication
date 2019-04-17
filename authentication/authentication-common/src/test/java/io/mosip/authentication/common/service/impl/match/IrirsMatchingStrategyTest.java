@@ -11,9 +11,8 @@ import java.util.function.BiFunction;
 
 import org.junit.Test;
 
-import io.mosip.authentication.common.service.impl.match.IrisMatchingStrategy;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.provider.bio.IrisProvider;
 

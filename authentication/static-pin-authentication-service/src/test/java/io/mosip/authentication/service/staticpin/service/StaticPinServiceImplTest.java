@@ -32,10 +32,10 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
-import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.staticpin.dto.PinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
 import io.mosip.authentication.staticpin.service.impl.StaticPinServiceImpl;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
@@ -61,7 +61,7 @@ public class StaticPinServiceImplTest {
 
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	@Mock
 	private AuditHelper auditHelper;

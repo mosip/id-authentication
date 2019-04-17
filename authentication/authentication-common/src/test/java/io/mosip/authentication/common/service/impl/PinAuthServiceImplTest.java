@@ -33,11 +33,11 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils;
 
 @RunWith(SpringRunner.class)

@@ -17,8 +17,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;

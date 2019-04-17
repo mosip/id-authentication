@@ -29,19 +29,19 @@ import io.mosip.authentication.common.service.integration.IdAuthenticationProper
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.dto.indauth.NotificationType;
-import io.mosip.authentication.core.dto.indauth.SenderType;
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
+import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
+import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
-import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 

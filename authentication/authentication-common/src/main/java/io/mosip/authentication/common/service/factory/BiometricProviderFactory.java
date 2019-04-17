@@ -7,7 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.provider.bio.CogentFaceProvider;
 import io.mosip.authentication.core.spi.provider.bio.CogentFingerprintProvider;

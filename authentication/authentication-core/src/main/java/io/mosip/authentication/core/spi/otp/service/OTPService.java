@@ -1,8 +1,8 @@
 package io.mosip.authentication.core.spi.otp.service;
 
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 
 /**
  * The {@code OTPAuthService} interface to trigger OTP request to core-kernal

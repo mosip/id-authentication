@@ -44,19 +44,19 @@ import io.mosip.authentication.common.service.impl.notification.NotificationServ
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.dto.indauth.NotificationType;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
-import io.mosip.authentication.core.dto.indauth.SenderType;
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.indauth.dto.SenderType;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -84,7 +84,7 @@ public class NotificationServiceImplTest {
 	private IdTemplateManager idTemplateManager;
 
 	@Mock
-	private IdAuthService<AutnTxn> idInfoService;
+	private IdService<AutnTxn> idInfoService;
 
 	@Mock
 	private IdInfoHelper demoHelper;

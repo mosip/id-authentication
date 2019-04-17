@@ -42,15 +42,15 @@ import io.mosip.authentication.common.service.repository.StaticPinHistoryReposit
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.id.service.VIDService;
+import io.mosip.authentication.core.staticpin.dto.PinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
 import io.mosip.authentication.staticpin.service.impl.StaticPinServiceImpl;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -79,7 +79,7 @@ public class StaticPinFacadeImplTest {
 
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	/** The Audit Helper */
 	@Mock

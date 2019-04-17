@@ -45,18 +45,18 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -84,7 +84,7 @@ public class DemoAuthServiceTest {
 	private MatchInputBuilder matchInputBuilder;
 
 	@Mock
-	private IdAuthService<?> idInfoService;
+	private IdService<?> idInfoService;
 
 	@Mock
 	private MasterDataManager masterDataManager;

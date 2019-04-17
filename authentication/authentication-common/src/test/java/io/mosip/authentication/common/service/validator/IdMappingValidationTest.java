@@ -34,15 +34,15 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

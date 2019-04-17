@@ -34,12 +34,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
-import io.mosip.authentication.kyc.service.indauth.service.KycServiceImpl;
+import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**

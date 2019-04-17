@@ -33,12 +33,12 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
-import io.mosip.authentication.otp.service.impl.otpgen.controller.OTPController;
+import io.mosip.authentication.otp.service.controller.OTPController;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**

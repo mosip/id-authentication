@@ -13,8 +13,8 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -98,7 +98,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
 				validateConsentReq(authRequestDto, errors);
-				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
+				validateAllowedAuthTypes(authRequestDto, errors, getAllowedAuthTypeProperty());
 			}
 			if (!errors.hasErrors()) {
 				validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
@@ -201,6 +201,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					new Object[] { AUTH_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
+	}
+
+	/**
+	 * @return the allowedAuthType
+	 */
+	public String getAllowedAuthTypeProperty() {
+		return ALLOWED_AUTH_TYPE;
 	}
 
 }

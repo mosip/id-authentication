@@ -24,8 +24,8 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.FullAddressMatchingStrategy;
 import io.mosip.authentication.common.service.impl.match.GenderMatchingStrategy;
 import io.mosip.authentication.common.service.impl.match.NameMatchingStrategy;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 
 /**

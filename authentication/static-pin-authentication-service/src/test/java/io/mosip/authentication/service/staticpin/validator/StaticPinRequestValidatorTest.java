@@ -24,9 +24,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.staticpin.dto.PinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
 import io.mosip.authentication.staticpin.service.validator.StaticPinRequestValidator;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;

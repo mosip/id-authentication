@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 
 /**
  * 

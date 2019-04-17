@@ -23,13 +23,13 @@ import io.mosip.authentication.common.service.repository.StaticPinHistoryReposit
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.staticpin.service.StaticPinService;
+import io.mosip.authentication.core.staticpin.dto.StaticPinRequestDTO;
+import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -69,7 +69,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 
 	/** The id auth service. */
 	@Autowired
-	private IdAuthService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idAuthService;
 
 	/** The AuditHelper */
 	@Autowired

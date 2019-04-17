@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 
 /**
  * The builder class of AuthResponseDTO.

@@ -38,13 +38,13 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorReques
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.dto.RestRequestDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.otp.service.impl.otpgen.service.OTPServiceImpl;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.otp.service.impl.OTPServiceImpl;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
@@ -62,7 +62,7 @@ public class OTPServiceImplTest {
 	AutnTxnRepository autntxnrepository;
 
 	@Mock
-	IdAuthService<AutnTxn> idAuthService;
+	IdService<AutnTxn> idAuthService;
 
 	@Mock
 	IdTemplateManager idTemplateService;

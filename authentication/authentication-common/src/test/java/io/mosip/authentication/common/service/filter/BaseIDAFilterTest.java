@@ -51,8 +51,8 @@ import io.mosip.authentication.common.service.filter.BaseIDAFilter;
 import io.mosip.authentication.common.service.filter.CharResponseWrapper;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.integration.KeyManager;
-import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)

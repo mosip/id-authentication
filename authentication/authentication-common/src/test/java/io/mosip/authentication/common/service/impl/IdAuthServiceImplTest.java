@@ -36,14 +36,14 @@ import io.mosip.authentication.common.service.entity.VIDEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 
 /**
  * IdAuthServiceImplTest test class.
@@ -67,13 +67,13 @@ public class IdAuthServiceImplTest {
 	private VIDRepository vidRepository;
 
 	@InjectMocks
-	IdAuthServiceImpl idAuthServiceImpl;
+	IdServiceImpl idAuthServiceImpl;
 
 	@Mock
-	IdAuthServiceImpl idAuthServiceImplMock;
+	IdServiceImpl idAuthServiceImplMock;
 
 	@Mock
-	IdAuthService<AutnTxn> idAuthService;
+	IdService<AutnTxn> idAuthService;
 
 	@Mock
 	AutnTxnRepository autntxnrepository;

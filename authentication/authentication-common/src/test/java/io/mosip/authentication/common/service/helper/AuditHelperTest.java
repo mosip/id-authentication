@@ -21,8 +21,8 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 
 /**
  * @author Manoj SP

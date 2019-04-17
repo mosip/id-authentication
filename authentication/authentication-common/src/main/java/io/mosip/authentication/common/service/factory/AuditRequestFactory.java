@@ -11,7 +11,7 @@ import io.mosip.authentication.common.service.integration.IdAuthenticationProper
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.AuditRequestDto;
-import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;

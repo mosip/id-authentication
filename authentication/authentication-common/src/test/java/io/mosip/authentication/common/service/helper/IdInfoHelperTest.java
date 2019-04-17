@@ -30,10 +30,10 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })

@@ -3,12 +3,12 @@ package io.mosip.authentication.core.spi.indauth.service;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 
 /**
  * This interface is used to retrieve Kyc information of individual

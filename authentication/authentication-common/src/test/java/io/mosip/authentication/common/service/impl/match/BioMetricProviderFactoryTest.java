@@ -18,7 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.spi.provider.bio.CogentFingerprintProvider;
 import io.mosip.authentication.core.spi.provider.bio.CogentIrisProvider;
 import io.mosip.authentication.core.spi.provider.bio.MantraFingerprintProvider;
