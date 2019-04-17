@@ -51,7 +51,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.VIDService;
-import io.mosip.authentication.staticpin.service.impl.spin.service.StaticPinServiceImpl;
+import io.mosip.authentication.staticpin.service.impl.StaticPinServiceImpl;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;

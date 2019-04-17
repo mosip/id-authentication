@@ -69,8 +69,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 	
-	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
- 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
  	/** The Constant DATETIME_PATTERN. */
  	private static final String DATETIME_PATTERN = "datetime.pattern";
