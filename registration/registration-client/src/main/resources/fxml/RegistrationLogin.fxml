@@ -54,10 +54,10 @@
                <children>
              	  <Label layoutX="57.0" layoutY="21.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="21.0" />
                	  <PasswordField fx:id="otp" onAction="#validateOTP" layoutX="57.0" layoutY="96.0" promptText="%enterotp" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
-                  <Button fx:id="getOTP" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
-                  <Button fx:id="resend" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="true" />
-                  <Button layoutX="53.0" layoutY="195.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
-                  <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" />
+                  <Button fx:id="getOTP" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" visible="true"/>
+                  <Button fx:id="resend" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="false" />
+                  <Button fx:id="otpSubmit" layoutX="53.0" layoutY="195.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" disable="true"/>
+                  <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" visible="false"/>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="fingerprintPane" layoutX="72.0" layoutY="220.0" prefHeight="192.0" prefWidth="207.0" styleClass="loginAnchorPaneStyle" visible="false">

@@ -137,6 +137,9 @@ public class LoginController extends BaseController implements Initializable {
 	private Button submit;
 
 	@FXML
+	private Button otpSubmit;
+	
+	@FXML
 	private Button getOTP;
 
 	@FXML
@@ -654,8 +657,10 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	private void changeToOTPSubmitMode() {
 		submit.setDisable(false);
+		otpSubmit.setDisable(false);
 		getOTP.setVisible(false);
 		resend.setVisible(true);
+		otpValidity.setVisible(true);
 	}
 
 	/**
