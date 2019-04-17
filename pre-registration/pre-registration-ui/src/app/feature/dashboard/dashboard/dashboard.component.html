@@ -33,9 +33,7 @@
         <mat-card>
           <div class="card-header">
             <span class="checkbox"
-              ><mat-checkbox
-                [disabled]="isBookingAllowed(user.appointmentDateTime)"
-                (change)="onSelectUser(user, $event)"
+              ><mat-checkbox [disabled]="isBookingAllowed(user.appointmentDate)" (change)="onSelectUser(user, $event)"
                 >{{ 'dashboard.card.text_app_id' | translate }}
               </mat-checkbox></span
             >
@@ -64,7 +62,7 @@
                 </tr>
                 <tr>
                   <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>
-                  <td class="application-value">{{ user.appointmentDateTime }}</td>
+                  <td class="application-value">{{ user.appointmentTime }} {{ user.appointmentDate }}</td>
                 </tr>
                 <tr>
                   <td>{{ 'dashboard.card.text_status' | translate }}</td>
@@ -111,7 +109,7 @@
                 mat-button
                 class="footer-btn"
                 (click)="onAcknowledgementView(user)"
-                [disabled]="user.status === 'Pending_Appointment'"
+                [disabled]="user.status === 'Pending_Appointment' || user.regDto === null"
               >
                 <img src="assets\view.png" class="modifyapp-btn-img" />{{
                   'dashboard.card.action_view_acknowledgement' | translate

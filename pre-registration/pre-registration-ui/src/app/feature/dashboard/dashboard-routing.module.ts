@@ -11,6 +11,13 @@ const routes: Routes = [
   }
 ];
 
+/**
+ * @description This module defines the route path for the dashboard feature.
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class DashboardRoutingModule
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

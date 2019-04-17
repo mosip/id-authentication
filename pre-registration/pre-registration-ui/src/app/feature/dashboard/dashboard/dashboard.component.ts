@@ -19,6 +19,15 @@ import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
+/**
+ * @description This is the dashbaord component which displays all the users linked to the login id
+ *              and provide functionality like modifying the information, viewing the acknowledgement
+ *              and modifying or booking an appointment.
+ *
+ * @export
+ * @class DashBoardComponent
+ * @implements {OnInit}
+ */
 @Component({
   selector: 'app-registration',
   templateUrl: './dashboard.component.html',
@@ -27,11 +36,12 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 export class DashBoardComponent implements OnInit {
   userFile: FileModel;
   userFiles: any[] = [];
-  tempFiles;
   loginId = '';
   message = {};
+  langCode = 'rtl';
 
   secondaryLanguagelabels: any;
+  primaryLanguagelabels: any;
   disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
@@ -42,6 +52,18 @@ export class DashBoardComponent implements OnInit {
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
 
+  /**
+   * @description Creates an instance of DashBoardComponent.
+   * @param {Router} router
+   * @param {MatDialog} dialog
+   * @param {DataStorageService} dataStorageService
+   * @param {RegistrationService} regService
+   * @param {SharedService} sharedService
+   * @param {AutoLogoutService} autoLogout
+   * @param {TranslateService} translate
+   * @param {ConfigService} configService
+   * @memberof DashBoardComponent
+   */
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -55,21 +77,26 @@ export class DashBoardComponent implements OnInit {
     this.translate.use(localStorage.getItem('langCode'));
     localStorage.setItem('modifyDocument', 'false');
   }
+
+  /**
+   * @description Lifecycle hook ngOnInit
+   *
+   * @memberof DashBoardComponent
+   */
   ngOnInit() {
     console.log('IN DASHBOARD');
 
     this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
-
     this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
     if (!this.message['timerFired']) {
-      //console.log("INSIDE AUTO LOGOUT DASHBOARD TIMER FIRED");
-      this.autoLogout.getValues();
-
+      this.autoLogout.getValues(localStorage.getItem('langCode'));
       this.autoLogout.setValues();
-
       this.autoLogout.keepWatching();
+    } else {
+      this.autoLogout.getValues(localStorage.getItem('langCode'));
+      this.autoLogout.continueWatching();
     }
 
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
@@ -79,15 +106,25 @@ export class DashBoardComponent implements OnInit {
     this.regService.setSameAs('');
   }
 
+  /**
+   * @description This is the intial set up for the dashboard component
+   *
+   * @memberof DashBoardComponent
+   */
   initUsers() {
     this.regService.flushUsers();
     this.sharedService.flushNameList();
     this.getUsers();
   }
 
+  /**
+   * @description This is to get all the users assosiated to the login id.
+   *
+   * @memberof DashBoardComponent
+   */
   getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
-      (applicants: Applicant[]) => {
+      (applicants: any) => {
         console.log('applicants', applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
@@ -112,7 +149,8 @@ export class DashBoardComponent implements OnInit {
       },
       error => {
         console.log(error);
-        this.router.navigate(['error']);
+        // this.router.navigate(['error']);
+        this.onError();
         this.isFetched = true;
       },
       () => {
@@ -121,15 +159,55 @@ export class DashBoardComponent implements OnInit {
     );
   }
 
-  private createAppointmentDateTime(applicant: any) {
+  /**
+   * @description This method return the appointment date and time.
+   *
+   * @private
+   * @param {*} applicant
+   * @returns the appointment date and time
+   * @memberof DashBoardComponent
+   */
+  private createAppointmentDate(applicant: any) {
+    // const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
+    // const date = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
+    // const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
+    // const toTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
+    // let appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
+    // return appointmentDateTime;
     const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
-    const date = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
-    const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
-    const toTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
-    let appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
-    return appointmentDateTime;
+    const date = Utils.getBookingDateTime(
+      bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate],
+      '',
+      localStorage.getItem('langCode')
+    );
+    let appointmentDate = date;
+    return appointmentDate;
   }
 
+  /**
+   * @description This method return the appointment date and time.
+   *
+   * @private
+   * @param {*} applicant
+   * @returns the appointment date and time
+   * @memberof DashBoardComponent
+   */
+  private createAppointmentTime(applicant: any) {
+    const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
+    const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
+    const toTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
+    let appointmentTime = ' ( ' + fromTime + ' - ' + toTime + ' ) ';
+    return appointmentTime;
+  }
+
+  /**
+   * @description This method parse the applicants and return the individual applicant.
+   *
+   * @param {*} applicants
+   * @param {number} index
+   * @returns
+   * @memberof DashBoardComponent
+   */
   createApplicant(applicants: any, index: number) {
     const applicantResponse = applicants[appConstants.RESPONSE][index];
     let primaryIndex = 0;
@@ -142,8 +220,11 @@ export class DashBoardComponent implements OnInit {
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
       name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex]['value'],
-      appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
-        ? this.createAppointmentDateTime(applicantResponse)
+      appointmentDate: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
+        ? this.createAppointmentDate(applicantResponse)
+        : '-',
+      appointmentTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
+        ? this.createAppointmentTime(applicantResponse)
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
       regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
@@ -155,6 +236,11 @@ export class DashBoardComponent implements OnInit {
     return applicant;
   }
 
+  /**
+   * @description This method navigate the user to demographic page if it is a new applicant.
+   *
+   * @memberof DashBoardComponent
+   */
   onNewApplication() {
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
@@ -243,7 +329,8 @@ export class DashBoardComponent implements OnInit {
             this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
             const index = this.users.indexOf(element);
             this.users[index].status = 'Pending Appointment';
-            this.users[index].appointmentDateTime = '-';
+            this.users[index].appointmentDate = '-';
+			this.users[index].appointmentTime = '';
           } else {
             this.displayMessage(
               this.secondaryLanguagelabels.title_error,
@@ -302,6 +389,12 @@ export class DashBoardComponent implements OnInit {
     this.openDialog(messageObj, '250px');
   }
 
+  /**
+   * @description This method navigate the user to demographic page to modify the existence data.
+   *
+   * @param {Applicant} user
+   * @memberof DashBoardComponent
+   */
   onModifyInformation(user: Applicant) {
     const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });
@@ -317,16 +410,24 @@ export class DashBoardComponent implements OnInit {
     this.dataStorageService.getUser(preId).subscribe(
       response => {
         console.log('RESPONSE [Modify Information]', response);
-
         this.onModification(response, preId);
       },
       error => {
         console.log('error', error);
-        return this.router.navigate(['error']);
+        // return this.router.navigate(['error']);
+        this.onError();
       }
     );
   }
 
+  /**
+   * @description This method navigate the user to demmographic page on selection of modification.
+   *
+   * @private
+   * @param {*} response
+   * @param {string} preId
+   * @memberof DashBoardComponent
+   */
   private onModification(response: any, preId: string) {
     const request = response[appConstants.RESPONSE][0];
     this.disableModifyDataButton = true;
@@ -335,6 +436,13 @@ export class DashBoardComponent implements OnInit {
     this.router.navigate(['pre-registration', 'demographic']);
   }
 
+  /**
+   * @description This method is called when a check box is selected.
+   *
+   * @param {Applicant} user
+   * @param {MatCheckboxChange} event
+   * @memberof DashBoardComponent
+   */
   onSelectUser(user: Applicant, event: MatCheckboxChange) {
     if (event && event.checked) {
       this.selectedUsers.push(user);
@@ -348,6 +456,11 @@ export class DashBoardComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This method navigates to center selection page to book/modify the apointment
+   *
+   * @memberof DashBoardComponent
+   */
   onModifyMultipleAppointment() {
     for (let index = 0; index < this.selectedUsers.length; index++) {
       this.addtoNameList(this.selectedUsers[index]);
@@ -358,6 +471,12 @@ export class DashBoardComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  /**
+   * @description This method is used to navigate to acknowledgement page to view the acknowledgment
+   *
+   * @param {Applicant} user
+   * @memberof DashBoardComponent
+   */
   onAcknowledgementView(user: Applicant) {
     this.addtoNameList(user);
     let url = '';
@@ -365,6 +484,12 @@ export class DashBoardComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  /**
+   * @description This method add the user details to shared service name list array.
+   *
+   * @param {Applicant} user
+   * @memberof DashBoardComponent
+   */
   addtoNameList(user: Applicant) {
     const preId = user.applicationID;
     const fullName = user.name;
@@ -412,5 +537,41 @@ export class DashBoardComponent implements OnInit {
       else return false;
     }
     return false;
+  }
+
+  /**
+   * @description This will return the json object of label of demographic in the primary language.
+   *
+   * @private
+   * @returns the `Promise`
+   * @memberof DemographicComponent
+   */
+  private getPrimaryLabels() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+        this.primaryLanguagelabels = response['dashboard'];
+        resolve(true);
+      });
+    });
+  }
+
+  /**
+   * @description This is a dialoug box whenever an erroe comes from the server, it will appear.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
+  private async onError() {
+    await this.getPrimaryLabels();
+    const body = {
+      case: 'ERROR',
+      title: 'ERROR',
+      message: this.primaryLanguagelabels.error.error,
+      yesButtonText: this.primaryLanguagelabels.error.button_ok
+    };
+    this.dialog.open(DialougComponent, {
+      width: '250px',
+      data: body
+    });
   }
 }

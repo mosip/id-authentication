@@ -17,6 +17,8 @@ export class PreviewComponent implements OnInit {
   secondaryLanguagelabels: any;
   primaryLanguage;
   secondaryLanguage;
+  dateOfBirthPrimary: string = '';
+  dateOfBirthSecondary: string = '';
   user: UserModel;
   files = [];
   documentTypes;
@@ -45,13 +47,20 @@ export class PreviewComponent implements OnInit {
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
-    this.previewData.dateOfBirth = this.previewData.dateOfBirth.split('/').reverse().join('/');
+    this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
     this.setResidentStatus();
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files[0];
     this.documentsMapping();
+  }
+
+  formatDob(dob: string) {
+    dob = dob.replace(/\//g, '-');
+    this.dateOfBirthPrimary = Utils.getBookingDateTime(dob, '', localStorage.getItem('langCode'));
+    this.dateOfBirthSecondary = Utils.getBookingDateTime(dob, '', localStorage.getItem('secondaryLangCode'));
+    console.log(this.dateOfBirthPrimary, this.dateOfBirthSecondary);
   }
 
   setFieldValues() {
