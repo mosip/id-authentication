@@ -443,13 +443,19 @@ public class ServiceDelegateUtil {
 						RegistrationExceptionConstants.INVALID_RESPONSE_HEADER.getErrorMessage());
 			}
 
-			LinkedHashMap<String, String> responseBody = (LinkedHashMap<String, String>) responseMap
+			LinkedHashMap<String, Object> responseBody = (LinkedHashMap<String, Object>) responseMap
 					.get(RegistrationConstants.REST_RESPONSE_BODY);
 
-			if (loginMode.equals(LoginMode.OTP)
-					&& !"Validation_Successful".equalsIgnoreCase(responseBody.get("message"))) {
-				throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
-						RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
+			if (loginMode.equals(LoginMode.OTP) && responseBody.get("response") != null) {
+
+				LinkedHashMap<String, String> otpResponseBody = (LinkedHashMap<String, String>) responseBody
+						.get("response");
+
+				if (otpResponseBody == null
+						|| !"Validation_Successful".equalsIgnoreCase(otpResponseBody.get("message"))) {
+					throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
+							RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
+				}
 			}
 
 			cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);

@@ -17,8 +17,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -36,6 +39,8 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.controller.reg.HomeController;
+import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -59,6 +64,8 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -78,6 +85,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -185,15 +193,42 @@ public class LoginController extends BaseController implements Initializable {
 
 	private List<String> loginList = new ArrayList<>();
 
+	@Autowired
+	private JobConfigurationService jobConfigurationService;
+
+	private boolean isInitialSetUp;
+
+	@Autowired
+	private RegistrationUpdate registrationUpdate;
+
+	private BorderPane loginRoot;
+
+	@Autowired
+	private PacketHandlerController packetHandlerController;
+
+	@Autowired
+	private HomeController homeController;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
-			// TODO to replace false with registrationUpdate.hasUpdate() method.
-			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				boolean hasUpdate = registrationUpdate.hasUpdate(); 
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+			}
 
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					responseDTO.getSuccessResponseDTO().getMessage());
+		} catch (IOException | ParserConfigurationException | SAXException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		}
+
+		try {
+			 isInitialSetUp = RegistrationConstants.ENABLE
+			 .equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.isInitialSetUp));
+
+			if (!isInitialSetUp) {
+				jobConfigurationService.startScheduler();
+			}
 
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
@@ -235,7 +270,7 @@ public class LoginController extends BaseController implements Initializable {
 			fXComponents.setStage(primaryStage);
 
 			validations.setResourceBundle();
-			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
 			scene = getScene(loginRoot);
 			pageFlow.getInitialPageDetails();
@@ -244,12 +279,14 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setX(bounds.getMinX());
 			primaryStage.setY(bounds.getMinY());
 			primaryStage.setWidth(bounds.getWidth());
-			primaryStage.setHeight(bounds.getHeight());	
+			primaryStage.setHeight(bounds.getHeight());
 			primaryStage.setResizable(false);
-					primaryStage.setScene(scene);
+			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			executePreLaunchTask(loginRoot);
+			if (!isInitialSetUp) {
+				executePreLaunchTask(loginRoot, progressIndicator);
+			}
 
 		} catch (IOException ioException) {
 
@@ -335,7 +372,6 @@ public class LoginController extends BaseController implements Initializable {
 							loginList = status ? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
 									: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-						
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
 							String irisDisableFlag = getValueFromApplicationContext(
@@ -487,7 +523,7 @@ public class LoginController extends BaseController implements Initializable {
 		auditFactory.audit(AuditEvent.LOGIN_SUBMIT_OTP, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		if (validations.validateTextField(otpPane, otp, otp.getId())) {
+		if (validations.validateTextField(otpPane, otp, otp.getId(), true)) {
 
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
@@ -786,9 +822,23 @@ public class LoginController extends BaseController implements Initializable {
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading Home screen");
 					schedulerUtil.startSchedulerUtil();
 					loginList.clear();
+
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 					// to add events to the stage
 					getStage();
+
+					if (isInitialSetUp) {
+
+						// TODO Need to find out code for initial set up flag
+						// globalParamService.update(RegistrationConstants.isInitialSetUp,
+						// RegistrationConstants.DISABLE);
+
+						executePreLaunchTask(homeController.getMainBox(),
+								packetHandlerController.getProgressIndicator());
+
+						// Start Scheduler if it was first Login
+						jobConfigurationService.startScheduler();
+					}
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -1024,10 +1074,10 @@ public class LoginController extends BaseController implements Initializable {
 						- loginTime.getTime()) > invalidLoginTime);
 	}
 
-	private void executePreLaunchTask(BorderPane loginRoot) {
+	private void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
-		loginRoot.setDisable(true);
+		pane.setDisable(true);
 
 		/**
 		 * This anonymous service class will do the pre application launch task
@@ -1094,7 +1144,7 @@ public class LoginController extends BaseController implements Initializable {
 				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 				}
-				loginRoot.setDisable(false);
+				pane.setDisable(false);
 				progressIndicator.setVisible(false);
 			}
 		});

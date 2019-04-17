@@ -69,6 +69,7 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
@@ -202,7 +203,7 @@ public class DemographicDetailController extends BaseController {
 	private GridPane parentDetailPane;
 
 	@FXML
-	private ScrollPane demoScrollPane;
+	private ScrollPane parentScrollPane;
 
 	private SimpleBooleanProperty switchedOn;
 
@@ -637,6 +638,7 @@ public class DemographicDetailController extends BaseController {
 	private String textFemaleLocalLanguage;
 	private String textMaleCode;
 	private String textFemaleCode;
+	private Node parentDetailNode;
 
 	/*
 	 * (non-Javadoc)
@@ -649,6 +651,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			parentDetailPane.setManaged(false);
 			lostUIN = false;
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
@@ -806,7 +809,6 @@ public class DemographicDetailController extends BaseController {
 					toggleLabel1LocalLanguage.setLayoutX(0);
 					ageField.clear();
 					ageFieldLocalLanguage.clear();
-					parentDetailPane.setVisible(false);
 					ageField.setDisable(true);
 					dob.setDisable(false);
 					dobLocallanguage.setDisable(false);
@@ -814,7 +816,6 @@ public class DemographicDetailController extends BaseController {
 					toggleLabel1.setLayoutX(30);
 					toggleLabel1LocalLanguage.setLayoutX(30);
 					ageField.clear();
-					parentDetailPane.setVisible(false);
 					ageField.setDisable(false);
 					ageFieldLocalLanguage.clear();
 					dob.setDisable(true);
@@ -828,7 +829,16 @@ public class DemographicDetailController extends BaseController {
 				ddLocalLanguage.clear();
 				mmLocalLanguage.clear();
 				yyyyLocalLanguage.clear();
+				
+				dd.setPromptText(ddLabel.getText());
+				mm.setPromptText(mmLabel.getText());
+				yyyy.setPromptText(yyyyLabel.getText());
+				
+				ddLocalLanguage.setPromptText(ddLocalLanguageLabel.getText());
+				mmLocalLanguage.setPromptText(mmLocalLanguageLabel.getText());
+				yyyyLocalLanguage.setPromptText(yyyyLocalLanguageLabel.getText());
 
+				
 				ageFieldMessage.setVisible(false);
 				ageFieldLabel.setVisible(false);
 				ageFieldLocalLanguageLabel.setVisible(false);
@@ -970,6 +980,7 @@ public class DemographicDetailController extends BaseController {
 							dateOfBirth = Date
 									.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
 							if (age <= minAge) {
+								parentDetailPane.setManaged(true);
 								parentDetailPane.setVisible(true);
 								parentDetailPane.setDisable(false);
 								parentName.clear();
@@ -983,6 +994,7 @@ public class DemographicDetailController extends BaseController {
 								parentDetailPane.setDisable(true);
 								parentName.clear();
 								uinId.clear();
+								parentDetailPane.setManaged(false);
 							}
 						}
 					}
@@ -1016,9 +1028,9 @@ public class DemographicDetailController extends BaseController {
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, addressLine3, validation, addressLine3LocalLanguage,
 					hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, parentName, validation, parentNameLocalLanguage,
+			fxUtils.validateOnFocusOut(parentFlowPane, parentName, validation, parentNameLocalLanguage,
 					hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, uinId, validation, uinIdLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, uinId, validation, uinIdLocalLanguage, !hasToBeTransliterated);
 
 			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
 

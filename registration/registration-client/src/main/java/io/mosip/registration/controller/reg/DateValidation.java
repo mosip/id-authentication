@@ -57,9 +57,6 @@ public class DateValidation extends BaseController {
 		try {
 			fxUtils.validateOnType(parentPane, date, validation, localField, false);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if ((newValue == null || newValue.isEmpty()) && !date.isFocused()) {
-					fxUtils.hideLabel(parentPane, date);
-				}
 				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
@@ -93,9 +90,6 @@ public class DateValidation extends BaseController {
 		try {
 			fxUtils.validateOnType(parentPane, month, validation, localField, false);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if ((newValue == null || newValue.isEmpty()) && !month.isFocused()) {
-					fxUtils.hideLabel(parentPane, month);
-				}
 				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
@@ -195,9 +189,6 @@ public class DateValidation extends BaseController {
 		try {
 			fxUtils.validateOnType(parentPane, year, validation, localField, false);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if ((newValue == null || newValue.isEmpty()) && !year.isFocused()) {
-					fxUtils.hideLabel(parentPane, year);
-				}
 				if (year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();

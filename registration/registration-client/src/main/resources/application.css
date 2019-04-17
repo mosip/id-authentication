@@ -10,6 +10,14 @@
 	-fx-font-size:10.0px;
 }
 
+.demoGraphicTextFieldFocused{
+	-fx-border-color: red;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+}
+
 .dividerTypeOne{
 	-fx-border-width : 0 0 1 0;
 	-fx-border-color : #C9C9C9;
@@ -621,15 +629,6 @@ Working on new Css by taleev
 	-fx-font-size: 1.2em;
 }
 
-.demoGraphicTextFieldTypeSecond{
-	-fx-border-color: #C9C9C9;
-	-fx-background-insets: 0,0 0 0 0;
-  	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: #FFFFFF;
-  	-fx-padding: 5 0 5 0;
-  	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 15px;  	
-}
 
 .demographicLangHeader{
 	-fx-font-size : 14px;
@@ -642,14 +641,6 @@ Working on new Css by taleev
 	-fx-font-size: 1.2em;
 }
 
-.demoGraphicTextFieldTypThree{
-	-fx-border-color: #C9C9C9;
-  	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: #FFFFFF;
-  	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 1.2em;
-  	
-}
 .demographicScrollpane{
 		-fx-pref-height: 590px;	
 		-fx-pref-width: 1100px;
@@ -683,6 +674,15 @@ Working on new Css by taleev
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #C9C9C9;
+	-fx-font-size: 14px;
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 190px;
+}
+
+.demographicComboboxFocused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: red;
 	-fx-font-size: 14px;
 	-fx-pref-height: 10px;	
 	-fx-pref-width: 190px;
