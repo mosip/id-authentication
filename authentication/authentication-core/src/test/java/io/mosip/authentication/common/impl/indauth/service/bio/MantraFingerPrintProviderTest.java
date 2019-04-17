@@ -14,7 +14,7 @@ public class MantraFingerPrintProviderTest {
 	 public void testMantraFingerPrintTest() {
 		 
 		 mantraFingerPrintProvider.captureFingerprint(null, null);
-		 mantraFingerPrintProvider.deviceInfo();
+//		 mantraFingerPrintProvider.deviceInfo();
 		 mantraFingerPrintProvider.createMinutiae(null);
 		 mantraFingerPrintProvider.segmentFingerprint(null);
 		 mantraFingerPrintProvider.OnCaptureCompleted(false, 0, null, null);

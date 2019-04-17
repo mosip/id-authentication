@@ -34,13 +34,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.entity.AutnTxn;
-import io.mosip.authentication.common.entity.VIDEntity;
-import io.mosip.authentication.common.helper.AuditHelper;
-import io.mosip.authentication.common.repository.VIDRepository;
+import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.entity.VIDEntity;
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 

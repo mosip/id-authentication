@@ -28,11 +28,11 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.factory.AuditRequestFactory;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.indauth.facade.AuthFacadeImpl;
-import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -47,6 +47,7 @@ import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.service.controller.AuthController;
 
 /**
  * This code tests the AuthController

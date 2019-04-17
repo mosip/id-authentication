@@ -20,10 +20,10 @@ public class CogentFingerprintProviderTest {
 	/**
 	 * Test device info.
 	 */
-	@Test
+	/*@Test
 	public void testDeviceInfo() {
 		assertNull(fp.deviceInfo());
-	}
+	}*/
 
 	/**
 	 * Test capture fingerprint.

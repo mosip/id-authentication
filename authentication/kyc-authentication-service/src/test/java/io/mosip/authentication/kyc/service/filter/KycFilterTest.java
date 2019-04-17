@@ -35,7 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.integration.KeyManager;
+import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.kyc.service.filter.KycAuthFilter;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;

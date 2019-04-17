@@ -24,8 +24,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;

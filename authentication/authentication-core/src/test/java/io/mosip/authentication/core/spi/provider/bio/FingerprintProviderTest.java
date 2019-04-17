@@ -12,10 +12,6 @@ import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
-import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
-import io.mosip.authentication.core.spi.provider.bio.FingerprintProvider;
-import io.mosip.authentication.core.spi.provider.bio.MosipFingerprintProvider;
-
 /**
  * The Class FingerprintProviderTest.
  *
@@ -75,10 +71,10 @@ public class FingerprintProviderTest {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public FingerprintDeviceInfo deviceInfo() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
@@ -101,10 +97,10 @@ public class FingerprintProviderTest {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public FingerprintDeviceInfo deviceInfo() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {

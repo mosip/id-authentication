@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.common.impl.indauth.service.demo.NameMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.NameMatchingStrategy;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;

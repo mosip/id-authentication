@@ -27,8 +27,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;

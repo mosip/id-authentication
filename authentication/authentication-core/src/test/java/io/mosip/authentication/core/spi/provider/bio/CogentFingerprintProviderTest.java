@@ -15,10 +15,10 @@ public class CogentFingerprintProviderTest {
 	
 	CogentFingerprintProvider fp = new CogentFingerprintProvider();
 
-	@Test
+	/*@Test
 	public void testDeviceInfo() {
 		assertNull(fp.deviceInfo());
-	}
+	}*/
 	
 	@Test
 	public void testCaptureFingerprint() {

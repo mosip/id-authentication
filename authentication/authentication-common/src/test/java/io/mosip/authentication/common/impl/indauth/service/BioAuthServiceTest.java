@@ -29,11 +29,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.config.IDAMappingConfig;
-import io.mosip.authentication.common.factory.BiometricProviderFactory;
-import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.common.service.impl.indauth.service.BioAuthServiceImpl;
+import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;

@@ -11,8 +11,8 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.mosip.authentication.common.impl.indauth.service.demo.AddressMatchingStrategy;
-import io.mosip.authentication.common.impl.indauth.service.demo.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.AddressMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;

@@ -3,7 +3,6 @@ package io.mosip.authentication.core.spi.provider.bio;
 import java.util.Map;
 import java.util.Optional;
 
-import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 
 /**
@@ -18,7 +17,7 @@ public interface MosipFingerprintProvider extends MosipBiometricProvider {
 	 *
 	 * @return the fingerprint device info
 	 */
-	FingerprintDeviceInfo deviceInfo();
+//	FingerprintDeviceInfo deviceInfo();
 	
 	/**
 	 * Capture fingerprint.

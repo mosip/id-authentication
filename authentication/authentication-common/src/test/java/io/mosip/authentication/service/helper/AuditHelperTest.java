@@ -15,10 +15,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.factory.AuditRequestFactory;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.AuditHelper;
-import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;

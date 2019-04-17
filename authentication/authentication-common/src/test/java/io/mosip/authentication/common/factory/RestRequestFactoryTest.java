@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.integration.IdAuthenticationProperties;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;

@@ -4,7 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.authentication.common.filter.IdAuthFilter;
+import io.mosip.authentication.common.service.filter.IdAuthFilter;
 
 /**
  * The configuration for adding filters.

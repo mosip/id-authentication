@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.authentication.common.entity.AutnTxn;
-import io.mosip.authentication.common.helper.AuditHelper;
-import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
+import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;

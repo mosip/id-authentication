@@ -19,10 +19,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.factory.AuditRequestFactory;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.indauth.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;

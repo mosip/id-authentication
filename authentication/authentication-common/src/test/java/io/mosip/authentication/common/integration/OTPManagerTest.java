@@ -27,9 +27,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.factory.AuditRequestFactory;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;

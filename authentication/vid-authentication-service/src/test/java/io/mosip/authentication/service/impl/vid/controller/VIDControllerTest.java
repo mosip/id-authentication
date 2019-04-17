@@ -15,8 +15,8 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.vid.service.impl.controller.VIDController;
-import io.mosip.authentication.vid.service.impl.id.service.impl.VIDServiceImpl;
+import io.mosip.authentication.vid.service.controller.VIDController;
+import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 

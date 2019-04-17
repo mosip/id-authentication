@@ -31,19 +31,19 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.entity.AutnTxn;
-import io.mosip.authentication.common.entity.VIDEntity;
-import io.mosip.authentication.common.factory.AuditRequestFactory;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.RestHelper;
-import io.mosip.authentication.common.integration.IdRepoManager;
-import io.mosip.authentication.common.repository.AutnTxnRepository;
-import io.mosip.authentication.common.repository.VIDRepository;
+import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.entity.VIDEntity;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
+import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.IdAuthServiceImpl;
 
 /**
  * IdAuthServiceImplTest test class.

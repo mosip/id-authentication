@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.authentication.common.impl.indauth.service.demo.DemoNormalizer;
+import io.mosip.authentication.common.service.impl.match.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 @RunWith(SpringRunner.class)

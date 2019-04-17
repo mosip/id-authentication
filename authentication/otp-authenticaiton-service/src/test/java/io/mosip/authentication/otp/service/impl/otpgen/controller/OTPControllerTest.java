@@ -37,7 +37,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.otpgen.service.OTPService;
+import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.authentication.otp.service.impl.otpgen.controller.OTPController;
 import io.mosip.kernel.core.logger.spi.Logger;
 

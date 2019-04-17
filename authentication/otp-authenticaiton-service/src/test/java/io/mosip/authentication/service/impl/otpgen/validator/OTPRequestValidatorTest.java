@@ -30,8 +30,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.impl.indauth.service.OTPAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.otp.service.impl.otpgen.validator.OTPRequestValidator;

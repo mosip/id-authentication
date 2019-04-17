@@ -3,8 +3,6 @@ package io.mosip.authentication.core.spi.provider.bio;
 import java.util.Map;
 import java.util.Optional;
 
-import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
-
 
 /**
  * The Class CogentFingerprintProvider - FingerprintProvider for Cogent devices.
@@ -20,10 +18,10 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
 	 * MosipFingerprintProvider#deviceInfo()
 	 */
-	@Override
-	public FingerprintDeviceInfo deviceInfo() {
-		return null;
-	}
+//	@Override
+//	public FingerprintDeviceInfo deviceInfo() {
+//		return null;
+//	}
 
 	/*
 	 * (non-Javadoc)

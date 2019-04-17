@@ -32,8 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.config.IDAMappingConfig;
-import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;

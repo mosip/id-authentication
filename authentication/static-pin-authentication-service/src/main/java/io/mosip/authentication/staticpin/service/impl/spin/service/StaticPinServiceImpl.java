@@ -15,12 +15,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.authentication.common.entity.AutnTxn;
-import io.mosip.authentication.common.entity.StaticPin;
-import io.mosip.authentication.common.entity.StaticPinHistory;
-import io.mosip.authentication.common.helper.AuditHelper;
-import io.mosip.authentication.common.repository.StaticPinHistoryRepository;
-import io.mosip.authentication.common.repository.StaticPinRepository;
+import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.entity.StaticPin;
+import io.mosip.authentication.common.service.entity.StaticPinHistory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.repository.StaticPinHistoryRepository;
+import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;

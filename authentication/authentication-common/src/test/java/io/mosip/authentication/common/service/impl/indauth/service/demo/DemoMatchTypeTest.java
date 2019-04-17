@@ -18,12 +18,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.mosip.authentication.common.config.IDAMappingConfig;
-import io.mosip.authentication.common.impl.indauth.service.demo.AgeMatchingStrategy;
-import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.common.impl.indauth.service.demo.FullAddressMatchingStrategy;
-import io.mosip.authentication.common.impl.indauth.service.demo.GenderMatchingStrategy;
-import io.mosip.authentication.common.impl.indauth.service.demo.NameMatchingStrategy;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.match.AgeMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.FullAddressMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.GenderMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.NameMatchingStrategy;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;

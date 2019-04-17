@@ -32,9 +32,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.config.IDAMappingConfig;
-import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.integration.MasterDataManager;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;

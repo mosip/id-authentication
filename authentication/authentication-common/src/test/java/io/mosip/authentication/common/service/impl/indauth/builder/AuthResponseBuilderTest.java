@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.common.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.common.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
+import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;

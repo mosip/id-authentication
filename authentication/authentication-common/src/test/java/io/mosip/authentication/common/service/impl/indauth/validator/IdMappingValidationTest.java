@@ -27,13 +27,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.config.IDAMappingConfig;
-import io.mosip.authentication.common.factory.RestRequestFactory;
-import io.mosip.authentication.common.helper.IdInfoHelper;
-import io.mosip.authentication.common.helper.RestHelper;
-import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
-import io.mosip.authentication.common.integration.MasterDataManager;
-import io.mosip.authentication.common.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.match.DOBType;
+import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;

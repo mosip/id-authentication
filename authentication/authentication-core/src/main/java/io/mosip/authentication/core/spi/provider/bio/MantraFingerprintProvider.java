@@ -6,7 +6,6 @@ import java.util.Optional;
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
-import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 
 /**
  * The Class MantraFingerprintProvider - Provider class for Mantra fingerprint
@@ -26,7 +25,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
 	 * MosipFingerprintProvider#deviceInfo()
 	 */
-	@Override
+	/*@Override
 	public FingerprintDeviceInfo deviceInfo() {
 		FingerprintDeviceInfo dInfo = new FingerprintDeviceInfo();
 		if (fpDevice.IsConnected() && fpDevice.Init() == 0) {
@@ -36,7 +35,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 			dInfo.setModel(fpDevice.GetDeviceInfo().Model());
 		}
 		return dInfo;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)

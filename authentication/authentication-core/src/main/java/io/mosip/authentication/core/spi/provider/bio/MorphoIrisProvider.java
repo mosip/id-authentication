@@ -4,8 +4,6 @@ import java.util.Map;
 
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
-
 
 /**
  * @author Arun Bose S

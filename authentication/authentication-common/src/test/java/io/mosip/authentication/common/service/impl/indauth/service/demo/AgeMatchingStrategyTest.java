@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import io.mosip.authentication.common.impl.indauth.service.demo.AgeMatchingStrategy;
+import io.mosip.authentication.common.service.impl.match.AgeMatchingStrategy;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
