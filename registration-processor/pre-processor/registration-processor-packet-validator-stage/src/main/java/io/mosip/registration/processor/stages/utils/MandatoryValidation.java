@@ -2,13 +2,15 @@ package io.mosip.registration.processor.stages.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +25,6 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -51,7 +52,7 @@ public class MandatoryValidation {
 		this.utility=utility;
 	}
 	
-	public boolean mandatoryFieldValidation(String regId) throws IOException {
+	public boolean mandatoryFieldValidation(String regId) throws IOException, JSONException {
 		io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity  identiy=	getMappeedJSONIdentity().getIdentity();
 		JSONObject idJsonObj = getDemoIdentity(regId);
 		Map<String, Boolean> fieldValidationMap = new HashMap<>();
@@ -96,9 +97,18 @@ public class MandatoryValidation {
 		return true;
 	}
 	
-	private boolean checkEmptyString(Object obj) {
+	private boolean checkEmptyString(Object obj) throws JSONException {
+		ArrayList<HashMap> objArray;
 		if(obj instanceof String)
 			return ((String)obj).trim().isEmpty()?true:false;
+		if(obj instanceof ArrayList) {
+			objArray = (ArrayList<HashMap>)obj;
+			for(int i=0;i<objArray.size();i++) {
+				Map jObj = objArray.get(i);
+				return jObj.get("value")==null || jObj.get("language")==null;
+			}
+		}
+		
 		return false;
 	}
 	

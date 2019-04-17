@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -397,7 +398,7 @@ public class PacketValidateProcessor {
 	
 
 
-	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto) throws IOException {
+	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto) throws IOException, JSONException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto,utility);
