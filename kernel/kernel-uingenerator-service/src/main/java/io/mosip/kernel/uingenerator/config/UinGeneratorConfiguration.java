@@ -39,7 +39,7 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @PropertySource(value = { "classpath:bootstrap.properties" })
-@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*" })
+@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*","io.mosip.kernel.responsesignature.*" })
 public class UinGeneratorConfiguration implements EnvironmentAware {
 
 	/**
