@@ -1,10 +1,13 @@
 {
-    "timestamp": 1549018877224,
-    "status": 200,
-    "errors": [
-        {
-            "errorCode": "KER-MSD-004",
-            "errorMessage": "BiometricAttribute not found"
-        }
-    ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T10:48:16.675Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-004",
+      "message": "BiometricAttribute not found"
+    }
+  ]
 }
