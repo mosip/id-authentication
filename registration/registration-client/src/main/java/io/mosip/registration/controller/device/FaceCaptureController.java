@@ -120,6 +120,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private boolean exceptionImageCaptured;
 
 	private boolean hasBiometricException = false;
+	
+	private int counter;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -155,6 +157,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				applicantImageCaptured = false;
 			}
 		} else {
+			counter = 0;
 			defaultExceptionImage = new Image(
 					getClass().getResourceAsStream(RegistrationConstants.DEFAULT_EXCEPTION_IMAGE_PATH));
 			exceptionImage.setImage(defaultExceptionImage);
@@ -466,11 +469,15 @@ public class FaceCaptureController extends BaseController implements Initializab
 		 * check if the applicant has biometric exception
 		 */
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+			boolean hasMissingBiometrics = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			boolean hasLowBiometrics = false;
+			if (counter == 1) {
+				hasLowBiometrics = validateBiometrics(hasBiometricException);
+			}
 			/* if there is no missing biometric, check for low quality of biometrics */
-			if (!hasBiometricException) {
-				hasBiometricException = validateBiometrics(hasBiometricException);
+			if (hasMissingBiometrics || hasLowBiometrics) {
+				hasBiometricException = true;
 				SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, hasBiometricException);
 			}
 		}
