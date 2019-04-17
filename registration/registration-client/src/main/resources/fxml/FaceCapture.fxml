@@ -114,7 +114,7 @@
                                           <Label styleClass="qualityBoxLabel" text="%exceptionimage" GridPane.columnIndex="1" />
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.rowIndex="2">
+                                    <GridPane visible="false" GridPane.rowIndex="2">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
@@ -182,7 +182,7 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
