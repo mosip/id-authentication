@@ -154,7 +154,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
-				validatePacketWithRegEntity();
+				validatePacketWithSync();
 				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());
@@ -236,7 +236,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/**
 	 * validate packet with reg entity.
 	 */
-	private void validatePacketWithRegEntity() {
+	private void validatePacketWithSync() {
 
 		if (regEntity == null) {
 			description = "PacketNotSync exception in packet receiver for registartionId " + registrationId + "::"
@@ -302,6 +302,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 */
 	private void validatePacketFormat(String fileOriginalName) {
 		if (!(fileOriginalName.endsWith(getExtention()))) {
+			description = " Invalid packet format" + registrationId;
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
@@ -324,6 +326,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				throw new VirusScanFailedException(PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());
 			}
 		} catch (VirusScannerException e) {
+			description = "Virus scanner service failed ::" + registrationId;
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 			throw new VirusScannerServiceException(
@@ -414,6 +418,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
 		byte[] packetHashSequenceFromEntity = hashSequence;// PacketHashSequesnce
 		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
+			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
+					+ registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 			throw new UnequalHashSequenceException(

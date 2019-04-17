@@ -394,5 +394,19 @@ public class PacketReceiverServiceTest {
 
 		assertEquals(false, successResult.getIsValid());
 	}
+	
+	@Test(expected=PacketReceiverAppException.class)
+	public void testPacketDecryptionFailureException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
+	{
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenThrow(new PacketDecryptionFailureException("",""));
+
+		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
+        Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
+		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
+
+		assertEquals(false, successResult.getIsValid());
+	}
 
 }

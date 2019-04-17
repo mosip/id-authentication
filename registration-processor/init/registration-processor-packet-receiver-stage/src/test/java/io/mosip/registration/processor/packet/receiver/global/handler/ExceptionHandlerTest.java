@@ -263,7 +263,7 @@ public class ExceptionHandlerTest {
 		String response = packetReceiverExceptionHandler.handler(exe);
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
-		errorDTO.setErrorcode("RPR-PKR-013");
+		errorDTO.setErrorcode("RPR-PKR-008");
 		errorDTO.setMessage("Virus scanner service failed");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
