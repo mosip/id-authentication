@@ -432,7 +432,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	private void updateRetryBox(int retries, double quality, double threshold) {
 		for (int j = 0; j < retries + 1; j++) {
-			if (quality > threshold) {
+			if (quality >= threshold) {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, retries);
 				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
@@ -978,7 +978,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					getQualityScore(detailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0]) / 100);
 			qualityText.setText(getQualityScore(detailsDTO.getQualityScore()));
 			if (Double.valueOf(getQualityScore(detailsDTO.getQualityScore())
-					.split(RegistrationConstants.PERCENTAGE)[0]) > thresholdValue) {
+					.split(RegistrationConstants.PERCENTAGE)[0]) >= thresholdValue) {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, detailsDTO.getNumRetry());
 				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);

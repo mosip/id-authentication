@@ -333,7 +333,7 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private void updateRetriesBox(double quality, double threshold, int retries) {
-		if (quality > threshold) {
+		if (quality >= threshold) {
 			clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, retries);
 			irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 			irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
@@ -434,7 +434,7 @@ public class IrisCaptureController extends BaseController {
 						.split(RegistrationConstants.PERCENTAGE)[0]) / 100);
 				irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 				if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
-						.split(RegistrationConstants.PERCENTAGE)[0]) > Double
+						.split(RegistrationConstants.PERCENTAGE)[0]) >= Double
 								.valueOf(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) {
 					clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, irisDetailsDTO.getNumOfIrisRetry());
 					irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
