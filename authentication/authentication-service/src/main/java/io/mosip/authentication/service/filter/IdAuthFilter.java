@@ -31,6 +31,7 @@ import io.mosip.authentication.service.policy.KYCAttributes;
 import io.mosip.authentication.service.policy.Policies;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IdAuthFilter - the implementation for deciphering
@@ -331,7 +332,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
-		boolean noBioType= listBioInfo.stream().anyMatch(s->s.getData()!=null &&s.getData().getBioType()==null);
+		boolean noBioType= listBioInfo.stream().anyMatch(s-> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
 		if(noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -339,7 +340,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 							BIO_TYPE));
 		}
 			List<String> bioTypeList = listBioInfo.stream()
-					.filter(s ->  s.getData() != null && s.getData().getBioType() != null)
+					.filter(s ->  Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
 					.map(s -> s.getData().getBioType())
 					.collect(Collectors.toList());
 			if(bioTypeList.isEmpty()) { 
