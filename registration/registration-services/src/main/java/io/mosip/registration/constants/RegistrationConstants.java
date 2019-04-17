@@ -1255,7 +1255,7 @@ public class RegistrationConstants {
 	public static final String ERRORS = "errors";
 	public static final String ERROR_MSG ="message";
 	public static final String OK_MSG ="ok";
-	public static final String NEW_LINE ="\\n";
+	public static final String NEW_LINE ="\n";
 
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
