@@ -258,7 +258,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		dbList.clear();
 	}*/
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		Object[] obj =  (Object[]) testdata[0];
 		String name="";

@@ -147,7 +147,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();

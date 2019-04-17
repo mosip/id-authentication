@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 [{"testType":"smoke","testCaseName":"Fetch all Pre Registration IDs for the particuler registration center_smoke","jiraId":"MOS-1001","Fetch all Pre Registration IDs with invalid date":"valid","Fetch all Pre Registration IDs with invalid registration center id":"valid","Fetch all Pre Registration without pre registration center id parameter in request":"valid","Fetch all Pre Registartion without from and to date parameter in Request":"valid","Fetch all Pre Registration ids without user id parameter in request":"valid","Fetch all Pre Registration IDs with other date format":"valid","Fetch all Pre Registration Ids in between date range where data is not available":"valid","status":""}]
-=======
-[]
->>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866

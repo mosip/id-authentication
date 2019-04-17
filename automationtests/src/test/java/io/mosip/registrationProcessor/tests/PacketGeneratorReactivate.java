@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -30,7 +28,6 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
@@ -39,15 +36,7 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-/**
- * This class is used for testing Packet Receiver API
- * 
- * @author Sayeri Mishra
- *
- */
-
-public class PacketReceiver extends  BaseTestCase implements ITest {	
-
+public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	private static Logger logger = Logger.getLogger(PacketReceiver.class);	
 	protected static String testCaseName = "";
 	boolean status = false;
@@ -145,64 +134,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			if (status) {
-				boolean isError = expectedResponse.containsKey("errors");
-				logger.info("isError ========= : "+isError);
-
-				if(!isError){
-					String actualStatus = null;
-					String expectedStatus = null;
-					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
-					JSONArray expected = (JSONArray) expectedResponse.get("response");
-					Iterator<Object> iterator = expected.iterator();
-					//extracting status from the expected response
-					while(iterator.hasNext()){
-						JSONObject jsonObject = (JSONObject) iterator.next();
-						expectedStatus = jsonObject.get("status").toString().trim();
-					}
-
-
-					for(Map<String,String> res : response){
-						actualStatus=res.get("status").toString();
-						if (expectedStatus.matches(actualStatus)){
-							logger.info("STATUS MATCHED....");
-							finalStatus = "Pass";
-							softAssert.assertAll();
-							object.put("status", finalStatus);
-							arr.add(object);
-						} 
-					}
-
-				}else{
-					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
-					String expectedErrorCode = null;
-					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
-					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
-						Iterator<Object> iterator1 = expectedError.iterator();
-						// extracting error code from expected response
-						while(iterator1.hasNext()){
-							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
-						}
-						if(expectedErrorCode.matches(errorCode)){
-							finalStatus = "Pass";
-							softAssert.assertAll();
-							object.put("status", finalStatus);
-							arr.add(object);
-						}
-					}
-				}
-			}else{
-				finalStatus="Fail";
-			}
-			boolean setFinalStatus=false;
-	        if(finalStatus.equals("Fail"))
-	              setFinalStatus=false;
-	        else if(finalStatus.equals("Pass"))
-	              setFinalStatus=true;
-	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();
+			
 
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
@@ -264,4 +196,5 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	public String getTestName() {
 		return this.testCaseName;
 	}
+
 }

@@ -15,7 +15,7 @@
   						regression
   						smokeAndRegression -->
  
-                  <test name="Kernel Tests">
+        <!--           <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
                          <class name="io.mosip.kernel.tests.AuditLog" />
@@ -70,7 +70,7 @@
                            <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />
                      </classes>
               </test> 
-
+ -->
 		
 
           		
@@ -81,13 +81,12 @@
 			<class name="io.mosip.registrationProcessor.tests.Sync" />
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
-			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
 		</classes>
 	</test>  
 
 	
 	
-		
+<!-- 		
 	
 	  <test name="PreRegistration Tests">
 
@@ -117,7 +116,7 @@
                            <class name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
                            <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
-                        <!--    <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" /> -->
+                           <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
                            
                            <class name="io.mosip.preregistration.tests.SyncMasterData" />
 			
@@ -127,7 +126,7 @@
 		</classes>
 
 	</test> 
- 
+  -->
 
 
 

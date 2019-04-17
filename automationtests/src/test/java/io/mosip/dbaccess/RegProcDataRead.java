@@ -14,7 +14,6 @@ import org.hibernate.cfg.Configuration;
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbdto.SyncStatusDto;
-import io.mosip.dbentity.AuditEntity;
 import io.mosip.dbentity.RegistrationStatusEntity;
 
 

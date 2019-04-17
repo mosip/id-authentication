@@ -276,7 +276,7 @@
 				<configuration>
 					<!-- Suite testng xml file to consider for test execution -->
 					<suiteXmlFiles>
-						<suiteXmlFile>src\test\resources\testng_regProc.xml</suiteXmlFile>
+						<suiteXmlFile>src\test\resources\registrationProcessorTestNgApi.xml</suiteXmlFile>
 						<!-- <suiteXmlFile>suites-test-testng.xml</suiteXmlFile> -->
 					</suiteXmlFiles>
 				</configuration>
