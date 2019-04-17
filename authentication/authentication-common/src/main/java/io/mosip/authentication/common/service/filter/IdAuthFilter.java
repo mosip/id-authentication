@@ -33,7 +33,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.DateUtils;
-
+import io.mosip.kernel.core.util.StringUtils;
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
  * the authenticating partner done for request as AUTH and KYC
@@ -327,7 +327,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				new TypeReference<List<BioIdentityInfoDTO>>() {
 				});
 
-		boolean noBioType = listBioInfo.stream().anyMatch(s -> s.getData() != null && s.getData().getBioType() == null);
+		boolean noBioType= listBioInfo.stream().anyMatch(s-> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
 		if (noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -335,7 +335,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		List<String> bioTypeList = listBioInfo.stream()
-				.filter(s -> s.getData() != null && s.getData().getBioType() != null).map(s -> s.getData().getBioType())
+				.filter(s ->  Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
+				.map(s -> s.getData().getBioType())
 				.collect(Collectors.toList());
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
