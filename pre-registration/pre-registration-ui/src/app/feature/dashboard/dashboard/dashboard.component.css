@@ -156,34 +156,28 @@ img {
 .checkbox {
   white-space: nowrap;
   margin-left: 10px;
+  margin-right: 8px;
   /* vertical-align: center; */
 }
 .footer-download-btn {
   margin-left: 18px;
 }
 
-/* .mat-checkbox-inner-container:lang(ara) {
+/* [dir='rtl'] mat-checkbox-inner-container {
   margin-left: 8px;
   margin-right: 8px;
 }
 
-.card-header:lang(ara) {
-  font-family: Roboto;
-  font-size: 12px;
-  position: relative;
-  left: 14px;
-  opacity: 100%;
-  width: 337px;
-  display: flex;
-  background-color: #d8f7ff;
-  align-items: center;
+mat-checkbox-inner-container:dir('rtl') {
+  margin-left: 8px;
+  margin-right: 8px;
+} */
+
+mat-card-actions {
+  margin-right: 14px;
+  padding: 8px 0;
 }
 
-.mat-card:lang(ara) {
-  width: 335px;
-  height: 240px;
-  padding: 0 14px 0 12px;
-  box-shadow: 1px 1px 1px;
-  opacity: 100%;
-  border-radius: 0;
-} */
+mat-card-content {
+  padding-right: 16px;
+}

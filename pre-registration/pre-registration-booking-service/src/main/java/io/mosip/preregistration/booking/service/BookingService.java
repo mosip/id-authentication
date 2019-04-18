@@ -364,6 +364,11 @@ public class BookingService {
 							/* Concatenating Booking date and slot from time */
 							RegistrationBookingEntity bookingEntity = bookingDAO
 									.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
+							BookingRequestDTO oldBooking = new BookingRequestDTO();
+							oldBooking.setRegDate(bookingEntity.getRegDate().toString());
+							oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+							oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
+							oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
 
 							String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -379,7 +384,7 @@ public class BookingService {
 							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
 
 							/* Increase availability */
-							increaseAvailability(bookingRequest);
+							increaseAvailability(oldBooking);
 
 							/* Creating new booking */
 							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
