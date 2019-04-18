@@ -32,7 +32,7 @@ export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendOtp',
   login: 'validateOtp',
-  logout: 'invalidatetoken',
+  logout: 'invalidateToken',
   // login: 'login',
   // logout: 'logout',
   location_metadata: 'locations/locationhierarchy/',
