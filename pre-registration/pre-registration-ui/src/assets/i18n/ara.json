@@ -447,9 +447,16 @@
       "title_confirm": "تؤكد",
       "title_success": "نجاح",
       "title_error": "خطأ",
-      "msg_confirm": "سيتم حذف التطبيق المحدد. يرجى تأكيد.",
-      "msg_deleted": "تم حذف التطبيق المحدد بنجاح",
-      "msg_could_not_deleted": "لا يمكن حذف التطبيق المحدد",
+      "cancelAppointment": {
+        "msg_confirm": "سيتم حذف موعد التطبيق المحدد. يرجى تأكيد.",
+        "msg_deleted": "تم حذف التطبيق المحدد بنجاح",
+        "msg_could_not_deleted": "لا يمكن حذف موعد التطبيق المحدد"
+      },
+      "deletePreregistration": {
+        "msg_confirm": "سيتم حذف التطبيق المحدد. يرجى تأكيد.",
+        "msg_deleted": "تم حذف التطبيق المحدد بنجاح",
+        "msg_could_not_deleted": "لا يمكن حذف التطبيق المحدد"
+      },
       "button_confirm": "تؤكد",
       "button_cancel": "إلغاء"
     },

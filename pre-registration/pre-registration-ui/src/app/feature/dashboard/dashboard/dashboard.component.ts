@@ -282,14 +282,25 @@ export class DashBoardComponent implements OnInit {
     return data;
   }
 
-  confirmationDialog() {
-    const body = {
-      case: 'CONFIRMATION',
-      title: this.secondaryLanguagelabels.title_confirm,
-      message: this.secondaryLanguagelabels.msg_confirm,
-      yesButtonText: this.secondaryLanguagelabels.button_confirm,
-      noButtonText: this.secondaryLanguagelabels.button_cancel
-    };
+  confirmationDialog(selectedOption: number) {
+    let body = {};
+    if (Number(selectedOption) === 1) {
+       body = {
+        case: 'CONFIRMATION',
+        title: this.secondaryLanguagelabels.title_confirm,
+        message: this.secondaryLanguagelabels.deletePreregistration.msg_confirm,
+        yesButtonText: this.secondaryLanguagelabels.button_confirm,
+        noButtonText: this.secondaryLanguagelabels.button_cancel
+      };
+    } else {
+       body = {
+        case: 'CONFIRMATION',
+        title: this.secondaryLanguagelabels.title_confirm,
+        message: this.secondaryLanguagelabels.cancelAppointment.msg_confirm,
+        yesButtonText: this.secondaryLanguagelabels.button_confirm,
+        noButtonText: this.secondaryLanguagelabels.button_cancel
+      };
+    }
     const dialogRef = this.openDialog(body, '250px');
     return dialogRef;
   }
@@ -299,13 +310,13 @@ export class DashBoardComponent implements OnInit {
       response => {
         console.log(response);
         if (!response['errors']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
+          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.deletePreregistration.msg_deleted);
           const index = this.users.indexOf(element);
           this.users.splice(index, 1);
         } else {
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
-            this.secondaryLanguagelabels.msg_could_not_deleted
+            this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
           );
         }
       },
@@ -313,7 +324,7 @@ export class DashBoardComponent implements OnInit {
         console.log(error);
         this.displayMessage(
           this.secondaryLanguagelabels.title_error,
-          this.secondaryLanguagelabels.msg_could_not_deleted
+          this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
         );
       }
     );
@@ -327,7 +338,7 @@ export class DashBoardComponent implements OnInit {
         response => {
           console.log(response);
           if (!response['errors']) {
-            this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
+            this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.cancelAppointment.msg_deleted);
             const index = this.users.indexOf(element);
             this.users[index].status = 'Pending Appointment';
             this.users[index].appointmentDate = '-';
@@ -335,7 +346,7 @@ export class DashBoardComponent implements OnInit {
           } else {
             this.displayMessage(
               this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.msg_could_not_deleted
+              this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
             );
           }
         },
@@ -343,7 +354,7 @@ export class DashBoardComponent implements OnInit {
           console.log(error);
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
-            this.secondaryLanguagelabels.msg_could_not_deleted
+            this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
           );
         }
       );
@@ -354,26 +365,26 @@ export class DashBoardComponent implements OnInit {
     let dialogRef = this.openDialog(data, `400px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
       if (selectedOption && Number(selectedOption) === 1) {
-        dialogRef = this.confirmationDialog();
+        dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.deletePreregistration(element);
           } else {
             this.displayMessage(
               this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.msg_could_not_deleted
+              this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
             );
           }
         });
       } else if (selectedOption && Number(selectedOption) === 2) {
-        dialogRef = this.confirmationDialog();
+        dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
           } else {
             this.displayMessage(
               this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.msg_could_not_deleted
+              this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
             );
           }
         });

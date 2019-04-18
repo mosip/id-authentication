@@ -448,9 +448,16 @@
       "title_confirm": "Confirmer",
       "title_success": "Succès",
       "title_error": "Erreur",
-      "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
-      "msg_deleted": "L'application sélectionnée a été supprimée avec succès",
-      "msg_could_not_deleted": "L'application sélectionnée n'a pas pu être supprimée",
+      "cancelAppointment": {
+        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera supprimée. Veuillez confirmer.",
+        "msg_deleted": "Rendez-vous pour L'application sélectionnée a été supprimée avec succès",
+        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être supprimée"
+      },
+      "deletePreregistration": {
+        "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
+        "msg_deleted": "L'application sélectionnée a été supprimée avec succès",
+        "msg_could_not_deleted": "L'application sélectionnée n'a pas pu être supprimée"
+      },
       "button_confirm": "Confirmer",
       "button_cancel": "Annuler"
     },
