@@ -176,7 +176,7 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
 	public ResponseEntity<MainListResponseDTO<PreRegistrationViewDTO>> getAllApplications(HttpServletRequest res) {
-		String userId ="shashank.agrawal@mindtree.com"; //preRegistrationService.authUserDetails().getUserId();
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all applications with userId " + userId + " Header "
 						+ res.getHeader("Authorization"));
