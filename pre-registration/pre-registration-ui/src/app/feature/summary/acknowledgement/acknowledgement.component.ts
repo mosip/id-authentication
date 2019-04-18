@@ -199,12 +199,11 @@ export class AcknowledgementComponent implements OnInit {
     this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
       console.log(user);
-      const bookingData = user.bookingData.split(',');
       const notificationDto = new NotificationDtoModel(
         user.fullName,
         user.preRegId,
-        bookingData[0] + bookingData[1],
-        bookingData[2],
+        user.bookingDataPrimary,
+        user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
         applicantNumber[0] === undefined ? null : applicantNumber[0]
         );
