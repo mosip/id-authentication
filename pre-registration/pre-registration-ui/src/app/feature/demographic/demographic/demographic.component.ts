@@ -47,6 +47,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   languages = [this.primaryLang, this.secondaryLang];
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
+  dayMaxLength = 2;
+  monthMaxLength = 2;
+  yearMaxLength = 4;
 
   YEAR_PATTERN = appConstants.YEAR_PATTERN;
   MONTH_PATTERN = appConstants.MONTH_PATTERN;
@@ -78,6 +81,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   step: number = 0;
   id: number;
+  oldAge: number;
   numberOfApplicants: number;
   userForm: FormGroup;
   transUserForm: FormGroup;
@@ -311,20 +315,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
       [this.formControlNames.dateOfBirth]: new FormControl(this.formControlValues.dateOfBirth),
       [this.formControlNames.date]: new FormControl(this.formControlValues.date, [
         Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
+        Validators.maxLength(this.dayMaxLength),
+        Validators.minLength(this.dayMaxLength),
         Validators.pattern(this.DATE_PATTERN)
       ]),
       [this.formControlNames.month]: new FormControl(this.formControlValues.month, [
         Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
+        Validators.maxLength(this.monthMaxLength),
+        Validators.minLength(this.monthMaxLength),
         Validators.pattern(this.MONTH_PATTERN)
       ]),
       [this.formControlNames.year]: new FormControl(this.formControlValues.year, [
         Validators.required,
-        Validators.maxLength(4),
-        Validators.minLength(4),
+        Validators.maxLength(this.yearMaxLength),
+        Validators.minLength(this.yearMaxLength),
         Validators.min(this.maxDate.getFullYear() - 150),
         Validators.pattern(this.YEAR_PATTERN)
       ]),
@@ -689,7 +693,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onAgeChange() {
     const age = this.age.nativeElement.value;
-    if (age) {
+    console.log('old age', this.oldAge);
+    console.log('age', age);
+
+    if (age && age != this.oldAge) {
       const now = new Date();
       const calulatedYear = now.getFullYear() - age;
       this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
@@ -702,11 +709,23 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  // nextElementFocus() {
+  //   console.log('AAYA');
+
+  //   const date = this.dd.nativeElement.value;
+  //   const month = this.mm.nativeElement.value;
+  //   const year = this.yyyy.nativeElement.value;
+  //   console.log(this.mm);
+
+  //   if (date.length == 2 && month.length != 2) this.mm.nativeElement.focus();
+  // }
+
   onDOBChange() {
     const date = this.dd.nativeElement.value;
     const month = this.mm.nativeElement.value;
     const year = this.yyyy.nativeElement.value;
-    if (date !== '' && month !== '' && year !== '') {
+
+    if (date.length == 2 && month.length == 2 && year.length == 4) {
       const newDate = month + '/' + date + '/' + year;
       const dateform = new Date(newDate);
       const _month = dateform.getMonth() + 1;
@@ -725,12 +744,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This method calculates the age for the given date.
+   *
+   * @param {Date} bDay
+   * @returns
+   * @memberof DemographicComponent
+   */
   calculateAge(bDay: Date) {
     const now = new Date();
     const born = new Date(bDay);
     const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
 
     if (this.dataModification) {
+      this.oldAge = years;
       return years;
     }
     if (years > 150) {
@@ -744,6 +771,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.userForm.controls[this.formControlNames.dateOfBirth].markAsUntouched();
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
       this.userForm.controls[this.formControlNames.year].setErrors(null);
+      this.oldAge = years;
       return years;
     }
   }

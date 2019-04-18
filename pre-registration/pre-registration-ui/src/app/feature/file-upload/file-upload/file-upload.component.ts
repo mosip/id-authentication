@@ -245,8 +245,12 @@ export class FileUploadComponent implements OnInit {
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
-      this.setApplicantType(response);
+      if (response['error'] == null) {
+        this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
+        this.setApplicantType(response);
+      } else {
+        alert('Servers unavailable,please try again after some time');
+      }
     });
   }
 
@@ -256,17 +260,25 @@ export class FileUploadComponent implements OnInit {
 
   async getDocumentCategories(applicantcode) {
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      console.log('document Categories', res);
+      if (res['error'] == null) {
+        console.log('document Categories', res);
 
-      this.LOD = res['response'].documentCategories;
-      this.registration.setDocumentCategories(res['response'].documentCategories);
+        this.LOD = res['response'].documentCategories;
+        this.registration.setDocumentCategories(res['response'].documentCategories);
+      } else {
+        alert('Servers unavailable,please try again after some time');
+      }
     });
   }
 
   async getAllApplicants() {
     await this.dataStroage.getUsers(this.loginId).subscribe(
-      applicants => {
-        this.sharedService.addApplicants(applicants);
+      response => {
+        if (response['error'] == null) {
+          this.sharedService.addApplicants(response);
+        } else {
+          alert('Servers unavailable,please try again after some time');
+        }
       },
       err => {},
       () => {}

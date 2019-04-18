@@ -445,9 +445,16 @@
       "title_confirm": "Confirm",
       "title_success": "Success",
       "title_error": "Error",
-      "msg_confirm": "The selected application will be deleted. Please confirm.",
-      "msg_deleted": "The selected application has been successfully deleted",
-      "msg_could_not_deleted": "The selected application could not be deleted",
+      "cancelAppointment": {
+        "msg_confirm": "Appointment for The selected application will be deleted. Please confirm.",
+        "msg_deleted": "Appointment for The selected application has been successfully deleted",
+        "msg_could_not_deleted": "Appointment for The selected application could not be deleted"
+      },
+      "deletePreregistration": {
+        "msg_confirm": "The selected application will be deleted. Please confirm.",
+        "msg_deleted": "The selected application has been successfully deleted",
+        "msg_could_not_deleted": "The selected application could not be deleted"
+      },
       "button_confirm": "Confirm",
       "button_cancel": "Cancel"
     },
