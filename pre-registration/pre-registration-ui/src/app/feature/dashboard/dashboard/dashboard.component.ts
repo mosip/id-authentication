@@ -38,8 +38,9 @@ export class DashBoardComponent implements OnInit {
   userFiles: any[] = [];
   loginId = '';
   message = {};
-  langCode = 'rtl';
 
+  primaryLangCode = localStorage.getItem('langCode');
+  textDir = localStorage.getItem('dir');
   secondaryLanguagelabels: any;
   primaryLanguagelabels: any;
   disableModifyDataButton = false;
@@ -74,7 +75,7 @@ export class DashBoardComponent implements OnInit {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
-    this.translate.use(localStorage.getItem('langCode'));
+    this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
   }
 
@@ -84,22 +85,22 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   ngOnInit() {
-    console.log('IN DASHBOARD');
+    console.log('IN DASHBOARD', this.primaryLangCode);
 
     this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
     this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
     if (!this.message['timerFired']) {
-      this.autoLogout.getValues(localStorage.getItem('langCode'));
+      this.autoLogout.getValues(this.primaryLangCode);
       this.autoLogout.setValues();
       this.autoLogout.keepWatching();
     } else {
-      this.autoLogout.getValues(localStorage.getItem('langCode'));
+      this.autoLogout.getValues(this.primaryLangCode);
       this.autoLogout.continueWatching();
     }
 
-    this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+    this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
       if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
       console.log(this.secondaryLanguagelabels);
     });
@@ -178,7 +179,7 @@ export class DashBoardComponent implements OnInit {
     const date = Utils.getBookingDateTime(
       bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate],
       '',
-      localStorage.getItem('langCode')
+      this.primaryLangCode
     );
     let appointmentDate = date;
     return appointmentDate;
@@ -213,7 +214,7 @@ export class DashBoardComponent implements OnInit {
     let primaryIndex = 0;
     let secondaryIndex = 1;
     let lang = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
-    if (lang !== localStorage.getItem('langCode')) {
+    if (lang !== this.primaryLangCode) {
       primaryIndex = 1;
       secondaryIndex = 0;
     }
@@ -330,7 +331,7 @@ export class DashBoardComponent implements OnInit {
             const index = this.users.indexOf(element);
             this.users[index].status = 'Pending Appointment';
             this.users[index].appointmentDate = '-';
-			this.users[index].appointmentTime = '';
+            this.users[index].appointmentTime = '';
           } else {
             this.displayMessage(
               this.secondaryLanguagelabels.title_error,
@@ -548,7 +549,7 @@ export class DashBoardComponent implements OnInit {
    */
   private getPrimaryLabels() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
         this.primaryLanguagelabels = response['dashboard'];
         resolve(true);
       });
