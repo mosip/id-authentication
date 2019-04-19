@@ -797,7 +797,7 @@ public class UinGeneratorStageTest {
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type("DEACTIVATED");
 		IdResponseDTO responsedto = new IdResponseDTO();
-		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":\"4215839851}}";
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
 		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
 
 		IdResponseDTO idResponseDTO = new IdResponseDTO();

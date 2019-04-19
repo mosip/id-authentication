@@ -140,6 +140,8 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				code = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getCode();
 			}
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING.toString());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			object.setInternalError(true);
