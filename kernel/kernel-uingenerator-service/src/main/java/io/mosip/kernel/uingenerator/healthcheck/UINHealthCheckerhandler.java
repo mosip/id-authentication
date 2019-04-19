@@ -33,7 +33,6 @@ import io.vertx.ext.auth.AuthProvider;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.HealthChecks;
 import io.vertx.ext.healthchecks.Status;
-import io.vertx.ext.healthchecks.impl.HealthCheckHandlerImpl;
 import io.vertx.ext.healthchecks.impl.HealthChecksImpl;
 import io.vertx.ext.web.RoutingContext;
 
