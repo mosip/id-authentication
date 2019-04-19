@@ -119,7 +119,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
 
-	private boolean hasBiometricException = false;
+	private boolean hasBiometricException;
 	
 	private boolean hasLowBiometrics;
 	
@@ -159,8 +159,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 				applicantImageCaptured = false;
 			}
 		} else {
-			counter = 0;
+			counter = 1;
 			hasLowBiometrics = false;
+			hasBiometricException = false;
 			
 			defaultExceptionImage = new Image(
 					getClass().getResourceAsStream(RegistrationConstants.DEFAULT_EXCEPTION_IMAGE_PATH));
@@ -534,6 +535,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		List<IrisDetailsDTO> capturedIrises = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getIrisDetailsDTO();
 		hasBiometricException = markReasonForIrisException(capturedIrises, hasBiometricException);
+		counter++;
 		return hasBiometricException;
 	}
 
