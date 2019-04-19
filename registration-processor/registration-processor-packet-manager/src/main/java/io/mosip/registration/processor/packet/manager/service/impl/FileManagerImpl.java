@@ -308,6 +308,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		return file;
 	}
 
+
+
 	public byte[] getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto){
 
 
@@ -315,7 +317,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		Channel channel = null;
 		ChannelSftp channelSftp = null;
 		byte[] bytedata =null;
-
+		ByteArrayOutputStream outputStream=null;
+		BufferedOutputStream buff =null;
 		try {
 
 			JSch jsch = new JSch();
@@ -331,15 +334,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channel.connect();
 			System.out.println("Connected");
 			channelSftp = (ChannelSftp)channel;
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			BufferedOutputStream buff = new BufferedOutputStream(outputStream);
+			outputStream = new ByteArrayOutputStream();
+			buff = new BufferedOutputStream(outputStream);
 			channelSftp.get(workingDirectory.toString(),buff);
 			bytedata = new byte[102400];
 			buff.write(bytedata);
+			
+			if(outputStream!=null)
 			outputStream.close();
+			if(buff!=null)
 			buff.close();
-			channel.disconnect();
-			session.disconnect(); 
 
 
 		} catch (JSchException e) {
@@ -352,7 +356,11 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-
+			
+				if(channel != null)
+				channel.disconnect();
+				if(session != null)
+				session.disconnect(); 
 		}
 
 
@@ -360,6 +368,63 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 
 		return bytedata;
+
+	}
+
+
+	public boolean moveFile(String fromFilePath, String toFilePath, SftpJschConnectionDto sftpConnectionDto) {
+
+
+		Session session = null;
+		Channel channel = null;
+		ChannelSftp channelSftp = null;
+		boolean status=false;
+		try {
+
+			JSch jsch = new JSch();
+			ClassLoader classLoader = getClass().getClassLoader();
+			jsch.addIdentity(new File(classLoader.getResource("Mosip_Private_key.ppk").getFile()).getAbsolutePath());
+			session = jsch.getSession(sftpConnectionDto.getUser(), sftpConnectionDto.getHost(),sftpConnectionDto.getPort());
+			Properties config = new Properties();
+			config.put("StrictHostKeyChecking", "no");
+			session.setConfig(config);
+			session.connect();
+			channel = session.openChannel(sftpConnectionDto.getProtocal());
+			channel.connect();
+			System.out.println("Connected");
+			channelSftp = (ChannelSftp)channel;
+			if (channelSftp.get( fromFilePath ) != null){
+
+				channelSftp.rename(fromFilePath,toFilePath);
+
+				if (channelSftp.get(toFilePath) != null) {
+					status=true;
+				}
+			}
+
+			
+
+		} catch (JSchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SftpException e) {
+			
+			if(e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE){
+				status=false;
+				return status;
+			} else {
+				e.printStackTrace();
+			}
+
+		}
+		finally {
+			if(channel != null)
+			channel.disconnect();
+			if(session != null)
+			session.disconnect(); 
+
+		}
+		return status;
 
 	}
 

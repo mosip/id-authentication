@@ -121,7 +121,9 @@ public interface FileManager<D, F> {
 	 */
 	public File getFile(D workingDirectory, String fileName) throws IOException;
 	
-	
 	public byte[] getFile(D workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto);
+	
+	public boolean moveFile(String fromFilePath, String toFilePath, SftpJschConnectionDto sftpConnectionDto) throws IOException;
+	
 
 }
