@@ -265,28 +265,28 @@ export class LoginComponent implements OnInit {
       this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
         response => {
           console.log(response);
-           if (!response['errors']) {
+          //  if (!response['errors']) {
           clearInterval(this.timer);
           localStorage.setItem('loggedIn', 'true');
           this.authService.setToken();
 
           this.regService.setLoginId(this.inputContactDetails);
           this.router.navigate(['dashboard']);
-          }
-           else {
-            console.log(response['error']);
-            this.showOtpMessage();
-          }
+          // }
+          //  else {
+          //   console.log(response['error']);
+          //   this.showOtpMessage();
+          // }
         },
 
         error => {
-           this.showOtpMessage();
-          // clearInterval(this.timer);
-          // localStorage.setItem('loggedIn', 'true');
-          // this.authService.setToken();
+          //  this.showOtpMessage();
+          clearInterval(this.timer);
+          localStorage.setItem('loggedIn', 'true');
+          this.authService.setToken();
 
-          // this.regService.setLoginId(this.inputContactDetails);
-          // this.router.navigate(['dashboard']);
+          this.regService.setLoginId(this.inputContactDetails);
+          this.router.navigate(['dashboard']);
         }
       );
     }

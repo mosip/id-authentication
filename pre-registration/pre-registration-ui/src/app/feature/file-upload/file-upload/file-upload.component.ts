@@ -93,7 +93,7 @@ export class FileUploadComponent implements OnInit {
     this.allowedFiles = this.config
       .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
       .split(',');
-    let applicants;
+    let applicants = [];
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
     this.allApplicants = [];
@@ -114,9 +114,9 @@ export class FileUploadComponent implements OnInit {
       this.multipleApplicants = true;
     }
     this.getApplicantTypeID();
-    if (this.users[0].files[0] != null) {
-      this.viewFirstFile();
-    }
+    // if (this.users[0].files[0] != null) {
+    //   this.viewFirstFile();
+    // }
     let i = 0;
     this.allApplicants.push(this.noneApplicant);
     let noneCount: Boolean = this.isNoneAvailable();
@@ -134,7 +134,7 @@ export class FileUploadComponent implements OnInit {
     if (!this.users[0].files[0]) {
       this.users[0].files[0] = [];
     } else {
-      this.sortUserFiles();
+      // this.sortUserFiles();
     }
   }
 
@@ -479,7 +479,7 @@ export class FileUploadComponent implements OnInit {
     }
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
-    this.sortUserFiles();
+    // this.sortUserFiles();
     // this.viewFileByIndex(this.fileIndex);
   }
 
@@ -495,11 +495,13 @@ export class FileUploadComponent implements OnInit {
     } else {
       this.dataStroage.copyDocument(event.value, this.users[0].preRegId).subscribe(
         response => {
-          this.registration.setSameAs(event.value);
-          if (response['err'] == null) {
+          if (response['errors'] == null) {
+            this.registration.setSameAs(event.value);
             this.removePOADocument();
           } else {
-            alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+            // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+            this.sameAs = this.registration.getSameAs();
+            alert(response['errors'].message);
           }
         },
         err => {
