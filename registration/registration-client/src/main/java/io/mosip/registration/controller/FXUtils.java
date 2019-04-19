@@ -427,12 +427,12 @@ public class FXUtils {
 	 * @param regex
 	 *            the regular expression pattern to validate the input of field
 	 */
-	public void dobListener(TextField field, TextField fieldToPopulate, TextField localFieldToPopulate, String regex) {
+	public void dobListener(TextField field, TextField fieldToPopulate, TextField localFieldToPopulate, String regex, int maxAge) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
-				if (age >= 0 && age <= 118) {
+				if (age >= 0 && age <= maxAge) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 				}

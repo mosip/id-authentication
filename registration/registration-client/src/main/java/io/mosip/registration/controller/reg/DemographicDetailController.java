@@ -1059,7 +1059,7 @@ public class DemographicDetailController extends BaseController {
 			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
 			dateValidation.validateYear(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
 					fxUtils, null);
-			fxUtils.dobListener(yyyy, ageField, ageFieldLocalLanguage, "\\d{4}");
+			fxUtils.dobListener(yyyy, ageField, ageFieldLocalLanguage, "\\d{4}", maxAge);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
