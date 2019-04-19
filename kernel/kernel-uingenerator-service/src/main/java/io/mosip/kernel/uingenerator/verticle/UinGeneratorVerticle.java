@@ -2,6 +2,7 @@ package io.mosip.kernel.uingenerator.verticle;
 
 import org.springframework.context.ApplicationContext;
 
+import io.mosip.kernel.uingenerator.constant.UINHealthConstants;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.generator.UinProcesser;
 import io.vertx.core.AbstractVerticle;
@@ -44,18 +45,21 @@ public class UinGeneratorVerticle extends AbstractVerticle {
 	@Override
 	public void start() {
 		vertx.eventBus().consumer(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, receivedMessage -> {
-			if (receivedMessage.body().equals(UinGeneratorConstant.GENERATE_UIN) && uinProcesser.shouldGenerateUins()) {
-				vertx.executeBlocking(future -> {
+   			if (receivedMessage.body().equals(UinGeneratorConstant.GENERATE_UIN) && uinProcesser.shouldGenerateUins()) {
+   				vertx.executeBlocking(future -> {
 					uinProcesser.generateUins();
 					future.complete();
 				}, result -> {
 					if (result.succeeded()) {
+						
 						// LOGGER.info("Generated and persisted uins");
 					} else {
+						
 						// LOGGER.info("Uin Genaration failed", result.cause());
 					}
 				});
 			}
+   			receivedMessage.reply(UINHealthConstants.ACTIVE);
 		});
 	}
 }
