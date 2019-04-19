@@ -88,7 +88,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		//testParam="smoke";
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -129,75 +129,45 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
 		
 		
-		System.out.println("Fetch App:"+fetchAppointmentDetailsResponse.asString());
-		
 		outerKeys.add("responsetime");
 		innerKeys.add("registration_center_id");
 		innerKeys.add("appointment_date");
 		innerKeys.add("time_slot_from");
 		innerKeys.add("time_slot_to");
 		
-		statuOfSmokeTest = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys, innerKeys);
-		
+		status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys, innerKeys);
 		
 		}
 		
 		else
 		{	
 		
-		try 
-		{
-			
-			Actualresponse=applicationLibrary.getRequest(preReg_URI,GetHeader.getHeader(actualRequest));
-			
-		} catch (Exception e) {
-			logger.info(e);
-		}
-		
-		outerKeys.add("resTime");
-		innerKeys.add("registration_center_id");
-		innerKeys.add("appointment_date");
-		innerKeys.add("time_slot_from");
-		innerKeys.add("time_slot_to");
-		
-		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-		
+			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
+			preReg_URI = preReg_URI + preRegistrationId;
+			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
+			System.out.println("Fetch App Det:"+Actualresponse.asString());
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
 		
 		}
 		
-		testParam="smoke";
 		
-		if(testParam.contains("smoke"))
-		{
-			status_val=statuOfSmokeTest;
-			
+		if (status) {
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
 		}
-		else if(testParam.contains("regression"))
-		{
-			status_val=status;
-		}
-		else if(testParam.contains("smokeAndRegression"))
-		{
-			status_val=(status && statuOfSmokeTest);
-		}
-		
-		if (status_val) {
-			finalStatus="Pass";		
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
 	
 		
 	}

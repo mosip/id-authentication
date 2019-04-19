@@ -1012,47 +1012,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response FetchCentre() {
-/*		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
-		ObjectNode fetchAvailabilityrequest = null;
-		
 
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					fetchAvailabilityrequest = JsonPath.using(config).parse(request.toJSONString())
-							.set("$.registrationCenterId", regCenterId).json();
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		String fetchCenterReq = fetchAvailabilityrequest.toString();
-		JSONObject fetchCenterReqjson = null;
-		try {
-			fetchCenterReqjson = (JSONObject) parser.parse(fetchCenterReq);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		String regCenterId = randomRegistrationCenterId();		
 		
 		preReg_FetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
 		response = applnLib.getRequestWithoutParm(preReg_FetchCenterIDURI);
-		
-		
 		
 		return response;
 	}

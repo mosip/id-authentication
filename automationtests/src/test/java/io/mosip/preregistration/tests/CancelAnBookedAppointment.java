@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -67,6 +68,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_URI;
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	/* implement,IInvokedMethodListener */
 	public CancelAnBookedAppointment() {
@@ -88,7 +90,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	public static Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("smokeAndregression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -103,6 +105,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
@@ -110,27 +113,34 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
-		/* Fetch availability[or]center details */
-		Response fetchCenter = preRegLib.FetchCentre();
-		
-		
-		
+		if (testCaseName.contains("smoke")) {
+			/* Fetch availability[or]center details */
+			Response fetchCenter = preRegLib.FetchCentre();
 
-		/* Book An Appointment for the available data */
-		Response bookAppointmentResponse = preRegLib.BookAppointment( fetchCenter, preId.toString());
-		
-		/* Fetch Appointment Details for specific PreId */
-		Response fetchCenterRes = preRegLib.FetchAppointmentDetails(preId);
-		
-		// Cancel Booked Appointment Details
-		Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
+			/* Book An Appointment for the available data */
+			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 
-		
-		// removing the keys for assertion
-		outerKeys.add("responsetime");
-		innerKeys.add("transactionId");
+			// Cancel Booked Appointment Details
+			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
 
-		status = AssertResponses.assertResponses(CancelBookingApp, Expectedresponse, outerKeys, innerKeys);
+			System.out.println("Cancel Book App:"+CancelBookingApp.asString());
+			// removing the keys for assertion
+			outerKeys.add("responsetime");
+			innerKeys.add("transactionId");
+
+			status = AssertResponses.assertResponses(CancelBookingApp, Expectedresponse, outerKeys, innerKeys);
+
+		} else {
+			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
+			preReg_URI = preReg_URI + preRegistrationId;
+			Actualresponse = applicationLibrary.putRequest_WithoutBody(preReg_URI);
+			System.out.println("Cancel Book App:"+Actualresponse.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("transactionId");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+		}
+
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -155,7 +165,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	 * 
 	 * @param result
 	 */
-	
+
 	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
