@@ -28,7 +28,9 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.RegProcTransactionDb;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -48,12 +50,12 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	Response actualResponse = null;
 	JSONObject expectedResponse = null;
 	String dest = "";
-	static String folderPath = "regProc/PacketReceiver";
-	static String outputFile = "PacketReceiverOutput.json";
-	static String requestKeyFile = "PacketReceiverRequest.json";
+	static String folderPath = "regProc/DeactivateRequest";
+	static String outputFile = "DeactivateRequestOutput.json";
+	static String requestKeyFile = "DeactivateUinRequest.json";
 	String rId = null;
 	Properties prop =  new Properties();
-
+	RegProcTransactionDb regProcDbRead=new RegProcTransactionDb();
 	/**
 	 * This method is used for reading the test data based on the test case name passed
 	 * 
@@ -61,14 +63,14 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 * @return object[][]
 	 * @throws Exception
 	 */
-	@DataProvider(name = "PacketReceiver")
+	@DataProvider(name = "DeactivateUin")
 	public Object[][] readData(ITestContext context){
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder = null;
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
-			switch (testParam) {
+			switch ("smokeAndRegression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -91,51 +93,40 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 * @param i
 	 * @param object
 	 */
-	@Test(dataProvider="PacketReceiver")
-	public void packetReceiver(String testSuite, Integer i, JSONObject object){
-
-		File file = null;
+	@Test(dataProvider="DeactivateUin")
+	public void packetGenerator(String testSuite, Integer i, JSONObject object){
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		String configPath = "src/test/resources/" + testSuite + "/";
-		File folder = new File(configPath);
-		File[] listOfFolders = folder.listFiles();
-		JSONObject objectData = new JSONObject();
+		
 
 		try {
 			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("requesttimestamp");
 			outerKeys.add("responsetime");
-			innerKeys.add("createdDateTime");
-			innerKeys.add("updatedDateTime");
-
-			for (int j = 0; j < listOfFolders.length; j++) {
-				if (listOfFolders[j].isDirectory()) {
-					if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-						logger.info("Testcase name is" + listOfFolders[j].getName());
-						File[] listOfFiles = listOfFolders[j].listFiles();
-						for (File f : listOfFiles) {
-							if (f.getName().toLowerCase().contains("request")) {
-								objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-								file=new File(f.getParent()+"/"+objectData.get("path"));
-								rId = file.getName().substring(0, file.getName().length()-4);
-							}
-						}
-					}
-				}
-			}
+			innerKeys.add("registrationId");
 
 
 			//generation of actual response
-			actualResponse = applicationLibrary.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
-
-			//Asserting actual and expected response
+			actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
+		/*	String regID=actualResponse.jsonPath().get("response.registrationId").toString();
+			regProcDbRead.compareTransactionOfDeactivatePackets(regID);
+		*/	//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			
-
+			if(status) {
+				finalStatus="Pass";
+			}else
+				finalStatus="Fail";
+			object.put("status", finalStatus);
+			arr.add(object);
+			boolean setFinalStatus = false;
+			if (finalStatus.equals("Fail")) {
+				setFinalStatus = false;
+			} else if (finalStatus.equals("Pass"))
+				setFinalStatus = true;
+			Verify.verify(setFinalStatus);
+			softAssert.assertAll();
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
 		}
@@ -169,7 +160,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, PacketReceiver.testCaseName);
+			f.set(baseTestMethod, PacketGenerator.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
 		}

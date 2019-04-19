@@ -46,6 +46,7 @@ public class RegProcDBCleanUp {
 		String deleteRegistrationList="DELETE"+" FROM regprc.registration_list WHERE reg_id = :regIdValue";
 		String deleteManualVerification="DELETE"+" FROM regprc.reg_manual_verification WHERE reg_id = :regIdValue";
 		String deleteRegistration="DELETE"+" FROM regprc.registration WHERE id = :regIdValue";
+		String deleteIndividualDemographicDedup="DELETE" +" FROM regprc.individual_demographic_dedup WHERE reg_id= :regIdValue";
 		List<String> queryList=new ArrayList<String>();
 		queryList.add(deleteTransaction);
 		queryList.add(deleteApplicantAbis);
@@ -53,8 +54,32 @@ public class RegProcDBCleanUp {
 		queryList.add(deleteRegistrationList);
 		queryList.add(deleteManualVerification);
 		queryList.add(deleteRegistration);
+		queryList.add(deleteIndividualDemographicDedup);
 		for(String query:queryList) {
 			cleanUp.deleteFromRegProcTables(regID, query);
+		}
+
+	}
+	public static void main(String[] args) {
+		RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
+		String deleteTransaction="DELETE"+" FROM regprc.registration_transaction WHERE reg_id = :regIdValue";
+		String deleteApplicantAbis="DELETE"+" FROM regprc.reg_abisref WHERE reg_id = :regIdValue";
+		String deleteApplicantUin="DELETE"+" FROM regprc.reg_uin WHERE reg_id = :regIdValue";
+		String deleteRegistrationList="DELETE"+" FROM regprc.registration_list WHERE reg_id = :regIdValue";
+		String deleteManualVerification="DELETE"+" FROM regprc.reg_manual_verification WHERE reg_id = :regIdValue";
+		String deleteRegistration="DELETE"+" FROM regprc.registration WHERE id = :regIdValue";
+		String deleteIndividualDemographicDedup="DELETE" +" FROM regprc.individual_demographic_dedup WHERE reg_id= :regIdValue";
+		List<String> queryList=new ArrayList<String>();
+		queryList.add(deleteIndividualDemographicDedup);
+		queryList.add(deleteTransaction);
+		queryList.add(deleteApplicantAbis);
+		queryList.add(deleteApplicantUin);
+		queryList.add(deleteRegistrationList);
+		queryList.add(deleteManualVerification);
+		queryList.add(deleteRegistration);
+		
+		for(String query:queryList) {
+			cleanUp.deleteFromRegProcTables("10006100060001220190419042546", query);
 		}
 
 	}
