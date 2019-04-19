@@ -33,7 +33,7 @@ export class DataStorageService {
   ) {}
 
   //need to remove
-  BASE_URL2 = 'https://qa.mosip.io/';
+  // BASE_URL = 'https://qa.mosip.io/';
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
@@ -65,7 +65,7 @@ export class DataStorageService {
    * @memberof DataStorageService
    */
   getGenderDetails() {
-    const url = this.BASE_URL2 + appConstants.APPEND_URL.gender;
+    const url = this.BASE_URL + appConstants.APPEND_URL.gender;
     return this.httpClient.get(url);
   }
 
@@ -143,7 +143,7 @@ export class DataStorageService {
 
   getNearbyRegistrationCenters(coords: any) {
     return this.httpClient.get(
-      this.BASE_URL2 +
+      this.BASE_URL +
         appConstants.APPEND_URL.master_data +
         appConstants.APPEND_URL.nearby_registration_centers +
         localStorage.getItem('langCode') +
@@ -158,7 +158,7 @@ export class DataStorageService {
 
   getRegistrationCentersByName(locType: string, text: string) {
     return this.httpClient.get(
-      this.BASE_URL2 +
+      this.BASE_URL +
         appConstants.APPEND_URL.master_data +
         appConstants.APPEND_URL.registration_centers_by_name +
         localStorage.getItem('langCode') +
@@ -171,7 +171,7 @@ export class DataStorageService {
 
   getLocationTypeData() {
     return this.httpClient.get(
-      this.BASE_URL2 + appConstants.APPEND_URL.master_data + 'locations/' + localStorage.getItem('langCode')
+      this.BASE_URL + appConstants.APPEND_URL.master_data + 'locations/' + localStorage.getItem('langCode')
     );
   }
 
@@ -211,7 +211,7 @@ export class DataStorageService {
    */
   getLocationImmediateHierearchy(lang: string, location: string) {
     const url =
-      this.BASE_URL2 +
+      this.BASE_URL +
       appConstants.APPEND_URL.location +
       appConstants.APPEND_URL.location_immediate_children +
       location +
@@ -269,7 +269,7 @@ export class DataStorageService {
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
     let url =
-      this.BASE_URL2 +
+      this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'registrationcenters/' +
       langCode +
@@ -307,14 +307,14 @@ export class DataStorageService {
 
   getApplicantType(docuemntCategoryDto) {
     return this.httpClient.post(
-      this.BASE_URL2 + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType,
+      this.BASE_URL + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType,
       docuemntCategoryDto
     );
   }
 
   getDocumentCategories(applicantCode) {
     const APPLICANT_VALID_DOCUMENTS_URL =
-      this.BASE_URL2 +
+      this.BASE_URL +
       appConstants.APPEND_URL.location +
       appConstants.APPEND_URL.validDocument +
       applicantCode +

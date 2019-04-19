@@ -39,7 +39,7 @@
           <span *ngIf="allApplicants.length > 0">OR</span>
           <span *ngIf="allApplicants.length > 0">
             <mat-form-field class="file-upload__or">
-              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [value]="sameAs">
+              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [(value)]="sameAs">
                 <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">
                   {{ applicant.fullname[0].value }}
                 </mat-option>
