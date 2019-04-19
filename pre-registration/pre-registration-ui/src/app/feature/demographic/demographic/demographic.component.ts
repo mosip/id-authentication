@@ -828,8 +828,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
       };
 
       // this.transUserForm.controls[toControl].patchValue('dummyValue');
+
       this.dataStorageService.getTransliteration(request).subscribe(
         response => {
+          console.log('TRANSLITERATION', response);
+
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else this.transUserForm.controls[toControl].patchValue('can not be transliterated');
