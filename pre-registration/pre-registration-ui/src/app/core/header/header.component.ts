@@ -3,6 +3,8 @@ import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from '../services/data-storage.service';
+import { MatDialog } from '@angular/material';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 
 @Component({
   selector: 'app-header',
@@ -10,43 +12,49 @@ import { DataStorageService } from '../services/data-storage.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public authService: AuthService, private translate: TranslateService, private router: Router) {
+  constructor(public authService: AuthService, 
+              private translate: TranslateService, 
+              private router: Router,
+              private dataService: DataStorageService,
+              private dialog: MatDialog) {
     this.translate.use(localStorage.getItem('langCode'));
   }
 
   ngOnInit() {}
 
-  // onLogout() {
-  //   console.log('Logging out');
-  // }
-
   onLogoClick() {
     if (this.authService.isAuthenticated()) {
       console.log('IF LOGO');
       this.router.navigate(['dashboard']);
-      // this.doLogout();
     } else {
-      // window.location.reload();
       this.router.navigate(['/']);
     }
   }
 
   onHome() {
     let homeURL = '';
-    // const route_parts = this.router.url.split('/');
-    // if (route_parts[2]) {
     homeURL = 'dashboard';
-    // } else {
-    // homeURL = '/';
-    // }
     this.router.navigate([homeURL]);
   }
 
-  // removeToken() {
-  //   localStorage.setItem('loggedIn', 'false');
-  // }
-
-  doLogout() {
-    this.authService.onLogout();
+ async doLogout() {
+   await this.showMessage();
   }
+
+  showMessage() {
+      this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+        const secondaryLanguagelabels = response['login']['logout_msg'];
+        localStorage.removeItem('loggedOutLang');
+        localStorage.removeItem('loggedOut');
+        const data = {
+          case: 'MESSAGE',
+          message: secondaryLanguagelabels
+        };
+        this.dialog.open(DialougComponent, {
+          width: '350px',
+          data: data
+        }).afterClosed().subscribe(() => this.authService.onLogout());
+      });
+  }
+
 }

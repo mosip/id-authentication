@@ -215,12 +215,20 @@ public class AuthController {
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
+		if(cookies==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
 		MosipUserDtoToken mosipUserDtoToken = null;
 		try {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
 					authToken = cookie.getValue();
 				}
+			}
+			if(authToken==null)
+			{
+				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
 			if (mosipUserDtoToken != null) {
@@ -276,10 +284,18 @@ public class AuthController {
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
+		if(cookies==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
 				authToken = cookie.getValue();
 			}
+		}
+		if(authToken==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 		}
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		responseWrapper.setResponse(authNResponse);

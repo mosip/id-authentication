@@ -9,8 +9,8 @@ package io.mosip.kernel.idgenerator.prid.constant;
  *
  */
 public enum PridExceptionConstant {
-	PRID_FETCH_EXCEPTION("KER-PIG-001","Error occur while fetching counter and value details"),
-	PRID_INSERTION_EXCEPTION("KER-PIG-002","Error occur while updating counter details");
+	PRID_FETCH_EXCEPTION("KER-PIG-001", "Error occur while fetching counter and value details"),
+	PRID_INSERTION_EXCEPTION("KER-PIG-002", "Error occur while updating counter details");
 
 	/**
 	 * The error code.
@@ -25,10 +25,8 @@ public enum PridExceptionConstant {
 	/**
 	 * Constructor for PridExceptionConstant.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	PridExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

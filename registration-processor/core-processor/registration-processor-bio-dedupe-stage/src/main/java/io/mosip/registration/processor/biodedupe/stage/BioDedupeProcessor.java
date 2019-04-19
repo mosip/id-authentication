@@ -117,45 +117,48 @@ public class BioDedupeProcessor {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					code + " - " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 		} catch (ABISInternalError e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.ABIS_INTERNAL_ERROR));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage());
 			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
 			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (ABISAbortException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.ABIS_ABORT_EXCEPTION));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage());
 			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
 			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-
+			object.setIsValid(Boolean.FALSE);
 		} catch (UnexceptedError e) {
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.UNEXCEPTED_ERROR));
-
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-
+			object.setIsValid(Boolean.FALSE);
 		} catch (UnableToServeRequestABISException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.UNABLE_TO_SERVE_REQUEST_ABIS_EXCEPTION));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage());
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + " -- " + registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 
@@ -165,7 +168,10 @@ public class BioDedupeProcessor {
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (DataAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_DATA_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
@@ -174,7 +180,10 @@ public class BioDedupeProcessor {
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
@@ -183,8 +192,10 @@ public class BioDedupeProcessor {
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-
+			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
@@ -193,6 +204,7 @@ public class BioDedupeProcessor {
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 

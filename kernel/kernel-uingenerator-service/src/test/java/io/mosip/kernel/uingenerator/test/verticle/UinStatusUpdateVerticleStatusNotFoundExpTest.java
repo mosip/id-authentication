@@ -71,25 +71,23 @@ public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
 
 		RestTemplate restTemplate = new RestTemplateBuilder().defaultMessageConverters()
-				.additionalMessageConverters(converter)
-				.build();
+				.additionalMessageConverters(converter).build();
 
-		ResponseWrapper<UinResponseDto> uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
-		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(),UinResponseDto.class);
-		
-		
-		
+		ResponseWrapper<UinResponseDto> uinResp = restTemplate
+				.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
+		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
 		requestDto.setUin(dto.getUin());
 		requestDto.setStatus("FailASSIGNED");
-		
+
 		RequestWrapper<UinStatusUpdateReponseDto> requestWrp = new RequestWrapper<>();
 		requestWrp.setId("mosip.kernel.uinservice");
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
 		String reqJson = mapper.writeValueAsString(requestWrp);
-				
+
 		final String length = Integer.toString(reqJson.length());
 		vertx.createHttpClient().put(port, "localhost", "/uingenerator/uin")
 				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
@@ -99,7 +97,6 @@ public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 						async.complete();
 					});
 				}).write(reqJson).end();
-		 
 
 	}
 

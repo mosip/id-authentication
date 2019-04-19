@@ -24,10 +24,8 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	/**
 	 * Get Document Type by specific code and language code
 	 * 
-	 * @param code
-	 *            the document category code.
-	 * @param langCode
-	 *            the language code.
+	 * @param code     the document category code.
+	 * @param langCode the language code.
 	 * @return object of {@link DocumentType}.
 	 */
 	@Query(value = "select dt.code, dt.name, dt.descr , dt.lang_code , dt.is_active ,dt.cr_by ,dt.cr_dtimes ,dt.upd_by ,dt.upd_dtimes ,dt.is_deleted ,dt.del_dtimes from master.valid_document vd , master.doc_type dt where vd.doctyp_code = dt.code and dt.lang_code=?2 and vd.doccat_code =?1 and (dt.is_deleted = false or dt.is_deleted is null) AND dt.is_active = true", nativeQuery = true)
@@ -36,10 +34,8 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	/**
 	 * Get Document Type by specific code and language code
 	 * 
-	 * @param code
-	 *            the document type code.
-	 * @param langCode
-	 *            the language code.
+	 * @param code     the document type code.
+	 * @param langCode the language code.
 	 * @return object of {@link DocumentType}.
 	 */
 	@Query("FROM DocumentType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -48,12 +44,9 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	/**
 	 * Delete Document Type based on code provided.
 	 * 
-	 * @param deletedDateTime
-	 *            the Date and time of deletion.
-	 * @param code
-	 *            the document type code.
-	 * @param updatedBy
-	 *            the updatedby user name.
+	 * @param deletedDateTime the Date and time of deletion.
+	 * @param code            the document type code.
+	 * @param updatedBy       the updatedby user name.
 	 * @return the Integer.
 	 */
 	@Modifying

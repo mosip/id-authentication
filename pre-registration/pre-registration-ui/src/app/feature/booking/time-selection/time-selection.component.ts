@@ -42,6 +42,7 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
+  disableContinueButton = false;
 
   constructor(
     private sharedService: SharedService,
@@ -133,21 +134,14 @@ export class TimeSelectionComponent implements OnInit {
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
-      // const cutOffDate = new Date();
-      // cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
-      // if (new Date(Date.parse(element.date)) < cutOffDate) {
-      //   element.inActive = true;
-      // } else {
-      //   element.inActive = false;
-      // }
       element.inActive = false;
-      element.displayDate =
-        element.date.split('-')[2] +
-        ' ' +
-        appConstants.MONTHS[Number(element.date.split('-')[1])] +
-        ', ' +
-        element.date.split('-')[0];
-      element.displayDay = appConstants.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
+        // element.date.split('-')[2] +
+        // ' ' +
+        // appConstants.MONTHS[Number(element.date.split('-')[1])] +
+        // ', ' +
+        // element.date.split('-')[0];
+      element.displayDay = appConstants.DAYS[localStorage.getItem('langCode')][new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -206,6 +200,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   makeBooking(): void {
+    this.disableContinueButton = true;
     this.bookingDataList = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
@@ -223,6 +218,10 @@ export class TimeSelectionComponent implements OnInit {
         }
       });
     });
+    if (this.bookingDataList.length === 0) {
+      this.disableContinueButton = false;
+      return;
+    }
     const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
     this.dataService.makeBooking(request).subscribe(
@@ -242,14 +241,14 @@ export class TimeSelectionComponent implements OnInit {
             .afterClosed()
             .subscribe(() => {
               this.temp.forEach(name => {
-                this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                const appointmentDateTime = Utils.getBookingDateTime(
-                  booking[0].appointment_date,
-                  booking[0].time_slot_from
-                );
-                this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                if (booking[0]) {
+                  this.sharedService.addNameList(name);
+                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
+                  this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                }
               });
+              this.sharedService.setSendNotification(true);
               const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
             });
@@ -265,6 +264,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   showError() {
+    this.disableContinueButton = false;
     const data = {
       case: 'MESSAGE',
       title: this.secondaryLanguagelabels.title_failure,
@@ -282,6 +282,7 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
+    this.sharedService.flushNameList();
     this.temp.forEach(name => {
       this.sharedService.addNameList(name);
     });

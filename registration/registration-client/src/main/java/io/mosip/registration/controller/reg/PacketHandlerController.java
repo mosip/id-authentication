@@ -113,9 +113,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private VBox vHolder;
 
 	@FXML
-	public ProgressIndicator reMapProgressIndicator;
-
-	@FXML
 	public GridPane uinUpdateGridPane;
 
 	@Autowired
@@ -167,6 +164,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
+	
+	@FXML
+	ProgressIndicator progressIndicator;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -182,8 +182,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
 		List<String> configuredFieldsfromDB = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
-						.split(","));
+				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
 		if (!pendingApprovalRegistrations.isEmpty()) {
 			pendingApprovalCountLbl
@@ -192,7 +191,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
-		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
+		if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)
 				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
 			vHolder.getChildren().forEach(btnNode -> {
@@ -205,12 +204,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		}
 
-		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
+		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
 			// vHolder.setManaged(false);
 		}
-
+		
 	}
 
 	/**
@@ -275,10 +274,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
-		String fingerPrintDisableFlag = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-		String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-		String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+		String fingerPrintDisableFlag = getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+		String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
+		String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
 
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag)
 				&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
@@ -341,9 +339,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void showReciept() {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt Started.");
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-					.get(RegistrationConstants.REGISTRATION_DATA);
-			ackReceiptController.setRegistrationData(registrationDTO);
+			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 
 			StringBuilder templateContent = new StringBuilder();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
@@ -409,7 +405,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			auditFactory.audit(AuditEvent.NAV_APPROVE_REG, Components.NAVIGATION,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
+			GridPane root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
 			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
@@ -417,7 +413,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(root, 0, 1);
+				getScene(root);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
@@ -452,7 +448,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().add(uploadRoot, 0, 1);
+				getScene(uploadRoot);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -476,9 +472,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String
-								.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+								getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
 
 					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
@@ -503,7 +499,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
-							homeController.getMainBox().add(root, 0, 1);
+							getScene(root);
 						}
 					}
 				}
@@ -625,8 +621,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.ACK_INSIDE_PACKET)))) {
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.ACK_INSIDE_PACKET))) {
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
@@ -643,7 +639,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			try {
 
-				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
+				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
 					syncAndUploadPacket();
@@ -652,12 +648,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC))
-						+ seperator
+				String filePath = getValueFromApplicationContext(RegistrationConstants.PKT_STORE_LOC) + seperator
 						+ formatDate(new Date(),
-								String.valueOf(
-										ApplicationContext.map().get(RegistrationConstants.PKT_STORE_DATE_FORMAT)))
-												.concat(seperator).concat(registrationDTO.getRegistrationId());
+								getValueFromApplicationContext(RegistrationConstants.PKT_STORE_DATE_FORMAT))
+										.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
@@ -734,8 +728,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
-
-			homeController.getMainBox().add(root, 0, 1);
+			
+			getScene(root);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
@@ -804,8 +798,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
-							if (notificationResponse.getErrorResponseDTOs() != null
-									|| notificationResponse.getSuccessResponseDTO() == null) {
+							if (notificationResponse.getErrorResponseDTOs() == null
+									|| notificationResponse.getSuccessResponseDTO() != null) {
 								emailSent = true;
 							} else {
 								notificationAlert(notificationResponse, RegistrationUIConstants.EMAIL_ERROR_MSG);
@@ -818,8 +812,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);
-							if (notificationResponse.getErrorResponseDTOs() != null
-									|| notificationResponse.getSuccessResponseDTO() == null) {
+							if (notificationResponse.getErrorResponseDTOs() == null
+									|| notificationResponse.getSuccessResponseDTO() != null) {
 								smsSent = true;
 							} else {
 								notificationAlert(notificationResponse, RegistrationUIConstants.SMS_ERROR_MSG);
@@ -852,5 +846,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
 				.ifPresent(message -> generateAlert("ERROR", alertMsg));
 
+	}
+	
+	public ProgressIndicator getProgressIndicator() {
+		return progressIndicator;
 	}
 }

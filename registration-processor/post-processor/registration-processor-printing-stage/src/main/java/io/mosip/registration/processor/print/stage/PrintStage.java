@@ -184,7 +184,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			QueueListener listener = new QueueListener() {
 				@Override
 				public void setListener(Message message) {
-					sendMessage(message);
+					cosnumerListener(message);
 				}
 			};
 
@@ -337,16 +337,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 		return isAddedToQueue;
 	}
 
-	/**
-	 * Send message.
-	 *
-	 * @param messageDTO
-	 *            the message DTO
-	 */
-	public void sendMessage(MessageDTO messageDTO) {
-		this.send(this.mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -413,7 +403,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		}
 	}
 
-	public void sendMessage(Message message) {
+	public void cosnumerListener(Message message) {
 		String description = null;
 		try {
 

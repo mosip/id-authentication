@@ -23,11 +23,11 @@ export class LoginComponent implements OnInit {
   timer: any;
   inputOTP: string;
   inputContactDetails = '';
-  secondaryLangCode = 'ar';
-  secondaryDir = 'rtl';
+  secondaryLangCode = '';
+  secondaryDir = '';
   selectedLanguage = '';
-  langCode = 'ara';
-  dir = 'ltr';
+  langCode = '';
+  dir = '';
   primaryLangFromConfig = '';
   primaryLang = '';
   secondaryLangFromConfig = '';
@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
   minutes: string;
   seconds: string;
   showSpinner = true;
+  validationMessages = {};
 
   constructor(
     private authService: AuthService,
@@ -53,26 +54,19 @@ export class LoginComponent implements OnInit {
     private regService: RegistrationService,
     private configService: ConfigService
   ) {
-    const loggedOut = localStorage.getItem('loggedOut');
-    this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
-    localStorage.setItem('loggedOut', loggedOut);
-    localStorage.setItem('langCode', this.langCode);
-    this.showMessage();
   }
 
   ngOnInit() {
     this.showSpinner = true;
-    if (localStorage.getItem('langCode')) {
-      this.langCode = localStorage.getItem('langCode');
-      if (this.loggedOutLang) {
-        this.translate.use(this.loggedOutLang);
-      } else {
-        this.translate.use(localStorage.getItem('langCode'));
-      }
-    }
-    localStorage.setItem('loggedIn', 'false');
     this.loadConfigs();
+    this.loadValidationMessages();
+  }
+
+  loadValidationMessages() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.validationMessages = response['login'];
+    });
   }
 
   loginIdValidator() {
@@ -82,15 +76,15 @@ export class LoginComponent implements OnInit {
     const phoneRegex = new RegExp(this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_regex_phone));
     if (modes === 'email,mobile') {
       if (!(emailRegex.test(this.inputContactDetails) || phoneRegex.test(this.inputContactDetails))) {
-        this.errorMessage = 'Invalid Email or Mobile Number entered';
+        this.errorMessage = this.validationMessages['invalidInput'];
       }
     } else if (modes === 'email') {
       if (!emailRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
+        this.errorMessage = this.validationMessages['invalidEmail'];
       }
     } else if (modes === 'mobile') {
       if (!phoneRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
+        this.errorMessage = this.validationMessages['invalidMobile'];
       }
     }
     console.log('errorMessage', this.errorMessage);
@@ -127,6 +121,8 @@ export class LoginComponent implements OnInit {
     this.setLanguageDirection(this.primaryLangFromConfig, this.secondaryLangFromConfig);
     localStorage.setItem('langCode', this.primaryLangFromConfig);
     localStorage.setItem('secondaryLangCode', this.secondaryLangFromConfig);
+    this.translate.use(this.primaryLang);
+    this.selectedLanguage = appConstants.languageMapping[this.primaryLang].langName;
     if (
       appConstants.languageMapping[this.primaryLangFromConfig] &&
       appConstants.languageMapping[this.secondaryLangFromConfig]
@@ -178,24 +174,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  showMessage() {
-    if (this.loggedOutLang) {
-      this.dataService.getSecondaryLanguageLabels(this.loggedOutLang).subscribe(async response => {
-        this.secondaryLanguagelabels = response['login']['logout_msg'];
-        localStorage.removeItem('loggedOutLang');
-        localStorage.removeItem('loggedOut');
-        const data = {
-          case: 'MESSAGE',
-          message: this.secondaryLanguagelabels
-        };
-        this.dialog.open(DialougComponent, {
-          width: '350px',
-          data: data
-        });
-      });
-    }
-  }
-
   changeLanguage(): void {
     if (this.selectedLanguage !== appConstants.languageMapping[this.primaryLangFromConfig].langName) {
       this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
@@ -214,6 +192,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.translate.use(localStorage.getItem('langCode'));
+    this.loadValidationMessages();
   }
 
   showVerifyBtn() {

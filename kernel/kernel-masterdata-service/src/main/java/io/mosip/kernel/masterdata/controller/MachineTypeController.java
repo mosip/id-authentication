@@ -39,8 +39,7 @@ public class MachineTypeController {
 	/**
 	 * Post API to insert a new row of Machine Type data
 	 * 
-	 * @param machineType
-	 *            input Machine Type DTO from user
+	 * @param machineType input Machine Type DTO from user
 	 * 
 	 * @return ResponseEntity Machine Type Code and Language Code which is
 	 *         successfully inserted

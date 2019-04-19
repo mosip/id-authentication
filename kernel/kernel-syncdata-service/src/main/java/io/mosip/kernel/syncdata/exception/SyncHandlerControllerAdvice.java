@@ -47,7 +47,7 @@ public class SyncHandlerControllerAdvice {
 			final HttpServletRequest httpServletRequest) throws IOException {
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
-	
+
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final RequestException e,
 			final HttpServletRequest httpServletRequest) throws IOException {
@@ -79,9 +79,9 @@ public class SyncHandlerControllerAdvice {
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@ExceptionHandler(AuthManagerServiceException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> authManagerServiceException(
-			HttpServletRequest httpServletRequest, final AuthManagerServiceException exception) throws IOException {
+	@ExceptionHandler(SyncServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> syncServiceException(
+			HttpServletRequest httpServletRequest, final SyncServiceException exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

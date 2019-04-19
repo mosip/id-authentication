@@ -35,7 +35,12 @@ import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
@@ -45,6 +50,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -63,7 +69,7 @@ import javafx.scene.layout.VBox;
 @Controller
 public class HeaderController extends BaseController {
 
-	/**
+	/**o
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(HeaderController.class);
@@ -110,6 +116,11 @@ public class HeaderController extends BaseController {
 	@Autowired
 	private RegistrationUpdate registrationUpdate;
 
+	@Autowired
+	private HomeController homeController;
+
+	ProgressIndicator progressIndicator;
+
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -146,6 +157,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to Home page on Logout and destroying Session context
+	 * 
+	 * @param event
+	 *            logout event
 	 */
 	public void logout(ActionEvent event) {
 		try {
@@ -179,6 +193,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to Home page
+	 * 
+	 * @param event
+	 *            event for redirecting to home
 	 */
 	public void redirectHome(ActionEvent event) {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -206,15 +223,7 @@ public class HeaderController extends BaseController {
 		try {
 			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			ResponseDTO responseDTO = jobConfigurationService.executeAllJobs();
-
-			if (responseDTO.getSuccessResponseDTO() != null) {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
-			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationConstants.SYNC_FAILURE,
-						responseDTO.getErrorResponseDTOs().get(0).getMessage());
-			}
-
+			executeSyncDataTask();
 			while (restartController.isToBeRestarted()) {
 				/* Clear the completed job map */
 				BaseJob.clearCompletedJobMap();
@@ -223,22 +232,27 @@ public class HeaderController extends BaseController {
 				restartController.restart();
 			}
 
-			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
-					.get(RegistrationConstants.UI_SYNC_DATA))) {
-				syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+			/*
+			 * if ("Y".equalsIgnoreCase((String)
+			 * ApplicationContext.getInstance().getApplicationMap()
+			 * .get(RegistrationConstants.UI_SYNC_DATA))) { syncData =
+			 * BaseController.load(getClass().getResource(RegistrationConstants.
+			 * SYNC_DATA));
+			 * 
+			 * VBox pane = (VBox) menu.getParent().getParent().getParent();
+			 * Object parent = pane.getChildren().get(0);
+			 * pane.getChildren().clear(); pane.getChildren().add((Node)
+			 * parent); pane.getChildren().add(syncData); }
+			 */
 
-				VBox pane = (VBox) menu.getParent().getParent().getParent();
-				Object parent = pane.getChildren().get(0);
-				pane.getChildren().clear();
-				pane.getChildren().add((Node) parent);
-				pane.getChildren().add(syncData);
-			}
-
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-		} catch (RuntimeException runtimeException) {
+		} /*
+			 * catch (IOException ioException) {
+			 * LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+			 * APPLICATION_ID, ioException.getMessage() +
+			 * ExceptionUtils.getStackTrace(ioException));
+			 * 
+			 * }
+			 */ catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
@@ -247,6 +261,9 @@ public class HeaderController extends BaseController {
 
 	/**
 	 * Redirecting to PacketStatusSync Page
+	 * 
+	 * @param event
+	 *            event for sync packet status
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		if (isMachineRemapProcessStarted()) {
@@ -325,6 +342,7 @@ public class HeaderController extends BaseController {
 	 * This method is to trigger the Pre registration sync service
 	 * 
 	 * @param event
+	 *            event for downloading pre reg data
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
@@ -433,6 +451,60 @@ public class HeaderController extends BaseController {
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
 		}
+	}
+
+	private void executeSyncDataTask() {
+		progressIndicator = packetHandlerController.getProgressIndicator();
+		GridPane gridPane = homeController.getMainBox();
+
+		gridPane.setDisable(true);
+		progressIndicator.setVisible(true);
+
+		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
+			@Override
+			protected Task<ResponseDTO> createTask() {
+				return /**
+						 * @author SaravanaKumar
+						 *
+						 */
+				new Task<ResponseDTO>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected ResponseDTO call() {
+
+						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+
+						return jobConfigurationService.executeAllJobs();
+					}
+				};
+			}
+		};
+
+		progressIndicator.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+
+				ResponseDTO responseDTO = taskService.getValue();
+				if (responseDTO.getErrorResponseDTOs() != null) {
+					generateAlert(RegistrationConstants.SYNC_FAILURE,
+							responseDTO.getErrorResponseDTOs().get(0).getMessage());
+				} else {
+
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
+
+				}
+				gridPane.setDisable(false);
+				progressIndicator.setVisible(false);
+			}
+		});
+
 	}
 
 }

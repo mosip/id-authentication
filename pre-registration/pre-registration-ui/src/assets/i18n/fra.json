@@ -11,12 +11,12 @@
     "select_language": {
       "name": "Choisir la langue",
       "list": {
-       "line1": "Sur la page de connexion, cliquez sur Sélectionnez votre langue pour afficher la liste des langues.",
-       "line2": "Sélectionnez la langue de votre choix."
+        "line1": "Sur la page de connexion, cliquez sur Sélectionnez votre langue pour afficher la liste des langues.",
+        "line2": "Sélectionnez la langue de votre choix."
       },
       "note": "Remarque: lorsque vous vous trouvez dans la page Détails démographiques, les données sont affichées dans la langue de votre choix à gauche et les données dans la deuxième langue à droite de l'écran."
     },
-    "login" : {
+    "login": {
       "name": "Login",
       "list": {
         "line1": "On the Login page, enter your valid email ID or mobile number in the Email ID or mobile number text box.",
@@ -36,7 +36,7 @@
     "demographic": {
       "name": "Remplir les détails démographiques",
       "list": {
-        "line1": "Remplissez tous vos détails démographiques, y compris Nom, Âge / Date de naissance, Sexe, Statut de résidence, Adresse, Numéro de téléphone portable, Email Id, etc.", 
+        "line1": "Remplissez tous vos détails démographiques, y compris Nom, Âge / Date de naissance, Sexe, Statut de résidence, Adresse, Numéro de téléphone portable, Email Id, etc.",
         "line1_note": "Remarque: vous pouvez entrer votre âge ou votre date de naissance.",
         "line2": "Vous pouvez également modifier ou vérifier vos données démographiques dans la deuxième langue à droite.",
         "line3": "Une fois que vous avez rempli et vérifié vos informations démographiques, cliquez sur Continuer pour télécharger vos documents."
@@ -174,8 +174,8 @@
     "Logout": {
       "name": "Connectez - Out",
       "list": {
-       "line1": "Cliquez sur Déconnexion en haut à droite.",
-       "line2": "Cliquez sur OK pour vous déconnecter de l'application de pré-inscription."
+        "line1": "Cliquez sur Déconnexion en haut à droite.",
+        "line2": "Cliquez sur OK pour vous déconnecter de l'application de pré-inscription."
       },
       "line": "Connectez-vous avec le même numéro de téléphone portable ou le même identifiant de messagerie pour accéder aux applications enregistrées."
     }
@@ -271,7 +271,10 @@
     "action_resend": "Renvoyer",
     "action_verify": "Vérifier",
     "logout_msg": "Le demandeur doit se connecter avec le même téléphone portable / courriel pour accéder aux applications créées.",
-    "otp_valid_label": "valable"
+    "otp_valid_label": "valable",
+    "invalidEmail": "Identifiant email invalide entré",
+    "invalidMobile": "Numéro de téléphone invalide entré",
+    "invalidInput": "Identifiant email ou numéro de portable invalide entré"
   },
   "stepper": {
     "link_demographic": "Détails démographiques",
@@ -285,9 +288,9 @@
     "label_name": "Nom complet",
     "name_required": "Le nom complet est requis",
     "label_age": "Âge",
-    "date_dd": "jj",
-    "date_mm": "mm",
-    "date_yyyy": "aaaa",
+    "date_dd": "JJ",
+    "date_mm": "MM",
+    "date_yyyy": "AAAA",
     "text_or": "OU",
     "text_years": "Années",
     "text_gender": "Le sexe",
@@ -317,11 +320,10 @@
       "message": "Donner son ement pour le stockage et l'utilisation des informations personnelles telles qu'elles sont données",
       "checkCondition": "Cliquez pour accepter les termes et conditions",
       "acceptButton": "Acceptez",
-      "alertMessageFirst":"Vous serez déconnecté car vous n'acceptez pas les conditions générales",
-      "alertMessageSecond":"Vous serez redirigé vers votre page d'application parce que vous n'acceptez pas les conditions générales",
-      "alertMessageThird":"Vous serez redirigé vers la page de prévisualisation car vous n'acceptez pas les conditions générales."
+      "alertMessageFirst": "Vous serez déconnecté car vous n'acceptez pas les conditions générales",
+      "alertMessageSecond": "Vous serez redirigé vers votre page d'application parce que vous n'acceptez pas les conditions générales",
+      "alertMessageThird": "Vous serez redirigé vers la page de prévisualisation car vous n'acceptez pas les conditions générales."
     },
-
     "validation": {
       "name_required": "Le nom complet est requis",
       "age_validation": "L'âge devrait être inférieur à 150",
@@ -340,6 +342,10 @@
       "mobile_required": "Veuillez entrer un numéro de téléphone valide",
       "email_required": "S'il vous plaît entrer email id valide",
       "pin_required": "Veuillez entrer un code PIN valide"
+    },
+    "error": {
+      "error": "L'application ne peut pas être créée. S'il vous plaît essayer après un certain temps",
+      "button_ok": "D'accord"
     }
   },
   "documents": {
@@ -442,9 +448,16 @@
       "title_confirm": "Confirmer",
       "title_success": "Succès",
       "title_error": "Erreur",
-      "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
-      "msg_deleted": "L'application sélectionnée a été supprimée avec succès",
-      "msg_could_not_deleted": "L'application sélectionnée n'a pas pu être supprimée",
+      "cancelAppointment": {
+        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera supprimée. Veuillez confirmer.",
+        "msg_deleted": "Rendez-vous pour L'application sélectionnée a été supprimée avec succès",
+        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être supprimée"
+      },
+      "deletePreregistration": {
+        "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
+        "msg_deleted": "L'application sélectionnée a été supprimée avec succès",
+        "msg_could_not_deleted": "L'application sélectionnée n'a pas pu être supprimée"
+      },
       "button_confirm": "Confirmer",
       "button_cancel": "Annuler"
     },
@@ -452,6 +465,10 @@
       "pendingAppointment": "Rendez-vous en attente",
       "booked": "Réservé",
       "expired": "Expiré"
+    },
+    "error": {
+      "error": "Erreur Interne du Serveur. Veuillez réessayer après un certain temps.",
+      "button_ok": "D'accord"
     }
   },
   "timeSelection": {
@@ -520,6 +537,10 @@
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
     "action_continue": "CONTINUER"
+  },
+  "autologout": {
+    "preview": "Vous serez expiré dans 60 secondes en raison de votre inactivité. Veuillez cliquer n'importe où pour réactiver votre session",
+    "post": "Vous avez été déconnecté pour cause d'inactivité."
   },
   "helpText": {
     "applicationId": "ID d'application pour votre pré-inscription",

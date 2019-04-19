@@ -1,12 +1,14 @@
 package io.mosip.kernel.core.jsonvalidator.model;
 
 import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class for Json Validator Response having status as String and warnings of Validation as ArrayList
+ * Class for Json Validator Response having status as String and warnings of
+ * Validation as ArrayList
  * 
  * @author Swati Raj
  * @since 1.0.0
@@ -16,12 +18,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ValidationReport {
-	
+
 	/**
 	 * Status of the JSON Validation
 	 */
 	private boolean valid;
-	
+
 	/**
 	 * Warnings if any, present in report of JSON validation
 	 */

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -29,6 +30,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
@@ -100,6 +103,9 @@ public class DocumentScanController extends BaseController {
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
 
+	@Autowired
+	private PDFGenerator pdfGenerator;
+
 	@FXML
 	protected GridPane documentScan;
 
@@ -133,6 +139,12 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	@Autowired
 	private MasterSyncService masterSyncService;
@@ -142,6 +154,9 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
+	
+	@Autowired
+	private DemographicDetailController demographicDetailController;
 
 	private List<BufferedImage> docPages;
 
@@ -156,10 +171,11 @@ public class DocumentScanController extends BaseController {
 	private TextField scannedField;
 
 	private int totalDocument;
-	
+
 	private boolean documentsUploaded;
-	
+
 	private int counter;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,10 +188,11 @@ public class DocumentScanController extends BaseController {
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel
-						.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+						.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
-			counter=0;
+			counter = 0;
 			totalDocument = 0;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
@@ -188,25 +205,27 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+
+				registrationNavlabel.setText(
+						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
+			} else {
+				scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
+					if (Integer.parseInt(newValue) <= 0) {
+						continueBtn.setDisable(false);
+						documentsUploaded = true;
+					} else {
+						continueBtn.setDisable(true);
+						documentsUploaded = false;
+					}
+				});
 			}
-
-			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-				if (Integer.parseInt(newValue) <= 0) {
-					continueBtn.setDisable(false);
-					documentsUploaded = true;
-				}
-				else {
-					continueBtn.setDisable(true);
-					documentsUploaded = false;
-				}
-			});
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
-			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -216,7 +235,7 @@ public class DocumentScanController extends BaseController {
 	 * To populate the document categories
 	 */
 	protected <T> void populateDocumentCategories() {
-		
+
 		counter++;
 
 		/* clearing all the previously added fields */
@@ -256,16 +275,16 @@ public class DocumentScanController extends BaseController {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
-							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_") + 1));
+							documentDetailsDTO.getValue().substring(
+									documentDetailsDTO.getValue().indexOf(RegistrationConstants.UNDER_SCORE) + 1));
 				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
 			documentsMap.clear();
 		}
 
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null && RegistrationConstants.DISABLE
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 			documentPane.setVisible(false);
 		}
 
@@ -280,13 +299,13 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
-		
+
 		/* show the scan doc info label for format and size */
 		Label fileSizeInfoLabel = new Label();
 		fileSizeInfoLabel.setWrapText(true);
 		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
 		docScanVbox.getChildren().add(fileSizeInfoLabel);
-		
+
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
@@ -306,17 +325,17 @@ public class DocumentScanController extends BaseController {
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
-				
+
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
-				comboBox.setPrefWidth(docScanVbox.getWidth()/2);
+				comboBox.setPrefWidth(docScanVbox.getWidth() / 2);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
-				comboBox.getStyleClass().add("documentCombobox");
+				comboBox.getStyleClass().add(RegistrationConstants.DOC_COMBO_BOX);
 				Label documentLabel = new Label(docCategoryName);
-				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
-				documentLabel.setPrefWidth(docScanVbox.getWidth()/2);
+				documentLabel.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_FIELD_LABEL);
+				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 					documentLabel.setVisible(true);
@@ -329,10 +348,10 @@ public class DocumentScanController extends BaseController {
 				}
 				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
-						if(counter==1) {
-							totalDocument++;
-							scannedField.setText("" + (totalDocument));
-						}
+					if (counter == 1) {
+						totalDocument++;
+						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+					}
 				}
 
 				/*
@@ -342,7 +361,7 @@ public class DocumentScanController extends BaseController {
 				documentComboBoxes.put(docCategoryCode, comboBox);
 
 				VBox documentVBox = new VBox();
-				documentVBox.getStyleClass().add("scanVBox");
+				documentVBox.getStyleClass().add(RegistrationConstants.SCAN_VBOX);
 				documentVBox.setId(docCategoryCode);
 
 				documentVBoxes.put(docCategoryCode, documentVBox);
@@ -350,7 +369,7 @@ public class DocumentScanController extends BaseController {
 				Button scanButton = new Button();
 				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
-				scanButton.getStyleClass().add("documentContentButton");
+				scanButton.getStyleClass().add(RegistrationConstants.DOCUMENT_CONTENT_BUTTON);
 				scanButton.setGraphic(new ImageView(new Image(
 						this.getClass().getResourceAsStream(RegistrationConstants.SCAN), 12, 12, true, true)));
 				scanButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -367,8 +386,8 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								RegistrationUIConstants.PLEASE_SELECT + " " + documentCategory.getCode() + " "
-										+ RegistrationUIConstants.DOCUMENT);
+								RegistrationUIConstants.PLEASE_SELECT + RegistrationConstants.SPACE
+										+ documentCategory.getCode() + " " + RegistrationUIConstants.DOCUMENT);
 					}
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
@@ -418,7 +437,8 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-		if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+		if (RegistrationConstants.YES
+				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -437,7 +457,8 @@ public class DocumentScanController extends BaseController {
 
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
-			if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+			if (RegistrationConstants.YES
+					.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);
@@ -469,8 +490,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-		if (byteArray.length > Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -542,17 +562,18 @@ public class DocumentScanController extends BaseController {
 			return;
 		}
 		byte[] byteArray;
-		if (!"pdf".equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)))) {
+		if (!"pdf".equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE))) {
 			byteArray = documentScanFacade.asImage(scannedPages);
 		} else {
-			byteArray = documentScanFacade.asPDF(scannedPages);
+			byteArray = pdfGenerator.asPDF(scannedPages);
 		}
 		if (byteArray == null) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
-		if (byteArray.length > Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+
+		if (byteArray.length > Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.DOC_SIZE))) {
+			scannedPages.clear();
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -584,8 +605,9 @@ public class DocumentScanController extends BaseController {
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
-		documentDetailsDTO.setFormat(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)));
-		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document.getName()));
+		documentDetailsDTO.setFormat(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE));
+		documentDetailsDTO
+				.setValue(selectedDocument.concat(RegistrationConstants.UNDER_SCORE).concat(document.getName()));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
@@ -597,7 +619,7 @@ public class DocumentScanController extends BaseController {
 		if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 				|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
 			totalDocument--;
-			scannedField.setText("" + (totalDocument));
+			scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 		}
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
@@ -614,7 +636,8 @@ public class DocumentScanController extends BaseController {
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
 		gridPane.add(new Label("     "), 0, vboxElement.getChildren().size());
-		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 1, vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1,
+				vboxElement.getChildren().size());
 		gridPane.add(new Label("  "), 2, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
@@ -639,7 +662,8 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 		/* clearing the previously loaded pdf pages inorder to clear up the memory */
 		initializePreviewSection();
-		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".") + 1))) {
+		if (RegistrationConstants.PDF
+				.equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(RegistrationConstants.DOT) + 1))) {
 			try {
 				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
@@ -647,7 +671,7 @@ public class DocumentScanController extends BaseController {
 
 					docPreviewLabel.setVisible(true);
 					if (docPages.size() > 1) {
-						docPageNumber.setText("1");
+						docPageNumber.setText(RegistrationConstants.ONE);
 						docPreviewNext.setVisible(true);
 						docPreviewPrev.setVisible(true);
 						docPreviewNext.setDisable(false);
@@ -759,7 +783,7 @@ public class DocumentScanController extends BaseController {
 			if (key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
 					|| key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)) {
 				totalDocument++;
-				scannedField.setText("" + (totalDocument));
+				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 			}
 		});
 
@@ -800,8 +824,8 @@ public class DocumentScanController extends BaseController {
 			DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
 
 			if (selectedDocumentToDisplay != null) {
-				displayDocument(selectedDocumentToDisplay.getDocument(),
-						selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
+				displayDocument(selectedDocumentToDisplay.getDocument(), selectedDocumentToDisplay.getValue()
+						+ RegistrationConstants.DOT + selectedDocumentToDisplay.getFormat());
 			}
 		});
 
@@ -868,7 +892,7 @@ public class DocumentScanController extends BaseController {
 
 		docPreviewNext.setDisable(true);
 		docPreviewPrev.setDisable(true);
-		docPageNumber.setText("");
+		docPageNumber.setText(RegistrationConstants.EMPTY);
 		docPreviewImgView.setImage(null);
 		docPages = null;
 	}
@@ -983,17 +1007,20 @@ public class DocumentScanController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		biometricExceptionController.disableNextBtn();
+		fingerPrintCaptureController.clearImage();
+		irisCaptureController.clearIrisBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
 				updateUINMethodFlow();
-
+				demographicDetailController.saveDetail();
 				registrationController.showUINUpdateCurrentPage();
 
 			}
 		} else {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+
+			if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
@@ -1006,7 +1033,7 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
-	
+
 	public List<BufferedImage> getScannedPages() {
 		return scannedPages;
 	}
@@ -1014,6 +1041,5 @@ public class DocumentScanController extends BaseController {
 	public void setScannedPages(List<BufferedImage> scannedPages) {
 		this.scannedPages = scannedPages;
 	}
-	
 
 }

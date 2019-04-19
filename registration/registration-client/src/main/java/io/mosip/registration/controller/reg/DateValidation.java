@@ -33,8 +33,8 @@ public class DateValidation extends BaseController {
 	private Validations validation;
 
 	/**
-	 * Validate the date and populate its corresponding local or secondary language
-	 * field if date is valid
+	 * Validate the date and populate its corresponding local or secondary
+	 * language field if date is valid
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the date fields
@@ -60,7 +60,7 @@ public class DateValidation extends BaseController {
 				if ((newValue == null || newValue.isEmpty()) && !date.isFocused()) {
 					fxUtils.hideLabel(parentPane, date);
 				}
-				validateTheDate(date, month, year);
+				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -70,8 +70,8 @@ public class DateValidation extends BaseController {
 	}
 
 	/**
-	 * Validate the month and populate its corresponding local or secondary language
-	 * field if month is valid
+	 * Validate the month and populate its corresponding local or secondary
+	 * language field if month is valid
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the date fields
@@ -96,7 +96,7 @@ public class DateValidation extends BaseController {
 				if ((newValue == null || newValue.isEmpty()) && !month.isFocused()) {
 					fxUtils.hideLabel(parentPane, month);
 				}
-				validateTheDate(date, month, year);
+				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -105,37 +105,24 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	private void validateTheDate(TextField date, TextField month, TextField year) {
+	
+	/**
+	 * Validates the date
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 */
+	private void yearValidator(TextField date, TextField month, TextField year) {
 		try {
-			int yearVal;
-			int monthVal;
-			int dateVal;
-			LocalDate localDate = LocalDate.now();
-			if (year != null) {
-				if (year.getText().matches("\\d{4}")) {
+				int yearVal;
+				LocalDate localDate = LocalDate.now();
+				if (year != null && year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					yearVal = Integer.parseInt(year.getText());
-					if (yearVal == localDate.getYear()) {
-						if (month != null) {
-							if (month.getText().matches("\\d+")) {
-								monthVal = Integer.parseInt(month.getText());
-								if (monthVal > localDate.getMonth().getValue()) {
-									month.setText("1");
-								}
-								if (monthVal == localDate.getMonth().getValue()) {
-									if (date != null) {
-										if (date.getText().matches("\\d+")) {
-											dateVal = Integer.parseInt(date.getText());
-											if (dateVal > localDate.getDayOfMonth()) {
-												date.setText("1");
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
+					monthValidator(date, month, yearVal, localDate);
 			}
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -145,8 +132,48 @@ public class DateValidation extends BaseController {
 	}
 
 	/**
-	 * Validate the year and populate its corresponding local or secondary language
-	 * field if year is valid
+	 * Validates the month
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 * @param LocalDate
+	 *            the localDate {@link LocalDate}
+	 */
+	private void monthValidator(TextField date, TextField month, int yearVal, LocalDate localDate) {
+		if (month != null && yearVal == localDate.getYear()
+				&& month.getText().matches(RegistrationConstants.NUMBER_REGEX)
+				&& Integer.parseInt(month.getText()) > localDate.getMonth().getValue()) {
+			month.setText(RegistrationConstants.ONE);
+		} else {
+			dateValdidator(date, Integer.parseInt(month.getText()), localDate);
+		}
+	}
+
+	/**
+	 * Validates the month
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param LocalDate
+	 *            the localDate {@link LocalDate}
+	 */
+	private void dateValdidator(TextField date, int monthVal, LocalDate localDate) {
+		if (date != null && monthVal == localDate.getMonth().getValue()
+				&& date.getText().matches(RegistrationConstants.NUMBER_REGEX)
+				&& Integer.parseInt(date.getText()) > localDate.getDayOfMonth()) {
+			date.setText(RegistrationConstants.ONE);
+		}
+	}
+
+	/**
+	 * Validate the year and populate its corresponding local or secondary
+	 * language field if year is valid
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the date fields
@@ -171,7 +198,7 @@ public class DateValidation extends BaseController {
 				if ((newValue == null || newValue.isEmpty()) && !year.isFocused()) {
 					fxUtils.hideLabel(parentPane, year);
 				}
-				if (year.getText().matches("\\d{4}")) {
+				if (year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
 					int minYear = 1900;
@@ -179,7 +206,7 @@ public class DateValidation extends BaseController {
 						year.setText(oldValue);
 					}
 				}
-				validateTheDate(date, month, year);
+				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

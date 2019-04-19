@@ -18,8 +18,7 @@ public class NotificationException extends BaseUncheckedException {
 	/**
 	 * Constructor for NotificationException.
 	 * 
-	 * @param notificationException
-	 *            the exception argument.
+	 * @param notificationException the exception argument.
 	 */
 	public NotificationException(Throwable notificationException) {
 		super(notificationException.getLocalizedMessage(), notificationException.getMessage());

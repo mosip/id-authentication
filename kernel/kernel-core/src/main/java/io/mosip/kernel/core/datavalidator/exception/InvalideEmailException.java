@@ -22,10 +22,8 @@ public class InvalideEmailException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *            unique exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param errorCode    unique exception code
+	 * @param errorMessage exception message
 	 */
 	public InvalideEmailException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

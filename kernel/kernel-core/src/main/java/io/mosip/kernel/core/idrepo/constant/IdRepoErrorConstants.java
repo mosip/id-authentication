@@ -15,7 +15,7 @@ public enum IdRepoErrorConstants {
 
 	/** The identity mismatch. */
 	IDENTITY_HASH_MISMATCH("KER-IDR-003", "Identity Element hash does not match"),
-	
+
 	DOCUMENT_HASH_MISMATCH("KER-IDR-004", "Biometric/Document hash does not match"),
 
 	/** The invalid uin. */
@@ -42,20 +42,20 @@ public enum IdRepoErrorConstants {
 	/** The no record found. */
 	NO_RECORD_FOUND("KER-IDR-012", "No Record(s) found"),
 
-	FILE_STORAGE_ACCESS_ERROR("KER-IDR-013", "Failed to store/retrieve files in DFS"), 
-	
+	FILE_STORAGE_ACCESS_ERROR("KER-IDR-013", "Failed to store/retrieve files in DFS"),
+
 	JSON_PROCESSING_FAILED("KER-IDR-014", "Failed to parse/process json"),
-	
+
 	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-015", "Unable to process id object json schema"),
-	
+
 	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-016", "Unable to retrieve id object schema from server"),
-	
+
 	CLIENT_ERROR("KER-IDR-017", "4XX - Client Error occured"),
-	
+
 	SERVER_ERROR("KER-IDR-018", "5XX - Server Error occured"),
-	
+
 	CONNECTION_TIMED_OUT("KER-IDR-019", "Connection timed out"),
-	
+
 	FILE_NOT_FOUND("KER-IDR-020", "File(s) not found in DFS");
 
 	/** The error code. */
@@ -67,11 +67,9 @@ public enum IdRepoErrorConstants {
 	/**
 	 * Constructor for {@link IdAuthenticationErrorConstants}.
 	 *
-	 * @param errorCode
-	 *            - id-usage error codes which follows
-	 *            "<product>-<component>-<number>" pattern
-	 * @param errorMessage
-	 *            - short error message
+	 * @param errorCode    - id-usage error codes which follows
+	 *                     "<product>-<component>-<number>" pattern
+	 * @param errorMessage - short error message
 	 */
 	private IdRepoErrorConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

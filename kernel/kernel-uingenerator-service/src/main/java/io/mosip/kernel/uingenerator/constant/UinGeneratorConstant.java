@@ -45,7 +45,7 @@ public final class UinGeneratorConstant {
 	/**
 	 * The string field V1_0_UIN
 	 */
-	public static final String V1_0_UIN = "/v1.0/uin";
+	public static final String VUIN = "/uin";
 
 	/**
 	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS
@@ -150,5 +150,7 @@ public final class UinGeneratorConstant {
 	 * The string field 9
 	 */
 	public static final String NINE = "9";
+
+	public static final String ZERO_TO_NINE = "1234567890";
 
 }

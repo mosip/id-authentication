@@ -28,13 +28,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
+import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
 import io.mosip.kernel.auth.adapter.model.AuthToken;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
- * @author M1049825
+ * @author Ramadurai Saravana Pandian
+ * @author Urvil Joshi
  *
  */
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
@@ -42,7 +44,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/","**/authenticate/**","/v1/emailnotifier/**" };
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/",
+				"**/authenticate/**", "/**/actuator/**" };
+
 	}
 
 	public AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
@@ -67,17 +71,19 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			HttpServletResponse httpServletResponse)
 			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
-		System.out.println("Look for Autherization Cookie");
 		Cookie[] cookies = httpServletRequest.getCookies();
+		System.out.println("Cookies List " + cookies);
+		System.out.println("Inside Auth Filter");
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
 					token = cookie.getValue();
+					System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}
 		}
+		System.out.println("Outside Auth Filter");
 		if (token == null) {
-			System.out.println("Autherization Cookie Not Found");
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
 					"Authentication Failed");
@@ -86,7 +92,6 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			httpServletResponse.setContentType("application/json");
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
-			System.out.println("Return UNAUTHORIZED error");
 			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
@@ -103,10 +108,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
+		AuthManagerException exception = (AuthManagerException) failed;
 		ResponseWrapper<ServiceError> errorResponse = setErrors(request);
-		ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
-				"Authentication Failed");
-		errorResponse.getErrors().add(error);
+		errorResponse.getErrors().addAll(exception.getList());
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

@@ -110,8 +110,8 @@ public class DemoDedupeTest {
 		iris.add("LEFTEYE");
 		iris.add("RIGHTEYE");
 		Mockito.when(env.getProperty("fingerType")).thenReturn("LeftThumb");
-		Mockito.when(packetInfoManager.getApplicantFingerPrintImageNameById(anyString())).thenReturn(fingers);
-		Mockito.when(packetInfoManager.getApplicantIrisImageNameById(anyString())).thenReturn(iris);
+		//Mockito.when(packetInfoManager.getApplicantFingerPrintImageNameById(anyString())).thenReturn(fingers);
+		//Mockito.when(packetInfoManager.getApplicantIrisImageNameById(anyString())).thenReturn(iris);
 
 		Mockito.when(filesystemAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(filesystemAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.3</version>
 	</parent>
 
 
@@ -29,6 +31,9 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
+		<javax.interceptor.version>1.2</javax.interceptor.version>
+		<jackson.datatype.version>2.9.8</jackson.datatype.version>
+		<byte.buddy.version>1.9.12</byte.buddy.version>
 
 		<!-- spring -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -106,6 +111,7 @@
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
 		<ignite.version>2.3.0</ignite.version>
+		<findbugs.version>3.0.1</findbugs.version>
 
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
@@ -170,14 +176,9 @@
 		<module>kernel-config-server</module>
 
 
-		<module>kernel-otpnotification-service</module>
+		<!-- <module>kernel-otpnotification-service</module> -->
 		<!-- <module>kernel-ldap-service</module> -->
 
-
-	</modules>
-
-		
-	
 		<!-- <module>kernel-idvalidator</module> -->
 		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
 		<!-- <module>kernel-packetserver-http</module> -->
@@ -187,7 +188,14 @@
 		<!-- <module>kernel-batch-framework</module> -->
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->
-   
+
+
+
+	</modules>
+
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

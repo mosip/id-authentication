@@ -5,18 +5,20 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SingleTypeType.
+ * <p>
+ * Java class for SingleTypeType.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * 
  * <pre>
  * &lt;simpleType name="SingleTypeType"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
@@ -44,52 +46,38 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SingleType {
 
-    @XmlEnumValue("Scent")
-    SCENT("Scent"),
-    DNA("DNA"),
-    @XmlEnumValue("Ear ")
-    EAR("Ear "),
-    @XmlEnumValue("Face")
-    FACE("Face"),
-    @XmlEnumValue("Finger")
-    FINGER("Finger"),
-    @XmlEnumValue("Foot")
-    FOOT("Foot"),
-    @XmlEnumValue("Vein")
-    VEIN("Vein"),
-    @XmlEnumValue("HandGeometry")
-    HAND_GEOMETRY("HandGeometry"),
-    @XmlEnumValue("Iris")
-    IRIS("Iris"),
-    @XmlEnumValue("Retina")
-    RETINA("Retina"),
-    @XmlEnumValue("Voice")
-    VOICE("Voice"),
-    @XmlEnumValue("Gait")
-    GAIT("Gait"),
-    @XmlEnumValue("Keystroke")
-    KEYSTROKE("Keystroke"),
-    @XmlEnumValue("LipMovement")
-    LIP_MOVEMENT("LipMovement"),
-    @XmlEnumValue("SignatureSign")
-    SIGNATURE_SIGN("SignatureSign");
-    private final String value;
+	@XmlEnumValue("Scent")
+	SCENT("Scent"), DNA("DNA"), @XmlEnumValue("Ear ")
+	EAR("Ear "), @XmlEnumValue("Face")
+	FACE("Face"), @XmlEnumValue("Finger")
+	FINGER("Finger"), @XmlEnumValue("Foot")
+	FOOT("Foot"), @XmlEnumValue("Vein")
+	VEIN("Vein"), @XmlEnumValue("HandGeometry")
+	HAND_GEOMETRY("HandGeometry"), @XmlEnumValue("Iris")
+	IRIS("Iris"), @XmlEnumValue("Retina")
+	RETINA("Retina"), @XmlEnumValue("Voice")
+	VOICE("Voice"), @XmlEnumValue("Gait")
+	GAIT("Gait"), @XmlEnumValue("Keystroke")
+	KEYSTROKE("Keystroke"), @XmlEnumValue("LipMovement")
+	LIP_MOVEMENT("LipMovement"), @XmlEnumValue("SignatureSign")
+	SIGNATURE_SIGN("SignatureSign");
+	private final String value;
 
-    SingleType(String v) {
-        value = v;
-    }
+	SingleType(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static SingleType fromValue(String v) {
-        for (SingleType c: SingleType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static SingleType fromValue(String v) {
+		for (SingleType c : SingleType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

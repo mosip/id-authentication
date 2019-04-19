@@ -28,15 +28,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
-import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -72,7 +69,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
+//	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
@@ -132,7 +129,7 @@ public class BookingController {
 	 * @throws java.text.ParseException
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
-	@PostMapping(path = "/appointment/multi", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
@@ -180,12 +177,11 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully"),
 			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
 	public ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> cancelBook(
-			@RequestBody MainRequestDTO<CancelBookingDTO> requestDTO,
 			@PathVariable("preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
-				"In cancelBook method of Booking controller to cancel the appointment for object: " + requestDTO);
+				"In cancelBook method of Booking controller to cancel the appointment for object: " + preRegistrationId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(bookingService.cancelAppointment(requestDTO, preRegistrationId));
+				.body(bookingService.cancelAppointment(preRegistrationId));
 	}
 
 	/**
@@ -200,8 +196,8 @@ public class BookingController {
 	@ApiOperation(value = "Discard Booking")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete booking") })
-	public ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> discardIndividual(
-			@RequestParam(value = "pre_registration_id") String preId) {
+	public ResponseEntity<MainResponseDTO<DeleteBookingDTO>> discardIndividual(
+			@RequestParam(value = "preRegistrationId") String preId) {
 		log.info("sessionId", "idType", "id", "In Booking controller for deletion of booking with preId " + preId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.deleteBooking(preId));

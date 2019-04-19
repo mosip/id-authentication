@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +60,10 @@ import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
+import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
@@ -208,20 +211,33 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimeStamp);
 		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
-		syncJobDefDtos=serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
-        screenDetails=serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
-		CompletableFuture
-				.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
-						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
-						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
-						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
-						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
-						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
-						registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
-						registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
-						registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList,
-						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations,syncJobDefDtos,screenDetails)
-				.join();
+		syncJobDefDtos = serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
+		screenDetails = serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
+		CompletableFuture<Void> future = CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes,
+				registrationCenters, templates, templateFileFormats, reasonCategory, reasonList, holidays,
+				blacklistedWords, biometricTypes, biometricAttributes, titles, languages, devices, documentCategories,
+				documentTypes, idTypes, deviceSpecifications, locationHierarchy, machineSpecification, machineType,
+				templateTypes, deviceTypes, validDocumentsMapping, registrationCenterMachines,
+				registrationCenterDevices, registrationCenterMachineDevices, registrationCenterUserMachines,
+				registrationCenterUsers, registrationCenterUserHistoryList,
+				registrationCenterUserMachineMappingHistoryList, registrationCenterMachineDeviceHistoryList,
+				registrationCenterDeviceHistoryList, registrationCenterMachineHistoryList, applicantValidDocumentList,
+				individualTypeList, appAuthenticationMethods, appDetails, appRolePriorities, processList,
+				screenAuthorizations, syncJobDefDtos, screenDetails);
+
+		try {
+			future.join();
+		} catch (CompletionException e) {
+			if (e.getCause() instanceof SyncDataServiceException) {
+				throw (SyncDataServiceException) e.getCause();
+			} else if (e.getCause() instanceof SyncServiceException) {
+				throw (SyncServiceException) e.getCause();
+			} else if (e.getCause() instanceof ParseResponseException) {
+				throw (ParseResponseException) e.getCause();
+			} else {
+				throw (RuntimeException) e.getCause();
+			}
+		}
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -256,8 +272,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setAppRolePriorities(appRolePriorities.get());
 		response.setProcessList(processList.get());
 		response.setScreenAuthorizations(screenAuthorizations.get());
-        response.setSyncJobDefinitions(syncJobDefDtos.get());
-        response.setScreenDetails(screenDetails.get());
+		response.setSyncJobDefinitions(syncJobDefDtos.get());
+		response.setScreenDetails(screenDetails.get());
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
@@ -270,16 +286,15 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setRegistrationCenterMachineDeviceHistory(registrationCenterMachineDeviceHistoryList.get());
 
 		return response;
+
 	}
 
 	/**
 	 * This method would return RegistrationCenterMachine mapping based on
 	 * macaddress/serial number
 	 * 
-	 * @param macId
-	 *            - mac address
-	 * @param serialNum
-	 *            - serial number
+	 * @param macId     - mac address
+	 * @param serialNum - serial number
 	 * @return - {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
@@ -322,12 +337,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * regCenterid is not available if regCenterId is present it would check for the
 	 * mapping. If the mapping is not present and is not active it will throw error.
 	 * 
-	 * @param regCenterId
-	 *            - registration center id
-	 * @param macId
-	 *            - mac address
-	 * @param serialNum
-	 *            - serial address
+	 * @param regCenterId - registration center id
+	 * @param macId       - mac address
+	 * @param serialNum   - serial address
 	 * @return {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,

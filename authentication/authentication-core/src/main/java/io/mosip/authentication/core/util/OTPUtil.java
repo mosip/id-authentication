@@ -13,16 +13,16 @@ public final class OTPUtil {
 	}
 
 	/**
-	 * Generate key.
+	 * Generate otp key to trigger otp.
 	 * 
 	 * @param productId productId
-	 * @param uin     uin
+	 * @param idvId     individual id
 	 * @param txnId     txnId
-	 * @param auaCode   auaCode
+	 * @param partnerId   partnerId
 	 * @return generated key.
 	 */
-	public static String generateKey(String productId, String uin, String txnId, String auaCode) {
-		return productId.concat("_").concat(Base64.getEncoder().encodeToString(uin.getBytes())).concat("_")
-				.concat(txnId).concat("_").concat(auaCode);
+	public static String generateKey(String productId, String idvId, String txnId, String partnerId) {
+		return productId.concat("_").concat(Base64.getEncoder().encodeToString(idvId.getBytes())).concat("_")
+				.concat(txnId).concat("_").concat(partnerId);
 	}
 }

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.3</version>
 	</parent>
 
 	<artifactId>registration-client</artifactId>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>io.mosip.registration</groupId>
 			<artifactId>registration-services</artifactId>
-			<version>0.10.2</version>
+			<version>0.10.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -36,6 +36,10 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-rid</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

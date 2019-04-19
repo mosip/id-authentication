@@ -21,5 +21,5 @@ public class DeviceSpecificationDto extends BaseDto {
 	private String deviceTypeCode;
 	private String minDriverversion;
 	private String description;
-	
+
 }

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,16 +40,14 @@ public class DeviceHistoryController {
 	 * Get api to fetch a device history details based on given Device ID, Language
 	 * code and effective date time
 	 * 
-	 * @param id
-	 *            input device Id from User
-	 * @param langCode
-	 *            input Language Code from user
-	 * @param dateAndTime
-	 *            input effective date and time from user
+	 * @param id          input device Id from User
+	 * @param langCode    input Language Code from user
+	 * @param dateAndTime input effective date and time from user
 	 * 
 	 * @return DeviceHistoryResponseDto returning device history detail based on
 	 *         given Device ID, Language code and effective date time
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID")

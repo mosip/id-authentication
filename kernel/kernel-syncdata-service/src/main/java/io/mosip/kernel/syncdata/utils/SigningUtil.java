@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,6 +26,7 @@ import io.mosip.kernel.syncdata.dto.CryptoManagerRequestDto;
 import io.mosip.kernel.syncdata.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.syncdata.exception.CryptoManagerServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 
 /**
  * 
@@ -43,11 +46,15 @@ public class SigningUtil {
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
-	@Value("${mosip.kernel.syncdata.cryptomanager-encrypt-url:http://localhost:8087/cryptomanager/encrypt/private}")
+	@Value("${mosip.kernel.syncdata.cryptomanager-encrypt-url}")
 	private String encryptUrl;
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	private static final String APPLICATION_ID = "KERNEL";
+
+	private static final String REFERENCE_ID = "KER";
 
 	/**
 	 * This util will get the raw data as input and will hash the data. The data
@@ -62,17 +69,28 @@ public class SigningUtil {
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
 
 		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
-		cryptoManagerRequestDto.setApplicationId("KERNEL");
-		cryptoManagerRequestDto.setReferenceId("KER");
+		cryptoManagerRequestDto.setApplicationId(APPLICATION_ID);
+		cryptoManagerRequestDto.setReferenceId(REFERENCE_ID);
 		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));
 		cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		RequestWrapper<CryptoManagerRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(syncDataRequestId);
 		requestWrapper.setVersion(syncDataVersionId);
 		requestWrapper.setRequest(cryptoManagerRequestDto);
+		ResponseEntity<String> responseEntity = null;
 
-		ResponseEntity<String> responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+		try {
+			responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			if (!validationErrorsList.isEmpty()) {
+				throw new CryptoManagerServiceException(validationErrorsList);
+			} else {
+				throw new SyncDataServiceException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
+						SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage());
+			}
+		}
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 

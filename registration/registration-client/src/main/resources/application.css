@@ -14,19 +14,6 @@
 	-fx-border-width : 0 0 1 0;
 	-fx-border-color : #C9C9C9;
 }
-.scroll-bar:vertical {
-		-fx-background-color : white;
-}
-
-.scroll-bar:vertical > .increment-button > .increment-arrow {
-    -fx-background-color: white;
-    -fx-shape: "";
-}
-
-.scroll-bar:vertical > .decrement-button > .decrement-arrow {
-    -fx-background-color: white;
-    -fx-shape: "";
-}
 
 .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: white;
@@ -359,8 +346,13 @@
 	-fx-background-color: white;
 }
 
-.scanPopupHeader {
-	-fx-font-size: 18.0px;
+.documentScanHeader{
+	-fx-background-color : #175768;
+}
+
+.scanPopupHeaderTitle {
+	-fx-text-fill: white;
+	-fx-font-size: 16.0px;
 	-fx-font-weight: bold;
 	-fx-font-family: System;
 }
@@ -636,13 +628,13 @@ Working on new Css by taleev
   	-fx-background-color: #FFFFFF;
   	-fx-padding: 5 0 5 0;
   	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 15px;
-  	
+  	-fx-font-size: 15px;  	
 }
 
 .demographicLangHeader{
-	-fx-font-size : 20px;
+	-fx-font-size : 14px;
 	-fx-text-fill : #2F3033;
+	-fx-font-weight: bold;
 }
 
 .demographicMiscTexts{
@@ -709,7 +701,7 @@ Working on new Css by taleev
 
 #docPreviewImgViewPane{
 	-fx-border-width : 1;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 		
 }
 

@@ -290,7 +290,7 @@ public class DemographicService {
 						"Pre ID generation end time : " + DateUtils.getUTCCurrentDateTimeString());
 				DemographicEntity demographicEntity = demographicRepository
 						.save(serviceUtil.prepareDemographicEntityForCreate(demographicRequest,
-								StatusCodes.PENDING_APPOINTMENT.getCode(), authUserDetails().getUserId(), preId));
+								StatusCodes.PENDING_APPOINTMENT.getCode(),authUserDetails().getUserId(), preId));
 				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity);
 				mainListResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 				saveList.add(res);
@@ -785,7 +785,7 @@ public class DemographicService {
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() == null) {
 				bookingRegistrationDTO = respEntity.getBody().getResponse();
 			}
@@ -884,8 +884,8 @@ public class DemographicService {
 					}, params);
 
 			if (responseEntity.getBody().getErrors() != null) {
-				if (!responseEntity.getBody().getErrors().getMessage()
-						.equalsIgnoreCase(ErrorMessages.DOCUMENT_IS_MISSING.getMessage())) {
+				if (!responseEntity.getBody().getErrors().getErrorCode()
+						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
 					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErrors().getErrorCode(),
 							responseEntity.getBody().getErrors().getMessage());
 				}
@@ -925,20 +925,20 @@ public class DemographicService {
 	private void callBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> responseEntity = null;
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> responseEntity = null;
 		try {
 
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
 					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
-					.queryParam("pre_registration_id", preregId);
+					.queryParam("preRegistrationId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+					new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 					});
 
 			if (responseEntity.getBody().getErrors() != null) {

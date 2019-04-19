@@ -67,8 +67,6 @@ public enum RegistrationStatusCode {
 	/** The packet demo dedupe failed. */
 	DEMO_DEDUPE_FAILED,
 
-	DEMO_POTENTIAL_MATCH,
-
 	/** The packet bio dedupe successful. */
 	PACKET_BIO_DEDUPE_SUCCESS,
 
@@ -117,8 +115,33 @@ public enum RegistrationStatusCode {
 	/** The packet uin printed and posted failure */
 	RESEND_UIN_CARD_FOR_PRINTING,
 
+	/** The external stage success */
 	EXTERNAL_STAGE_SUCCESS,
 
-	EXTERNAL_STAGE_FAILURE
+	/** The external stage failure */
+	EXTERNAL_STAGE_FAILURE,
 
+	/** The virus scan reprocessing */
+	VIRUS_SCAN_REPROCESSING,
+
+	/** The packet upload to packet store reprocessing */
+	PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING,
+
+	/** The structure validation reprocessing */
+	STRUCTURE_VALIDATION_REPROCESSING,
+
+	/** The packet osi validation reprocessing */
+	PACKET_OSI_VALIDATION_REPROCESSING,
+
+	/** The demo dedupe reprocessing */
+	DEMO_DEDUPE_REPROCESSING,
+
+	/** The packet bio dedupe reproccesing */
+	PACKET_BIO_DEDUPE_REPROCESSING,
+
+	/** The packet uin updation reprocessing */
+	PACKET_UIN_UPDATION_REPROCESSING,
+
+    /** The external stage reprocessing */
+    EXTERNAL_STAGE_REPROCESSING
 }

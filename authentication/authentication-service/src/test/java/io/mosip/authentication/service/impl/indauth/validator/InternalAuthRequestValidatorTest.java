@@ -343,7 +343,6 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 

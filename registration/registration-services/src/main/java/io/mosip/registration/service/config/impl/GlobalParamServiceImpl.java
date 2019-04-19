@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
@@ -142,9 +140,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 								/* Add in application map */
 								ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
 
-								if (globalParamId.getCode().contains("kernel") || globalParamId.getCode().contains("mosip.primary")) {
-									isToBeRestarted = true;
-								}
+								isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
 							}
 						}
 						/* Set is deleted true as removed from server */
@@ -158,9 +154,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					for (Entry<String, String> key : globalParamMap.entrySet()) {
 						createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
 
-						if (key.getKey().contains("kernel") || key.getKey().contains("mosip.primary")) {
-							isToBeRestarted = true;
-						}
+						isToBeRestarted = isPropertyRequireRestart(key.getKey());
 						/* Add in application map */
 						ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
 					}
@@ -187,6 +181,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to synch config data as no internet connection and no data in DB");
 		}
+	}
+
+	private boolean isPropertyRequireRestart(String  key) {
+		return (key.contains("kernel") || key.contains("mosip.primary"));
 	}
 
 	private void updateVal(GlobalParam globalParam, String val) {

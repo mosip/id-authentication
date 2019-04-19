@@ -57,6 +57,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -150,6 +151,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The demographic identity. */
 	JSONObject demographicIdentity = null;
+	
+	JSONObject idJSON = null;
 
 	/** The registration status service. */
 	@Autowired
@@ -243,7 +246,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_ASSIGNED);
 					isTransactionSuccessful = true;
-					description = "UIN updated succesfully for registrationId " + registrationId;
+					description = "UIN updated successfully for registrationId " + registrationId;
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -252,7 +255,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 				} else {
-					String statusComment = idResponseDTO != null && idResponseDTO.getErrors() != null
+					String statusComment =  idResponseDTO.getErrors() != null
 							? idResponseDTO.getErrors().get(0).getMessage()
 							: NULL_IDREPO_RESPONSE;
 					registrationStatusDto.setStatusComment(statusComment);
@@ -262,15 +265,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_UNASSIGNED);
 					isTransactionSuccessful = false;
-					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
-							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getMessage()
-									: NULL_IDREPO_RESPONSE;
-
+					description = UIN_FAILURE + registrationId + "::" +statusComment;
+					String idres=idResponseDTO != null ? idResponseDTO.toString()
+							: NULL_IDREPO_RESPONSE;
+					
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-							idResponseDTO != null ? idResponseDTO.getErrors().get(0).getMessage()
-									: NULL_IDREPO_RESPONSE + "  :  " + idResponseDTO != null ? idResponseDTO.toString()
-											: NULL_IDREPO_RESPONSE);
+							statusComment + "  :  " + idres);
 				}
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
@@ -284,6 +285,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -295,30 +298,39 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			object.setIsValid(Boolean.FALSE);
 			object.setRid(registrationId);
 		} catch (ApisResourceAccessException ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 			description = "Internal error occured in UINGenerator stage while processing registrationId "
 					+ registrationId + "::" + ex.getMessage();
 
 		} catch (IOException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 			description = "Internal error in UINGenerator stage while processing registrationId " + registrationId
 					+ e.getMessage();
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.name());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString() + ex.getMessage()
+					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 			description = "Internal error occured in UINGenerator stage while processing registrationId "
 					+ registrationId + ex.getMessage();
 		} finally {
@@ -416,71 +428,44 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	private List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
-		Documents documentsInfoDto = null;
-		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
-		applicantDocuments.add(addBiometricDetails(regId));
-		for (ApplicantDocument entity : applicantDocument) {
-			documentsInfoDto = new Documents();
-			documentsInfoDto.setCategory(entity.getDocName());
-			documentsInfoDto.setValue(CryptoUtil.encodeBase64(entity.getDocStore()));
-			applicantDocuments.add(documentsInfoDto);
+		
+		idJSON = getDemoIdentity(registrationId);
+		regProcessorIdentityJson = getMappeedJSONIdentity();
+		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
+		String proofOfDateOfBirthLabel =regProcessorIdentityJson.getIdentity().getPob().getValue();
+		String proofOfIdentityLabel = regProcessorIdentityJson.getIdentity().getPoi().getValue();
+		String proofOfRelationshipLabel =regProcessorIdentityJson.getIdentity().getPor().getValue();
+		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
+		
+		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJSON, proofOfAddressLabel);
+		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJSON, proofOfDateOfBirthLabel);
+		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJSON, proofOfIdentityLabel);
+		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJSON, proofOfRelationshipLabel);
+		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJSON, applicantBiometricLabel);
+		if(proofOfAddress!=null) {
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+		}
+		if(proofOfDateOfBirth!=null) {
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+		}
+		if(proofOfIdentity!=null) {
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+		}
+		if(proofOfRelationship!=null) {
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+		}
+		if(applicantBiometric!=null) {
+			applicantDocuments.add(getIdDocumnet(registrationId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
 		}
 		return applicantDocuments;
 	}
-
-	/**
-	 * Adds the biometric details.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the documents
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 */
-	private Documents addBiometricDetails(String regId) throws IOException {
-		Documents document = new Documents();
-
-		byte[] biometricDocument = getFile(regId);
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
-
-		String individuaBiometricValue = regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
-		document.setCategory(individuaBiometricValue);
-		document.setValue(CryptoUtil.encodeBase64(biometricDocument));
-		return document;
-	}
-
-	/**
-	 * Gets the file.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the file
-	 * @throws IOException
-	 */
-	private byte[] getFile(String registrationId) throws IOException {
-		byte[] file = null;
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-		PacketMetaInfo packetMetaInfo = null;
-		String applicantBiometricFileName = "";
-
-		packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
-
-		List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
-		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
-				JsonConstant.APPLICANTBIOMETRICSEQUENCE);
-		if (hashList != null)
-			applicantBiometricFileName = hashList.get(0);
-		InputStream fileInStream = adapter.getFile(registrationId,
-				PacketStructure.BIOMETRIC + applicantBiometricFileName.toUpperCase());
-		file = IOUtils.toByteArray(fileInStream);
-
-		return file;
+	
+	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
+		Documents documentsInfoDto = new Documents();;
+		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
+		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
+		documentsInfoDto.setCategory(idDocLabel);
+		return 	documentsInfoDto;
 	}
 
 	/**
@@ -741,9 +726,28 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
-				MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
+	}
+	
+	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+		return regProcessorIdentityJson;
+	}
+	private JSONObject getDemoIdentity(String registrationId) throws IOException{
+		InputStream documentInfoStream = adapter.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+
+		byte[] bytes = IOUtils.toByteArray(documentInfoStream);
+		String demographicJsonString = new String(bytes);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
+		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,utility.getGetRegProcessorDemographicIdentity());
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		return demographicIdentity;
 	}
 }
 

@@ -105,6 +105,7 @@ public class MantraFingerprintProviderTest {
 	/**
 	 * Test segment fingerprint.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testSegmentFingerprint() {
 		Optional<Map> segmentFingerprint = fp.segmentFingerprint(new byte[10]);

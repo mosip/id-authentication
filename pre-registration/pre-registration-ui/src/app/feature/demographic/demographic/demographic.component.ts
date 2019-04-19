@@ -23,6 +23,15 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 
+/**
+ * @description This component takes care of the demographic page.
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class DemographicComponent
+ * @implements {OnInit}
+ * @implements {OnDestroy}
+ */
 @Component({
   selector: 'app-demographic',
   templateUrl: './demographic.component.html',
@@ -38,7 +47,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   languages = [this.primaryLang, this.secondaryLang];
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
-  // textPattern = appConstants.TEXT_PATTERN;
+  dayMaxLength = 2;
+  monthMaxLength = 2;
+  yearMaxLength = 4;
 
   YEAR_PATTERN = appConstants.YEAR_PATTERN;
   MONTH_PATTERN = appConstants.MONTH_PATTERN;
@@ -54,22 +65,23 @@ export class DemographicComponent implements OnInit, OnDestroy {
   DOB_PATTERN: string;
   POSTALCODE_PATTERN: string;
   POSTALCODE_LENGTH: string;
-  ADDRESS_LENGTH: string;
+  ADDRESS_PATTERN: string;
   defaultDay: string;
   defaultMonth: string;
-  FULLNAME_LENGTH: string;
+  FULLNAME_PATTERN: string;
 
   ageOrDobPref = '';
   showDate = false;
   isNewApplicant = false;
   checked = true;
   dataUploadComplete = true;
-  isReadOnly = false;
+  // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
 
   step: number = 0;
   id: number;
+  oldAge: number;
   numberOfApplicants: number;
   userForm: FormGroup;
   transUserForm: FormGroup;
@@ -142,6 +154,17 @@ export class DemographicComponent implements OnInit, OnDestroy {
     addressLine3Secondary: 'secondaryAddressLine3'
   };
 
+  /**
+   * @description Creates an instance of DemographicComponent.
+   * @param {Router} router
+   * @param {RegistrationService} regService
+   * @param {DataStorageService} dataStorageService
+   * @param {SharedService} sharedService
+   * @param {ConfigService} configService
+   * @param {TranslateService} translate
+   * @param {MatDialog} dialog
+   * @memberof DemographicComponent
+   */
   constructor(
     private router: Router,
     private regService: RegistrationService,
@@ -156,18 +179,28 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.initialization();
   }
 
+  /**
+   * @description This is the anular life cycle hook called upon loading the component.
+   *
+   * @memberof DemographicComponent
+   */
   async ngOnInit() {
     console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
-    this.initForm();
     await this.getPrimaryLabels();
+    this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
     if (!this.dataModification) this.consentDeclaration();
   }
 
+  /**
+   * @description This set the global configuration used in the demographic component.
+   *
+   * @memberof DemographicComponent
+   */
   setConfig() {
     this.MOBILE_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_phone];
     this.CNIE_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_CNIE];
@@ -180,11 +213,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.CNIE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_CINE_length];
     this.EMAIL_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_email_length];
     this.MOBILE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_mobile_length];
-    this.ADDRESS_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
-    this.FULLNAME_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
+    this.ADDRESS_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
+    this.FULLNAME_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
     this.agePattern = this.config[appConstants.CONFIG_KEYS.mosip_id_validation_identity_age];
   }
 
+  /**
+   * @description This will return the json object of label of demographic in the primary language.
+   *
+   * @private
+   * @returns the `Promise`
+   * @memberof DemographicComponent
+   */
   private getPrimaryLabels() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
@@ -194,13 +234,17 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This method do the basic initialization,
+   * if user is opt for updation or creating the new applicaton
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
   private initialization() {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    // this.regService.currentMessage.subscribe(message => (this.message = message));
-    // this.message$ = this.regService.currentMessage;
-    // this.message$.subscribe(message => (this.message = message));
     if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
@@ -212,6 +256,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.loginId = this.regService.getLoginId();
   }
 
+  /**
+   * @description This is the consent form, which applicant has to agree upon to proceed forward.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
   private consentDeclaration() {
     if (this.primaryLanguagelabels) {
       const data = {
@@ -233,6 +283,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This will initialize the demographic form and
+   * if update set the inital values of the attributes.
+   *
+   *
+   * @memberof DemographicComponent
+   */
   async initForm() {
     if (this.dataModification) {
       this.user = this.regService.getUser(this.step);
@@ -243,7 +300,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.userForm = new FormGroup({
       [this.formControlNames.fullName]: new FormControl(this.formControlValues.fullName.trim(), [
         Validators.required,
-        Validators.maxLength(Number(this.FULLNAME_LENGTH)),
+        Validators.pattern(this.FULLNAME_PATTERN),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.gender]: new FormControl(this.formControlValues.gender, Validators.required),
@@ -258,35 +315,35 @@ export class DemographicComponent implements OnInit, OnDestroy {
       [this.formControlNames.dateOfBirth]: new FormControl(this.formControlValues.dateOfBirth),
       [this.formControlNames.date]: new FormControl(this.formControlValues.date, [
         Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
+        Validators.maxLength(this.dayMaxLength),
+        Validators.minLength(this.dayMaxLength),
         Validators.pattern(this.DATE_PATTERN)
       ]),
       [this.formControlNames.month]: new FormControl(this.formControlValues.month, [
         Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
+        Validators.maxLength(this.monthMaxLength),
+        Validators.minLength(this.monthMaxLength),
         Validators.pattern(this.MONTH_PATTERN)
       ]),
       [this.formControlNames.year]: new FormControl(this.formControlValues.year, [
         Validators.required,
-        Validators.maxLength(4),
-        Validators.minLength(4),
+        Validators.maxLength(this.yearMaxLength),
+        Validators.minLength(this.yearMaxLength),
         Validators.min(this.maxDate.getFullYear() - 150),
         Validators.pattern(this.YEAR_PATTERN)
       ]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH)),
+        Validators.pattern(this.ADDRESS_PATTERN),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.addressLine2]: new FormControl(
         this.formControlValues.addressLine2,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH))
+        Validators.pattern(this.ADDRESS_PATTERN)
       ),
       [this.formControlNames.addressLine3]: new FormControl(
         this.formControlValues.addressLine3,
-        Validators.maxLength(Number(this.ADDRESS_LENGTH))
+        Validators.pattern(this.ADDRESS_PATTERN)
       ),
       [this.formControlNames.region]: new FormControl(this.formControlValues.region, Validators.required),
       [this.formControlNames.province]: new FormControl(this.formControlValues.province, Validators.required),
@@ -334,11 +391,19 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.setGender();
   }
 
+  /**
+   * @description This sets the top location hierachy,
+   * if update set the regions also.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
   private async setLocations() {
     await this.getLocationMetadataHirearchy();
+    console.log('this.uppermostLocationHierarchy', this.uppermostLocationHierarchy);
 
     this.selectedLocationCode = [
-      this.uppermostLocationHierarchy[0].code,
+      this.uppermostLocationHierarchy,
       this.formControlValues.region,
       this.formControlValues.province,
       this.formControlValues.city,
@@ -360,12 +425,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is to get the list of gender available in the master data.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
   private async setGender() {
     await this.getGenderDetails();
     this.filterOnLangCode(this.primaryLang, this.primaryGender, this.genders);
     this.filterOnLangCode(this.secondaryLang, this.secondaryGender, this.genders);
   }
 
+  /**
+   * @description This set the initial values for the form attributes.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
   private setFormControlValues() {
     if (!this.dataModification) {
       this.formControlValues = {
@@ -432,25 +509,42 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPreferenceChange(event: MatSlideToggleChange) {
-    if (event.checked) {
-      this.isReadOnly = true;
-    } else {
-      this.isReadOnly = false;
-    }
-  }
-
+  /**
+   * @description This will get the gender details from the master data.
+   *
+   * @private
+   * @returns
+   * @memberof DemographicComponent
+   */
   private getGenderDetails() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getGenderDetails().subscribe(response => {
-        console.log(response);
-
-        this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
-        resolve(true);
-      });
+      this.dataStorageService.getGenderDetails().subscribe(
+        response => {
+          console.log(response);
+          if (response[appConstants.NESTED_ERROR]) {
+            this.onError();
+          } else {
+            this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+            resolve(true);
+          }
+        },
+        error => {
+          console.log('Unable to fetch gender');
+          this.onError();
+        }
+      );
     });
   }
 
+  /**
+   * @description This will filter the gender on the basis of langugae code.
+   *
+   * @private
+   * @param {string} langCode
+   * @param {*} [genderEntity=[]]
+   * @param {*} entityArray
+   * @memberof DemographicComponent
+   */
   private filterOnLangCode(langCode: string, genderEntity = [], entityArray: any) {
     if (entityArray) {
       entityArray.filter((element: any) => {
@@ -470,33 +564,52 @@ export class DemographicComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  /**
+   * @description This is to get the top most location Hierarchy, i.e. `Country Code`
+   *
+   * @returns
+   * @memberof DemographicComponent
+   */
   getLocationMetadataHirearchy() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getLocationMetadataHirearchy(appConstants.COUNTRY_HIERARCHY).subscribe(
-        response => {
-          const countryHirearchy = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
-          if (countryHirearchy) {
-            const uppermostLocationHierarchy = countryHirearchy.filter(
-              (element: any) => element.name === appConstants.COUNTRY_NAME
-            );
-            this.uppermostLocationHierarchy = uppermostLocationHierarchy;
-            resolve(this.uppermostLocationHierarchy);
-          }
-        },
-        error => console.log('Error in fetching location Hierarchy')
-      );
+      const uppermostLocationHierarchy = this.dataStorageService.getLocationMetadataHirearchy();
+      this.uppermostLocationHierarchy = uppermostLocationHierarchy;
+      resolve(this.uppermostLocationHierarchy);
+      //please don't remove
+      // const uppermostLocationHierarchy = this.dataStorageService.getLocationMetadataHirearchy(
+      //   appConstants.COUNTRY_HIERARCHY
+      // );
+      // .subscribe(
+      //   response => {
+      //     const countryHirearchy = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
+      //     if (countryHirearchy) {
+      //       const uppermostLocationHierarchy = countryHirearchy.filter(
+      //         (element: any) => element.name === appConstants.COUNTRY_NAME
+      //       );
+      //       this.uppermostLocationHierarchy = uppermostLocationHierarchy;
+      //       resolve(this.uppermostLocationHierarchy);
+      //     }
+      //   },
+      //   error => {
+      //     this.onError();
+      //     console.log('Error in fetching location Hierarchy');
+      //   }
+      // );
     });
   }
 
   async onLocationSelect(
     event: MatSelectChange,
     nextHierarchies: CodeValueModal[][],
-    currentLocationHierarchies: CodeValueModal[][]
+    currentLocationHierarchies: CodeValueModal[][],
+    formControlName?: string
   ) {
     if (nextHierarchies) {
       for (let index = 0; index < nextHierarchies.length; index++) {
         const element = nextHierarchies[index];
         const languageCode = this.languages[index];
+        if (formControlName) this.userForm.controls[formControlName].setValue('');
         this.getLocationImmediateHierearchy(languageCode, event.value, element);
       }
     }
@@ -531,31 +644,35 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
-          response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
-            let codeValueModal: CodeValueModal = {
-              valueCode: element.code,
-              valueName: element.name,
-              languageCode: languageCode
-            };
-            childLocations.push(codeValueModal);
-            if (currentLocationCode && codeValueModal.valueCode === currentLocationCode) {
-              this.codeValue.push(codeValueModal);
-            }
-          });
-          return resolve(true);
+          console.log('IMMEDIATE', response);
+          if (response[appConstants.NESTED_ERROR]) {
+            this.onError();
+          } else {
+            response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
+              let codeValueModal: CodeValueModal = {
+                valueCode: element.code,
+                valueName: element.name,
+                languageCode: languageCode
+              };
+              childLocations.push(codeValueModal);
+              if (currentLocationCode && codeValueModal.valueCode === currentLocationCode) {
+                this.codeValue.push(codeValueModal);
+              }
+            });
+            return resolve(true);
+          }
         },
-        error => console.log('Unable to fetch Below Hierearchy')
+        error => {
+          this.onError();
+          console.log('Unable to fetch Below Hierearchy');
+        }
       );
     });
   }
 
   onBack() {
     let url = '';
-    // if (this.message['modifyUser'] === 'false') {
-    //   url = Utils.getURL(this.router.url, 'summary/preview');
-    // } else {
     url = Utils.getURL(this.router.url, 'dashboard', 2);
-    // }
     this.router.navigate([url]);
   }
 
@@ -578,7 +695,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onAgeChange() {
     const age = this.age.nativeElement.value;
-    if (age) {
+    console.log('old age', this.oldAge);
+    console.log('age', age);
+
+    if (age && age != this.oldAge) {
       const now = new Date();
       const calulatedYear = now.getFullYear() - age;
       this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
@@ -591,11 +711,23 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  // nextElementFocus() {
+  //   console.log('AAYA');
+
+  //   const date = this.dd.nativeElement.value;
+  //   const month = this.mm.nativeElement.value;
+  //   const year = this.yyyy.nativeElement.value;
+  //   console.log(this.mm);
+
+  //   if (date.length == 2 && month.length != 2) this.mm.nativeElement.focus();
+  // }
+
   onDOBChange() {
     const date = this.dd.nativeElement.value;
     const month = this.mm.nativeElement.value;
     const year = this.yyyy.nativeElement.value;
-    if (date !== '' && month !== '' && year !== '') {
+
+    if (date.length == 2 && month.length == 2 && year.length == 4) {
       const newDate = month + '/' + date + '/' + year;
       const dateform = new Date(newDate);
       const _month = dateform.getMonth() + 1;
@@ -614,12 +746,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This method calculates the age for the given date.
+   *
+   * @param {Date} bDay
+   * @returns
+   * @memberof DemographicComponent
+   */
   calculateAge(bDay: Date) {
     const now = new Date();
     const born = new Date(bDay);
     const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
 
     if (this.dataModification) {
+      this.oldAge = years;
       return years;
     }
     if (years > 150) {
@@ -633,6 +773,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.userForm.controls[this.formControlNames.dateOfBirth].markAsUntouched();
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
       this.userForm.controls[this.formControlNames.year].setErrors(null);
+      this.oldAge = years;
       return years;
     }
   }
@@ -641,10 +782,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (fromControl.value) {
       const request: any = {
         from_field_lang: this.primaryLang,
-        // from_field_name: toControl,
         from_field_value: fromControl.value,
         to_field_lang: this.secondaryLang,
-        // to_field_name: toControl,
         to_field_value: ''
       };
 
@@ -656,7 +795,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
           else this.transUserForm.controls[toControl].patchValue('can not be transliterated');
         },
         error => {
-          this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+          // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+          this.onError();
           console.log(error);
         }
       );
@@ -684,12 +824,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.dataStorageService.updateUser(request, preRegistrationId).subscribe(
           response => {
             console.log(response);
-            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
-              this.router.navigate(['error']);
-              return;
-            }
-            if (response[appConstants.NESTED_ERROR] !== null) {
-              this.router.navigate(['error']);
+            if (
+              (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
+              response[appConstants.NESTED_ERROR] !== null
+            ) {
+              this.onError();
               return;
             } else {
               this.onModification(responseJSON);
@@ -698,19 +837,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
           },
           error => {
             console.log(error);
-            this.router.navigate(['error']);
+            this.onError();
           }
         );
       } else {
         this.dataStorageService.addUser(request).subscribe(
           response => {
             console.log(response);
-            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
-              this.router.navigate(['error']);
-              return;
-            }
-            if (response[appConstants.NESTED_ERROR] !== null) {
-              this.router.navigate(['error']);
+            if (
+              (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
+              response[appConstants.NESTED_ERROR] !== null
+            ) {
+              this.onError();
               return;
             } else {
               this.onAddition(response, responseJSON);
@@ -719,7 +857,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
           },
           error => {
             console.log(error);
-            this.router.navigate(['error']);
+            // this.router.navigate(['error']);
+            this.onError();
           }
         );
       }
@@ -733,11 +872,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     );
     this.sharedService.updateNameList(this.step, {
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
       preRegId: this.preRegId,
-      postalCode: this.formControlValues.postalCode,
+      postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
       regDto: this.sharedService.getNameList()[0].regDto
     });
+
+    console.log('GET NAME LIST on Modification', this.sharedService.getNameList());
   }
 
   private onAddition(response: any, request: ResponseModel) {
@@ -749,6 +890,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
       preRegId: this.preRegId,
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
+    console.log('GET NAME LIST On ADDITON', this.sharedService.getNameList());
+    console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
   onSubmission() {
@@ -811,27 +954,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private createRequestJSON(identity: IdentityModel) {
-    // const identity = this.createIdentityJSONDynamic();
-    // let preRegistrationId = '';
-    // let createdBy = this.loginId;
-    // let createdDateTime = Utils.getCurrentDate();
-    // let updatedBy = '';
-    // let updatedDateTime = '';
     let langCode = this.primaryLang;
     if (this.user) {
-      // preRegistrationId = this.user.preRegId;
-      // createdBy = this.user.request.createdBy;
-      // createdDateTime = this.user.request.createdDateTime;
-      // updatedBy = this.loginId;
-      // updatedDateTime = Utils.getCurrentDate();
       langCode = this.user.request.langCode;
     }
     const req: RequestModel = {
-      // preRegistrationId: preRegistrationId,
-      // createdBy: createdBy,
-      // createdDateTime: createdDateTime,
-      // updatedBy: updatedBy,
-      // updatedDateTime: updatedDateTime,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)
     };
@@ -839,18 +966,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private createResponseJSON(identity: IdentityModel) {
-    // const identity = this.createIdentityJSONDynamic();
     let preRegistrationId = '';
     let createdBy = this.loginId;
     let createdDateTime = Utils.getCurrentDate();
-    // let updatedBy = '';
     let updatedDateTime = '';
     let langCode = this.primaryLang;
     if (this.user) {
       preRegistrationId = this.user.preRegId;
       createdBy = this.user.request.createdBy;
       createdDateTime = this.user.request.createdDateTime;
-      // updatedBy = this.loginId;
       updatedDateTime = Utils.getCurrentDate();
       langCode = this.user.request.langCode;
     }
@@ -858,7 +982,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       preRegistrationId: preRegistrationId,
       createdBy: createdBy,
       createdDateTime: createdDateTime,
-      // updatedBy: updatedBy,
       updatedDateTime: updatedDateTime,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)
@@ -868,5 +991,27 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // this.message$
+  }
+  /**
+   * @description This is a dialoug box whenever an erroe comes from the server, it will appear.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
+  private onError() {
+    console.log(this.primaryLanguagelabels);
+    console.log(this.dialog.openDialogs);
+
+    this.dataUploadComplete = true;
+    const body = {
+      case: 'ERROR',
+      title: 'ERROR',
+      message: this.primaryLanguagelabels.error.error,
+      yesButtonText: this.primaryLanguagelabels.error.button_ok
+    };
+    this.dialog.open(DialougComponent, {
+      width: '250px',
+      data: body
+    });
   }
 }

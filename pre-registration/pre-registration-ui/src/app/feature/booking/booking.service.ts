@@ -10,7 +10,7 @@ export class SharedService {
   private allApplicants: NameList[] = [];
   private coordinatesSource = new BehaviorSubject(Array);
   currentCoordinates = this.coordinatesSource.asObservable();
-
+  private sendNotification = false;
   private registrationCenterCoordinatesList = new BehaviorSubject(Array);
   coordinatesList = this.registrationCenterCoordinatesList.asObservable();
 
@@ -72,5 +72,17 @@ export class SharedService {
     const index = this.getIndexByPreId(preId);
     this.nameList[index].bookingData = bookingDetails;
     return this.nameList.slice();
+  }
+
+  getSendNotification() {
+    return this.sendNotification;
+  }
+
+  resetSendNotification() {
+    this.sendNotification = false;
+  }
+
+  setSendNotification(flag: boolean) {
+    this.sendNotification = flag;
   }
 }
