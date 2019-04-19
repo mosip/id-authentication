@@ -189,7 +189,7 @@ public class UMCValidator {
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
 		MachineHistoryResponseDto mhrdto;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<?> responseWrapper;
 		try {
 			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
 					pathsegments, "", "", ResponseWrapper.class);
@@ -280,7 +280,7 @@ public class UMCValidator {
 
 	private boolean validateMapping(List<String> pathsegments) throws  IOException, ApisResourceAccessException {
 		boolean isValidUser = false;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<?> responseWrapper ;
 		RegistrationCenterUserMachineMappingHistoryResponseDto userDto =null;
 		try {
 			responseWrapper = (ResponseWrapper<?>)registrationProcessorRestService
@@ -473,7 +473,7 @@ public class UMCValidator {
 			for (FieldValue fieldValue : registreredDeviceIds) {
 				String deviceId = null;
 				deviceId = fieldValue.getValue();
-				ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+				ResponseWrapper<?> responseWrapper ;
 				RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
 				try {
 					List<String> pathsegments = new ArrayList<>();
@@ -566,7 +566,7 @@ public class UMCValidator {
 				String deviceId = null;
 				deviceId = fieldValue.getValue();
 				DeviceHistoryResponseDto deviceHistoryResponsedto;
-				ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+				ResponseWrapper<?> responseWrapper;
 				try {
 					List<String> pathsegments = new ArrayList<>();
 
@@ -667,7 +667,7 @@ public class UMCValidator {
 			pathsegments.add(primaryLanguagecode);
 			pathsegments.add(rcmDto.getPacketCreationDate());
 			RegistartionCenterTimestampResponseDto result;
-			ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+			ResponseWrapper<?> responseWrapper ;
 			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
 							ResponseWrapper.class);

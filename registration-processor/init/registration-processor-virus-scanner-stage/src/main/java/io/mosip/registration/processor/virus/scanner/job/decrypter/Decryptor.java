@@ -138,10 +138,10 @@ public class Decryptor {
 			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
 			request.setRequesttime(localdatetime);
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response;
 			response =  (ResponseWrapper<CryptomanagerResponseDto>) restClientService.postApi(
 					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
+			CryptomanagerResponseDto cryptomanagerResponseDto;
 			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
