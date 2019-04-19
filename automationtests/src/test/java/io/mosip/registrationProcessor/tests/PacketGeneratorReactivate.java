@@ -28,7 +28,9 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.RegProcTransactionDb;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -37,164 +39,154 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
-	private static Logger logger = Logger.getLogger(PacketReceiver.class);	
-	protected static String testCaseName = "";
-	boolean status = false;
-	String finalStatus = "";	
-	JSONArray arr = new JSONArray();	
-	ObjectMapper mapper = new ObjectMapper();
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	SoftAssert softAssert=new SoftAssert();
-	Response actualResponse = null;
-	JSONObject expectedResponse = null;
-	String dest = "";
-	static String folderPath = "regProc/PacketReceiver";
-	static String outputFile = "PacketReceiverOutput.json";
-	static String requestKeyFile = "PacketReceiverRequest.json";
-	String rId = null;
-	Properties prop =  new Properties();
+	 private static Logger logger = Logger.getLogger(PacketReceiver.class);	 
+	 protected static String testCaseName = "";
+	 boolean status = false;
+	 String finalStatus = "";	 
+	 JSONArray arr = new JSONArray();	 
+	 ObjectMapper mapper = new ObjectMapper();
+	 ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	 SoftAssert softAssert=new SoftAssert();
+	 Response actualResponse = null;
+	 JSONObject expectedResponse = null;
+	 String dest = "";
+	 static String folderPath = "regProc/ReactivateRequest";
+	 static String outputFile = "ReactivateRequestOutput.json";
+	 static String requestKeyFile = "ReactivateUinRequest.json";
+	 String rId = null;
+	 Properties prop =  new Properties();
+	 RegProcTransactionDb regProcDbRead=new RegProcTransactionDb();
+	 /**
+	  * This method is used for reading the test data based on the test case name passed
+	  * 
+	  * @param context
+	  * @return object[][]
+	  * @throws Exception
+	  */
+	 @DataProvider(name = "DeactivateUin")
+	 public Object[][] readData(ITestContext context){
+	 	 String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+	 	 String testParam = context.getCurrentXmlTest().getParameter("testType");
+	 	 Object[][] readFolder = null;
+	 	 try {
+	 	 	 prop.load(new FileReader(new File(propertyFilePath)));
+	 	 	 switch ("smokeAndRegression") {
+	 	 	 case "smoke":
+	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+	 	 	 	 break;
+	 	 	 case "regression":
+	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+	 	 	 	 break;
+	 	 	 default:
+	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+	 	 	 }
+	 	 }catch (IOException | ParseException e) {
+	 	 	 logger.error("Exception occurred in Packet Receiver class in readData method"+e);
+	 	 }
+	 	 return readFolder;
+	 }
 
-	/**
-	 * This method is used for reading the test data based on the test case name passed
-	 * 
-	 * @param context
-	 * @return object[][]
-	 * @throws Exception
-	 */
-	@DataProvider(name = "PacketReceiver")
-	public Object[][] readData(ITestContext context){
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		Object[][] readFolder = null;
-		try {
-			prop.load(new FileReader(new File(propertyFilePath)));
-			switch (testParam) {
-			case "smoke":
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-				break;
-			case "regression":
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-				break;
-			default:
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-			}
-		}catch (IOException | ParseException e) {
-			logger.error("Exception occurred in Packet Receiver class in readData method"+e);
-		}
-		return readFolder;
-	}
+	 /**
+	  * This method is used for generating actual response and comparing it with expected response
+	  * along with db check and audit log check
+	  * @param testSuite
+	  * @param i
+	  * @param object
+	  */
+	 @Test(dataProvider="DeactivateUin")
+	 public void packetGenerator(String testSuite, Integer i, JSONObject object){
+	 	 List<String> outerKeys = new ArrayList<String>();
+	 	 List<String> innerKeys = new ArrayList<String>();
+	 	 
 
-	/**
-	 * This method is used for generating actual response and comparing it with expected response
-	 * along with db check and audit log check
-	 * @param testSuite
-	 * @param i
-	 * @param object
-	 */
-	@Test(dataProvider="PacketReceiver")
-	public void packetReceiver(String testSuite, Integer i, JSONObject object){
+	 	 try {
+	 	 	 JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	 
+	 	 	 expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		File file = null;
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		String configPath = "src/test/resources/" + testSuite + "/";
-		File folder = new File(configPath);
-		File[] listOfFolders = folder.listFiles();
-		JSONObject objectData = new JSONObject();
-
-		try {
-			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
-			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
-
-			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("requesttimestamp");
-			outerKeys.add("responsetime");
-			innerKeys.add("createdDateTime");
-			innerKeys.add("updatedDateTime");
-
-			for (int j = 0; j < listOfFolders.length; j++) {
-				if (listOfFolders[j].isDirectory()) {
-					if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-						logger.info("Testcase name is" + listOfFolders[j].getName());
-						File[] listOfFiles = listOfFolders[j].listFiles();
-						for (File f : listOfFiles) {
-							if (f.getName().toLowerCase().contains("request")) {
-								objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-								file=new File(f.getParent()+"/"+objectData.get("path"));
-								rId = file.getName().substring(0, file.getName().length()-4);
-							}
-						}
-					}
-				}
-			}
+	 	 	 //outer and inner keys which are dynamic in the actual response
+	 	 	 outerKeys.add("responsetime");
+	 	 	 innerKeys.add("registrationId");
 
 
-			//generation of actual response
-			actualResponse = applicationLibrary.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
+	 	 	 //generation of actual response
+	 	 	 actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
+	 	 /*	 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
+	 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID);
+	 	 */	 //Asserting actual and expected response
+	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+	 	 	 if(status) {
+	 	 	 	 finalStatus="Pass";
+	 	 	 }else
+	 	 	 	 finalStatus="Fail";
+	 	 	 object.put("status", finalStatus);
+	 	 	 arr.add(object);
+	 	 	 boolean setFinalStatus = false;
+	 	 	 if (finalStatus.equals("Fail")) {
+	 	 	 	 setFinalStatus = false;
+	 	 	 } else if (finalStatus.equals("Pass"))
+	 	 	 	 setFinalStatus = true;
+	 	 	 Verify.verify(setFinalStatus);
+	 	 	 softAssert.assertAll();
+	 	 } catch (IOException | ParseException e) {
+	 	 	 logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
+	 	 }
+	 }
 
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			
+	 /**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
+	 @BeforeMethod(alwaysRun=true)
+	 public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
+	 	 JSONObject object = (JSONObject) testdata[2];
+	 	 testCaseName = object.get("testCaseName").toString();
+	 }
 
-		} catch (IOException | ParseException e) {
-			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
-		}
-	}
+	 /**
+	  * This method is used for generating report
+	  * 
+	  * @param result
+	  */
+	 @AfterMethod(alwaysRun = true)
+	 public void setResultTestName(ITestResult result) {
 
-	/**
-	 * This method is used for fetching test case name
-	 * @param method
-	 * @param testdata
-	 * @param ctx
-	 */
-	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
-	}
+	 	 Field method = null;
+	 	 try {
+	 	 	 method = TestResult.class.getDeclaredField("m_method");
+	 	 	 method.setAccessible(true);
+	 	 	 method.set(result, result.getMethod().clone());
+	 	 	 BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+	 	 	 Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+	 	 	 f.setAccessible(true);
+	 	 	 f.set(baseTestMethod, PacketGeneratorReactivate.testCaseName);
+	 	 } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+	 	 	 logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
+	 	 }
 
-	/**
-	 * This method is used for generating report
-	 * 
-	 * @param result
-	 */
-	@AfterMethod(alwaysRun = true)
-	public void setResultTestName(ITestResult result) {
+	 }
 
-		Field method = null;
-		try {
-			method = TestResult.class.getDeclaredField("m_method");
-			method.setAccessible(true);
-			method.set(result, result.getMethod().clone());
-			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-			f.setAccessible(true);
-			f.set(baseTestMethod, PacketReceiver.testCaseName);
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
-		}
+	 /**
+	  * This method is used for generating output file with the test case result
+	  */
+	 @AfterClass
+	 public void statusUpdate() {
+	 	 String configPath =  "src/test/resources/" + folderPath + "/"
+	 	 	 	 + outputFile;
+	 	 try (FileWriter file = new FileWriter(configPath)) {
+	 	 	 file.write(arr.toString());
+	 	 	 logger.info("Successfully updated Results to " + outputFile);
+	 	 	 file.close();
+	 	 } catch (IOException e) {
+	 	 	 logger.error("Exception occurred in PacketReceiver class in statusUpdate "+e);
+	 	 }
+	 }
 
-	}
+	 @Override
+	 public String getTestName() {
+	 	 return this.testCaseName;
+	 }
 
-	/**
-	 * This method is used for generating output file with the test case result
-	 */
-	@AfterClass
-	public void statusUpdate() {
-		String configPath =  "src/test/resources/" + folderPath + "/"
-				+ outputFile;
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to " + outputFile);
-			file.close();
-		} catch (IOException e) {
-			logger.error("Exception occurred in PacketReceiver class in statusUpdate "+e);
-		}
-	}
-
-	@Override
-	public String getTestName() {
-		return this.testCaseName;
-	}
 
 }
