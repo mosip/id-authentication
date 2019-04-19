@@ -131,8 +131,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			
 			
 
-			outerKeys.add("resTime");
-			innerKeys.add("registartion_center_id");
+			outerKeys.add("responsetime");
+			innerKeys.add("registration_center_id");
 			innerKeys.add("pre_registration_ids");
 
 			//status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);

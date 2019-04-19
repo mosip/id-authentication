@@ -9,11 +9,39 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.mosip.util.ReadFolder;
+
 public class SampleTest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		String testCaseName = null;
+		testCaseName="CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded";
+		String val = testCaseName.contains("smoke")
+				?(testCaseName="cond1"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidCatCode")
+				?(testCaseName="cond2"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidDestinationPreId")
+				?(testCaseName="cond3"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidSourcePreId")
+				?(testCaseName="cond4"):testCaseName.contains("CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists")
+				?(testCaseName="cond5"):(testCaseName="cond6");
+		
+         System.out.println("val:"+val.toString());
+         
+         switch (val) {
+ 		case "cond1":
+ 			
+ 			System.out.println("1111");
+         break;
+ 		case "cond6":
+ 			System.out.println("2222");
+ 	         break;
+ 		default:
+ 			System.out.println("33333");
+ 			break;
+ 		
 
+ 	}
+         
+         
 		/*
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", "98989898");
@@ -52,7 +80,7 @@ public class SampleTest {
 		}
         
 		*/
-		HashMap<String, String> parm= new HashMap<>();
+		/*HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", "98989898");
 		parm.put("poerpepro", "45345345435");
 		System.out.println("hjjh"+parm);
@@ -61,16 +89,16 @@ public class SampleTest {
 		System.out.println(parm.get(parm.keySet().toArray()[0]).toString());
 		System.out.println("Size of HashMap : " + parm.size());
 		
-		/*for(int i=0;i<parm.size();i++)
+		for(int i=0;i<parm.size();i++)
 		{	
 		System.out.println("jhjhjhh::jljljl::"+parm.get(parm.keySet().toArray()[i]).toString());
 		}
-		*/
+		
 		int i=0;
 			
 		System.out.println("jhjhjhh::jljljl::"+parm.get(parm.keySet().toArray()[i]).toString());
 		System.out.println("jhjhjhh::jljljl::"+parm.get(parm.keySet().toArray()[i+1]).toString());
-		
+		*/
 		/*
 		         
 		Set<String> keySet = parm.keySet(); 

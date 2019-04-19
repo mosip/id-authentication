@@ -913,16 +913,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Get All Documents For Pre-Registration Id
 	 * 
 	 */
-	public Response getAllDocumentForPreId(String preId) {
-
-		testSuite = "GetAllDocumentForPreRegId/GetAllDocumentForPreRegId_smoke";
-		
+	public Response getAllDocumentForPreId(String preId) 
+	{
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
-		
-		
 		response = applnLib.getRequestPathParam(preReg_FetchAllDocumentURI, parm);
-			
 		return response;
 	}
 
@@ -935,9 +930,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public Response getAllDocumentForDocId(String preId,String DocId) 
 	{
-
-		testSuite = "GetAllDocumentForDocId/GetAllDocumentForDocId_smoke";
-		
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
 		
@@ -950,41 +942,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Delete All Document by Pre-RegistrationId
 	 * 
 	 */
-	public Response deleteAllDocumentByPreId(String preId) {
-
-		/*testSuite = "DeleteAllDocumentsByPreRegID/DeleteAllDocumentForPreRegId_smoke";
-		request = getRequest(testSuite);
+	public Response deleteAllDocumentByPreId(String preId) 
+	{
 		
-		*/
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		/*ObjectNode deleteAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preId).json();
-		String delDocForPreId = deleteAllDocForPreIdReq.toString();
-		JSONObject delDocByPreId = null;
-		try {
-			delDocByPreId = (JSONObject) parser.parse(delDocForPreId);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.deleteRequest(preReg_DeleteAllDocumentByPreIdURI, GetHeader.getHeader(delDocByPreId));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 		preReg_DeleteAllDocumentByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
 		response = applnLib.deleteRequestWithPathParam(preReg_DeleteAllDocumentByPreIdURI);
-		
-		
 		
 		return response;
 	}
@@ -995,34 +957,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response deleteAllDocumentByDocId(String docId,String preId) {
-
-		/*testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke";
-		request = getRequest(testSuite);*/
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-
-		/*ObjectNode deleteAllDocForDocIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.documentId", documentId).json();
-
-		String delDocForDocId = deleteAllDocForDocIdReq.toString();
-		JSONObject delDocByDocIdRes = null;
-		try {
-			delDocByDocIdRes = (JSONObject) parser.parse(delDocForDocId);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			response = applnLib.deleteRequest(prereg_DeleteDocumentByDocIdURI, GetHeader.getHeader(delDocByDocIdRes));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
@@ -1061,45 +995,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response copyUploadedDocuments(String destPreId,String sourcePreId,String docCatCode) {
-		
-		/*testSuite = "CopyUploadedDocument/CopyUploadedDocument_smoke";
-		request = getRequest(testSuite);*/
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		/*ObjectNode copyDocForSrcPreId = JsonPath.using(config).parse(request.toString())
-				.set("$.sourcePrId", sourcePreId).json();
-		ObjectNode copyDocForDestPreId = JsonPath.using(config).parse(copyDocForSrcPreId.toString())
-				.set("$.destinationPreId", destPreId).json();
-		String copyDoc = copyDocForDestPreId.toString();
-		JSONObject copyDocRes = null;
-		try {
-			copyDocRes = (JSONObject) parser.parse(copyDoc);
-		
-			GetHeader.getHeader(request);
-			response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
-		} 
-		*/
-		
+
 		preReg_CopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
-		
-		System.out.println("MY URL:"+preReg_CopyDocumentsURI);
 		
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("catCode", docCatCode);
 		parm.put("sourcePreId", sourcePreId);
-		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
 		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_CopyDocumentsURI, parm);
-		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, );
-		
-		
 		return response;
 	}
 
@@ -1390,47 +1292,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response FetchAppointmentDetails(String preID) {
-		
-		/*
-		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
-		request = getRequest(testSuite);
-		
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 
-		ObjectNode fetchAppDetails = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preID).json();
-		String fetchAppDetStr = fetchAppDetails.toString();
-		JSONObject fetchAppjson = null;
-		try {
-			fetchAppjson = (JSONObject) parser.parse(fetchAppDetStr);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(fetchAppjson);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.getRequest(preReg_FecthAppointmentDetailsURI, GetHeader.getHeader(fetchAppjson));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
-		
+
 		preReg_FecthAppointmentDetailsURI=preReg_FecthAppointmentDetailsURI+preID;
 		response = applnLib.get_RequestWithoutBody(preReg_FecthAppointmentDetailsURI);
-		
-		
 		return response;
 	}
 
@@ -1439,61 +1303,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response CancelBookingAppointment(String preID,Response FetchAppDet) {
-		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		/*ObjectNode cancelAppPreRegId = JsonPath.using(config).parse(request.toJSONString())
-				.set("$.request.pre_registration_id", preID).json();
-		
-		*/
-		ObjectNode cancelAppRegCenterId = JsonPath.using(config).parse(request.toJSONString())
-				.set("$.request.registration_center_id ",
-						FetchAppDet.jsonPath().get("response.registration_center_id").toString())
-				.json();
-		ObjectNode cancelAppDate = JsonPath.using(config).parse(cancelAppRegCenterId.toString())
-				.set("$.request.appointment_date", FetchAppDet.jsonPath().get("response.appointment_date").toString())
-				.json();
-		ObjectNode cancelAppTimeSlotFrom = JsonPath.using(config).parse(cancelAppDate.toString())
-				.set("$.request.time_slot_from", FetchAppDet.jsonPath().get("response.time_slot_from").toString())
-				.json();
-		ObjectNode cancelAppRequest = JsonPath.using(config).parse(cancelAppTimeSlotFrom.toString())
-				.set("$.request.time_slot_to", FetchAppDet.jsonPath().get("response.time_slot_to").toString()).json();
+	public Response CancelBookingAppointment(String preID) {
 
-		String cancelAppDetStr = cancelAppRequest.toString();
-		
-		
-		System.out.println("PreRegg Request::"+cancelAppRequest);
-		
-		JSONObject cancelAppjson = null;
-		try {
-			cancelAppjson = (JSONObject) parser.parse(cancelAppDetStr);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
 		preReg_CancelAppointmentURI=preReg_CancelAppointmentURI+preID;
-		response = applnLib.putRequest_WithBody(preReg_CancelAppointmentURI, cancelAppjson);
-		
+		response = applnLib.putRequest_WithoutBody(preReg_CancelAppointmentURI);
 		return response;
 	}
 

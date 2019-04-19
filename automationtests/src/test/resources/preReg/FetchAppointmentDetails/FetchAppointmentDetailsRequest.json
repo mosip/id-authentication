@@ -1,3 +1,8 @@
 {
-                             "pre_registration_id": "39857836075371"
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_Alphabets":"",
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_AlphaNumeric":"",
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_EmptyValue":"",
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_SpecialCharacters":"",
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_GreaterThanMaxLength":""
 }

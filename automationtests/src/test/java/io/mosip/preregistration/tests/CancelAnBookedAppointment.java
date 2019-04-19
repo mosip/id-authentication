@@ -122,13 +122,9 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		/* Fetch Appointment Details for specific PreId */
 		Response fetchCenterRes = preRegLib.FetchAppointmentDetails(preId);
 		
-		System.out.println("Fetch Center:"+fetchCenterRes.asString());
-		
 		// Cancel Booked Appointment Details
-		Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId,fetchCenterRes);
+		Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
 
-		
-		System.out.println("Cancel::"+CancelBookingApp.asString());
 		
 		// removing the keys for assertion
 		outerKeys.add("responsetime");

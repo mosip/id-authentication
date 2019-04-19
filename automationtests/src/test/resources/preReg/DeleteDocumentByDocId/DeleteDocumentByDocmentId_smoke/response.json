@@ -1,12 +1,11 @@
 {
-    "id": "mosip.pre-registration.document.upload",
+    "id": "mosip.pre-registration.document.delete.specific",
     "version": "1.0",
-    "err": null,
-    "responsetime": "2019-03-29T07:21:25.299Z",
+    "errors": null,
+    "responsetime": "2019-04-17T06:09:05.271Z",
     "response": [
         {
-            "documnet_Id": "4277f075-51f3-11e9-8073-d354907687a4",
-            "resMsg": "DOCUMENT_DELETE_SUCCESSFUL"
+            "message": "Document successfully deleted"
         }
     ]
 }

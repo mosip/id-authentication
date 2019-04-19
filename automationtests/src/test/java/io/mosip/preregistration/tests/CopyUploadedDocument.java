@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -73,7 +74,10 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	static String requestKeyFile = "CopyUploadedDocumentRequest.json";
 	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
+	private static ApplicationLibrary appLibrary = new ApplicationLibrary();
 	private static String preReg_URI ;
+	HashMap<String, String> parm= new HashMap<>();
+	
 	
 	/*implement,IInvokedMethodListener*/
 	public CopyUploadedDocument() 
@@ -96,7 +100,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	@DataProvider(name = "CopyUploadedDocument")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -111,43 +115,105 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
+		
+		String val = testCaseName.contains("smoke")
+				?(testCaseName="cond1"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidCatCode")
+				?(testCaseName="cond2"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidDestinationPreId")
+				?(testCaseName="cond3"):testCaseName.contains("CopyUploadedDocumentByPassingInvalidSourcePreId")
+				?(testCaseName="cond4"):testCaseName.contains("CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists")
+				?(testCaseName="cond5"):(testCaseName="cond6");
+		
+				testCaseName="cond2";
 		//Creating the Pre-Registration Application
-		//Response createApplicationResponse = preRegLib.CreatePreReg();
-		//preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Document Upload for created application
-		//Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
-		
-		//System.out.println("Doc Upload respose::"+docUploadResponse.asString());
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
 		
 		//PreId of Uploaded document
-		//String srcPreID=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		//String docCatCode=docUploadResponse.jsonPath().get("response[0].docCatCode").toString();
+		String srcPreID=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		//String docId=docUploadResponse.jsonPath().get("response[0].docId").toString();
+		String docCatCode=docUploadResponse.jsonPath().get("response[0].docCatCode").toString();
 		
 		//Creating the Pre-Registration Application for Destination PreId
-		//Response createApplicationRes = preRegLib.CreatePreReg();
-		//String destPreId = createApplicationRes.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		//Copy uploaded document from Source PreId to Destination PreId
-		// Response copyDocresponse=preRegLib.copyUploadedDocuments(destPreId,srcPreID,docCatCode);
-		 
-		 Response copyDocresponse=preRegLib.copyUploadedDocuments("35967213496392","26417486459782","POA");
-		 
-		System.out.println("Copy Doc REs::"+copyDocresponse.asString());
-		 
-		outerKeys.add("responsetime");
-		innerKeys.add("sourcePreRegId");
-		innerKeys.add("sourceDocumnetId");
-		innerKeys.add("destPreRegId");
-		innerKeys.add("destDocumnetId");
+		Response createApplicationRes = preRegLib.CreatePreReg();
+		String destPreId = createApplicationRes.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		
-		status = AssertResponses.assertResponses(copyDocresponse, Expectedresponse, outerKeys, innerKeys);
+		
+		switch (val) {
+ 		case "cond1":
+ 			
+ 			//Copy uploaded document from Source PreId to Destination PreId
+ 			
+ 			Response copyDocresponse=preRegLib.copyUploadedDocuments(destPreId,srcPreID,docCatCode);
+ 			outerKeys.add("responsetime");
+ 			innerKeys.add("docId");
+ 			//preRegLib.compareValues(actual, expected);
+ 			status = AssertResponses.assertResponses(copyDocresponse, Expectedresponse, outerKeys, innerKeys);
+ 			
+         break;
+        case "cond2":
+ 			
+        	docCatCode=actualRequest.get("catCode").toString();
+ 			preReg_URI=preReg_URI+destPreId;
+ 			parm.put("catCode", docCatCode);
+ 			parm.put("sourcePreId", srcPreID);
+ 			Actualresponse = appLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+ 			
+ 	         break;
+ 		case "cond3":
+ 			
+ 			destPreId=actualRequest.get("destinationPreId").toString();
+ 			preReg_URI=preReg_URI+destPreId;
+ 			parm.put("catCode", docCatCode);
+ 			parm.put("sourcePreId", srcPreID);
+ 			Actualresponse = appLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+ 			
+ 	         break;
+        case "cond4":
+ 			
+        	srcPreID=actualRequest.get("sourcePrId").toString();
+ 			preReg_URI=preReg_URI+destPreId;
+ 			
+ 			parm.put("catCode", docCatCode);
+ 			parm.put("sourcePreId", srcPreID);
+ 			Actualresponse = appLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+ 			
+ 			System.out.println("33333");
+         break;
+ 		case "cond5":
+ 			System.out.println("2222");
+ 	         break;
+ 		case "cond6":
+ 			System.out.println("2222");
+ 	         break;
+ 		default:
+ 			System.out.println("33333");
+ 			break;
+ 		
+
+ 	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();
