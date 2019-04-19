@@ -168,9 +168,6 @@ public class DemographicDetailController extends BaseController {
 	private Label parentNameLocalLanguageMessage;
 
 	@FXML
-	private Label uinIdLocalLanguageLabel;
-
-	@FXML
 	private Label languageLabelLocalLanguage;
 
 	@FXML
@@ -181,6 +178,14 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label toggleLabel1;
+	@FXML
+	private Label uinRidToggleLabel1;
+	@FXML
+	private Label uinRidToggleLabel2;
+	@FXML
+	private Label uinRidToggleLabel1LocalLanguage;
+	@FXML
+	private Label uinRidToggleLabel2LocalLanguage;
 
 	@FXML
 	private Label mmLabel;
@@ -205,6 +210,8 @@ public class DemographicDetailController extends BaseController {
 	private ScrollPane parentScrollPane;
 
 	private SimpleBooleanProperty switchedOn;
+	
+	private SimpleBooleanProperty switchedOnParentUinOrRid;
 
 	@FXML
 	private TextField addressLine1;
@@ -252,7 +259,7 @@ public class DemographicDetailController extends BaseController {
 	private Label addressLine3Message;
 
 	@FXML
-	private Label uinIdLabel;
+	private Label parentRegIdLabel;
 
 	@FXML
 	private TextField addressLine3LocalLanguage;
@@ -402,9 +409,6 @@ public class DemographicDetailController extends BaseController {
 	private TextField cniOrPinNumberLocalLanguage;
 
 	@FXML
-	private TextField uinIdLocalLanguage;
-
-	@FXML
 	private TextField parentNameLocalLanguage;
 
 	@FXML
@@ -424,9 +428,38 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label ageFieldLocalLanguageMessage;
-
+	
 	@FXML
-	private TextField uinId;
+	private TextField parentRegId;
+	
+	@FXML
+	private Label parentRegIdMessage;
+	
+	@FXML
+	private Label parentRegIdLocalLanguageMessage;
+
+	
+	@FXML
+	private TextField parentRegIdLocalLanguage;
+	
+	@FXML
+	private Label parentRegIdLocalLanguageLabel;
+	
+	@FXML
+	private TextField parentUinId;
+	
+	@FXML
+	private Label parentUinIdMessage;
+	
+	@FXML
+	private Label parentUinIdLocalLanguageMessage;
+	
+	@FXML
+	private TextField parentUinIdLocalLanguage;
+	
+	@FXML
+	private Label parentUinIdLocalLanguageLabel;
+
 
 	private boolean isChild;
 
@@ -588,6 +621,14 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox localUinIdPane;
 	@FXML
+	private VBox applicationUinIdPane;
+	@FXML
+	private AnchorPane localRidOrUinToggle;
+	@FXML
+	private VBox localRidPane;
+	@FXML
+	private VBox applicationRidPane;
+	@FXML
 	private GridPane applicationGender;
 	@FXML
 	private GridPane localGender;
@@ -656,9 +697,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
 			switchedOn = new SimpleBooleanProperty(true);
-			switchedOn.setValue(true);
 			isChild = false;
+			disableLocalFields();
+			switchedOnParentUinOrRid = new SimpleBooleanProperty(true);
 			toggleFunction();
+			toggleFunctionForParentUinOrRid();
 			ageFieldValidations();
 			listenerOnFields();
 			loadLocalLanguageFields();
@@ -679,7 +722,6 @@ public class DemographicDetailController extends BaseController {
 					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
 			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 			genderSettings();
-			disableLocalFields();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -791,8 +833,74 @@ public class DemographicDetailController extends BaseController {
 		localMobileNumberPane.setDisable(true);
 		localAge.setDisable(true);
 		localUinIdPane.setDisable(true);
+		localRidPane.setDisable(true);
+		localRidOrUinToggle.setDisable(true);
 	}
 
+	/**
+	 * Toggle functionality between age field and date picker.
+	 */
+	private void toggleFunctionForParentUinOrRid() {
+		try {
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Entering into toggle function for toggle label 1 and toggle level 2");
+
+			switchedOnParentUinOrRid.addListener((observableValue, oldValue, newValue) -> {
+				if (newValue) {
+					uinRidToggleLabel1.setLayoutX(0);
+					uinRidToggleLabel1LocalLanguage.setLayoutX(0);
+					
+					parentRegIdLocalLanguage.clear();
+					parentRegId.clear();
+					applicationRidPane.setDisable(false);
+					
+					parentUinIdLocalLanguage.clear();
+					parentUinId.clear();
+					applicationUinIdPane.setDisable(true);
+					
+					parentRegIdMessage.setVisible(false);
+					parentRegIdLocalLanguageMessage.setVisible(false);
+					parentUinIdMessage.setVisible(false);
+					parentUinIdLocalLanguageMessage.setVisible(false);
+					
+				} else {
+					uinRidToggleLabel1.setLayoutX(30);
+					uinRidToggleLabel1LocalLanguage.setLayoutX(30);
+					
+					parentRegIdLocalLanguage.clear();
+					parentRegId.clear();
+					applicationRidPane.setDisable(true);
+					
+					parentUinIdLocalLanguage.clear();
+					parentUinId.clear();
+					applicationUinIdPane.setDisable(false);
+					
+					parentRegIdMessage.setVisible(false);
+					parentRegIdLocalLanguageMessage.setVisible(false);
+					parentUinIdMessage.setVisible(false);
+					parentUinIdLocalLanguageMessage.setVisible(false);
+
+
+				}
+			});
+
+			uinRidToggleLabel1.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel2.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel1LocalLanguage.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel2LocalLanguage.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Exiting the toggle function for toggle label 1 and toggle level 2");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
+	}
+
+	
 	/**
 	 * Toggle functionality between age field and date picker.
 	 */
@@ -848,6 +956,12 @@ public class DemographicDetailController extends BaseController {
 				ddLocalLanguageLabel.setVisible(false);
 				mmLocalLanguageLabel.setVisible(false);
 				yyyyLocalLanguageLabel.setVisible(false);
+				
+				parentDetailPane.setManaged(false);
+				parentDetailPane.setVisible(false);
+				
+
+
 			});
 
 			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
@@ -982,19 +1096,19 @@ public class DemographicDetailController extends BaseController {
 								parentDetailPane.setVisible(true);
 								parentDetailPane.setDisable(false);
 								parentName.clear();
-								uinId.clear();
+								parentRegId.clear();
 								isChild = true;
 								validation.setChild(isChild);
 								documentScanController.setChild(isChild);
 							} else {
+								parentDetailPane.setManaged(false);
+								parentDetailPane.setVisible(false);
+								parentDetailPane.setDisable(true);
 								isChild = false;
 								validation.setChild(isChild);
 								documentScanController.setChild(isChild);
-								parentDetailPane.setVisible(false);
-								parentDetailPane.setDisable(true);
 								parentName.clear();
-								uinId.clear();
-								parentDetailPane.setManaged(false);
+								parentRegId.clear();
 							}
 						}
 					}
@@ -1030,8 +1144,8 @@ public class DemographicDetailController extends BaseController {
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, parentName, validation, parentNameLocalLanguage,
 					hasToBeTransliterated);
-			fxUtils.validateOnFocusOut(parentFlowPane, uinId, validation, uinIdLocalLanguage, !hasToBeTransliterated);
-
+			fxUtils.validateOnFocusOut(parentFlowPane, parentRegId, validation, parentRegIdLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, parentUinId, validation, parentUinIdLocalLanguage, !hasToBeTransliterated);
 			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
@@ -1101,8 +1215,10 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguage.setPromptText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
 			parentNameLocalLanguage.setPromptText(localProperties.getString("parentName"));
-			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
-			uinIdLocalLanguage.setPromptText(localProperties.getString("uinId"));
+			parentUinIdLocalLanguageLabel.setText(localProperties.getString("parentUinId"));
+			parentRegIdLocalLanguageLabel.setText(localProperties.getString("parentRegId"));
+
+			parentUinIdLocalLanguage.setPromptText(localProperties.getString("parentUinId"));
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
 			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
@@ -1265,7 +1381,7 @@ public class DemographicDetailController extends BaseController {
 				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 			}
 
-			registrationMetaDataDTO.setParentOrGuardianUINOrRID(uinId.getText());
+			registrationMetaDataDTO.setParentOrGuardianRID(parentRegId.getText());
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
 
@@ -1300,12 +1416,7 @@ public class DemographicDetailController extends BaseController {
 		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO();
 
-		boolean isParentOrGuradianUINOrRIDAvail = !(uinId.isDisabled() || uinId.getText().isEmpty());
-		boolean isParentOrGuardianUIN = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() == Integer
-				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
-		boolean isParentOrGuardianRID = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() != Integer
-				.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH));
-
+	
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
 						.with(identity -> identity
@@ -1441,9 +1552,9 @@ public class DemographicDetailController extends BaseController {
 														.get()))
 												.get()))
 						.with(identity -> identity
-								.setParentOrGuardianRID(isParentOrGuardianRID ? new BigInteger(uinId.getText()) : null))
+								.setParentOrGuardianRID(!parentRegId.isDisabled() ? new BigInteger(parentRegId.getText()) : null))
 						.with(identity -> identity
-								.setParentOrGuardianUIN(isParentOrGuardianUIN ? new BigInteger(uinId.getText()) : null))
+								.setParentOrGuardianUIN(!parentUinId.isDisabled() ? new BigInteger(parentUinId.getText()) : null))
 						.with(identity -> identity.setParentOrGuardianName(
 								parentName.isDisabled() || parentName.getText().isEmpty() ? null
 										: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1512,10 +1623,15 @@ public class DemographicDetailController extends BaseController {
 			parentFlowPane.setDisable(false);
 			fetchBtn.setVisible(false);
 
-			uinIdLabel.setText(applicationLabelBundle.getString("uinIdUinUpdate"));
-			uinIdLocalLanguageLabel.setText(localLabelBundle.getString("uinIdUinUpdate"));
-			uinId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
-			uinIdLocalLanguage.setPromptText(localLabelBundle.getString("uinIdUinUpdate"));
+			parentRegIdLabel.setText(applicationLabelBundle.getString("uinIdUinUpdate"));
+			parentUinIdLocalLanguageLabel.setText(localLabelBundle.getString("parentUinId"));
+			parentRegIdLocalLanguageLabel.setText(localLabelBundle.getString("parentRegId"));
+
+			//local language needs to be set
+			parentUinId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
+			parentRegId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
+
+			parentUinIdLocalLanguage.setPromptText(localLabelBundle.getString("parentUinId"));
 
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 			updateUinId.setVisible(true);
@@ -1592,6 +1708,7 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
+
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
 			mobileNo.setText(moroccoIdentity.getPhone() + "");
 			emailId.setText(moroccoIdentity.getEmail() + "");
@@ -1606,6 +1723,9 @@ public class DemographicDetailController extends BaseController {
 			mobileNoLocalLanguage.setText(moroccoIdentity.getPhone());
 			emailIdLocalLanguage.setText(moroccoIdentity.getEmail());
 			cniOrPinNumberLocalLanguage.setText(moroccoIdentity.getCnieNumber() + "");
+			parentRegId.setText(moroccoIdentity.getParentOrGuardianRID() + "");
+			parentUinId.setText(moroccoIdentity.getParentOrGuardianUIN() + "");
+
 
 			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 
@@ -1635,13 +1755,6 @@ public class DemographicDetailController extends BaseController {
 				boolean isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 				parentDetailPane.setDisable(!isChild);
 				parentDetailPane.setVisible(isChild);
-			}
-			if (!(moroccoIdentity.getParentOrGuardianRID() == null
-					&& moroccoIdentity.getParentOrGuardianUIN() == null)) {
-				populateFieldValue(parentName, parentNameLocalLanguage, moroccoIdentity.getParentOrGuardianName());
-				uinId.setText(moroccoIdentity.getParentOrGuardianRID() == null
-						? moroccoIdentity.getParentOrGuardianUIN().toString()
-						: moroccoIdentity.getParentOrGuardianRID().toString());
 			}
 			preRegistrationId.setText(getRegistrationDTOFromSession().getPreRegistrationId());
 
@@ -1779,7 +1892,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(fullNameGridPane.getWidth() * 1.2);
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth());
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
@@ -1871,7 +1984,7 @@ public class DemographicDetailController extends BaseController {
 	private void next() throws InvalidApplicantArgumentException, ParseException {
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& uinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
+				&& parentUinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
 			generateAlert(RegistrationConstants.ERROR,
 					RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
 		} else {
@@ -1944,8 +2057,8 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 		}
-		if (isValid)
-			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+//		if (isValid)
+//			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 
 		return isValid;
 

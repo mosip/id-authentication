@@ -59,7 +59,7 @@
 												<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 											</rowConstraints>
 											<children>
-												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}" styleClass="demographicScrollpane">
+												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}">
 													<content>
 														<AnchorPane fx:id="keyboardPane">
 															<children>
@@ -241,9 +241,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -439,9 +439,9 @@
                                                             </GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -557,9 +557,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -567,9 +567,9 @@
 																		</GridPane>
 																		<GridPane fx:id="residenceParentpane" prefHeight="50.0" prefWidth="${scrollParentPane.width}">
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -997,9 +997,9 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
 																				<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -1014,9 +1014,30 @@
                                                                         <Label fx:id="parentNameLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
                                                                         <TextField fx:id="parentName" prefWidth="${childParentDetail.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
                                                                         <Label fx:id="parentNameMessage" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
-                                                                        <Label fx:id="uinIdLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
-                                                                        <TextField fx:id="uinId" promptText="%uinId" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="uinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
+                                                                        <HBox alignment="CENTER" spacing="20.0">
+                                                                           <children>
+                                                                              <VBox fx:id="applicationRidPane">
+                                                                                 <children>
+                                                                                    <Label fx:id="parentRegIdLabel" styleClass="demoGraphicFieldLabel" text="%parentRegId" visible="false" />
+                                                                                    <TextField fx:id="parentRegId" promptText="%parentRegId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="parentRegIdMessage" styleClass="demoGraphicFieldMessageLabel" text="Hello" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <AnchorPane>
+                                                                                 <children>
+                                                                                    <Label id="toggleLabel2" fx:id="uinRidToggleLabel2" layoutY="34.0" text="" />
+                                                                                    <Label id="toggleLabel1" fx:id="uinRidToggleLabel1" layoutY="32.0" text="" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                              <VBox fx:id="applicationUinIdPane" disable="true">
+                                                                                 <children>
+                                                                                    <Label fx:id="parentUinIdLabel" styleClass="demoGraphicFieldLabel" text="%parentUinId" visible="false" />
+                                                                                    <TextField fx:id="parentUinId" promptText="%parentUinId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="parentUinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="Hello" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                           </children>
+                                                                        </HBox>
                                                                      </children>
                                                                   </VBox>
                                                                </children>
@@ -1040,13 +1061,30 @@
                                                                               <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
                                                                            </children>
                                                                         </VBox>
-                                                                        <VBox fx:id="localUinIdPane" spacing="5.0">
+                                                                        <HBox alignment="CENTER" spacing="20.0">
                                                                            <children>
-                                                                              <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
-                                                                              <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
-                                                                              <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
+                                                                              <VBox fx:id="localRidPane">
+                                                                                 <children>
+                                                                                    <Label fx:id="parentRegIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentRegId" visible="false" />
+                                                                                    <TextField fx:id="parentRegIdLocalLanguage" promptText="%parentRegId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="parentRegIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <AnchorPane fx:id="localRidOrUinToggle">
+                                                                                 <children>
+                                                                                    <Label id="toggleLabel2" fx:id="uinRidToggleLabel2LocalLanguage" layoutY="34.0" text="" />
+                                                                                    <Label id="toggleLabel1" fx:id="uinRidToggleLabel1LocalLanguage" layoutY="32.0" text="" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                              <VBox fx:id="localUinIdPane">
+                                                                                 <children>
+                                                                                    <Label fx:id="parentUinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentUinId" visible="false" />
+                                                                                    <TextField fx:id="parentUinIdLocalLanguage" promptText="%parentUinId" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="parentUinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="" visible="false" />
+                                                                                 </children>
+                                                                              </VBox>
                                                                            </children>
-                                                                        </VBox>
+                                                                        </HBox>
                                                                      </children>
                                                                   </VBox>
                                                                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -1070,9 +1108,9 @@
                                                             </GridPane>
                                                          </children>
                                                          <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

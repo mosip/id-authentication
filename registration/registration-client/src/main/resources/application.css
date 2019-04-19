@@ -641,12 +641,6 @@ Working on new Css by taleev
 	-fx-font-size: 1.2em;
 }
 
-.demographicScrollpane{
-		-fx-pref-height: 590px;	
-		-fx-pref-width: 1100px;
-	
-}
-
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
 		-fx-border-width: 0;
