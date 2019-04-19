@@ -494,7 +494,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return responseDTO;
 	}
 
-	private void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
+	public void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
 		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records started");
@@ -558,6 +558,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "deleted records ended");
 
 		return responseDTO;
+	}
+	
+	public PreRegistrationList getPreRegistrationRecordForDeletion(String preRegistrationId) {
+		LOGGER.info(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"Fetching pre registration records for deletion");
+		return preRegistrationDAO.get(preRegistrationId);
 	}
 
 }
