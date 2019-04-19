@@ -66,7 +66,6 @@ public class Decryptor {
 	@Autowired
 	private Environment env;
 
-
 	private static final String DECRYPT_SERVICE_ID = "mosip.registration.processor.crypto.decrypt.id";
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
@@ -102,24 +101,23 @@ public class Decryptor {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
-			ObjectMapper mapper=new ObjectMapper();
-			String centerId = registrationId.substring(0,centerIdLength);
+			ObjectMapper mapper = new ObjectMapper();
+			String centerId = registrationId.substring(0, centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(centerId);
-			
 
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-			LocalDateTime ldt =null;
+			LocalDateTime ldt = null;
 			if (registrationId.length() > 14) {
 				String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
 				Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
 						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6));
-				 ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
+				ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
 				cryptomanagerRequestDto.setTimeStamp(ldt);
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -135,14 +133,15 @@ public class Decryptor {
 			request.setMetadata(null);
 			request.setRequest(cryptomanagerRequestDto);
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
+			LocalDateTime localdatetime = LocalDateTime
+					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			request.setRequesttime(localdatetime);
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 			ResponseWrapper<CryptomanagerResponseDto> response;
-			response =  (ResponseWrapper<CryptomanagerResponseDto>) restClientService.postApi(
-					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			CryptomanagerResponseDto cryptomanagerResponseDto;
-			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
+			response = (ResponseWrapper<CryptomanagerResponseDto>) restClientService
+					.postApi(ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
+			CryptomanagerResponseDto cryptomanagerResponseDto = mapper
+					.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;

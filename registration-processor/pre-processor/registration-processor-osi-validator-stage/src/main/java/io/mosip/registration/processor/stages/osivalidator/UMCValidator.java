@@ -11,7 +11,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -60,7 +59,6 @@ public class UMCValidator {
 	/** The response from masterdata validate api. */
 	private static final String VALID = "Valid";
 
-
 	/** The umc client. */
 
 	@Value("${mosip.workinghour.validation.required}")
@@ -90,7 +88,7 @@ public class UMCValidator {
 
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
-	ObjectMapper mapper=new ObjectMapper();
+	ObjectMapper mapper = new ObjectMapper();
 
 	/** The identity. */
 	Identity identity;
@@ -117,30 +115,31 @@ public class UMCValidator {
 	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate) throws ApisResourceAccessException, IOException {
+	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate)
+			throws ApisResourceAccessException, IOException {
 		boolean activeRegCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(langCode);
 		pathsegments.add(effectiveDate);
-		RegistrationCenterResponseDto rcpdto=null;
-		ResponseWrapper<?> responseWrapper=null;
+		RegistrationCenterResponseDto rcpdto = null;
+		ResponseWrapper<?> responseWrapper = null;
 
 		try {
 			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
 					pathsegments, "", "", ResponseWrapper.class);
-			rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterResponseDto.class);
+			rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					RegistrationCenterResponseDto.class);
 
-			if(responseWrapper.getErrors()==null) {
+			if (responseWrapper.getErrors() == null) {
 				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
 				if (!activeRegCenter) {
 					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
 				}
-			}else {
+			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 			}
-
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -159,7 +158,6 @@ public class UMCValidator {
 		return activeRegCenter;
 
 	}
-
 
 	/**
 	 * Validate machine.
@@ -189,14 +187,15 @@ public class UMCValidator {
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
 		MachineHistoryResponseDto mhrdto;
-		ResponseWrapper<?> responseWrapper;
-		try {
-			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
-					pathsegments, "", "", ResponseWrapper.class);
-			mhrdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), MachineHistoryResponseDto.class);
 
-			if(responseWrapper.getErrors()==null) {
-				MachineHistoryDto dto =mhrdto.getMachineHistoryDetails().get(0);
+		try {
+			ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
+					.getApi(ApiName.MACHINEHISTORY, pathsegments, "", "", ResponseWrapper.class);
+			mhrdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					MachineHistoryResponseDto.class);
+
+			if (responseWrapper.getErrors() == null) {
+				MachineHistoryDto dto = mhrdto.getMachineHistoryDetails().get(0);
 
 				if (dto.getId() != null && dto.getId().matches(machineId)) {
 					isActiveMachine = dto.getIsActive();
@@ -207,7 +206,7 @@ public class UMCValidator {
 				} else {
 					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
 				}
-			}else {
+			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 			}
@@ -215,7 +214,6 @@ public class UMCValidator {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-
 
 				this.registrationStatusDto.setStatusComment(result);
 
@@ -245,7 +243,7 @@ public class UMCValidator {
 	 * @throws IOException
 	 */
 	private boolean isValidUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
-									  String superviserId, String officerId) throws ApisResourceAccessException, IOException {
+			String superviserId, String officerId) throws ApisResourceAccessException, IOException {
 
 		boolean supervisorActive = false;
 		boolean officerActive = false;
@@ -268,29 +266,25 @@ public class UMCValidator {
 				officerActive = validateMapping(officerpathsegments);
 
 		}
-		if(!supervisorActive && !officerActive) {
+		if (!supervisorActive && !officerActive) {
 			registrationStatusDto.setStatusComment("Registration Center, Machine, User not found");
 		}
 		return supervisorActive || officerActive;
 	}
 
-
-
-
-
-	private boolean validateMapping(List<String> pathsegments) throws  IOException, ApisResourceAccessException {
+	private boolean validateMapping(List<String> pathsegments) throws IOException, ApisResourceAccessException {
 		boolean isValidUser = false;
-		ResponseWrapper<?> responseWrapper ;
-		RegistrationCenterUserMachineMappingHistoryResponseDto userDto =null;
+		ResponseWrapper<?> responseWrapper;
+		RegistrationCenterUserMachineMappingHistoryResponseDto userDto = null;
 		try {
-			responseWrapper = (ResponseWrapper<?>)registrationProcessorRestService
-					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
-							ResponseWrapper.class);
-			userDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-			if(userDto != null) {
-				if(responseWrapper.getErrors() == null) {
+			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
+					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "", ResponseWrapper.class);
+			userDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+			if (userDto != null) {
+				if (responseWrapper.getErrors() == null) {
 					isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
-				}else {
+				} else {
 					List<ErrorDTO> error = responseWrapper.getErrors();
 					this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 				}
@@ -361,13 +355,13 @@ public class UMCValidator {
 				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-				regOsi.getSupervisorId(), regOsi.getOfficerId())
+						regOsi.getSupervisorId(), regOsi.getOfficerId())
 				&& validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto))
 			umc = true;
 		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-				regOsi.getSupervisorId(), regOsi.getOfficerId())
+						regOsi.getSupervisorId(), regOsi.getOfficerId())
 				&& isValidDevice(rcmDto))
 			umc = true;
 
@@ -466,14 +460,14 @@ public class UMCValidator {
 	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
 
-	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException, IOException {
+	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto)
+			throws ApisResourceAccessException, IOException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
+		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
 			for (FieldValue fieldValue : registreredDeviceIds) {
 				String deviceId = null;
 				deviceId = fieldValue.getValue();
-				ResponseWrapper<?> responseWrapper ;
 				RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
 				try {
 					List<String> pathsegments = new ArrayList<>();
@@ -481,19 +475,22 @@ public class UMCValidator {
 					pathsegments.add(deviceId);
 					pathsegments.add(rcmDto.getPacketCreationDate());
 
-					responseWrapper = (ResponseWrapper<?>)  registrationProcessorRestService
-							.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "",
-									ResponseWrapper.class);
-					registrationCenterDeviceHistoryResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterDeviceHistoryResponseDto.class);
-					if(responseWrapper.getErrors()==null) {
+					ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(
+							ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "", ResponseWrapper.class);
+					registrationCenterDeviceHistoryResponseDto = mapper.readValue(
+							mapper.writeValueAsString(responseWrapper.getResponse()),
+							RegistrationCenterDeviceHistoryResponseDto.class);
+					if (responseWrapper.getErrors() == null) {
 						isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
-								registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(), rcmDto.getRegId());
-						if(!isDeviceMappedWithCenter) {
-							registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+IS_DEVICE_MAPPED_WITH_CENTER+deviceId);
+								registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(),
+								rcmDto.getRegId());
+						if (!isDeviceMappedWithCenter) {
+							registrationStatusDto.setStatusComment(
+									StatusMessage.OSI_VALIDATION_FAILURE + IS_DEVICE_MAPPED_WITH_CENTER + deviceId);
 							break;
 						}
-					}else {
-						isDeviceMappedWithCenter=false;
+					} else {
+						isDeviceMappedWithCenter = false;
 						List<ErrorDTO> error = responseWrapper.getErrors();
 						this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 						break;
@@ -509,8 +506,8 @@ public class UMCValidator {
 					break;
 				}
 			}
-		}else {
-			isDeviceMappedWithCenter=true;
+		} else {
+			isDeviceMappedWithCenter = true;
 		}
 		return isDeviceMappedWithCenter;
 	}
@@ -555,36 +552,36 @@ public class UMCValidator {
 	 *             the apis resource access exception
 	 */
 
-
-	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto) throws JsonProcessingException, IOException, ApisResourceAccessException {
+	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto)
+			throws JsonProcessingException, IOException, ApisResourceAccessException {
 		boolean isDeviceActive = false;
 
-
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
+		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
 			for (FieldValue fieldValue : registreredDeviceIds) {
 				String deviceId = null;
 				deviceId = fieldValue.getValue();
 				DeviceHistoryResponseDto deviceHistoryResponsedto;
-				ResponseWrapper<?> responseWrapper;
 				try {
 					List<String> pathsegments = new ArrayList<>();
 
 					pathsegments.add(deviceId);
 					pathsegments.add(primaryLanguagecode);
 					pathsegments.add(rcmDto.getPacketCreationDate());
-					responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
+					ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
 							.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", ResponseWrapper.class);
-					deviceHistoryResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), DeviceHistoryResponseDto.class);
-					if(deviceHistoryResponsedto.getErrors()==null) {
+					deviceHistoryResponsedto = mapper.readValue(
+							mapper.writeValueAsString(responseWrapper.getResponse()), DeviceHistoryResponseDto.class);
+					if (deviceHistoryResponsedto.getErrors() == null) {
 						isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
-						if(!isDeviceActive) {
-							registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+NO_DEVICE_HISTORY_FOUND+deviceId);
+						if (!isDeviceActive) {
+							registrationStatusDto.setStatusComment(
+									StatusMessage.OSI_VALIDATION_FAILURE + NO_DEVICE_HISTORY_FOUND + deviceId);
 							break;
 
 						}
-					}else {
-						isDeviceActive=false;
+					} else {
+						isDeviceActive = false;
 						List<ErrorDTO> error = responseWrapper.getErrors();
 						this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 						break;
@@ -618,7 +615,7 @@ public class UMCValidator {
 	 * @return true, if successful
 	 */
 	private boolean validateDeviceResponse(DeviceHistoryResponseDto deviceHistoryResponsedto, String deviceId,
-										   String regId) {
+			String regId) {
 
 		boolean isDeviceActive = false;
 
@@ -667,12 +664,11 @@ public class UMCValidator {
 			pathsegments.add(primaryLanguagecode);
 			pathsegments.add(rcmDto.getPacketCreationDate());
 			RegistartionCenterTimestampResponseDto result;
-			ResponseWrapper<?> responseWrapper ;
-			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
-					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
-							ResponseWrapper.class);
+			ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
+					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "", ResponseWrapper.class);
 
-			result = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistartionCenterTimestampResponseDto.class);
+			result = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					RegistartionCenterTimestampResponseDto.class);
 
 			if (responseWrapper.getErrors() == null) {
 				if (result.getStatus().equals(VALID)) {

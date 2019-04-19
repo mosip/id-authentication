@@ -59,9 +59,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public void put(String fileName, InputStream file, DirectoryPathDto workingDirectory) throws IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::put()::entry");
-		
-		String filepath=env.getProperty(workingDirectory.toString());
-		File destinationDirectory=FileUtils.getFile(filepath, getFileName(fileName));				
+
+		String filepath = env.getProperty(workingDirectory.toString());
+		File destinationDirectory = FileUtils.getFile(filepath, getFileName(fileName));
 		FileUtils.copyToFile(file, destinationDirectory);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::put()::exit");
@@ -140,9 +140,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	private void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 
-		String filepath=env.getProperty(destinationDirectory.toString());
-		File filePath=FileUtils.getFile(filepath, getFileName(fileName));				
-		
+		String filepath = env.getProperty(destinationDirectory.toString());
+		File filePath = FileUtils.getFile(filepath, getFileName(fileName));
+
 		FileUtils.forceDelete(filePath);
 	}
 
@@ -170,12 +170,12 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::copy()::entry");
 		if (checkIfFileExists(sourceWorkingDirectory, fileName)) {
-			
-			String filepath=env.getProperty(sourceWorkingDirectory.toString());
-			File srcFile=FileUtils.getFile(filepath, getFileName(fileName));
-			
-			String filepath1=env.getProperty(destinationWorkingDirectory.toString());
-			File destFile=FileUtils.getFile(filepath1, getFileName(fileName));
+
+			String filepath = env.getProperty(sourceWorkingDirectory.toString());
+			File srcFile = FileUtils.getFile(filepath, getFileName(fileName));
+
+			String filepath1 = env.getProperty(destinationWorkingDirectory.toString());
+			File destFile = FileUtils.getFile(filepath1, getFileName(fileName));
 			FileUtils.copyFile(srcFile, destFile);
 
 		}
@@ -269,9 +269,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public void deleteFolder(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::deleteFolder()::entry");
-		
-//		String filepath=env.getProperty(destinationDirectory.toString());
-//		File srcFile=FileUtils.getFile(filepath, getFileName(fileName));
+
+		// String filepath=env.getProperty(destinationDirectory.toString());
+		// File srcFile=FileUtils.getFile(filepath, getFileName(fileName));
 		File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
 
 		FileUtils.forceDelete(filePath);
