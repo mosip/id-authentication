@@ -129,6 +129,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/** The registration id. */
 	private String registrationId;
 
+	InternalRegistrationStatusDto dto;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -163,14 +165,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 
-				scanFile(new ByteArrayInputStream(encryptedByteArray));
-
-				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
-						registrationId);
-
-				scanFile(decryptedData);
-
-				storePacket(new ByteArrayInputStream(encryptedByteArray), stageName);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");
@@ -193,21 +187,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 								+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
 				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getCode(),
 						PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
-
-			} catch (PacketDecryptionFailureException e) {
-				description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-						+ e.getErrorText();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, e.getMessage());
-				throw new PacketReceiverAppException(e.getErrorCode(), e.getMessage());
-
-			} catch (ApisResourceAccessException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "API resource not accessible : "
-								+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
-				description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
-				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getCode(),
-						PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
 
 			} finally {
 
@@ -259,8 +238,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void storePacket(InputStream encryptedInputStream, String stageName) throws IOException {
-		InternalRegistrationStatusDto dto;
+	private void storePacket(String stageName) throws IOException {
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
 		if (dto == null)
@@ -270,7 +248,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			dto.setRetryCount(retryCount);
 
 		}
-		fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
+		// fileManager.put(registrationId, encryptedInputStream,
+		// DirectoryPathDto.LANDING_ZONE);
 
 		dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
 		dto.setRegistrationStageName(stageName);
@@ -451,6 +430,93 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		}
 
+	}
+
+	@Override
+	public MessageDTO processPacket(File file) {
+		MessageDTO messageDTO = new MessageDTO();
+
+		messageDTO.setInternalError(false);
+
+		messageDTO.setIsValid(false);
+
+		if (file.getName() != null && file.exists()) {
+			String fileOriginalName = file.getName();
+			registrationId = fileOriginalName.split("\\.")[0];
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
+			messageDTO.setRid(registrationId);
+
+			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
+
+				scanFile(new ByteArrayInputStream(encryptedByteArray));
+
+				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
+						registrationId);
+
+				scanFile(decryptedData);
+
+				// storePacket(new ByteArrayInputStream(encryptedByteArray), stageName);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PacketReceiverServiceImpl::validatePacket()::exit");
+
+			} catch (IOException e) {
+
+				description = " IOException in packet receiver for registrationId" + registrationId + "::"
+						+ e.getMessage();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+						PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+			} catch (DataAccessException e) {
+
+				description = "DataAccessException in packet receiver for registrationId" + registrationId + "::"
+						+ e.getMessage();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "Error while updating status : "
+								+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getCode(),
+						PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
+
+			} catch (PacketDecryptionFailureException e) {
+				description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
+						+ e.getErrorText();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, e.getMessage());
+				throw new PacketReceiverAppException(e.getErrorCode(), e.getMessage());
+
+			} catch (ApisResourceAccessException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "API resource not accessible : "
+								+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
+				description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
+				throw new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getCode(),
+						PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
+
+			} finally {
+
+				String eventId = "";
+				String eventName = "";
+				String eventType = "";
+				eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+				eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+						: EventName.EXCEPTION.toString();
+				eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+						: EventType.SYSTEM.toString();
+
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						registrationId, ApiName.AUDIT);
+			}
+
+			if (storageFlag) {
+				messageDTO.setIsValid(true);
+			}
+
+		}
+		return messageDTO;
 	}
 
 }
