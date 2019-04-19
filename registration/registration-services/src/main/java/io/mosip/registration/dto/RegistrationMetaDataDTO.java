@@ -18,8 +18,7 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String previousRID;
 	private String uin;
 	private String consentOfApplicant;
-	private String parentOrGuardianUIN;
-	private String parentOrGuardianRID;
+	private String parentOrGuardianUINOrRID;
 	private String deviceId;
 	private String applicantTypeCode;
 
@@ -133,28 +132,27 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 		return uin;
 	}
 
-	public String getParentOrGuardianUIN() {
-		return parentOrGuardianUIN;
-	}
-
-	public void setParentOrGuardianUIN(String parentOrGuardianUIN) {
-		this.parentOrGuardianUIN = parentOrGuardianUIN;
-	}
-
-	public String getParentOrGuardianRID() {
-		return parentOrGuardianRID;
-	}
-
-	public void setParentOrGuardianRID(String parentOrGuardianRID) {
-		this.parentOrGuardianRID = parentOrGuardianRID;
-	}
-
 	/**
 	 * @param uin
 	 *            the uin to set
 	 */
 	public void setUin(String uin) {
 		this.uin = uin;
+	}
+
+	/**
+	 * @return the parentOrGuardianUINOrRID
+	 */
+	public String getParentOrGuardianUINOrRID() {
+		return parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @param parentOrGuardianUINOrRID
+	 *            the parentOrGuardianUINOrRID to set
+	 */
+	public void setParentOrGuardianUINOrRID(String parentOrGuardianUINOrRID) {
+		this.parentOrGuardianUINOrRID = parentOrGuardianUINOrRID;
 	}
 
 	/**
