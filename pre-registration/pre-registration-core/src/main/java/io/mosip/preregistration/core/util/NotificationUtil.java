@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -62,7 +63,9 @@ public class NotificationUtil {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String dateTimeFormat;
 	
 	public MainListResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException  {
@@ -70,10 +73,10 @@ public class NotificationUtil {
 		log.info("sessionId", "idType", "id", "In notify method of NotificationUtil service");
 		
 		MainListResponseDTO<NotificationResponseDTO> response=new MainListResponseDTO<>();
-		if(notificationType=="sms")  {
+		if(notificationType==RequestCodes.SMS)  {
 			response=smsNotification(acknowledgementDTO, langCode);
 		}
-		if(notificationType=="email") {
+		if(notificationType==RequestCodes.EMAIL) {
 			response=emailNotification(acknowledgementDTO, langCode, file);
 		}
 		

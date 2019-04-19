@@ -25,8 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
+import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
-
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
 /**
@@ -58,10 +58,10 @@ public class NotificationControllerTest {
 
 	private NotificationDTO notificationDTO;
 
-	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	MainResponseDTO<ResponseDTO> responseDTO = new MainResponseDTO<>();
 
 	MainResponseDTO<Map<String, String>> configRes = new MainResponseDTO<>();
-
+        ResponseDTO respDTO=new ResponseDTO();
 	@Before
 	public void setUp() {
 		notificationDTO = new NotificationDTO();
@@ -71,8 +71,8 @@ public class NotificationControllerTest {
 		notificationDTO.setEmailID("sanober,noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
-
-		responseDTO.setResponse(notificationDTO);
+		respDTO.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(respDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 	}
