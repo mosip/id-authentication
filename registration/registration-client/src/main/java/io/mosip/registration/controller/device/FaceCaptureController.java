@@ -716,7 +716,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds((Integer) (configuredSecs - diffSeconds)), new KeyValue(timeDiff, 1)));
 		timeline.setOnFinished(event -> {
-			takePhoto.setDisable(false);
 			photoLabel.setVisible(false);
 			webCameraController.capture.setDisable(false);
 		});
