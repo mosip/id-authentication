@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
@@ -29,7 +31,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
  */
 @Component
 public class PacketArchiver {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketArchiver.class);
 
@@ -45,41 +47,51 @@ public class PacketArchiver {
 	@Autowired
 	private Environment env;
 
-	/**
-	 * Archive packet.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws UnableToAccessPathException
-	 *             the unable to access path exception
-	 * @throws PacketNotFoundException
-	 *             the packet not found exception
-	 */
-	public void archivePacket(String registrationId) throws IOException {
+	//@Value("${registration.processor.server.ppk.filelocation}")
+	private String ppkFileLocation;
+
+	//@Value("${registration.processor.server.ppk.filename}")
+	private String ppkFileName;
+
+	@Value("${registration.processor.dmz.server.host}")
+	private String host;
+
+	@Value("${registration.processor.dmz.server.port}")
+	private String dmzPort;
+
+	@Value("${registration.processor.dmz.server.user}")
+	private String dmzServerUser;
+
+	@Value("${registration.processor.dmz.server.protocal}")
+	private String dmzServerProtocal;
+
+	public boolean archivePacket(String registrationId) throws IOException {
+
 		boolean isTransactionSuccessful = false;
 		String description = "";
-		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator + registrationId
-				+ ".zip";
-		File file = new File(filepath);
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketArchiver::archivePacket()::entry");
 		try {
-			if (file.exists()) {
 
-				InputStream encryptedpacket = new FileInputStream(file);
+			String fromFilePath = env.getProperty(DirectoryPathDto.LANDING_ZONE.toString()) + File.separator + registrationId+ ".zip";
+			String toFilePath = env.getProperty(DirectoryPathDto.ARCHIVE_LOCATION.toString()) + File.separator + registrationId+ ".zip";
+			SftpJschConnectionDto jschConnectionDto=new SftpJschConnectionDto();
+			jschConnectionDto.setHost(host);
+			jschConnectionDto.setPort(Integer.parseInt(dmzPort));
+			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);
+			jschConnectionDto.setUser(dmzServerUser);
+			jschConnectionDto.setProtocal(dmzServerProtocal);
 
-				filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
+			if (filemanager.moveFile(fromFilePath, toFilePath, jschConnectionDto)) {
 				description = "Packet successfully archived for registrationId " + registrationId;
-
 				isTransactionSuccessful = true;
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, "PacketArchiver::archivePacket()::exit");
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, description);
 			} else {
-				description = "Packet not found in VIRUS SCAN ENCRYPTED FOLDER DURING ARCHIVAL " + registrationId + "::"
+				description = "Packet not moved from LANDING ZONE ENCRYPTED FOLDER DURING ARCHIVAL " + registrationId + "::"
 						+ PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
@@ -100,6 +112,8 @@ public class PacketArchiver {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId, ApiName.AUDIT);
 		}
+		return isTransactionSuccessful;
 	}
+
 
 }
