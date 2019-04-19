@@ -18,7 +18,7 @@
                   <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
-          <!--                  <class name="io.mosip.kernel.tests.AuditLog" />
+                            <class name="io.mosip.kernel.tests.AuditLog" />
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -52,9 +52,9 @@
                            <class name="io.mosip.kernel.tests.GetListOfRoles" />
                            <class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />         
                            <class name="io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory" />
-                           <class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" /> -->
+                           <class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" /> 
                            <class name="io.mosip.kernel.tests.LicenseKeyController" />
-                        <!--    <class name="io.mosip.kernel.tests.OtpGenerate" />
+                            <class name="io.mosip.kernel.tests.OtpGenerate" />
                            <class name="io.mosip.kernel.tests.OTP" />    
                            <class name="io.mosip.kernel.tests.RIDGenerator" />   
   
@@ -67,7 +67,7 @@
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  -->                        
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />                          
                            
                      </classes>
               </test> 

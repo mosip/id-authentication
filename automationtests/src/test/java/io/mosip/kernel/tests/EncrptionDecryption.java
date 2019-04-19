@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -137,6 +138,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
 		String requestData = null;
+		JSONObject request =null;
 		String encDecCase="default";
 		for (int k = 0; k < listofFiles.length; k++) {
 
@@ -145,13 +147,15 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 				if(objectData.containsKey("case"))
 					encDecCase = objectData.get("case").toString();
 				objectData.remove("case");
-				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				requestData = objectData.get("data").toString();
-				String encoded = Base64.getEncoder().encodeToString(objectData.get("data").toString().getBytes());
-				objectData.put("data", encoded);
-
+				requestData = ((JSONObject)objectData.get("request")).get("data").toString();
+				String encoded = Base64.getEncoder().encodeToString(requestData.getBytes());
+				request = (JSONObject)objectData.get("request");
+				request.put("data", encoded);
+				objectData.put("request", request);
+				
 				logger.info("Json Request Is : " + objectData.toJSONString());
+				
 				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
@@ -162,32 +166,41 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		int statusCode = response.statusCode();
 		logger.info("Encryption Status Code is : " + statusCode);
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
-		JSONObject responseJson = (JSONObject)new JSONParser().parse(response.asString());
+		JSONObject responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
 		
-		if (responseJson.containsKey("data")) {
+		if (responseJson!=null) {
 
-			
-			objectData.put("data", (response.jsonPath().get("data")).toString());
-			
+			request = ((JSONObject)objectData.get("request"));
+			request.put("data", ((HashMap<String, String>)response.jsonPath().get("response")).get("data"));
+			objectData.put("request", request);
 
 			switch(encDecCase) {
-			
 			case "diffRefToDecrypt":
-				objectData.put("referenceId", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("referenceId", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffAppIdToDecrypt":
-				objectData.put("applicationId", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("applicationId", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffDataToDecrypt":
-				objectData.put("data", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("data", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffTimeStampBefToDecrypt":
-				objectData.put("timeStamp", "2018-12-09T06:12:52.994Z");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("timeStamp", "2018-12-09T06:12:52.994Z");
+				objectData.put("request", request);
 				break;
 			case "diffTimeStampAfToDecrypt":
-				objectData.put("timeStamp", "2018-12-11T06:12:52.994Z");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("timeStamp", "2018-12-11T06:12:52.994Z");
+				objectData.put("request", request);
 				break;
 				
 			}
@@ -198,11 +211,11 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
 
-			responseJson = (JSONObject)new JSONParser().parse(response.asString());
-			if (responseJson.containsKey("data")) {
+			responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
+			if (responseJson!=null) {
 
 				String responseData = new String(
-						Base64.getDecoder().decode(response.jsonPath().get("data").toString().getBytes()));
+						Base64.getDecoder().decode(((HashMap<String, String>)response.jsonPath().get("response")).get("data").toString().getBytes()));
 				
 				status = requestData.equals(responseData);
 

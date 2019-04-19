@@ -155,9 +155,9 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 
 			
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
-			
-			
+
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+
 			// fetching json array of objects from response
 			JSONArray dataFromGet = (JSONArray) responseJson.get("biometrictypes");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
@@ -189,6 +189,9 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 			listOfElementToRemove.add("responsetime");
+
+			listOfElementToRemove.add("timestamp");
+
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
