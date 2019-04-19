@@ -828,16 +828,15 @@ public class DemographicDetailController extends BaseController {
 				ddLocalLanguage.clear();
 				mmLocalLanguage.clear();
 				yyyyLocalLanguage.clear();
-				
+
 				dd.setPromptText(ddLabel.getText());
 				mm.setPromptText(mmLabel.getText());
 				yyyy.setPromptText(yyyyLabel.getText());
-				
+
 				ddLocalLanguage.setPromptText(ddLocalLanguageLabel.getText());
 				mmLocalLanguage.setPromptText(mmLocalLanguageLabel.getText());
 				yyyyLocalLanguage.setPromptText(yyyyLocalLanguageLabel.getText());
 
-				
 				ageFieldMessage.setVisible(false);
 				ageFieldLabel.setVisible(false);
 				ageFieldLocalLanguageLabel.setVisible(false);
@@ -1214,8 +1213,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -1600,8 +1598,7 @@ public class DemographicDetailController extends BaseController {
 			if (moroccoIdentity.getAge() != null) {
 				switchedOn.set(true);
 				ageField.setText(moroccoIdentity.getAge() + "");
-			}
-			else {
+			} else {
 				switchedOn.set(false);
 			}
 			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber() + "");
@@ -1621,13 +1618,13 @@ public class DemographicDetailController extends BaseController {
 					female(null);
 				}
 			}
-				if (moroccoIdentity.getDateOfBirth() != null) {
-					String[] date = moroccoIdentity.getDateOfBirth().split("/");
-					if (date.length == 3) {
-						yyyy.setText(date[0]);
-						mm.setText(date[1]);
-						dd.setText(date[2]);
-					}
+			if (moroccoIdentity.getDateOfBirth() != null) {
+				String[] date = moroccoIdentity.getDateOfBirth().split("/");
+				if (date.length == 3) {
+					yyyy.setText(date[0]);
+					mm.setText(date[1]);
+					dd.setText(date[2]);
+				}
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
@@ -1782,7 +1779,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(fullNameGridPane.getWidth()*1.2);
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth() * 1.2);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
@@ -1937,10 +1934,9 @@ public class DemographicDetailController extends BaseController {
 				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
 			} catch (ParseException exception) {
 				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-					if (dd.getText().isEmpty() && mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
-						isValid = true;
-					}
+						.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
+						&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+					isValid = true;
 				} else {
 					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
 					dobMessage.setVisible(true);
@@ -1952,6 +1948,7 @@ public class DemographicDetailController extends BaseController {
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 
 		return isValid;
+
 	}
 
 	/**
