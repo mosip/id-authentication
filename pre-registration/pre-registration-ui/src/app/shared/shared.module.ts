@@ -10,6 +10,13 @@ import { ErrorComponent } from './error/error.component';
 import { StepperComponent } from './stepper/stepper.component';
 import { ParentComponent } from './parent/parent.component';
 
+/**
+ * @description This is the shared module, which comprises of all the components which are used in multiple modules and components.
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class SharedModule
+ */
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule, I18nModule, RouterModule],
   declarations: [DialougComponent, ErrorComponent, StepperComponent, ParentComponent],

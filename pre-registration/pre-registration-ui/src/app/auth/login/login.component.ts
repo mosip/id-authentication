@@ -60,12 +60,12 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.showSpinner = true;
     this.loadConfigs();
-    this.loadValidationMessages();
   }
 
   loadValidationMessages() {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.validationMessages = response['login'];
+      console.log(this.validationMessages);
     });
   }
 
@@ -132,6 +132,7 @@ export class LoginComponent implements OnInit {
     }
     this.translate.addLangs([this.primaryLangFromConfig, this.secondaryLangFromConfig]);
     this.showSpinner = false;
+    this.loadValidationMessages();
   }
 
   setLanguageDirection(primaryLang: string, secondaryLang: string) {

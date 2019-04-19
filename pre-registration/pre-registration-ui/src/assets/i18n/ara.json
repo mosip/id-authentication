@@ -349,7 +349,8 @@
 
   "documents": {
     "title_document": "تحميل المستندات",
-    "text_filetype": "نوع الملف المسموح به Pdf وMax 1 ميغابايت",
+    "text_filetype": " أنواع الملفات المسموح بها",
+    "text_filesize": "حجم الملف المسموح به ",
     "action_browse": "تصفح",
     "action_back": "الى الخلف",
     "action_skip": "تخطى",

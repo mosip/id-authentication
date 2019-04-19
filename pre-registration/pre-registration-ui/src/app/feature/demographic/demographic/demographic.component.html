@@ -30,6 +30,7 @@
                   #dd
                   [formControlName]="formControlNames.date"
                   (focusout)="onDOBChange()"
+                  (keyup)="nextElementFocus()"
                 />
               </mat-form-field>
               <mat-form-field>
@@ -40,6 +41,7 @@
                   #mm
                   [formControlName]="formControlNames.month"
                   (focusout)="onDOBChange()"
+                  (keyup)="nextElementFocus()"
                 />
               </mat-form-field>
               <mat-form-field>
@@ -211,7 +213,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, cities, provinces,formControlNames.city)"
+                (selectionChange)="onLocationSelect($event, cities, provinces, formControlNames.city)"
                 placeholder="{{ 'demographic.label_province' | translate }}"
                 [formControlName]="formControlNames.province"
                 #province
@@ -228,7 +230,14 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, cities, formControlNames.localAdministrativeAuthority)"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    localAdministrativeAuthorities,
+                    cities,
+                    formControlNames.localAdministrativeAuthority
+                  )
+                "
                 placeholder="{{ 'demographic.label_city' | translate }}"
                 [formControlName]="formControlNames.city"
                 #city
