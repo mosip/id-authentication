@@ -528,10 +528,10 @@ public class TweakRegProcPackets {
 		property.load(reader);
 		String validPacketPath = property.getProperty("pathForValidRegProcPackets");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
-		for (int i = 0; i < 2; i++) {
+	//	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
-		}
+		}*/
 		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		reader.close();
 
