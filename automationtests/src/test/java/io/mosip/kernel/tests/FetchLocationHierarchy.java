@@ -154,6 +154,7 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

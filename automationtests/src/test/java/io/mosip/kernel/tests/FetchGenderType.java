@@ -30,16 +30,12 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
-import com.google.gson.Gson;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.DeviceDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
@@ -179,7 +175,7 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray genderTypeFromGet = (JSONArray) responseJson.get("genderType");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + genderTypeFromGet.size());
@@ -209,6 +205,7 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
