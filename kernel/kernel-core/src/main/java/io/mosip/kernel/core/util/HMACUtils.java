@@ -101,14 +101,14 @@ public final class HMACUtils {
 		}
 	}
 	
-	public static byte[] genarateRandomIV() {
+	public static byte[] genarateSalt() {
 		SecureRandom random= new SecureRandom();
 		byte[] randomBytes= new byte[16];
 		random.nextBytes(randomBytes);
 		return randomBytes;
 	}
 	
-	public static byte[] genarateRandomIV(int bytes) {
+	public static byte[] genarateSalt(int bytes) {
 		SecureRandom random= new SecureRandom();
 		byte[] randomBytes= new byte[bytes];
 		random.nextBytes(randomBytes);

@@ -34,12 +34,12 @@ public class HMACUtilsTest {
 	
 	@Test
 	public void testGenarateRandomIV(){
-		assertThat(HMACUtils.genarateRandomIV(),isA(byte[].class));
+		assertThat(HMACUtils.genarateSalt(),isA(byte[].class));
 	}
 	
 	@Test
 	public void testGenarateRandomIVInputBytes(){
-		assertThat(HMACUtils.genarateRandomIV(16),isA(byte[].class));
+		assertThat(HMACUtils.genarateSalt(16),isA(byte[].class));
 	}
 
 }
