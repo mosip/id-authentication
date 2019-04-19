@@ -195,7 +195,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, provinces, regions)"
+                (selectionChange)="onLocationSelect($event, provinces, regions, formControlNames.province)"
                 placeholder="{{ 'demographic.label_region' | translate }}"
                 [formControlName]="formControlNames.region"
                 #region
@@ -211,7 +211,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, cities, provinces)"
+                (selectionChange)="onLocationSelect($event, cities, provinces,formControlNames.city)"
                 placeholder="{{ 'demographic.label_province' | translate }}"
                 [formControlName]="formControlNames.province"
                 #province
@@ -228,7 +228,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, cities)"
+                (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, cities, formControlNames.localAdministrativeAuthority)"
                 placeholder="{{ 'demographic.label_city' | translate }}"
                 [formControlName]="formControlNames.city"
                 #city

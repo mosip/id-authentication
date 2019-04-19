@@ -2,7 +2,6 @@ package io.mosip.preregistration.notification.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
 import io.swagger.annotations.ApiOperation;
 
@@ -51,29 +50,19 @@ public class NotificationController {
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/notify", consumes = {
-			"multipart/form-data" }, produces = MediaType.APPLICATION_JSON_VALUE)
+			"multipart/form-data" })
 	@ApiOperation(value = "Trigger notification")
-	public ResponseEntity<MainResponseDTO<NotificationDTO>> sendNotification(
+	public ResponseEntity<MainResponseDTO<ResponseDTO>> sendNotification(
 			@RequestPart(value = "NotificationRequestDTO", required = true) String jsonbObject,
 			@RequestPart(value = "langCode", required = true) String langCode,
 			@RequestPart(value = "attachment", required = false) MultipartFile file) {
 		log.info("sessionId", "idType", "id",
 				"In notification controller for send notification with request notification dto " + jsonbObject);
 		return new ResponseEntity<>(notificationService.sendNotification(jsonbObject, langCode, file), HttpStatus.OK);
+
 	}
 	
-//	/**
-//	 * @param Json Stirng data
-//	 * @return the response entity
-//	 */
-//	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
-//	@PostMapping(path="/generateQRCode")
-//	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody String data) {
-//		log.info("sessionId", "idType", "id",
-//				"In notification controller for generateQRCode generation with request " + data);
-//		return  new ResponseEntity<>( notificationService.generateQRCode(data),HttpStatus.OK);
-//		
-//	}
+
 	
 	
 }
