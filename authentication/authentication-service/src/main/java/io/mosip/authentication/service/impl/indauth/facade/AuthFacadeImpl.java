@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -508,13 +509,14 @@ public class AuthFacadeImpl implements AuthFacade {
 					kycAuthRequestDTO.getIndividualId(), idType, AuditModules.EKYC_AUTH.getDesc());
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
-		KycResponseDTO response = null;
+		KycResponseDTO response = new KycResponseDTO();
 		ResponseDTO authResponse = authResponseDTO.getResponse();
-		if (idResDTO != null && authResponse != null && authResponse.isAuthStatus()) {
+		if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
-
+		}
+		if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 			response.setKycStatus(authResponse.isAuthStatus());
 			response.setStaticToken(authResponse.getStaticToken());
 			kycAuthResponseDTO.setResponse(response);

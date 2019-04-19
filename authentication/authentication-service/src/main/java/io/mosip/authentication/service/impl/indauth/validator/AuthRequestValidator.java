@@ -111,6 +111,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateTxnId(authRequestDto.getTransactionID(), errors, TRANSACTION_ID);
 				// Validation for TransaactionId in the RequestDTO.
 				validateTxnId(authRequestDto.getRequest().getTransactionID(), errors, REQUEST_TRANSACTION_ID);
+				validateTxnId(authRequestDto.getTransactionID(), authRequestDto.getRequest().getTransactionID(), errors);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);

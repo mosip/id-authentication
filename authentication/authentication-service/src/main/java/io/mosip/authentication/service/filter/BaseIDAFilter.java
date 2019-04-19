@@ -10,7 +10,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +38,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthError;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.service.exception.IdAuthExceptionHandler;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -152,10 +149,7 @@ public abstract class BaseIDAFilter implements Filter {
 		} catch (IdAuthenticationAppException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
-			AuthError authError = new AuthError();
-			authError.setErrorCode(e.getErrorCode());
-			authError.setErrorMessage(e.getErrorText());
-			sendErrorResponse(response, responseWrapper, requestWrapper, authError, requestTime);
+			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e);
 		} finally {
 			logDataSize(responseWrapper.toString(), RESPONSE);
 		}
@@ -165,24 +159,25 @@ public abstract class BaseIDAFilter implements Filter {
 	/**
 	 * sendErrorResponse method is used to construct error response
 	 * when any exception is thrown while deciphering or validating
-	 * the authenticating partner 
+	 * the authenticating partner .
 	 *
-	 * @param response        where the response are written
+	 * @param response        where the response is written
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param chain           the chain used to link the request wrapper and response wrapper
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
-	 * @param authError 	  the AUTH error is used to set the error details if any
-	 * @param requestTime 
+	 * @param requestTime the request time
+	 * @param ex the ex
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @throws ServletException the servlet exception
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
-			ResettableStreamHttpServletRequest requestWrapper, AuthError authError, Temporal requestTime) throws IOException {
-		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setErrors(Collections.singletonList(authError));
+			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationAppException ex) throws IOException {
+		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
+		Map<String, Object> responseMap = mapper.convertValue(responseObj,
+				new TypeReference<Map<String, Object>>() {
+				});
 		Map<String, Object> requestMap = null;
 		try {
+			responseMap = transformResponse(responseMap);
 			requestMap = getRequestBody(requestWrapper.getInputStream());
 			requestWrapper.resetInputStream();
 		} catch (IdAuthenticationAppException e) {
@@ -194,9 +189,6 @@ public abstract class BaseIDAFilter implements Filter {
 				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(DATETIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
-		ResponseDTO res=new ResponseDTO();
-		res.setAuthStatus(Boolean.FALSE);
-		authResponseDTO.setResponse(res);
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
@@ -207,20 +199,17 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
-			authResponseDTO.setTransactionID((String) requestMap.get(TRANSACTION_ID));
+			responseMap.replace(TRANSACTION_ID, (String) requestMap.get(TRANSACTION_ID));
 		}
-		authResponseDTO.setResponseTime(resTime);
+		responseMap.replace(RES_TIME, resTime);
 		requestWrapper.resetInputStream();
-		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+		responseMap.replace(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVersion(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
-		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
-				new TypeReference<Map<String, Object>>() {
-				});
+		responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		response.getWriter().write(mapper.writeValueAsString(responseMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		logTime(authResponseDTO.getResponseTime(), RESPONSE, requestTime);
+		logTime(resTime, RESPONSE, requestTime);
 		return responseWrapper;
 	}
 
