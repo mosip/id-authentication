@@ -100,7 +100,7 @@ public class NotificationServiceTest {
 		File fileTest = new File(classLoader.getResource("pre-registration.json").getFile());
 		FileReader reader = new FileReader(fileTest);
 		jsonTestObject= (JSONObject) parser.parse(reader);
-		File fileTest1 = new File(classLoader.getResource("pre-registration-Test.json").getFile());
+		File fileTest1 = new File(classLoader.getResource("pre-registration-test.json").getFile());
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileTest1));
 
 		//mapper.registerModule(new JavaTimeModule());
