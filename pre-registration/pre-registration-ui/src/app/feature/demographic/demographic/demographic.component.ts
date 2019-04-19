@@ -599,6 +599,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This method get the next set of locations hierarchy for the selected location
+   *
+   * @param {MatSelectChange} event
+   * @param {CodeValueModal[][]} nextHierarchies
+   * @param {CodeValueModal[][]} currentLocationHierarchies
+   * @param {string} [formControlName]
+   * @memberof DemographicComponent
+   */
   async onLocationSelect(
     event: MatSelectChange,
     nextHierarchies: CodeValueModal[][],
@@ -626,6 +635,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This method push to the CodeValueModal array
+   *
+   * @param {CodeValueModal} element
+   * @memberof DemographicComponent
+   */
   addCodeValue(element: CodeValueModal) {
     this.codeValue.push({
       valueCode: element.valueCode,
@@ -634,6 +649,16 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This method returns the next immediate location hierarchy for the selected location.
+   *
+   * @param {string} languageCode
+   * @param {string} parentLocationCode
+   * @param {CodeValueModal[]} childLocations
+   * @param {string} [currentLocationCode]
+   * @returns
+   * @memberof DemographicComponent
+   */
   getLocationImmediateHierearchy(
     languageCode: string,
     parentLocationCode: string,
@@ -670,12 +695,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description On click of back button the user will be navigate to dashboard.
+   *
+   * @memberof DemographicComponent
+   */
   onBack() {
     let url = '';
     url = Utils.getURL(this.router.url, 'dashboard', 2);
     this.router.navigate([url]);
   }
 
+  /**
+   * @description On change of natioanlity, this is called.
+   *
+   * @param {*} entity
+   * @param {MatButtonToggleChange} [event]
+   * @memberof DemographicComponent
+   */
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
       entity.forEach(element => {
@@ -693,11 +730,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is called when age is changed and the date of birth will get calculated.
+   *
+   * @memberof DemographicComponent
+   */
   onAgeChange() {
     const age = this.age.nativeElement.value;
-    console.log('old age', this.oldAge);
-    console.log('age', age);
-
     if (age && age != this.oldAge) {
       const now = new Date();
       const calulatedYear = now.getFullYear() - age;
@@ -711,17 +750,38 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
-  // nextElementFocus() {
-  //   console.log('AAYA');
+  /**
+   * @description This is to change the focus in ddate of birth field.
+   *
+   * @memberof DemographicComponent
+   */
+  nextElementFocus() {
+    console.log('AAYA');
 
-  //   const date = this.dd.nativeElement.value;
-  //   const month = this.mm.nativeElement.value;
-  //   const year = this.yyyy.nativeElement.value;
-  //   console.log(this.mm);
+    const date = this.dd.nativeElement.value;
+    const month = this.mm.nativeElement.value;
+    console.log(this.mm);
+    console.log(date.length);
+    console.log(this.dayMaxLength);
 
-  //   if (date.length == 2 && month.length != 2) this.mm.nativeElement.focus();
-  // }
+    if (!this.dataModification) {
+      if (date.length == this.dayMaxLength) {
+        console.log('aaya date');
+        this.mm.nativeElement.focus();
+      }
+      if (month.length == this.monthMaxLength) {
+        console.log('aaya month');
+        this.yyyy.nativeElement.focus();
+      }
+    }
+  }
 
+  /**
+   * @description This is called whenever there is a change in Date of birth field and accordingly age
+   * will get calculate.
+   *
+   * @memberof DemographicComponent
+   */
   onDOBChange() {
     const date = this.dd.nativeElement.value;
     const month = this.mm.nativeElement.value;
@@ -778,6 +838,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is used for the tranliteration.
+   *
+   * @param {FormControl} fromControl
+   * @param {*} toControl
+   * @memberof DemographicComponent
+   */
   onTransliteration(fromControl: FormControl, toControl: any) {
     if (fromControl.value) {
       const request: any = {
@@ -805,12 +872,25 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is a custom validator, which check for the white spaces.
+   *
+   * @private
+   * @param {FormControl} control
+   * @returns
+   * @memberof DemographicComponent
+   */
   private noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { whitespace: true };
   }
 
+  /**
+   * @description This is called to submit the user form in case od modify or create.
+   *
+   * @memberof DemographicComponent
+   */
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
@@ -865,6 +945,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is called when user chooses to modify the data.
+   *
+   * @private
+   * @param {ResponseModel} request
+   * @memberof DemographicComponent
+   */
   private onModification(request: ResponseModel) {
     this.regService.updateUser(
       this.step,
@@ -881,6 +968,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     console.log('GET NAME LIST on Modification', this.sharedService.getNameList());
   }
 
+  /**
+   * @description This is called when user creates a new application.
+   *
+   * @private
+   * @param {*} response
+   * @param {ResponseModel} request
+   * @memberof DemographicComponent
+   */
   private onAddition(response: any, request: ResponseModel) {
     this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
     this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
@@ -894,6 +989,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
     console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
+  /**
+   * @description After sumission of the form, the user is route to file-upload or preview page.
+   *
+   * @memberof DemographicComponent
+   */
   onSubmission() {
     this.checked = true;
     this.dataUploadComplete = true;
@@ -907,6 +1007,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.router.navigate([url]);
   }
 
+  /**
+   * @description THis is to create the attribute array for the Identity modal.
+   *
+   * @private
+   * @param {string} element
+   * @param {IdentityModel} identity
+   * @memberof DemographicComponent
+   */
   private createAttributeArray(element: string, identity: IdentityModel) {
     let attr: any;
     if (typeof identity[element] === 'object') {
@@ -933,6 +1041,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     identity[element] = attr;
   }
 
+  /**
+   * @description This method mark all the form control as touched
+   *
+   * @private
+   * @param {FormGroup} formGroup
+   * @memberof DemographicComponent
+   */
   private markFormGroupTouched(formGroup: FormGroup) {
     (<any>Object).values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -942,6 +1057,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This is to create the identity modal
+   *
+   * @private
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createIdentityJSONDynamic() {
     const identity = new IdentityModel(1, [], '', [], [], [], [], [], [], [], [], [], '', '', '', '');
     const length = Object.keys(identity).length;
@@ -953,6 +1075,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return identity;
   }
 
+  /**
+   * @description This is to create the request modal.
+   *
+   * @private
+   * @param {IdentityModel} identity
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createRequestJSON(identity: IdentityModel) {
     let langCode = this.primaryLang;
     if (this.user) {
@@ -965,6 +1095,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return req;
   }
 
+  /**
+   * @description This is the response modal.
+   *
+   * @private
+   * @param {IdentityModel} identity
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createResponseJSON(identity: IdentityModel) {
     let preRegistrationId = '';
     let createdBy = this.loginId;
