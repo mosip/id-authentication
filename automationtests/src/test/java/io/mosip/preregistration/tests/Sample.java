@@ -52,17 +52,22 @@ public class Sample extends BaseTestCase implements ITest {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void fetchDiscardedApplication() {
+	public void fetchDiscardedApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUploadParm(createResponse,preID);
 		Response avilibityResponse = lib.FetchCentre();
-		String expectedRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
-		String expectedCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]").toString();
-		//lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		
+		String regcenter = avilibityResponse.jsonPath().get("response.regCenterId").toString();
+		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
+		lib.expiredStatus();
+		lib.getPreRegistrationStatus(preID);
+		List<String> preI=new ArrayList<String> ();
+		preI.add(preID);
+		lib.reverseDataSync(preI);
+		lib.consumedStatus();
+		lib.getPreRegistrationStatus(preID);
 	}
 
 

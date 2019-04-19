@@ -121,6 +121,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String invalidateToken_URI;
 	private static String preReg_GetDocByDocId;
 	private static String preReg_RetriveBookedPreIdsByRegId;
+	private static String preReg_GetPreRegistrationConfigData;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -535,6 +536,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
+	public Response getPreRegistrationConfigData() {
+		try {
+			response = applnLib.getRequestWithoutParm(preReg_GetPreRegistrationConfigData);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		return response;
+	}
+
 
 	/*
 	 * Generic method to fetch the Create Pre-Registration Application
@@ -741,13 +751,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		List<String> appointmentDetails = new ArrayList<>();
 		String date = getDate(-1);
 
-		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[18].fromTime");
+		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[17].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 		appointmentDetails.add(date);
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[18].fromTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[17].fromTime").toString());
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[18].toTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[17].toTime").toString());
 		return appointmentDetails;
 	}
 
@@ -2037,6 +2047,7 @@ public Response FetchCentre() {
 		invalidateToken_URI = commonLibrary.fetch_IDRepo().get("invalidateToken_URI");
 		preReg_GetDocByDocId = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
 		preReg_RetriveBookedPreIdsByRegId = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
+		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
 	}
 
 }

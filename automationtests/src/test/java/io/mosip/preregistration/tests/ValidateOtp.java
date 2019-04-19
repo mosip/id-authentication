@@ -31,7 +31,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 	public void readPropertiesFile() {
 		initialize();
 	}
-	/*@Test
+	@Test
 	public void validateOtpSendToMobileNo() {
 		testSuite = "SendOtp/SendOtpMobile";
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
@@ -63,7 +63,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
-	}*/
+	}
 	@Test
 	public void validateExpired() throws InterruptedException {
 		testSuite = "SendOtp/SendOtpMobile";
@@ -81,7 +81,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("response[0].message").toString(), "OTP is Expired");
 	}
-	/*@Test
+	@Test
 	public void validateWithoutGeneratingOtp(){
 		
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
@@ -111,7 +111,6 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String message = validateOTP.jsonPath().get("response.message").toString();
 		lib.compareValues(message, "USER_BLOCKED");
 	}
-
 	@Test
 	public void validateWithInvalidOtp() {
 		testSuite = "SendOtp/SendOtpMobile";
@@ -141,7 +140,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
 		String message = validateOTP.jsonPath().get("error[0].message").toString();
 		lib.compareValues(message, "USERID_OTP_VALIDATION_FAILED");
-	}*/
+	}
 
 	@Override
 	public String getTestName() {

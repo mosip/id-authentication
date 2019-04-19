@@ -89,7 +89,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	@DataProvider(name = "Fetch_all_PreRegistration_Ids")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -115,6 +115,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 		List<String> innerKeys = new ArrayList<String>();
 		PreRegistrationLibrary lib=new PreRegistrationLibrary();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		actualRequest.put("requesttime",lib.getCurrentDate());
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
 			Actualresponse = applicationLibrary.dataSyncPostRequest(actualRequest.toJSONString(), preReg_URI);
