@@ -327,7 +327,7 @@
       "age_validation": "يجب أن يكون العمر أقل من 150",
       "gender_validation": "يرجى تحديد الجنس",
       "nationality_validation": "يرجى تحديد الجنسية",
-      "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
+      "DOB_validation": "أدخل تاريخ الميلاد أو العمر الصحيح",
       "date_required": "مطلوب رقمين التاريخ",
       "month_required": "أدخل رقمين رقميين للشهر",
       "year_required": "أدخل رقمين رقميين للسنة",
