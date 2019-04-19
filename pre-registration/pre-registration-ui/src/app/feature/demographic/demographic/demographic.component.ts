@@ -602,12 +602,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
   async onLocationSelect(
     event: MatSelectChange,
     nextHierarchies: CodeValueModal[][],
-    currentLocationHierarchies: CodeValueModal[][]
+    currentLocationHierarchies: CodeValueModal[][],
+    formControlName?: string
   ) {
     if (nextHierarchies) {
       for (let index = 0; index < nextHierarchies.length; index++) {
         const element = nextHierarchies[index];
         const languageCode = this.languages[index];
+        if (formControlName) this.userForm.controls[formControlName].setValue('');
         this.getLocationImmediateHierearchy(languageCode, event.value, element);
       }
     }
