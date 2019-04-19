@@ -34,6 +34,8 @@ export class FileUploadComponent implements OnInit {
     preRegistrationId: ''
   };
   applicantType: string;
+  allowedFilesHtml: string = '';
+  allowedFileSize: string = '';
   sameAsselected: boolean = false;
   isModify: any;
   fileName: string = '';
@@ -90,9 +92,12 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getFileSize();
     this.allowedFiles = this.config
       .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
       .split(',');
+    this.getAllowedFileTypes(this.allowedFiles);
+    // this.allowedFiles.toString();
     let applicants = [];
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
@@ -138,6 +143,24 @@ export class FileUploadComponent implements OnInit {
     }
   }
 
+  getAllowedFileTypes(allowedFiles) {
+    let i = 0;
+    for (let file of allowedFiles) {
+      if (i == 0) {
+        this.allowedFilesHtml = this.allowedFilesHtml + file.substring(file.indexOf('/') + 1);
+      } else {
+        this.allowedFilesHtml = this.allowedFilesHtml + ',' + file.substring(file.indexOf('/') + 1);
+      }
+      i++;
+    }
+  }
+
+  getFileSize() {
+    this.allowedFileSize =
+      (
+        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size) / 1000000
+      ).toString() + 'mb';
+  }
   removeExtraNone() {
     let i: number = 0;
     for (let applicant of this.allApplicants) {

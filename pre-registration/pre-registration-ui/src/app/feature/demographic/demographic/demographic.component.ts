@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatSelectChange, MatButtonToggleChange, MatSlideToggleChange, MatDialog } from '@angular/material';
-import { DatePipe } from '@angular/common';
+import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -47,13 +46,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
   languages = [this.primaryLang, this.secondaryLang];
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
-  dayMaxLength = 2;
-  monthMaxLength = 2;
-  yearMaxLength = 4;
 
-  YEAR_PATTERN = appConstants.YEAR_PATTERN;
-  MONTH_PATTERN = appConstants.MONTH_PATTERN;
-  DATE_PATTERN = appConstants.DATE_PATTERN;
+  // YEAR_PATTERN = appConstants.YEAR_PATTERN;
+  // MONTH_PATTERN = appConstants.MONTH_PATTERN;
+  // DATE_PATTERN = appConstants.DATE_PATTERN;
 
   agePattern: string;
   MOBILE_PATTERN: string;
@@ -209,10 +205,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.DOB_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_DOB];
     this.defaultDay = this.config[appConstants.CONFIG_KEYS.mosip_default_dob_day];
     this.defaultMonth = this.config[appConstants.CONFIG_KEYS.mosip_default_dob_month];
-    this.POSTALCODE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_postal_code_length];
-    this.CNIE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_CINE_length];
-    this.EMAIL_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_email_length];
-    this.MOBILE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_mobile_length];
     this.ADDRESS_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
     this.FULLNAME_PATTERN = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
     this.agePattern = this.config[appConstants.CONFIG_KEYS.mosip_id_validation_identity_age];
@@ -226,7 +218,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private getPrimaryLabels() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
         this.primaryLanguagelabels = response['demographic'];
         resolve(true);
@@ -312,26 +304,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.pattern(this.agePattern)
       ]),
-      [this.formControlNames.dateOfBirth]: new FormControl(this.formControlValues.dateOfBirth),
-      [this.formControlNames.date]: new FormControl(this.formControlValues.date, [
-        Validators.required,
-        Validators.maxLength(this.dayMaxLength),
-        Validators.minLength(this.dayMaxLength),
-        Validators.pattern(this.DATE_PATTERN)
+      [this.formControlNames.dateOfBirth]: new FormControl(this.formControlValues.dateOfBirth, [
+        Validators.pattern(this.DOB_PATTERN)
       ]),
-      [this.formControlNames.month]: new FormControl(this.formControlValues.month, [
-        Validators.required,
-        Validators.maxLength(this.monthMaxLength),
-        Validators.minLength(this.monthMaxLength),
-        Validators.pattern(this.MONTH_PATTERN)
-      ]),
-      [this.formControlNames.year]: new FormControl(this.formControlValues.year, [
-        Validators.required,
-        Validators.maxLength(this.yearMaxLength),
-        Validators.minLength(this.yearMaxLength),
-        Validators.min(this.maxDate.getFullYear() - 150),
-        Validators.pattern(this.YEAR_PATTERN)
-      ]),
+      [this.formControlNames.date]: new FormControl(this.formControlValues.date, [Validators.required]),
+      [this.formControlNames.month]: new FormControl(this.formControlValues.month, [Validators.required]),
+      [this.formControlNames.year]: new FormControl(this.formControlValues.year, [Validators.required]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
         Validators.pattern(this.ADDRESS_PATTERN),
@@ -353,23 +331,19 @@ export class DemographicComponent implements OnInit, OnDestroy {
         Validators.required
       ),
       [this.formControlNames.email]: new FormControl(this.formControlValues.email, [
-        Validators.pattern(this.EMAIL_PATTERN),
-        Validators.maxLength(Number(this.EMAIL_LENGTH))
+        Validators.pattern(this.EMAIL_PATTERN)
+        // Validators.maxLength(Number(this.EMAIL_LENGTH))
       ]),
       [this.formControlNames.postalCode]: new FormControl(this.formControlValues.postalCode, [
         Validators.required,
-        Validators.maxLength(Number(this.POSTALCODE_LENGTH)),
-        Validators.minLength(Number(this.POSTALCODE_LENGTH)),
         Validators.pattern(this.POSTALCODE_PATTERN)
       ]),
       [this.formControlNames.phone]: new FormControl(this.formControlValues.phone, [
-        Validators.maxLength(Number(this.MOBILE_LENGTH)),
-        Validators.minLength(Number(this.MOBILE_LENGTH)),
         Validators.pattern(this.MOBILE_PATTERN)
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
-        Validators.maxLength(Number(this.CNIE_LENGTH)),
+        // Validators.maxLength(Number(this.CNIE_LENGTH)),
         Validators.pattern(this.CNIE_PATTERN)
       ])
     });
@@ -517,7 +491,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private getGenderDetails() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.dataStorageService.getGenderDetails().subscribe(
         response => {
           console.log(response);
@@ -528,7 +502,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             resolve(true);
           }
         },
-        error => {
+        () => {
           console.log('Unable to fetch gender');
           this.onError();
         }
@@ -572,33 +546,22 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   getLocationMetadataHirearchy() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const uppermostLocationHierarchy = this.dataStorageService.getLocationMetadataHirearchy();
       this.uppermostLocationHierarchy = uppermostLocationHierarchy;
       resolve(this.uppermostLocationHierarchy);
-      //please don't remove
-      // const uppermostLocationHierarchy = this.dataStorageService.getLocationMetadataHirearchy(
-      //   appConstants.COUNTRY_HIERARCHY
-      // );
-      // .subscribe(
-      //   response => {
-      //     const countryHirearchy = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
-      //     if (countryHirearchy) {
-      //       const uppermostLocationHierarchy = countryHirearchy.filter(
-      //         (element: any) => element.name === appConstants.COUNTRY_NAME
-      //       );
-      //       this.uppermostLocationHierarchy = uppermostLocationHierarchy;
-      //       resolve(this.uppermostLocationHierarchy);
-      //     }
-      //   },
-      //   error => {
-      //     this.onError();
-      //     console.log('Error in fetching location Hierarchy');
-      //   }
-      // );
     });
   }
 
+  /**
+   * @description This method get the next set of locations hierarchy for the selected location
+   *
+   * @param {MatSelectChange} event
+   * @param {CodeValueModal[][]} nextHierarchies
+   * @param {CodeValueModal[][]} currentLocationHierarchies
+   * @param {string} [formControlName]
+   * @memberof DemographicComponent
+   */
   async onLocationSelect(
     event: MatSelectChange,
     nextHierarchies: CodeValueModal[][],
@@ -626,6 +589,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This method push to the CodeValueModal array
+   *
+   * @param {CodeValueModal} element
+   * @memberof DemographicComponent
+   */
   addCodeValue(element: CodeValueModal) {
     this.codeValue.push({
       valueCode: element.valueCode,
@@ -634,6 +603,16 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This method returns the next immediate location hierarchy for the selected location.
+   *
+   * @param {string} languageCode
+   * @param {string} parentLocationCode
+   * @param {CodeValueModal[]} childLocations
+   * @param {string} [currentLocationCode]
+   * @returns
+   * @memberof DemographicComponent
+   */
   getLocationImmediateHierearchy(
     languageCode: string,
     parentLocationCode: string,
@@ -641,7 +620,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     currentLocationCode?: string
   ) {
     childLocations.length = 0;
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
           console.log('IMMEDIATE', response);
@@ -662,7 +641,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             return resolve(true);
           }
         },
-        error => {
+        () => {
           this.onError();
           console.log('Unable to fetch Below Hierearchy');
         }
@@ -670,12 +649,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description On click of back button the user will be navigate to dashboard.
+   *
+   * @memberof DemographicComponent
+   */
   onBack() {
     let url = '';
     url = Utils.getURL(this.router.url, 'dashboard', 2);
     this.router.navigate([url]);
   }
 
+  /**
+   * @description On change of natioanlity, this is called.
+   *
+   * @param {*} entity
+   * @param {MatButtonToggleChange} [event]
+   * @memberof DemographicComponent
+   */
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
       entity.forEach(element => {
@@ -693,56 +684,98 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is called when age is changed and the date of birth will get calculated.
+   *
+   * @memberof DemographicComponent
+   */
   onAgeChange() {
     const age = this.age.nativeElement.value;
-    console.log('old age', this.oldAge);
-    console.log('age', age);
+    const ageRegex = new RegExp(this.agePattern);
+    if (age && age != this.oldAge)
+      if (ageRegex.test(age)) {
+        const now = new Date();
+        const calulatedYear = now.getFullYear() - age;
+        this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
+        this.userForm.controls[this.formControlNames.month].patchValue(this.defaultMonth);
+        this.userForm.controls[this.formControlNames.year].patchValue(calulatedYear);
+        this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(
+          calulatedYear + '/' + this.defaultMonth + '/' + this.defaultDay
+        );
+        this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
+      } else {
+        this.userForm.controls[this.formControlNames.date].patchValue('');
+        this.userForm.controls[this.formControlNames.month].patchValue('');
+        this.userForm.controls[this.formControlNames.year].patchValue('');
+      }
+  }
 
-    if (age && age != this.oldAge) {
-      const now = new Date();
-      const calulatedYear = now.getFullYear() - age;
-      this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
-      this.userForm.controls[this.formControlNames.month].patchValue(this.defaultMonth);
-      this.userForm.controls[this.formControlNames.year].patchValue(calulatedYear);
-      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(
-        calulatedYear + '/' + this.defaultMonth + '/' + this.defaultDay
-      );
-      this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
+  /**
+   * @description This is to change the focus in date of birth field.
+   *
+   * @memberof DemographicComponent
+   */
+  nextElementFocus() {
+    console.log('AAYA');
+
+    const dayMaxLength = 2;
+    const monthMaxLength = 2;
+    const date = this.dd.nativeElement.value;
+    const month = this.mm.nativeElement.value;
+    console.log(this.mm);
+    console.log(date.length);
+    console.log(dayMaxLength);
+
+    if (!this.dataModification) {
+      if (date.length == dayMaxLength) {
+        console.log('aaya date');
+        this.mm.nativeElement.focus();
+      }
+      if (month.length == monthMaxLength) {
+        console.log('aaya month');
+        this.yyyy.nativeElement.focus();
+      }
     }
   }
 
-  // nextElementFocus() {
-  //   console.log('AAYA');
-
-  //   const date = this.dd.nativeElement.value;
-  //   const month = this.mm.nativeElement.value;
-  //   const year = this.yyyy.nativeElement.value;
-  //   console.log(this.mm);
-
-  //   if (date.length == 2 && month.length != 2) this.mm.nativeElement.focus();
-  // }
-
+  /**
+   * @description This is called whenever there is a change in Date of birth field and accordingly age
+   * will get calculate.
+   *
+   * @memberof DemographicComponent
+   */
   onDOBChange() {
     const date = this.dd.nativeElement.value;
     const month = this.mm.nativeElement.value;
     const year = this.yyyy.nativeElement.value;
 
-    if (date.length == 2 && month.length == 2 && year.length == 4) {
-      const newDate = month + '/' + date + '/' + year;
+    const newDate = year + '/' + month + '/' + date;
+    const dobRegex = new RegExp(this.DOB_PATTERN);
+    if (dobRegex.test(newDate)) {
+      // if (date.length == 2 && month.length == 2 && year.length == 4) {
       const dateform = new Date(newDate);
-      const _month = dateform.getMonth() + 1;
-      if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
-        const pipe = new DatePipe('en-US');
-        const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
-        this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(myFormattedDate);
-        this.userForm.controls[this.formControlNames.age].patchValue(this.calculateAge(dateform));
-      } else {
-        this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
-        this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
-          incorrect: true
-        });
-        this.userForm.controls[this.formControlNames.age].patchValue('');
-      }
+      // const _month = dateform.getMonth() + 1;
+      // if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
+      // const pipe = new DatePipe('en-US');
+      // const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
+      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(newDate);
+      this.userForm.controls[this.formControlNames.age].patchValue(this.calculateAge(dateform));
+      // }
+      // else {
+      //   console.log('INSIDE DATE CHANGE ERROR');
+
+      //   this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
+      //   this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
+      //     incorrect: true
+      //   });
+      // this.userForm.controls[this.formControlNames.age].patchValue('');
+    } else {
+      console.log('INSIDE DATE CHANGE ERROR');
+      this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
+      this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
+        incorrect: true
+      });
+      this.userForm.controls[this.formControlNames.age].patchValue('');
     }
   }
 
@@ -778,6 +811,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is used for the tranliteration.
+   *
+   * @param {FormControl} fromControl
+   * @param {*} toControl
+   * @memberof DemographicComponent
+   */
   onTransliteration(fromControl: FormControl, toControl: any) {
     if (fromControl.value) {
       const request: any = {
@@ -788,8 +828,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
       };
 
       // this.transUserForm.controls[toControl].patchValue('dummyValue');
+
       this.dataStorageService.getTransliteration(request).subscribe(
         response => {
+          console.log('TRANSLITERATION', response);
+
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else this.transUserForm.controls[toControl].patchValue('can not be transliterated');
@@ -805,12 +848,25 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is a custom validator, which check for the white spaces.
+   *
+   * @private
+   * @param {FormControl} control
+   * @returns
+   * @memberof DemographicComponent
+   */
   private noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { whitespace: true };
   }
 
+  /**
+   * @description This is called to submit the user form in case od modify or create.
+   *
+   * @memberof DemographicComponent
+   */
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
@@ -865,6 +921,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description This is called when user chooses to modify the data.
+   *
+   * @private
+   * @param {ResponseModel} request
+   * @memberof DemographicComponent
+   */
   private onModification(request: ResponseModel) {
     this.regService.updateUser(
       this.step,
@@ -881,6 +944,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     console.log('GET NAME LIST on Modification', this.sharedService.getNameList());
   }
 
+  /**
+   * @description This is called when user creates a new application.
+   *
+   * @private
+   * @param {*} response
+   * @param {ResponseModel} request
+   * @memberof DemographicComponent
+   */
   private onAddition(response: any, request: ResponseModel) {
     this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
     this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
@@ -894,6 +965,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
     console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
+  /**
+   * @description After sumission of the form, the user is route to file-upload or preview page.
+   *
+   * @memberof DemographicComponent
+   */
   onSubmission() {
     this.checked = true;
     this.dataUploadComplete = true;
@@ -907,6 +983,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.router.navigate([url]);
   }
 
+  /**
+   * @description THis is to create the attribute array for the Identity modal.
+   *
+   * @private
+   * @param {string} element
+   * @param {IdentityModel} identity
+   * @memberof DemographicComponent
+   */
   private createAttributeArray(element: string, identity: IdentityModel) {
     let attr: any;
     if (typeof identity[element] === 'object') {
@@ -933,6 +1017,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     identity[element] = attr;
   }
 
+  /**
+   * @description This method mark all the form control as touched
+   *
+   * @private
+   * @param {FormGroup} formGroup
+   * @memberof DemographicComponent
+   */
   private markFormGroupTouched(formGroup: FormGroup) {
     (<any>Object).values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -942,9 +1033,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description This is to create the identity modal
+   *
+   * @private
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createIdentityJSONDynamic() {
     const identity = new IdentityModel(1, [], '', [], [], [], [], [], [], [], [], [], '', '', '', '');
-    const length = Object.keys(identity).length;
     let keyArr: any[] = Object.keys(this.formControlNames);
     for (let index = 0; index < keyArr.length - 8; index++) {
       const element = keyArr[index];
@@ -953,6 +1050,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return identity;
   }
 
+  /**
+   * @description This is to create the request modal.
+   *
+   * @private
+   * @param {IdentityModel} identity
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createRequestJSON(identity: IdentityModel) {
     let langCode = this.primaryLang;
     if (this.user) {
@@ -965,6 +1070,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return req;
   }
 
+  /**
+   * @description This is the response modal.
+   *
+   * @private
+   * @param {IdentityModel} identity
+   * @returns
+   * @memberof DemographicComponent
+   */
   private createResponseJSON(identity: IdentityModel) {
     let preRegistrationId = '';
     let createdBy = this.loginId;
