@@ -302,7 +302,6 @@ public class DocumentScanController extends BaseController {
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 			documentPane.setVisible(false);
 		}
-
 	}
 
 	private Map<String, DocumentDetailsDTO> getDocumentsMapFromSession() {
@@ -363,13 +362,16 @@ public class DocumentScanController extends BaseController {
 				}
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					if (counter == 1
-							&& (getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
-									&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
-							|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
-									&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
-						totalDocument++;
-						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+					if (counter == 1) {
+						if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
+								&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
+								|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
+										&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
+							totalDocument++;
+							scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+						} else {
+							scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+						}
 					}
 				} else {
 					if (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
