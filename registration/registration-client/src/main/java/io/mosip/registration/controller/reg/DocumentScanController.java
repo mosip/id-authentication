@@ -139,10 +139,10 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private FaceCaptureController faceCaptureController;
-	
+
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
-	
+
 	@Autowired
 	private IrisCaptureController irisCaptureController;
 
@@ -154,7 +154,7 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
-	
+
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
@@ -172,9 +172,15 @@ public class DocumentScanController extends BaseController {
 
 	private int totalDocument;
 
-	private boolean documentsUploaded;
+	private boolean isPORUploaded;
+
+	private int documentsCount;
 
 	private int counter;
+
+	private boolean isChild;
+
+	private boolean markedAsChild;
 
 	/*
 	 * (non-Javadoc)
@@ -194,9 +200,10 @@ public class DocumentScanController extends BaseController {
 			}
 			counter = 0;
 			totalDocument = 0;
+			documentsCount = 0;
+			isPORUploaded = false;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
-			documentsUploaded = false;
 
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
@@ -214,10 +221,8 @@ public class DocumentScanController extends BaseController {
 				scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
 					if (Integer.parseInt(newValue) <= 0) {
 						continueBtn.setDisable(false);
-						documentsUploaded = true;
 					} else {
 						continueBtn.setDisable(true);
-						documentsUploaded = false;
 					}
 				});
 			}
@@ -229,6 +234,16 @@ public class DocumentScanController extends BaseController {
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
+	}
+
+	/**
+	 * Set for child.
+	 *
+	 * @param isChild
+	 *            the new child
+	 */
+	public void setChild(boolean isChild) {
+		this.isChild = isChild;
 	}
 
 	/**
@@ -346,9 +361,23 @@ public class DocumentScanController extends BaseController {
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 					documentLabel.setAlignment(Pos.CENTER_RIGHT);
 				}
-				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
-					if (counter == 1) {
+
+				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+					if (counter == 1
+							&& (getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
+									&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
+							|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
+									&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
+						totalDocument++;
+						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+					}
+				} else {
+					if (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
+						makePORMandatory();
+					}
+					if (counter == 1 && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+							|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
+							|| (isChild && docCategoryCode.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)))) {
 						totalDocument++;
 						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
 					}
@@ -395,6 +424,44 @@ public class DocumentScanController extends BaseController {
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
+		}
+	}
+
+	private void makePORMandatory() {
+		if (counter == 1) {
+			markedAsChild = isChild;
+		} else {
+			if (markedAsChild) {
+				if (!isChild) {
+					if ((isPORUploaded && documentsCount > 2) || (!isPORUploaded && documentsCount == 2)) {
+						totalDocument = 0;
+					} else if (!isPORUploaded && documentsCount == 1) {
+						totalDocument = 1;
+					} else if (documentsCount == 0 || (isPORUploaded && documentsCount == 1)) {
+						totalDocument = 2;
+					}
+					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+					markedAsChild = isChild;
+				}
+			} else {
+				if (isChild) {
+					switch (documentsCount) {
+					case 0:
+						totalDocument = 3;
+						break;
+					case 1:
+						totalDocument = 2;
+						break;
+					case 2:
+						totalDocument = 1;
+						break;
+					default:
+						totalDocument = 0;
+					}
+					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+					markedAsChild = isChild;
+				}
+			}
 		}
 	}
 
@@ -452,7 +519,6 @@ public class DocumentScanController extends BaseController {
 	 */
 	@Override
 	public void scan(Stage popupStage) {
-
 		try {
 
 			// TODO this check has to removed after when the stubbed data is no
@@ -614,11 +680,29 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
-		if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-				|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
-			totalDocument--;
-			scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
+					&& document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
+					|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
+							&& document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
+				totalDocument--;
+				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+			}
+		} else {
+			if (document.getCode().equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
+				isPORUploaded = true;
+			}
+			if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+
+					|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
+					|| (isChild && document.getCode().equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT))) {
+				totalDocument--;
+				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+			}
+			documentsCount++;
 		}
+
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -640,9 +724,9 @@ public class DocumentScanController extends BaseController {
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
-		
+
 		((ImageView) (((HBox) vboxElement.getParent()).getChildren().get(0))).setImage(new Image(
-					this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
+				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
@@ -781,10 +865,27 @@ public class DocumentScanController extends BaseController {
 			getDocumentsMapFromSession().remove(key);
 
 			vboxElement.getChildren().remove(gridpane);
-			if (key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
-					|| key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)) {
-				totalDocument++;
-				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
+						&& key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
+						|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
+								&& key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
+					totalDocument++;
+					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+				}
+			} else {
+				if (key.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
+					isPORUploaded = false;
+				}
+				if (key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
+
+						|| key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+						|| (isChild && key.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT))) {
+					totalDocument++;
+					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
+				}
+				documentsCount--;
 			}
 		});
 
@@ -1003,7 +1104,6 @@ public class DocumentScanController extends BaseController {
 	 */
 	@FXML
 	private void next() {
-
 		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -1016,10 +1116,8 @@ public class DocumentScanController extends BaseController {
 				updateUINMethodFlow();
 				demographicDetailController.saveDetail();
 				registrationController.showUINUpdateCurrentPage();
-
 			}
 		} else {
-
 			if (RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
@@ -1042,5 +1140,4 @@ public class DocumentScanController extends BaseController {
 	public void setScannedPages(List<BufferedImage> scannedPages) {
 		this.scannedPages = scannedPages;
 	}
-
 }

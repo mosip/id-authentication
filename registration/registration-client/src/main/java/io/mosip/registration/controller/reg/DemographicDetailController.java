@@ -987,9 +987,11 @@ public class DemographicDetailController extends BaseController {
 								uinId.clear();
 								isChild = true;
 								validation.setChild(isChild);
+								documentScanController.setChild(isChild);
 							} else {
 								isChild = false;
 								validation.setChild(isChild);
+								documentScanController.setChild(isChild);
 								parentDetailPane.setVisible(false);
 								parentDetailPane.setDisable(true);
 								parentName.clear();
