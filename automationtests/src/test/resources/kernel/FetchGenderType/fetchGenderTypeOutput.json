@@ -1,1 +1,1 @@
-[{"Jira ID":"MOS-8266","langcode":"valid","Test case Name":"allValid_smoke_get","status":"Fail"},{"Jira ID":"MOS-8266","langcode":"valid","Test case Name":"allValid_smoke_lang","status":"Fail"},{"Jira ID":"MOS-8266","langcode":"invalid","Test case Name":"invalid_langcode_unexisting","status":"Pass"}]
+[]

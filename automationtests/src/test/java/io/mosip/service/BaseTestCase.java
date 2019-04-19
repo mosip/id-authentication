@@ -111,8 +111,8 @@ public class BaseTestCase {
 			initialize();
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
-			pil.PreRegistrationResourceIntialize();
-			authToken=pil.getToken();
+/*			pil.PreRegistrationResourceIntialize();
+			authToken=pil.getToken();*/
 			
 		} // End suiteSetup
 

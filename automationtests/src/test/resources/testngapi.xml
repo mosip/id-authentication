@@ -4,9 +4,9 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
-<!-- 	<listeners>
+	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners> -->
+	</listeners> 
 
 <!-- 
   Passing Group as parmeter unsing "testType"
@@ -15,12 +15,12 @@
   						regression
   						smokeAndRegression -->
  
-                  <test name="Kernel Tests">
+                      <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
                          <class name="io.mosip.kernel.tests.AuditLog" />
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
-                           <class name="io.mosip.kernel.tests.EmailNotification" />
+                      <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
                            <class name="io.mosip.kernel.tests.FetchApplication" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
@@ -68,13 +68,15 @@
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" />
                            <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />
+                           
+                           
                      </classes>
               </test> 
 
 		
-
+ 
           		
-			<test name="RegistrationProcessor Tests">
+		<!-- 	<test name="RegistrationProcessor Tests">
 		<parameter name="testType" value="smokeAndregression" />
 		<classes>
 			<class name="io.mosip.regProc.tests.PacketStatus" />
@@ -82,13 +84,13 @@
 			<class name="io.mosip.regProc.tests.PacketReceiver" />
 			<class name="io.mosip.regProc.tests.IntegrationScenarios" />
 		</classes>
-	</test>  
+	</test>   -->
 
 	
 	
 		
 	
-	  <test name="PreRegistration Tests">
+	<!--   <test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smoke" />
 
@@ -97,7 +99,7 @@
 		<classes>
 
 						   <class name="io.mosip.preregistration.tests.BookingAppointment" />
-                           <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
+                            <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
                            <class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
                            <class name="io.mosip.preregistration.tests.CreatePreRegistration" />
                            <class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
@@ -115,10 +117,10 @@
                            <class name="io.mosip.preregistration.tests.IntegrationScenarios" />
                            <class name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
                            <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
-                           <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
-                        <!--    <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" /> -->
+                           <class name="io.mosip.preregistration.tests.RetrivePreRegistration" /> 
+                        <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
                            
-                           <class name="io.mosip.preregistration.tests.SyncMasterData" />
+                            <class name="io.mosip.preregistration.tests.SyncMasterData" /> 
 			
 
 			
@@ -127,7 +129,7 @@
 
 	</test> 
  
-
+ -->
 
 
 
