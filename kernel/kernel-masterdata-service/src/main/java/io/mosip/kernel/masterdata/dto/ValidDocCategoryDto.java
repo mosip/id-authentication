@@ -1,26 +1,22 @@
 package io.mosip.kernel.masterdata.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * Response dto for Document Category Detail
  * 
  * @author Neha Sinha
- * @author Ritesh Sinha
- * 
  * @since 1.0.0
- *
  */
 @Data
-@ApiModel(value = "DocumentCategory", description = "DocumentCategory resource representation")
-public class DocumentCategoryDto {
+public class ValidDocCategoryDto {
 
 	/**
 	 * Document category code.
@@ -58,7 +54,9 @@ public class DocumentCategoryDto {
 	 * Is active or not.
 	 */
 	@NotNull
-	@ApiModelProperty(value = "Application isActive Status", required = true, dataType = "java.lang.Boolean")
+	@ApiModelProperty(value = "Application isActive Status", required =  true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
-
+	
+	private List<DocumentTypeDto> documenttypes;
+	
 }
