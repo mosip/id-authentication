@@ -36,7 +36,7 @@ stage ('---------- mvn-clean-test ---------------') {
       alwaysLinkToLastBuild: false,
       keepAll: true,
       reportDir: branch+"/"+projectToBuild+"/src/test/resources",
-      reportFiles: 'customize-emailable-report-template.html',
+      reportFiles: 'customize-emailable-report.html',
       reportName: "Tests Report"
   ])
 }
