@@ -17,7 +17,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
@@ -50,12 +49,12 @@ public class SymmetricProcessor {
 	 * @param mode   if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
 
 		if (mode == Cipher.ENCRYPT_MODE) {
-			return encrypt(method, key, data, mode);
+			return encrypt(method, key, data, mode,randomIV);
 		} else {
-			return decrypt(method, key, data, mode);
+			return decrypt(method, key, data, mode,randomIV);
 		}
 
 	}
@@ -70,15 +69,18 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
-		byte[] randomIV = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
+			if(randomIV == null) {
 			randomIV = generateIV(cipher.getBlockSize());
 			cipher.init(mode, key, new IvParameterSpec(randomIV), random);
+			}else {
+				cipher.init(mode, key, new IvParameterSpec(randomIV),new SecureRandom());
+			}
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
@@ -126,14 +128,20 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
+			if(randomIV == null) {
 			cipher.init(mode, key,
 					new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
 					random);
+			}
+			else {
+				cipher.init(mode, key,
+						new IvParameterSpec(randomIV),new SecureRandom());
+			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
