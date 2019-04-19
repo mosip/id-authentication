@@ -1,7 +1,6 @@
 {
   "id": "string",
-  "ver": "string",
-  "timestamp": "2019-02-05T12:00:00.000Z",
+  "metadata": {},
   "request": [
       {
       "cntrId": "10001",
@@ -10,5 +9,7 @@
       "machineId": "10001",
       "usrId": "110001"
     }
-  ]
+  ],
+  "requesttime": "2019-04-11T10:00:00.000Z",
+  "version": "string"
 }

@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -54,9 +54,9 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	private static final String apiName = "FetchHolidays";
 	private static final String requestJsonName = "FetchHolidaysRequest";
 	private static final String outputJsonName = "FetchHolidaysOutput";
-	private static final String service_URI = "/masterdata/v1.0/holidays";
-	private static final String service_id_URI = "/masterdata/v1.0/holidays/{holidayid}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/holidays/{holidayid}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/holidays";
+	private static final String service_id_URI = "/v1/masterdata/holidays/{holidayid}";
+	private static final String service_id_lang_URI = "/v1/masterdata/holidays/{holidayid}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -178,10 +178,10 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where id = '" + objectData.get("holidayid") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("holidays");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
@@ -217,6 +217,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}

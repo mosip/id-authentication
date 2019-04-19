@@ -1,45 +1,44 @@
 package io.mosip.kernel.tests;
 	
 	import java.io.File;
-	import java.io.FileReader;
-	import java.io.FileWriter;
-	import java.io.IOException;
-	import java.lang.reflect.Field;
-	import java.lang.reflect.Method;
-	import java.util.ArrayList;
-	import java.util.List;
-	
-	import org.apache.log4j.Logger;
-	import org.json.simple.JSONArray;
-	import org.json.simple.JSONObject;
-	import org.json.simple.parser.JSONParser;
-	import org.json.simple.parser.ParseException;
-	import org.testng.ITest;
-	import org.testng.ITestContext;
-	import org.testng.ITestResult;
-	import org.testng.Reporter;
-	import org.testng.annotations.AfterClass;
-	import org.testng.annotations.AfterMethod;
-	import org.testng.annotations.BeforeMethod;
-	import org.testng.annotations.DataProvider;
-	import org.testng.annotations.Test;
-	import org.testng.asserts.SoftAssert;
-	import org.testng.internal.BaseTestMethod;
-	import org.testng.internal.TestResult;
-	
-	import com.fasterxml.jackson.core.JsonParseException;
-	import com.fasterxml.jackson.databind.JsonMappingException;
-	import com.google.common.base.Verify;
-	import com.google.common.io.BaseEncoding;
-	
-	import io.mosip.dbaccess.KernelTables;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.testng.ITest;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Verify;
+import com.google.common.io.BaseEncoding;
+
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbdto.PublicKeyResponse;
 import io.mosip.service.ApplicationLibrary;
-	import io.mosip.service.AssertKernel;
-	import io.mosip.service.BaseTestCase;
-	import io.mosip.util.GetHeader;
-	import io.mosip.util.TestCaseReader;
-	import io.restassured.response.Response;
+import io.mosip.service.AssertKernel;
+import io.mosip.service.BaseTestCase;
+import io.mosip.util.GetHeader;
+import io.mosip.util.TestCaseReader;
+import io.restassured.response.Response;
 	
 	
 	/**
@@ -59,7 +58,7 @@ import io.mosip.service.ApplicationLibrary;
 	       private static final String apiName = "SyncPublicKeyToRegClient";
 	       private static final String requestJsonName = "syncPublicKeyRequest";
 	       private static final String outputJsonName = "syncPublicKeyOutput";
-	       private static final String service_URI = "/keymanager/v1.0/publickey/";
+	       private static final String service_URI = "/v1/keymanager/publickey/";
 	
 	       protected static String testCaseName = "";
 	       static SoftAssert softAssert = new SoftAssert();
@@ -78,7 +77,7 @@ import io.mosip.service.ApplicationLibrary;
 	       * @param testdata
 	       * @param ctx
 	       */
-	       @BeforeMethod
+	       @BeforeMethod(alwaysRun=true)
 	       public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 	              String object = (String) testdata[0];
 	              testCaseName = object.toString();
@@ -170,11 +169,11 @@ import io.mosip.service.ApplicationLibrary;
 	              {
 	                     String referenceId=(objectData.get("referenceId")).toString();
 	                     String queryStr = "select public_key from kernel.key_store where id = (select id from kernel.key_alias where ref_id = '"+referenceId+"' and app_id='"+applicationId+"')";
-	                     boolean valid = KernelTables.validateDB(queryStr,PublicKeyResponse.class);
+	                     boolean valid = KernelMasterDataR.masterDataDBConnection(PublicKeyResponse.class,queryStr);
 	                     String s = null;
 	                     if(valid)
 	                     {
-	                           byte b[] = (byte[]) KernelTables.objs.get(0);
+	                           byte b[] = (byte[]) KernelMasterDataR.objs.get(0);
 	                           s = BaseEncoding.base64().encode(b);
 	                     }
 	                     if(s!=null)

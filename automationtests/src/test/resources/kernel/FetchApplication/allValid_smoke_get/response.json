@@ -1,144 +1,18 @@
 {
-  "applicationtypes": [
-    {
-      "code": "1111",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1112",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1113",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1114",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1115",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1116",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1117",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1118",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1119",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1120",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1121",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1122",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1123",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1124",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1125",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1126",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1127",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1128",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1129",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    },
-    {
-      "code": "1130",
-      "name": "Pre_Reg",
-      "description": "string",
-      "langCode": "eng",
-      "isActive": true
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T10:14:53.237Z",
+  "metadata": null,
+  "response": {
+    "applicationtypes": [
+      {
+        "code": "1111",
+        "name": "Pre_Reg",
+        "description": "string",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
 }

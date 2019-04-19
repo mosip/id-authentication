@@ -56,7 +56,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateLocationByName = "/masterdata/v1.0/locations/validate/{locationname}";
+	private static final String validateLocationByName = "/v1/masterdata/locations/validate/{locationname}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/ValidateLocationByName";
@@ -68,7 +68,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());
@@ -82,7 +82,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	@DataProvider(name = "ValidateLocationByName")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -117,7 +117,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
 		/*
 		 * Getting the response time in milliseconds	
