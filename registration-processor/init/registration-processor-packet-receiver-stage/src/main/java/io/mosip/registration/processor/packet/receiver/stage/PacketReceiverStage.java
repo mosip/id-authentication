@@ -25,7 +25,7 @@ import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverRes
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -158,7 +158,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx, PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-						RegistrationStatusCode.PACKET_RECEIVED.toString(), listObj), APPLICATION_JSON);
+						StatusMessage.PACKET_RECEIVED.toString(), listObj), APPLICATION_JSON);
 
 			}
 		} catch (IOException e) {
