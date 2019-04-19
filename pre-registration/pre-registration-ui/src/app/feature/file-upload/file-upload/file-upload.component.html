@@ -1,6 +1,11 @@
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
-  <div class="file-upload__message">{{ 'documents.text_filetype' | translate }}</div>
+  <div class="file-upload__message">
+    {{ 'documents.text_filetype' | translate }} &nbsp;{{ allowedFilesHtml }} &nbsp;{{
+      'documents.text_filesize' | translate
+    }}
+    &nbsp; {{ allowedFileSize }}
+  </div>
   <div class="file-upload__body">
     <div class="file-upload__body__1">
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">

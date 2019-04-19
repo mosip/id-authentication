@@ -350,7 +350,8 @@
   },
   "documents": {
     "title_document": "Télécharger des documents",
-    "text_filetype": "Type de fichier autorisé Pdf et Max 1 Mo",
+    "text_filetype": "Type de fichier autorisé ",
+    "text_filesize": "taille de fichier autorisée",
     "action_browse": "FEUILLETER",
     "action_back": "RETOUR",
     "action_skip": "SAUTER",

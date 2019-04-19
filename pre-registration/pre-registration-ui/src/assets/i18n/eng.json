@@ -347,7 +347,8 @@
   },
   "documents": {
     "title_document": "Upload Documents",
-    "text_filetype": "Allowed file type Pdf,Max size 1MB",
+    "text_filetype": "Allowed file type ",
+    "text_filesize": "allowed file size",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",
