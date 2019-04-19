@@ -164,7 +164,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
-
+				storePacket(stageName);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");
@@ -241,15 +241,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void storePacket(String stageName) throws IOException {
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
-		if (dto == null)
+		if (dto == null) {
 			dto = new InternalRegistrationStatusDto();
-		else {
+			dto.setRetryCount(0);
+		} else {
 			int retryCount = dto.getRetryCount() != null ? dto.getRetryCount() + 1 : 1;
 			dto.setRetryCount(retryCount);
 
 		}
-		// fileManager.put(registrationId, encryptedInputStream,
-		// DirectoryPathDto.LANDING_ZONE);
 
 		dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
 		dto.setRegistrationStageName(stageName);
@@ -257,9 +256,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setRegistrationId(registrationId);
 		dto.setRegistrationType(regEntity.getRegistrationType());
 		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+		dto.setStatusCode(RegistrationStatusCode.PACKET_RECEIVED.toString());
 		dto.setLangCode("eng");
-		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
+		dto.setStatusComment(StatusMessage.PACKET_RECEIVED);
 		dto.setReProcessRetryCount(0);
 		dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dto.setIsActive(true);
