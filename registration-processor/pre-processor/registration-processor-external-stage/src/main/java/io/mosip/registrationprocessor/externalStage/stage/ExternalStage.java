@@ -158,7 +158,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_FAILURE.toString());
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			}
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
