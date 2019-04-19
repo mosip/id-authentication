@@ -47,13 +47,11 @@ public class CbeffValidator {
 	/**
 	 * Method used for custom validation of the BIR
 	 * 
-	 * @param bir
-	 *            BIR data
+	 * @param bir BIR data
 	 * 
 	 * @return boolean value if BIR is valid
 	 * 
-	 * @exception CbeffException
-	 *                when any condition fails
+	 * @exception CbeffException when any condition fails
 	 * 
 	 */
 	public static boolean validateXML(BIRType bir) throws CbeffException {
@@ -91,11 +89,9 @@ public class CbeffValidator {
 	/**
 	 * Method used for validation of Format Type
 	 * 
-	 * @param formatType
-	 *            format type
+	 * @param formatType     format type
 	 * 
-	 * @param singleTypeList
-	 *            List of types
+	 * @param singleTypeList List of types
 	 * 
 	 * @return boolean value if format type is matching with type
 	 * 
@@ -120,8 +116,7 @@ public class CbeffValidator {
 	/**
 	 * Method used for getting Format Type Id from type string
 	 * 
-	 * @param type
-	 *            format type
+	 * @param type format type
 	 * 
 	 * @return long format type id
 	 * 
@@ -145,14 +140,11 @@ public class CbeffValidator {
 	/**
 	 * Method used for creating XML bytes using JAXB
 	 * 
-	 * @param bir
-	 *            BIR type
-	 * @param xsd
-	 *            xml schema definition
+	 * @param bir BIR type
+	 * @param xsd xml schema definition
 	 * @return byte[] byte array of XML data
 	 * 
-	 * @exception Exception
-	 *                exception
+	 * @exception Exception exception
 	 * 
 	 */
 	public static byte[] createXMLBytes(BIRType bir, byte[] xsd) throws Exception {
@@ -175,21 +167,19 @@ public class CbeffValidator {
 		return savedData;
 	}
 
-	private static byte[] readXSD(String name) throws IOException {
+	/*private static byte[] readXSD(String name) throws IOException {
 		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xsd"));
 		return fileContent;
-	}
+	}*/
 
 	/**
 	 * Method used for BIR Type
 	 * 
-	 * @param fileBytes
-	 *            byte array of XML data
+	 * @param fileBytes byte array of XML data
 	 * 
 	 * @return BIRType BIR data
 	 * 
-	 * @exception Exception
-	 *                exception
+	 * @exception Exception exception
 	 * 
 	 */
 	public static BIRType getBIRFromXML(byte[] fileBytes) throws Exception {
@@ -204,19 +194,15 @@ public class CbeffValidator {
 	/**
 	 * Method used for searching Cbeff data based on type and subtype
 	 * 
-	 * @param bir
-	 *            BIR data
+	 * @param bir     BIR data
 	 * 
-	 * @param type
-	 *            format type
+	 * @param type    format type
 	 * 
-	 * @param subType
-	 *            format subtype
+	 * @param subType format subtype
 	 * 
 	 * @return bdbMap
 	 * 
-	 * @exception Exception
-	 *                exception
+	 * @exception Exception exception
 	 * 
 	 */
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)

@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * AppRolePriority entity details
+ * The Entity Class for AppRolePriority
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -25,8 +25,9 @@ public class AppRolePriority extends RegistrationCommonFields{
 	private AppRolePriorityId appRolePriorityId;
 
 	@Column(name = "priority")
-	private int priority;
+	private Integer priority;
 	@Column(name = "lang_code")
 	private String langCode;
+	
 
 }

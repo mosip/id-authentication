@@ -53,6 +53,7 @@ import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 import io.mosip.kernel.idrepo.dto.AuditResponseDto;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
+import io.mosip.kernel.idrepo.helper.RestHelper;
 import io.netty.handler.ssl.SslContext;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
@@ -363,7 +364,7 @@ public class RestHelperTest {
 	 * @throws RestServiceException
 	 *             the rest service exception
 	 */
-	@Test
+	//@Test
 	public void testRequestAsyncWithoutHeaders() throws IdRepoDataValidationException, RestServiceException {
 		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");

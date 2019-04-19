@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.3</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -79,6 +79,7 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

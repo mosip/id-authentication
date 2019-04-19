@@ -1,12 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
@@ -14,12 +12,14 @@ import org.springframework.core.env.Environment;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.spi.faceauth.provider.FaceProvider;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
+import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeImpl;
 
 /**
  * The Enum BioAuthType.
@@ -30,7 +30,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 public enum BioAuthType implements AuthType {
 
 	FGR_MIN("FMR",
-			setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX, BioMatchType.FGRMIN_LEFT_MIDDLE,
+			AuthType.setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX, BioMatchType.FGRMIN_LEFT_MIDDLE,
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
 					BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
@@ -42,7 +42,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {							
+						if (!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
 							BiFunction<String, String, Double> func = idInfoFetcher
 									.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
 							valueMap.put(FingerprintProvider.class.getSimpleName(), func);
@@ -62,7 +62,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	FGR_IMG("FIR",
-			setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
+			AuthType.setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
 					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
@@ -87,7 +87,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRIMG_MULTI);
 		}
 	},
-	FGR_MIN_MULTI("FMR", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
+	FGR_MIN_MULTI("FMR", AuthType.setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -104,16 +104,8 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-				Environment environment) {
-
-			String bioType = getType();
-			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(MULTI_MIN_MATCH_VALUE_SUFFIX);
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				threshold = Integer.parseInt(property);
-			}
-			return Optional.ofNullable(threshold);
+				Environment environment, IdInfoFetcher idInfoFetcher) {
+			return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(COMPOSITE_THRESHOLD));
 		}
 
 		@Override
@@ -121,7 +113,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_MULTI);
 		}
 	},
-	IRIS_COMP_IMG("IIR", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
+	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -139,16 +131,8 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-				Environment environment) {
-
-			String bioType = getType();
-			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(MULTI_MIN_MATCH_VALUE_SUFFIX);
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				threshold = Integer.parseInt(property);
-			}
-			return Optional.ofNullable(threshold);
+				Environment environment, IdInfoFetcher idInfoFetcher) {
+			return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(COMPOSITE_THRESHOLD));
 		}
 
 		@Override
@@ -157,7 +141,7 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris", 1) {
+	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris", 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -165,7 +149,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
+						if (!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
 							BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 									.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 							valueMap.put(IrisProvider.class.getSimpleName(), func);
@@ -184,28 +168,42 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FID", Collections.emptySet(), "face", 1) {
+	FACE_IMG("FID", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), "face", 1) {
+
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+								.getFaceProvider(bioinfovalue)::matchImage;
+						valueMap.put(FaceProvider.class.getSimpleName(), func);
+					});
+			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO).orElse(""));
+			return valueMap;
+		}
+
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			// TODO
-			return 0L;
+			long entries = 0;
+			for(MatchType matchType : AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
+				entries += (long) helper.getIdentityRequestInfo(matchType, reqDTO.getRequest(), null).size();
+			}
+			return entries;
 		}
 	};
 
-	private static final String MIN_MATCH_VALUE_SUFFIX = ".min.match.value";
+	/** The Constant SINGLE_THRESHOLD. */
+	private static final String SINGLE_THRESHOLD = ".single.threshold";
 
-	private static final String MULTI_MIN_MATCH_VALUE_SUFFIX = ".multi" + MIN_MATCH_VALUE_SUFFIX;
+	/** The Constant COMPOSITE_THRESHOLD. */
+	private static final String COMPOSITE_THRESHOLD = ".composite.threshold";
 
+	/** The Constant FINGERPRINT. */
 	private static final String FINGERPRINT = "Fingerprint";
 
-	/** The type. */
-	private String type;
-
-	/** The associated match types. */
-	private Set<MatchType> associatedMatchTypes;
-
-	/** The display name. */
-	private String displayName;
+	private AuthTypeImpl authTypeImpl;
 
 	/** The count. */
 	private int count;
@@ -219,11 +217,8 @@ public enum BioAuthType implements AuthType {
 	 * @param count                the count
 	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName, int count) {
-		this.type = type;
-
-		this.displayName = displayName;
+		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, displayName);
 		this.count = count;
-		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
@@ -231,33 +226,25 @@ public enum BioAuthType implements AuthType {
 	/**
 	 * Gets the FP values count in identity.
 	 *
-	 * @param reqDTO the req DTO
-	 * @param helper the helper
-	 * @param fpMultiMatchType 
+	 * @param reqDTO           the req DTO
+	 * @param helper           the helper
+	 * @param fpMultiMatchType
 	 * @return the FP values count in identity
 	 */
-	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper, MatchType fpMultiMatchType) {
+	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper,
+			MatchType fpMultiMatchType) {
 		return (long) helper.getIdentityRequestInfo(fpMultiMatchType, reqDTO.getRequest(), null).size();
 	}
 
+	/**
+	 * Gets the iris values count in identity.
+	 *
+	 * @param reqDTO the req DTO
+	 * @param helper the helper
+	 * @return the iris values count in identity
+	 */
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest(), null).size();
-	}
-
-	/*
-	 * To get Display name
-	 */
-	@Override
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/*
-	 * To get type
-	 */
-	@Override
-	public String getType() {
-		return type;
 	}
 
 	/*
@@ -295,24 +282,8 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
-			Environment environment) {
-
-		String bioType = getType();
-		Integer threshold = null;
-		String key = bioType.toLowerCase().concat(MIN_MATCH_VALUE_SUFFIX);
-		String property = environment.getProperty(key);
-		if (property != null && !property.isEmpty()) {
-			threshold = Integer.parseInt(property);
-		}
-		return Optional.ofNullable(threshold);
-	}
-
-	/*
-	 * Get Associated Matchtypes
-	 */
-	@Override
-	public Set<MatchType> getAssociatedMatchTypes() {
-		return Collections.unmodifiableSet(associatedMatchTypes);
+			Environment environment, IdInfoFetcher idInfoFetcher) {
+		return idInfoFetcher.getMatchingThreshold(getType().toLowerCase().concat(SINGLE_THRESHOLD));
 	}
 
 	/*
@@ -331,12 +302,20 @@ public enum BioAuthType implements AuthType {
 	}
 
 	/**
-	 * Returns the set of given match types
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
+	 * This method accepts the bioType and it will return Optional of BioAuthType
+	 * only when the count is single.
+	 * 
+	 * @param type
+	 * @return
 	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
+	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
+		BioAuthType[] values = BioAuthType.values();
+		return Stream.of(values)
+				.filter(authType -> authType.getType().equalsIgnoreCase(type) && authType.getCount() == 1).findAny();
+	}
+	
+	@Override
+	public AuthType getAuthTypeImpl() {
+		return authTypeImpl;
 	}
 }

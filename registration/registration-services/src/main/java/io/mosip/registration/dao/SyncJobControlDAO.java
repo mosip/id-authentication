@@ -20,18 +20,10 @@ public interface SyncJobControlDAO {
 	 */
 	public SyncJobInfo getSyncStatus();
 
+	
+	
 	/**
-	 * Gets the sync count.
-	 *
-	 * @return the sync count
-	 */
-	/**
-	 * Instantiates a new sync job info.
-	 *
-	 * @param comparableList
-	 *            the comparable list
-	 * @param syncCount
-	 *            the sync count
+	 * The Class SyncJobInfo.
 	 */
 	public class SyncJobInfo {
 
@@ -44,6 +36,16 @@ public interface SyncJobControlDAO {
 		/** The last export registration list. */
 		private List<Registration> lastExportRegistrationList;
 
+		/**
+		 * Instantiates a new sync job info.
+		 *
+		 * @param syncControlList 
+		 * 				the sync control list
+		 * @param yetToExportCount 
+		 * 				the yet to export count
+		 * @param lastExportRegistrationList 
+		 * 				the last export registration list
+		 */
 		public SyncJobInfo(List<SyncControl> syncControlList, double yetToExportCount, List<Registration> lastExportRegistrationList) {
 			super();
 			this.syncControlList = syncControlList;
@@ -52,6 +54,8 @@ public interface SyncJobControlDAO {
 		}
 
 		/**
+		 * Gets the sync control list.
+		 *
 		 * @return the syncControlList
 		 */
 		public List<SyncControl> getSyncControlList() {
@@ -59,6 +63,8 @@ public interface SyncJobControlDAO {
 		}
 
 		/**
+		 * Gets the yet to export count.
+		 *
 		 * @return the yetToExportCount
 		 */
 		public double getYetToExportCount() {
@@ -66,6 +72,8 @@ public interface SyncJobControlDAO {
 		}
 
 		/**
+		 * Gets the last export registration list.
+		 *
 		 * @return the lastExportRegistrationList
 		 */
 		public List<Registration> getLastExportRegistrationList() {
@@ -74,40 +82,42 @@ public interface SyncJobControlDAO {
 	}
 
 	/**
-	 * Update Sync control transaction
-	 * @param syncControl sync control
+	 * Update Sync control transaction.
+	 *
+	 * @param syncControl 
+	 * 				sync control
 	 * @return sync control
 	 */
 	public SyncControl update(SyncControl syncControl);
 
 	/**
-	 * Save Sync Control Transaction
-	 * 
-	 * @param syncControl
-	 *            sync Control
+	 * Save Sync Control Transaction.
+	 *
+	 * @param syncControl            
+	 * 				sync Control
 	 * @return sync control
 	 */
 	public SyncControl save(SyncControl syncControl);
 
 	/**
-	 * Get Sync Control data using jobId
-	 * 
-	 * @param syncJobId
-	 *            id
+	 * Get Sync Control data using jobId.
+	 *
+	 * @param syncJobId            
+	 * 				id
 	 * @return SyncControl data
 	 */
 	public SyncControl findBySyncJobId(String syncJobId);
 	
 	/**
-	 * Get all sync control records
-	 * 
+	 * Get all sync control records.
+	 *
 	 * @return list of syncControl
 	 */
 	public List<SyncControl> findAll();
 	
 	/**
-	 * Get Registration Details
-	 * 
+	 * Get Registration Details.
+	 *
 	 * @return list of Registration
 	 */
 	List<Registration> getRegistrationDetails();

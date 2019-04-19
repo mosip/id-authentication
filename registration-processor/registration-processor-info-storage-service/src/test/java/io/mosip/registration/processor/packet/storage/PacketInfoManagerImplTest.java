@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,39 +35,24 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
-import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDTO;
-
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
-import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
-import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
@@ -93,41 +77,11 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The applicant document repository. */
-	@Mock
-	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
-
-	/** The biometric exception repository. */
-	@Mock
-	private BasePacketRepository<BiometricExceptionEntity, String> biometricExceptionRepository;
-
-	/** The applicant fingerprint repository. */
-	@Mock
-	private BasePacketRepository<ApplicantFingerprintEntity, String> applicantFingerprintRepository;
-
-	/** The applicant iris repository. */
-	@Mock
-	private BasePacketRepository<ApplicantIrisEntity, String> applicantIrisRepository;
-
-	/** The applicant photograph repository. */
-	@Mock
-	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
-
-	/** The reg osi repository. */
-	@Mock
-	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	/** The applicant demographic repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> applicantDemographicRepository;
 
-	/** The reg center machine repository. */
-	@Mock
-	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
-
-	/** The demographic json repository. */
-	@Mock
-	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
 
 	/** The demographic dedupe repository. */
 	@Mock
@@ -162,12 +116,6 @@ public class PacketInfoManagerImplTest {
 
 	/** The identity. */
 	private Identity identity;
-
-	/** The applicant document entity. */
-	private ApplicantDocumentEntity applicantDocumentEntity;
-
-	/** The applicant document PK entity. */
-	private ApplicantDocumentPKEntity applicantDocumentPKEntity;
 
 	/** The meta data list. */
 	private List<FieldValue> metaDataList;
@@ -515,24 +463,6 @@ public class PacketInfoManagerImplTest {
 				supervisorFingerprintImage, supervisorIrisImage, supervisorPassword, officerPassword, supervisiorPIN,
 				officerPIN, officerAuthenticationImage, supervisorAuthenticationImage));
 
-		applicantDocumentEntity = new ApplicantDocumentEntity();
-		applicantDocumentPKEntity = new ApplicantDocumentPKEntity();
-		applicantDocumentPKEntity.setRegId("2018782130000224092018121229");
-		applicantDocumentPKEntity.setDocTypCode("passport");
-		applicantDocumentPKEntity.setDocCatCode("poA");
-
-		applicantDocumentEntity.setId(applicantDocumentPKEntity);
-		applicantDocumentEntity.setPreRegId("PEN1345T");
-		applicantDocumentEntity.setDocFileFormat(".zip");
-		applicantDocumentEntity.setDocOwner("self");
-		String byteArray = "Binary Data";
-		applicantDocumentEntity.setActive(true);
-		applicantDocumentEntity.setCrBy("Mosip_System");
-		applicantDocumentEntity.setCrDtimes(LocalDateTime.now());
-		applicantDocumentEntity.setUpdBy("MOSIP_SYSTEM");
-
-		applicantDocumentEntity.setDocStore(byteArray.getBytes());
-
 		metaDataList = new ArrayList<>();
 		FieldValue regId = new FieldValue();
 		regId.setLabel("registrationId");
@@ -559,44 +489,9 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	/**
-	 * Save packet test.
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	@Test
-	public void savePacketTest() throws IOException {
+	
 
-		packetInfoManagerImpl.savePacketData(identity);
-
-		// test to cover IoException
-		InputStream inputStream = Mockito.mock(InputStream.class);
-
-		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
-
-		// Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new
-		// IOException());
-
-		packetInfoManagerImpl.savePacketData(identity);
-		assertEquals(inputStream, filesystemAdapterImpl.getFile("1234", PacketFiles.DEMOGRAPHIC.name()));
-
-	}
-
-	/**
-	 * Save packet data table not accessible test.
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	@Test
-	public void savePacketDataTableNotAccessibleTest() throws IOException {
-
-		// Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
-
-		packetInfoManagerImpl.savePacketData(identity);
-
-	}
+	
 
 	/**
 	 * Save demographic info json test.
@@ -604,7 +499,7 @@ public class PacketInfoManagerImplTest {
 	@Test
 	public void saveDemographicInfoJsonTest() {
 
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229", metaDataList);
 		assertEquals("identity", utility.getGetRegProcessorDemographicIdentity());
 	}
 
@@ -613,7 +508,7 @@ public class PacketInfoManagerImplTest {
 	 */
 	@Test(expected = FileNotFoundInPacketStore.class)
 	public void fileNotFoundInPacketStoreTest() {
-		packetInfoManagerImpl.saveDemographicInfoJson(null, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(null, "2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -624,7 +519,7 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229",metaDataList);
 	}
 
 	/**
@@ -634,7 +529,7 @@ public class PacketInfoManagerImplTest {
 	public void demographicDedupeUnableToInsertDataTest() {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
 
 	}
 
@@ -645,7 +540,7 @@ public class PacketInfoManagerImplTest {
 	public void identityNotFoundExceptionTest() {
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn(null);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -693,34 +588,7 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	/**
-	 * Save json unable to insert data test.
-	 */
-	@Test(expected = UnableToInsertData.class)
-	public void saveJsonUnableToInsertDataTest() {
-
-		Mockito.when(demographicJsonRepository.save(any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
-
-	}
-
-	/**
-	 * Gets the osi test.
-	 *
-	 * @return the osi test
-	 */
-	@Test
-	public void getOsiTest() {
-		RegOsiDto regOsi = new RegOsiDto();
-		regOsi.setRegId("2018782130000224092018121229");
-		regOsi.setPreregId("PET431");
-		regOsi.setIsActive(true);
-		Mockito.when(packetInfoDao.getEntitiesforRegOsi(anyString())).thenReturn(regOsi);
-
-		RegOsiDto regOsiDto = packetInfoManagerImpl.getOsi("2018782130000224092018121229");
-
-		assertEquals("verifing regOsi dto", "2018782130000224092018121229", regOsiDto.getRegId());
-	}
+	
 
 	/**
 	 * Find demo by id test.
@@ -767,7 +635,7 @@ public class PacketInfoManagerImplTest {
 	 *
 	 * @return the applicant finger print image name by id test
 	 */
-	@Test
+	/*@Test
 	public void getApplicantFingerPrintImageNameByIdTest() {
 		List<String> applicantFingerPrintImages = new ArrayList<>();
 		applicantFingerPrintImages.add("LeftThumb");
@@ -782,25 +650,9 @@ public class PacketInfoManagerImplTest {
 				"Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb",
 				"LeftThumb", resultList.get(0));
 
-	}
+	}*/
 
-	/**
-	 * Gets the applicant iris image name by id test.
-	 *
-	 * @return the applicant iris image name by id test
-	 */
-	@Test
-	public void getApplicantIrisImageNameByIdTest() {
-		List<String> applicantIrisImageList = new ArrayList<>();
-		applicantIrisImageList.add("LeftEye");
-		applicantIrisImageList.add("RightEye");
-
-		Mockito.when(packetInfoDao.getApplicantIrisImageNameById(anyString())).thenReturn(applicantIrisImageList);
-		List<String> resultList = packetInfoManagerImpl.getApplicantIrisImageNameById("2018782130000103122018100224");
-		assertEquals(
-				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
-				"LeftEye", resultList.get(0));
-	}
+	
 
 	/**
 	 * Test get reg idby UIN.
@@ -844,44 +696,8 @@ public class PacketInfoManagerImplTest {
 		assertEquals("27847657360002520181208094056", resultList.get(0));
 	}
 
-	/**
-	 * Save document test.
-	 */
-	@Test
-	public void saveDocumentTest() {
 
-		Document document = new Document();
-		List<Document> documents = new ArrayList<Document>();
-		document.setDocumentCategory("poA");
-		document.setDocumentOwner("self");
-		document.setDocumentName("ResidenceCopy");
-		document.setDocumentType("Passport");
-		documents.add(document);
-		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
-
-		packetInfoManagerImpl.savePacketData(identity);
-		packetInfoManagerImpl.saveDocuments(documents);
-	}
-
-	/**
-	 * Save document test exception.
-	 */
-	@Test(expected = UnableToInsertData.class)
-	public void saveDocumentTestException() {
-		Mockito.when(applicantDocumentRepository.save(any())).thenThrow(exp);
-
-		Document document = new Document();
-		List<Document> documents = new ArrayList<Document>();
-		document.setDocumentCategory("poA");
-		document.setDocumentOwner("self");
-		document.setDocumentName("ResidenceCopy");
-		document.setDocumentType("Passport");
-		documents.add(document);
-		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
-
-		packetInfoManagerImpl.savePacketData(identity);
-		packetInfoManagerImpl.saveDocuments(documents);
-	}
+	
 
 	/**
 	 * Test save manual adjudication data success.

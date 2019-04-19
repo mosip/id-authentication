@@ -15,7 +15,7 @@ import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 
 /**
- * Entity class mapping title to master data
+ * The Entity Class for mapping title to master data
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

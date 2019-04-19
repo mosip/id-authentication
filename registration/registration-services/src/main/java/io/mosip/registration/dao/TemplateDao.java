@@ -23,7 +23,7 @@ public interface TemplateDao {
 	 * 
 	 * @param templateTypeCode
 	 *            the required template type code
-	 * @return List<Template> the list of templates
+	 * @return {@link Template} the list of templates
 	 */
 	List<Template> getAllTemplates(String templateTypeCode);
 
@@ -31,16 +31,18 @@ public interface TemplateDao {
 	 * This method returns the list of template types which are active and have
 	 * specified templateTypeCode and language code
 	 * 
-	 * @param templateTypeCode
-	 *            the combination of templateTypeCode and language code
-	 * @return List<TemplateType> the list of template types
+	 * @param code
+	 *            the template type code
+	 * @param langCode 
+	 * 				the lang code in which the template is required
+	 * @return {@link TemplateType} the list of template types
 	 */
 	List<TemplateType> getAllTemplateTypes(String code,String langCode);
 
 	/**
 	 * This method returns the list of template file formats which are active
 	 * 
-	 * @return List<TemplateFileFormatO> the list of template file formats
+	 * @return {@link TemplateFileFormat} the list of template file formats
 	 */
 	List<TemplateFileFormat> getAllTemplateFileFormats();
 }

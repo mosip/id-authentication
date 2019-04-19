@@ -176,6 +176,12 @@ TRUNCATE TABLE master.applicant_valid_document cascade ;
 
 \COPY master.applicant_valid_document (apptyp_code,doccat_code,doctyp_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-applicant_valid_document.csv' delimiter ',' HEADER  csv;
 
+
+----- TRUNCATE master.valid_document TABLE Data and It's reference Data and COPY Data from CSV file -----
+TRUNCATE TABLE master.valid_document cascade ;
+
+\COPY master.valid_document (doctyp_code,doccat_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-valid_document.csv' delimiter ',' HEADER  csv;
+
 -------------- Level 3 data load scripts ------------------------
 
 ----- TRUNCATE master.device_master TABLE Data and It's reference Data and COPY Data from CSV file -----

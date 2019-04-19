@@ -88,7 +88,7 @@
 	
 		
 	
-	 <test name="PreRegistration Tests">
+	  <test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smoke" />
 
@@ -116,7 +116,7 @@
                            <class name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
                            <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
-                          <!--  <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" /> -->
+                        <!--    <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" /> -->
                            
                            <class name="io.mosip.preregistration.tests.SyncMasterData" />
 			
@@ -125,9 +125,8 @@
 
 		</classes>
 
-	</test>
-
-
+	</test> 
+ 
 
 
 
@@ -199,9 +198,8 @@
 	</test> 
  -->
 	
- 
 
-	
+
 	
 </suite>
 	

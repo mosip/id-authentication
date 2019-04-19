@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 []
+=======
+[{"testType":"smoke","testCaseName":"DeleteDocumentByDocmentId_smoke","jiraId":"MOS-1007","DeleteAllDocumentByPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentByPassingInvalidDocumentId_Alphabets":"valid","DeleteAllDocumentByPassingInvalidDocumentId_EmptyValue":"valid","DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumeric":"valid","status":""}]
+>>>>>>> 0.10.0

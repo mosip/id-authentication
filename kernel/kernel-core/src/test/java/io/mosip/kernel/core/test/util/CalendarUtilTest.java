@@ -29,14 +29,12 @@ public class CalendarUtilTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getCeilingTestCheckException()
-			throws ParseException, IllegalArgumentException, ArithmeticException {
+	public void getCeilingTestCheckException() throws ParseException, IllegalArgumentException, ArithmeticException {
 		CalendarUtils.getCeiling(null, Calendar.HOUR);
 	}
 
 	@Test(expected = ArithmeticException.class)
-	public void getCeilingTestCheckException2()
-			throws ParseException, ArithmeticException, IllegalArgumentException {
+	public void getCeilingTestCheckException2() throws ParseException, ArithmeticException, IllegalArgumentException {
 
 		Date d = dateTimeParser.parse("March 28, 280000001 13:52:10.099");
 		Calendar c = Calendar.getInstance();
@@ -45,8 +43,7 @@ public class CalendarUtilTest {
 	}
 
 	@Test(expected = ArithmeticException.class)
-	public void getRoundCheckException2()
-			throws ParseException, ArithmeticException, IllegalArgumentException {
+	public void getRoundCheckException2() throws ParseException, ArithmeticException, IllegalArgumentException {
 
 		Date d = dateTimeParser.parse("March 28, 280000001 13:52:10.099");
 		Calendar c = Calendar.getInstance();
@@ -94,8 +91,7 @@ public class CalendarUtilTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void isSameDayTestCheckException()
-			throws ParseException, IllegalArgumentException, ArithmeticException {
+	public void isSameDayTestCheckException() throws ParseException, IllegalArgumentException, ArithmeticException {
 		CalendarUtils.isSameDay(null, null);
 	}
 
@@ -112,8 +108,7 @@ public class CalendarUtilTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getRoundTestCheckException()
-			throws ParseException, IllegalArgumentException, ArithmeticException {
+	public void getRoundTestCheckException() throws ParseException, IllegalArgumentException, ArithmeticException {
 		CalendarUtils.getRound(null, Calendar.MONTH);
 	}
 

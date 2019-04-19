@@ -3,16 +3,9 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
-import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.constant.AuthConstant;
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.service.UinService;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +13,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.auth.config.MosipEnvironment;
+import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.service.UinService;
+
 /**
- * @author M1049825
+ * @author Ramadurai Pandian
  *
  */
 

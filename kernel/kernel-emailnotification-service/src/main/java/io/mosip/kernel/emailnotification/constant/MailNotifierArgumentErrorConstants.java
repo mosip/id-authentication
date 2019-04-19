@@ -9,13 +9,12 @@ package io.mosip.kernel.emailnotification.constant;
  *
  */
 public enum MailNotifierArgumentErrorConstants {
-	RECEIVER_ADDRESS_NOT_FOUND("KER-NOE-001", "To must be valid. It can't be empty or null."), 
-	SUBJECT_NOT_FOUND("KER-NOE-002", "Subject must be valid. It can't be empty or null."), 
-	CONTENT_NOT_FOUND("KER-NOE-003", "Content must be valid. It can't be empty or null."), 
-	MAIL_SEND_EXCEPTION_CODE("KER-NOE-004"), 
-	MAIL_AUTHENTICATION_EXCEPTION_CODE("KER-NOE-005"), 
-	MAIL_EXCEPTION_CODE("KER-NOE-006"),
-	REQUEST_DATA_NOT_VALID("KER-NOE-999","Data not valid"), INTERNAL_SERVER_ERROR("KER-NOE-500");
+	RECEIVER_ADDRESS_NOT_FOUND("KER-NOE-001", "To must be valid. It can't be empty or null."),
+	SUBJECT_NOT_FOUND("KER-NOE-002", "Subject must be valid. It can't be empty or null."),
+	CONTENT_NOT_FOUND("KER-NOE-003", "Content must be valid. It can't be empty or null."),
+	MAIL_SEND_EXCEPTION_CODE("KER-NOE-004"), MAIL_AUTHENTICATION_EXCEPTION_CODE("KER-NOE-005"),
+	MAIL_EXCEPTION_CODE("KER-NOE-006"), REQUEST_DATA_NOT_VALID("KER-NOE-999", "Data not valid"),
+	INTERNAL_SERVER_ERROR("KER-NOE-500");
 
 	/**
 	 * The error code.
@@ -26,12 +25,11 @@ public enum MailNotifierArgumentErrorConstants {
 	 * The error message.
 	 */
 	private String errorMessage;
-	
+
 	/**
 	 * Single argument constructor for {@link MailNotifierArgumentErrorConstants}
 	 * 
-	 * @param errorCode
-	 *            this error code
+	 * @param errorCode this error code
 	 */
 	private MailNotifierArgumentErrorConstants(String errorCode) {
 		this.errorCode = errorCode;
@@ -40,15 +38,13 @@ public enum MailNotifierArgumentErrorConstants {
 	/**
 	 * Multiple argument Constructor for {@link MailNotifierArgumentErrorConstants}
 	 * 
-	 * @param errorCode
-	 *            this error code.
-	 * @param errorMessage
-	 *            this error message.
+	 * @param errorCode    this error code.
+	 * @param errorMessage this error message.
 	 */
 	private MailNotifierArgumentErrorConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
-	}	
+	}
 
 	/**
 	 * Getter for error code.

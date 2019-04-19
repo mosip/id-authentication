@@ -1,1 +1,1 @@
-[{"catCode":"valid","destinationPreId":"valid","sourcePrId":"valid","jiraId":"MOS-1002","testType":"smoke","testCaseName":"CopyUploadedDocument_smoke","status":"Pass"}]
+[{"testType":"smoke","testCaseName":"CopyUploadedDocument_smoke","jiraId":"MOS-1002","catCode":"valid","destinationPreId":"valid","sourcePrId":"valid","status":""}]

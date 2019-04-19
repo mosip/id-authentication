@@ -62,9 +62,9 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 			if (machineId == null) {
 				machineId = new MachineId();
 				machineId.setMId(initialValue);
-				machineId.setCreatedBy("default@user");
+				machineId.setCreatedBy("SYSTEM");
 				machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				machineId.setUpdatedBy("default@user");
+				machineId.setUpdatedBy("SYSTEM");
 				machineId.setUpdatedDateTime(null);
 				generatedMID = initialValue;
 				machineIdRepository.create(machineId);

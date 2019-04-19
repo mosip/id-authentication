@@ -28,13 +28,11 @@ public class UUIDUtils {
 	 * This method takes UUID <code>namespace</code> and a <code>name</code> and
 	 * generate Type 5 UUID.
 	 * 
-	 * @param namespace
-	 *            is the {@link UUID}
-	 * @param name
-	 *            for which UUID needs to be generated.
+	 * @param namespace is the {@link UUID}
+	 * @param name      for which UUID needs to be generated.
 	 * @return type 5 UUID as per given <code>namespace</code> and <code>name</code>
-	 * @throws NullPointerException
-	 *             when either <code>namespace</code> or <code>name</code> is null.
+	 * @throws NullPointerException when either <code>namespace</code> or
+	 *                              <code>name</code> is null.
 	 */
 	public static UUID getUUID(UUID namespace, String name) {
 		return getUUIDFromBytes(namespace, Objects.requireNonNull(name, "name == null").getBytes(UTF8));
@@ -45,21 +43,19 @@ public class UUIDUtils {
 	 * This method takes UUID <code>namespace</code> and a <code>name</code> as a
 	 * byte array and generate Type 5 UUID.
 	 * 
-	 * @param namespace
-	 *            is the {@link UUID}
-	 * @param name
-	 *            is a byte array
+	 * @param namespace is the {@link UUID}
+	 * @param name      is a byte array
 	 * @return type 5 UUID as per given <code>namespace</code> and <code>name</code>
 	 * 
-	 * @throws NullPointerException
-	 *             when either <code>namespace</code> or <code>name</code> is null.
+	 * @throws NullPointerException when either <code>namespace</code> or
+	 *                              <code>name</code> is null.
 	 */
 	public static UUID getUUIDFromBytes(UUID namespace, byte[] name) {
 		MessageDigest md;
 		try {
-			md = MessageDigest.getInstance("SHA-1");
+			md = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException nsae) {
-			throw new InternalError("SHA-1 not supported");
+			throw new InternalError("SHA-256 not supported");
 		}
 		md.update(toBytes(Objects.requireNonNull(namespace, "namespace is null")));
 		md.update(Objects.requireNonNull(name, "name is null"));

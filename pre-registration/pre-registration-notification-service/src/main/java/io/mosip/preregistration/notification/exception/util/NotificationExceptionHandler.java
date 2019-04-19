@@ -41,7 +41,7 @@ public class NotificationExceptionHandler {
 			WebRequest request) {
 
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		MainResponseDTO<?> errorRes = e.getMainResponseDTO();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
@@ -77,7 +77,7 @@ public class NotificationExceptionHandler {
 	@ExceptionHandler(IllegalParamException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final IllegalParamException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		MainResponseDTO<?> errorRes =e.getMainResponseDto();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);

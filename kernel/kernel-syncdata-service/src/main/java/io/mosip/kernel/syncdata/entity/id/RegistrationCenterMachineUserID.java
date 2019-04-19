@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Entity class for Registration Center User Machine
+/**
+ * Entity class for Registration Center User Machine
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -21,12 +23,12 @@ import lombok.NoArgsConstructor;
 public class RegistrationCenterMachineUserID implements Serializable {
 
 	/**
-	 *  Generated serial version
+	 * Generated serial version
 	 */
 	private static final long serialVersionUID = -1169819225048676557L;
 
 	/**
-	 *  Center Id
+	 * Center Id
 	 */
 	@Column(name = "regcntr_id", nullable = false, length = 10)
 	private String cntrId;

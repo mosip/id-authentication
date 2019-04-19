@@ -5,12 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.ApplicantValidDocument;
 import lombok.Data;
 
 /**
- * 
- * @author Sreekar Chukka
+ * Composite key for {@link ApplicantValidDocument}
  *
+ * @author Sreekar Chukka
  */
 @Embeddable
 @Data

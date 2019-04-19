@@ -12,6 +12,10 @@ import org.json.simple.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -19,6 +23,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
@@ -27,7 +32,6 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class MasterDataValidation.
@@ -40,9 +44,6 @@ public class MasterDataValidation {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MasterDataValidation.class);
-
-	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto;
 
 	/** The registration processor rest service. */
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
@@ -62,6 +63,12 @@ public class MasterDataValidation {
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
+	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	private static final String SECONDARY_LANGUAGE = "secondary.language";
+
+	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
+
 	/**
 	 * Instantiates a new master data validation.
 	 *
@@ -74,9 +81,8 @@ public class MasterDataValidation {
 	 * @param utility
 	 *            the utility
 	 */
-	public MasterDataValidation(InternalRegistrationStatusDto registrationStatusDto, Environment env,
+	public MasterDataValidation(Environment env,
 			RegistrationProcessorRestClientService<Object> registrationProcessorRestService, Utilities utility) {
-		this.registrationStatusDto = registrationStatusDto;
 		this.env = env;
 		this.registrationProcessorRestService = registrationProcessorRestService;
 		this.utility = utility;
@@ -87,18 +93,17 @@ public class MasterDataValidation {
 	 * Validate master data.
 	 *
 	 * @param jsonString
-	 *            the json string
-	 * @return the boolean
+	 *            the json string @return the boolean @throws
 	 */
-	public Boolean validateMasterData(String jsonString) {
+	public Boolean validateMasterData(String jsonString) throws ApisResourceAccessException, IOException {
 		boolean isValid = false;
-		String primaryLanguage = env.getProperty("primary.language");
-		String secondaryLanguage = env.getProperty("secondary.language");
+		String primaryLanguage = env.getProperty(PRIMARY_LANGUAGE);
+		String secondaryLanguage = env.getProperty(SECONDARY_LANGUAGE);
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
 
-			String[] attributes = env.getProperty("registration.processor.idjson.attributes").split(",");
+			String[] attributes = env.getProperty(ATTRIBUTES).split(",");
 			List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
 			Iterator<String> it = list.iterator();
@@ -130,36 +135,29 @@ public class MasterDataValidation {
 						isValid = false;
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), "",
-								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage());
-						this.registrationStatusDto
-								.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES + key);
+								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage() + " " + key
+										+ "and for values are" + engValue + " " + araValue);
+
 						break;
 					}
 				} else {
 					isValid = false;
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage());
-					this.registrationStatusDto
-							.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND + key);
+							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage() + " " + key);
+
 					break;
 
 				}
 			}
 
 		} catch (IdentityNotFoundException | IOException e) {
-			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage() + e.getMessage());
-			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
+			throw e;
+
 		}
 
-		catch (Exception e) {
-			isValid = false;
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
-			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
-		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::exit");
 		return isValid;
@@ -174,9 +172,15 @@ public class MasterDataValidation {
 	 * @param value
 	 *            the value
 	 * @return true, if successful
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	private boolean validateIdentityValues(String key, String value) {
+	@SuppressWarnings("unchecked")
+	private boolean validateIdentityValues(String key, String value) throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, ApisResourceAccessException {
 		StatusResponseDto statusResponseDto;
+		ObjectMapper mapper=new ObjectMapper();
 		boolean isvalidateIdentity = false;
 		if (value != null) {
 			try {
@@ -184,25 +188,21 @@ public class MasterDataValidation {
 				List<String> pathsegmentsEng = new ArrayList<>();
 
 				pathsegmentsEng.add(value);
-
-				statusResponseDto = (StatusResponseDto) registrationProcessorRestService
-						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", StatusResponseDto.class);
-
+				ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+				responseWrapper =  (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
+						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", ResponseWrapper.class);
+				statusResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), StatusResponseDto.class);
 				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
 					isvalidateIdentity = true;
 			} catch (ApisResourceAccessException ex) {
 				if (ex.getCause() instanceof HttpClientErrorException) {
-					HttpClientErrorException httpClientException = (HttpClientErrorException) ex.getCause();
-					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					statusResponseDto = gsonObj.fromJson(result, StatusResponseDto.class);
-					ErrorDTO error = statusResponseDto.getErrors().get(0);
 					isvalidateIdentity = false;
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
 							PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + ex.getMessage());
-					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
 
+				} else {
+					throw ex;
 				}
 			}
 		} else {

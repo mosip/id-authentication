@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -19,6 +20,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "static_pin", schema = "ida")
+@AllArgsConstructor
 public class StaticPin {
 	/** The pin. */
 	@Column(name = "pin", nullable = false)
@@ -49,11 +51,11 @@ public class StaticPin {
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedOn;
 
-	/** The is deleted. */
+	/** The StaticPin is deleted or not. */
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
-	/** The deleted on. */
+	/** The StaticPin deleted on. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedOn;
 }

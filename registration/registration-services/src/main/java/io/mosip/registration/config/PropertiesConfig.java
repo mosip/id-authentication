@@ -17,9 +17,9 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 public class PropertiesConfig {
 	
 	private static final String GLOBAL_PARAM_PROPERTIES = 
-			"SELECT NAME, VAL from REG.GLOBAL_PARAM where IS_ACTIVE=TRUE";
+			"SELECT CODE, VAL from REG.GLOBAL_PARAM where IS_ACTIVE=TRUE";
 	
-	private static final String KEY = "NAME";
+	private static final String KEY = "CODE";
 	private static final String VALUE= "VAL";
 
 	private JdbcTemplate jdbcTemplate;

@@ -68,10 +68,8 @@ public class KeymanagerUtil {
 	/**
 	 * Function to check valid timestamp
 	 * 
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param keyAlias
-	 *            keyAlias
+	 * @param timeStamp timeStamp
+	 * @param keyAlias  keyAlias
 	 * @return true if timestamp is valid, else false
 	 */
 	public boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
@@ -83,14 +81,10 @@ public class KeymanagerUtil {
 	/**
 	 * Function to check if timestamp is overlapping
 	 * 
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param policyExpiryTime
-	 *            policyExpiryTime
-	 * @param keyGenerationTime
-	 *            keyGenerationTime
-	 * @param keyExpiryTime
-	 *            keyExpiryTime
+	 * @param timeStamp         timeStamp
+	 * @param policyExpiryTime  policyExpiryTime
+	 * @param keyGenerationTime keyGenerationTime
+	 * @param keyExpiryTime     keyExpiryTime
 	 * @return true if timestamp is overlapping, else false
 	 */
 	public boolean isOverlapping(LocalDateTime timeStamp, LocalDateTime policyExpiryTime,
@@ -101,8 +95,7 @@ public class KeymanagerUtil {
 	/**
 	 * Function to check is reference id is valid
 	 * 
-	 * @param referenceId
-	 *            referenceId
+	 * @param referenceId referenceId
 	 * @return true if referenceId is valid, else false
 	 */
 	public boolean isValidReferenceId(String referenceId) {
@@ -112,14 +105,12 @@ public class KeymanagerUtil {
 	/**
 	 * Function to set metadata
 	 * 
-	 * @param <T>
-	 *            is a type parameter
-	 * @param entity
-	 *            entity of T type
+	 * @param        <T> is a type parameter
+	 * @param entity entity of T type
 	 * @return Entity with metadata
 	 */
 	public <T extends BaseEntity> T setMetaData(T entity) {
-		String contextUser = "defaultadmin@mosip.io";
+		String contextUser = "SYSTEM";
 		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 		entity.setCreatedBy(contextUser);
 		entity.setCreatedtimes(time);
@@ -130,10 +121,8 @@ public class KeymanagerUtil {
 	/**
 	 * Function to encrypt key
 	 * 
-	 * @param privateKey
-	 *            privateKey
-	 * @param masterKey
-	 *            masterKey
+	 * @param privateKey privateKey
+	 * @param masterKey  masterKey
 	 * @return encrypted key
 	 */
 	public byte[] encryptKey(PrivateKey privateKey, PublicKey masterKey) {
@@ -146,10 +135,8 @@ public class KeymanagerUtil {
 	/**
 	 * Function to decrypt key
 	 * 
-	 * @param key
-	 *            key
-	 * @param privateKey
-	 *            privateKey
+	 * @param key        key
+	 * @param privateKey privateKey
 	 * @return decrypted key
 	 */
 	public byte[] decryptKey(byte[] key, PrivateKey privateKey) {
@@ -169,8 +156,7 @@ public class KeymanagerUtil {
 	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
 	 * {@link LocalDateTime}
 	 * 
-	 * @param dateTime
-	 *            of type {@link String} of pattern UTC_DATETIME_PATTERN
+	 * @param dateTime of type {@link String} of pattern UTC_DATETIME_PATTERN
 	 * @return a {@link LocalDateTime} of given pattern
 	 */
 	public LocalDateTime parseToLocalDateTime(String dateTime) {

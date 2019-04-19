@@ -24,6 +24,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
  */
 
 public enum IdaIdMapping implements IdMapping {
+// @formatter:off
 
 	NAME("name", MappingConfig::getName), 
 	DOB("dob", MappingConfig::getDob),
@@ -52,46 +53,21 @@ public enum IdaIdMapping implements IdMapping {
 	RIGHTMIDDLE("RIGHT_MIDDLE"), 
 	RIGHTRING("RIGHT_RING"),
 	RIGHTTHUMB("RIGHT_THUMB"),
-	UNKNOWN_FINGER("UNKNOWN", setOf(
-			LEFTINDEX,
-			LEFTLITTLE,
-			LEFTMIDDLE,
-			LEFTRING,
-			LEFTTHUMB,
-			RIGHTINDEX,
-			RIGHTLITTLE,
-			RIGHTMIDDLE,
-			RIGHTRING,
-			RIGHTTHUMB
-			)),
+	UNKNOWN_FINGER("UNKNOWN",
+			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE,
+					RIGHTRING, RIGHTTHUMB)),
 
-	FINGERPRINT("fingerprint", setOf(
-			LEFTINDEX,
-			LEFTLITTLE,
-			LEFTMIDDLE,
-			LEFTRING,
-			LEFTTHUMB,
-			RIGHTINDEX,
-			RIGHTLITTLE,
-			RIGHTMIDDLE,
-			RIGHTRING,
-			RIGHTTHUMB,
-			UNKNOWN_FINGER
-			)),
+	FINGERPRINT("fingerprint",
+			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE,
+					RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER)),
 	LEFTEYE("LEFT"), 
 	RIGHTIRIS("RIGHT"), 
-	UNKNOWN_IRIS("UNKNOWN", setOf(
-			RIGHTIRIS,
-			LEFTEYE
-			)),
-	IRIS("iris", setOf(
-			RIGHTIRIS,
-			LEFTEYE,
-			UNKNOWN_IRIS
-			)), 
-	
-	FACE("face", cfg -> Collections.emptyList());
+	UNKNOWN_IRIS("UNKNOWN", setOf(RIGHTIRIS, LEFTEYE)),
+	IRIS("iris", setOf(RIGHTIRIS, LEFTEYE, UNKNOWN_IRIS)), 
+	FACE("FACE"), 
+	UNKNOWN_FACE("UNKNOWN", setOf(FACE));
 
+// @formatter:on
 	private String idname;
 
 	private BiFunction<MappingConfig, MatchType, List<String>> mappingFunction;
@@ -109,34 +85,36 @@ public enum IdaIdMapping implements IdMapping {
 		this.mappingFunction = (mappingConfig, matchType) -> getCbeffMapping(matchType);
 		this.subIdMappings = Collections.emptySet();
 	}
-	
 
 	private IdaIdMapping(String idname, Set<IdMapping> subIdMappings) {
 		this.idname = idname;
 		this.subIdMappings = subIdMappings;
-		this.mappingFunction = (mappingConfig, matchType) 
-									-> {
-										if(matchType instanceof BioMatchType) {
-											return Stream.of(((BioMatchType)matchType).getMatchTypesForSubIdMappings(subIdMappings))
-												.flatMap(subMatchType -> 
-												subMatchType.getIdMapping().getMappingFunction()
-														.apply(mappingConfig, subMatchType)
-														.stream())
-												.collect(Collectors.toList());
-										} else {
-											return Collections.emptyList();
-										}
-									};
+		this.mappingFunction = (mappingConfig, matchType) -> {
+			if (matchType instanceof BioMatchType) {
+				return Stream.of(((BioMatchType) matchType).getMatchTypesForSubIdMappings(subIdMappings))
+						.flatMap(subMatchType -> subMatchType.getIdMapping().getMappingFunction()
+								.apply(mappingConfig, subMatchType).stream())
+						.collect(Collectors.toList());
+			} else {
+				return Collections.emptyList();
+			}
+		};
 	}
 
 	public String getIdname() {
 		return idname;
 	}
-	
+
 	public Set<IdMapping> getSubIdMappings() {
 		return subIdMappings;
 	}
 
+	/**
+	 * Fetch Cbeff Mapping based on Match Type
+	 * 
+	 * @param matchType
+	 * @return
+	 */
 	private static List<String> getCbeffMapping(MatchType matchType) {
 		if (matchType instanceof BioMatchType) {
 			BioMatchType bioMatchType = (BioMatchType) matchType;
@@ -146,31 +124,55 @@ public enum IdaIdMapping implements IdMapping {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * To get Cbeff mapping based on Single and SubType on Cbeff
+	 * 
+	 * @param singleType
+	 * @param subType
+	 * @param singleSubType
+	 * @param matchType
+	 * @return
+	 */
 	private static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
 		String formatType = "";
 		CbeffDocType cbeffDocType = ((BioMatchType) matchType).getCbeffDocType();
 		formatType = String.valueOf(cbeffDocType.getValue());
-		String cbeffKey = singleType.name() + "_" + (subType == null ? "" : subType.value())
-				+ (singleSubType == null ? "" : (" " + singleSubType.value())) + "_" + formatType;
+//		String cbeffKey1 = singleType.name() + "_" + (subType == null ? "" : subType.value())
+//				+ (singleSubType == null ? "" : (" " + singleSubType.value())) + "_" + formatType;
+
+		String cbeffKey = null;
+		if (subType == null && singleSubType == null) {// for FACE
+			cbeffKey = singleType.name() + "__" + formatType;
+		} else if (subType != null && singleSubType != null) { // for FINGER
+			cbeffKey = singleType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
+		} else if (subType != null && singleSubType == null) {
+			cbeffKey = singleType.name() + "_" + subType.value() + "_" + formatType; // for IRIS
+		}
+
 		return Arrays.asList(cbeffKey);
 	}
 
 	public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 		return mappingFunction;
 	}
-	
+
 	public static Set<IdMapping> setOf(IdMapping... idMapping) {
 		return Stream.of(idMapping).collect(Collectors.toSet());
 
 	}
-	
+
+	/**
+	 * Fetch Id name for Mapping
+	 * 
+	 * @param mappingName
+	 * @param mappingConfig
+	 * @return
+	 */
 	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
-		return Stream.of(IdaIdMapping.values())
-				.filter(mapping -> mapping.getSubIdMappings().isEmpty())
+		return Stream.of(IdaIdMapping.values()).filter(mapping -> mapping.getSubIdMappings().isEmpty())
 				.filter(mapping -> mapping.getMappingFunction().apply(mappingConfig, null).contains(mappingName))
-				.findFirst()
-				.map(IdaIdMapping::getIdname);
+				.findFirst().map(IdaIdMapping::getIdname);
 	}
 
 }

@@ -10,7 +10,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -132,17 +131,4 @@ public class AuthControllerTest {
 				 .content(jsonObject.toString());
 		 mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-	
-	@Test
-	public void getConfigTest() throws Exception {
-		MainResponseDTO<Map<String,String>> mainResponseDTO=new MainResponseDTO<>();
-		Mockito.when(authService.getConfig()).thenReturn(mainResponseDTO);
-		 RequestBuilder requestBuilder=MockMvcRequestBuilders
-				 .get("/config")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .characterEncoding("UTF-8")
-				 .accept(MediaType.APPLICATION_JSON_VALUE);
-		 mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	}
-	
 }

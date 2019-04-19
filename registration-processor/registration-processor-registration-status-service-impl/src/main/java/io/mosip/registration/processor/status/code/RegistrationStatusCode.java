@@ -7,7 +7,8 @@ package io.mosip.registration.processor.status.code;
  *
  */
 public enum RegistrationStatusCode {
-//If any new status is being added here then add it in RegistrationStatusMapUtil also.
+	// If any new status is being added here then add it in
+	// RegistrationStatusMapUtil also.
 	/** Potential Match found in data base. */
 
 	DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
@@ -60,13 +61,11 @@ public enum RegistrationStatusCode {
 	/** The packet osi validation failed. */
 	PACKET_OSI_VALIDATION_FAILED,
 
-    /** The packet demo dedupe successful. */
-    DEMO_DEDUPE_SUCCESS,
+	/** The packet demo dedupe successful. */
+	DEMO_DEDUPE_SUCCESS,
 
-    /** The packet demo dedupe failed. */
-    DEMO_DEDUPE_FAILED,
-    
-    DEMO_POTENTIAL_MATCH,
+	/** The packet demo dedupe failed. */
+	DEMO_DEDUPE_FAILED,
 
 	/** The packet bio dedupe successful. */
 	PACKET_BIO_DEDUPE_SUCCESS,
@@ -105,15 +104,44 @@ public enum RegistrationStatusCode {
 	UNABLE_TO_SENT_FOR_PRINTING,
 
 	/** Unable to upload packet to packet store. */
-    PACKET_UPLOAD_TO_PACKET_STORE_FAILED,
+	PACKET_UPLOAD_TO_PACKET_STORE_FAILED,
 
-    /** The notification sent to resident. */
-    NOTIFICATION_SENT_TO_RESIDENT,
+	/** The notification sent to resident. */
+	NOTIFICATION_SENT_TO_RESIDENT,
 
-    /** The packet uin printed and posted success */
-    PRINT_AND_POST_COMPLETED,
+	/** The packet uin printed and posted success */
+	PRINT_AND_POST_COMPLETED,
 
-    /** The packet uin printed and posted failure */
-    RESEND_UIN_CARD_FOR_PRINTING
+	/** The packet uin printed and posted failure */
+	RESEND_UIN_CARD_FOR_PRINTING,
 
+	/** The external stage success */
+	EXTERNAL_STAGE_SUCCESS,
+
+	/** The external stage failure */
+	EXTERNAL_STAGE_FAILURE,
+
+	/** The virus scan reprocessing */
+	VIRUS_SCAN_REPROCESSING,
+
+	/** The packet upload to packet store reprocessing */
+	PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING,
+
+	/** The structure validation reprocessing */
+	STRUCTURE_VALIDATION_REPROCESSING,
+
+	/** The packet osi validation reprocessing */
+	PACKET_OSI_VALIDATION_REPROCESSING,
+
+	/** The demo dedupe reprocessing */
+	DEMO_DEDUPE_REPROCESSING,
+
+	/** The packet bio dedupe reproccesing */
+	PACKET_BIO_DEDUPE_REPROCESSING,
+
+	/** The packet uin updation reprocessing */
+	PACKET_UIN_UPDATION_REPROCESSING,
+
+    /** The external stage reprocessing */
+    EXTERNAL_STAGE_REPROCESSING
 }

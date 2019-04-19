@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.CryptoManagerRequestDTO;
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
@@ -45,7 +48,7 @@ public class CryptoUtil {
 	public byte[] encrypt(byte[] originalInput, LocalDateTime localDateTime) {
 		log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service ");
 
-		ResponseEntity<CryptoManagerResponseDTO> response = null;
+		ResponseEntity<ResponseWrapper<CryptoManagerResponseDTO>> response = null;
 		byte[] encryptedBytes = null;
 		try {
 			String encodedBytes = io.mosip.kernel.core.util.CryptoUtil.encodeBase64(originalInput);
@@ -54,15 +57,17 @@ public class CryptoUtil {
 			dto.setData(encodedBytes);
 			dto.setReferenceId("");
 			dto.setTimeStamp(localDateTime);
-
+			RequestWrapper<CryptoManagerRequestDTO> requestKernel=new RequestWrapper<>();
+			requestKernel.setRequest(dto);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<CryptoManagerRequestDTO> request = new HttpEntity<>(dto, headers);
+			HttpEntity<RequestWrapper<CryptoManagerRequestDTO>> request = new HttpEntity<>(requestKernel, headers);
 			log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/encrypt");
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
-					CryptoManagerResponseDTO.class);
-			encryptedBytes = response.getBody().getData().getBytes();
+					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
+					});
+			encryptedBytes = response.getBody().getResponse().getData().getBytes();
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for Exception- "
 					+ ex.getMessage());
@@ -74,7 +79,7 @@ public class CryptoUtil {
 
 	public byte[] decrypt(byte[] originalInput, LocalDateTime localDateTime) {
 		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service ") ;
-		ResponseEntity<CryptoManagerResponseDTO> response = null;
+		ResponseEntity<ResponseWrapper<CryptoManagerResponseDTO>> response = null;
 		byte[] decodedBytes = null;
 		try {
 
@@ -83,15 +88,18 @@ public class CryptoUtil {
 			dto.setData(new String(originalInput, StandardCharsets.UTF_8));
 			dto.setReferenceId("");
 			dto.setTimeStamp(localDateTime);
+			RequestWrapper<CryptoManagerRequestDTO> requestKernel=new RequestWrapper<>();
+			requestKernel.setRequest(dto);
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<CryptoManagerRequestDTO> request = new HttpEntity<>(dto, headers);
+			HttpEntity<RequestWrapper<CryptoManagerRequestDTO>> request = new HttpEntity<>(requestKernel, headers);
 			log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/decrypt");
 			response = restTemplate.exchange(cryptoResourceUrl + "/decrypt", HttpMethod.POST, request,
-					CryptoManagerResponseDTO.class);
-			decodedBytes = Base64.decodeBase64(response.getBody().getData().getBytes());
+					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
+					});
+			decodedBytes = Base64.decodeBase64(response.getBody().getResponse().getData().getBytes());
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for Exception- "

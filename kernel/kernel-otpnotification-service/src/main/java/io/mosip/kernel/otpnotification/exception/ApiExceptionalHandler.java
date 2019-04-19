@@ -43,8 +43,7 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles HttpClientErrorException.
 	 * 
-	 * @param e
-	 *            the exception.
+	 * @param e the exception.
 	 * @return the response entity.
 	 * @throws IOException
 	 */
@@ -61,8 +60,7 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles OtpInvalidArgumentException.
 	 * 
-	 * @param exception
-	 *            The exception.
+	 * @param exception The exception.
 	 * @return The response entity.
 	 * @throws IOException
 	 */
@@ -78,8 +76,7 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles MethodArgumentNotValidException.
 	 * 
-	 * @param e
-	 *            The exception.
+	 * @param e The exception.
 	 * @return The response entity.
 	 * @throws IOException
 	 */
@@ -102,8 +99,7 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles OtpNotifierServiceException.
 	 * 
-	 * @param e
-	 *            the exception.
+	 * @param e the exception.
 	 * @return the response entity.
 	 * @throws IOException
 	 */
@@ -119,8 +115,7 @@ public class ApiExceptionalHandler {
 	/**
 	 * Method to handle {@link HttpMessageNotReadableException}.
 	 * 
-	 * @param exception
-	 *            the exception.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
 	 */
@@ -139,10 +134,8 @@ public class ApiExceptionalHandler {
 	/**
 	 * Method to handle {@link RuntimeException}.
 	 * 
-	 * @param request
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param request   the servlet request.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
 	 */

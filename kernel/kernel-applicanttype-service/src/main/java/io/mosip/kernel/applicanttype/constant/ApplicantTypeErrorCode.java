@@ -8,8 +8,8 @@ package io.mosip.kernel.applicanttype.constant;
  */
 public enum ApplicantTypeErrorCode {
 
-	NO_APPLICANT_FOUND_EXCEPTION("KER-MSD-147", "Applicant Type data does not exist"), INVALID_REQUEST_EXCEPTION("KER-MSD-148",
-			"One or more input parameter is invalid or does not exist");
+	NO_APPLICANT_FOUND_EXCEPTION("KER-MSD-147", "Applicant Type data does not exist"),
+	INVALID_REQUEST_EXCEPTION("KER-MSD-148", "One or more input parameter is invalid or does not exist");
 
 	private final String errorCode;
 	private final String errorMessage;

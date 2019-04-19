@@ -24,7 +24,7 @@ public interface MapMachineService {
 
 	/**
 	 * Update or save User Details in Machine Mapping
-	 * @param userDto the details of user to update machine mapping
+	 * @param userDTO the details of user to update machine mapping
 	 * @return responseDTO is UI response
 	 */
 	ResponseDTO saveOrUpdate(UserMachineMappingDTO userDTO);

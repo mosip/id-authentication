@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -16,7 +15,7 @@ import org.hibernate.annotations.Type;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
- * RegDeviceMaster entity details
+ * The Entity Class for Reg Device Master details
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

@@ -21,6 +21,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
@@ -47,7 +48,6 @@ public class PacketArchiverTest {
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	/** The audit request builder. */
-	// private AuditRequestBuilder auditRequestBuilder;
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -105,7 +105,7 @@ public class PacketArchiverTest {
 		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(null);
 		try {
-			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.AUDIT, "", "",
+			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.DMZAUDIT, "", "",
 					auditRequestDto, AuditResponseDto.class);
 		} catch (ApisResourceAccessException e) {
 			// TODO Auto-generated catch block
@@ -136,9 +136,11 @@ public class PacketArchiverTest {
 	public void archivePacketSuccessCheck() throws IOException, IllegalArgumentException, IllegalAccessException,
 			NoSuchFieldException, SecurityException, PacketNotFoundException {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		AuditResponseDto auditResponseDto = new AuditResponseDto();
+		responseWrapper.setResponse(auditResponseDto);
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
-				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(auditResponseDto);
-		// Mockito.when(filesystemAdapterImpl.getPacket(registrationId)).thenReturn(in);
+				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
 
 		packetArchiver.archivePacket(registrationId);

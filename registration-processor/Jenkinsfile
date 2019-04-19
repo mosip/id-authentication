@@ -4,12 +4,16 @@ node {
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  def branch = env.NEXT_BRANCH_NAME
- def projectToBuild = 'registration-processor'
+ projectToBuild = 'registration-processor'
  def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
- k8DevContext = 'dev-k8-cluster'
+ updatedServicesForDmz = []
+ updatedDockerImagesForDmz = []
+ updatedServicesForPrivateZone = []
+ updatedDockerImagesForPrivateZone= []
+ k8DevContextForPrivateZone = 'dev-k8-cluster'
 
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
@@ -57,62 +61,202 @@ stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
  
-stage('-----------Docker image push and cleanup-----------') {
-	dir(branch) {
-		/*
+ stage('------ Docker Images : Push & Cleanup -------') {
+  /*
+   Building Docker images of the services which have to be run inside a Docker Container and pushing the
+   images to Docker Registry.
+   This stage will build either all the Services (modules) present or only modules that have been changed
+   since last build according to the build parameter provided.
+  */
+  dir(branch) {
+	/*
 	finding parent pom version to create Docker tags
 	*/
    pomFile = readMavenPom file: projectToBuild+'/pom.xml'
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
-			sh "find . -name 'Dockerfile'> directoryDockerFiles"
-			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
-			sh "rm -f directoryDockerFiles"
-			for (int i=0; i < locationOfDockerFiles.size(); i++) {
-			if(locationOfDockerFiles[i].equals("")){
-			echo "No Dockerfile found"
-			break;
-			}
-			echo locationOfDockerFiles[i]
-			def currentModule = locationOfDockerFiles[i]
-			sh "basename `dirname $currentModule` > parentDirectoryName"
-			parentDirectoryName = readFile('parentDirectoryName').trim()
-			sh "rm -f parentDirectoryName"
-			sh "dirname $currentModule > parentDirectoryPath"
-			parentDirectoryPath = readFile('parentDirectoryPath').trim()
-			sh "rm -f parentDirectoryPath"
-			docker.withRegistry(registryUrl, registryCredentials) {
-			echo "$currentModule"
-			echo "$parentDirectoryName"
-			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
-			    newApp.push()
-			    newApp.push 'latest'
-			 }
-			sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName"
+ 
+   /*
+     Checking if there is any Dockerfile present to build, if not, returning from this stage
+   */
+   sh "find . -name 'Dockerfile'> testdirectoryDockerFiles"
+   testlocationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n");
+   sh "rm -f testdirectoryDockerFiles"
+   if (testlocationOfDockerFiles[0].equals("")) {
+      echo "tested:::: no docker files present, returning"
+      return;
+     }
+   /*
+   Finding location of all the Dockerfiles present in module
+   */
+   sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
+   locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
+   sh "rm -f directoryDockerFiles"
+   /*
+   If build paramerter is passed as Build All (All submodules have to be built)
+   */
+   if ("${env.BUIILD_OPTION}" == "Build All") {
+    echo "BUILD_OPTION is set to Build All."
+    echo "Building all submodules."
+    for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+     if (locationOfDockerFiles[i].equals("")) {
+      break;
+     }
+     def currentModule = locationOfDockerFiles[i]
+     /*
+     Getting name of the module to be built
+     */
+     sh "basename $currentModule > moduleName"
+     moduleName = readFile('moduleName').trim()
+     sh "rm -f moduleName"
+     /*
+     Getting path of the module to be built
+     */
+     modulePath = locationOfDockerFiles[i].substring(2);
 
-			}
+     /**
+     Finding out the parent directory of modules to deploy services accordingly.
+     **/
+     sh "dirname $currentModule > parentDirectory"
+     def parentDirectory = readFile('parentDirectory').trim()
+     parentDirectory = parentDirectory.substring(2);
+     /*
+     If Services are present in init directory, they have to be deployed in DM Zone
+     */
+     if(parentDirectory == 'registration-processor/init'){
+         updatedServicesForDmz.add(moduleName)
+         updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
+     /*
+     If Services are present in pre-processor, post-processor or core-processor directory, they have to be deployed in Private Zone
+     */
+     else if ((parentDirectory == 'registration-processor/core-processor') || (parentDirectory == 'registration-processor/pre-processor') ||(parentDirectory == 'registration-processor/post-processor')){
+         updatedServicesForPrivateZone.add(moduleName)
+         updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
+     /*
+     If Services are present in root path in registartion-processor module and starts with 'registartion-processor-common', they have to be deployed in both private and DM Zones.
+     */
+     else if (parentDirectory == 'registration-processor' && moduleName.startsWith('registartion-processor-common')) 
+     {
+          updatedServicesForDmz.add(moduleName)
+          updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+          updatedServicesForPrivateZone.add(moduleName)
+          updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
 
-	}
+     echo moduleName + " will be built"
+     /*
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
+     */
+     docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      newApp.push()
+      newApp.push 'latest'
+     }
+     /*
+     Removing local images
+     */
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName"
+    }
+   } 
+   else {
+    /*
+     If build paramerter is passed as Build Changes (Only changed submodules have to be built)
+    */   
+    echo "BUILD_OPTION is set to Build Changed."
+    echo "Building only changed submodules."
+    changedModulesLocation = getChangedModulesPaths();
+    for (int i = 0; i < changedModulesLocation.size(); i++) {
+     def currentModule = changedModulesLocation[i]
+     /*
+     Getting name of the module to be built
+     */
+     sh "basename $currentModule > moduleName"
+     moduleName = readFile('moduleName').trim()
+     sh "rm -f moduleName"
+     /*
+     Getting path of the module to be built
+     */
+     modulePath = changedModulesLocation[i].substring(2);
+      /**
+     Finding out the parent directory of modules to deploy services accordingly.
+     **/
+     sh "dirname $currentModule > parentDirectory"
+     def parentDirectory = readFile('parentDirectory').trim()
+     parentDirectory = parentDirectory.substring(2);
+     /*
+     If Services are present in init directory, they have to be deployed in DM Zone
+     */
+     if(parentDirectory == 'registration-processor/init'){
+        updatedServicesForDmz.add(moduleName)
+        updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
+     /*
+     If Services are present in pre-processor, post-processor or core-processor directory, they have to be deployed in Private Zone
+     */
+     else if ((parentDirectory == 'registration-processor/core-processor') || (parentDirectory == 'registration-processor/pre-processor') ||(parentDirectory == 'registration-processor/post-processor')){
+         updatedServicesForPrivateZone.add(moduleName)
+         updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
+     /*
+     If Services are present in root path in module and starts with 'registartion-processor-common', they have to be deployed in both private and DM Zones.
+     */
+     else if (parentDirectory == 'registration-processor' && moduleName.startsWith('registartion-processor-common')) 
+     {
+        updatedServicesForDmz.add(moduleName)
+        updatedDockerImagesForDmz.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+        updatedServicesForPrivateZone.add(moduleName)
+        updatedDockerImagesForPrivateZone.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
+     echo moduleName + " will be built"
+     /*
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
+     */
+     docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      newApp.push()
+      newApp.push 'latest'
+     }
+     /*
+     Removing local images
+     */
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName"
+    }
+   }
+
+    /*
+     Removing all untagged images
+     */
+    sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
+
+  }
+
+ }
 
 
-}
+/**TBD - Deploy - DM Zone Services - in K8**/
 
-/*stage('Kubernetes Deploy : DEV-INT'){
+
+
+stage('Deploy - Private Zone Services - in K8'){
       //this stage will rollout the changes on Kubernetes Cluster
-      //sh "kubectl config use-context $k8DevContext"
-
-      sh "kubectl set image deployment/registration-processor-dmz registration-processor-packet-reciever-service=docker-registry.mosip.io:5000/packet-receiver-stage:$dockerImagesTagVersion.$BUILD_NUMBER registration-processor-virus-scanner-stage=docker-registry.mosip.io:5000/virus-scanner-stage:$dockerImagesTagVersion.$BUILD_NUMBER registration-processor-packet-uploader-stage=docker-registry.mosip.io:5000/packet-uploader-stage:$dockerImagesTagVersion.$BUILD_NUMBER"
-      sh "kubectl set image deployment/registration-processor-stages registration-processor-packet-validator-service=docker-registry.mosip.io:5000/packet-validator-stage:$dockerImagesTagVersion.$BUILD_NUMBER registration-processor-osi-validator=docker-registry.mosip.io:5000/osi-validator-stage:$dockerImagesTagVersion.$BUILD_NUMBER registration-processor-demo-dedupe-stage=docker-registry.mosip.io:5000/demo-dedupe-stage:$dockerImagesTagVersion.$BUILD_NUMBER registration-processor-manual-verification-stage=docker-registry.mosip.io:5000/manual-verification-stage:$dockerImagesTagVersion.$BUILD_NUMBER"
-      sh "kubectl set image deployment/registration-processor-registration-status-service registration-status-service=docker-registry.mosip.io:5000/registration-status-service:$dockerImagesTagVersion.$BUILD_NUMBER"
-      
+      sh "kubectl config use-context $k8DevContextForPrivateZone"
+      for(int i = 0; i<updatedDockerImagesForPrivateZone.size(); i++){
+        def updatedDockerImage = updatedDockerImagesForPrivateZone[i]
+        def updatedService = updatedServicesForPrivateZone[i]
+        echo "Updating [ Service:$updatedService, Image:$updatedDockerImage ]"
+        sh "kubectl set image deployment/$updatedService $updatedService=$updatedDockerImage"
+      }
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
-    */
 	}
 	   // Catching the exception for triggering email
   catch (exception) {
@@ -143,4 +287,59 @@ stage('-----------Docker image push and cleanup-----------') {
 	}
 	}
 
+}
+
+/*This function will return paths all the Submodules which have been changed and 
+ which will be deployed as a service*/
+@NonCPS
+def getChangedModulesPaths() {
+ Set modifiedModulePaths = [] as TreeSet
+
+ /*
+ ChangeSets until last build
+ */
+ def changeLogSets = currentBuild.changeSets
+
+ /*
+ A treeSet to store paths of all the files that have been changed until last build
+ */
+ Set affectedPaths = [] as TreeSet
+ for (int i = 0; i < changeLogSets.size(); i++) {
+  def entries = changeLogSets[i].items 
+  for (int j = 0; j < entries.length; j++) {
+   def entry = entries[j]
+   echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+   affectedPaths.addAll(entry.affectedPaths);
+   }
+  }
+  /*
+  Filtering all the modules from affected path that do not belong to project to build
+  */
+  echo "affected paths are :" + affectedPaths
+  affectedPaths.retainAll{it.startsWith(projectToBuild)}
+  echo "affected paths after retaining only kernel modules are --------:" + affectedPaths
+for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+        /*
+        If there is no Dockerfile present in the Services
+        */
+        if(locationOfDockerFiles[i].equals("")){
+        	break;
+        }
+	/*
+        Checking if the paths affected belong to modules that have to be deployed
+        */
+		if(affectedPaths.any{it.startsWith(locationOfDockerFiles[i].substring(2))}){
+			modifiedModulePaths.add(locationOfDockerFiles[i])
+            /*
+            Removing affected paths that belong to same module (Because we have already taken
+            into consideration this module)
+            */
+			affectedPaths.removeAll{it.startsWith(locationOfDockerFiles[i].substring(2))}
+		}
+		
+		
+	
+  }
+	echo "paths of modules to be built ::::::::::::>" + modifiedModulePaths
+ 	return modifiedModulePaths
 }

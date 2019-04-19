@@ -1,1 +1,1 @@
-[{"pre_registration_id":"valid","jiraId":"MOS-1002","testType":"smoke","testCaseName":"FetchAppointmentDetails_smoke","status":"Pass"}]
+[{"testType":"smoke","testCaseName":"FetchAppointmentDetails_smoke","jiraId":"MOS-1002","pre_registration_id":"valid","status":""}]

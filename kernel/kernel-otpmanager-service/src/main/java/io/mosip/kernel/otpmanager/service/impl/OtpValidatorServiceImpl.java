@@ -111,7 +111,8 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		 * This condition freezes the key for a certain time, if the validation attempt
 		 * reaches the maximum allowed limit.
 		 */
-		if (attemptCount == Integer.parseInt(numberOfValidationAttemptsAllowed)) {
+		if ((attemptCount == Integer.parseInt(numberOfValidationAttemptsAllowed) - 1)
+				&& (!otp.equals(otpResponse.getOtp()))) {
 			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
 					+ " SET status_code = :newOtpStatus," + "upd_dtimes = :newValidationTime,"
 					+ "validation_retry_count = :newNumOfAttempt WHERE id=:id";
@@ -150,18 +151,12 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	 * blocks the validation for the assigned freeze period. If the key is freezed
 	 * and has completed the freeze time, it unfreezes the key.
 	 * 
-	 * @param key
-	 *            the key.
-	 * @param otp
-	 *            the OTP.
-	 * @param otpResponse
-	 *            the OTP response.
-	 * @param attemptCount
-	 *            the attempt count.
-	 * @param responseDto
-	 *            the response dto.
-	 * @param validationResponseEntity
-	 *            the validation response entity.
+	 * @param key                      the key.
+	 * @param otp                      the OTP.
+	 * @param otpResponse              the OTP response.
+	 * @param attemptCount             the attempt count.
+	 * @param responseDto              the response dto.
+	 * @param validationResponseEntity the validation response entity.
 	 * @return the response entity.
 	 */
 	private ResponseEntity<OtpValidatorResponseDto> unFreezeKey(String key, String otp, OtpEntity otpResponse,
@@ -195,14 +190,10 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	/**
 	 * This method creates the UPDATE map required for UPDATE operations.
 	 * 
-	 * @param key
-	 *            the key to be updated.
-	 * @param status
-	 *            the status to be updated.
-	 * @param newNumberOfAttempt
-	 *            the new number of attempt value.
-	 * @param localDateTime
-	 *            the new LocalDateTime.
+	 * @param key                the key to be updated.
+	 * @param status             the status to be updated.
+	 * @param newNumberOfAttempt the new number of attempt value.
+	 * @param localDateTime      the new LocalDateTime.
 	 * @return the map.
 	 */
 	private HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
@@ -226,10 +217,8 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 	/**
 	 * This method handles UPDATE query operations.
 	 * 
-	 * @param updateString
-	 *            the query string.
-	 * @param updateMap
-	 *            the query map.
+	 * @param updateString the query string.
+	 * @param updateMap    the query map.
 	 */
 	private void updateData(String updateString, HashMap<String, Object> updateMap) {
 		otpRepository.createQueryUpdateOrDelete(updateString, updateMap);

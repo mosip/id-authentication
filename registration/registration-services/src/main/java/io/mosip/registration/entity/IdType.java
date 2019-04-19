@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
-/*
-* Entity class for IdType.
-* 
-* @author Sreekar chukka
-* @since 1.0.0
-*
-*/
+/**
+ * The Entity class for IdType.
+ * 
+ * @author Sreekar chukka
+ * @since 1.0.0
+ *
+ */
 @Entity
 @Table(name = "id_type", schema = "reg")
 public class IdType extends RegistrationCommonFields implements Serializable {

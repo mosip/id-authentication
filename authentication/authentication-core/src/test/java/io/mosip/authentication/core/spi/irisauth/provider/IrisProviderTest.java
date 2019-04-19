@@ -39,19 +39,16 @@ public class IrisProviderTest {
 
 			@Override
 			public String createMinutiae(byte[] inputImage) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public double matchMinutiae(Object reqInfo, Object entityInfo) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 
 			@Override
 			public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
@@ -89,7 +86,7 @@ public class IrisProviderTest {
 		Mockito.when(environment.getProperty("evenuin.irisimg.right.match.value", Double.class)).thenReturn(70D);
 		Mockito.when(environment.getProperty("evenuin.irisimg.left.match.value", Double.class)).thenReturn(40D);
 		double score = iris.matchMultiImage(reqInfo, entityInfo);
-		assertEquals(110D, score, 0);
+		assertEquals(140D, score, 0);
 	}
 	
 	@Test
@@ -107,7 +104,7 @@ public class IrisProviderTest {
 		Mockito.when(environment.getProperty("evenuin.irisimg.right.match.value", Double.class)).thenReturn(70D);
 		Mockito.when(environment.getProperty("evenuin.irisimg.left.match.value", Double.class)).thenReturn(40D);
 		double score = iris.matchMultiImage(reqInfo, entityInfo);
-		assertEquals(40D, score, 0);
+		assertEquals(70D, score, 0);
 	}
 	
 	@Test

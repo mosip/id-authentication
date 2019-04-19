@@ -16,6 +16,8 @@ import com.github.sarxos.webcam.WebcamPanel;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.device.webcam.MosipWebcamServiceImpl;
 
 /**
@@ -49,24 +51,22 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void connect(int width, int height) {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "connecting to webcam");
+		String webcamName = String.valueOf(ApplicationContext.map().get(RegistrationConstants.WEBCAM_NAME));
+
 		List<Webcam> webcams = Webcam.getWebcams();
 		if (!webcams.isEmpty()) {
-			if (webcams.get(0).getName().toLowerCase().contains("integrated")) {
-				if (webcams.size() > 1) {
-					webcam = webcams.get(1);
-				} else {
-					webcam = webcams.get(0);
-					// return null;
+			for (Webcam webcamera : webcams) {
+				if (!webcamera.getName().toLowerCase().contains(webcamName.toLowerCase())) {
+					this.webcam = webcamera;
+					Dimension requiredDimension = new Dimension(width, height);
+					Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
+					webcamera.setCustomViewSizes(nonStandardResolutions);
+					webcamera.setViewSize(requiredDimension);
+					webcamera.open();
+					Webcam.getDiscoveryService().stop();
+					break;
 				}
-			} else {
-				webcam = webcams.get(0);
 			}
-			Dimension requiredDimension = new Dimension(width, height);
-			Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
-			webcam.setCustomViewSizes(nonStandardResolutions);
-			webcam.setViewSize(requiredDimension);
-			webcam.open();
-			Webcam.getDiscoveryService().stop();
 		}
 	}
 

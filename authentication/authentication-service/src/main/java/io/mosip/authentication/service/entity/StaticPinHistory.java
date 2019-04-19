@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -22,49 +23,50 @@ import lombok.Data;
 @Entity
 @IdClass(StaticPinHistory.IdClass.class)
 @Table(name = "static_pin_h", schema = "ida")
+@AllArgsConstructor
 public class StaticPinHistory {
-	/** The pin. */
+	/** The variable to hold StaticPin. */
 	@Column(name = "pin", nullable = false)
 	private String pin;
 
-	/** The uin */
+	/** The variable to hold uin */
 	@Id
 	@Column(name = "uin", unique = true, nullable = false)
 	private String uin;
 
-	/** The is active. */
+	/** To check StaticPin is active. */
 	@Column(name = "is_active")
 	private boolean isActive;
 
-	/** The corrected by. */
+	/** The variable to hold created by. */
 	@Column(name = "cr_by")
 	private String createdBy;
 
-	/** The corrected date. */
+	/** The variable to hold created date. */
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createdOn;
 
-	/** The updated by. */
+	/** The variable to hold updated by. */
 	@Column(name = "upd_by")
 	private String updatedBy;
 
-	/** The updated on. */
+	/** The variable to hold updated on. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedOn;
 
-	/** The is deleted. */
+	/** To check StaticPin is deleted. */
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
-	/** The deleted on. */
+	/** The variable to hold deleted on. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedOn;
 
-	/** The effective date */
+	/** The variable to hold effective date */
 	@Id
 	@Column(name = "eff_dtimes")
 	private LocalDateTime effectiveDate;
-
+	
 	@Data
 	static class IdClass implements Serializable {
 		/**

@@ -2,16 +2,24 @@ package io.mosip.registration.processor.message.sender.stage.test;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -25,13 +33,13 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -45,7 +53,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
 import io.vertx.core.Vertx;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utilities.class })
+@PrepareForTest({ Utilities.class, JsonUtil.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class MessageSenderStageTest {
 
@@ -69,6 +77,20 @@ public class MessageSenderStageTest {
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	/** The adapter. */
+	@Mock
+	private FileSystemAdapter adapter;
+
+	/** The packet meta info. */
+	private PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
+
+	/** The identity. */
+	Identity identity = new Identity();
+
+	/** The input stream. */
+	@Mock
+	private InputStream inputStream;
 
 	@InjectMocks
 	private MessageSenderStage stage = new MessageSenderStage() {
@@ -105,10 +127,25 @@ public class MessageSenderStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		Mockito.when(transcationStatusService.addRegistrationTransaction(any())).thenReturn(null);
+
+		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("New");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentUINGenerated() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -120,7 +157,12 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_UIN_GEN_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS.name());
 
@@ -130,8 +172,10 @@ public class MessageSenderStageTest {
 		assertTrue(result.getIsValid());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentUINUpdate() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -143,7 +187,12 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_UIN_UPD_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
@@ -154,8 +203,10 @@ public class MessageSenderStageTest {
 		assertTrue(result.getIsValid());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentUINUpdatewithActivatedUIN() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -167,20 +218,37 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
-
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
 
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("ACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		dto.setReg_type(RegistrationType.ACTIVATED.name());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getIsValid());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentUINUpdatewithDeactivatedUIN() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -192,20 +260,38 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_UIN_DEAC_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
 
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("DEACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		dto.setReg_type(RegistrationType.DEACTIVATED.name());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getIsValid());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentDuplicateUIN() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -217,7 +303,12 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_DUP_UIN_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.name());
@@ -228,8 +319,10 @@ public class MessageSenderStageTest {
 		assertTrue(result.getIsValid());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMessageSentTechnicalIssue() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -241,7 +334,12 @@ public class MessageSenderStageTest {
 		templateDto1.setTemplateTypeCode("RPR_TEC_ISSUE_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());

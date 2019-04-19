@@ -24,8 +24,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -56,7 +54,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-	
+
 	/** The Constant READ. */
 	private static final String READ = "read";
 
@@ -76,17 +74,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Resource
 	private Map<String, String> id;
 
 	/**
 	 * Handle all exceptions.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(Exception.class)
@@ -128,10 +124,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app exception.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
@@ -147,10 +141,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app unchecked exception.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(IdRepoAppUncheckedException.class)
@@ -166,9 +158,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex
-	 *            the exception occurred
-	 * @param httpMethod 
+	 * @param ex         the exception occurred
+	 * @param httpMethod
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod) {
@@ -176,7 +167,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = getRootCause(ex);
-		
+
 		if (httpMethod.compareTo(HttpMethod.GET) == 0) {
 			response.setId(id.get(READ));
 		} else if (httpMethod.compareTo(HttpMethod.POST) == 0) {
@@ -215,15 +206,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Gets the root cause.
 	 *
-	 * @param ex the ex
+	 * @param ex       the ex
 	 * @param response the response
 	 * @return the root cause
 	 */
 	private Throwable getRootCause(Exception ex) {
 		Throwable e = ex;
 		while (e != null) {
-			if (Objects.nonNull(e.getCause()) 
-					&& (e.getCause() instanceof IdRepoAppException)) {
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException)) {
 				e = e.getCause();
 			} else {
 				break;

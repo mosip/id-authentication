@@ -1,113 +1,144 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { BookingModelRequest } from '../../shared/booking-request.model';
 import * as appConstants from '../../app.constants';
-import Utils from '../../app.util';
 import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
+/**
+ * @description This class is responsible for sending or receiving data to the service.
+ *
+ * @author Shashank Agrawal
+ * @export
+ * @class DataStorageService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class DataStorageService {
+  /**
+   * @description Creates an instance of DataStorageService.
+   * @see HttpClient
+   * @param {HttpClient} httpClient
+   * @param {AppConfigService} appConfigService
+   * @param {ConfigService} configService
+   * @memberof DataStorageService
+   */
   constructor(
     private httpClient: HttpClient,
     private appConfigService: AppConfigService,
     private configService: ConfigService
   ) {}
 
-  // BASE_URL = environment.BASE_URL;
-  // BASE_URL2 = 'https://integ.mosip.io/';
+  //need to remove
+  // BASE_URL = 'https://qa.mosip.io/';
+  // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
+
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
+  // BASE_URL = 'https://dev.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
-  // SEND_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // MASTER_DATA_URL = this.BASE_URL + appConstants.APPEND_URL.master_data;
-  // AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability;
-  // BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment;
-  // DELETE_REGISTRATION_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-  // COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document_copy;
-  // QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code;
-  // NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.notification;
-  // APPLICANNT_TYPE_URL =
-  //   this.BASE_URL + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType;
-  // APPLICANT_VALID_DOCUMENTS_URL =
-  //   this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
-  // AUTH_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth;
 
-  getUsers(value: string) {
-    return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
-    });
+  getUsers(userId: string) {
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    return this.httpClient.get<Applicant[]>(url);
   }
 
+  /**
+   * @description This method returns the user details for the given pre-registration id.
+   *
+   * @param {string} preRegId - pre-registartion-id
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getUser(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
-    });
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
+    return this.httpClient.get(url);
   }
 
+  /**
+   * @description This methos returns the list of available genders
+   *
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getGenderDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
-    // return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+    const url = this.BASE_URL + appConstants.APPEND_URL.gender;
+    return this.httpClient.get(url);
   }
 
+  /**
+   * @description This method is responsible for doing the transliteration for a given word.
+   *
+   * @param {*} request
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getTransliteration(request: any) {
-    const obj = {
-      id: appConstants.IDS.transliteration,
-      requesttime: Utils.getCurrentDate(),
-      version: appConstants.VERSION,
-      request: request
-    };
-
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration, obj);
+    const obj = new RequestModel(appConstants.IDS.transliteration, request);
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration;
+    return this.httpClient.post(url, obj);
   }
 
   getUserDocuments(preRegId) {
     console.log('documents fetched for : ', preRegId);
 
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getDocument, preRegId)
-    });
+    return this.httpClient.get(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId
+      //   ,{
+      //   observe: 'body',
+      //   responseType: 'json',
+      //   params: new HttpParams().append(appConstants.PARAMS_KEYS.getDocument, preRegId)
+      // }
+    );
   }
 
+  /**
+   * @description This method adds the user
+   *
+   * @param {*} identity `Object`
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   addUser(identity: any) {
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: identity
-    };
-    console.log('data being sent', obj);
-
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
+    const obj = new RequestModel(appConstants.IDS.newUser, identity);
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    console.log('data being sent', JSON.stringify(obj));
+    return this.httpClient.post(url, obj);
   }
 
-  sendFile(formdata: FormData) {
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document, formdata);
+  updateUser(identity: any, preRegId: string) {
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
+    const obj = new RequestModel(appConstants.IDS.updateUser, identity);
+    console.log('data being update', JSON.stringify(obj));
+    return this.httpClient.put(url, obj);
+  }
+
+  sendFile(formdata: FormData, preRegId) {
+    console.log('formData', formdata);
+
+    return this.httpClient.post(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId,
+      formdata
+    );
     // console.log('servvice called', formdata);
   }
 
   deleteRegistration(preId: string) {
-    return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.deleteUser, preId)
-    });
+    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
+    return this.httpClient.delete(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId
+    );
   }
 
-  cancelAppointment(data: BookingModelRequest) {
+  cancelAppointment(data: RequestModel, preRegId: string) {
     console.log('cancel appointment data', data);
-    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment, data);
+    return this.httpClient.put(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.cancelAppointment + preRegId,
+      data
+    );
   }
 
   getNearbyRegistrationCenters(coords: any) {
@@ -145,14 +176,12 @@ export class DataStorageService {
   }
 
   getAvailabilityData(registrationCenterId) {
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getAvailabilityData, registrationCenterId)
-    });
+    return this.httpClient.get(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability + registrationCenterId
+    );
   }
 
-  makeBooking(request: BookingModelRequest) {
+  makeBooking(request: RequestModel) {
     console.log('request inside service', request);
     return this.httpClient.post(
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment,
@@ -160,26 +189,35 @@ export class DataStorageService {
     );
   }
 
-  getLocationMetadataHirearchy(value: string) {
-    return this.httpClient.get(
-      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
-      // this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
-      {
-        params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
-      }
-    );
+  /**
+   * @description This method return the list of list of countries.
+   *
+   * @return String
+   * @memberof DataStorageService
+   */
+  getLocationMetadataHirearchy() {
+    // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    // return this.httpClient.get(url);
+    return this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_country_code);
   }
 
+  /**
+   * @description This method return the below list of location hierarchy in specified language for the given location hierarchy and langugae code.
+   *
+   * @param {string} lang
+   * @param {string} location
+   * @return an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getLocationImmediateHierearchy(lang: string, location: string) {
-    return this.httpClient.get(
-      // this.BASE_URL2 +
+    const url =
       this.BASE_URL +
-        appConstants.APPEND_URL.location +
-        appConstants.APPEND_URL.location_immediate_children +
-        location +
-        '/' +
-        lang
-    );
+      appConstants.APPEND_URL.location +
+      appConstants.APPEND_URL.location_immediate_children +
+      location +
+      appConstants.APPENDER +
+      lang;
+    return this.httpClient.get(url);
   }
 
   deleteFile(documentId) {
@@ -194,21 +232,29 @@ export class DataStorageService {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
 
-  copyDocument(catCode: string, sourceId: string, destinationId: string) {
+  copyDocument(sourceId: string, destinationId: string) {
     const url =
       this.BASE_URL +
       this.PRE_REG_URL +
-      appConstants.APPEND_URL.document_copy +
-      '?catCode=POA&destinationPreId=' +
+      appConstants.APPEND_URL.document +
       destinationId +
-      '&sourcePrId=' +
+      '?catCode=' +
+      appConstants.PARAMS_KEYS.POA +
+      '&sourcePreId=' +
       sourceId;
     console.log('copy document URL', url);
-    return this.httpClient.post(url, '');
+    const params = new URLSearchParams().set(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA);
+    // params.set(appConstants.PARAMS_KEYS.sourcePrId, sourceId);
+
+    return this.httpClient.put(url, {
+      observe: 'body',
+      responseType: 'json'
+    });
   }
 
   generateQRCode(data: string) {
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, data);
+    const obj = new RequestModel(appConstants.IDS.qrCode, data);
+    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, obj);
   }
 
   sendNotification(data: FormData) {
@@ -280,9 +326,8 @@ export class DataStorageService {
 
   getConfig() {
     //    return this.httpClient.get('./assets/configs.json');
-    return this.httpClient.get(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.config
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.config;
+    return this.httpClient.get(url);
   }
 
   sendOtp(userId: string) {
@@ -293,17 +338,10 @@ export class DataStorageService {
       userId: userId
     };
 
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: req
-    };
+    const obj = new RequestModel(appConstants.IDS.sendOtp, req);
 
-    return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp,
-      obj
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp;
+    return this.httpClient.post(url, obj);
   }
 
   verifyOtp(userId: string, otp: string) {
@@ -312,24 +350,20 @@ export class DataStorageService {
       userId: userId
     };
 
-    const requestObj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: request
-    };
+    const obj = new RequestModel(appConstants.IDS.validateOtp, request);
 
-    return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.verify_otp,
-      requestObj
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login;
+    return this.httpClient.post(url, obj);
   }
 
+  /**
+   * @description This method is responsible to logout the user and invalidate the token.
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   onLogout() {
-    const auth =
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.invalid_token;
-    // 'https://dev.mosip.io/pre-registration/v1.0/auth/invalidatetoken';
-    // this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth+'invalidatetoken'
-    return this.httpClient.post(auth, '');
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.logout;
+    return this.httpClient.post(url, '');
   }
 }

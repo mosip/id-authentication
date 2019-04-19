@@ -47,9 +47,8 @@ public class AppAuthenticationDAOTest {
 		
 		Set<String> roleSet = new HashSet<>();
 		roleSet.add("OFFICER");
-		String role = roleSet.iterator().next();
 		Mockito.when(appRolePriorityRepository.findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority("login", roleSet)).thenReturn(roleList);
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence("login",roleSet)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
 		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
@@ -68,9 +67,8 @@ public class AppAuthenticationDAOTest {
 		Set<String> roleSet = new HashSet<>();
 		roleSet.add("OFFICER");
 		roleSet.add("SUPERVISOR");
-		String role = roleSet.iterator().next();
 		Mockito.when(appRolePriorityRepository.findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority("login", roleSet)).thenReturn(roleList);
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence("login",roleSet)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
 		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
@@ -87,9 +85,9 @@ public class AppAuthenticationDAOTest {
 		List<AppRolePriorityDetails> roleList = new ArrayList<AppRolePriorityDetails>();
 		
 		Set<String> roleSet = new HashSet<>();
-		String role = "OFFICER";
+		roleSet.add("OFFICER");
 		Mockito.when(appRolePriorityRepository.findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority("login", roleSet)).thenReturn(roleList);
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeInOrderByMethodSequence("login",roleSet)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
 		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());

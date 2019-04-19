@@ -70,6 +70,13 @@ public class IdInfoHelper {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	/**
+	 * Get Authrequest Info
+	 * 
+	 * @param matchType
+	 * @param authRequestDTO
+	 * @return
+	 */
 	public Map<String, String> getAuthReqestInfo(MatchType matchType, AuthRequestDTO authRequestDTO) {
 		return matchType.getReqestInfoFunction().apply(authRequestDTO);
 	}
@@ -126,6 +133,8 @@ public class IdInfoHelper {
 	}
 
 	/**
+	 * To check Whether Match type is Enabled
+	 * 
 	 * @param idMapping
 	 * @param matchType
 	 * @return
@@ -359,17 +368,35 @@ public class IdInfoHelper {
 		if (matchType.hasRequestEntityInfo()) {
 			entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
 		} else if (matchType.hasIdEntityInfo()) {
-			entityInfo = getIdEntityInfoMap(matchType, demoEntity, input.getLanguage());
+			entityInfo = getIdEntityInfoMap(matchType, demoEntity, input.getLanguage());	
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
 		if (null == entityInfo || entityInfo.isEmpty()) {
 			Category category = matchType.getCategory();
 			if (category == Category.BIO) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(),
+								input.getAuthType().getType()));
 			}
+			
+			else if (category == Category.DEMO) {
+				if(null==input.getLanguage()) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorMessage(),
+								matchType.getIdMapping().getIdname()));
+				
+			}
+			else {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
+								matchType.getIdMapping().getIdname(),input.getLanguage()));
+			}
+		  }
 		}
-
 		return entityInfo;
 	}
 

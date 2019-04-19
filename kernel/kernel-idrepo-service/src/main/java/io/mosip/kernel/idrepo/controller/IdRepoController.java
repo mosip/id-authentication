@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -55,7 +56,7 @@ public class IdRepoController {
 
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
-	
+
 	/** The Constant CREATE. */
 	private static final String CREATE = "create";
 
@@ -103,8 +104,7 @@ public class IdRepoController {
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder
-	 *            the binder
+	 * @param binder the binder
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -114,12 +114,17 @@ public class IdRepoController {
 	/**
 	 * Adds the identity.
 	 *
-	 * @param uin the uin
-	 * @param request            the request
-	 * @param errors            the errors
+	 * @param uin
+	 *            the uin
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
 	 * @return the response entity
-	 * @throws IdRepoAppException             the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@PostMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> addIdentity(@PathVariable String uin,
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
@@ -130,16 +135,13 @@ public class IdRepoController {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e);
 		} catch (IdRepoDataValidationException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
@@ -147,12 +149,16 @@ public class IdRepoController {
 	/**
 	 * Retrieve identity.
 	 *
-	 * @param uin            the uin
-	 * @param type the type
-	 * @param request the request
+	 * @param uin
+	 *            the uin
+	 * @param type
+	 *            the type
+	 *
 	 * @return the response entity
-	 * @throws IdRepoAppException             the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
+
 	@GetMapping(path = "/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -181,12 +187,10 @@ public class IdRepoController {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
@@ -194,16 +198,13 @@ public class IdRepoController {
 	/**
 	 * Update identity.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param request
-	 *            the request
-	 * @param errors
-	 *            the errors
+	 * @param uin     the uin
+	 * @param request the request
+	 * @param errors  the errors
 	 * @return the response entity
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@PatchMapping(path = "/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin,
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
@@ -214,20 +215,17 @@ public class IdRepoController {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e);
 		} catch (IdRepoDataValidationException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					e.getMessage());
+			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
-	
+
 	private void validateId(String id, Errors errors, String operation) {
 		if (Objects.isNull(id)) {
 			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -99,7 +98,7 @@ public class PinAuthServiceImplTest {
 
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
-		StaticPin stat = new StaticPin();
+		StaticPin stat = new StaticPin(null, null, false, null, null, null, null, false, null);
 		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
@@ -110,7 +109,7 @@ public class PinAuthServiceImplTest {
 
 	@Test
 	public void invalidPinTest() throws IdAuthenticationBusinessException {
-		StaticPin stat = new StaticPin();
+		StaticPin stat = new StaticPin(null, "123456", false, null, null, null, null, false, null);
 		stat.setPin("123456");
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);

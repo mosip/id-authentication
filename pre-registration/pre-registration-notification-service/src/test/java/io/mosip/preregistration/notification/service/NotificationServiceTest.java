@@ -2,12 +2,18 @@ package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,19 +36,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
-import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
+import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
+import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
@@ -66,41 +72,57 @@ public class NotificationServiceTest {
 	@MockBean(name = "restTemplate")
 	private RestTemplate restTemplate;
 
-	@MockBean
-	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-
+	
+	@MockBean
+   private NotificationUtil NotificationUtil;
 	private NotificationDTO notificationDTO;
 	boolean requestValidatorFlag = false;
 	TemplateResponseDTO templateResponseDTO = new TemplateResponseDTO();
-	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	MainResponseDTO<ResponseDTO> responseDTO = new MainResponseDTO<>();
+	MainListResponseDTO<NotificationResponseDTO> responselist=new MainListResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
 	MainRequestDTO<NotificationDTO> mainReqDto = new MainRequestDTO<>();
 	List<TemplateResponseDTO> tepmlateList = new ArrayList<>();
+     ResponseDTO response=new ResponseDTO();
 
+ 	JSONParser parser = new JSONParser();
+ 	private JSONObject jsonTestObject;
+ 	private JSONObject jsonObject;
+ 	
 	@Before
-	public void beforeSet() throws ParseException {
+	public void beforeSet() throws ParseException, FileNotFoundException, java.io.IOException, org.json.simple.parser.ParseException {
+
+		ClassLoader classLoader=getClass().getClassLoader();
+		File fileTest = new File(classLoader.getResource("pre-registration.json").getFile());
+		FileReader reader = new FileReader(fileTest);
+		jsonTestObject= (JSONObject) parser.parse(reader);
+		File fileTest1 = new File(classLoader.getResource("pre-registration-Test.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(fileTest1));
 
 		//mapper.registerModule(new JavaTimeModule());
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum("1234567890");
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
-		mainReqDto.setId("mosip.pre-registration.demographic.create");
+		notificationDTO.setAdditionalRecipient(true);
+		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
-
-		mainReqDto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
+//2019-04-8T07:22:57.186Z
+		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
+		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
-		responseDTO.setResponse(notificationDTO);
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		templateResponseDTO.setFileText("Email message");
 		tepmlateList.add(templateResponseDTO);
@@ -117,7 +139,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-	@Test
+     @Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
@@ -125,21 +147,84 @@ public class NotificationServiceTest {
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
 		templateResponseListDTO.setTemplates(tepmlateList);
+		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
 		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
 				templateResponseListDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
 				.thenReturn(res);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
 				notificationResponseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
 				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
-		System.out.println(stringjson);
-		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, langCode, file);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
 		assertEquals(responseDTO.getResponse(), response.getResponse());
 	}
 
+     @Test
+ 	public void callGetDemographicDetailsWithPreIdTest()
+ 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
+    	// String responsejson = mapper.writeValueAsString(jsonTestObject);
+    	 ResponseEntity<String> respEntity=new ResponseEntity<String>(jsonTestObject.toJSONString(),HttpStatus.OK);
+    	 notificationDTO.setAdditionalRecipient(false);
+    	
+    	
+    	 mainReqDto.setRequest(notificationDTO);
+ 		String stringjson = mapper.writeValueAsString(mainReqDto);
+ 		String langCode = "eng";
+ 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+ 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
+ 		templateResponseListDTO.setTemplates(tepmlateList);
+ 		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
+ 		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
+ 				templateResponseListDTO, HttpStatus.OK);
+ 		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
+ 				.thenReturn(res);
+ 		
+ 		HttpHeaders headers = new HttpHeaders();
+ 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+ 		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
+ 				notificationResponseDTO, HttpStatus.OK);
+ 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
+ 				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
+ 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+ 				Mockito.eq(String.class))).thenReturn(respEntity);
+ 		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
+ 		assertEquals(responseDTO.getResponse(), response.getResponse());
+ 	}
+
+     @Test
+  	public void callGetDemographicDetailsWithPreIdrestcallTest()
+  			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
+     	 ResponseEntity<String> respEntity=new ResponseEntity<String>(jsonObject.toJSONString(),HttpStatus.OK);
+     	 notificationDTO.setAdditionalRecipient(false);
+     	
+     	
+     	 mainReqDto.setRequest(notificationDTO);
+  		String stringjson = mapper.writeValueAsString(mainReqDto);
+  		String langCode = "eng";
+  		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+  		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
+  		templateResponseListDTO.setTemplates(tepmlateList);
+  		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
+  		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
+  				templateResponseListDTO, HttpStatus.OK);
+  		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
+  				.thenReturn(res);
+  		
+  		HttpHeaders headers = new HttpHeaders();
+  		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+  		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
+  				notificationResponseDTO, HttpStatus.OK);
+  		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
+  				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
+  		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+  				Mockito.eq(String.class))).thenReturn(respEntity);
+  		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
+  		assertEquals(responseDTO.getResponse(), response.getResponse());
+  	}
 	/**
 	 * This method is for failure case of sendNotification
 	 * 
@@ -149,18 +234,20 @@ public class NotificationServiceTest {
 	public void sendNotificationFailureTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum("");
 		notificationDTO.setEmailID("");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setAdditionalRecipient(true);
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
-		responseDTO.setResponse(notificationDTO);
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		String stringjson = mapper.writeValueAsString(mainReqDto);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
 		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
 
 	}
@@ -174,52 +261,25 @@ public class NotificationServiceTest {
 	public void sendNotificationExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum(null);
 		notificationDTO.setEmailID(null);
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setAdditionalRecipient(true);
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
-		responseDTO.setResponse(notificationDTO);
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		String stringjson = mapper.writeValueAsString(mainReqDto);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
 		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
 
 	}
 
-	/**
-	 * This method return the success test case for generateQRCode method
-	 * 
-	 * @throws QrcodeGenerationException
-	 * @throws java.io.IOException
-	 */
-	@Test
-	public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.io.IOException {
-		String stringjson = mapper.writeValueAsString(notificationDTO);
-		byte[] qrCode = null;
-		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
-		responsedto.setQrcode(qrCode);
-		qrCodeResponseDTO.setResponse(responsedto);
-		qrCodeResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		Mockito.when(qrCodeGenerator.generateQrCode(stringjson, QrVersion.V25)).thenReturn(qrCode);
-		MainResponseDTO<QRCodeResponseDTO> response = service.generateQRCode(stringjson);
 
-		assertEquals(qrCodeResponseDTO.getResponse(), response.getResponse());
-	}
-
-	@Test
-	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException {
-		String stringjson = mapper.writeValueAsString(notificationDTO);
-
-		Mockito.when(qrCodeGenerator.generateQrCode(null, QrVersion.V25)).thenThrow(QrcodeGenerationException.class);
-		service.generateQRCode(stringjson);
-
-		assertEquals(null, qrCodeResponseDTO.getResponse());
-
-	}
 
 	/**
 	 * This test method is for succes case of getConfig

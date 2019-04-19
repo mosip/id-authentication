@@ -24,7 +24,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -34,7 +33,7 @@ import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.util.DateUtils;
@@ -107,26 +106,12 @@ public class StaticPinServiceImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),now());
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
@@ -146,26 +131,13 @@ public class StaticPinServiceImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, uin, true, IDA, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),now());
+	
 		Optional<StaticPin> entity1 = Optional.empty();
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
@@ -188,26 +160,13 @@ public class StaticPinServiceImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPin stat = new StaticPin();
-		stat.setCreatedOn(now());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistory staticPinHistory = new StaticPinHistory();
-		staticPinHistory.setUin(uin);
-		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(null);
-		staticPinHistory.setCreatedOn(now());
-		staticPinHistory.setEffectiveDate(now());
-		staticPinHistory.setActive(true);
-		staticPinHistory.setDeleted(false);
-		staticPinHistory.setUpdatedBy(IDA);
-		staticPinHistory.setUpdatedOn(now());
+		StaticPin stat = new StaticPin(pin, uin, true, null, now(), IDA, now(), false, now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(pin, uin, true, IDA, now(), IDA, now(), false, now(),now());
+	
 		Optional<StaticPin> entity1 = Optional.empty();
 		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
@@ -227,32 +186,36 @@ public class StaticPinServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue", idRepo);
 	}
+
 	@Test
 	public void testGetUin_UINEmpty() {
 		String uin = "";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue", idRepo);
 	}
+
 	@Test
 	public void testGetUin_UINNull() {
 		String uin = null;
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue", idRepo);
 	}
+
 	@Test
 	public void testGetUin_DifferentKey() {
 		String uin = null;
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("vid", uin);
 		idRepo.put("registrationId", "1234567890");
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue", idRepo);
 	}
+
 	private LocalDateTime now() throws IdAuthenticationBusinessException {
 		return DateUtils.getUTCCurrentDateTime();
 	}

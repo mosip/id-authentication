@@ -12,12 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -37,7 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
+import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
@@ -63,14 +62,10 @@ public class IDAuthExceptionHandlerTest {
 	@InjectMocks
 	private IdAuthExceptionHandler handler;
 
-	@Mock
-	private MessageSource messageSource;
-
 	@Before
 	public void before() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("errormessages");
-		ReflectionTestUtils.setField(handler, "messageSource", source);
 		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
@@ -136,8 +131,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataException() {
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -158,8 +155,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testAsyncRequestTimeoutException() {
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -175,22 +174,34 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testNoSuchMessageException() {
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
-		ResponseEntity<Object> handleExceptionInternal = handler
-				.handleIdAppException(new IdAuthenticationAppException("1234", "1234"), null);
-		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()),
+				null);
+		AuthResponseDTO actualResponse = (AuthResponseDTO) handleExceptionInternal.getBody();
 		actualResponse.setResponseTime(null);
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(Boolean.FALSE);
+		actualResponse.setResponse(response);
+		actualResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
 		assertEquals(expectedResponse, actualResponse);
 	}
 
 	@Test
 	public void testhandleAllExceptionsUnknownError() {
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -204,7 +215,7 @@ public class IDAuthExceptionHandlerTest {
 			ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
 					new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e), null, null,
 					null, null);
-			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+			AuthResponseDTO actualResponse = (AuthResponseDTO) handleExceptionInternal.getBody();
 			actualResponse.setResponseTime(null);
 			assertEquals(expectedResponse, actualResponse);
 		}
@@ -212,12 +223,14 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testCreateAuthError() {
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(Collections
 				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getActionCode())));
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getActionMessage())));
 		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
@@ -228,14 +241,14 @@ public class IDAuthExceptionHandlerTest {
 	@Ignore
 	@Test
 	public void testCreateAuthErrorwithActionCode() {
-		Mockito.when(messageSource.getMessage(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn("Please regenerate OTP and try again after sometime");
-		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus(Boolean.FALSE);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(Collections
 				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(),
 						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getActionCode())));
+						IdAuthenticationErrorConstants.EXPIRED_OTP.getActionMessage())));
 		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.EXPIRED_OTP), null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();

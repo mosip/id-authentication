@@ -19,10 +19,8 @@ public interface BiometricAttributeService {
 	 * Method to fetch list of biometricAttribute for given biometric type code and
 	 * language code
 	 * 
-	 * @param biometricTypeCode
-	 *            input as  biometricTypeCode 
-	 * @param langCode
-	 *            input as langCode
+	 * @param biometricTypeCode input as biometricTypeCode
+	 * @param langCode          input as langCode
 	 * @return List of BiometricAttributeDto
 	 */
 	List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode);
@@ -30,8 +28,7 @@ public interface BiometricAttributeService {
 	/**
 	 * Function to save biometricAttribute Details to the Database
 	 * 
-	 * @param biometricAttribute
-	 *             biometric attribute dto
+	 * @param biometricAttribute biometric attribute dto
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */

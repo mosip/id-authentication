@@ -266,7 +266,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"RegistrationProcessorRestClientServiceImpl::postApi()::entry");
+				"RegistrationProcessorRestClientServiceImpl::putApi()::entry");
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = null;
@@ -304,7 +304,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
+				"RegistrationProcessorRestClientServiceImpl::putApi()::exit");
 		return obj;
 	}
 

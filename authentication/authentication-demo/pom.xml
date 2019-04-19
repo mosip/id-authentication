@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.10.3</version>
 	</parent>
 
 	<artifactId>authentication-demo</artifactId>
@@ -27,6 +27,8 @@
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<sonar.skip>true</sonar.skip>
+		<ida-version>0.10.1</ida-version>
+		<kernel-version>0.10.1</kernel-version>
 	</properties>
 
 	<dependencies>
@@ -70,22 +72,22 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>${kernel-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>${kernel-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>${kernel-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>${ida-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -103,6 +105,13 @@
 			<artifactId>MFS100</artifactId>
 			<version>1.0</version>
 		</dependency>
+				
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		
 
 		<!-- Commons Lang -->
 		<dependency>
@@ -114,6 +123,14 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>1.6</version>
+		</dependency>
+		
+		
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>${kernel-version}</version>
 		</dependency>
 
 		<dependency>
@@ -129,7 +146,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>${kernel-version}</version>
 		</dependency>
 	</dependencies>
 		<build>

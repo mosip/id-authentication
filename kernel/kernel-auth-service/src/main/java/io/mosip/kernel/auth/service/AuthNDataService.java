@@ -14,13 +14,13 @@ import io.mosip.kernel.auth.entities.otp.OtpUser;
  *
  */
 public interface AuthNDataService {
-	
+
 	MosipUserDto authenticateUser(LoginUser loginUser) throws Exception;
 
 	MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception;
 
 	MosipUserDto authenticateUserWithOtp(UserOtp loginUser) throws Exception;
-    
+
 	MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception;
 
 }

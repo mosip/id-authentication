@@ -18,12 +18,6 @@ public class CancelBookingDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * pre-registration id
-	 */
-	@JsonProperty("pre_registration_id")
-	@ApiModelProperty(value = "Pre-Registartion ID", position = 1)
-	private String preRegistrationId;
-	/**
 	 * registration Center Id
 	 */
 	@JsonProperty("registration_center_id")

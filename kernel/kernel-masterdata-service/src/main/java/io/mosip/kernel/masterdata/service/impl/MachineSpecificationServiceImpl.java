@@ -56,8 +56,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 		MachineSpecification renMachineSpecification = new MachineSpecification();
 
-		MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification,
-				MachineSpecification.class);
+		MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification, MachineSpecification.class);
 		try {
 			renMachineSpecification = machineSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {

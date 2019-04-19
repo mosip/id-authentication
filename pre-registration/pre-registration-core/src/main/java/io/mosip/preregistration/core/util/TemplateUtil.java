@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,10 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +26,8 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -64,13 +69,14 @@ public class TemplateUtil {
 	 * @return
 	 */
 	public String getTemplate(String langCode,String templatetypecode)  {
-		
-		
 		String url = resourceUrl + "/" + langCode + "/" + templatetypecode;
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<RequestWrapper<TemplateResponseListDTO>> httpEntity = new HttpEntity<>(headers);
 		log.info("sessionId", "idType", "id", "In getTemplate method of TemplateUtil service url: "+url);
-		ResponseEntity<TemplateResponseListDTO> respEntity = restTemplate.getForEntity(url, TemplateResponseListDTO.class);
+		ResponseEntity<ResponseWrapper<TemplateResponseListDTO>> respEntity = restTemplate.exchange(url,HttpMethod.GET,httpEntity,new ParameterizedTypeReference<ResponseWrapper<TemplateResponseListDTO>>() {
+		});
 
-		List<TemplateResponseDTO> response = respEntity.getBody().getTemplates();
+		List<TemplateResponseDTO> response = respEntity.getBody().getResponse().getTemplates();
 
 		return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 		
@@ -106,15 +112,17 @@ public class TemplateUtil {
 	public Map<String, Object> mapSetting(NotificationDTO acknowledgementDTO) {
 		Map<String, Object> responseMap = new HashMap<>();
 		log.info("sessionId", "idType", "id", "In mapSetting method of TemplateUtil service ");
-		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("dd MMM yyyy");
+		DateTimeFormatter timeFormate = DateTimeFormatter.ofPattern("HH:mm");
 
 		LocalDateTime now = LocalDateTime.now();
-		LocalTime localTime = LocalTime.now(ZoneId.of("UTC"));
+		LocalTime localTime = LocalTime.now();
+		
 
 		responseMap.put("name", acknowledgementDTO.getName());
-		responseMap.put("PRID", acknowledgementDTO.getPreId());
+		responseMap.put("PRID", acknowledgementDTO.getPreRegistrationId());
 		responseMap.put("Date", dateFormate.format(now));
-		responseMap.put("Time", localTime);
+		responseMap.put("Time", timeFormate.format(localTime));
 		responseMap.put("Appointmentdate", acknowledgementDTO.getAppointmentDate());
 		responseMap.put("Appointmenttime", acknowledgementDTO.getAppointmentTime());
 		return responseMap;

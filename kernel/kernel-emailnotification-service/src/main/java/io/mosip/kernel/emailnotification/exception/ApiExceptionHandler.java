@@ -41,13 +41,10 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles {@link InvalidArgumentsException}.
 	 * 
-	 * @param httpServletRequest
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param httpServletRequest the servlet request.
+	 * @param exception          the exception.
 	 * @return the error response.
-	 * @throws IOException
-	 *             when the response is not mapped.
+	 * @throws IOException when the response is not mapped.
 	 */
 	@ExceptionHandler(InvalidArgumentsException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> mailNotifierArgumentsValidation(
@@ -58,13 +55,10 @@ public class ApiExceptionHandler {
 	}
 
 	/**
-	 * @param httpServletRequest
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param httpServletRequest the servlet request.
+	 * @param exception          the exception.
 	 * @return the error response.
-	 * @throws IOException
-	 *             when the response is not mapped.
+	 * @throws IOException when the response is not mapped.
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
@@ -78,13 +72,10 @@ public class ApiExceptionHandler {
 	}
 
 	/**
-	 * @param httpServletRequest
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param httpServletRequest the servlet request.
+	 * @param exception          the exception.
 	 * @return the error response.
-	 * @throws IOException
-	 *             when the response is not mapped.
+	 * @throws IOException when the response is not mapped.
 	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
@@ -99,11 +90,9 @@ public class ApiExceptionHandler {
 	/**
 	 * This method sets the error response.
 	 * 
-	 * @param httpServletRequest
-	 *            the servlet request.
+	 * @param httpServletRequest the servlet request.
 	 * @return the error response wrapped in {@link ResponseWrapper}.
-	 * @throws IOException
-	 *             when the response is not mapped.
+	 * @throws IOException when the response is not mapped.
 	 */
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();

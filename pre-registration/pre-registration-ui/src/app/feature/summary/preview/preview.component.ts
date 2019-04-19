@@ -17,9 +17,11 @@ export class PreviewComponent implements OnInit {
   secondaryLanguagelabels: any;
   primaryLanguage;
   secondaryLanguage;
+  dateOfBirthPrimary: string = '';
+  dateOfBirthSecondary: string = '';
   user: UserModel;
   files = [];
-  documentTypes;
+  documentTypes = [];
   documentMapObject = [];
 
   constructor(
@@ -34,6 +36,7 @@ export class PreviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('IN PREVIEW');
     this.primaryLanguage = localStorage.getItem('langCode');
     this.secondaryLanguage = localStorage.getItem('secondaryLangCode');
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
@@ -44,6 +47,7 @@ export class PreviewComponent implements OnInit {
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
+    this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
     this.setResidentStatus();
     console.log(this.previewData);
@@ -52,41 +56,47 @@ export class PreviewComponent implements OnInit {
     this.documentsMapping();
   }
 
+  formatDob(dob: string) {
+    dob = dob.replace(/\//g, '-');
+    this.dateOfBirthPrimary = Utils.getBookingDateTime(dob, '', localStorage.getItem('langCode'));
+    this.dateOfBirthSecondary = Utils.getBookingDateTime(dob, '', localStorage.getItem('secondaryLangCode'));
+    console.log(this.dateOfBirthPrimary, this.dateOfBirthSecondary);
+  }
+
   setFieldValues() {
     let fields = appConstants.previewFields;
     fields.forEach(field => {
       this.previewData[field].forEach(element => {
-          element.name = this.locCodeToName(
-          element.value,
-          element.language
-        )
-      })
-    })
+        element.name = this.locCodeToName(element.value, element.language);
+      });
+    });
   }
 
   setResidentStatus() {
     this.previewData['residenceStatus'].forEach(element => {
       element.name = appConstants.residentTypesMapping[element.value][element.language];
-    })
+    });
   }
 
   documentsMapping() {
     this.documentMapObject = [];
-    this.documentTypes.forEach(type => {
-      const file = this.files.filter(file => file.doc_cat_code === type.code);
-      if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
-        const obj = {
-          doc_name: appConstants.sameAs[localStorage.getItem('langCode')]
+    if (this.documentTypes.length !== 0) {
+      this.documentTypes.forEach(type => {
+        const file = this.files.filter(file => file.docCatCode === type.code);
+        if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
+          const obj = {
+            docName: appConstants.sameAs[localStorage.getItem('langCode')]
+          };
+          file.push(obj);
         }
-        file.push(obj);
-      }
-      const obj = {
-        code: type.code,
-        name: type.description,
-        fileName: file.length > 0 ? file[0].doc_name : undefined
-      };
-      this.documentMapObject.push(obj);
-    });
+        const obj = {
+          code: type.code,
+          name: type.description,
+          fileName: file.length > 0 ? file[0].docName : undefined
+        };
+        this.documentMapObject.push(obj);
+      });
+    }
     console.log(this.documentMapObject);
   }
 
@@ -135,7 +145,7 @@ export class PreviewComponent implements OnInit {
 
   enableContinue(): boolean {
     let flag = true;
-    this.documentMapObject.forEach(object => {      
+    this.documentMapObject.forEach(object => {
       if (object.fileName === undefined) {
         if (object.code === 'POA' && this.registrationService.getSameAs() !== '') {
           flag = true;
@@ -143,7 +153,7 @@ export class PreviewComponent implements OnInit {
           flag = false;
         }
       }
-    })
+    });
     return flag;
   }
 

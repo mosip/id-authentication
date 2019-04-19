@@ -107,7 +107,6 @@ public class IdMappingValidationTest {
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -177,7 +176,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -196,7 +194,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors.hasErrors());
 		assertTrue(errors.hasErrors());
 	}
 
@@ -255,21 +252,21 @@ public class IdMappingValidationTest {
 		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
 		dataDTO1.setBioValue("finger");
-		dataDTO1.setBioSubType("Thumb");
+		dataDTO1.setBioSubType("LEFT_THUMB");
 		dataDTO1.setBioType("FIR");
 		dataDTO1.setDeviceProviderID("test01");
 		fingerValue1.setData(dataDTO1);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
-		dataDTOFace.setBioSubType("Thumb");
 		dataDTOFace.setBioType("FID");
+		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTOFace);
 
@@ -332,8 +329,6 @@ public class IdMappingValidationTest {
 		identity.setLocation1(addressLine1List);
 		identity.setLocation2(addressLine1List);
 		identity.setLocation3(addressLine1List);
-		/* Age */
-		List<IdentityInfoDTO> age = new ArrayList<>();
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");

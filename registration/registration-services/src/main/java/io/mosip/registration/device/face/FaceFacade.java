@@ -45,6 +45,11 @@ public class FaceFacade {
 	/**
 	 * Validate Face
 	 * 
+	 * @param faceDetail
+	 *            details of the captured face
+	 * @param userFaceDetails
+	 *            details of the user face from db
+	 * 
 	 * @return boolean of captured Face
 	 */
 	public boolean validateFace(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails) {

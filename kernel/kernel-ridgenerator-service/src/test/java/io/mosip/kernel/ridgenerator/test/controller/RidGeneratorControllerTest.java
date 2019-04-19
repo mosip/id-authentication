@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,6 +31,7 @@ public class RidGeneratorControllerTest {
 	private RidGeneratorService<RidGeneratorResponseDto> ridGeneratorService;
 
 	@Test
+	@WithUserDetails("reg-processor")
 	public void generateRidTest() throws Exception {
 		String rid = "21347867870000120190329060437";
 		RidGeneratorResponseDto response = new RidGeneratorResponseDto();

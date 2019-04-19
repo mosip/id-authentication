@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
-
 /**
  * 
  * @author Bal Vikash Sharma
@@ -38,7 +37,6 @@ public class EmptyCheckUtilsTest {
 		Date d = null;
 		assertTrue(EmptyCheckUtils.isNullEmpty(d));
 	}
-
 
 	@Test
 	public void isNullEmptyStringTest() {

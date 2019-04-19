@@ -61,6 +61,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
 
+
 	/** The validator. */
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -247,22 +248,24 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("Thumb");
+		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
-		dataDTO.setBioType("IIR");
-		dataDTO.setDeviceProviderID("provider001");
-		irisValue.setData(dataDTO);
+		DataDTO dataDTO1 = new DataDTO();
+		dataDTO1.setBioValue("iris img");
+		dataDTO1.setBioSubType("LEFT");
+		dataDTO1.setBioType("IIR");
+		dataDTO1.setDeviceProviderID("provider001");
+		irisValue.setData(dataDTO1);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		dataDTO.setBioValue("face img");
-		dataDTO.setBioSubType("Thumb");
-		dataDTO.setBioType("FID");
-		dataDTO.setDeviceProviderID("provider001");
-		faceValue.setData(dataDTO);
+		DataDTO dataDTO2 = new DataDTO();
+		dataDTO2.setBioValue("face img");
+		dataDTO2.setBioType("FID");
+		dataDTO2.setBioSubType("Face");
+		dataDTO2.setDeviceProviderID("provider001");
+		faceValue.setData(dataDTO2);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
@@ -297,7 +300,7 @@ public class BaseAuthRequestValidatorTest {
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
@@ -323,7 +326,6 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> data = new ArrayList<DataDTO>();
 		data.add(dataDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFinger", authRequestDTO, data, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -343,7 +345,7 @@ public class BaseAuthRequestValidatorTest {
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
@@ -463,6 +465,47 @@ public class BaseAuthRequestValidatorTest {
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
+
+	}
+	
+	
+	
+	/**
+	 * Test validate face if more than one face data is present.
+	 */
+	@Test
+	public void testValidateFaceReq() {
+
+		authRequestDTO = getAuthRequestDTO();
+		
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		DataDTO faceData = new DataDTO();
+		faceData.setBioValue("face img");
+		faceData.setBioSubType("face");
+		faceData.setBioType("FID");
+		faceData.setDeviceProviderID("provider001");
+		faceValue.setData(faceData);
+		
+		BioIdentityInfoDTO faceValue1 = new BioIdentityInfoDTO();
+		
+		faceData.setBioValue("face img");
+		faceData.setBioSubType("face");
+		faceData.setBioType("FID");
+		faceData.setDeviceProviderID("provider001");
+		faceValue1.setData(faceData);
+		List<BioIdentityInfoDTO> faceIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		faceIdentityInfoDtoList.add(faceValue);
+		faceIdentityInfoDtoList.add(faceValue1);
+		IdentityDTO identitydto = new IdentityDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setDemographics(identitydto);
+		requestDTO.setBiometrics(faceIdentityInfoDtoList);
+		authRequestDTO.setRequest(requestDTO);
+        List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
+		bioInfoList.add(faceData);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
+		assertTrue(error.hasErrors());
 
 	}
 
@@ -1083,7 +1126,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1250,10 +1292,10 @@ public class BaseAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1263,7 +1305,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1291,10 +1333,10 @@ public class BaseAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1304,7 +1346,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1345,7 +1387,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1374,10 +1416,10 @@ public class BaseAuthRequestValidatorTest {
 		authTypeDTO.setDemo(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1387,7 +1429,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1494,7 +1536,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1524,10 +1565,10 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateAge_Valid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("16");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1540,7 +1581,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setAge("25");
 		idDTO.setDob("25/11/1990");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1550,7 +1591,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1558,10 +1598,10 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateAge_InValid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("16");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1574,7 +1614,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setAge("25/01/1998");
 		idDTO.setDob("25/11/1990");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1584,7 +1624,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1596,7 +1635,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateDOB_valid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1607,7 +1646,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1628,7 +1667,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateDOB_Invalid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1639,7 +1678,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25-11-1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1805,7 +1844,6 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(dobIdentityDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOBType", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1844,7 +1882,6 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1859,7 +1896,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateGender_valid() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1868,7 +1905,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOGender.setValue("M");
 		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
 		idInfoListGender.add(idInfoDTOGender);
@@ -1879,7 +1916,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1893,7 +1929,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateGender_invalid() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1902,7 +1938,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOGender.setValue("");
 		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
 		idInfoListGender.add(idInfoDTOGender);
@@ -1913,7 +1949,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderTypeNull());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1921,7 +1956,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateGender_NullFetchType() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1930,7 +1965,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTOGender.setValue("");
 		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
 		idInfoListGender.add(idInfoDTOGender);
@@ -1941,7 +1976,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1949,7 +1983,7 @@ public class BaseAuthRequestValidatorTest {
 		Map<String, List<String>> map = new HashMap<>();
 		List<String> list = new ArrayList<>();
 		list.add("M");
-		map.put(environment.getProperty("mosip.secondary.lang-code"), list);
+		map.put(environment.getProperty("mosip.secondary-language"), list);
 		return map;
 	}
 
@@ -1957,7 +1991,7 @@ public class BaseAuthRequestValidatorTest {
 		Map<String, List<String>> map = new HashMap<>();
 		List<String> list = new ArrayList<>();
 		list.add("Test");
-		map.put(environment.getProperty("mosip.secondary.lang-code"), list);
+		map.put(environment.getProperty("mosip.secondary-language"), list);
 		return map;
 	}
 }

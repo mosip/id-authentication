@@ -1,6 +1,6 @@
-.progress{
+.progress {
   display: inline-block;
-  width : 150px;
+  width: 150px;
   height: 0;
   position: relative;
   top: 3px;
@@ -52,6 +52,7 @@ p {
 .inline-icon-background-incomplete {
   background: grey;
   opacity: 0.5;
+  padding: 1px;
 }
 
 .active {
@@ -67,7 +68,7 @@ p {
   opacity: 0.5;
 }
 
-@media(max-width: 500px) {
+@media (max-width: 500px) {
   .progress {
     width: 0;
   }
@@ -77,7 +78,7 @@ p {
   }
 }
 
-@media (max-width:1000px) and (min-width:801px) {
+@media (max-width: 1032px) and (min-width: 801px) {
   .progress {
     width: 100px;
   }
@@ -87,7 +88,7 @@ p {
   }
 }
 
-@media (max-width:800px) and (min-width:501px) {
+@media (max-width: 800px) and (min-width: 501px) {
   .progress {
     width: 60px;
   }

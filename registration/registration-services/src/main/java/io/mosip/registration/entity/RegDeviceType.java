@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 
 /**
- * RegDeviceType entity details
+ * The Entity Class for Reg Device Type details
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

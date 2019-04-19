@@ -8,6 +8,8 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
+ * Composite key for Code And Language Code
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
  */

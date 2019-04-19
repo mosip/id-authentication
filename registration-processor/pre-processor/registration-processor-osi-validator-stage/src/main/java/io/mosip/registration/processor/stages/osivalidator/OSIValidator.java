@@ -6,17 +6,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -30,28 +42,27 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
-import io.mosip.registration.processor.status.code.ApplicantType;
-import io.mosip.registration.processor.status.code.IntroducerType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
-import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registration.processor.status.service.TransactionService;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,6 +103,10 @@ public class OSIValidator {
 	@Autowired
 	private OSIUtils osiUtils;
 
+	private JSONObject demographicIdentity;
+	
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
+	
 	/** The message. */
 	private String message = null;
 
@@ -121,6 +136,16 @@ public class OSIValidator {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	
+	@Value("${mosip.kernel.applicant.type.age.limit}")
+	private String ageLimit;
+	
+	@Value("${registration.processor.applicant.dob.format}")
+	private String dobFormat;
+	
+
+	@Autowired
+	private Utilities utility;
 
 	/**
 	 * Checks if is valid OSI.
@@ -137,7 +162,8 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-
+		demographicIdentity = getDemoIdentity(registrationId);
+		regProcessorIdentityJson = getIdentity();
 		Identity identity = osiUtils.getIdentity(registrationId);
 		/** Getting data from packet MetadataInfo*/
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId,identity);
@@ -147,7 +173,7 @@ public class OSIValidator {
 			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			return false;
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(registrationId)))
 			isValidOsi = true;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::exit");
@@ -172,15 +198,17 @@ public class OSIValidator {
 
 		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
-			String fingerPrint = regOsi.getOfficerFingerpImageName();
-			String fingerPrintType = regOsi.getOfficerfingerType();
-			String iris = regOsi.getOfficerIrisImageName();
-			String irisType = regOsi.getOfficerIrisType();
-			String face = regOsi.getOfficerPhotoName();
-			String pin = regOsi.getOfficerHashedPin();
 			// officer password and otp check
-			String officerPassword =regOsi.getOfficerHashedPwd();
+			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
+			
+			String fingerPrint = null;//regOsi.getOfficerFingerpImageName();
+			String fingerPrintType = null;//regOsi.getOfficerfingerType();
+			String iris =null;// regOsi.getOfficerIrisImageName();
+			String irisType =null;// regOsi.getOfficerIrisType();
+			String face =null;// regOsi.getOfficerPhotoName();
+			String pin = null;//regOsi.getOfficerHashedPin();
+			
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
@@ -240,16 +268,17 @@ public class OSIValidator {
 			throws IOException, ApisResourceAccessException {
 		String supervisorId = regOsi.getSupervisorId();
 		if (supervisorId != null) {
-
-			String fingerPrint = regOsi.getSupervisorBiometricFileName();
 			// superVisior otp and password
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
-			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
-			String fingerPrintType = regOsi.getSupervisorFingerType();
-			String iris = regOsi.getSupervisorIrisImageName();
-			String irisType = regOsi.getSupervisorIrisType();
-			String face = regOsi.getSupervisorPhotoName();
-			String pin = regOsi.getSupervisorHashedPin();
+			String supervisorOTPAuthentication =regOsi.getSupervisorOTPAuthentication();
+			
+			String fingerPrint = null;//regOsi.getSupervisorBiometricFileName();
+			String fingerPrintType = null;//regOsi.getSupervisorFingerType();
+			String iris = null;//regOsi.getSupervisorIrisImageName();
+			String irisType = null;//regOsi.getSupervisorIrisType();
+			String face = null;//regOsi.getSupervisorPhotoName();
+			String pin = null;//regOsi.getSupervisorHashedPin();
+			
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
@@ -285,36 +314,93 @@ public class OSIValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
+	private boolean isValidIntroducer(String registrationId)
 			throws IOException, ApisResourceAccessException {
-
+			
+		int childAgeLimit = Integer.parseInt(ageLimit);
+		int applicantAge = getApplicantAge(registrationId);
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
-				&& registrationStatusDto.getApplicantType().equalsIgnoreCase(ApplicantType.CHILD.name())
-				&& regOsi.getIntroducerTyp().equalsIgnoreCase(IntroducerType.PARENT.name())) {
-			String introducerUin = regOsi.getIntroducerUin();
-			String introducerRid = regOsi.getIntroducerRegId();
-			if (introducerUin == null && introducerRid == null) {
+				&& applicantAge<= childAgeLimit && applicantAge>0) {
+			String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
+			String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
+			Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
+			Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
+			BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
+			BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
+			if (introducerUIN == null && introducerRID == null) {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
+			String introducerRidString = bigIntegerToString(introducerRID);
+			String introducerUinString = bigIntegerToString(introducerUIN);
+			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
 
-				introducerUin = getIntroducerUIN(introducerRid);
-				if (introducerUin == null) {
-
+				introducerUinString = getIntroducerUIN(introducerRidString);
+				if (introducerUinString == null) {
 					registrationStatusDto
 							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
 			}
-			if (introducerUin != null) {
-				return validateIntroducer(regOsi, registrationId, introducerUin);
+			if (introducerUinString != null) {
+				return validateIntroducer(registrationId, introducerUinString);
 			} else {
 				return false;
 			}
 		}
 		return true;
 	}
+
+	private BigInteger numberToBigInteger(Number number ) {
+		return number!=null? new BigInteger(String.valueOf(number)):null;
+	}
+	
+	private String bigIntegerToString(BigInteger number ) {
+
+		return String.valueOf(number);
+	}
+
+	private int getApplicantAge(String registrationId) throws IOException {
+		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
+		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
+		
+		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
+		try {
+			if (applicantDob != null) {
+				DateFormat sdf = new SimpleDateFormat(dobFormat);
+				Date birthDate = sdf.parse(applicantDob);
+				LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
+				Period p = Period.between(ld, LocalDate.now());
+				return p.getYears();
+			} else {
+				return JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			} 
+		} catch (ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, e.getMessage());
+		}
+		return 0;
+	}
+	private RegistrationProcessorIdentity getIdentity() throws JsonParseException, JsonMappingException, IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+		return regProcessorIdentityJson;
+	}
+	private JSONObject getDemoIdentity(String registrationId) throws IOException{
+		InputStream documentInfoStream = adapter.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+
+		byte[] bytes = IOUtils.toByteArray(documentInfoStream);
+		String demographicJsonString = new String(bytes);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
+		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,utility.getGetRegProcessorDemographicIdentity());
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		return demographicIdentity;
+	}
+	
 
 	/**
 	 * Validate fingerprint.
@@ -372,7 +458,8 @@ public class OSIValidator {
 			pd.getWriteMethod().invoke(obj, value);
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			e.printStackTrace();
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"OSIValidator", e.getMessage());
 		}
 	}
 
@@ -604,38 +691,11 @@ public class OSIValidator {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
+	
+	//TODO Now Introducer data will come in ID JSON Logic is going to change 
+	private boolean validateIntroducer(String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
-		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
-				&& (regOsi.getIntroducerPhotoName() == null)) {
-			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-			return false;
-		}
-
-		if (regOsi.getIntroducerFingerpImageName() != null) {
-			String fingerPrint = BIOMETRIC
-					+ getHashSequenceValue(registrationId, JsonConstant.INTRODUCERBIOMETRICSEQUENCE);
-			String fingerPrintType = regOsi.getIntroducerFingerpType();
-			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}
-		if (regOsi.getIntroducerIrisImageName() != null) {
-			String iris = BIOMETRIC + regOsi.getIntroducerIrisImageName().toUpperCase();
-			String irisType = regOsi.getIntroducerIrisType();
-			if (!validateIris(introducerUin, iris, irisType, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}
-		if (regOsi.getIntroducerPhotoName() != null) {
-			String face = BIOMETRIC + regOsi.getIntroducerPhotoName().toUpperCase();
-			if (!validateFace(introducerUin, face, registrationId)) {
-				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
-				return false;
-			}
-		}
+		
 		return true;
 
 	}

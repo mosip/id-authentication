@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -36,7 +37,7 @@ import io.vertx.ext.web.RoutingContext;
  * @since 0.0.1
  */
 @Component
-public class ManualVerificationStage extends MosipVerticleAPIManager{
+public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	private ManualVerificationService manualAdjudicationService;
@@ -55,8 +56,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
-	
+
 	private static final String ASSIGNMENT_SERVICE_ID = "mosip.registration.processor.manual.verification.assignment.id";
 	private static final String DECISION_SERVICE_ID = "mosip.registration.processor.manual.verification.decision.id";
 	private static final String BIOMETRIC_SERVICE_ID = "mosip.registration.processor.manual.verification.biometric.id";
@@ -67,24 +67,25 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 
 	@Autowired
 	ManualVerificationRequestValidator manualVerificationRequestValidator;
-	
+
 	@Autowired
 	ManualVerificationExceptionHandler manualVerificationExceptionHandler;
-	
+
 	@Autowired
 	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
-	
+
 	/**
 	 * server port number
 	 */
 	@Value("${server.port}")
 	private String port;
 	private static final String APPLICATION_JSON = "application/json";
+
 	/**
 	 * Deploy stage.
 	 */
 	public void deployStage() {
-		this.mosipEventBus = this.getEventBus(this,clusterManagerUrl);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 	}
 
 	@Override
@@ -100,25 +101,28 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
-			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
+					APPLICATION_JSON);
 		});
 
-		router.post("/manual-verification/applicantDemographic/v1.0").blockingHandler(ctx -> { 
+		router.post("/manual-verification/applicantDemographic/v1.0").blockingHandler(ctx -> {
 			processDemographic(ctx);
 		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
-			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
-		
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
+					APPLICATION_JSON);
+
 		});
-		
+
 		router.post("/manual-verification/assignment/v1.0").blockingHandler(ctx -> {
 			processAssignment(ctx);
 		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
-		 
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
+					APPLICATION_JSON);
+
 		});
 
 		router.post("/manual-verification/decision/v1.0").blockingHandler(ctx -> {
@@ -126,7 +130,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
+					APPLICATION_JSON);
 		});
 
 		router.post("/manual-verification/packetInfo/v1.0").blockingHandler(ctx -> {
@@ -134,84 +139,109 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
+					APPLICATION_JSON);
 		});
 
-		router.get("/manualverification/health").handler(ctx -> {
+		router.get("/manual-verification/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(handlerObj->{
-			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
+		}).failureHandler(handlerObj -> {
+			this.setResponse(handlerObj, handlerObj.failure().getMessage());
 		});
 
 	}
 
-	public void processBiometric(RoutingContext ctx){
+	public void processBiometric(RoutingContext ctx) {
 
-			JsonObject obj = ctx.getBodyAsJson();
-			manualVerificationRequestValidator.validate(obj,env.getProperty(BIOMETRIC_SERVICE_ID));
-			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
-			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),pojo.getRequest().getFileName());
-			if (packetInfo != null) {
-				String byteAsString = new String(packetInfo);
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
-			}
-		
+		JsonObject obj = ctx.getBodyAsJson();
+		manualVerificationRequestValidator.validate(obj, env.getProperty(BIOMETRIC_SERVICE_ID));
+		ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue(obj.getMap(), ManualAppBiometricRequestDTO.class);
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),
+				pojo.getRequest().getFileName());
+		if (packetInfo != null) {
+			String byteAsString = new String(packetInfo);
+			this.setResponse(ctx,
+					ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,
+							env.getProperty(BIOMETRIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),
+							env.getProperty(DATETIME_PATTERN)),
+					APPLICATION_JSON);
+		}
+
 	}
 
 	public void processDemographic(RoutingContext ctx) {
-			JsonObject obj = ctx.getBodyAsJson();
-			manualVerificationRequestValidator.validate(obj,env.getProperty(DEMOGRAPHIC_SERVICE_ID));
-			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
-			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),PacketFiles.DEMOGRAPHIC.name());
-			
-			if (packetInfo != null) {
-				String byteAsString = new String(packetInfo);
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
-			}
-		
+		JsonObject obj = ctx.getBodyAsJson();
+		manualVerificationRequestValidator.validate(obj, env.getProperty(DEMOGRAPHIC_SERVICE_ID));
+		ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue(obj.getMap(), ManualAppBiometricRequestDTO.class);
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),
+				PacketFiles.DEMOGRAPHIC.name());
+
+		if (packetInfo != null) {
+			String byteAsString = new String(packetInfo);
+			this.setResponse(ctx,
+					ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,
+							env.getProperty(DEMOGRAPHIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),
+							env.getProperty(DATETIME_PATTERN)),
+					APPLICATION_JSON);
+		}
+
 	}
 
 	public void processAssignment(RoutingContext ctx) {
-			JsonObject obj = ctx.getBodyAsJson();
-			ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualVerificationAssignmentRequestDTO.class );
-			manualVerificationRequestValidator.validate(obj,env.getProperty(ASSIGNMENT_SERVICE_ID));
-			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest(),pojo.getMatchType());
-			if (manualVerificationDTO != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
+		JsonObject obj = ctx.getBodyAsJson();
+		ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
+				ManualVerificationAssignmentRequestDTO.class);
+		manualVerificationRequestValidator.validate(obj, env.getProperty(ASSIGNMENT_SERVICE_ID));
+		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest(),
+				pojo.getMatchType());
+		if (manualVerificationDTO != null) {
+			this.setResponse(ctx,
+					ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,
+							env.getProperty(ASSIGNMENT_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),
+							env.getProperty(DATETIME_PATTERN)),
+					APPLICATION_JSON);
 
-			}
+		}
 
-		
 	}
 
 	public void processDecision(RoutingContext ctx) {
-			JsonObject obj = ctx.getBodyAsJson();
-			ManualVerificationDecisionRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualVerificationDecisionRequestDTO.class );
-			manualVerificationRequestValidator.validate(obj,env.getProperty(DECISION_SERVICE_ID));
-			ManualVerificationDTO updatedManualVerificationDTO = manualAdjudicationService.updatePacketStatus(pojo.getRequest());
-			if (updatedManualVerificationDTO != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(updatedManualVerificationDTO,env.getProperty(DECISION_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
-			}
-		
+		JsonObject obj = ctx.getBodyAsJson();
+		ManualVerificationDecisionRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
+				ManualVerificationDecisionRequestDTO.class);
+		manualVerificationRequestValidator.validate(obj, env.getProperty(DECISION_SERVICE_ID));
+		ManualVerificationDTO updatedManualVerificationDTO = manualAdjudicationService
+				.updatePacketStatus(pojo.getRequest(), this.getClass().getSimpleName());
+		if (updatedManualVerificationDTO != null) {
+			this.setResponse(ctx,
+					ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(
+							updatedManualVerificationDTO, env.getProperty(DECISION_SERVICE_ID),
+							env.getProperty(MVS_APPLICATION_VERSION), env.getProperty(DATETIME_PATTERN)),
+					APPLICATION_JSON);
+		}
+
 	}
 
 	public void processPacketInfo(RoutingContext ctx) {
-			JsonObject obj = ctx.getBodyAsJson();
-			ManualAppDemographicRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppDemographicRequestDTO.class );
-			manualVerificationRequestValidator.validate(obj,env.getProperty(PACKETINFO_SERVICE_ID));
-			PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(pojo.getRequest().getRegId());
-			if (packetInfo != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(packetInfo,env.getProperty(PACKETINFO_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
-			}
-		
+		JsonObject obj = ctx.getBodyAsJson();
+		ManualAppDemographicRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
+				ManualAppDemographicRequestDTO.class);
+		manualVerificationRequestValidator.validate(obj, env.getProperty(PACKETINFO_SERVICE_ID));
+		PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(pojo.getRequest().getRegId());
+		if (packetInfo != null) {
+			this.setResponse(ctx,
+					ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(packetInfo,
+							env.getProperty(PACKETINFO_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),
+							env.getProperty(DATETIME_PATTERN)),
+					APPLICATION_JSON);
+		}
+
 	}
 
-	
 	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.MANUAL_VERIFICATION_BUS, messageDTO);
 	}
 
-	
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		return null;

@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 public class PersonNameMap {
 
 	private Map<String, String> nameMap;
-	
+
 }
