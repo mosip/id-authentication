@@ -72,6 +72,16 @@ public class DecryptorTest {
 		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
 		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData), isA(byte[].class));
 	}
+	
+	@Test
+	public void testAESSymmetricSaltDecrypt() throws java.security.NoSuchAlgorithmException {
+		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
+		SecureRandom random = new SecureRandom();
+		byte[] keyBytes = new byte[16];
+		random.nextBytes(keyBytes);
+		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data,keyBytes);
+		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData,keyBytes), isA(byte[].class));
+	}
 
 	@Test(expected = InvalidKeyException.class)
 	public void testAESSymmetricDecryptInvalidKey() throws java.security.NoSuchAlgorithmException {
