@@ -4,6 +4,7 @@
 package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -16,6 +17,7 @@ import io.mosip.kernel.core.util.constant.HMACUtilConstants;
  * package
  * 
  * @author Omsaieswar Mulaklauri
+ * @author Urvil Joshi
  * 
  * @since 1.0.0
  */
@@ -97,6 +99,20 @@ public final class HMACUtils {
 			throw new NoSuchAlgorithmException(HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), exception.getCause());
 		}
+	}
+	
+	public static byte[] genarateRandomIV() {
+		SecureRandom random= new SecureRandom();
+		byte[] randomBytes= new byte[16];
+		random.nextBytes(randomBytes);
+		return randomBytes;
+	}
+	
+	public static byte[] genarateRandomIV(int bytes) {
+		SecureRandom random= new SecureRandom();
+		byte[] randomBytes= new byte[bytes];
+		random.nextBytes(randomBytes);
+		return randomBytes;
 	}
 
 	/*
