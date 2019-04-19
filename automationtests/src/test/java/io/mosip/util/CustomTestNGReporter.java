@@ -515,7 +515,7 @@ public class CustomTestNGReporter implements IReporter {
 	private String encodeDefaultTestngReportFile() throws IOException
 	{
 		//String content=FileUtils.readFileToString(new File("./test-output/emailable-report.html").getAbsoluteFile());
-		String content=FileUtils.readFileToString(new File("./test-output/emailable-report.html").getAbsoluteFile());
+		String content=FileUtils.readFileToString(new File("./target/surefire-reports/emailable-report.html").getAbsoluteFile());
 		String base64encodedString = Base64.getEncoder().encodeToString(
 				content.getBytes("utf-8"));
 		return base64encodedString;
