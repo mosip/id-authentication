@@ -74,7 +74,7 @@ stage ('---------- build ---------------') {
 			print file.exists()
 			if(file.exists()){
 			// installing node modules and building the angular project
-			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --prod --base-href . --output-path=dist && popd --outputHashing=all"
+			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --prod --base-href . --output-path=dist && popd"
 			}
 		}
 	}
