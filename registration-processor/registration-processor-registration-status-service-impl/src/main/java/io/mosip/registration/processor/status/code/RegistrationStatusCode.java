@@ -12,6 +12,8 @@ public enum RegistrationStatusCode {
 	// RegistrationStatusMapUtil also.
 	/** Potential Match found in data base. */
 
+	PACKET_RECEIVED,
+	
 	DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
 
 	/** The packet uploaded to LANDING ZONE. */
