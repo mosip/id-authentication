@@ -1,4 +1,4 @@
-package io.mosip.kernel.uingenerator.healthcheck;
+package io.mosip.kernel.uingenerator.config;
 
 import static io.vertx.ext.healthchecks.impl.StatusHelper.isUp;
 
@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.uingenerator.constant.UINHealthConstants;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
-import io.mosip.kernel.uingenerator.healthcheck.model.BaseHealthCheckModel;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -37,7 +36,8 @@ import io.vertx.ext.healthchecks.impl.HealthChecksImpl;
 import io.vertx.ext.web.RoutingContext;
 
 /**
- * Health check Handler for uingenerator which check database health,disk space, verticle health
+ * Health check Handler for uingenerator which check database health,disk space,
+ * verticle health
  * 
  * @author Urvil Joshi
  * 
@@ -57,7 +57,6 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	private static final int THRESHOLD = 10485760;
 
 	private static final String DEFAULT_QUERY = "SELECT 1";
-	
 
 	/**
 	 * The field for Logger
@@ -81,12 +80,11 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		healthChecks.register(name, procedure);
 		return this;
 	}
-	
 
 	@Override
 	public HealthCheckHandler register(String name, long timeout, Handler<Future<Status>> procedure) {
-		 healthChecks.register(name, timeout, procedure);
-		    return this;
+		healthChecks.register(name, timeout, procedure);
+		return this;
 	}
 
 	public void databaseHealthChecker(Future<Status> future) {
@@ -99,19 +97,19 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 			future.complete(Status.KO(result));
 		}
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
-			try(Statement statement = conn.createStatement()){
-			
+			try (Statement statement = conn.createStatement()) {
 
-			try(ResultSet rs = statement.executeQuery(DEFAULT_QUERY)){
+				try (ResultSet rs = statement.executeQuery(DEFAULT_QUERY)) {
 
-			if (rs.next()) {
-				UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
-				final JsonObject result = resultBuilder.add(UINHealthConstants.DATABASE, conn.getMetaData().getDatabaseProductName())
-						.add(UINHealthConstants.HELLO, JdbcUtils.getResultSetValue(rs, 1)).build();
-				future.complete(Status.OK(result));
+					if (rs.next()) {
+						UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
+						final JsonObject result = resultBuilder
+								.add(UINHealthConstants.DATABASE, conn.getMetaData().getDatabaseProductName())
+								.add(UINHealthConstants.HELLO, JdbcUtils.getResultSetValue(rs, 1)).build();
+						future.complete(Status.OK(result));
 
-			}
-			}
+					}
+				}
 			}
 		} catch (SQLException exception) {
 			UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
@@ -125,14 +123,13 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		long diskFreeInBytes = this.currentWorkingDirPath.getUsableSpace();
 		UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 		if (diskFreeInBytes >= THRESHOLD) {
-			final JsonObject result = resultBuilder.add(UINHealthConstants.TOTAL, this.currentWorkingDirPath.getTotalSpace())
+			final JsonObject result = resultBuilder
+					.add(UINHealthConstants.TOTAL, this.currentWorkingDirPath.getTotalSpace())
 					.add(UINHealthConstants.FREE, diskFreeInBytes).add(UINHealthConstants.THRESHOLD, THRESHOLD).build();
 			future.complete(Status.OK(result));
 		} else {
 			final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR,
-					String.format(UINHealthConstants.THRESHOLD_ERROR,
-							diskFreeInBytes, THRESHOLD))
-					.build();
+					String.format(UINHealthConstants.THRESHOLD_ERROR, diskFreeInBytes, THRESHOLD)).build();
 			future.complete(Status.KO(result));
 		}
 
@@ -141,14 +138,15 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	public void verticleHealthHandler(Future<Status> future, Vertx vertx) {
 
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UINHealthConstants.PING, response -> {
-			
-			
+
 			UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 			if (response.succeeded()) {
-				final JsonObject result = resultBuilder.add(UINHealthConstants.RESPONSE, response.result().body()).build();
+				final JsonObject result = resultBuilder.add(UINHealthConstants.RESPONSE, response.result().body())
+						.build();
 				future.complete(Status.OK(result));
 			} else {
-				final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, UINHealthConstants.NOT_ACTIVE).build();
+				final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, UINHealthConstants.NOT_ACTIVE)
+						.build();
 				future.complete(Status.KO(result));
 			}
 		});
@@ -223,14 +221,14 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		json.put(UINHealthConstants.DETAILS, new JsonObject());
 
 		JsonArray checks = json.getJsonArray(UINHealthConstants.CHECKS);
-		
+
 		if (status == 200 && checks.isEmpty()) {
 			// Special case, no procedure installed.
 			response.setStatusCode(204).end();
 			return;
 		}
-		if(checks!=null && !checks.isEmpty()) {
-		createResponse(json, checks);
+		if (checks != null && !checks.isEmpty()) {
+			createResponse(json, checks);
 		}
 		response.setStatusCode(status).end(encode(json));
 	}
@@ -244,13 +242,13 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 			if (jsonobject.containsKey(UINHealthConstants.DATA)) {
 				healthCheckModel.setDetails(jsonobject.getJsonObject(UINHealthConstants.DATA).getMap());
 			}
-				try {
-					json.getJsonObject(UINHealthConstants.DETAILS).put(id,
-							new JsonObject(objectMapper.writeValueAsString(healthCheckModel)));
-				} catch (JsonProcessingException e) {
-					LOGGER.error(e.getMessage());
-				}
-			
+			try {
+				json.getJsonObject(UINHealthConstants.DETAILS).put(id,
+						new JsonObject(objectMapper.writeValueAsString(healthCheckModel)));
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e.getMessage());
+			}
+
 		}
 	}
 
@@ -304,6 +302,5 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		}
 
 	}
-
 
 }

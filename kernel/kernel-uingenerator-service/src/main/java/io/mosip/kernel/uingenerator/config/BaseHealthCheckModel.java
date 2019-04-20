@@ -1,4 +1,4 @@
-package io.mosip.kernel.uingenerator.healthcheck.model;
+package io.mosip.kernel.uingenerator.config;
 
 import java.util.Map;
 
