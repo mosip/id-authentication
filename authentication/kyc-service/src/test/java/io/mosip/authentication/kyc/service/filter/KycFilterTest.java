@@ -18,7 +18,6 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,10 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.kyc.service.filter.KycAuthFilter;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

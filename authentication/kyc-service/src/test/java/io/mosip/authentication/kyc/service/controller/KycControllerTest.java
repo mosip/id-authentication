@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,21 +30,16 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
@@ -53,8 +47,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
-import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.kyc.service.controller.KycAuthController;
+import io.mosip.authentication.kyc.service.facade.KycFacade;
 import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 
@@ -62,7 +55,6 @@ import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
  * @author M1047697
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, })
@@ -81,46 +73,31 @@ public class KycControllerTest {
 	private AuditRequestFactory auditFactory;
 
 	@Mock
-	private AuthFacadeImpl authFacade;
-
-	@Mock
-	private IdService<AutnTxn> idAuthService;
+	private KycFacade kycFacade;
 
 	@InjectMocks
-	private KycAuthController kycauthController;
-
-	@InjectMocks
-	private IdInfoFetcherImpl idInfoFetcherImpl;
+	private KycAuthController kycAuthController;
 
 	@Mock
 	WebDataBinder binder;
 
 	@InjectMocks
-	KycServiceImpl KycService;
-
-	@InjectMocks
 	private KycAuthRequestValidator KycAuthRequestValidator;
 
-	@InjectMocks
-	private AuthRequestValidator authRequestValidator;
-
-	@InjectMocks
-	private AuditHelper auditHelper;
-
+	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
+
+	/** The Kyc Service */
+	@Mock
+	private KycServiceImpl kycService;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.invokeMethod(kycauthController, "initKycBinder", binder);
-		ReflectionTestUtils.setField(kycauthController, "authFacade", authFacade);
-		ReflectionTestUtils.setField(KycService, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(KycService, "env", env);
-		ReflectionTestUtils.setField(KycService, "auditHelper", auditHelper);
-		ReflectionTestUtils.setField(authFacade, "env", env);
-		ReflectionTestUtils.setField(auditHelper, "auditFactory", auditFactory);
-		ReflectionTestUtils.setField(auditHelper, "restFactory", restFactory);
+		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
+		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -129,10 +106,8 @@ public class KycControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenThrow(new IdAuthenticationBusinessException());
-		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenThrow(new IdAuthenticationBusinessException());
-		kycauthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
+		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789");
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
 	}
 
 	@Test
@@ -163,7 +138,6 @@ public class KycControllerTest {
 		idDTO.setName(idInfoList);
 		RequestDTO request = new RequestDTO();
 		kycAuthReqDTO.setIndividualId("5134256294");
-		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
 		request.setOtp("456789");
 		request.setDemographics(idDTO);
 		kycAuthReqDTO.setRequest(request);
@@ -199,12 +173,14 @@ public class KycControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
-		Mockito.when(KycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
+		Mockito.when(kycService.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycAuthResponseDTO);
-		kycauthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
-		assertFalse(errors.hasErrors());
+//		Mockito.when(kycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
+//				.thenReturn(kycAuthResponseDTO);
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
+		assertFalse(error.hasErrors());
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -270,11 +246,13 @@ public class KycControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
-		Mockito.when(KycService.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
+		Mockito.when(kycService.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		kycauthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");
+//		Mockito.when(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
+//				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+		kycAuthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");
 	}
 
 }
