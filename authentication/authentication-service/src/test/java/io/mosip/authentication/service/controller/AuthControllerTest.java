@@ -1,16 +1,6 @@
 package io.mosip.authentication.service.controller;
 
-import static org.junit.Assert.assertFalse;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,15 +29,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.indauth.dto.ResponseDTO;
-import io.mosip.authentication.service.controller.AuthController;
 
 /**
  * This code tests the AuthController
@@ -56,8 +38,6 @@ import io.mosip.authentication.service.controller.AuthController;
  * 
  * @author Prem Kumar
  */
-
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -90,13 +70,11 @@ public class AuthControllerTest {
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
 
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
-		ReflectionTestUtils.invokeMethod(authController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authFacade);
 
 //		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
@@ -138,7 +116,7 @@ public class AuthControllerTest {
 
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/*@Test(expected = IdAuthenticationAppException.class)
 	public void showProcessKycValidator()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
@@ -288,5 +266,5 @@ public class AuthControllerTest {
 //				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 //		authController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");
 	}
-
+*/
 }

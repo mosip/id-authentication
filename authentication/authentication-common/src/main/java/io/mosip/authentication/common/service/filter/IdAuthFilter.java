@@ -356,9 +356,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 				}
 				if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-									BIO_TYPE));
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									bioType));
 				}
 				String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
 				throw new IdAuthenticationAppException(

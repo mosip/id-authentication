@@ -18,15 +18,15 @@
 	<description>Parent project of MOSIP ID Authentication</description>
 
 	<modules>
+		<module>authentication-common</module>
 		<module>authentication-core</module>
 		<module>authentication-service</module>
-		<module>authentication-demo</module>
-		<module>authentication-common</module>
+		<module>partnerdemo-services</module>
 		<module>internal-authentication-service</module>
-		<module>kyc-authentication-service</module>
-		<module>otp-authenticaiton-service</module>
-		<module>vid-authentication-service</module>
-		<module>static-pin-authentication-service</module>
+		<module>kyc-service</module>
+		<module>otp-service</module>
+		<module>vid-service</module>
+		<module>staticpin-service</module>
 	</modules>
 
 	<properties>
@@ -71,7 +71,7 @@
 		<sourceafis.version>3.4.0</sourceafis.version>
 
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/spin/filter/**,**io/mosip/authentication/common/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/spin/service/StaticPinApplication.java</sonar.exclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java</sonar.exclusions>
 	</properties>
 
 	<dependencies>
@@ -163,37 +163,14 @@
 		</plugins>
 	</build>
 
-	<!--<profiles>
-		<profile>
-			<id>DEV</id>
-			<properties>
-				 <sonar.host.url>
-				 	http://13.76.43.109:9000
-				 </sonar.host.url>
-				 <sonar.login>
-				 	d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624
-				 </sonar.login>
-				 <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-		<profile>
-			<id>LOCAL</id>
-			<properties>
-				<sonar.host.url>
-					http://104.215.158.154:9000
-				</sonar.host.url>
-				 <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-                 <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-	</profiles>-->
+	<!--<profiles> <profile> <id>DEV</id> <properties> <sonar.host.url> http://13.76.43.109:9000 
+		</sonar.host.url> <sonar.login> d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624 
+		</sonar.login> <sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion> 
+		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
+		</properties> </profile> <profile> <id>LOCAL</id> <properties> <sonar.host.url> 
+		http://104.215.158.154:9000 </sonar.host.url> <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login> 
+		<sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion> 
+		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
+		</properties> </profile> </profiles> -->
 
 </project>
