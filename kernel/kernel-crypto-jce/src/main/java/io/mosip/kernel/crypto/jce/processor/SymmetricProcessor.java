@@ -79,7 +79,7 @@ public class SymmetricProcessor {
 			randomIV = generateIV(cipher.getBlockSize());
 			cipher.init(mode, key, new IvParameterSpec(randomIV), random);
 			}else {
-				cipher.init(mode, key, new IvParameterSpec(randomIV),new SecureRandom());
+				cipher.init(mode, key, new IvParameterSpec(randomIV),generateSecureRandom());
 			}
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
@@ -140,7 +140,7 @@ public class SymmetricProcessor {
 			}
 			else {
 				cipher.init(mode, key,
-						new IvParameterSpec(randomIV),new SecureRandom());
+						new IvParameterSpec(randomIV),generateSecureRandom());
 			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
@@ -165,9 +165,13 @@ public class SymmetricProcessor {
 	 * @return generated IV
 	 */
 	private static byte[] generateIV(int blockSize) {
-		random = new SecureRandom();
+		random = generateSecureRandom();
 		byte[] byteIV = new byte[blockSize];
 		random.nextBytes(byteIV);
 		return byteIV;
+	}
+
+	private static SecureRandom generateSecureRandom() {
+		return new SecureRandom();
 	}
 }
