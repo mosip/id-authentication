@@ -97,9 +97,9 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 			future.complete(Status.KO(result));
 		}
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
-			try (Statement statement = conn.createStatement()) {
+			try (final Statement statement = conn.createStatement()) {
 
-				try (ResultSet rs = statement.executeQuery(DEFAULT_QUERY)) {
+				try (final ResultSet rs = statement.executeQuery(DEFAULT_QUERY)) {
 
 					if (rs.next()) {
 						UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
@@ -112,7 +112,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				}
 			}
 		} catch (SQLException exception) {
-			UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
+			final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 			final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, exception.getMessage()).build();
 			future.complete(Status.KO(result));
 		}
@@ -120,8 +120,8 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 	public void dispSpaceHealthChecker(Future<Status> future) {
 
-		long diskFreeInBytes = this.currentWorkingDirPath.getUsableSpace();
-		UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
+		final long diskFreeInBytes = this.currentWorkingDirPath.getUsableSpace();
+		final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 		if (diskFreeInBytes >= THRESHOLD) {
 			final JsonObject result = resultBuilder
 					.add(UINHealthConstants.TOTAL, this.currentWorkingDirPath.getTotalSpace())
@@ -139,15 +139,13 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UINHealthConstants.PING, response -> {
 
-			UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
+			final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 			if (response.succeeded()) {
 				final JsonObject result = resultBuilder.add(UINHealthConstants.RESPONSE, response.result().body())
 						.build();
 				future.complete(Status.OK(result));
 			} else {
-				final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, UINHealthConstants.NOT_ACTIVE)
-						.build();
-				future.complete(Status.KO(result));
+				future.complete(Status.KO());
 			}
 		});
 	}
@@ -239,15 +237,20 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 			String id = jsonobject.getString(UINHealthConstants.ID);
 			BaseHealthCheckModel healthCheckModel = new BaseHealthCheckModel();
 			healthCheckModel.setStatus(jsonobject.getString(UINHealthConstants.STATUS));
-			if (jsonobject.containsKey(UINHealthConstants.DATA)) {
-				healthCheckModel.setDetails(jsonobject.getJsonObject(UINHealthConstants.DATA).getMap());
-			}
+			JsonObject result = null;
 			try {
-				json.getJsonObject(UINHealthConstants.DETAILS).put(id,
-						new JsonObject(objectMapper.writeValueAsString(healthCheckModel)));
+				if (jsonobject.containsKey(UINHealthConstants.DATA)) {
+					healthCheckModel.setDetails(jsonobject.getJsonObject(UINHealthConstants.DATA).getMap());
+					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
+					result.remove(UINHealthConstants.DETAILS);
+				} else {
+					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
+				}
 			} catch (JsonProcessingException e) {
 				LOGGER.error(e.getMessage());
 			}
+
+			json.getJsonObject(UINHealthConstants.DETAILS).put(id, result);
 
 		}
 	}
@@ -278,7 +281,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	}
 
 	private String encode(JsonObject json) {
-		String outcome = json.getString(UINHealthConstants.OUTCOME);
+		final String outcome = json.getString(UINHealthConstants.OUTCOME);
 		json.remove(UINHealthConstants.OUTCOME);
 		json.put(UINHealthConstants.STATUS, outcome);
 		return json.encode();
