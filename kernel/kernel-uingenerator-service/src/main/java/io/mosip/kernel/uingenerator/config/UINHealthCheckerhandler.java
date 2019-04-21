@@ -242,9 +242,10 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				if (jsonobject.containsKey(UINHealthConstants.DATA)) {
 					healthCheckModel.setDetails(jsonobject.getJsonObject(UINHealthConstants.DATA).getMap());
 					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
-					result.remove(UINHealthConstants.DETAILS);
+					
 				} else {
 					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
+					result.remove(UINHealthConstants.DETAILS);
 				}
 			} catch (JsonProcessingException e) {
 				LOGGER.error(e.getMessage());
