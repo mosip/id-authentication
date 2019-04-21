@@ -58,6 +58,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 	private static final String DEFAULT_QUERY = "SELECT 1";
 
+	private UINHealthCheckerhandler.JSONResultBuilder resultBuilder;
 	/**
 	 * The field for Logger
 	 */
@@ -73,6 +74,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		this.username = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_USER);
 		this.password = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_PASS);
 		this.currentWorkingDirPath = new File(System.getProperty(UinGeneratorConstant.CURRENT_WORKING_DIRECTORY));
+		this.resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 	}
 
 	@Override
@@ -92,8 +94,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		try {
 			Class.forName(driver);
 		} catch (ClassNotFoundException exception) {
-			UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
-			final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, exception.getMessage()).build();
+			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage()).build();
 			future.complete(Status.KO(result));
 		}
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
@@ -102,8 +103,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				try (final ResultSet rs = statement.executeQuery(DEFAULT_QUERY)) {
 
 					if (rs.next()) {
-						UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
-						final JsonObject result = resultBuilder
+						final JsonObject result = resultBuilder.create()
 								.add(UINHealthConstants.DATABASE, conn.getMetaData().getDatabaseProductName())
 								.add(UINHealthConstants.HELLO, JdbcUtils.getResultSetValue(rs, 1)).build();
 						future.complete(Status.OK(result));
@@ -112,8 +112,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				}
 			}
 		} catch (SQLException exception) {
-			final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
-			final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR, exception.getMessage()).build();
+			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage()).build();
 			future.complete(Status.KO(result));
 		}
 	}
@@ -121,14 +120,13 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	public void dispSpaceHealthChecker(Future<Status> future) {
 
 		final long diskFreeInBytes = this.currentWorkingDirPath.getUsableSpace();
-		final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 		if (diskFreeInBytes >= THRESHOLD) {
-			final JsonObject result = resultBuilder
+			final JsonObject result = resultBuilder.create()
 					.add(UINHealthConstants.TOTAL, this.currentWorkingDirPath.getTotalSpace())
 					.add(UINHealthConstants.FREE, diskFreeInBytes).add(UINHealthConstants.THRESHOLD, THRESHOLD).build();
 			future.complete(Status.OK(result));
 		} else {
-			final JsonObject result = resultBuilder.add(UINHealthConstants.ERROR,
+			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR,
 					String.format(UINHealthConstants.THRESHOLD_ERROR, diskFreeInBytes, THRESHOLD)).build();
 			future.complete(Status.KO(result));
 		}
@@ -139,9 +137,8 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UINHealthConstants.PING, response -> {
 
-			final UINHealthCheckerhandler.JSONResultBuilder resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
 			if (response.succeeded()) {
-				final JsonObject result = resultBuilder.add(UINHealthConstants.RESPONSE, response.result().body())
+				final JsonObject result = resultBuilder.create().add(UINHealthConstants.RESPONSE, response.result().body())
 						.build();
 				future.complete(Status.OK(result));
 			} else {
@@ -291,9 +288,10 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	class JSONResultBuilder {
 
 		private JsonObject jsonObject;
-
-		public JSONResultBuilder() {
+		
+		public JSONResultBuilder create() {
 			jsonObject = new JsonObject();
+			return this;
 		}
 
 		public JSONResultBuilder add(String key, Object object) {
