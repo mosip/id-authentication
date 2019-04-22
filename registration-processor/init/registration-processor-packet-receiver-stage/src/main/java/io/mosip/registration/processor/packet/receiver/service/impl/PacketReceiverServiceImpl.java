@@ -304,7 +304,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						+ PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
 				dto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
-				dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
+				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -315,7 +315,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			description = "Virus scanner service failed ::" + registrationId;
 			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
-			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
+			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -468,7 +468,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
-				dto.setLatestTransactionTypeCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				messageDTO.setIsValid(Boolean.TRUE);
 				description = PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId;
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -491,7 +491,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		} catch (PacketDecryptionFailureException e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 			dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
-			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
+			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
 			+ e.getErrorText();
