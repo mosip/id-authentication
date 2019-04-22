@@ -1709,23 +1709,25 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
 
-			postalCode.setText(moroccoIdentity.getPostalCode() + "");
-			mobileNo.setText(moroccoIdentity.getPhone() + "");
-			emailId.setText(moroccoIdentity.getEmail() + "");
+			postalCode.setText(moroccoIdentity.getPostalCode());
+			mobileNo.setText(moroccoIdentity.getPhone());
+			emailId.setText(moroccoIdentity.getEmail());
 			if (moroccoIdentity.getAge() != null) {
 				switchedOn.set(true);
-				ageField.setText(moroccoIdentity.getAge() + "");
+				ageField.setText(moroccoIdentity.getAge() == null ? "" : String.valueOf(moroccoIdentity.getAge()));
 			} else {
 				switchedOn.set(false);
 			}
-			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber() + "");
+			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber());
+			postalCodeLocalLanguage.setText(moroccoIdentity.getPostalCode());
 			postalCodeLocalLanguage.setAccessibleHelp(moroccoIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(moroccoIdentity.getPhone());
 			emailIdLocalLanguage.setText(moroccoIdentity.getEmail());
-			cniOrPinNumberLocalLanguage.setText(moroccoIdentity.getCnieNumber() + "");
-			parentRegId.setText(moroccoIdentity.getParentOrGuardianRID() + "");
-			parentUinId.setText(moroccoIdentity.getParentOrGuardianUIN() + "");
-
+			cniOrPinNumberLocalLanguage.setText(moroccoIdentity.getCnieNumber());
+			parentRegId.setText(moroccoIdentity.getParentOrGuardianRID() == null ? ""
+					: String.valueOf(moroccoIdentity.getParentOrGuardianRID()));
+			parentUinId.setText(moroccoIdentity.getParentOrGuardianUIN() == null ? ""
+					: String.valueOf(moroccoIdentity.getParentOrGuardianUIN()));
 
 			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 
