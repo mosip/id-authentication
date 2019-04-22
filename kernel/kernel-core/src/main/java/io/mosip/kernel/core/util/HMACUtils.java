@@ -60,15 +60,15 @@ public final class HMACUtils {
 	public static byte[] updatedHash() {
 		return messageDigest.digest();
 	}
-	
+
 	/**
 	 * Return the digest as a plain text with Salt
 	 * 
 	 * @param bytes digest bytes
-	 * @param salt digest bytes
+	 * @param salt  digest bytes
 	 * @return String converted digest as plain text
 	 */
-	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes,final byte[] salt) {
+	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes, final byte[] salt) {
 		messageDigest.update(salt);
 		byte[] saltedDigest = messageDigest.digest(bytes);
 		return DatatypeConverter.printHexBinary(saltedDigest).toUpperCase();
@@ -100,17 +100,28 @@ public final class HMACUtils {
 					HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), exception.getCause());
 		}
 	}
-	
+
+	/**
+	 * Generate Random Salt (with default 16 bytes of length).
+	 * 
+	 * @return Random Salt
+	 */
 	public static byte[] genarateSalt() {
-		SecureRandom random= new SecureRandom();
-		byte[] randomBytes= new byte[16];
+		SecureRandom random = new SecureRandom();
+		byte[] randomBytes = new byte[16];
 		random.nextBytes(randomBytes);
 		return randomBytes;
 	}
-	
+
+	/**
+	 * Generate Random Salt (with given length)
+	 * 
+	 * @param bytes length of random salt
+	 * @return Random Salt of given length
+	 */
 	public static byte[] genarateSalt(int bytes) {
-		SecureRandom random= new SecureRandom();
-		byte[] randomBytes= new byte[bytes];
+		SecureRandom random = new SecureRandom();
+		byte[] randomBytes = new byte[bytes];
 		random.nextBytes(randomBytes);
 		return randomBytes;
 	}

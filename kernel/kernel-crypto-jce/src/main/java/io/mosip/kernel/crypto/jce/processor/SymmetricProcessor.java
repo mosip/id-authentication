@@ -49,12 +49,12 @@ public class SymmetricProcessor {
 	 * @param mode   if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
+	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 
 		if (mode == Cipher.ENCRYPT_MODE) {
-			return encrypt(method, key, data, mode,randomIV);
+			return encrypt(method, key, data, mode, randomIV);
 		} else {
-			return decrypt(method, key, data, mode,randomIV);
+			return decrypt(method, key, data, mode, randomIV);
 		}
 
 	}
@@ -69,17 +69,17 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
+	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
-			if(randomIV == null) {
-			randomIV = generateIV(cipher.getBlockSize());
-			cipher.init(mode, key, new IvParameterSpec(randomIV), random);
-			}else {
-				cipher.init(mode, key, new IvParameterSpec(randomIV),generateSecureRandom());
+			if (randomIV == null) {
+				randomIV = generateIV(cipher.getBlockSize());
+				cipher.init(mode, key, new IvParameterSpec(randomIV), random);
+			} else {
+				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
 			}
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
@@ -128,19 +128,17 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode,byte[] randomIV) {
+	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
-			if(randomIV == null) {
-			cipher.init(mode, key,
-					new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
-					random);
-			}
-			else {
+			if (randomIV == null) {
 				cipher.init(mode, key,
-						new IvParameterSpec(randomIV),generateSecureRandom());
+						new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
+						random);
+			} else {
+				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
 			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
@@ -171,6 +169,11 @@ public class SymmetricProcessor {
 		return byteIV;
 	}
 
+	/**
+	 * Generate a Secure Random with default random seed.
+	 * 
+	 * @return {@link SecureRandom}
+	 */
 	private static SecureRandom generateSecureRandom() {
 		return new SecureRandom();
 	}
