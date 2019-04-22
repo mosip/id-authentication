@@ -132,7 +132,7 @@ spec:
           servicePort: 80
       - path: /bio-dedupe
         backend:
-          serviceName: registration-processor-packet-bio-dedupe-service
+          serviceName: registration-processor-bio-dedupe-service
           servicePort: 9097
       - path: /abis
         backend:
@@ -154,6 +154,10 @@ spec:
         backend:
           serviceName: registration-processor-print-service
           servicePort: 9099
+      - path: /print-stage
+        backend:
+          serviceName: registration-processor-printing-stage
+          servicePort: 8099
       - path: /config
         backend:
           serviceName: kernel-config-server

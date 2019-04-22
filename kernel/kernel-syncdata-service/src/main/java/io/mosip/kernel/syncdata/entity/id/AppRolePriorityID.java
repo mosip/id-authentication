@@ -21,12 +21,9 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new app role priority ID.
  *
- * @param appId
- *            the app id
- * @param processId
- *            the process id
- * @param roleCode
- *            the role code
+ * @param appId     the app id
+ * @param processId the process id
+ * @param roleCode  the role code
  */
 @AllArgsConstructor
 /**

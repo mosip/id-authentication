@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.util.List;
 
 import lombok.Data;
+
 /**
  * 
  * @author Abhishek Kumar
@@ -10,7 +11,6 @@ import lombok.Data;
  * @since 23-10-2016
  */
 @Data
-
 
 public class RegistrationCenterHolidayDto {
 	private RegistrationCenterDto registrationCenter;

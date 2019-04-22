@@ -1,10 +1,13 @@
 {
-  "timestamp": 1549280499101,
-  "status": 200,
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:25:20.873Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-999",
-      "errorMessage": "request[0].machineId: size must be between 1 and 10"
+      "message": "request[0].machineId: size must be between 1 and 10"
     }
   ]
 }

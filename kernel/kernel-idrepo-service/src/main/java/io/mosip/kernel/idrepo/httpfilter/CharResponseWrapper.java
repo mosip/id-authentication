@@ -36,13 +36,10 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/**
 	 * Instantiates a new char response wrapper.
 	 *
-	 * @param response
-	 *            the response
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param response the response
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public CharResponseWrapper(HttpServletResponse response)
-			throws IOException {
+	public CharResponseWrapper(HttpServletResponse response) throws IOException {
 		super(response);
 		this.output = new ByteArrayOutputStream();
 	}
@@ -72,7 +69,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 
 			@Override
 			public void setWriteListener(WriteListener listener) {
-			    //override method
+				// override method
 			}
 
 			@Override

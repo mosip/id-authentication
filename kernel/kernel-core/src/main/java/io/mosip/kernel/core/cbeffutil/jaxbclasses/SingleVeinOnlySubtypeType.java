@@ -5,18 +5,20 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SingleVeinOnlySubtypeType.
+ * <p>
+ * Java class for SingleVeinOnlySubtypeType.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * 
  * <pre>
  * &lt;simpleType name="SingleVeinOnlySubtypeType"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
@@ -36,37 +38,31 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SingleVeinOnlySubtypeType {
 
-    @XmlEnumValue("LeftVein")
-    LEFT_VEIN("LeftVein"),
-    @XmlEnumValue("RightVein")
-    RIGHT_VEIN("RightVein"),
-    @XmlEnumValue("Palm")
-    PALM("Palm"),
-    @XmlEnumValue("BackOfHand")
-    BACK_OF_HAND("BackOfHand"),
-    @XmlEnumValue("Wrist")
-    WRIST("Wrist"),
-    @XmlEnumValue("Reserved1")
-    RESERVED_1("Reserved1"),
-    @XmlEnumValue("Reserved2")
-    RESERVED_2("Reserved2");
-    private final String value;
+	@XmlEnumValue("LeftVein")
+	LEFT_VEIN("LeftVein"), @XmlEnumValue("RightVein")
+	RIGHT_VEIN("RightVein"), @XmlEnumValue("Palm")
+	PALM("Palm"), @XmlEnumValue("BackOfHand")
+	BACK_OF_HAND("BackOfHand"), @XmlEnumValue("Wrist")
+	WRIST("Wrist"), @XmlEnumValue("Reserved1")
+	RESERVED_1("Reserved1"), @XmlEnumValue("Reserved2")
+	RESERVED_2("Reserved2");
+	private final String value;
 
-    SingleVeinOnlySubtypeType(String v) {
-        value = v;
-    }
+	SingleVeinOnlySubtypeType(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static SingleVeinOnlySubtypeType fromValue(String v) {
-        for (SingleVeinOnlySubtypeType c: SingleVeinOnlySubtypeType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static SingleVeinOnlySubtypeType fromValue(String v) {
+		for (SingleVeinOnlySubtypeType c : SingleVeinOnlySubtypeType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

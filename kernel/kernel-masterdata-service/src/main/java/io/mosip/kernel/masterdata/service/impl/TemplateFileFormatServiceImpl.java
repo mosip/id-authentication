@@ -40,8 +40,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	 * createTemplateFileFormat(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createTemplateFileFormat(
-		TemplateFileFormatDto templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeID createTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto) {
 		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(templateFileFormatRequestDto,
 				TemplateFileFormat.class);
 		TemplateFileFormat templateFileFormat;
@@ -69,8 +68,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 
 		try {
 			TemplateFileFormat templateFileFormat = templateFileFormatRepository
-					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-							templateFileFormatRequestDto.getCode(),
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(templateFileFormatRequestDto.getCode(),
 							templateFileFormatRequestDto.getLangCode());
 
 			if (templateFileFormat != null) {

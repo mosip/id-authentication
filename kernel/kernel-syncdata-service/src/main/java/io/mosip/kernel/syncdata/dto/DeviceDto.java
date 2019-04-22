@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceDto extends BaseDto{
+public class DeviceDto extends BaseDto {
 
 	/**
 	 * Field for device id
@@ -45,11 +45,10 @@ public class DeviceDto extends BaseDto{
 	 * Field for device ip address
 	 */
 	private String ipAddress;
-	
+
 	/**
 	 * Valdity timestamp
 	 */
 	private LocalDateTime validityDateTime;
-	
 
 }

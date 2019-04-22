@@ -12,8 +12,9 @@ import lombok.Data;
 /**
  * Response dto for Document Category Detail
  * 
- * @author Neha
+ * @author Neha Sinha
  * @author Ritesh Sinha
+ * 
  * @since 1.0.0
  *
  */
@@ -57,7 +58,7 @@ public class DocumentCategoryDto {
 	 * Is active or not.
 	 */
 	@NotNull
-	@ApiModelProperty(value = "Application isActive Status", required =  true, dataType = "java.lang.Boolean")
+	@ApiModelProperty(value = "Application isActive Status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 
 }

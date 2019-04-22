@@ -14,7 +14,6 @@ import lombok.Data;
  */
 @Data
 
-
 public class TitleResponseDto {
 
 	private List<TitleDto> titleList;

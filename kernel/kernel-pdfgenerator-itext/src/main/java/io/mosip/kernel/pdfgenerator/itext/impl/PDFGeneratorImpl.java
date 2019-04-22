@@ -49,17 +49,16 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
 @Component
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
-	//private static final String FILE_SEPERATOR = System.getProperty("file.separator");
+	// private static final String FILE_SEPERATOR =
+	// System.getProperty("file.separator");
 
 	/**
 	 * This method is used to convert Template obtained from an {@link InputStream}
 	 * to a PDF file and written to an {@link OutputStream}.
 	 *
-	 * @param is
-	 *            The {@link InputStream} with the source processed Template
+	 * @param is The {@link InputStream} with the source processed Template
 	 * @return It will return generated PDF file as {@link OutputStream}
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred
+	 * @throws IOException Signals that an I/O exception has occurred
 	 *
 	 */
 	@Override
@@ -80,13 +79,11 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	 * Converts a {@link String} containing processed template to an
 	 * {@link OutputStream} containing PDF
 	 *
-	 * @param template
-	 *            the processedTemplate in the form of a {@link String}
+	 * @param template the processedTemplate in the form of a {@link String}
 	 * 
 	 * @return It will return generated PDF file as {@link OutputStream}
 	 * 
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred
+	 * @throws IOException Signals that an I/O exception has occurred
 	 * 
 	 * 
 	 */
@@ -106,14 +103,11 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	/**
 	 * Converts processed Template stored in a {@link String} to a PDF {@link File}.
 	 * 
-	 * @param templatePath
-	 *            The {@link String} containing the source Processed Template
-	 * @param outpuFilePath
-	 *            The {@link File} containing the resulting PDF
-	 * @param outputFileName
-	 *            The {@link String} name of output file
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred
+	 * @param templatePath   The {@link String} containing the source Processed
+	 *                       Template
+	 * @param outpuFilePath  The {@link File} containing the resulting PDF
+	 * @param outputFileName The {@link String} name of output file
+	 * @throws IOException Signals that an I/O exception has occurred
 	 */
 	@Override
 	public void generate(String templatePath, String outpuFilePath, String outputFileName) throws IOException {
@@ -133,13 +127,10 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	 * This method is used to convert Template obtained from an {@link InputStream}
 	 * to a PDF file and written to an {@link OutputStream}.
 	 *
-	 * @param is
-	 *            The {@link InputStream} with the source processed Template
-	 * @param resourceLoc
-	 *            The {@link String} resourceLocation
+	 * @param is          The {@link InputStream} with the source processed Template
+	 * @param resourceLoc The {@link String} resourceLocation
 	 * @return It will return generated PDF file as {@link OutputStream}
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred
+	 * @throws IOException Signals that an I/O exception has occurred
 	 *
 	 */
 	@Override
@@ -169,8 +160,9 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return os;
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#asPDF(java.util.List)
 	 */
 	@Override
@@ -210,8 +202,11 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return imageInByte;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#mergePDF(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#mergePDF(java.util.List)
 	 */
 	@Override
 	public byte[] mergePDF(List<URL> pdfFiles) throws IOException {

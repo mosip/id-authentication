@@ -11,7 +11,7 @@ import io.mosip.kernel.auth.entities.otp.OtpUser;
  *
  */
 public interface UinService {
-	
-	MosipUserDto getDetailsFromUin(OtpUser otpUser)  throws Exception;
+
+	MosipUserDto getDetailsFromUin(OtpUser otpUser) throws Exception;
 
 }

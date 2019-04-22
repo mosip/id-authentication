@@ -189,6 +189,8 @@ public class DemodedupeProcessor {
 			isTransactionSuccessful = true;
 
 		} catch (IOException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -196,7 +198,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -204,7 +209,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (ParseException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -212,7 +220,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_REPROCESSING.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -220,7 +231,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (IllegalAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_ILLEGAL_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.ILLEGAL_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -228,7 +242,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (IllegalArgumentException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_ILLEGAL_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.ILLEGAL_ARGUMENT_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -236,7 +253,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (InvocationTargetException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_INVOCATION_TARGET_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.INVOCATION_TARGET_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -244,7 +264,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (IntrospectionException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_INTROSPECTION_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.INTROSPECTION_EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -252,7 +275,10 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -260,6 +286,7 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
 		} finally {
 
 			if (registrationStatusDto.getLatestTransactionStatusCode() == "")

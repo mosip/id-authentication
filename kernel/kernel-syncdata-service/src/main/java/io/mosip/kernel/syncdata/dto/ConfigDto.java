@@ -1,7 +1,5 @@
 package io.mosip.kernel.syncdata.dto;
 
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -13,8 +11,8 @@ public class ConfigDto {
 	private JSONObject globalConfig;
 	@JsonIgnore
 	private JSONObject registrationCenterConfiguration;
-	
+
 	private String lastSyncTime;
-	
+
 	private JSONObject configDetail;
 }

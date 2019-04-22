@@ -4,12 +4,7 @@
 package io.mosip.kernel.core.cbeffutil.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlSchemaType;
 
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;

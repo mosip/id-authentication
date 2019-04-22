@@ -25,7 +25,7 @@ public class BaseEntity {
 	/**
 	 * The field createdBy
 	 */
-	@Column(name = "cr_by")
+	@Column(name = "cr_by", length = 256)
 	private String createdBy;
 
 	/**
@@ -37,7 +37,7 @@ public class BaseEntity {
 	/**
 	 * The field updatedBy
 	 */
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
 	/**

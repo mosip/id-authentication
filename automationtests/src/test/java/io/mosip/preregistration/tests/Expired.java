@@ -868,7 +868,7 @@ public class Expired extends BaseTestCase {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		response = applnLib.putRequest_WithBody(cancelBookAppointment_URI, cancelAppjson);
+		response = applnLib.putRequestWithBody(cancelBookAppointment_URI, cancelAppjson);
 		return response;
 	}
 

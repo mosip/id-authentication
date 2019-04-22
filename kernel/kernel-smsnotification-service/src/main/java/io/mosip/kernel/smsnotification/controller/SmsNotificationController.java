@@ -3,6 +3,7 @@ package io.mosip.kernel.smsnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,10 +37,10 @@ public class SmsNotificationController {
 	/**
 	 * This method sends sms to the contact number provided.
 	 * 
-	 * @param smsRequestDto
-	 *            the request dto for sms-notification.
+	 * @param smsRequestDto the request dto for sms-notification.
 	 * @return the status and message as dto response.
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@PostMapping(value = "/sms/send")
 	public ResponseWrapper<SmsResponseDto> sendSmsNotification(

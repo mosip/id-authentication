@@ -47,8 +47,8 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Create a mapping of registration center,user,and machine
 	 * 
-	 * @param registrationCenterUserMachineMappingDto
-	 *            {@link RegistrationCenterUserMachineMappingDto} request
+	 * @param registrationCenterUserMachineMappingDto {@link RegistrationCenterUserMachineMappingDto}
+	 *                                                request
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
@@ -66,12 +66,9 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Delete a mapping of registration center,user,and machine
 	 * 
-	 * @param regCenterId
-	 *            input from user
-	 * @param machineId
-	 *            input from user
-	 * @param userId
-	 *            input from user
+	 * @param regCenterId input from user
+	 * @param machineId   input from user
+	 * @param userId      input from user
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
@@ -91,19 +88,18 @@ public class RegistrationCenterUserMachineController {
 	/**
 	 * Create or update a mapping of registration center,user,and machine
 	 * 
-	 * @param regCenterMachineUserReqDto
-	 *            {@link RegCenterMachineUserReqDto} request
+	 * @param regCenterMachineUserReqDto {@link RegCenterMachineUserReqDto} request
 	 * @return {@link RegCenterMachineUserResponseDto} as response
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine")
 	@PutMapping("/registrationmachineusermappings")
 	public ResponseWrapper<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
-			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
-
+			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto>> regCenterMachineUserReqDto) {
+		
 		ResponseWrapper<RegCenterMachineUserResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterMachineUserService
-				.createOrUpdateRegistrationCentersMachineUserMapping(regCenterMachineUserReqDto));
+				.createOrUpdateRegistrationCentersMachineUserMapping(regCenterMachineUserReqDto.getRequest()));
 		return responseWrapper;
 	}
 

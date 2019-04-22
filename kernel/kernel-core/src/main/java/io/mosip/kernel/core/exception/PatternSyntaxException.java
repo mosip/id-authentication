@@ -13,22 +13,17 @@ public class PatternSyntaxException extends BaseUncheckedException {
 	private static final long serialVersionUID = 123456202110630628L;
 
 	/**
-	 * @param errorCode
-	 *            The error code defined for the exception
-	 * @param errorMessage
-	 *            The error message defined for the exception
+	 * @param errorCode    The error code defined for the exception
+	 * @param errorMessage The error message defined for the exception
 	 */
 	public PatternSyntaxException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
 	/**
-	 * @param errorCode
-	 *            The error code defined for the exception
-	 * @param errorMessage
-	 *            The error message defined for the exception
-	 * @param rootCause
-	 *            Traceback to the method throwing the error
+	 * @param errorCode    The error code defined for the exception
+	 * @param errorMessage The error message defined for the exception
+	 * @param rootCause    Traceback to the method throwing the error
 	 */
 	public PatternSyntaxException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

@@ -17,8 +17,7 @@ public enum PridPropertyConstant {
 	/**
 	 * Constructor for PridPropertyConstant.
 	 * 
-	 * @param property
-	 *            the property.
+	 * @param property the property.
 	 */
 	PridPropertyConstant(String property) {
 		this.property = property;

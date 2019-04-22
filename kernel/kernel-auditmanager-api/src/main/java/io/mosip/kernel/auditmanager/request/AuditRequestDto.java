@@ -12,8 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Request class with required fields to be captured
- * and recorded
+ * The Audit Request class with required fields to be captured and recorded
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -57,7 +56,7 @@ public class AuditRequestDto {
 	private String applicationName;
 
 	@NotNull
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 256)
 	private String sessionUserId;
 
 	@Size(min = 1, max = 128)
@@ -72,7 +71,7 @@ public class AuditRequestDto {
 	private String idType;
 
 	@NotNull
-	@Size(min = 1, max = 255)
+	@Size(min = 1, max = 256)
 	private String createdBy;
 
 	@Size(max = 128)

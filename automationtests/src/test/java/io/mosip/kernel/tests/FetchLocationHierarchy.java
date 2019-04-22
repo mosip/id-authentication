@@ -52,9 +52,9 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchLocationHierarchy";
 	private static final String requestJsonName = "fetchLocationHierarchyRequest";
 	private static final String outputJsonName = "fetchLocationHierarchyOutput";
-	private static final String service_URI_withlangCode = "/masterdata/v1.0/locations/{langcode}";
-	private static final String service_URI_locationcode = "/masterdata/v1.0/locations/{locationcode}/{langcode}";
-	private static final String service_URI_hierarchyname = "/masterdata/v1.0/locations/locationhierarchy/{hierarchyname}";
+	private static final String service_URI_withlangCode = "/v1/masterdata/locations/{langcode}";
+	private static final String service_URI_locationcode = "/v1/masterdata/locations/{locationcode}/{langcode}";
+	private static final String service_URI_hierarchyname = "/v1/masterdata/locations/locationhierarchy/{hierarchyname}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -154,6 +154,7 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

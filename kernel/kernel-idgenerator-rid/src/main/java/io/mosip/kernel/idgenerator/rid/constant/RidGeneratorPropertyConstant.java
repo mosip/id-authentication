@@ -18,8 +18,7 @@ public enum RidGeneratorPropertyConstant {
 	/**
 	 * The constructor to set rid property.
 	 * 
-	 * @param property
-	 *            the property to set.
+	 * @param property the property to set.
 	 */
 	private RidGeneratorPropertyConstant(String property) {
 		this.property = property;
