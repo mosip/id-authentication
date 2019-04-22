@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
@@ -21,6 +20,13 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.0.2.RELEASE</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -137,11 +143,8 @@
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
 
-	<!-- 	<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>testing</artifactId>
-			<version>demoApp</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>testing</artifactId> 
+			<version>demoApp</version> </dependency> -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -205,9 +208,9 @@
 				<inherited>true</inherited>
 				<configuration>
 					<suiteXmlFiles>
-					<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
 
-			</suiteXmlFiles>
+					</suiteXmlFiles>
 				</configuration>
 
 			</plugin>

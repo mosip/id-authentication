@@ -1,92 +1,56 @@
 package io.mosip.preregistration.tests;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.testng.Assert;
-import org.testng.ITest;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Map.Entry;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
 import org.testng.annotations.Test;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ibm.icu.impl.USerializedSet;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
-import io.mosip.util.PreRegistrationLibrary;
-import io.restassured.response.Response;
-
-public class Sample extends BaseTestCase implements ITest {
-	Logger logger = Logger.getLogger(BatchJob.class);
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	String preID = null;
-	protected static String testCaseName = "";
-	static String folder = "preReg";
+public class Sample {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applnLib = new ApplicationLibrary();
-
-	Configuration config = Configuration.builder().jsonProvider(new JacksonJsonNodeJsonProvider())
-			.mappingProvider(new JacksonMappingProvider()).build();
-
-	@BeforeClass
-	public void readPropertiesFile() {
-		initialize();
+	HashMap<String, String>  parm =new HashMap<>();
+	static Map<String, String> configParamMap= new HashMap<>();
+	
+	@Value("${ui.config.params}")
+	private static String uiConfigParams;
+	
+	public static HashMap<String, String> config() throws IOException {
+		List<String> reqParams = new ArrayList<>();
+		
+		uiConfigParams=commonLibrary.fetch_IDRepo().get("ui.config.params");
+		
+		String[] uiParams = uiConfigParams.split(",");
+		for (int i = 0; i < uiParams.length; i++) {
+			reqParams.add(uiParams[i]);
+		}
+		RestTemplate restTemplate = new RestTemplate();
+	
+		String s=restTemplate.getForObject("http://104.211.212.28:51000/pre-registration/qa/0.10.0/pre-registration-qa.properties", String.class);
+		final Properties p = new Properties();
+		p.load(new StringReader(s));
+		for (Entry<Object, Object> e : p.entrySet()) {
+			if (reqParams.contains(String.valueOf(e.getKey()))) {
+			System.out.println(String.valueOf(e.getKey()) +" ---"+e.getValue().toString());
+				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
+				
+			}
+			
+		}
+		return (HashMap<String, String>) configParamMap;
 	}
-
-	@Test(groups = { "IntegrationScenarios" })
-	public void fetchDiscardedApplication() throws FileNotFoundException, IOException, ParseException {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response documentResponse = lib.documentUploadParm(createResponse,preID);
-		Response avilibityResponse = lib.FetchCentre();
-		String regcenter = avilibityResponse.jsonPath().get("response.regCenterId").toString();
-		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
-		lib.expiredStatus();
-		lib.getPreRegistrationStatus(preID);
-		List<String> preI=new ArrayList<String> ();
-		preI.add(preID);
-		lib.reverseDataSync(preI);
-		lib.consumedStatus();
-		lib.getPreRegistrationStatus(preID);
-	}
-
-
-	@BeforeMethod
-	public void getAuthToken() {
-		authToken = lib.getToken();
-	}
-
-	@Override
-	public String getTestName() {
-		return this.testCaseName;
-
-	}
-
-	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		logger.info("method name:" + result.getMethod().getMethodName());
-		// lib.logOut();
-
-	}
-
+	public static void main(String[] args) throws IOException
+	{
+		HashMap<String, String> a = config();
+		System.out.println("==========="+a);
+		
+	}	
 }
