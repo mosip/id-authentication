@@ -258,8 +258,7 @@ public class Validations extends BaseController {
 								messageBundle.getString(RegistrationConstants.BLACKLISTED_2)));
 			} else {
 				generateInvalidValueAlert(parentPane, id,
-						messageBundle.getString(
-								label + RegistrationConstants.UNDER_SCORE + RegistrationConstants.REG_DDC_004),
+						labelBundle.getString(label)+" "+messageBundle.getString(RegistrationConstants.REG_DDC_004),
 						showAlert);
 				if (isPreviousValid &&  !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
@@ -355,28 +354,29 @@ public class Validations extends BaseController {
 	 *            RID
 	 * @return <code>true</code> if UIN or RID is valid, else <code>false</code>
 	 */
-	public boolean validateUinOrRid(TextField field, boolean isChild, UinValidator<String> uinValidator,
+	public boolean validateUinOrRid(TextField uinId, TextField regId , boolean isChild, UinValidator<String> uinValidator,
 			RidValidator<String> ridValidator) {
 		boolean isIdValid = false;
 
 		if (isChild) {
-			if (field.getText().length() <= Integer
-					.parseInt(getValueFromApplicationContext(RegistrationConstants.UIN_LENGTH))) {
+			if (!uinId.isDisabled()) {
 				try {
-					isIdValid = uinValidator.validateId(field.getText());
+					isIdValid = uinValidator.validateId(uinId.getText());
 				} catch (InvalidIDException invalidUinException) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
 					LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
+					uinId.requestFocus();
 				}
 			} else {
-				if (getRegistrationDTOFromSession().getSelectionListDTO() == null) {
+				if (getRegistrationDTOFromSession().getSelectionListDTO() == null  && !regId.isDisabled()) {
 					try {
-						isIdValid = ridValidator.validateId(field.getText());
+						isIdValid = ridValidator.validateId(regId.getText());
 					} catch (InvalidIDException invalidRidException) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.RID_INVALID);
 						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+						regId.requestFocus();
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
