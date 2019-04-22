@@ -1119,4 +1119,15 @@ public class BaseController extends BaseService {
 	protected String getValueFromApplicationContext(String key) {
 		return (String) applicationContext.getApplicationMap().get(key);
 	}
+	
+	/**
+	 * Gets the quality score.
+	 *
+	 * @param qulaityScore the qulaity score
+	 * @return the quality score
+	 */
+	protected String getQualityScore(Double qulaityScore) {
+		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+
 }

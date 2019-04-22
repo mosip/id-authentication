@@ -57,6 +57,10 @@ public class PageFlow {
 		registrationMap.put(RegistrationConstants.BIOMETRIC_EXCEPTION, exceptionMap);
 		onboardMap.put(RegistrationConstants.BIOMETRIC_EXCEPTION, exceptionMap);
 		
+		Map<String, Boolean> guardianBioMap = new LinkedHashMap<>();
+		guardianBioMap.put(RegistrationConstants.VISIBILITY, false);
+		registrationMap.put(RegistrationConstants.GUARDIAN_BIOMETRIC, guardianBioMap);
+		
 		Map<String, Boolean> fingerPrintMap = new LinkedHashMap<>();
 		fingerPrintMap.put(RegistrationConstants.VISIBILITY, true);
 		registrationMap.put(RegistrationConstants.FINGERPRINT_CAPTURE, fingerPrintMap);
