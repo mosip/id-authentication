@@ -32,5 +32,11 @@
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel.hibernate.version}</version>
 		</dependency>
+		<!-- Postgres -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
 	</dependencies>
 </project>

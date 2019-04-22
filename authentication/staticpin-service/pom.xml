@@ -42,5 +42,11 @@
 			<artifactId>kernel-pinvalidator</artifactId>
 			<version>${kernel.version}</version>
 		</dependency>
+		<!-- Postgres -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
 	</dependencies>
 </project>
