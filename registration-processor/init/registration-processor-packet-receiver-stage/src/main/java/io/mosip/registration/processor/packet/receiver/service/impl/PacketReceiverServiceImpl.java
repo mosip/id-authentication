@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -325,20 +324,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		}
 
 	}
-
-	/**
-	 * check if file exists or not.
-	 *
-	 * @param file
-	 *            the file
-	 * @param fileOriginalName
-	 *            the file original name
-	 * @return true, if successful
-	 */
-	boolean fileExists(MultipartFile file, String fileOriginalName) {
-		return file.getOriginalFilename() != null && !file.isEmpty() && fileOriginalName != null;
-	}
-
 	/**
 	 * Gets the max file size.
 	 *

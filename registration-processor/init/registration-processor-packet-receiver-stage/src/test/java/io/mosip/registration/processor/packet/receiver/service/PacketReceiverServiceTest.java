@@ -30,6 +30,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -456,20 +457,15 @@ public class PacketReceiverServiceTest {
 
 		assertEquals(false, successResult.getIsValid());
 	}
-	@Test
-	@Ignore
+	@Test(expected=PacketReceiverAppException.class)
 	public void testIOExceptionForValidatePacket() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
 	{
 
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
-		Mockito.doThrow(new IOException()).when(registrationStatusService).getRegistrationStatus("0000");
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenThrow(new IOException());
-		//File mockedFile=Mockito.mock(File.class);
-        //Mockito.when(mockedFile.getName()).thenReturn("Abc.txt");
-       // Mockito.when(mockedFile.exists()).thenThrow(new IOException());
-        //Mockito.doThrow(new IOException()).when(mockedFile.exists());
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.toByteArray(any(InputStream.class))).thenThrow(new IOException());
         MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile,stageName);
-		assertEquals(false, successResult.getIsValid());
+		assertEquals(false, successResult.getIsValid()); 
 	}
 
 }
