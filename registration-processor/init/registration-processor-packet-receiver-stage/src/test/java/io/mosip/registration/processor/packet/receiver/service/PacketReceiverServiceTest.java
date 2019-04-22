@@ -186,7 +186,7 @@ public class PacketReceiverServiceTest {
         Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
 		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
-		//assertEquals(true, successResult.getIsValid());
+		assertEquals(true, successResult.getIsValid());
 	}
 	
 	@Test
@@ -207,7 +207,7 @@ public class PacketReceiverServiceTest {
 
 		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
-		//assertEquals(true, successResult.getIsValid());
+		assertEquals(true, successResult.getIsValid());
 	}
 	
 	@Test
@@ -229,7 +229,7 @@ public class PacketReceiverServiceTest {
 		Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenReturn(is);
 		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
-		//assertEquals(true, successResult.getIsValid());
+		assertEquals(true, successResult.getIsValid());
 	}
 
 	@SuppressWarnings("unchecked")

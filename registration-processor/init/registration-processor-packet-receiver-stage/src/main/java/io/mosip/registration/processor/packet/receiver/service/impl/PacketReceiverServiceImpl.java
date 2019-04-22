@@ -296,7 +296,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * @param inputStream
 	 *            the input stream
 	 */
-	private void scanFile(InputStream inputStream) {
+	private boolean scanFile(InputStream inputStream) {
 		try {
 			boolean isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
@@ -310,6 +310,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());
 			}
+			return isInputFileClean;
 		} catch (VirusScannerException e) {
 			description = "Virus scanner service failed ::" + registrationId;
 			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
@@ -319,6 +320,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
+			return false;
 		}
 
 	}
@@ -447,6 +449,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setInternalError(false);
 
 		messageDTO.setIsValid(false);
+		boolean scanningFlag;
 		String fileOriginalName = file.getName();
 		registrationId = fileOriginalName.split("\\.")[0];
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -455,19 +458,23 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
-			scanFile(new ByteArrayInputStream(encryptedByteArray));
-
-			InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
-
-			scanFile(decryptedData);
-			fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-			dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
-			dto.setLatestTransactionTypeCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			messageDTO.setIsValid(Boolean.TRUE);
-			description = PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId;
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "PacketReceiverServiceImpl::processPacket()::exit");
+			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
+			if (scanningFlag) {
+				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
+						registrationId);
+				scanningFlag = scanFile(decryptedData);
+			}
+			if (scanningFlag) {
+				fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
+				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
+				dto.setLatestTransactionTypeCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+				messageDTO.setIsValid(Boolean.TRUE);
+				description = PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId;
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PacketReceiverServiceImpl::processPacket()::exit");
+			}
 
 		} catch (IOException e) {
 
@@ -487,7 +494,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-					+ e.getErrorText();
+			+ e.getErrorText();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, e.getMessage());
 		} catch (ApisResourceAccessException e) {
