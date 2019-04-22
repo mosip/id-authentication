@@ -7,7 +7,7 @@ node {
  def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'registration'
  def registryUrl = env.REG_CLIENT_REGISTRYURL
- def registryName = env.REG_ClLIENT_REGISTRYNAME
+ def registryName = env.REG_CLIENT_REGISTRYNAME
  def gitUrl = env.GIT_URL
  def gitCredentials = env.GIT_CREDENTIALS
  def buildInfo1
