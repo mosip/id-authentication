@@ -71,6 +71,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
 	public static final String BIOMETRIC_EXCEPTION_FLOW = "biometricExceptionFlow";
+	public static final String GUARDIAN_BIOMETRIC = "guardianBiometric";
 	
 	//css for quality indicator
 	public static final String RETRY_ATTEMPT = "#retryAttempt_";

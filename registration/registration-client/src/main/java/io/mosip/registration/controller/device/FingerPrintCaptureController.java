@@ -689,16 +689,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	/**
-	 * Gets the quality score.
-	 *
-	 * @param qulaityScore the qulaity score
-	 * @return the quality score
-	 */
-	private String getQualityScore(Double qulaityScore) {
-		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
-	}
-
-	/**
 	 * Scan.
 	 */
 	public void scan() {

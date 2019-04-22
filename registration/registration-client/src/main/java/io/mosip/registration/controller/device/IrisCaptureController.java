@@ -241,10 +241,10 @@ public class IrisCaptureController extends BaseController {
 		for (IrisDetailsDTO capturedIris : getIrises()) {
 			if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
-				leftIrisQualityScore.setText(getQualityScoreAsString(capturedIris.getQualityScore()));
+				leftIrisQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
 			} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
 				rightIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
-				rightIrisQualityScore.setText(getQualityScoreAsString(capturedIris.getQualityScore()));
+				rightIrisQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
 			}
 		}
 	}
@@ -421,19 +421,19 @@ public class IrisCaptureController extends BaseController {
 			if (irisType.equals(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 				leftIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
-				leftIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
+				leftIrisQualityScore.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
 				leftIrisAttempts.setText(String.valueOf(irisDetailsDTO.getNumOfIrisRetry()));
 			} else {
 				rightIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 				rightIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
-				rightIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
+				rightIrisQualityScore.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
 				rightIrisAttempts.setText(String.valueOf(irisDetailsDTO.getNumOfIrisRetry()));
 			}
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
+				irisProgress.setProgress(Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
 						.split(RegistrationConstants.PERCENTAGE)[0]) / 100);
-				irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
-				if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
+				irisQuality.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
+				if (Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
 						.split(RegistrationConstants.PERCENTAGE)[0]) >= Double
 								.valueOf(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) {
 					clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, irisDetailsDTO.getNumOfIrisRetry());
@@ -694,10 +694,6 @@ public class IrisCaptureController extends BaseController {
 		return StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
 				? RegistrationConstants.LEFT
 				: RegistrationConstants.RIGHT;
-	}
-
-	private String getQualityScoreAsString(double qualityScore) {
-		return String.valueOf(Math.round(qualityScore)).concat(RegistrationConstants.PERCENTAGE);
 	}
 
 	public void clearIrisData() {

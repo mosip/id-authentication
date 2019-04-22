@@ -1072,7 +1072,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-
+	@SuppressWarnings("unchecked")
 	private void ageFieldValidations() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1092,15 +1092,32 @@ public class DemographicDetailController extends BaseController {
 							dateOfBirth = Date
 									.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
 							if (age <= minAge) {
-								parentDetailPane.setManaged(true);
-								parentDetailPane.setVisible(true);
-								parentDetailPane.setDisable(false);
-								parentName.clear();
-								parentRegId.clear();
-								isChild = true;
-								validation.setChild(isChild);
-								documentScanController.setChild(isChild);
+								if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+										getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+										&& RegistrationConstants.DISABLE
+												.equalsIgnoreCase(getValueFromApplicationContext(
+														RegistrationConstants.IRIS_DISABLE_FLAG))) {
+									generateAlert(RegistrationConstants.ERROR,RegistrationUIConstants.PARENT_BIO_MSG);
+
+								} else {
+									updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
+									updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE, false);
+									updatePageFlow(RegistrationConstants.IRIS_CAPTURE, false);
+									
+									parentDetailPane.setManaged(true);
+									parentDetailPane.setVisible(true);
+									parentDetailPane.setDisable(false);
+									parentName.clear();
+									parentRegId.clear();
+									isChild = true;
+									validation.setChild(isChild);
+									documentScanController.setChild(isChild);
+								}
 							} else {
+								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
+								updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.FINGERPRINT_CAPTURE);
+								updateBioPageFlow(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.IRIS_CAPTURE);
+
 								parentDetailPane.setManaged(false);
 								parentDetailPane.setVisible(false);
 								parentDetailPane.setDisable(true);
@@ -2123,5 +2140,21 @@ public class DemographicDetailController extends BaseController {
 	protected String getSelectedNationalityCode() {
 		return residence.getText() != null ? residence.getId() : null;
 
+	}
+	
+	
+	private void updatePageFlow(String pageId, boolean val) {
+		((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+				.get(RegistrationConstants.REGISTRATION_MAP)).get(pageId)
+						.put(RegistrationConstants.VISIBILITY, val);
+		
+	}
+	
+	private void updateBioPageFlow(String flag, String pageId) {
+		if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(flag)))) {
+			updatePageFlow(pageId, false);
+		} else {
+			updatePageFlow(pageId, true);
+		}
 	}
 }
