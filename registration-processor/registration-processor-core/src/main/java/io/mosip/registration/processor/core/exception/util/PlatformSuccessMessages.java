@@ -9,6 +9,7 @@ public enum PlatformSuccessMessages {
 	
 	//Packet Receiver Success messages.
 	
+	/** The rpr pkr packet receiver. */
 	RPR_PKR_PACKET_RECEIVER(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "000", "Packet received and uploaded to landing zone"),
 
 	// Packet Validator Success messages

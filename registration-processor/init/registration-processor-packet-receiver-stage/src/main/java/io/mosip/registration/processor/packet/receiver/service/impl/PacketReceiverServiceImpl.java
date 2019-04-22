@@ -256,9 +256,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setRegistrationId(registrationId);
 		dto.setRegistrationType(regEntity.getRegistrationType());
 		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+		dto.setStatusCode(RegistrationStatusCode.PACKET_RECEIVED.toString());
 		dto.setLangCode("eng");
-		dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
+		dto.setStatusComment(StatusMessage.PACKET_RECEIVED);
 		dto.setReProcessRetryCount(0);
 		dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dto.setIsActive(true);
