@@ -18,8 +18,7 @@ public enum TokenIdPropertyConstant {
 	/**
 	 * Constructor for PridPropertyConstant.
 	 * 
-	 * @param property
-	 *            the property.
+	 * @param property the property.
 	 */
 	TokenIdPropertyConstant(String property) {
 		this.property = property;

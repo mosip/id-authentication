@@ -51,8 +51,7 @@ public class JsonUtilTest {
 	}
 
 	@Test
-	public void testJsonStringToJavaObject()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void testJsonStringToJavaObject() throws JsonParseException, JsonMappingException, IOException {
 		Car car2 = (Car) JsonUtils.jsonStringToJavaObject(Car.class, JsonUtilTestConstants.json);
 		assertNotNull(car2);
 		assertThat(car2.getColor(), is("Black"));

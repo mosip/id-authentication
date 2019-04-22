@@ -1,16 +1,23 @@
 {
-  "deviceHistoryDetails": [
-    {
-      "id": "3000021",
-      "name": "Finger Print Scanner 1",
-      "serialNum": "SZ5912878988",
-      "ipAddress": null,
-      "macAddress": "85:bb:97:4b:14:05",
-      "deviceSpecId": "165",
-      "langCode": "eng",
-      "isActive": true,
-      "effectDateTime": "2019-02-28T10:24:38.383Z",
-      "validityDateTime": null
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T12:58:35.933Z",
+  "metadata": null,
+  "response": {
+    "deviceHistoryDetails": [
+      {
+        "id": "3000021",
+        "name": "Finger Print Scanner 1",
+        "serialNum": "SZ5912878988",
+        "ipAddress": null,
+        "macAddress": "85-BB-97-4B-14-05",
+        "deviceSpecId": "165",
+        "langCode": "eng",
+        "isActive": true,
+        "effectDateTime": "2019-04-10T11:54:11.174Z",
+        "validityDateTime": null
+      }
+    ]
+  },
+  "errors": null
 }

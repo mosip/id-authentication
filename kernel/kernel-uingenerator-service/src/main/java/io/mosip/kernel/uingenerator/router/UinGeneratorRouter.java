@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -28,6 +29,7 @@ import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -36,6 +38,7 @@ import io.vertx.ext.web.handler.BodyHandler;
  * Router for vertx server
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @author Megha Tanga
  * @since 1.0.0
  *
@@ -52,6 +55,9 @@ public class UinGeneratorRouter {
 	@Autowired
 	ObjectMapper objectMapper;
 
+	@Autowired
+	private AuthHandler authHandler;
+
 	/**
 	 * Field for UinGeneratorService
 	 */
@@ -61,20 +67,23 @@ public class UinGeneratorRouter {
 	/**
 	 * Creates router for vertx server
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-		router.get(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin")
-				.handler(routingContext -> {
-					getRouter(vertx, routingContext);
-				});
+		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
+		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+		if (!profile.equalsIgnoreCase("test")) {
+			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
+		}
+		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin")
-				.consumes("application/json").handler(this::updateRouter);
+		if (!profile.equalsIgnoreCase("test")) {
+			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
+		}
+		router.put(path).consumes("application/json").handler(this::updateRouter);
 		return router;
 	}
 
@@ -103,8 +112,7 @@ public class UinGeneratorRouter {
 	/**
 	 * update router for update the status of the given UIN
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
@@ -159,8 +167,7 @@ public class UinGeneratorRouter {
 	/**
 	 * Checks and generate uins
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);

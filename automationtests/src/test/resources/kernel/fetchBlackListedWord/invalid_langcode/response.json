@@ -1,10 +1,13 @@
 {
-  "timestamp": 1548921853802,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-16T13:05:19.567Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-008",
-      "errorMessage": "Blacklisted word not found"
+      "message": "Blacklisted word not found"
     }
   ]
 }

@@ -14,14 +14,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * @author Abhishek Kumar
  * @since 1.0.0
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.syncdata.*", "io.mosip.kernel.auth.*" })
 @EnableAsync
 public class SyncDataBootApplication {
 	/**
 	 * Function to run the Master-Data-Service application
 	 * 
-	 * @param args
-	 *            The arguments to pass will executing the main function
+	 * @param args The arguments to pass will executing the main function
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SyncDataBootApplication.class, args);

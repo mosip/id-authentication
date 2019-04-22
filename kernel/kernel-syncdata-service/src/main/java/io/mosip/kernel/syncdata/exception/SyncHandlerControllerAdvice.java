@@ -47,7 +47,7 @@ public class SyncHandlerControllerAdvice {
 			final HttpServletRequest httpServletRequest) throws IOException {
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
-	
+
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final RequestException e,
 			final HttpServletRequest httpServletRequest) throws IOException {

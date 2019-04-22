@@ -8,7 +8,7 @@ import { AutoLogoutService } from 'src/app/core/services/auto-logout.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = "pre-registration";
+  title = 'pre-registration';
   message: object;
 
   constructor(private autoLogout: AutoLogoutService) {}
@@ -20,17 +20,12 @@ export class AppComponent implements OnInit {
     this.autoLogout.changeMessage({ timerFired: false });
   }
 
-  @HostListener('mouseover') onMouseOver() {
-    this.autoLogout.setisActive(true);
-  }
-  @HostListener('click') onMouseClick() {
-    this.autoLogout.setisActive(true);
-  }
-  @HostListener('keypress') onKeyPress() {
-    this.autoLogout.setisActive(true);
-  }
+  @HostListener('mouseover')
   @HostListener('document:mousemove', ['$event'])
-  onMouseMove() {
+  @HostListener('keypress')
+  @HostListener('click')
+  @HostListener('document:keypress', ['$event'])
+  onMouseClick() {
     this.autoLogout.setisActive(true);
   }
 }

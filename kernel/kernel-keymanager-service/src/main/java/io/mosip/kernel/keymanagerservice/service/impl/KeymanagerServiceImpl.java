@@ -157,10 +157,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Function to get Public key from HSM. On first request for an applicationId
 	 * and duration, will create a new keypair.
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param timeStamp
-	 *            timeStamp
+	 * @param applicationId applicationId
+	 * @param timeStamp     timeStamp
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	private PublicKeyResponse<PublicKey> getPublicKeyFromHSM(String applicationId, LocalDateTime timeStamp) {
@@ -206,12 +204,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Function to get public key from DB store. On first request for an
 	 * applicationId, referenceId and duration, will create a new keypair.
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param referenceId
-	 *            referenceId
+	 * @param applicationId applicationId
+	 * @param timeStamp     timeStamp
+	 * @param referenceId   referenceId
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	private PublicKeyResponse<byte[]> getPublicKeyFromDBStore(String applicationId, LocalDateTime timeStamp,
@@ -294,12 +289,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	/**
 	 * Function to get keyalias from keyalias table
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param referenceId
-	 *            referenceId
-	 * @param timeStamp
-	 *            timeStamp
+	 * @param applicationId applicationId
+	 * @param referenceId   referenceId
+	 * @param timeStamp     timeStamp
 	 * @return a map containing a list of all keyalias matching applicationId and
 	 *         referenceId with key "keyAlias"; and a list of all keyalias with
 	 *         matching timestamp with key "currentKeyAlias"
@@ -329,12 +321,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * exists for same time interval, then expiry datetime of current key will be
 	 * till generation datetime of overlapping key
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param keyAlias
-	 *            keyAlias
+	 * @param applicationId applicationId
+	 * @param timeStamp     timeStamp
+	 * @param keyAlias      keyAlias
 	 * @return expiry datetime
 	 */
 	private LocalDateTime getExpiryPolicy(String applicationId, LocalDateTime timeStamp, List<KeyAlias> keyAlias) {
@@ -389,10 +378,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	/**
 	 * Function to get Private Key which will be used to decrypt symmetric key.
 	 * 
-	 * @param referenceId
-	 *            referenceId
-	 * @param fetchedKeyAlias
-	 *            fetchedKeyAlias
+	 * @param referenceId     referenceId
+	 * @param fetchedKeyAlias fetchedKeyAlias
 	 * @return Private key
 	 */
 	private PrivateKey getPrivateKey(String referenceId, KeyAlias fetchedKeyAlias) {
@@ -437,16 +424,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	/**
 	 * Function to store key in keyalias table
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param timeStamp
-	 *            timeStamp
-	 * @param referenceId
-	 *            referenceId
-	 * @param alias
-	 *            alias
-	 * @param expiryDateTime
-	 *            expiryDateTime
+	 * @param applicationId  applicationId
+	 * @param timeStamp      timeStamp
+	 * @param referenceId    referenceId
+	 * @param alias          alias
+	 * @param expiryDateTime expiryDateTime
 	 */
 	private void storeKeyInAlias(String applicationId, LocalDateTime timeStamp, String referenceId, String alias,
 			LocalDateTime expiryDateTime) {
@@ -464,14 +446,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	/**
 	 * Function to store key in DB store
 	 * 
-	 * @param alias
-	 *            alias
-	 * @param masterAlias
-	 *            masterAlias
-	 * @param publicKey
-	 *            publicKey
-	 * @param encryptedPrivateKey
-	 *            encryptedPrivateKey
+	 * @param alias               alias
+	 * @param masterAlias         masterAlias
+	 * @param publicKey           publicKey
+	 * @param encryptedPrivateKey encryptedPrivateKey
 	 */
 	private void storeKeyInDBStore(String alias, String masterAlias, byte[] publicKey, byte[] encryptedPrivateKey) {
 		io.mosip.kernel.keymanagerservice.entity.KeyStore dbKeyStore = new io.mosip.kernel.keymanagerservice.entity.KeyStore();

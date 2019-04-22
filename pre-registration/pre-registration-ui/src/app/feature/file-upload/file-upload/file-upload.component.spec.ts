@@ -180,14 +180,14 @@ describe('FileUploadComponent', () => {
   describe('nextFile', () => {
     it('makes expected calls', () => {
       spyOn(component, 'viewFileByIndex');
-      component.nextFile();
+      component.nextFile(0);
       expect(component.viewFileByIndex).toHaveBeenCalled();
     });
   });
   describe('previousFile', () => {
     it('makes expected calls', () => {
       spyOn(component, 'viewFileByIndex');
-      component.previousFile();
+      component.previousFile(0);
       expect(component.viewFileByIndex).toHaveBeenCalled();
     });
   });

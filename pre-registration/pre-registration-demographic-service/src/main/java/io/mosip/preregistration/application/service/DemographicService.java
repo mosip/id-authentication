@@ -290,7 +290,7 @@ public class DemographicService {
 						"Pre ID generation end time : " + DateUtils.getUTCCurrentDateTimeString());
 				DemographicEntity demographicEntity = demographicRepository
 						.save(serviceUtil.prepareDemographicEntityForCreate(demographicRequest,
-								StatusCodes.PENDING_APPOINTMENT.getCode(), authUserDetails().getUserId(), preId));
+								StatusCodes.PENDING_APPOINTMENT.getCode(),authUserDetails().getUserId(), preId));
 				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity);
 				mainListResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 				saveList.add(res);
@@ -925,7 +925,7 @@ public class DemographicService {
 	private void callBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> responseEntity = null;
+		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> responseEntity = null;
 		try {
 
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
@@ -933,12 +933,12 @@ public class DemographicService {
 					.queryParam("preRegistrationId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+					new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
 					});
 
 			if (responseEntity.getBody().getErrors() != null) {

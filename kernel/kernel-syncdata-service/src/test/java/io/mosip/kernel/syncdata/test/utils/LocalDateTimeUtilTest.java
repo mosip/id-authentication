@@ -23,17 +23,17 @@ public class LocalDateTimeUtilTest {
 	public void getLocalDateTimeFailureTest() {
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-09-09T09.000");
 	}
-	
+
 	@Test
 	public void getLocalDateTimeTest() {
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-01-09T09:00:00.000Z");
 	}
-	
-	@Test(expected=DataNotFoundException.class)
+
+	@Test(expected = DataNotFoundException.class)
 	public void getLocalDateTimeExceptionTest() {
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-09-09T09:00:00.000Z");
 	}
-	
+
 	@Test()
 	public void getLocalDateTimeNullTest() {
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), null);

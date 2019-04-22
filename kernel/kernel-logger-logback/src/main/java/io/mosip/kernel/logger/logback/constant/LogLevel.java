@@ -2,7 +2,9 @@ package io.mosip.kernel.logger.logback.constant;
 
 import lombok.Getter;
 
-/** Log level for logger contains {@link #DEBUG}  {@link #ERROR}  {@link #TRACE}  {@link #INFO}  {@link #WARN}
+/**
+ * Log level for logger contains {@link #DEBUG} {@link #ERROR} {@link #TRACE}
+ * {@link #INFO} {@link #WARN}
  * 
  * @author Urvil Joshi
  *
@@ -13,19 +15,19 @@ public enum LogLevel {
 	/**
 	 * Debug log level for logger
 	 */
-	DEBUG("DEBUG"), 
+	DEBUG("DEBUG"),
 	/**
 	 * Trace log level for logger
 	 */
-	TRACE("TRACE"), 
+	TRACE("TRACE"),
 	/**
 	 * Error log level for logger
 	 */
-	ERROR("ERROR"), 
+	ERROR("ERROR"),
 	/**
 	 * Warn log level for logger
 	 */
-	WARN("WARN"), 
+	WARN("WARN"),
 	/**
 	 * Info log level for logger
 	 */

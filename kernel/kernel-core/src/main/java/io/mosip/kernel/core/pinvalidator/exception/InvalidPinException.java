@@ -19,15 +19,11 @@ public class InvalidPinException extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
-
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *             exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param errorCode    exception code
+	 * @param errorMessage exception message
 	 */
 	public InvalidPinException(String errorCode, String errorMessage) {
 

@@ -19,12 +19,9 @@ public class JsonIOException extends BaseCheckedException {
 	/**
 	 * Constructor for JsonIOException class.
 	 * 
-	 * @param errorCode
-	 *            the error code of the exception.
-	 * @param errorMessage
-	 *            the error message associated with the exception.
-	 * @param rootCause
-	 * 			  root cause of exception.
+	 * @param errorCode    the error code of the exception.
+	 * @param errorMessage the error message associated with the exception.
+	 * @param rootCause    root cause of exception.
 	 */
 	public JsonIOException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

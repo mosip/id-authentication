@@ -1,10 +1,13 @@
 {
-  "timestamp": 1551770106283,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T10:03:13.168Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-042",
-      "errorMessage": "Registration Center not found"
+      "message": "Registration Center not found"
     }
   ]
 }

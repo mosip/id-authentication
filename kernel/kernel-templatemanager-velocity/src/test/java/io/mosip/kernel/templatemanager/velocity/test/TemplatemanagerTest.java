@@ -27,16 +27,15 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-
-@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
+@SpringBootTest(classes = { TemplateManagerBuilderImpl.class })
 @RunWith(SpringRunner.class)
 public class TemplatemanagerTest {
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-	
+
 	private TemplateManager templateManager;
-	
+
 	Map<String, Object> valueMap;
 	private static final String expected = "<head></head><body>"
 			+ "<h1>Welcome to Cafe Coffee Day Store</h1><p>6 Coffee on Sale!"

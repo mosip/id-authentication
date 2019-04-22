@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CodeAndLanguageCodeID implements Serializable {
-	
 
 	/**
 	 * 

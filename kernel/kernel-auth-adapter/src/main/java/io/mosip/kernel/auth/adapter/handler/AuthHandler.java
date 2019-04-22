@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
 
@@ -49,6 +50,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
@@ -81,8 +83,6 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private RestTemplate restTemplate;
-
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -102,6 +102,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getResponseEntity(String token) {
 		HttpHeaders headers = new HttpHeaders();
+		System.out.println("Token details "+System.currentTimeMillis()+" : "+token);
+		System.out.println("Validate Url "+validateUrl);
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
@@ -126,7 +128,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 
 		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),validationErrorsList);
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
 		}
 
 		ResponseWrapper<?> responseObject;
@@ -160,6 +162,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			sendErrors(routingContext, errors, AuthAdapterConstant.NOTAUTHENTICATED);
 			return "";
 		}
+		token = token.split(";")[0];
 		ResponseEntity<String> response = getResponseEntity(token);
 		if (response == null) {
 			List<ServiceError> errors = new ArrayList<>();
@@ -185,10 +188,13 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 					AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), exception);
 		}
 
+		String[] authorities = mosipUserDto.getRole().split(",");
 		for (String role : roles) {
-			if (role.equals(mosipUserDto.getRole())) {
-				isAuthorized = true;
-				break;
+			for (String authority : authorities) {
+				if (role.equals(authority)) {
+					isAuthorized = true;
+					break;
+				}
 			}
 		}
 		if (!isAuthorized) {
@@ -266,13 +272,14 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
-	public void addAuthFilter(Router router, String path, io.vertx.core.http.HttpMethod httpMethod, String[] roles) {
-		Route filterRoute = null;
-		if (httpMethod == null) {
-			filterRoute = router.route(path);
-		} else {
-			filterRoute = router.route(httpMethod, path);
+	public void addAuthFilter(Router router, String path, io.vertx.core.http.HttpMethod httpMethod, String commaSepratedRoles) {
+		Objects.requireNonNull(httpMethod,AuthAdapterConstant.HTTP_METHOD_NOT_NULL);
+		if(EmptyCheckUtils.isNullEmpty(commaSepratedRoles)) {
+			throw new NullPointerException(AuthAdapterConstant.ROLES_NOT_EMPTY_NULL);
 		}
+		String[] roles=commaSepratedRoles.split(",");
+		Route filterRoute = router.route(httpMethod, path);
+		
 		filterRoute.handler(routingContext -> {
 			String token = validateToken(routingContext, roles);
 			if (token.isEmpty()) {

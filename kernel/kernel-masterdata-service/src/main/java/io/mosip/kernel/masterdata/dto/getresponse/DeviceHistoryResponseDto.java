@@ -14,5 +14,3 @@ import lombok.Data;
 public class DeviceHistoryResponseDto {
 	private List<DeviceHistoryDto> deviceHistoryDetails;
 }
-
-
