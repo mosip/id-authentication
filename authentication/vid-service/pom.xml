@@ -31,5 +31,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<!-- Postgres -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
 	</dependencies>
 </project>
