@@ -457,20 +457,23 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		exceptionFingersCount();
 		if (leftSlapCount == 4) {
-			removeFingerPrint(RegistrationConstants.LEFTPALM,leftHandPalmImageview,leftSlapQualityScore,RegistrationConstants.LEFTPALM_IMG_PATH);
+			removeFingerPrint(RegistrationConstants.LEFTPALM, leftHandPalmImageview, leftSlapQualityScore,
+					RegistrationConstants.LEFTPALM_IMG_PATH);
 
 		}
 		if (rightSlapCount == 4) {
-			removeFingerPrint(RegistrationConstants.RIGHTPALM,rightHandPalmImageview,rightSlapQualityScore,RegistrationConstants.RIGHTPALM_IMG_PATH);
+			removeFingerPrint(RegistrationConstants.RIGHTPALM, rightHandPalmImageview, rightSlapQualityScore,
+					RegistrationConstants.RIGHTPALM_IMG_PATH);
 
 		}
 		if (thumbCount == 2) {
-			removeFingerPrint(RegistrationConstants.THUMBS,thumbImageview,thumbsQualityScore,RegistrationConstants.THUMB_IMG_PATH);
+			removeFingerPrint(RegistrationConstants.THUMBS, thumbImageview, thumbsQualityScore,
+					RegistrationConstants.THUMB_IMG_PATH);
 
 		}
 		List<BiometricExceptionDTO> tempExceptionList = (List<BiometricExceptionDTO>) SessionContext.map()
 				.get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
-		
+
 		if ((tempExceptionList == null || tempExceptionList.isEmpty())
 				&& (Boolean) SessionContext.userContext().getUserMap()
 						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
@@ -504,13 +507,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (biometricException.contains(RegistrationConstants.LEFT.toLowerCase())
 						&& !biometricException.contains(RegistrationConstants.THUMB)
 						&& !biometricException.contains(RegistrationConstants.EYE)) {
-					removeFingerPrint(RegistrationConstants.LEFTPALM,leftHandPalmImageview,leftSlapQualityScore,RegistrationConstants.LEFTPALM_IMG_PATH);
+					removeFingerPrint(RegistrationConstants.LEFTPALM, leftHandPalmImageview, leftSlapQualityScore,
+							RegistrationConstants.LEFTPALM_IMG_PATH);
 				} else if (biometricException.contains(RegistrationConstants.RIGHT.toLowerCase())
 						&& !biometricException.contains(RegistrationConstants.THUMB)
 						&& !biometricException.contains(RegistrationConstants.EYE)) {
-					removeFingerPrint(RegistrationConstants.RIGHTPALM,rightHandPalmImageview,rightSlapQualityScore,RegistrationConstants.RIGHTPALM_IMG_PATH);
+					removeFingerPrint(RegistrationConstants.RIGHTPALM, rightHandPalmImageview, rightSlapQualityScore,
+							RegistrationConstants.RIGHTPALM_IMG_PATH);
 				} else if (biometricException.contains(RegistrationConstants.THUMB)) {
-					removeFingerPrint(RegistrationConstants.THUMBS,thumbImageview,thumbsQualityScore,RegistrationConstants.THUMB_IMG_PATH);
+					removeFingerPrint(RegistrationConstants.THUMBS, thumbImageview, thumbsQualityScore,
+							RegistrationConstants.THUMB_IMG_PATH);
 				}
 			});
 
@@ -545,16 +551,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Removes the finger print.
 	 *
-	 * @param handSlap 
-	 * 				the hand slap
-	 * @param handSlapImageView 
-	 * 				the hand slap image view
-	 * @param handSlapQualityScoreLabel 
-	 * 				the hand slap quality score label
-	 * @param HandSlapImagePath 
-	 * 				the hand slap image path
+	 * @param handSlap                  the hand slap
+	 * @param handSlapImageView         the hand slap image view
+	 * @param handSlapQualityScoreLabel the hand slap quality score label
+	 * @param HandSlapImagePath         the hand slap image path
 	 */
-	private void removeFingerPrint(String handSlap,ImageView handSlapImageView,Label handSlapQualityScoreLabel,String HandSlapImagePath) {
+	private void removeFingerPrint(String handSlap, ImageView handSlapImageView, Label handSlapQualityScoreLabel,
+			String HandSlapImagePath) {
 		Iterator<FingerprintDetailsDTO> iterator;
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -570,8 +573,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			FingerprintDetailsDTO value = iterator.next();
 			if (value.getFingerType().contains(handSlap)) {
 				iterator.remove();
-				handSlapImageView
-				.setImage(new Image(getClass().getResource(HandSlapImagePath).toExternalForm()));
+				handSlapImageView.setImage(new Image(getClass().getResource(HandSlapImagePath).toExternalForm()));
 				handSlapQualityScoreLabel.setText(RegistrationConstants.EMPTY);
 				break;
 			}
@@ -582,9 +584,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Clear finger print DTO.
 	 */
 	public void clearFingerPrintDTO() {
-		removeFingerPrint(RegistrationConstants.LEFTPALM,leftHandPalmImageview,leftSlapQualityScore,RegistrationConstants.LEFTPALM_IMG_PATH);
-		removeFingerPrint(RegistrationConstants.RIGHTPALM,rightHandPalmImageview,rightSlapQualityScore,RegistrationConstants.RIGHTPALM_IMG_PATH);
-		removeFingerPrint(RegistrationConstants.THUMBS,thumbImageview,thumbsQualityScore,RegistrationConstants.THUMB_IMG_PATH);
+		removeFingerPrint(RegistrationConstants.LEFTPALM, leftHandPalmImageview, leftSlapQualityScore,
+				RegistrationConstants.LEFTPALM_IMG_PATH);
+		removeFingerPrint(RegistrationConstants.RIGHTPALM, rightHandPalmImageview, rightSlapQualityScore,
+				RegistrationConstants.RIGHTPALM_IMG_PATH);
+		removeFingerPrint(RegistrationConstants.THUMBS, thumbImageview, thumbsQualityScore,
+				RegistrationConstants.THUMB_IMG_PATH);
 
 		leftSlapAttempt.setText(RegistrationConstants.EMPTY);
 		rightSlapAttempt.setText(RegistrationConstants.EMPTY);
@@ -1333,15 +1338,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		leftSlapException.setText(RegistrationConstants.HYPHEN);
 		rightSlapException.setText(RegistrationConstants.HYPHEN);
 		thumbSlapException.setText(RegistrationConstants.HYPHEN);
-		
+
 		StringBuilder leftSlapExceptionFingers = new StringBuilder();
 		StringBuilder rightSlapExceptionFingers = new StringBuilder();
 		StringBuilder thumbSlapExceptionFingers = new StringBuilder();
-		
+
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
 					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO() != null) {
-
+				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO()
+						.sort((a, b) -> a.getMissingBiometric().compareTo(b.getMissingBiometric()));
 				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().stream()
 						.forEach(bio -> findExceptionFinger(leftSlapExceptionFingers, rightSlapExceptionFingers,
 								thumbSlapExceptionFingers, bio));
@@ -1351,7 +1357,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getBiometricExceptionDTO() != null) {
-
+				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
+						.sort((a, b) -> a.getMissingBiometric().compareTo(b.getMissingBiometric()));
 				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
 						.stream().forEach(bio -> findExceptionFinger(leftSlapExceptionFingers,
 								rightSlapExceptionFingers, thumbSlapExceptionFingers, bio));
