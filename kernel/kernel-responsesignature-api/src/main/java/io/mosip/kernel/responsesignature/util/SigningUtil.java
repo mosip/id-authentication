@@ -70,9 +70,7 @@ public class SigningUtil {
 	public String signResponseData(String response) {
 
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
-        System.out.println("encoded byte array--->"+CryptoUtil.encodeBase64(responseByteArray));
-        System.out.println("digestAsPlainText--->"+HMACUtils.digestAsPlainText(responseByteArray));
-		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
+        CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId(SignatureUtilConstant.APPLICATION_ID);
 		cryptoManagerRequestDto.setReferenceId(SignatureUtilConstant.REFERENCE_ID);
 		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));

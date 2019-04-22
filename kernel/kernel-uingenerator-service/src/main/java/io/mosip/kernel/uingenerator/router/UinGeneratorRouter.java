@@ -94,12 +94,20 @@ public class UinGeneratorRouter {
 
 	private void getRouter(Vertx vertx, RoutingContext routingContext) {
 		UinResponseDto uin = new UinResponseDto();
+		uin = uinGeneratorService.getUin();
+		ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
+		reswrp.setResponse(uin);
+		reswrp.setErrors(null);
+		String resWrpJsonString = null;
 		try {
-			uin = uinGeneratorService.getUin();
-			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
-			reswrp.setResponse(uin);
-			reswrp.setErrors(null);
-			String signedData = signatureUtil.signResponse(reswrp.toString());
+			resWrpJsonString = objectMapper.writeValueAsString(reswrp);
+		} catch (JsonProcessingException e1) {
+
+			e1.printStackTrace();
+		}
+		String signedData = signatureUtil.signResponse(resWrpJsonString);
+		try {
+
 			routingContext.response().putHeader("response-signature", signedData)
 					.putHeader("content-type", "application/json").setStatusCode(200)
 					.end(objectMapper.writeValueAsString(reswrp));
