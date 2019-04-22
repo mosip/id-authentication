@@ -130,8 +130,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	InternalRegistrationStatusDto dto;
 
-	private RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -164,7 +162,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
-
+				storePacket(stageName);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");
@@ -301,7 +299,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						+ PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
 				dto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
-				dto.setLatestTransactionTypeCode(registrationStatusMapperUtil
+				dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -311,7 +309,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			description = "Virus scanner service failed ::" + registrationId;
 			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
-			dto.setLatestTransactionTypeCode(registrationStatusMapperUtil
+			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -444,73 +442,69 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setInternalError(false);
 
 		messageDTO.setIsValid(false);
-		storageFlag=false;
+		storageFlag = false;
 
-			String fileOriginalName = file.getName();
-			registrationId = fileOriginalName.split("\\.")[0];
+		String fileOriginalName = file.getName();
+		registrationId = fileOriginalName.split("\\.")[0];
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "PacketReceiverServiceImpl::processPacket()::entry");
+		messageDTO.setRid(registrationId);
+
+		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
+			scanFile(new ByteArrayInputStream(encryptedByteArray));
+
+			InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
+
+			scanFile(decryptedData);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "PacketReceiverServiceImpl::processPacket()::entry");
-			messageDTO.setRid(registrationId);
+					registrationId, "PacketReceiverServiceImpl::processPacket()::exit");
 
-			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
-				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
-				scanFile(new ByteArrayInputStream(encryptedByteArray));
+		} catch (IOException e) {
 
-				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
-						registrationId);
+			description = " IOException in packet receiver for registrationId" + registrationId + "::" + e.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+		} catch (DataAccessException e) {
 
-				scanFile(decryptedData);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"PacketReceiverServiceImpl::processPacket()::exit");
+			description = "DataAccessException in packet receiver for registrationId" + registrationId + "::"
+					+ e.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Error while updating status : "
+							+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
+		} catch (PacketDecryptionFailureException e) {
+			dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
+			dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
+			dto.setLatestTransactionTypeCode("");
+			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
+					+ e.getErrorText();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, e.getMessage());
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "API resource not accessible : "
+							+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
+			description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
 
-			} catch (IOException e) {
-				
-				description = " IOException in packet receiver for registrationId" + registrationId + "::"
-						+ e.getMessage();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
-			} catch (DataAccessException e) {
+		} finally {
 
-				description = "DataAccessException in packet receiver for registrationId" + registrationId + "::"
-						+ e.getMessage();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "Error while updating status : "
-								+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
-			} catch (PacketDecryptionFailureException e) {
-				dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
-				dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
-				dto.setLatestTransactionTypeCode("");
-				description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-						+ e.getErrorText();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, e.getMessage());
-			} catch (ApisResourceAccessException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "API resource not accessible : "
-								+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
-				description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
+			registrationStatusService.updateRegistrationStatus(dto);
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
 
-			} finally {
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
+					ApiName.AUDIT);
+		}
 
-				registrationStatusService.updateRegistrationStatus(dto);
-				String eventId = "";
-				String eventName = "";
-				String eventType = "";
-				eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-				eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-						: EventName.EXCEPTION.toString();
-				eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-						: EventType.SYSTEM.toString();
-
-				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						registrationId, ApiName.AUDIT);
-			}
-
-			if (storageFlag) {
-				messageDTO.setIsValid(true);
-			}
+		if (storageFlag) {
+			messageDTO.setIsValid(true);
+		}
 
 		return messageDTO;
 	}
