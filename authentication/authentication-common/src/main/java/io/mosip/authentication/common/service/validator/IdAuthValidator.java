@@ -23,6 +23,7 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -258,6 +259,21 @@ public abstract class IdAuthValidator implements Validator {
 			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(),
 							CONSENT_OBTAINED));
+		}
+	}
+	
+	/**
+	 * Validate txn id.
+	 *
+	 * @param transactionID the transaction ID
+	 * @param requestTransactionID the request transaction ID
+	 * @param errors the errors
+	 */
+	protected void validateTxnId(String transactionID, String requestTransactionID, Errors errors) {
+		if (!StringUtils.isEmpty(requestTransactionID) && !StringUtils.isEmpty(transactionID)
+				&& !transactionID.equals(requestTransactionID)) {
+			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

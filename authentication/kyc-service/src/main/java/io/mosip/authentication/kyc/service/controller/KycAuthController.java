@@ -21,8 +21,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.kyc.service.facade.KycFacade;
+import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
@@ -51,10 +50,7 @@ public class KycAuthController {
 
 	/** The auth facade. */
 	@Autowired
-	private KycFacade kycFacade;
-
-	@Autowired
-	private KycService kycService;
+	private KycFacadeImpl kycFacade;
 
 	/**
 	 *
@@ -90,7 +86,7 @@ public class KycAuthController {
 			DataValidationUtil.validate(errors);
 			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId);
 			if (authResponseDTO != null) {
-				kycAuthResponseDTO = kycService.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
+				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "processKyc",

@@ -37,10 +37,10 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
-public class KycFacadeTest {
+public class KycFacadeImplTest {
 
 	@InjectMocks
-	private KycFacade kycFacade;
+	private KycFacadeImpl kycFacade;
 
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;

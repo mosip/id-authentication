@@ -47,12 +47,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.filter.BaseIDAFilter;
-import io.mosip.authentication.common.service.filter.CharResponseWrapper;
-import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
@@ -371,7 +368,7 @@ public class BaseIDAFilterTest {
 
 			@Override
 			public String getServletPath() {
-				return null;
+				return "/staticpin/dsa";
 			}
 
 			@Override
@@ -555,7 +552,6 @@ public class BaseIDAFilterTest {
 		Mockito.when(output.toString()).thenReturn(responsewrapper);
 		Mockito.when(responseWrapper.toString()).thenReturn(responsewrapper);
 		Mockito.when(responseWrapper.getWriter()).thenReturn(new PrintWriter(new ByteArrayOutputStream()));
-		AuthError authError = new AuthError();
 		ServletResponse respserv = new ServletResponse() {
 
 			@Override
@@ -645,8 +641,9 @@ public class BaseIDAFilterTest {
 
 			}
 		};
-		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper,
-				authError, DateUtils.getUTCCurrentDateTime());
+		IdAuthenticationAppException idex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
+		Mockito.when(requestWrapper.getServletPath()).thenReturn("/vid/zxd");
+		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex);
 	}
 
 	@Test
@@ -917,7 +914,7 @@ public class BaseIDAFilterTest {
 
 			@Override
 			public String getServletPath() {
-				return null;
+				return "/otp/zyx";
 			}
 
 			@Override
