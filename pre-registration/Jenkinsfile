@@ -6,9 +6,12 @@ node {
  def branch = env.NEXT_BRANCH_NAME
  def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'pre-registration'
- def registryUrl = 'http://docker-registry.mosip.io:5000'
- def registryName = 'docker-registry.mosip.io:5000'
- def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+// def registryUrl = 'http://docker-registry.mosip.io:5000'
+ def registryUrl = env.REGISTRY_URL
+ //def registryName = 'docker-registry.mosip.io:5000'
+  def registryName = env.REGISTRY_NAME
+// def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+  def registryCredentials = env.REGISTRY_CREDENTIALS
  updatedServices = []
  updatedDockerImages = []
  containersToRun = ''
