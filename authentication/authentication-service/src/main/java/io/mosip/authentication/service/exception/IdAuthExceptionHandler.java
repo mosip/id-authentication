@@ -72,6 +72,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@Autowired
 	private HttpServletRequest servletRequest;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Instantiates a new id auth exception handler.
@@ -97,7 +100,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
-		return new ResponseEntity<>(buildExceptionResponse(unknownException, servletRequest), HttpStatus.OK);
+		return new ResponseEntity<>(buildExceptionResponse(unknownException, servletRequest, mapper), HttpStatus.OK);
 	}
 
 	/**
@@ -132,7 +135,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				|| ex instanceof HttpMessageConversionException || ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-			return new ResponseEntity<>(buildExceptionResponse(ex, servletRequest), HttpStatus.OK);
+			return new ResponseEntity<>(buildExceptionResponse(ex, servletRequest, mapper), HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
 		}
@@ -162,7 +165,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				break;
 			}
 		}
-		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e, servletRequest), HttpStatus.OK);
+		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e, servletRequest, mapper), HttpStatus.OK);
 	}
 
 	/**
@@ -171,7 +174,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param ex the exception occurred
 	 * @return Object .
 	 */
-	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
+	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request, ObjectMapper mapper) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String servletPath = request.getServletPath();
@@ -203,7 +206,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 							.distinct().collect(Collectors.toList());
 				}
 				
-				response =  frameErrorResponse(requestReceived, errors);
+				response =  frameErrorResponse(requestReceived, errors, mapper);
 				mosipLogger.debug(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), response.toString());
 				return response;
 		}
@@ -219,8 +222,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param errors the errors
 	 * @return the object
 	 */
-	private static Object frameErrorResponse(String requestReceived, List<AuthError> errors) {
-		ObjectMapper mapper = new ObjectMapper();
+	private static Object frameErrorResponse(String requestReceived, List<AuthError> errors, ObjectMapper mapper) {
 		String responseTime = mapper.convertValue(new Date(), String.class);
 		switch (requestReceived) {
 		case "kyc":

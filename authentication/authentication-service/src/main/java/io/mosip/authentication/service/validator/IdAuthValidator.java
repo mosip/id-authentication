@@ -262,6 +262,13 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 	
+	/**
+	 * Validate txn id.
+	 *
+	 * @param transactionID the transaction ID
+	 * @param requestTransactionID the request transaction ID
+	 * @param errors the errors
+	 */
 	protected void validateTxnId(String transactionID, String requestTransactionID, Errors errors) {
 		if (!StringUtils.isEmpty(requestTransactionID) && !StringUtils.isEmpty(transactionID)
 				&& !transactionID.equals(requestTransactionID)) {

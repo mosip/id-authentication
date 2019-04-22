@@ -171,7 +171,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
 			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationAppException ex) throws IOException {
-		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
+		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper, mapper);
 		Map<String, Object> responseMap = mapper.convertValue(responseObj,
 				new TypeReference<Map<String, Object>>() {
 				});
