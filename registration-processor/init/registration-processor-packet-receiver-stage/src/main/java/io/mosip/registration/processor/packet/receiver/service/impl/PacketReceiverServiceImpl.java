@@ -243,9 +243,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void storePacket(String stageName) throws IOException {
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
-		if (dto == null)
+		if (dto == null) {
 			dto = new InternalRegistrationStatusDto();
-		else {
+			dto.setRetryCount(0);
+		} else {
 			int retryCount = dto.getRetryCount() != null ? dto.getRetryCount() + 1 : 1;
 			dto.setRetryCount(retryCount);
 
@@ -494,7 +495,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-			+ e.getErrorText();
+					+ e.getErrorText();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, e.getMessage());
 		} catch (ApisResourceAccessException e) {
