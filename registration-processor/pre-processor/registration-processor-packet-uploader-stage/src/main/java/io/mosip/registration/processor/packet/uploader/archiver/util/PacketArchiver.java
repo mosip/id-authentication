@@ -74,8 +74,8 @@ public class PacketArchiver {
 				registrationId, "PacketArchiver::archivePacket()::entry");
 		try {
 
-			String fromFilePath = env.getProperty(DirectoryPathDto.LANDING_ZONE.toString()) + File.separator + registrationId+ ".zip";
-			String toFilePath = env.getProperty(DirectoryPathDto.ARCHIVE_LOCATION.toString()) + File.separator + registrationId+ ".zip";
+			String fromFilePath = env.getProperty(DirectoryPathDto.LANDING_ZONE.toString())+"/"+registrationId+ ".zip";
+			String toFilePath = env.getProperty(DirectoryPathDto.ARCHIVE_LOCATION.toString())+"/"+ registrationId+ ".zip";
 			SftpJschConnectionDto jschConnectionDto=new SftpJschConnectionDto();
 			jschConnectionDto.setHost(host);
 			jschConnectionDto.setPort(Integer.parseInt(dmzPort));

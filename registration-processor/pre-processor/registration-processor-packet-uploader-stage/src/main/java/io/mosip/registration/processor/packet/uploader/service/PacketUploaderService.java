@@ -21,6 +21,6 @@ public interface PacketUploaderService<U> {
 	 *            the file
 	 * @return the u
 	 */
-	public U validatePacket(String regId);
+	public U validateAndUploadPacket(String regId);
 
 }

@@ -32,14 +32,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-batch</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -80,7 +72,11 @@
 			<artifactId>registration-processor-core</artifactId>
 			<version>${registration.processor.core.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-virusscanner-clamav</artifactId>
+			<version>${kernel.clamav.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

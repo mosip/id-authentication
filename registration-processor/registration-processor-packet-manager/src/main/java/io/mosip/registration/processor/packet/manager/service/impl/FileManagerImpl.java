@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -317,8 +318,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		Channel channel = null;
 		ChannelSftp channelSftp = null;
 		byte[] bytedata =null;
-		ByteArrayOutputStream outputStream=null;
-		BufferedOutputStream buff =null;
+	//	ByteArrayOutputStream outputStream=null;
+	//	BufferedOutputStream buff =null;
 		try {
 
 			JSch jsch = new JSch();
@@ -334,17 +335,13 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channel.connect();
 			System.out.println("Connected");
 			channelSftp = (ChannelSftp)channel;
-			outputStream = new ByteArrayOutputStream();
-			buff = new BufferedOutputStream(outputStream);
-			channelSftp.get(workingDirectory.toString(),buff);
-			bytedata = new byte[102400];
-			buff.write(bytedata);
+			String value=env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName);
 			
-			if(outputStream!=null)
-			outputStream.close();
-			if(buff!=null)
-			buff.close();
-
+			 try (InputStream is = channelSftp.get(env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName))){
+             	bytedata=IOUtils.toByteArray(is);
+              }
+			
+		
 
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block

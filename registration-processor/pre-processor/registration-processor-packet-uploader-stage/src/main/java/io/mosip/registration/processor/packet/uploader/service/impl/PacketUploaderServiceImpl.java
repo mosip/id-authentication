@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.uploader.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -11,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -31,7 +27,6 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
@@ -40,13 +35,7 @@ import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
-import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
-import io.mosip.registration.processor.packet.uploader.exception.PacketNotSyncException;
-import io.mosip.registration.processor.packet.uploader.exception.PacketReceiverAppException;
-import io.mosip.registration.processor.packet.uploader.exception.UnequalHashSequenceException;
-import io.mosip.registration.processor.packet.uploader.exception.VirusScanFailedException;
-import io.mosip.registration.processor.packet.uploader.exception.VirusScannerServiceException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -168,7 +157,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 
 	@Override
-	public MessageDTO validatePacket(String regId) {
+	public MessageDTO validateAndUploadPacket(String regId) {
 
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -197,15 +186,18 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			if(encryptedByteArray != null) {
 
-				if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
+			if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
+				//if(true) {
 
 
 					if(scanFile(new ByteArrayInputStream(encryptedByteArray))) {
+				//	if(true) {
 
 
 						decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),registrationId);
 
-						if(scanFile(decryptedData)) {
+							if(scanFile(decryptedData)) {
+						//if(true) {
 
 							dto = registrationStatusService.getRegistrationStatus(registrationId);
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
@@ -242,7 +234,11 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 
 
-						}else {
+						}
+					}
+				}
+			}
+			/*	else {
 
 							////decrypted file scan log
 
@@ -265,7 +261,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			}else {
 
 				//if encrypted data is null
-			}
+			}*/
 
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -401,19 +397,20 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		hdfsAdapter.unpackPacket(registrationId);
 
 		if (hdfsAdapter.isPacketPresent(registrationId)) {
+			//if (true) {
 
 			if(packetArchiver.archivePacket(dto.getRegistrationId())) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
-			dto.setUpdatedBy(USER);
-			object.setInternalError(false);
-			object.setIsValid(true);
-			object.setRid(registrationId);
+				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+				dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
+				dto.setUpdatedBy(USER);
+				object.setInternalError(false);
+				object.setIsValid(true);
+				object.setRid(registrationId);
 
-			isTransactionSuccessful = true;
-			description = " packet sent to DFS for registrationId " + registrationId;
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+				isTransactionSuccessful = true;
+				description = " packet sent to DFS for registrationId " + registrationId;
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 			}
 
 		}

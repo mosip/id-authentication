@@ -11,6 +11,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -48,7 +49,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	MosipEventBus mosipEventBus = null;
 
 
-	
+
 
 	@Value("${server.servlet.path}")
 	private String contextPath;
@@ -56,21 +57,18 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 
 
-
-	@Value("${registration.processor.uploader.max.retry.count}")
-	private int maxRetryCount;
-
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	
+
 	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-	
-	
+	@Autowired
+	PacketUploaderService<MessageDTO> packetUploaderService;
+
 	/** The registration id. */
 	private String registrationId = "";
 
@@ -130,8 +128,13 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));
-		process(messageDTO);
+		//	process(messageDTO);
+
+		messageDTO=packetUploaderService.validateAndUploadPacket("10003100030010320190412102906");
+		if(messageDTO.getIsValid())
 		sendMessage( messageDTO);
+		
+		
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
 		regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage", null, null);
 
@@ -143,11 +146,11 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 
 
-			
-		try {
-       System.out.println("will you call");
 
-			
+		try {
+			System.out.println("will you call");
+
+
 
 
 		} catch (Exception e) {
@@ -171,5 +174,5 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 
 
-	
+
 }
