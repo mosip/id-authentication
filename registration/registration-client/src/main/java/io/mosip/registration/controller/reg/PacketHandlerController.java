@@ -650,14 +650,17 @@ public class PacketHandlerController extends BaseController implements Initializ
 				}
 				
 				//Deletes the pre registration Data after creation of registration Packet.
-				if(getRegistrationDTOFromSession().getPreRegistrationId()!=null) {
-					
+				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
+						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
+
 					ResponseDTO responseDTO = new ResponseDTO();
 					List<PreRegistrationList> preRegistrationLists = new ArrayList<>();
-					PreRegistrationList preRegistrationList = preRegistrationDataSyncService.getPreRegistrationRecordForDeletion(getRegistrationDTOFromSession().getPreRegistrationId());
+					PreRegistrationList preRegistrationList = preRegistrationDataSyncService
+							.getPreRegistrationRecordForDeletion(
+									getRegistrationDTOFromSession().getPreRegistrationId());
 					preRegistrationLists.add(preRegistrationList);
 					preRegistrationDataSyncService.deletePreRegRecords(responseDTO, preRegistrationLists);
-					
+
 				}
 
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
