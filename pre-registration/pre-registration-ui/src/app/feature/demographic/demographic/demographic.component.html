@@ -23,7 +23,6 @@
           <div class="user__age-or-date">
             <div class="user__date">
               <mat-form-field>
-                <!-- [readonly]="isReadOnly" -->
                 <input
                   matInput
                   placeholder="{{ 'demographic.date_dd' | translate }}"
@@ -33,7 +32,6 @@
                 />
               </mat-form-field>
               <mat-form-field>
-                <!-- [readonly]="isReadOnly" -->
                 <input
                   matInput
                   placeholder="{{ 'demographic.date_mm' | translate }}"
@@ -43,7 +41,6 @@
                 />
               </mat-form-field>
               <mat-form-field>
-                <!-- [readonly]="isReadOnly" -->
                 <input
                   matInput
                   placeholder="{{ 'demographic.date_yyyy' | translate }}"
@@ -55,12 +52,10 @@
             </div>
 
             <div class="user__pref">
-              <!-- <mat-slide-toggle (change)="onPreferenceChange($event)"></mat-slide-toggle> -->
               OR
             </div>
             <div class="user__age">
               <mat-form-field>
-                <!-- [readonly]="!isReadOnly" -->
                 <input
                   matInput
                   tabindex="-1"
@@ -72,25 +67,6 @@
               </mat-form-field>
               <div class="user__age--years">{{ 'demographic.text_years' | translate }}</div>
             </div>
-          </div>
-
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.date).valid && userForm.get(formControlNames.date).touched"
-          >
-            {{ 'demographic.validation.date_required' | translate }}
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.month).valid && userForm.get(formControlNames.month).touched"
-          >
-            {{ 'demographic.validation.month_required' | translate }}
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched"
-          >
-            {{ 'demographic.validation.year_required' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
@@ -211,7 +187,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, cities, provinces,formControlNames.city)"
+                (selectionChange)="onLocationSelect($event, cities, provinces, formControlNames.city)"
                 placeholder="{{ 'demographic.label_province' | translate }}"
                 [formControlName]="formControlNames.province"
                 #province
@@ -228,7 +204,14 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, cities, formControlNames.localAdministrativeAuthority)"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    localAdministrativeAuthorities,
+                    cities,
+                    formControlNames.localAdministrativeAuthority
+                  )
+                "
                 placeholder="{{ 'demographic.label_city' | translate }}"
                 [formControlName]="formControlNames.city"
                 #city
@@ -372,21 +355,6 @@
               </mat-form-field>
               <div class="user__age--years user__age--disabled">{{ secondaryLanguagelabels.text_years }}</div>
             </div>
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.date).valid && userForm.get(formControlNames.date).touched"
-          >
-            <br />
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.month).valid && userForm.get(formControlNames.month).touched"
-          >
-            <br />
-          </div>
-          <div *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched">
-            <br />
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"

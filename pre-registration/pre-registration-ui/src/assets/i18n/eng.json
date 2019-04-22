@@ -326,7 +326,7 @@
       "age_validation": "Age should be less than 150",
       "gender_validation": "Please select gender",
       "nationality_validation": "Please select nationality",
-      "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
+      "DOB_validation": "Enter Valid date of birth or age",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
       "year_required": "Enter 4 numeric digits for year",
@@ -347,7 +347,8 @@
   },
   "documents": {
     "title_document": "Upload Documents",
-    "text_filetype": "Allowed file type Pdf,Max size 1MB",
+    "text_filetype": "Allowed file type ",
+    "text_filesize": "allowed file size",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",

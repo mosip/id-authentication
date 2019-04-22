@@ -7,6 +7,9 @@ import { ErrorComponent } from './shared/error/error.component';
 import { ParentComponent } from './shared/parent/parent.component';
 import { AuthGuardService } from './auth/auth-guard.service';
 
+/**
+ * @description These are the routes.
+ */
 const appRoutes: Routes = [
   { path: 'dashboard', loadChildren: './feature/dashboard/dashboard.module#DashboardModule' },
   { path: 'about-us', component: AboutUsComponent },
@@ -29,6 +32,12 @@ const appRoutes: Routes = [
   // { path: '**', redirectTo: '/' }
 ];
 
+/**
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class AppRoutingModule
+ */
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes, { useHash: true, preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule]
