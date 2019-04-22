@@ -118,7 +118,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			if (matchType.equals(DedupeSourceName.ALL.toString())) {
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
 
-			} else {
+			} else if(matchType.equals(DedupeSourceName.DEMO.toString()) || matchType.equals(DedupeSourceName.BIO.toString() ))  {
 				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),
 						matchType);
 
