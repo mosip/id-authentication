@@ -3,19 +3,13 @@ package io.mosip.registration.processor.packet.uploader.stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -31,9 +25,6 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketUploaderStage.class);
 
-	/** The Constant USER. */
-	private static final String USER = "MOSIP_SYSTEM";
-
 	/** The cluster url. */
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
@@ -48,41 +39,12 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
-
-
-
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
-
-
-
-	/** The registration status service. */
-	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-
-
-	/** The audit log request builder. */
-	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
-
 	@Autowired
 	PacketUploaderService<MessageDTO> packetUploaderService;
-
-	/** The registration id. */
-	private String registrationId = "";
-
-	private boolean isTransactionSuccessful;
-
-	String description = "";
-	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
-
-
-
-
-
-
-
+	
 	/**
 	 * Deploy verticle.
 	 */
@@ -128,38 +90,18 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));
-		//	process(messageDTO);
-
-		messageDTO=packetUploaderService.validateAndUploadPacket("10003100030010320190412102906");
-		if(messageDTO.getIsValid())
+		messageDTO=packetUploaderService.validateAndUploadPacket(messageDTO.getRid());
+		if(messageDTO.getIsValid()) {
 		sendMessage( messageDTO);
-		
-		
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
 		regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage", null, null);
-
+		}
 
 	}
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-
-
-
-
-		try {
-			System.out.println("will you call");
-
-
-
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-		return null;
+	return null;
 	}
 
 
