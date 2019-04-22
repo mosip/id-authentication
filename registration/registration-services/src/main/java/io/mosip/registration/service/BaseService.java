@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	protected Map<String, Object> applicationMap;
+	public static Map<String, Object> applicationMap;
 
 	/**
 	 * create error response.

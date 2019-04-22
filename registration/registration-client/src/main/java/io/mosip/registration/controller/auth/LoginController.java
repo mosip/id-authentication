@@ -138,7 +138,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private Button otpSubmit;
-	
+
 	@FXML
 	private Button getOTP;
 
@@ -211,25 +211,31 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private HomeController homeController;
+	
+	private boolean isUserNewToMachine;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				boolean hasUpdate = registrationUpdate.hasUpdate(); 
+				boolean hasUpdate = registrationUpdate.hasUpdate();
 				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException exception) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 
 		try {
-			 isInitialSetUp = RegistrationConstants.ENABLE
-			 .equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.isInitialSetUp));
+			isInitialSetUp = RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
-			if (!isInitialSetUp) {
+			//TODO get is New user from reg_center_user_machine table
+			isUserNewToMachine = true;
+			
+			if (!isInitialSetUp || !isUserNewToMachine) {
 				jobConfigurationService.startScheduler();
 			}
 
@@ -451,13 +457,19 @@ public class LoginController extends BaseController implements Initializable {
 
 		// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
 		// implemented, getting AuthZ Token by Client ID and Secret Key
-		ApplicationContext.map().put(RegistrationConstants.USER_DTO, new LoginUserDTO());
+		
+		LoginUserDTO loginUserDTO=new LoginUserDTO();
+//		loginUserDTO.setUserId(userId.getText());
+//		loginUserDTO.setPassword(password.getText());
+		
+		ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			try {
 				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
 			} catch (Exception exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
 						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+				exception.printStackTrace();
 			}
 		}
 
@@ -835,8 +847,8 @@ public class LoginController extends BaseController implements Initializable {
 					if (isInitialSetUp) {
 
 						// TODO Need to find out code for initial set up flag
-						// globalParamService.update(RegistrationConstants.isInitialSetUp,
-						// RegistrationConstants.DISABLE);
+						 globalParamService.update(RegistrationConstants.INITIAL_SETUP,
+						 RegistrationConstants.DISABLE);
 
 						executePreLaunchTask(homeController.getMainBox(),
 								packetHandlerController.getProgressIndicator());
@@ -1172,6 +1184,11 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Ignoring login method if the configuration is off");
 
+	}
+	
+	
+	private void getAuthToken() {
+		
 	}
 
 }
