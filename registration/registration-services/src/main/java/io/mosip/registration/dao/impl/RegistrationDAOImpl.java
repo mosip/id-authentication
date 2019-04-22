@@ -338,7 +338,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on server status codes");
 
-		return registrationRepository.findByServerStatusCodeNotIn(serverStatusCodes);
+		return registrationRepository.findByServerStatusCodeNotInOrServerStatusCodeIsNull(serverStatusCodes);
 
 	}
 
