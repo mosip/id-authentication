@@ -116,20 +116,23 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
-		String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
+		
+		String val = testCaseName.contains("smoke")
+				?(testCaseName="cond1"):testCaseName.contains("BookAnAppointmentByPassingInvalidId")
+				?(testCaseName="cond2"):testCaseName.contains("BookAnAppointmentByPassingInvalidStatusCode")
+				?(testCaseName="cond3"):testCaseName.contains("BookAnAppointmentByPassingInvalidPreRegistrationId")
+				?(testCaseName="cond4"):testCaseName.contains("BookAnAppointmentByPassingInvalidRegistrationCenterId")
+				?(testCaseName="cond5"):testCaseName.contains("BookAnAppointmentByPassingInvalidAppointmentDate")	
+				?(testCaseName="cond6"):testCaseName.contains("BookAnAppointmentByPassingInvalidTimeSlotFrom")		
+				?(testCaseName="cond7"):(testCaseName="cond8");
+		
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
-		// Document Upload for created application
-
-		//Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
-
-		/* PreId of Uploaded document */
-		//preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-
+		
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 
@@ -138,40 +141,110 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		System.out.println("Book app:"+bookAppointmentResponse.asString());
 		
-		switch (testCase) {
+		switch (val) {
 
-		case "BookingAppointment_smoke":
+		case "cond1":
 
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+		case "cond2":
+			String preRegBookingAppointmentURI=preReg_URI+preId;
+			
+			
+		Response response = applicationLibrary.postRequest(actualRequest, preRegBookingAppointmentURI);
+		System.out.println("Response::"+response.asString());
+		outerKeys.add("responsetime");
+		innerKeys.add("preRegistrationId");
+		status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
-		case "empty_registration_center_id":
+		
+		break;
 
-			String jsonPathTraverse = "$.request[0].preRegistrationId";
-			String jsonSetVal = preId;
-			String readFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_registration_center_id/request.json";
-			String writeFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_registration_center_id/request.json";
-			ObjectNode jsonPath = preRegLib.dynamicJsonRequest(jsonPathTraverse, jsonSetVal, readFilePath,
-					writeFilePath);
-
-			String strPath = jsonPath.toString();
-			JSONObject fetchCenterReqjson = (JSONObject) parser.parse(strPath);
-
-			Actualresponse = applicationLibrary.postRequest(fetchCenterReqjson, preReg_URI);
-
-			outerKeys.add("resTime");
-			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+		case "cond3":
+			
+			preRegLib.updateStatusCode("Consumed", preId);
+			/* Fetch availability[or]center details */
+			Response fetchCen = preRegLib.FetchCentre();
+           
+			/* Book An Appointment for the available data */
+			Response bookAppointmentRes = preRegLib.BookAppointment( fetchCen, preId.toString());
+			System.out.println("Responseuuuuuuuu::"+bookAppointmentRes.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+         case "cond4":
+			
+        	 String preRegBookingAppURI=preReg_URI+"ABCD";
+ 			
+ 			
+     		Response res = applicationLibrary.postRequest(actualRequest, preRegBookingAppURI);
+     		System.out.println("Cond 4 Response::"+res.asString());
+     		outerKeys.add("responsetime");
+     		innerKeys.add("preRegistrationId");
+     		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+         case "cond5":
+ 			
+        	 String preRegBookAppURI=preReg_URI+preId;
+ 			
+ 			
+     		Response resp = applicationLibrary.postRequest(actualRequest, preRegBookAppURI);
+     		System.out.println("Cond 5 Response::"+resp.asString());
+     		outerKeys.add("responsetime");
+     		innerKeys.add("preRegistrationId");
+     		status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+         case "cond6":
+  			
+        	 String preRegiBookAppURI=preReg_URI+preId;
+ 			
+ 			
+     		Response respo = applicationLibrary.postRequest(actualRequest, preRegiBookAppURI);
+     		System.out.println("Cond 6 Response::"+respo.asString());
+     		outerKeys.add("responsetime");
+     		innerKeys.add("preRegistrationId");
+     		status = AssertResponses.assertResponses(respo, Expectedresponse, outerKeys, innerKeys);
+
+			break;	
+         case "cond7":
+   			
+        	 String preRegisBookAppURI=preReg_URI+preId;
+ 			
+ 			
+     		Response respon = applicationLibrary.postRequest(actualRequest, preRegisBookAppURI);
+     		System.out.println("Cond 6 Response::"+respon.asString());
+     		outerKeys.add("responsetime");
+     		innerKeys.add("preRegistrationId");
+     		status = AssertResponses.assertResponses(respon, Expectedresponse, outerKeys, innerKeys);
+
+			break;	
+			
+			
+         case "cond8":
+    			
+        	 String preRegistBookAppURI=preReg_URI+preId;
+ 			
+ 			
+     		Response respons = applicationLibrary.postRequest(actualRequest, preRegistBookAppURI);
+     		System.out.println("Cond 6 Response::"+respons.asString());
+     		outerKeys.add("responsetime");
+     		innerKeys.add("preRegistrationId");
+     		status = AssertResponses.assertResponses(respons, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+			
 		case "empty_appointment_date":
 
-			String jsonPathTra = "$.request[0].preRegistrationId";
-			String jsonSetValue = preId;
+			String jsonPathTra = "$.request.requesttime";
+			String jsonSetValue=preRegLib.getCurrentDate();
+			
 			String readJsonFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
 					+ "empty_appointment_date/request.json";
 			String writeJsonFilePath = "src/test/resources/" + "preReg/BookingAppointment/"

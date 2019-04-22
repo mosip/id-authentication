@@ -5,22 +5,19 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -75,6 +72,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_URI ;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	 HashMap<String, String> parm= new HashMap<>();
 	
 	/*implement,IInvokedMethodListener*/
 	public DeleteDocumentByDocId() {
@@ -93,7 +91,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	@DataProvider(name = "DeleteDocumentByDocId")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("smokeAdRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -111,34 +109,174 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
+		String testCase = object.get("testCaseName").toString();
 		
+		System.out.println("Test Case name:"+testCase);
+		
+		//Creating the Pre-Registration Application
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		
+		//Document Upload for created application
+		
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
+		
+		//Get PreId from Document upload response
+		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		
+		//Get docId from Document upload response
+		docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
+	
+		if(testCaseName.contains("smoke"))
+		{
+
+			
+			//Delete All Document by Document Id
+			Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId( docId, preId);
+			outerKeys.add("responsetime");
+			innerKeys.add("multipartFile");
+			
+			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+			
+			
+		}
+		else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId"))
+		{
+			docId= actualRequest.get("documentId").toString();
+			
+			
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+		}
+		else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId"))
+		{
+			 preId= actualRequest.get("preRegistrationId").toString();
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+			
+		}
+		
+		/*
+		
+		switch (testCase)
+		{
+		
+		case "DeleteDocumentByDocmentId_smoke":
+			
+			//Delete All Document by Document Id
+			Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId( docId, preId);
+			outerKeys.add("responsetime");
+			innerKeys.add("multipartFile");
+			
+			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+			
+			break;
+			
+			
+		case "DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":
+			
+			
+			//preId = actualRequest.get("preRegistrationId").toString();
+			docId= actualRequest.get("documentId").toString();
+			
+			
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			 System.out.println("Actualresponse:"+Actualresponse.asString());
+			 
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+			break;
+			
+         case "DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":
+			
+			//preId = actualRequest.get("preRegistrationId").toString();
+			docId= actualRequest.get("documentId").toString();
+			
+			
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			 System.out.println("Actualresponse:"+Actualresponse.asString());
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+			break;
+			
+         case "DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":
+ 			
+ 			//preId = actualRequest.get("preRegistrationId").toString();
+ 			docId= actualRequest.get("documentId").toString();
+ 			
+ 			
+ 			 parm.put("preRegistrationId", preId);
+ 			 
+ 			 preReg_URI=preReg_URI+docId;
+ 			 
+ 			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+ 			 
+ 			System.out.println("Actualresponse:"+Actualresponse.asString());
+ 			 
+ 			 outerKeys.add("responsetime");
+ 			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+ 			 
+ 			break;
+ 			
+		
+         case "DeleteDocumentByDocIdByPassingInvalidDocumentId_SpecialCharacters":
+  			
+  			//preId = actualRequest.get("preRegistrationId").toString();
+  			docId= actualRequest.get("documentId").toString();
+  			
+  			
+  			 parm.put("preRegistrationId", preId);
+  			 
+  			 preReg_URI=preReg_URI+docId;
+  			 
+  			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+  			 
+  			System.out.println("Actualresponse:"+Actualresponse.asString());
+  			 
+  			 outerKeys.add("responsetime");
+  			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+  			 
+  			break;
+ 			
+ 			
+		}
+		*/
+		
+		/*
 		if(testCaseName.contains("smoke"))
 		{
 		
-			//Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
-			preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			
-			//Document Upload for created application
-			
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
-			
-			
-			//Get PreId from Document upload response
-			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			
-			//Get docId from Document upload response
-			docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
-		
 		
 		//Delete All Document by Document Id
 		
 		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId( docId, preId);
 		
+		System.out.println("Dele All Doc::"+delAllDocByPreId.asString());
 		
 		outerKeys.add("responsetime");
-		innerKeys.add("documnet_Id");
 		
 		
 		status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
@@ -147,12 +285,25 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		
 		else
 		{
+			
+			String preRegId;
+			String preRegDocId;
+			
+			 preRegId = actualRequest.get("preRegistrationId").toString();
+			 preRegDocId= actualRequest.get("documentId").toString();
+			
+			 HashMap<String, String> parm= new HashMap<>();
+			 parm.put("preRegistrationId", preRegId);
 			 
-			 Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
+			 preReg_URI=preReg_URI+preRegDocId;
+			 
+			 Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			 
+			 
 			 outerKeys.add("resTime");
 			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
-			   
-		}
+			 
+		}*/
 		
 		if (status) {
 			finalStatus="Pass";		

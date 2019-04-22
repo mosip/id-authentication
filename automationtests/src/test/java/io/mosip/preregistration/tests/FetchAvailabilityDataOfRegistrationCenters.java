@@ -74,7 +74,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 	static String requestKeyFile = "FetchAvailabilityDataOfRegcentersRequest.json";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_URI ;
-	
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("smokeAndregression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -120,16 +120,32 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		
+		
+		if(testCaseName.contains("smoke"))
+		{	
+		
 		Response fetchCenter = preRegLib.FetchCentre();
 		
-		System.out.println("Get request ::"+fetchCenter.asString());
 		outerKeys.add("responsetime");
 		innerKeys.add("regCenterId");
 		innerKeys.add("centerDetails");
-		
-		
-		
 		status = AssertResponses.assertResponses(fetchCenter, Expectedresponse, outerKeys, innerKeys);
+		
+		}
+		
+		else
+		{
+			String regCenterid = actualRequest.get("registrationCenterId").toString();
+			String preRegURI = preReg_URI + regCenterid;
+			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURI);
+			System.out.println("Test Casse Name:"+testCaseName);
+			System.out.println("Fetch Book App:"+Actualresponse.asString());
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+		}
 		
 		if (status) {
 			finalStatus="Pass";		
@@ -154,7 +170,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		JSONObject object = (JSONObject) testdata[2];
 	
 		testCaseName = object.get("testCaseName").toString();
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		authToken=preRegLib.getToken();
 	}
 

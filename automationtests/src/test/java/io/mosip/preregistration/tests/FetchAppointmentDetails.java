@@ -88,7 +88,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		//testParam="smoke";
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -108,15 +108,19 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		
 		
 		String testCase = object.get("testCaseName").toString();
+		/*String val = testCaseName.contains("PendingAppointment")
+				?(testCaseName="cond1"):testCaseName.contains("FetchAppointmentDetailsByPassingInvalidStatusCode")
+				?(testCaseName="cond2"):(testCaseName="cond3");*/
+		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		
+		// Creating the Pre-Registration Application
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		
 		
 		if(testCase.contains("smoke"))
 		{	
 		
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
-		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Fetch availability[or]center details
 		Response fetchCenter = preRegLib.FetchCentre();
@@ -129,75 +133,56 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
 		
 		
-		System.out.println("Fetch App:"+fetchAppointmentDetailsResponse.asString());
-		
 		outerKeys.add("responsetime");
 		innerKeys.add("registration_center_id");
 		innerKeys.add("appointment_date");
 		innerKeys.add("time_slot_from");
 		innerKeys.add("time_slot_to");
 		
-		statuOfSmokeTest = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys, innerKeys);
-		
+		status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys, innerKeys);
 		
 		}
 		
 		else
 		{	
 		
-		try 
-		{
+			if(testCase.contains("FetchAppointmentDetailsByPassingInvalidStatusCode"))
+			{	
 			
-			Actualresponse=applicationLibrary.getRequest(preReg_URI,GetHeader.getHeader(actualRequest));
-			
-		} catch (Exception e) {
-			logger.info(e);
+			  String statusCode=actualRequest.get("statusCode").toString();
+			  preRegLib.updateStatusCode(statusCode, preId);
+			  
+			}
+			else
+			{
+				preId = actualRequest.get("preRegistrationId").toString();
+			}
+			System.out.println("PreId:"+preId);
+			preReg_URI = preReg_URI + preId;
+			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
+			System.out.println("Status Code::"+testCase+"Fetch App Det:"+Actualresponse.asString());
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+		
 		}
 		
-		outerKeys.add("resTime");
-		innerKeys.add("registration_center_id");
-		innerKeys.add("appointment_date");
-		innerKeys.add("time_slot_from");
-		innerKeys.add("time_slot_to");
 		
-		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-		
-		
+		if (status) {
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
 		}
-		
-		testParam="smoke";
-		
-		if(testParam.contains("smoke"))
-		{
-			status_val=statuOfSmokeTest;
-			
-		}
-		else if(testParam.contains("regression"))
-		{
-			status_val=status;
-		}
-		else if(testParam.contains("smokeAndRegression"))
-		{
-			status_val=(status && statuOfSmokeTest);
-		}
-		
-		if (status_val) {
-			finalStatus="Pass";		
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
 	
 		
 	}

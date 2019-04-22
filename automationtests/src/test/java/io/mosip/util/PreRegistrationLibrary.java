@@ -59,6 +59,7 @@ import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
+import io.mosip.preregistration.dao.PreregistratonDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -90,7 +91,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_CreateApplnURI;
-
+	PreregistratonDAO dao=new PreregistratonDAO();
 	private static String preReg_DataSyncnURI;
 	private static String preReg_NotifyURI;
 	private static String preReg_DocumentUploadURI;
@@ -937,7 +938,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Get All Documents For Pre-Registration Id
 	 * 
 	 */
-	public Response getAllDocumentForPreId(String preId) {
+
+	public Response getAllDocumentForPreId(String preId) 
+	{
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
 		response = applnLib.getRequestPathParam(preReg_FetchAllDocumentURI, parm);
@@ -953,14 +956,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public Response getAllDocumentForDocId(String preId,String DocId) 
 	{
-
-		testSuite = "GetAllDocumentForDocId/GetAllDocumentForDocId_smoke";
-		
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
 		
-		preReg_GetDocByDocId=preReg_GetDocByDocId+DocId;
-		response = applnLib.getRequestPathAndQueryParam(preReg_GetDocByDocId, parm);	
+		String preRegGetDocByDocId=preReg_GetDocByDocId+DocId;
+		response = applnLib.getRequestPathAndQueryParam(preRegGetDocByDocId, parm);	
 		return response;
 	}
 	
@@ -968,33 +968,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Delete All Document by Pre-RegistrationId
 	 * 
 	 */
-	public Response deleteAllDocumentByPreId(String preId) {
-		HashMap<String, String> parm=new HashMap<>();
-		parm.put("preRegistrationId", preId);
-		response = applnLib.deleteRequestWithParm(preReg_DeleteAllDocumentByPreIdURI,parm);
-		return response;
-	}
 
-	/*
-	 * Generic method to Delete All Document by Document Id
-	 * 
-	 */
-	public Response deleteAllDocumentByDocId(String documentId,String preRegistrationId) {
-		HashMap<String, String> query=new HashMap<>();
-		query.put("preRegistrationId",preRegistrationId);
-		request = getRequest("DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke");
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		request.put("documentId", documentId);
-			response = applnLib.deleteRequestWithParmAndQuerry(prereg_DeleteDocumentByDocIdURI, request,query);
+	public Response deleteAllDocumentByDocId(String docId,String preId) {
+
+		HashMap<String, String> parm= new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		
+		String preregDeleteDocumentByDocIdURI=prereg_DeleteDocumentByDocIdURI+docId;
+		response = applnLib.deleteRequestPathAndQueryParam(preregDeleteDocumentByDocIdURI, parm);
+		
 		return response;
-	}
+	} 
 	public Response FetchCentre(String regCenterID) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
 		request = getRequest(testSuite);
@@ -1015,81 +999,30 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-public Response copyUploadedDocuments(String destPreId,String sourcePreId,String docCatCode) {
-		
-		/*testSuite = "CopyUploadedDocument/CopyUploadedDocument_smoke";
-		request = getRequest(testSuite);*/
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		/*ObjectNode copyDocForSrcPreId = JsonPath.using(config).parse(request.toString())
-				.set("$.sourcePrId", sourcePreId).json();
-		ObjectNode copyDocForDestPreId = JsonPath.using(config).parse(copyDocForSrcPreId.toString())
-				.set("$.destinationPreId", destPreId).json();
-		String copyDoc = copyDocForDestPreId.toString();
-		JSONObject copyDocRes = null;
-		try {
-			copyDocRes = (JSONObject) parser.parse(copyDoc);
-		
-			GetHeader.getHeader(request);
-			response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
-		} 
-		*/
-		
-		preReg_CopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
-		
-		System.out.println("MY URL:"+preReg_CopyDocumentsURI);
+	public Response copyUploadedDocuments(String destPreId,String sourcePreId,String docCatCode) {
+
+		String preRegCopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
 		
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("catCode", docCatCode);
 		parm.put("sourcePreId", sourcePreId);
-		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
-		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_CopyDocumentsURI, parm);
-		//response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, );
-		
-		
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preRegCopyDocumentsURI, parm);
 		return response;
-	}
-
+	} 
 	/*
 	 * 
 	 * Generic method For Fetching the Registration center details
 	 * 
 	 */
-
 public Response FetchCentre() {
-	testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-	String configPath = "src/test/resources/" + folder + "/" + testSuite;
-	String regCenterId = randomRegistrationCenterId();
 
-	File folder = new File(configPath);
-	File[] listOfFiles = folder.listFiles();
-	for (File f : listOfFiles) {
-		if (f.getName().toLowerCase().contains("request")) {
-			try {
-				request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				request.put("registrationCenterId", regCenterId);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		String regCenterId = randomRegistrationCenterId();		
+		
+		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
+		
+		return response;
 	}
-	try {
-		response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	return response;
-}
-
 	public Response fetchCentreWithCerterId(String regCenterId) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
@@ -1289,6 +1222,7 @@ public Response FetchCentre() {
 
 			}
 		}
+
 		testSuite = "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke";
 		JSONObject parm = getRequest(testSuite);
 		parm.put("preRegistrationId", preID);
@@ -1384,16 +1318,19 @@ public Response FetchCentre() {
 		 *
 		 */
 		request.put("preRegistrationId", preID);
-			response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsURI,request);
-		
+		response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsURI,request);
 		return response;
 	}
+	public Response CancelBookingAppointment(String preID) {
 
+		String preReg_CancelAppURI=preReg_CancelAppointmentURI+preID;
+		response = applnLib.putRequest_WithoutBody(preReg_CancelAppURI);
+		return response;
+	} 
 	/*
 	 * Generic method to Cancel Booking Appointment Details
 	 * 
 	 */
-
 	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
 		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment_smoke";
 		request = getRequest(testSuite);
@@ -1434,7 +1371,12 @@ public Response FetchCentre() {
 		response = applnLib.putRequestWithParameter(preReg_CancelAppointmentURI,parm, cancelAppjson);
 		return response;
 	}
-
+	public Response deleteAllDocumentByPreId(String preId) {
+		HashMap<String, String> parm=new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		response = applnLib.deleteRequestWithParm(preReg_DeleteAllDocumentByPreIdURI,parm);
+		return response;
+	}
 
 
 	/*
@@ -1643,8 +1585,8 @@ public Response FetchCentre() {
 	 */
 	public String randomRegistrationCenterId() {
 		Random rand = new Random();
-		List<String> givenList = Lists.newArrayList("10001", "10002", "10003", "10004", "10005", "10006", "10007",
-				"10008", "10009", "10010", "10011", "10012", "10013", "10014", "10015");
+		List<String> givenList = Lists.newArrayList("10002","10013","10014","10010","10015","10006","10004","10011",
+				"10008","10001","10012","10005","10003","10007","10009");
 		String s = null;
 		int numberOfElements = givenList.size();
 		for (int i = 0; i < numberOfElements; i++) {
@@ -2012,6 +1954,18 @@ public Response FetchCentre() {
 		return timeStamp;
 	}
 
+	
+	public void updateStatusCode(String statusCode,String preregId)
+	{
+		dao.updateStatusCode(statusCode, preregId);
+	}
+	
+	
+	public  List<? extends Object> preregFetchPreregDetails(String preregId)
+	{
+		return dao.preregFetchPreregDetails(preregId);
+	}
+	
 	@BeforeClass
 	public void PreRegistrationResourceIntialize() {
 		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
@@ -2020,7 +1974,6 @@ public Response FetchCentre() {
 		preReg_BookingAppointmentURI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
 		preReg_DataSyncnURI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		preReg_FetchRegistrationDataURI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		preReg_FecthAppointmentDetailsURI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
 		preReg_FetchAllDocumentURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
 		prereg_DeleteDocumentByDocIdURI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");

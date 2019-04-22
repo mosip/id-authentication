@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "id": "mosip.pre-registration.booking.book",
   "version": "1.0",
   "requesttime": "2019-04-15T10:31:32.957Z",
@@ -10,3 +11,7 @@
 
 }
 } 
+=======
+                             "preRegistrationId": "54670415640826"
+}
+>>>>>>> origin/0.10.0_PreregTest

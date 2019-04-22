@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -66,14 +67,16 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
-	
+	private static String preReg_URI ;
+	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
 	static String folderPath = "preReg/GetAllDocumentForPreRegId";
 	static String outputFile = "GetAllDocumentForPreRegIdOutput.json";
 	static String requestKeyFile = "GetAllDocumentForPreRegIdRequest.json";
 	
 	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	
 	//implement,IInvokedMethodListener
 		public GetAllDocumentForPreRegId() {
 
@@ -93,7 +96,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -108,7 +111,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
@@ -120,21 +123,41 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		//Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
 		
-		System.out.println("Doc Uploa res::"+docUploadResponse.asString());
 		
 		//Get PreId from Document upload response
 		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
-		//Get All Document For PreID
-		Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
+		
+		if(testCaseName.contains("smoke"))
+		{
+			//Get All Document For PreID
+			Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
+			System.out.println("getAllDocResDoc::"+docUploadResponse.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("documentId");
+			innerKeys.add("multipartFile");
+			
+			
+			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
+		}
+		else
+		{
+			
+			preId= actualRequest.get("preRegistrationId").toString();
+			HashMap<String, String> parm= new HashMap<>();
+			parm.put("preRegistrationId", preId);
+			Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
+			System.out.println("Test Case name:"+testCaseName+"getAllDocResDoc Actualresponse::"+Actualresponse.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("documentId");
+			innerKeys.add("multipartFile");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+			
+		}
 		
 		
-		outerKeys.add("responsetime");
-		innerKeys.add("documentId");
-		innerKeys.add("multipartFile");
 		
-		
-		status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();
@@ -160,6 +183,11 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 	
 		testCaseName = object.get("testCaseName").toString();
+		/**
+         * Get All document by PreReg Id Resource URI           
+         */
+        
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
 		 authToken=preRegLib.getToken();
 	}
 

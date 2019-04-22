@@ -2,7 +2,7 @@
     "id": "mosip.pre-registration.document.delete.specific",
     "version": "1.0",
     "errors": null,
-    "responsetime": "2019-04-17T12:01:33.216Z",
+    "responsetime": "2019-04-17T06:09:05.271Z",
     "response": [
         {
             "message": "Document successfully deleted"

@@ -369,7 +369,7 @@ public class prereg_dbread {
 	{
 		List<?> flag;
 		
-		factory = new Configuration().configure("prereg.cfg.xml")
+		factory = new Configuration().configure("preregqa.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		/*factory = new Configuration().configure("prereg.cfg.xml")
 				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
@@ -381,9 +381,24 @@ public class prereg_dbread {
 		
 
 	}
-	
-	
+	public static int validateDBUpdate(String queryStr)
+	{
+		int flag;
+		
+		factory = new Configuration().configure("preregqa.cfg.xml")
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		/*factory = new Configuration().configure("prereg.cfg.xml")
+				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdataUpdate(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
 
+	}
+	
+	
 	public static List<Object> validateDBdata(Session session, String queryStr)
 	{
 		int size;
@@ -407,9 +422,32 @@ public class prereg_dbread {
 		
 	
 	}
-	
 
 	
 	
+	public static  int validateDBdataUpdate(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		org.hibernate.query.Query query= session.createQuery(queryStr);
+		
+		//Query query = session.createSQLQuery(queryString);
+	
+		//List<Object> objs = (List<Object>) query.list();
+		int result = query.executeUpdate();
+		
+		logger.info("Size is : " +result);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		return result;
+		
+	
+	}
+
 
 }

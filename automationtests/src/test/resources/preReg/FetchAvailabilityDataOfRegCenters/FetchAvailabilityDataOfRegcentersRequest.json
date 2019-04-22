@@ -1,3 +1,7 @@
 {
-                             "registration_center_id": "10025"
+    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_EmptyValue":"",
+    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_Alphabets":"", 
+    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_AlphaNumeric":"", 
+    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_SpecialCharacters":"",
+    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_AlphaNumericAndSpecialCharacters":"" 
 }

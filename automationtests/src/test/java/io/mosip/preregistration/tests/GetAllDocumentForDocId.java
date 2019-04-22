@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -67,7 +68,10 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
-	
+	private static CommonLibrary commonLibrary = new CommonLibrary();
+	private static String preReg_URI ;
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	 HashMap<String, String> parm= new HashMap<>();
 	static String dest = "";
 	static String folderPath = "preReg/GetAllDocumentForDocId";
 	static String outputFile = "GetAllDocumentForDocIdOutput.json";
@@ -109,7 +113,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
@@ -128,16 +132,49 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		//Get docId from Document upload response
 		docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
 				
+		
+		if(testCaseName.contains("smoke"))
+		{
+		
 		//Get All Document For PreID
 		Response getAllDocRes=preRegLib.getAllDocumentForDocId(preId, docId);
-		
 		
 		outerKeys.add("responsetime");
 		innerKeys.add("documentId");
 		innerKeys.add("multipartFile");
-		
-		
 		status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
+		
+		}
+		else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId"))
+		{
+			docId= actualRequest.get("documentId").toString();
+			
+			
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+		}
+		else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId"))
+		{
+			 preId= actualRequest.get("preRegistrationId").toString();
+			 parm.put("preRegistrationId", preId);
+			 
+			 preReg_URI=preReg_URI+docId;
+			 
+			 Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			 outerKeys.add("responsetime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			 
+			
+		}
+		
+		
+		
 		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();
@@ -163,6 +200,11 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 	
 		testCaseName = object.get("testCaseName").toString();
+		/**
+         * Get All Document by Document Id Resource URI           
+         */
+        
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
 		 authToken=preRegLib.getToken();
 	}
 
