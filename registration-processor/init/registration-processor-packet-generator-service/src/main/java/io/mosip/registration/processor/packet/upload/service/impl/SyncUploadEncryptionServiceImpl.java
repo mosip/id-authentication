@@ -130,8 +130,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 					packetReceiverResponseDTO = gson.fromJson(result, PacketReceiverResponseDTO.class);
 					uploadStatus = packetReceiverResponseDTO.getResponse().getStatus();
 					packerGeneratorResDto.setRegistrationId(registartionId);
-					if (uploadStatus
-							.equalsIgnoreCase(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString())) {
+					if (uploadStatus.equalsIgnoreCase(RegistrationStatusCode.PACKET_RECEIVED.toString())) {
 						packerGeneratorResDto.setStatus(UPLOADSTATUSCOMMENT);
 					} else {
 						packerGeneratorResDto.setStatus(uploadStatus);

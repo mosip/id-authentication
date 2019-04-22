@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.code;
 
+// TODO: Auto-generated Javadoc
 /**
  * Valid Status codes for Registration status table.
  *
@@ -11,6 +12,8 @@ public enum RegistrationStatusCode {
 	// RegistrationStatusMapUtil also.
 	/** Potential Match found in data base. */
 
+	PACKET_RECEIVED,
+	
 	DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
 
 	/** The packet uploaded to LANDING ZONE. */
@@ -18,6 +21,9 @@ public enum RegistrationStatusCode {
 
 	/** The virus scan failed. */
 	VIRUS_SCAN_FAILED,
+	
+	/** The virus scanner service failed. */
+	VIRUS_SCANNER_SERVICE_FAILED,
 
 	/** The packet uploaded to filesystem. */
 	PACKET_UPLOADED_TO_FILESYSTEM,
@@ -94,7 +100,7 @@ public enum RegistrationStatusCode {
 	/** The packet uin updation failure. */
 	PACKET_UIN_UPDATION_FAILURE,
 
-	/** The document resent to camel queue */
+	/**  The document resent to camel queue. */
 	DOCUMENT_RESENT_TO_CAMEL_QUEUE,
 
 	/** The packet sent for printing. */
@@ -109,14 +115,16 @@ public enum RegistrationStatusCode {
 	/** The notification sent to resident. */
 	NOTIFICATION_SENT_TO_RESIDENT,
 
-	/** The packet uin printed and posted success */
+	/**  The packet uin printed and posted success. */
 	PRINT_AND_POST_COMPLETED,
 
-	/** The packet uin printed and posted failure */
+	/**  The packet uin printed and posted failure. */
 	RESEND_UIN_CARD_FOR_PRINTING,
 
+	/** The external stage success. */
 	EXTERNAL_STAGE_SUCCESS,
 
+	/** The external stage failure. */
 	EXTERNAL_STAGE_FAILURE
 
 }

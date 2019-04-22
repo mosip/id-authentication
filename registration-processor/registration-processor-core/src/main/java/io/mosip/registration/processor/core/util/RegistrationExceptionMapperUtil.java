@@ -33,6 +33,8 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.IOEXCEPTION, RegistrationTransactionStatusCode.ERROR);
 		statusMap.put(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION,
 				RegistrationTransactionStatusCode.ERROR);
+		statusMap.put(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED,
+				RegistrationTransactionStatusCode.ERROR);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION,
 				RegistrationTransactionStatusCode.ERROR);
 		statusMap.put(RegistrationExceptionTypeCode.EXCEPTION, RegistrationTransactionStatusCode.ERROR);
@@ -107,7 +109,6 @@ public class RegistrationExceptionMapperUtil {
 
 		statusMap.put(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
-
 		return unmodifiableMap;
 
 	}
