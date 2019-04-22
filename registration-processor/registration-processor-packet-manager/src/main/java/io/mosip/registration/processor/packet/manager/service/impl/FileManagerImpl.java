@@ -318,8 +318,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		Channel channel = null;
 		ChannelSftp channelSftp = null;
 		byte[] bytedata =null;
-	//	ByteArrayOutputStream outputStream=null;
-	//	BufferedOutputStream buff =null;
 		try {
 
 			JSch jsch = new JSch();
@@ -335,9 +333,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channel.connect();
 			System.out.println("Connected");
 			channelSftp = (ChannelSftp)channel;
-			String value=env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName);
-			
-			 try (InputStream is = channelSftp.get(env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName))){
+			try (InputStream is = channelSftp.get(env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName))){
              	bytedata=IOUtils.toByteArray(is);
               }
 			

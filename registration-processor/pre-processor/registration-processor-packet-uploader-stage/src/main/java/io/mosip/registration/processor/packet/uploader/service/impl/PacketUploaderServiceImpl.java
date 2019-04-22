@@ -182,22 +182,23 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);
 			jschConnectionDto.setUser(dmzServerUser);
 			jschConnectionDto.setProtocal(dmzServerProtocal);
+
 			byte[] encryptedByteArray=fileManager.getFile(DirectoryPathDto.LANDING_ZONE, regId, jschConnectionDto);
 
 			if(encryptedByteArray != null) {
 
-			if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
-				//if(true) {
+				if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
+					//if(true) {
 
 
 					if(scanFile(new ByteArrayInputStream(encryptedByteArray))) {
-				//	if(true) {
+						//	if(true) {
 
 
 						decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),registrationId);
 
-							if(scanFile(decryptedData)) {
-						//if(true) {
+						if(scanFile(decryptedData)) {
+							//if(true) {
 
 							dto = registrationStatusService.getRegistrationStatus(registrationId);
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;

@@ -169,7 +169,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 * @param messageDTO
 	 */
 	public void sendMessage(MessageDTO messageDTO) {
-		this.send(this.mosipEventBus, MessageBusAddress.REGISTRATION_CONNECTOR_BUS_OUT, messageDTO);
+		this.send(this.mosipEventBus, MessageBusAddress.PACKET_UPLOADER_OUT, messageDTO);
 	}
 
 
