@@ -28,18 +28,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.filter.AuthFilter;
 import io.mosip.kernel.auth.adapter.filter.ClientInterceptor;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -114,7 +118,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public WebClient webClient() {
-		return WebClient.builder().build();
+		return WebClient.builder().filter((req, next) -> {
+			ClientRequest filtered = null;
+			if (SecurityContextHolder.getContext() != null
+					&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
+					&& SecurityContextHolder.getContext().getAuthentication()
+							.getPrincipal() instanceof AuthUserDetails) {
+				AuthUserDetails userDetail = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication()
+						.getPrincipal();
+				filtered = ClientRequest.from(req).header(AuthAdapterConstant.AUTH_HEADER_COOKIE,
+						AuthAdapterConstant.AUTH_COOOKIE_HEADER + userDetail.getToken()).build();
+			}
+			return next.exchange(filtered);
+		}).build();
 	}
 }
 
