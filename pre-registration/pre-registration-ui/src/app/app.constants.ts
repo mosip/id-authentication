@@ -1,7 +1,7 @@
 // export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const COUNTRY_NAME = 'Morroco';
-export const COUNTRY_HIERARCHY = 'Country';
+export const COUNTRY_NAME = 'Morocco';
+// export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
@@ -32,7 +32,7 @@ export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendOtp',
   login: 'validateOtp',
-  logout: 'invalidatetoken',
+  logout: 'invalidateToken',
   // login: 'login',
   // logout: 'logout',
   location_metadata: 'locations/locationhierarchy/',
@@ -79,6 +79,7 @@ export const ERROR_CODES = {
 };
 
 export const CONFIG_KEYS = {
+  mosip_country_code: 'mosip.country.code',
   preregistration_nearby_centers: 'preregistration.nearby.centers',
   preregistration_timespan_rebook: 'preregistration.timespan.rebook',
   mosip_login_mode: 'mosip.login.mode',
@@ -241,4 +242,8 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
 
 export const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-export const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const DAYS = {
+  eng: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  ara: ['يَوم الأحَد', 'يَوم الإثنين', 'يَوم الثلاثاء', 'يَوم الأربعاء', 'يَوم الخميس', 'يَوم الجمعة', 'يَوم السبت'],
+  fra: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+};

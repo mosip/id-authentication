@@ -86,31 +86,46 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
+		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_REPROCESSING, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_REPROCESSING,
+				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING, RegistrationExternalStatusCode.PROCESSING);
 
 		return unmodifiableMap;
 
 	}
 
-	public RegistrationExternalStatusCode getExternalStatus(RegistrationStatusEntity entity) {	
+	public RegistrationExternalStatusCode getExternalStatus(RegistrationStatusEntity entity) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				entity.getReferenceRegistrationId(), "RegistrationStatusMapUtil::getExternalStatus()::entry");
 
 		RegistrationExternalStatusCode mappedValue = null;
 		Map<RegistrationStatusCode, RegistrationExternalStatusCode> mapStatus = RegistrationStatusMapUtil
 				.statusMapper();
-		if(entity.getStatusCode() != null) {
+		if (entity.getStatusCode() != null) {
 			mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(entity.getStatusCode()));
-			if ((entity.getRetryCount() < threshold) && (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
+			if ((entity.getRetryCount() < threshold)
+					&& (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
 				mappedValue = RegistrationExternalStatusCode.RESEND;
 			}
-		}else {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), entity.getReferenceRegistrationId(),
+		} else {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					entity.getReferenceRegistrationId(),
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_STATUS_NOT_EXIST.getMessage());
 		}
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				entity.getReferenceRegistrationId(), "RegistrationStatusMapUtil::getExternalStatus()::exit");		
+				entity.getReferenceRegistrationId(), "RegistrationStatusMapUtil::getExternalStatus()::exit");
 		return mappedValue;
 	}
 

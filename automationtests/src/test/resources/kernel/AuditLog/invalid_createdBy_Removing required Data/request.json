@@ -1,4 +1,7 @@
 {
+  "id": "string",
+  "metadata": {},
+  "request": {
   "eventId": "string",
   "eventName": "string",
   "eventType": "string",
@@ -11,4 +14,7 @@
   "sessionUserName": "string",
   "id": "string",
   "idType": "string"
+},
+  "requesttime": "2018-12-12T11:11:11.256Z",
+  "version": "string"
 }

@@ -1,5 +1,12 @@
 import { AttributeModel } from './attribute.modal';
 
+/**
+ * @description This is the data object for the request object for adding the user.
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class IdentityModel
+ */
 export class IdentityModel {
   constructor(
     public IDSchemaVersion: number,

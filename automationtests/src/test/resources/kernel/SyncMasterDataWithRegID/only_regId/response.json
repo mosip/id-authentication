@@ -1,10 +1,13 @@
 {
-  "timestamp": 1553236058194,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-16T07:36:46.346Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-SNC-140",
-      "errorMessage": "Mac-Address and Serial Number cannot be empty"
+      "message": "Mac-Address and Serial Number cannot be empty"
     }
   ]
 }

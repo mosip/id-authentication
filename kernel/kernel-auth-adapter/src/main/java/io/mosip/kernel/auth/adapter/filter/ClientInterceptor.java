@@ -34,7 +34,9 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
 	private AuthUserDetails getAuthUserDetails() {
 		AuthUserDetails authUserDetails = null;
-		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthUserDetails)
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthUserDetails)
+
 			authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return authUserDetails;
 	}

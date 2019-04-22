@@ -33,7 +33,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
+
+import io.mosip.dbaccess.KernelMasterDataR;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -55,8 +57,8 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchDocumentCategories";
 	private static final String requestJsonName = "fetchDocumentCategoriesRequest";
 	private static final String outputJsonName = "fetchDocumentCategoriesOutput";
-	private static final String service_URI = "/masterdata/v1.0/documentcategories/{langcode}";
-	private static final String service_URI_withcodeAndLangCode = "/masterdata/v1.0/documentcategories/{code}/{langcode}";
+	private static final String service_URI = "/v1/masterdata/documentcategories/{langcode}";
+	private static final String service_URI_withcodeAndLangCode = "/v1/masterdata/documentcategories/{code}/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -170,10 +172,12 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray devicesFromGet = (JSONArray) responseJson.get("documentcategories");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + devicesFromGet.size());
@@ -207,6 +211,7 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}

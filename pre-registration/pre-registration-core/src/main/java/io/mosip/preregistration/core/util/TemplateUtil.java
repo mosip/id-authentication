@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +25,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
@@ -115,15 +112,17 @@ public class TemplateUtil {
 	public Map<String, Object> mapSetting(NotificationDTO acknowledgementDTO) {
 		Map<String, Object> responseMap = new HashMap<>();
 		log.info("sessionId", "idType", "id", "In mapSetting method of TemplateUtil service ");
-		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("dd MMM yyyy");
+		DateTimeFormatter timeFormate = DateTimeFormatter.ofPattern("HH:mm");
 
 		LocalDateTime now = LocalDateTime.now();
-		LocalTime localTime = LocalTime.now(ZoneId.of("UTC"));
+		LocalTime localTime = LocalTime.now();
+		
 
 		responseMap.put("name", acknowledgementDTO.getName());
 		responseMap.put("PRID", acknowledgementDTO.getPreRegistrationId());
 		responseMap.put("Date", dateFormate.format(now));
-		responseMap.put("Time", localTime);
+		responseMap.put("Time", timeFormate.format(localTime));
 		responseMap.put("Appointmentdate", acknowledgementDTO.getAppointmentDate());
 		responseMap.put("Appointmenttime", acknowledgementDTO.getAppointmentTime());
 		return responseMap;
