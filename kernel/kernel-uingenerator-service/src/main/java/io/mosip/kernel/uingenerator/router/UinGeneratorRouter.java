@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +20,6 @@ import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -29,6 +29,7 @@ import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
+import io.mosip.kernel.uingenerator.util.SigningUtil;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
@@ -60,7 +61,7 @@ public class UinGeneratorRouter {
 	private AuthHandler authHandler;
 
 	@Autowired
-	private SignatureUtil signatureUtil;
+	private SigningUtil signingUtil;
 
 	/**
 	 * Field for UinGeneratorService
@@ -80,6 +81,7 @@ public class UinGeneratorRouter {
 		Router router = Router.router(vertx);
 		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
@@ -93,23 +95,24 @@ public class UinGeneratorRouter {
 	}
 
 	private void getRouter(Vertx vertx, RoutingContext routingContext) {
+
 		UinResponseDto uin = new UinResponseDto();
 		uin = uinGeneratorService.getUin();
 		ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 		reswrp.setResponse(uin);
 		reswrp.setErrors(null);
 		String resWrpJsonString = null;
+
 		try {
 			resWrpJsonString = objectMapper.writeValueAsString(reswrp);
 		} catch (JsonProcessingException e1) {
 
 			e1.printStackTrace();
 		}
-		String signedData = signatureUtil.signResponse(resWrpJsonString);
+		String signedData = signingUtil.signResponseData(resWrpJsonString, routingContext);
 		try {
 
 			routingContext.response().putHeader("response-signature", signedData)
-					.putHeader("content-type", "application/json").setStatusCode(200)
 					.end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),

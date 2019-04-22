@@ -1,10 +1,14 @@
-package io.mosip.kernel.responsesignature.util;
+package io.mosip.kernel.uingenerator.util;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -28,7 +33,8 @@ import io.mosip.kernel.responsesignature.constant.SignatureUtilConstant;
 import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
-
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * SigningUtil class.
@@ -41,6 +47,7 @@ public class SigningUtil {
 
 	/** The rest template. */
 	@Autowired
+	@Qualifier("uinRestTemplate")
 	RestTemplate restTemplate;
 
 	/** The sync data request id. */
@@ -65,13 +72,13 @@ public class SigningUtil {
 	 *
 	 * @param response
 	 *            the response
-	 * @return {@link String} digest as plain text 
+	 * @return {@link String} digest as plain text
 	 */
-	public String signResponseData(String response) {
+	public String signResponseData(String response, RoutingContext routingContext) {
 
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
 		System.out.println("encoded data--->"+CryptoUtil.encodeBase64(responseByteArray));
-        CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
+		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId(SignatureUtilConstant.APPLICATION_ID);
 		cryptoManagerRequestDto.setReferenceId(SignatureUtilConstant.REFERENCE_ID);
 		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));
@@ -83,7 +90,15 @@ public class SigningUtil {
 		ResponseEntity<String> responseEntity = null;
 
 		try {
-			responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+			HttpServerRequest request = routingContext.request();
+			String token = request.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+			httpHeaders.add(AuthAdapterConstant.AUTH_HEADER_COOKIE, token);
+			HttpEntity<RequestWrapper<CryptoManagerRequestDto>> httpEntity = new HttpEntity<>(requestWrapper,
+					httpHeaders);
+
+			responseEntity = restTemplate.postForEntity(encryptUrl, httpEntity, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
