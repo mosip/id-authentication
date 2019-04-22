@@ -3,10 +3,10 @@
 CREATE TABLE idrepo.uin_document(
 	uin_ref_id character varying(36) NOT NULL,
 	doccat_code character varying(36) NOT NULL,
-	doctyp_code character varying(36),
-	doc_id character varying(128),
+	doctyp_code character varying(36) NOT NULL,
+	doc_id character varying(128) NOT NULL,
 	doc_name character varying(128) NOT NULL,
-	docfmt_code character varying(36),
+	docfmt_code character varying(36) NOT NULL,
 	doc_hash character varying(64) NOT NULL,
 	lang_code character varying(3) NOT NULL,
 	cr_by character varying(256) NOT NULL,
