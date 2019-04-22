@@ -1103,7 +1103,7 @@ public class RegistrationConstants {
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";
 	public static final String REG_PKT_APPRVL_TIME_EXCEED = "REG_PKT_APPRVL_TIME_EXCEED";
-	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_EXPORT_EXCEED";
+	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "OPT_TO_REG_REACH_MAX_LIMIT";
 	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "OPT_TO_REG_OUTSIDE_LOCATION";
@@ -1255,7 +1255,7 @@ public class RegistrationConstants {
 	public static final String ERRORS = "errors";
 	public static final String ERROR_MSG ="message";
 	public static final String OK_MSG ="ok";
-	public static final String NEW_LINE ="\n";
+	public static final String NEW_LINE ="\\n";
 
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
@@ -1277,6 +1277,6 @@ public class RegistrationConstants {
 	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
 	
 	//TODO Need to discuss with Sravya about code
-	public static String isInitialSetUp="mosip.registration.isInitialSetUp";
+	public static String INITIAL_SETUP="mosip.registration.initial_setup";
 
 }
