@@ -54,6 +54,7 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_RECEIVED, RegistrationExternalStatusCode.RECEIVED);
 
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_FAILED, RegistrationExternalStatusCode.REREGISTER);
+		statusMap.put(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED,RegistrationExternalStatusCode.RESEND);
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM, RegistrationExternalStatusCode.PROCESSING);

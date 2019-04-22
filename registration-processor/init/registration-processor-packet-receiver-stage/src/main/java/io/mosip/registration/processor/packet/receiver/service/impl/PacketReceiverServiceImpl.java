@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -53,6 +54,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -103,7 +105,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private String fileSize;
 
 	/** The registration exception mapper util. */
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+	private RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+
+	private RegistrationStatusEntity entity = new RegistrationStatusEntity();
 
 	/** The reg entity. */
 	private SyncRegistrationEntity regEntity;
@@ -264,6 +268,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		storageFlag = true;
 		isTransactionSuccessful = true;
 		description = "Packet sucessfully uploaded for registrationId " + registrationId;
+
 	}
 
 	/**
@@ -310,7 +315,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
 			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
+					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
@@ -442,8 +447,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setInternalError(false);
 
 		messageDTO.setIsValid(false);
-		storageFlag = false;
-
 		String fileOriginalName = file.getName();
 		registrationId = fileOriginalName.split("\\.")[0];
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -457,6 +460,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
 
 			scanFile(decryptedData);
+			fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
+			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+			dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
+			dto.setLatestTransactionTypeCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			messageDTO.setIsValid(Boolean.TRUE);
+			description = PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "PacketReceiverServiceImpl::processPacket()::exit");
 
@@ -475,7 +484,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		} catch (PacketDecryptionFailureException e) {
 			dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 			dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
-			dto.setLatestTransactionTypeCode("");
+			dto.setLatestTransactionTypeCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
 					+ e.getErrorText();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -500,10 +510,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
-		}
-
-		if (storageFlag) {
-			messageDTO.setIsValid(true);
 		}
 
 		return messageDTO;

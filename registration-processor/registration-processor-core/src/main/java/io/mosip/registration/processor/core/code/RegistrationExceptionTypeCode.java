@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum RegistrationExceptionTypeCode.
  */
@@ -13,6 +14,9 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The packet not found exception. */
 	PACKET_NOT_FOUND_EXCEPTION,
+	
+	/** The packet uploaded to landing zone. */
+	PACKET_UPLOADED_TO_LANDING_ZONE,
 
 	/** The unexcepted error. */
 	UNEXCEPTED_ERROR,
@@ -145,26 +149,38 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The virus scan failed exception. */
 	VIRUS_SCAN_FAILED_EXCEPTION,
+	
+	/** The virus scanner service failed. */
+	VIRUS_SCANNER_SERVICE_FAILED,
 
 	/** The ioexception. */
 	IOEXCEPTION,
 
+	/** The file io exception. */
 	FILE_IO_EXCEPTION,
 
+	/** The packet osi validation failed. */
 	PACKET_OSI_VALIDATION_FAILED,
 
+	/** The packet structural validation failed. */
 	PACKET_STRUCTURAL_VALIDATION_FAILED,
 
+	/** The packet uploader failed. */
 	PACKET_UPLOADER_FAILED,
 
+	/** The packet uin generation failed. */
 	PACKET_UIN_GENERATION_FAILED,
 
+	/** The invocation target exception. */
 	INVOCATION_TARGET_EXCEPTION,
 
+	/** The introspection exception. */
 	INTROSPECTION_EXCEPTION,
 
+	/** The base unchecked exception. */
 	BASE_UNCHECKED_EXCEPTION,
 
+	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED
 
 }
