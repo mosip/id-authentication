@@ -79,7 +79,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		Object[][] readFolder = null;
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
-			switch ("smokeAndRegression") {
+		/*	switch ("smokeAndRegression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -88,7 +88,8 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				break;
 			default:
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-			}
+			}*/
+			readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testParam);
 		}catch (IOException | ParseException e) {
 			logger.error("Exception occurred in Packet Receiver class in readData method"+e);
 		}

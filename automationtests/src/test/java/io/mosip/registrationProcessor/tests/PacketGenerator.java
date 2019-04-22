@@ -110,6 +110,10 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 
 	 	 	 //generation of actual response
 	 	 	 actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
+	 	 	 if(actualResponse.getStatusCode()==200) {
+	 	 		 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
+		 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID); 
+	 	 	 }
 	 	 /*	 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
 	 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID);
 	 	 */	 //Asserting actual and expected response
