@@ -4,5 +4,8 @@
              "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
              "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_EmptyValue":"",
              "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_SpecialCharacters":"",
-             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_GreaterThanMaxLength":""
+             "FetchAppointmentDetailsByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"",
+             "FetchAppointmentDetailsByPassingInvalidStatusCode_Consumed":"",
+             "FetchAppointmentDetailsByPassingInvalidStatusCode_Expired":"",
+             "FetchAppointmentDetailsByPassingInvalidStatusCode_PendingAppointment":""
 }

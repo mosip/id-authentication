@@ -4,6 +4,10 @@
    "CancelBookingAppointmentByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
    "CancelBookingAppointmentByPassingInvalidPreRegistrationId_EmptyValue":"",
    "CancelBookingAppointmentByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"",
-   "CancelBookingAppointmentByPassingInvalidPreRegistrationId_SpecialCharacters":""
+   "CancelBookingAppointmentByPassingInvalidPreRegistrationId_SpecialCharacters":"",
+   "CancelBookingAppointmentByPassingInvalidStatusCode_Consumed":"",
+   "CancelBookingAppointmentByPassingInvalidStatusCode_Expired":"",
+   "CancelBookingAppointmentByPassingInvalidStatusCode_PendingAppointment":"",
+   "CancelBookingAppointmentForCancelledApplication":""
             
 }

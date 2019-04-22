@@ -59,6 +59,7 @@ import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
+import io.mosip.preregistration.dao.PreregistratonDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -90,7 +91,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_CreateApplnURI;
-
+	PreregistratonDAO dao=new PreregistratonDAO();
 	private static String preReg_DataSyncnURI;
 	private static String preReg_NotifyURI;
 	private static String preReg_DocumentUploadURI;
@@ -933,8 +934,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
 		
-		preReg_GetDocByDocId=preReg_GetDocByDocId+DocId;
-		response = applnLib.getRequestPathAndQueryParam(preReg_GetDocByDocId, parm);	
+		String preRegGetDocByDocId=preReg_GetDocByDocId+DocId;
+		response = applnLib.getRequestPathAndQueryParam(preRegGetDocByDocId, parm);	
 		return response;
 	}
 	
@@ -945,8 +946,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response deleteAllDocumentByPreId(String preId) 
 	{
 		
-		preReg_DeleteAllDocumentByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
-		response = applnLib.deleteRequestWithPathParam(preReg_DeleteAllDocumentByPreIdURI);
+		String preRegDeleteAllDocumentByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
+		response = applnLib.deleteRequestWithPathParam(preRegDeleteAllDocumentByPreIdURI);
 		
 		return response;
 	}
@@ -961,8 +962,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("preRegistrationId", preId);
 		
-		prereg_DeleteDocumentByDocIdURI=prereg_DeleteDocumentByDocIdURI+docId;
-		response = applnLib.deleteRequestPathAndQueryParam(prereg_DeleteDocumentByDocIdURI, parm);
+		String preregDeleteDocumentByDocIdURI=prereg_DeleteDocumentByDocIdURI+docId;
+		response = applnLib.deleteRequestPathAndQueryParam(preregDeleteDocumentByDocIdURI, parm);
 		
 		return response;
 	}
@@ -996,12 +997,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response copyUploadedDocuments(String destPreId,String sourcePreId,String docCatCode) {
 
-		preReg_CopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
+		String preRegCopyDocumentsURI=preReg_CopyDocumentsURI+destPreId;
 		
 		HashMap<String, String> parm= new HashMap<>();
 		parm.put("catCode", docCatCode);
 		parm.put("sourcePreId", sourcePreId);
-		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_CopyDocumentsURI, parm);
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preRegCopyDocumentsURI, parm);
 		return response;
 	}
 
@@ -1015,8 +1016,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		String regCenterId = randomRegistrationCenterId();		
 		
-		preReg_FetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
-		response = applnLib.getRequestWithoutParm(preReg_FetchCenterIDURI);
+		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
 		
 		return response;
 	}
@@ -1173,8 +1174,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		System.out.println("Request::Value Of book App::"+request.toString());
 		
-		preReg_BookingAppointmentURI=preReg_BookingAppointmentURI+preID;
-		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
+		String preRegBookingAppointmentURI=preReg_BookingAppointmentURI+preID;
+		response = applnLib.postRequest(request, preRegBookingAppointmentURI);
 		return response;
 	}
 
@@ -1257,8 +1258,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response FetchAppointmentDetails(String preID) {
 
-		preReg_FecthAppointmentDetailsURI=preReg_FecthAppointmentDetailsURI+preID;
-		response = applnLib.get_RequestWithoutBody(preReg_FecthAppointmentDetailsURI);
+		String preRegFecthAppointmentDetailsURI=preReg_FecthAppointmentDetailsURI+preID;
+		response = applnLib.get_RequestWithoutBody(preRegFecthAppointmentDetailsURI);
 		return response;
 	}
 
@@ -1269,10 +1270,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response CancelBookingAppointment(String preID) {
 
-		preReg_CancelAppointmentURI=preReg_CancelAppointmentURI+preID;
-		response = applnLib.putRequest_WithoutBody(preReg_CancelAppointmentURI);
+		String preReg_CancelAppURI=preReg_CancelAppointmentURI+preID;
+		response = applnLib.putRequest_WithoutBody(preReg_CancelAppURI);
 		return response;
 	}
+
 
 	/*
 	 * Generic method to Cancel Booking Appointment Details
@@ -1442,8 +1444,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public String randomRegistrationCenterId() {
 		Random rand = new Random();
-		List<String> givenList = Lists.newArrayList("10001", "10002", "10003", "10004", "10005", "10006", "10007",
-				"10008", "10009", "10010", "10011", "10012", "10013", "10014", "10015");
+		List<String> givenList = Lists.newArrayList("10002","10013","10014","10010","10015","10006","10004","10011",
+				"10008","10001","10012","10005","10003","10007","10009");
 		String s = null;
 		int numberOfElements = givenList.size();
 		for (int i = 0; i < numberOfElements; i++) {
@@ -1760,6 +1762,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return timeStamp;
 	}
 
+	
+	public void updateStatusCode(String statusCode,String preregId)
+	{
+		dao.updateStatusCode(statusCode, preregId);
+	}
+	
+	
+	public  List<? extends Object> preregFetchPreregDetails(String preregId)
+	{
+		return dao.preregFetchPreregDetails(preregId);
+	}
+	
 	@BeforeClass
 	public void PreRegistrationResourceIntialize() {
 		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
@@ -1768,7 +1782,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_BookingAppointmentURI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
 		preReg_DataSyncnURI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		preReg_FetchRegistrationDataURI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		preReg_FecthAppointmentDetailsURI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
 		preReg_FetchAllDocumentURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
 		prereg_DeleteDocumentByDocIdURI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
