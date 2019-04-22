@@ -2057,8 +2057,8 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 		}
-//		if (isValid)
-//			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+		if (isValid)
+			isValid = validation.validateUinOrRid(parentUinId, parentRegId, isChild, uinValidator, ridValidator);
 
 		return isValid;
 
