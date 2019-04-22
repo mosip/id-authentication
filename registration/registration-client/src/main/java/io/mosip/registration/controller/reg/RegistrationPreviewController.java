@@ -317,8 +317,16 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-					RegistrationConstants.FINGERPRINT_CAPTURE);
+			if(RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.FINGERPRINT_CAPTURE);
+			} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.IRIS_CAPTURE);
+			} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.FACE_CAPTURE);
+			} 
 		}
 
 	}
