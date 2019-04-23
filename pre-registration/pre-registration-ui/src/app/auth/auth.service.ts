@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserIdleService } from 'angular-user-idle';
 import { DataStorageService } from '../core/services/data-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private router: Router, private dataStorageService: DataStorageService) {}
+  constructor(
+    private router: Router,
+    private dataStorageService: DataStorageService,
+    private userIdle: UserIdleService
+  ) {}
 
   token: string;
 
@@ -30,6 +35,6 @@ export class AuthService {
     this.removeToken();
     this.dataStorageService.onLogout().subscribe(res => console.log(res));
     this.router.navigate(['/']);
-    window.location.reload();
+    this.userIdle.stopWatching();
   }
 }

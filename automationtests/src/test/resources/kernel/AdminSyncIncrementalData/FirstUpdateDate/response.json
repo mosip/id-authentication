@@ -1,0 +1,22 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-09T10:52:57.291Z",
+  "metadata": null,
+  "response": {
+    "syncJobDefinitions": [
+      {
+        "id": "RDJ_J00010",
+        "name": "Registration Packet Deletion Job",
+        "apiName": "registrationDeletionJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      }
+    ]
+  },
+  "errors": null
+}

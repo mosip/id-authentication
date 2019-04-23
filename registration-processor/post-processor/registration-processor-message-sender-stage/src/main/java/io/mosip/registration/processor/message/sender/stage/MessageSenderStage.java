@@ -1,12 +1,20 @@
 package io.mosip.registration.processor.message.sender.stage;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.constant.JsonConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +89,10 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
 
+	/** The adapter. */
+	@Autowired
+	private FileSystemAdapter adapter;
+
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
@@ -151,6 +163,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 
 	private ObjectMapper mapper=new ObjectMapper();
 
+	/** The identity iterator util. */
+	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -171,12 +186,17 @@ public class MessageSenderStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		String id = object.getRid();
-		String regType = object.getReg_type();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 
 		try {
+			InputStream packetMetaInfoStream = adapter.getFile(id, PacketFiles.PACKET_META_INFO.name());
+			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+					PacketMetaInfo.class);
+			List<FieldValue> metadataList = packetMetaInfo.getIdentity().getMetaData();
+			String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
+
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
 			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
 			if (type != null) {
@@ -310,7 +330,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			subject = uinGeneratedSubject;
 			break;
 		case UIN_UPDATE:
-			if(regType == null || regType.equalsIgnoreCase(RegistrationType.NEW.name()) ) {
+			if(regType.equalsIgnoreCase(RegistrationType.NEW.name()) ) {
 				smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
 				emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
 				idType = IdType.UIN;

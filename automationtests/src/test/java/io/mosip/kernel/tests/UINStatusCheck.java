@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -19,6 +22,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -35,6 +39,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class UINStatusCheck extends BaseTestCase implements ITest{
 
 	public UINStatusCheck() {
@@ -46,6 +54,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	/**
 	 *  Declaration of all variables
 	 */
+	
 	private static Logger logger = Logger.getLogger(UINStatusCheck.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
@@ -53,7 +62,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String uingenerator = "/uingenerator/v1.0/uin";
+	private static final String uingenerator = "/v1/uingenerator/uin";
 	static String dest = "";
 	static String folderPath = "kernel/UINStatusCheck";
 	static String outputFile = "UINStatusCheckOutput.json";
@@ -61,10 +70,13 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
+	
+	public KernelMasterDataR dbConnection=new KernelMasterDataR();
+		
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -110,24 +122,26 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		 * Calling the GET method with no parameters
 		 */
 		String query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
-		List<String>list=KernelMasterDataR.getDataFromDB(UinEntity.class, query);
+	
+		List<String>list=dbConnection.getData(query);
 		
 		int total=list.size();
 		
 		
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
-		
-		String uin_number=res.getBody().jsonPath().get("uin");
-		
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
+		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
+				
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
 		
-		List<String> status_list = KernelMasterDataR.getDataFromDB(UinEntity.class, query1);
+		List<String> status_list = dbConnection.getData(query1);
+		
 		String status=status_list.get(0);
 		for(String uin:list)
 		{
 			if(uin.equals(uin_number))
 			{
 				finalStatus="pass";
+				
 			
 				if(status.equals("ISSUED"))
 				{
@@ -182,6 +196,8 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
 				logger.info("Successfully updated Results to UINStatusCheckOutput.json file.......................!!");
+				
+				
 			}
 		}
 

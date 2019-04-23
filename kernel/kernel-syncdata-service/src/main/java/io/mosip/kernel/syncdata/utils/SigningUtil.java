@@ -46,7 +46,7 @@ public class SigningUtil {
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
-	@Value("${mosip.kernel.syncdata.cryptomanager-encrypt-url:http://localhost:8087/cryptomanager/encrypt/private}")
+	@Value("${mosip.kernel.syncdata.cryptomanager-encrypt-url}")
 	private String encryptUrl;
 
 	@Autowired

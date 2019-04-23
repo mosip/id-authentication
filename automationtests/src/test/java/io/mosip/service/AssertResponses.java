@@ -34,8 +34,8 @@ public class AssertResponses {
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-		logger.info(obj1);
-		logger.info(obj2);
+//		logger.info(obj1);
+//		logger.info(obj2);
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();

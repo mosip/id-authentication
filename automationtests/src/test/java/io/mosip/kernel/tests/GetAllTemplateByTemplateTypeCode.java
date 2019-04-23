@@ -36,6 +36,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements ITest{
 
 	public GetAllTemplateByTemplateTypeCode() {
@@ -46,13 +50,13 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetDeviceHistory.class);
+	private static Logger logger = Logger.getLogger(GetAllTemplateByTemplateTypeCode.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String fetchAllTemplate = "/masterdata/v1.0/templates/templatetypecodes/{code}";
+	private static final String fetchAllTemplate = "/v1/masterdata/templates/templatetypecodes/{code}";
 	static String dest = "";
 	static String folderPath = "kernel/GetAllTemplateByTemplateTypeCode";
 	static String outputFile = "GetAllTemplateByTemplateTypeCodeOutput.json";
@@ -64,7 +68,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -78,7 +82,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	@DataProvider(name = "GetAllTemplateByTemplateTypeCode")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -116,7 +120,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */
@@ -126,7 +130,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 //    	  {
 //    		        String id = actualRequest.get("id").toString();
 //	                String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
+//				boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
 //			if(valid)
 //					{
 //						finalStatus ="Pass";
@@ -173,7 +177,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetDeviceHistory.testCaseName);
+				f.set(baseTestMethod, GetAllTemplateByTemplateTypeCode.testCaseName);
 
 				
 			} catch (Exception e) {

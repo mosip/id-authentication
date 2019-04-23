@@ -73,10 +73,10 @@ public class OtpEntity {
 	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
-	@Column(name = "cr_by")
+	@Column(name = "cr_by", length = 256)
 	private String createdBy;
 
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
 	@Column(name = "cr_dtimes")
