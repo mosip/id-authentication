@@ -22,6 +22,8 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -206,7 +208,7 @@ public class ResponseSignatureAdviceTest {
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
 		
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenThrow(NullPointerException.class);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenThrow(JsonProcessingException.class);
 
 		responseSignatureAdvice.responseSignature(joinPointMock, linkedMap);
 
