@@ -9,7 +9,7 @@
 		<version>0.10.2</version>
 	</parent>
 
-	<artifactId>partnerdemo-services</artifactId>
+	<artifactId>partnerdemo-service</artifactId>
 	<packaging>jar</packaging>
 
 	<repositories>
