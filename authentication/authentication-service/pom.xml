@@ -72,29 +72,15 @@
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-cryptomanager-service</artifactId>
+			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 			<version>${kernel.core.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-auth-adapter</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-web</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-config</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-core</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-crypto-jce</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 
 		<dependency>
