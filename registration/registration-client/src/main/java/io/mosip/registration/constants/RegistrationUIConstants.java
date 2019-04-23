@@ -313,4 +313,7 @@ public class RegistrationUIConstants {
 	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
 	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
 	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
+	
+	//AUTH TOKEN
+		public static String UNABLE_TO_GET_AUTH_TOKEN= bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
 }
