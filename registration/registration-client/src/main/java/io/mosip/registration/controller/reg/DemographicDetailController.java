@@ -85,6 +85,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -460,6 +461,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private Label parentUinIdLocalLanguageLabel;
 
+	@FXML
+	private Label parentUinIdLabel;
 
 	private boolean isChild;
 
@@ -853,12 +856,10 @@ public class DemographicDetailController extends BaseController {
 					
 					parentRegIdLocalLanguage.clear();
 					parentRegId.clear();
-					applicationRidPane.setDisable(false);
-					
 					parentUinIdLocalLanguage.clear();
 					parentUinId.clear();
+					applicationRidPane.setDisable(false);
 					applicationUinIdPane.setDisable(true);
-					
 					parentRegIdMessage.setVisible(false);
 					parentRegIdLocalLanguageMessage.setVisible(false);
 					parentUinIdMessage.setVisible(false);
@@ -870,12 +871,10 @@ public class DemographicDetailController extends BaseController {
 					
 					parentRegIdLocalLanguage.clear();
 					parentRegId.clear();
-					applicationRidPane.setDisable(true);
-					
 					parentUinIdLocalLanguage.clear();
 					parentUinId.clear();
+					applicationRidPane.setDisable(true);
 					applicationUinIdPane.setDisable(false);
-					
 					parentRegIdMessage.setVisible(false);
 					parentRegIdLocalLanguageMessage.setVisible(false);
 					parentUinIdMessage.setVisible(false);
@@ -883,6 +882,7 @@ public class DemographicDetailController extends BaseController {
 
 
 				}
+				
 			});
 
 			uinRidToggleLabel1.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
@@ -1103,7 +1103,10 @@ public class DemographicDetailController extends BaseController {
 									updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
 									updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE, false);
 									updatePageFlow(RegistrationConstants.IRIS_CAPTURE, false);
-									
+									parentRegIdLocalLanguage.clear();
+									parentRegId.clear();
+									parentUinIdLocalLanguage.clear();
+									parentUinId.clear();
 									parentDetailPane.setManaged(true);
 									parentDetailPane.setVisible(true);
 									parentDetailPane.setDisable(false);
@@ -1126,6 +1129,10 @@ public class DemographicDetailController extends BaseController {
 								documentScanController.setChild(isChild);
 								parentName.clear();
 								parentRegId.clear();
+								parentRegIdLocalLanguage.clear();
+								parentRegId.clear();
+								parentUinIdLocalLanguage.clear();
+								parentUinId.clear();
 							}
 						}
 					}
@@ -1234,7 +1241,7 @@ public class DemographicDetailController extends BaseController {
 			parentNameLocalLanguage.setPromptText(localProperties.getString("parentName"));
 			parentUinIdLocalLanguageLabel.setText(localProperties.getString("parentUinId"));
 			parentRegIdLocalLanguageLabel.setText(localProperties.getString("parentRegId"));
-
+			parentRegIdLocalLanguage.setPromptText(localProperties.getString("parentRegId"));
 			parentUinIdLocalLanguage.setPromptText(localProperties.getString("parentUinId"));
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
@@ -1250,6 +1257,15 @@ public class DemographicDetailController extends BaseController {
 			ddLocalLanguageLabel.setText(localProperties.getString("dd"));
 			mmLocalLanguageLabel.setText(localProperties.getString("mm"));
 			yyyyLocalLanguageLabel.setText(localProperties.getString("yyyy"));
+			parentRegIdLabel.setMinWidth(Region.USE_PREF_SIZE);
+			parentRegIdLabel.setMaxWidth(Region.USE_PREF_SIZE);
+			parentRegIdLocalLanguageLabel.setMinWidth(Region.USE_PREF_SIZE);
+			parentRegIdLocalLanguageLabel.setMaxWidth(Region.USE_PREF_SIZE);
+			parentUinIdLabel.setMinWidth(Region.USE_PREF_SIZE);
+			parentUinIdLabel.setMaxWidth(Region.USE_PREF_SIZE);
+			parentUinIdLocalLanguageLabel.setMinWidth(Region.USE_PREF_SIZE);
+			parentUinIdLocalLanguageLabel.setMaxWidth(Region.USE_PREF_SIZE);
+
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
@@ -1639,17 +1655,7 @@ public class DemographicDetailController extends BaseController {
 			registrationNavlabel.setText(applicationLabelBundle.getString("uinUpdateNavLbl"));
 			parentFlowPane.setDisable(false);
 			fetchBtn.setVisible(false);
-
 			parentRegIdLabel.setText(applicationLabelBundle.getString("uinIdUinUpdate"));
-			parentUinIdLocalLanguageLabel.setText(localLabelBundle.getString("parentUinId"));
-			parentRegIdLocalLanguageLabel.setText(localLabelBundle.getString("parentRegId"));
-
-			//local language needs to be set
-			parentUinId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
-			parentRegId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
-
-			parentUinIdLocalLanguage.setPromptText(localLabelBundle.getString("parentUinId"));
-
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 			updateUinId.setVisible(true);
 			updateUinId.setDisable(true);
