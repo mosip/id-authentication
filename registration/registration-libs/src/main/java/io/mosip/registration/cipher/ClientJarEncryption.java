@@ -6,8 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -167,8 +170,12 @@ public class ClientJarEncryption {
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
+					File rxtxJarFolder = new File(args[8]);
+					LinkedList<File> jars = new LinkedList<>( Arrays.asList(listOfJars.listFiles()));
+					jars.addAll(Arrays.asList(rxtxJarFolder.listFiles()));
+					
 					// Adding lib files into map
-					for (File files : listOfJars.listFiles()) {
+					for (File files : jars) {
 
 						if (files.getName().contains(REGISTRATION)) {
 
