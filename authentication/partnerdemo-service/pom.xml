@@ -6,10 +6,10 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.5</version>
 	</parent>
 
-	<artifactId>partnerdemo-service</artifactId>
+	<artifactId>partnerdemo-services</artifactId>
 	<packaging>jar</packaging>
 
 	<repositories>
@@ -28,8 +28,6 @@
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<sonar.skip>true</sonar.skip>
-		<ida-version>0.10.1</ida-version>
-		<kernel-version>0.10.1</kernel-version>
 	</properties>
 
 	<dependencies>
@@ -73,22 +71,22 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel-version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>${kernel-version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel-version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>${ida-version}</version>
+			<version>${ida.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -128,7 +126,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>${kernel-version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 
 		<dependency>
@@ -144,7 +142,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>
-			<version>${kernel-version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
