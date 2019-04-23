@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
+import java.nio.channels.UnresolvedAddressException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -226,9 +227,12 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (IdRepoAppUncheckedException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e); 
 		} catch (FSAdapterException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppUncheckedException(
+			throw new IdRepoAppException(
 					e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
 							? IdRepoErrorConstants.FILE_NOT_FOUND
 							: IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR);
@@ -325,7 +329,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				} catch (IdRepoAppException e) {
 					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
-				} catch (IOException e) {
+				} catch (IOException | UnresolvedAddressException e) {
 					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
 					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 				}
