@@ -1,11 +1,18 @@
-/**
- * 
- */
 package io.mosip.kernel.uingenerator.router;
 
-import java.io.IOException;
+import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +21,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.uingenerator.config.OpenApiRoutePublisher;
+import io.mosip.kernel.uingenerator.config.Required;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -28,11 +39,20 @@ import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
+import io.swagger.v3.core.util.Json;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.Schema;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 /**
  * Router for vertx server
@@ -45,6 +65,9 @@ import io.vertx.ext.web.handler.BodyHandler;
  */
 @Component
 public class UinGeneratorRouter {
+
+	@Value("${uin.swagger.base.url}")
+	private String swaggerBaseUrl;
 
 	/**
 	 * Field for environment
@@ -67,7 +90,8 @@ public class UinGeneratorRouter {
 	/**
 	 * Creates router for vertx server
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 * @return Router
 	 */
 
@@ -75,6 +99,10 @@ public class UinGeneratorRouter {
 		Router router = Router.router(vertx);
 		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+		router.route().handler(routingContext -> {
+			routingContext.response().headers().add(CONTENT_TYPE, UinGeneratorConstant.APPLICATION_JSON);
+			routingContext.next();
+		});
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
@@ -83,9 +111,55 @@ public class UinGeneratorRouter {
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
 		}
-		router.put(path).consumes("application/json").handler(this::updateRouter);
+		router.put(path).consumes(UinGeneratorConstant.APPLICATION_JSON).handler(this::updateRouter);
+		OpenAPI openAPIDoc = OpenApiRoutePublisher.publishOpenApiSpec(router, "spec", "UIN Generation Service", "1.0.0",
+				swaggerBaseUrl);
+		openAPIDoc
+				.addTagsItem(new io.swagger.v3.oas.models.tags.Tag().name("Generate UIN").description("Generate UIN"));
+		openAPIDoc.addTagsItem(
+				new io.swagger.v3.oas.models.tags.Tag().name("UIN Status Update").description("Update UIN status"));
+
+		ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.mosip.kernel.uingenerator.dto");
+
+		Map<String, Object> map = new HashMap<>();
+
+		for (ClassPath.ClassInfo modelClass : modelClasses) {
+
+			Field[] fields = FieldUtils.getFieldsListWithAnnotation(modelClass.load(), Required.class)
+					.toArray(new Field[0]);
+			List<String> requiredParameters = new ArrayList<>();
+
+			for (Field requiredField : fields) {
+				requiredParameters.add(requiredField.getName());
+			}
+
+			fields = modelClass.load().getDeclaredFields();
+
+			for (Field field : fields) {
+				mapParameters(field, map);
+			}
+
+			openAPIDoc.schema(modelClass.getSimpleName(), new Schema().title(modelClass.getSimpleName()).type("object")
+					.required(requiredParameters).properties(map));
+
+			map = new HashMap<>();
+		}
+		router.get("/swagger").handler(res -> res.response().setStatusCode(200).end(Json.pretty(openAPIDoc))
+
+		);
+		router.route(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/*").handler(
+				StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot/node_modules/swagger-ui-dist"));
 		return router;
 	}
+
+	@Operation(summary = "Generate UIN", method = "GET", operationId = "v1/uingenerator/uin", tags = {
+			"Generate UIN" }, responses = {
+					@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", encoding = @Encoding(contentType = "application/json"), schema = @io.swagger.v3.oas.annotations.media.Schema(name = "uinResponseDto", example = "{'errors':["
+							+ "{" + "'errorCode':'string'," + "'message':'string'" + "}" + "]," + "'id': 'string',"
+							+ "'metadata': {}," + "'response': {" + "'uin': '72638402372'" + "},"
+							+ "'responsetime': '2019-04-22T12:12:12.121Z'," + "'version': 'string'"
+							+ "}", implementation = Object.class))),
+					@ApiResponse(responseCode = "500", description = "Internal Server Error.") })
 
 	private void getRouter(Vertx vertx, RoutingContext routingContext) {
 		UinResponseDto uin = new UinResponseDto();
@@ -94,8 +168,8 @@ public class UinGeneratorRouter {
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -109,10 +183,18 @@ public class UinGeneratorRouter {
 		}
 	}
 
+	@Operation(summary = "Update an UIN status", method = "PUT", operationId = "v1/uingenerator/uin", description = "Update UIN Status", tags = {
+			"UIN Status Update" }, requestBody = @RequestBody(description = "JSON object of product", content = @Content(mediaType = "application/json", encoding = @Encoding(contentType = "application/json"), schema = @io.swagger.v3.oas.annotations.media.Schema(name = "uinStatusUpdateReponseDto", example = "{"
+					+ "'id': 'string'," + "'metadata': {}," + "'request': {" + "'uin': '72638402372',"
+					+ "'status': 'ASSIGNED'" + "}," + "'requesttime': '2019-04-22T12:12:12.121Z',"
+					+ "'version': 'string'" + "}", implementation = Object.class)), required = true), responses = {
+							@ApiResponse(responseCode = "200", description = "UIN Updated."),
+							@ApiResponse(responseCode = "500", description = "Internal Server Error.") })
 	/**
 	 * update router for update the status of the given UIN
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
@@ -142,8 +224,8 @@ public class UinGeneratorRouter {
 			reswrp.setId(reqwrp.getId());
 			reswrp.setVersion(reqwrp.getVersion());
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -167,7 +249,8 @@ public class UinGeneratorRouter {
 	/**
 	 * Checks and generate uins
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);
@@ -187,8 +270,8 @@ public class UinGeneratorRouter {
 			}
 		}
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
@@ -200,10 +283,49 @@ public class UinGeneratorRouter {
 		errorResponse.setId(reqwrp.getId());
 		errorResponse.setVersion(reqwrp.getVersion());
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
+	}
+
+	public ImmutableSet<ClassPath.ClassInfo> getClassesInPackage(String pckgname) {
+		try {
+			ClassPath classPath = ClassPath.from(Thread.currentThread().getContextClassLoader());
+			return classPath.getTopLevelClasses(pckgname);
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private void mapParameters(Field field, Map<String, Object> map) {
+		Class type = field.getType();
+		Class componentType = field.getType().getComponentType();
+
+		if (isPrimitiveOrWrapper(type)) {
+			Schema primitiveSchema = new Schema();
+			primitiveSchema.type(field.getType().getSimpleName());
+			map.put(field.getName(), primitiveSchema);
+		} else {
+			HashMap<String, Object> subMap = new HashMap<>();
+
+			if (isPrimitiveOrWrapper(componentType)) {
+				HashMap<String, Object> arrayMap = new HashMap<>();
+				arrayMap.put("type", componentType.getSimpleName() + "[]");
+				subMap.put("type", arrayMap);
+			} else {
+				subMap.put("$ref", "#/components/schemas/" + componentType.getSimpleName());
+			}
+
+			map.put(field.getName(), subMap);
+		}
+	}
+
+	private Boolean isPrimitiveOrWrapper(Type type) {
+		return type.equals(Double.class) || type.equals(Float.class) || type.equals(Long.class)
+				|| type.equals(Integer.class) || type.equals(Short.class) || type.equals(Character.class)
+				|| type.equals(Byte.class) || type.equals(Boolean.class) || type.equals(String.class);
 	}
 }

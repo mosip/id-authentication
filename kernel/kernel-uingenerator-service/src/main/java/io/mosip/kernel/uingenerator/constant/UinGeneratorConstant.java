@@ -153,4 +153,5 @@ public final class UinGeneratorConstant {
 
 	public static final String ZERO_TO_NINE = "1234567890";
 
+	public static final String APPLICATION_JSON = "application/json";
 }
