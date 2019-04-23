@@ -61,7 +61,7 @@
 											<children>
 												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}">
 													<content>
-														<AnchorPane fx:id="keyboardPane">
+														<AnchorPane fx:id="keyboardPane" styleClass="paneAtDisplayDemoGraphic">
 															<children>
 																<FlowPane fx:id="parentFlowPane" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
 																	<children>
