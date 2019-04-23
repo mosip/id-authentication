@@ -1,75 +1,9 @@
 <routes xmlns="http://camel.apache.org/schema/spring">
-	<!-- Packet-Reciever to Virus Scanner Route -->
-	<route id="packet-reciever-->virus-scanner route">
-		<from uri="vertx:packet-receiver-bus-out" />
-		<log
-			message="packet-reciever-->virus-scanner route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:virus-scanner-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<to uri="vertx:retry-bus-in" />
-			</when>
-			<otherwise>
-				<to uri="vertx:error-bus-in" />
-			</otherwise>
-		</choice>
-	</route>
-	<!-- Virus Scanner to Packet Uploader Route -->
-	<route id="virus-scan-->packet-uploader route">
-		<from uri="vertx:virus-scanner-bus-out" />
-		<log
-			message=" virus-scan-->packet-uploader route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:packet-uploader-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<to uri="vertx:retry-bus-in" />
-			</when>
-			<otherwise>
-				<to uri="vertx:error-bus-in" />
-			</otherwise>
-		</choice>
-	</route>
-	<!-- Packet Uploader to Registration connector Route -->
-	<route id="packet-uploader-->registration-connector route">
-		<from uri="vertx:packet-uploader-bus-out" />
-		<log
-			message="packet-uploader-->registration-connector route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<setHeader headerName="CamelHttpMethod">
-					<constant>POST</constant>
-				</setHeader>
-				<setHeader headerName="Content-Type">
-					<constant>application/json</constant>
-				</setHeader>
-				<setBody>
-					<simple>${bodyAs(String)}</simple>
-				</setBody>
-				<to uri="https://integ.mosip.io/registration-connector/registration-processor/connector/v1.0" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<to uri="vertx:retry-bus-in" />
-			</when>
-			<otherwise>
-				<to uri="vertx:error-bus-in" />
-			</otherwise>
-		</choice>
-	</route>
-	<!-- Registration connector to packet-validator Route -->
-	<route id="registration-connector-->packet-validator route">
-	<from uri="vertx:registration-connector-bus-out" />
+	<!-- packet-uploader to packet-validator Route -->
+	<route id="packet-uploader-->packet-validator route">
+	<from uri="vertx:packet-uploader-bus-out" />
 	<log
-			message="registration-connector-->packet-validator route ${bodyAs(String)}" />
+			message="packet-uploader-->packet-validator route ${bodyAs(String)}" />
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>

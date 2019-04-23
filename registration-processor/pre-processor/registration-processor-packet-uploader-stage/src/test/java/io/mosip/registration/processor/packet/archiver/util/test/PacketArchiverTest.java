@@ -1,7 +1,8 @@
 package io.mosip.registration.processor.packet.archiver.util.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -62,6 +64,7 @@ public class PacketArchiverTest {
 	/** The packet archiver. */
 	@InjectMocks
 	private PacketArchiver packetArchiver;
+	
 
 	/** The source. */
 	private String source = "Sample input Steam";
@@ -84,8 +87,7 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn("src/test/resources/");
+		ReflectionTestUtils.setField(packetArchiver,"dmzPort", "5161");
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setDescription("description");
@@ -142,9 +144,9 @@ public class PacketArchiverTest {
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
-
-		packetArchiver.archivePacket(registrationId);
-
+        Mockito.when(filemanager.moveFile(any(),any(),any())).thenReturn(Boolean.TRUE);
+        assertTrue(packetArchiver.archivePacket(registrationId));
+        
 	}
 
 	/**
@@ -159,8 +161,15 @@ public class PacketArchiverTest {
 	 */
 	@Test(expected = PacketNotFoundException.class)
 	public void archivePacketAdaptedFailureCheck() throws PacketNotFoundException, IOException {
-		registrationId = "1000";
-		packetArchiver.archivePacket(registrationId);
+		InputStream in = IOUtils.toInputStream(source, "UTF-8");
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		AuditResponseDto auditResponseDto = new AuditResponseDto();
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
+				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
+		Mockito.doNothing().when(filemanager).put(any(), any(), any());
+        Mockito.when(filemanager.moveFile(any(),any(),any())).thenReturn(Boolean.FALSE);
+        assertFalse(packetArchiver.archivePacket(registrationId));
 
 	}
 
