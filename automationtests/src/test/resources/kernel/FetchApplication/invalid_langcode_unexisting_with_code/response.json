@@ -1,10 +1,13 @@
 {
-    "timestamp": 1550049548544,
-    "status": 200,
+    "id": null,
+    "version": null,
+    "responsetime": "2019-04-17T10:21:51.014Z",
+    "metadata": null,
+    "response": null,
     "errors": [
         {
             "errorCode": "KER-MSD-002",
-            "errorMessage": "Application not found"
+            "message": "Application not found"
         }
     ]
 }

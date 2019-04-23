@@ -19,4 +19,6 @@ public class IdentityJsonValues {
 	private String format;
 
 	private String type;
+	
+	private Boolean isMandatory;
 }

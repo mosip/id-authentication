@@ -36,17 +36,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * Hybrid RSA Engine Initialization with PKCS1Padding
 	 * 
-	 * @param key
-	 *            key for encryption/decryption
-	 * @param data
-	 *            data for encryption/decryption
-	 * @param mode
-	 *            if true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  key for encryption/decryption
+	 * @param data data for encryption/decryption
+	 * @param mode if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             if data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException if data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  if key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] hybridRsaAesWithPKCS1Padding(AsymmetricKeyParameter key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -56,17 +52,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * Hybrid RSA Engine Initialization with OAEP(MD5AndMGF1)Padding
 	 * 
-	 * @param key
-	 *            Key for encryption/decryption
-	 * @param data
-	 *            Data for encryption/decryption
-	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  Key for encryption/decryption
+	 * @param data Data for encryption/decryption
+	 * @param mode If true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException If data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  If key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] hybridRsaAesWithOAEPWithMD5AndMGF1Padding(AsymmetricKeyParameter key, byte[] data,
 			boolean mode) throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -76,17 +68,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * Hybrid RSA Engine Initialization with OAEP(SHA3512AndMGF1)Padding
 	 * 
-	 * @param key
-	 *            Key for encryption/decryption
-	 * @param data
-	 *            Data for encryption/decryption
-	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  Key for encryption/decryption
+	 * @param data Data for encryption/decryption
+	 * @param mode If true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException If data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  If key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] hybridRsaAesWithOAEPWithSHA3512AndMGF1Padding(AsymmetricKeyParameter key, byte[] data,
 			boolean mode) throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -96,17 +84,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * RSA Engine Initialization with PKCS1Padding
 	 * 
-	 * @param key
-	 *            Key for encryption/decryption
-	 * @param data
-	 *            Data for encryption/decryption
-	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  Key for encryption/decryption
+	 * @param data Data for encryption/decryption
+	 * @param mode If true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException If data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  If key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] rsaWithPKCS1Padding(AsymmetricKeyParameter key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -116,17 +100,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * RSA Engine Initialization with OAEP(MD5AndMGF1)Padding
 	 * 
-	 * @param key
-	 *            Key for encryption/decryption
-	 * @param data
-	 *            Data for encryption/decryption
-	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  Key for encryption/decryption
+	 * @param data Data for encryption/decryption
+	 * @param mode If true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException If data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  If key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] rsaWithOAEPWithMD5AndMGF1Padding(AsymmetricKeyParameter key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
@@ -136,17 +116,13 @@ public class MosipRSA extends AsymmetricProcessor {
 	/**
 	 * RSA Engine Initialization with OAEP(SHA3512AndMGF1)Padding
 	 * 
-	 * @param key
-	 *            Key for encryption/decryption
-	 * @param data
-	 *            Data for encryption/decryption
-	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  Key for encryption/decryption
+	 * @param data Data for encryption/decryption
+	 * @param mode If true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException If data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  If key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] rsaWithOAEPWithSHA3512AndMGF1Padding(AsymmetricKeyParameter key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {

@@ -96,7 +96,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -136,7 +136,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 	
 		
-		switch (testCase) {
+		switch ("BookingAppointment_smoke") {
 
 		case "BookingAppointment_smoke":
 
@@ -286,6 +286,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
+		logger.info("Currently fetched Resource URI =======" +preReg_URI);
 
 	}
 

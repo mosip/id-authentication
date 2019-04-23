@@ -530,7 +530,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			continueBtn.setDisable(false);
 		}
 
-		singleBiomtericCaptureCheck();
 		populateException();
 	}
 
@@ -1340,7 +1339,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Populate exception.
 	 */
-	public void populateException() {
+	private void populateException() {
 		leftSlapException.setText(RegistrationConstants.HYPHEN);
 		rightSlapException.setText(RegistrationConstants.HYPHEN);
 		thumbSlapException.setText(RegistrationConstants.HYPHEN);
@@ -1384,6 +1383,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					(thumbSlapExceptionFingers.deleteCharAt(thumbSlapExceptionFingers.length() - 1)).toString() + " "
 							+ ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.FINGER));
 		}
+		singleBiomtericCaptureCheck();
 	}
 
 	private void findExceptionFinger(StringBuilder leftSlapExceptionFingers, StringBuilder rightSlapExceptionFingers,

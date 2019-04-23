@@ -31,9 +31,13 @@ public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationC
 	@Autowired
 	RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService#getRegCenterDeviceHisByregCenterIdDevIdEffDTime(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService#
+	 * getRegCenterDeviceHisByregCenterIdDevIdEffDTime(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterDeviceHistoryResponseDto getRegCenterDeviceHisByregCenterIdDevIdEffDTime(
@@ -43,9 +47,10 @@ public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationC
 			lDateAndTime = MapperUtils.parseToLocalDateTime(effDateTime);
 		} catch (DateTimeParseException e) {
 			throw new RequestException(
-					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION
+							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		RegistrationCenterDeviceHistory registrationCenterDeviceHistory;
@@ -56,17 +61,22 @@ public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationC
 					.findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							regCenterId, deviceId, lDateAndTime);
 		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+			throw new MasterDataServiceException(
+					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION
+							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (registrationCenterDeviceHistory != null) {
 
 			registrationCenterDeviceHistoryDto = MapperUtils.map(registrationCenterDeviceHistory,
 					RegistrationCenterDeviceHistoryDto.class);
 		} else {
-			throw new DataNotFoundException(RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
-					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(
+					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterDeviceHistoryErrorCode.REGISTRATION_CENTER_DEVICE_HISTORY_NOT_FOUND_EXCEPTION
+							.getErrorMessage());
 		}
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDto);

@@ -25,12 +25,9 @@ public interface RegistrationCenterMachineUserRepository
 	/**
 	 * To find all data which are not previously deleted
 	 * 
-	 * @param cntrId
-	 *            input from user
-	 * @param machineId
-	 *            input from user
-	 * @param usrId
-	 *            input from user
+	 * @param cntrId    input from user
+	 * @param machineId input from user
+	 * @param usrId     input from user
 	 * @return {@link RegistrationCenterUserMachine}
 	 */
 	@Query("FROM RegistrationCenterUserMachine a WHERE a.registrationCenterMachineUserID.cntrId=?1 AND a.registrationCenterMachineUserID.machineId=?2 AND a.registrationCenterMachineUserID.usrId=?3 and (a.isDeleted is null or a.isDeleted =false) and a.isActive = true")

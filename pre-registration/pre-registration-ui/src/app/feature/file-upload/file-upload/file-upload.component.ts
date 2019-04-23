@@ -24,7 +24,7 @@ export class FileUploadComponent implements OnInit {
 
   @ViewChild('docCatSelect')
   docCatSelect: ElementRef;
-
+  sortedUserFiles: any[] = [];
   noneApplicant = {
     fullname: [
       {
@@ -34,6 +34,8 @@ export class FileUploadComponent implements OnInit {
     preRegistrationId: ''
   };
   applicantType: string;
+  allowedFilesHtml: string = '';
+  allowedFileSize: string = '';
   sameAsselected: boolean = false;
   isModify: any;
   fileName: string = '';
@@ -51,7 +53,7 @@ export class FileUploadComponent implements OnInit {
   LOD: DocumentCategory[];
   fileIndex: number = -1;
   secondaryLanguagelabels: any;
-
+  fileExtension: string = '';
   sameAs: string;
   disableNavigation: boolean = false;
   // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
@@ -74,6 +76,8 @@ export class FileUploadComponent implements OnInit {
   step: number = 0;
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
+  allowedFiles: string[];
+  firstFile: Boolean = true;
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -83,13 +87,18 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
-    console.log('IN FILE-UPLOAD');
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
 
   ngOnInit() {
-    let applicants;
+    this.getFileSize();
+    this.allowedFiles = this.config
+      .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
+      .split(',');
+    this.getAllowedFileTypes(this.allowedFiles);
+    // this.allowedFiles.toString();
+    let applicants = [];
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
     this.allApplicants = [];
@@ -97,52 +106,100 @@ export class FileUploadComponent implements OnInit {
     applicants = this.sharedService.getAllApplicants();
     this.allApplicants = this.getApplicantsName(applicants);
 
-    console.log('applicants', this.allApplicants);
-
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['message']) this.secondaryLanguagelabels = response['message'];
-      console.log(response, this.secondaryLanguagelabels);
     });
 
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-      if (!this.users[0].files[0]) {
-        this.users[0].files[0] = [];
-      } else {
-        // this.sortUserFiles();
-      }
+      console.log('users', this.users);
     }
 
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
-    console.log('users', this.users);
     this.getApplicantTypeID();
-    if (this.users[0].files[0].length != 0) {
-      this.viewFirstFile();
-    }
+    // if (this.users[0].files[0] != null) {
+    //   this.viewFirstFile();
+    // }
     let i = 0;
+    this.allApplicants.push(this.noneApplicant);
+    let noneCount: Boolean = this.isNoneAvailable();
+
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
         this.allApplicants.splice(i, 1);
         this.allApplicants.push(this.noneApplicant);
+        this.removeExtraNone();
       } else {
         i++;
       }
     }
+    i = 0;
+    if (!this.users[0].files[0]) {
+      this.users[0].files[0] = [];
+    } else {
+      // this.sortUserFiles();
+    }
+  }
 
-    console.log('applicants', this.allApplicants);
+  getAllowedFileTypes(allowedFiles) {
+    let i = 0;
+    for (let file of allowedFiles) {
+      if (i == 0) {
+        this.allowedFilesHtml = this.allowedFilesHtml + file.substring(file.indexOf('/') + 1);
+      } else {
+        this.allowedFilesHtml = this.allowedFilesHtml + ',' + file.substring(file.indexOf('/') + 1);
+      }
+      i++;
+    }
+  }
+
+  getFileSize() {
+    this.allowedFileSize =
+      (
+        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size) / 1000000
+      ).toString() + 'mb';
+  }
+  removeExtraNone() {
+    let i: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        this.allApplicants.splice(i, 1);
+      }
+      i++;
+    }
+  }
+
+  isNoneAvailable() {
+    let noneCount: number = 0;
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == '') {
+        noneCount++;
+      }
+    }
+    return true;
+  }
+
+  sortUserFiles() {
+    for (let document of this.LOD) {
+      for (let file of this.users[0].files[0]) {
+        if (document.code === file.doc_cat_code) {
+          this.sortedUserFiles.push(file);
+        }
+      }
+    }
+    for (let i = 0; i <= this.users[0].files[0]; i++) {
+      this.users[0].files[0][i] = this.sortedUserFiles[i];
+    }
   }
 
   getApplicantsName(applicants) {
-    console.log('applicants', applicants);
-
     let i = 0;
     let j = 0;
     for (let applicant of applicants) {
       for (let name of applicant.fullname) {
         if (name.language != localStorage.getItem('langCode')) {
-          console.log('lang code ', localStorage.getItem('langCode'));
           applicants[i].fullname.splice(j, 1);
         } else {
         }
@@ -211,33 +268,40 @@ export class FileUploadComponent implements OnInit {
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
-      this.setApplicantType(response);
+      if (response['error'] == null) {
+        this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
+        this.setApplicantType(response);
+      } else {
+        alert('Servers unavailable,please try again after some time');
+      }
     });
   }
 
   async setApplicantType(response) {
-    console.log(response);
     this.applicantType = await response['response'].applicationtypecode;
-    console.log(this.applicantType);
   }
 
   async getDocumentCategories(applicantcode) {
-    console.log('applicantCode', applicantcode);
-
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      console.log('response form  document categories', res);
-      console.log(this.LOD);
-      this.LOD = res['response'].documentCategories;
-      console.log(this.applicantType);
-      this.registration.setDocumentCategories(res['response'].documentCategories);
+      if (res['error'] == null) {
+        console.log('document Categories', res);
+
+        this.LOD = res['response'].documentCategories;
+        this.registration.setDocumentCategories(res['response'].documentCategories);
+      } else {
+        alert('Servers unavailable,please try again after some time');
+      }
     });
   }
 
   async getAllApplicants() {
     await this.dataStroage.getUsers(this.loginId).subscribe(
-      applicants => {
-        this.sharedService.addApplicants(applicants);
+      response => {
+        if (response['error'] == null) {
+          this.sharedService.addApplicants(response);
+        } else {
+          alert('Servers unavailable,please try again after some time');
+        }
       },
       err => {},
       () => {}
@@ -254,20 +318,48 @@ export class FileUploadComponent implements OnInit {
   }
 
   viewFile(file: FileModel) {
+    console.log('file', file);
+
     this.fileName = file.docName;
     this.fileByteArray = file.multipartFile;
     let i = 0;
     for (let x of this.users[0].files[0]) {
-      i++;
       if (this.fileName === x.doc_name) {
+        i++;
         break;
       }
     }
-    this.fileIndex = i - 1;
+    if (this.firstFile) {
+      this.fileIndex = i;
+      this.firstFile = false;
+    }
+    this.fileExtension = file.docName.substring(file.docName.indexOf('.') + 1);
     if (this.fileByteArray) {
-      this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-        'data:application/pdf;base64,' + this.fileByteArray
-      );
+      console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
+
+      switch (file.docName.substring(file.docName.indexOf('.') + 1)) {
+        case 'pdf':
+          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+            'data:application/pdf;base64,' + this.fileByteArray
+          );
+          break;
+        case 'jpg':
+          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+            'data:image/jpeg;base64,' + this.fileByteArray
+          );
+
+        case 'png':
+          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+            'data:image/png;base64,' + this.fileByteArray
+          );
+
+          break;
+      }
+      // if (file.docName.substring(file.docName.indexOf('.') + 1) == 'pdf') {
+      //   this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+      //     'data:application/pdf;base64,' + this.fileByteArray
+      //   );
+      // }
     }
   }
 
@@ -275,41 +367,58 @@ export class FileUploadComponent implements OnInit {
     this.fileIndex = this.users[0].files[0].length - 1;
     this.viewFile(this.users[0].files[0][this.fileIndex]);
   }
-
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   handleFileInput(event) {
-    console.log('event of file upload', event);
+    console.log('file input event', event);
+    this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
+    let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
-    if (
-      event.target.files[0].type ===
-      this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
-    ) {
-      if (
-        event.target.files[0].name.length <
-        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
-      ) {
+    for (let file of this.allowedFiles) {
+      if (event.target.files[0].type === file) {
+        allowedFileUploaded = true;
         if (
-          event.target.files[0].size <
-          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          event.target.files[0].name.length <
+          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
         ) {
-          this.getBase64(event.target.files[0]).then(data => {
-            this.fileByteArray = data;
-            this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-          });
-          this.setJsonString(event);
-          this.sendFile(event);
+          if (
+            event.target.files[0].size <
+            this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
+          ) {
+            this.getBase64(event.target.files[0]).then(data => {
+              this.fileByteArray = data;
+              switch (this.fileExtension) {
+                case 'pdf':
+                  this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+                  break;
+                case 'jpg':
+                  this.fileByteArray = this.fileByteArray.replace('data:image/jpeg;base64,', '');
+                  break;
+                case 'png':
+                  this.fileByteArray = this.fileByteArray.replace('data:image/png;base64,', '');
+                  break;
+              }
+            });
+            this.setJsonString(event);
+            this.sendFile(event);
+          } else {
+            alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.disableNavigation = false;
+          }
         } else {
-          alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+          alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
-      } else {
-        alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
-        this.disableNavigation = false;
       }
-    } else {
+    }
+    if (!allowedFileUploaded) {
       alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
-    // this.disableNavigation = false;
   }
 
   getBase64(file) {
@@ -353,13 +462,14 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
-        console.log('document response', response);
-
-        this.updateUsers(response);
+        if (response['errors'] == null) {
+          this.updateUsers(response);
+        } else {
+          alert(response['errors'].errorCode + ' Invalid document format supported');
+        }
       },
       error => {
         alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
-        console.log(error);
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
@@ -392,9 +502,8 @@ export class FileUploadComponent implements OnInit {
     }
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
-    console.log('userrs', this.users);
     // this.sortUserFiles();
-    this.nextFile();
+    // this.viewFileByIndex(this.fileIndex);
   }
 
   openFile() {
@@ -405,21 +514,20 @@ export class FileUploadComponent implements OnInit {
 
   sameAsChange(event) {
     if (event.value == '') {
-      console.log('none selected');
       this.sameAsselected = false;
     } else {
       this.dataStroage.copyDocument(event.value, this.users[0].preRegId).subscribe(
         response => {
-          console.log('copy document', response);
-          this.registration.setSameAs(event.value);
-          if (response['err'] == null) {
+          if (response['errors'] == null) {
+            this.registration.setSameAs(event.value);
             this.removePOADocument();
           } else {
-            alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+            // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+            this.sameAs = this.registration.getSameAs();
+            alert(response['errors'].message);
           }
         },
         err => {
-          console.log('error in copy document', err);
           alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
         }
       );
@@ -431,9 +539,10 @@ export class FileUploadComponent implements OnInit {
     let i = 0;
     for (let file of this.users[0].files[0]) {
       if (file.docCatCode == 'POA') {
-        this.users[0].files[0][i] = this.userFiles;
-        i++;
+        // this.users[0].files[0][i] = this.userFiles;
+        this.users[0].files[0].splice(i, 1);
       }
+      i++;
     }
   }
 
@@ -461,17 +570,17 @@ export class FileUploadComponent implements OnInit {
     arr.push('summary');
     arr.push('preview');
     const url = arr.join('/');
-    console.log('OUT FILE-UPLOAD IN PREVIEW');
     this.router.navigateByUrl(url);
   }
 
-  nextFile() {
-    this.fileIndex++;
+  nextFile(fileIndex: number) {
+    this.fileIndex = fileIndex + 1;
+
     this.viewFileByIndex(this.fileIndex);
   }
 
-  previousFile() {
-    this.fileIndex--;
+  previousFile(fileIndex: number) {
+    this.fileIndex = fileIndex - 1;
     this.viewFileByIndex(this.fileIndex);
   }
 }

@@ -5,7 +5,6 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SBInfoType complex type.
+ * <p>
+ * Java class for SBInfoType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="SBInfoType"&gt;
@@ -36,42 +37,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SBInfoType", propOrder = {
-    "formatOwner",
-    "formatType"
-})
+@XmlType(name = "SBInfoType", propOrder = { "formatOwner", "formatType" })
 public class SBInfoType {
 
-    @XmlElement(name = "FormatOwner")
-    @XmlSchemaType(name = "positiveInteger")
-    protected Long formatOwner;
-    @XmlElement(name = "FormatType")
-    @XmlSchemaType(name = "positiveInteger")
-    protected Long formatType;
+	@XmlElement(name = "FormatOwner")
+	@XmlSchemaType(name = "positiveInteger")
+	protected Long formatOwner;
+	@XmlElement(name = "FormatType")
+	@XmlSchemaType(name = "positiveInteger")
+	protected Long formatType;
+
 	/**
 	 * @return the formatOwner
 	 */
 	public Long getFormatOwner() {
 		return formatOwner;
 	}
+
 	/**
 	 * @param formatOwner the formatOwner to set
 	 */
 	public void setFormatOwner(Long formatOwner) {
 		this.formatOwner = formatOwner;
 	}
+
 	/**
 	 * @return the formatType
 	 */
 	public Long getFormatType() {
 		return formatType;
 	}
+
 	/**
 	 * @param formatType the formatType to set
 	 */
 	public void setFormatType(Long formatType) {
 		this.formatType = formatType;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -80,6 +83,7 @@ public class SBInfoType {
 		result = prime * result + ((formatType == null) ? 0 : formatType.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

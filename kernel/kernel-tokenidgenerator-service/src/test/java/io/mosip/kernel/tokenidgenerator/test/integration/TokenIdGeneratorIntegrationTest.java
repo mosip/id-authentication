@@ -9,20 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.tokenidgenerator.dto.TokenIDResponseDto;
+import io.mosip.kernel.tokenidgenerator.test.TokenIdGeneratorTestBootApplication;
 
+@SpringBootTest(classes=TokenIdGeneratorTestBootApplication.class)
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @AutoConfigureMockMvc
 public class TokenIdGeneratorIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
+	
 	@Test
+	@WithUserDetails("id-auth")
 	public void generateTokenIDTest() throws Exception {
 		TokenIDResponseDto response = new TokenIDResponseDto();
 		response.setTokenID("123456");
@@ -31,7 +36,8 @@ public class TokenIdGeneratorIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails("id-auth")
 	public void generateTokenIdExceptionTest() throws Exception {
-		mockMvc.perform(get("/    /   ").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(get("/    /  ").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 }

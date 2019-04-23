@@ -22,16 +22,13 @@ public interface MachineService {
 	 * This abstract method to fetch machine details for given Machine ID and
 	 * language code
 	 * 
-	 * @param id
-	 *            Machine Id given by user
-	 * @param langCode
-	 *            Language code given by user
+	 * @param id       Machine Id given by user
+	 * @param langCode Language code given by user
 	 * @return MachineResponseDto Machine Detail for given machine id and language
 	 *         code
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while retrieving Machine Details
-	 * @throws DataNotFoundException
-	 *             if no Machine found
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    Machine Details
+	 * @throws DataNotFoundException      if no Machine found
 	 *
 	 */
 	MachineResponseDto getMachine(String id, String langCode);
@@ -40,10 +37,9 @@ public interface MachineService {
 	 * This abstract method to fetch all machines details
 	 * 
 	 * @return MachineResponseDto Returning all Machines Details
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while retrieving Machine Details
-	 * @throws DataNotFoundException
-	 *             if no Machine found
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    Machine Details
+	 * @throws DataNotFoundException      if no Machine found
 	 *
 	 */
 
@@ -52,14 +48,12 @@ public interface MachineService {
 	/**
 	 * This abstract method to fetch machine details for given language code
 	 * 
-	 * @param langCode
-	 *            Language code given by user
+	 * @param langCode Language code given by user
 	 * @return MachineResponseDto Machine Detail for given machine id and language
 	 *         code
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while retrieving Machine Details
-	 * @throws DataNotFoundException
-	 *             if no Machine found
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    Machine Details
+	 * @throws DataNotFoundException      if no Machine found
 	 *
 	 */
 	MachineResponseDto getMachine(String langCode);
@@ -67,30 +61,26 @@ public interface MachineService {
 	/**
 	 * Abstract method to save Machine Details to the Database
 	 * 
-	 * @param machine
-	 *            machine DTO
+	 * @param machine machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is inserted successfully
 	 *         {@link IdResponseDto}
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine
+	 * @throws MasterDataServiceException if any error occurred while saving Machine
 	 */
 	public IdAndLanguageCodeID createMachine(MachineDto machine);
 
 	/**
 	 * Abstract method to update Machine Details to the Database
 	 * 
-	 * @param machine
-	 *            machine DTO
+	 * @param machine machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}
-	 * @throws RequestException
-	 *             if Machine not Found
+	 * @throws RequestException           if Machine not Found
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Machine
+	 * @throws MasterDataServiceException if any error occurred while updating
+	 *                                    Machine
 	 * 
 	 */
 	public IdAndLanguageCodeID updateMachine(MachineDto machine);
@@ -98,16 +88,14 @@ public interface MachineService {
 	/**
 	 * Abstract method to delete Machine Details to the Database
 	 * 
-	 * @param id
-	 *            machine id
+	 * @param id machine id
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}
-	 * @throws RequestException
-	 *             if Machine not Found
+	 * @throws RequestException           if Machine not Found
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Machine
+	 * @throws MasterDataServiceException if any error occurred while updating
+	 *                                    Machine
 	 * 
 	 */
 	IdResponseDto deleteMachine(String id);

@@ -21,8 +21,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -46,10 +44,10 @@ public class IdRepoFilter extends OncePerRequestFilter {
 
 	/** The Constant ID_REPO_FILTER. */
 	private static final String ID_REPO_FILTER = "IdRepoFilter";
-	
+
 	/** The Constant ID_REPO. */
 	private static final String ID_REPO = "IdRepo";
-	
+
 	/** The Constant READ. */
 	private static final String READ = "read";
 
@@ -68,15 +66,15 @@ public class IdRepoFilter extends OncePerRequestFilter {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
-	
+
 	String uin;
 
 	/**
@@ -118,9 +116,10 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		Instant requestTime = Instant.now();
-		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
+
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER,
+				"Request URL: " + request.getRequestURL() + "  Method : " + request.getMethod());
 
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
 
@@ -128,19 +127,16 @@ public class IdRepoFilter extends OncePerRequestFilter {
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
 			response.getWriter().write(buildErrorResponse());
 		} else {
-			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-
-			filterChain.doFilter(requestWrapper, responseWrapper);
-			mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response body : \n" + responseWrapper.toString());
-			response.getWriter().write(responseWrapper.toString());
+			filterChain.doFilter(request, response);
 		}
 
 		Instant responseTime = Instant.now();
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		long duration = Duration.between(requestTime, responseTime).toMillis();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " + duration
-				+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
-				+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER,
+				"Time taken to respond in ms: " + duration
+						+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
+						+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
 	}
 
 	/**

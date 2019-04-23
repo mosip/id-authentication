@@ -20,8 +20,7 @@ public enum LanguageIdConstant {
 	/**
 	 * Constructor for LanguageIdConstant.
 	 * 
-	 * @param language
-	 *            the language id.
+	 * @param language the language id.
 	 */
 	LanguageIdConstant(String language) {
 		this.language = language;

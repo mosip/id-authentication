@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource("classpath:/application-exception.properties")
@@ -28,12 +27,10 @@ public class DecryptorExceptionTest {
 
 	@Autowired
 	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptorImpl;
-	
+
 	private KeyPair rsaPair;
 
 	private byte[] data;
-
-	
 
 	@Before
 	public void setRSAUp() throws java.security.NoSuchAlgorithmException {
@@ -51,23 +48,27 @@ public class DecryptorExceptionTest {
 		return new SecretKeySpec(keyBytes, algo);
 	}
 
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testRSAPKS1AsymmetricPrivateDecrypt(){
-	decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), data);
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testRSAPKS1AsymmetricPrivateDecrypt() {
+		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), data);
 	}
 
-	
-
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testRSAPKS1AsymmetricPublicDecrypt()
-			{
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testRSAPKS1AsymmetricPublicDecrypt() {
 		decryptorImpl.asymmetricPublicDecrypt(rsaPair.getPublic(), data);
 	}
- 
-	@Test(expected=NoSuchAlgorithmException.class)
-	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException
-			{
+
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
 		decryptorImpl.symmetricDecrypt(secretKeySpec, data);
+	}
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testAESSymmetricSaltDecrypt() throws java.security.NoSuchAlgorithmException {
+		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
+		SecureRandom random = new SecureRandom();
+		byte[] keyBytes = new byte[16];
+		random.nextBytes(keyBytes);
+		decryptorImpl.symmetricDecrypt(secretKeySpec, data,keyBytes);
 	}
 }

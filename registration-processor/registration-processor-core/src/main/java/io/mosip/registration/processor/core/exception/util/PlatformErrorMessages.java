@@ -213,8 +213,12 @@ public enum PlatformErrorMessages {
 			"Attribute Value Invalid in Master Data Validation for"),
 
 	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
-			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(
-					PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+			"Not able to access the API resource"),
+	
+	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+	
+	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"A Mandatory Field is missing from ID JSON for NEW registration "),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -476,6 +480,21 @@ public enum PlatformErrorMessages {
 
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
+
+	/** The rpr sys data access exception*/
+	RPR_SYS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "013", "Data Access Exception"),
+
+	/** The rpr sys api resource exception*/
+	RPR_SYS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "014", "API Resource Exception"),
+
+	/** The rpr sys illegal access exception*/
+	RPR_SYS_ILLEGAL_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "015", "ILLEGAL ACCESS Exception"),
+
+	/** The rpr sys Invocation target exception*/
+	RPR_SYS_INVOCATION_TARGET_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "016", "Invocation target Exception"),
+
+	/** The rpr sys Invocation target exception*/
+	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
 
 	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions

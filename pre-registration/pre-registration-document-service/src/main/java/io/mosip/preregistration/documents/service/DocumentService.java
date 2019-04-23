@@ -249,7 +249,7 @@ public class DocumentService {
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,authUserDetails().getUserId(),
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));

@@ -21,10 +21,8 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	/**
 	 * Get TemplateFileFormat by specific id and language code
 	 * 
-	 * @param code
-	 *            for TemplateFileFormat
-	 * @param langCode
-	 *            is the language code present in database
+	 * @param code     for TemplateFileFormat
+	 * @param langCode is the language code present in database
 	 * @return object of {@link TemplateFileFormat}
 	 */
 	@Query("FROM TemplateFileFormat WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -33,12 +31,9 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	/**
 	 * Delete TemplateFileFormat based on code provided.
 	 * 
-	 * @param updatedBy
-	 *            name of user
-	 * @param deletedDateTime
-	 *            the Date and time of deletion.
-	 * @param code
-	 *            the document category code.
+	 * @param updatedBy       name of user
+	 * @param deletedDateTime the Date and time of deletion.
+	 * @param code            the document category code.
 	 * @return the integer.
 	 */
 	@Modifying

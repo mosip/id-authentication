@@ -22,7 +22,6 @@ public class ReasonCategoryDto {
 	@Size(min = 1, max = 64)
 	private String name;
 
-	
 	@Size(min = 1, max = 128)
 	private String description;
 
@@ -30,7 +29,6 @@ public class ReasonCategoryDto {
 	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;
-
 
 	private Boolean isActive;
 

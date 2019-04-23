@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class BaseDto {
 	private Boolean isDeleted;
-	
+
 	private String langCode;
-	
+
 	private Boolean isActive;
 }

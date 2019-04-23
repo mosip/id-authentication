@@ -18,30 +18,26 @@ public interface TemplateFileFormatService {
 	/**
 	 * Method to create a templatefileformat
 	 * 
-	 * @param templateFileFormatRequestDto
-	 *            the template file format dto
+	 * @param templateFileFormatRequestDto the template file format dto
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID createTemplateFileFormat(
-			TemplateFileFormatDto templateFileFormatRequestDto);
+	public CodeAndLanguageCodeID createTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto);
 
 	/**
 	 * This method is used to update an existing TemplateFileFormat
 	 * 
-	 * @param templateFileFormatRequestDto
-	 *            TemplateFileFormat DTO to update data
+	 * @param templateFileFormatRequestDto TemplateFileFormat DTO to update data
 	 * @return IdResponseDto TemplateFileFormat ID which is successfully updated
 	 *         {@link IdResponseDto}
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Device
+	 * @throws MasterDataServiceException if any error occurred while updating
+	 *                                    Device
 	 */
 	public CodeAndLanguageCodeID updateTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto);
 
 	/**
 	 * Method to delete TemplateFileFormat based on code provided.
 	 * 
-	 * @param code
-	 *            the TemplateFileFormat code.
+	 * @param code the TemplateFileFormat code.
 	 * 
 	 * @return {@link CodeResponseDto}
 	 */

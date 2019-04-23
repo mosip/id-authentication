@@ -18,21 +18,18 @@ public final class EmptyCheckUtils {
 	/**
 	 * This method used to check if given <code>obj</code> is null.
 	 * 
-	 * @param obj
-	 *            is of any java.lang.Object type.
+	 * @param obj is of any java.lang.Object type.
 	 * @return true if <code>obj</code> is null.
 	 */
 	public static boolean isNullEmpty(Object obj) {
 		return obj == null;
 	}
 
-
 	/**
 	 * This method is used to check if the given <code>str</code> is null or an
 	 * empty string.
 	 * 
-	 * @param str
-	 *            id of type java.lang.String
+	 * @param str id of type java.lang.String
 	 * @return true if given <code>str</code> is null or length of it is Zero after
 	 *         trim.
 	 */
@@ -44,8 +41,7 @@ public final class EmptyCheckUtils {
 	 * This method is used to check given <code>collection</code> is null or is
 	 * Empty.
 	 * 
-	 * @param collection
-	 *            is of type java.util.Collection.
+	 * @param collection is of type java.util.Collection.
 	 * @return true if given <code>collection</code> is null or does not contains
 	 *         any element inside it.
 	 */
@@ -56,8 +52,7 @@ public final class EmptyCheckUtils {
 	/**
 	 * This method is used to check given <code>map</code> is null or is Empty.
 	 * 
-	 * @param map
-	 *            is of type java.util.Map
+	 * @param map is of type java.util.Map
 	 * @return true if given <code>map</code> is null or does not contains any key,
 	 *         values pairs inside it.
 	 */

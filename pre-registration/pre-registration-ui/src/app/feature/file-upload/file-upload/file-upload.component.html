@@ -1,6 +1,11 @@
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
-  <div class="file-upload__message">{{ 'documents.text_filetype' | translate }}</div>
+  <div class="file-upload__message">
+    {{ 'documents.text_filetype' | translate }} &nbsp;{{ allowedFilesHtml }} &nbsp;{{
+      'documents.text_filesize' | translate
+    }}
+    &nbsp; {{ allowedFileSize }}
+  </div>
   <div class="file-upload__body">
     <div class="file-upload__body__1">
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
@@ -39,7 +44,7 @@
           <span *ngIf="allApplicants.length > 0">OR</span>
           <span *ngIf="allApplicants.length > 0">
             <mat-form-field class="file-upload__or">
-              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [value]="sameAs">
+              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [(value)]="sameAs">
                 <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">
                   {{ applicant.fullname[0].value }}
                 </mat-option>
@@ -66,16 +71,33 @@
     </div>
     <div class="file-upload__body__2" *ngIf="this.users[0].files[0].length != 0">
       <p>{{ fileName }}</p>
-      <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
+      <iframe
+        *ngIf="fileExtension == 'pdf'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="application/pdf;Base64,"
+      ></iframe>
+      <img
+        *ngIf="fileExtension == 'jpg'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="image/jpeg;Base64,"
+      />
+      <img
+        *ngIf="fileExtension == 'png'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="image/png;Base64,"
+      />
       <div class="file-buttons">
-        <button class="previousFile" [disabled]="fileIndex <= 0 ? true : false" (click)="previousFile()">
+        <button class="previousFile" [disabled]="fileIndex == 0 ? true : false" (click)="previousFile(fileIndex)">
           <img src="assets/left.png" />
         </button>
-        <p>{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
+        <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
         <button
           class="nextFile"
-          [disabled]="fileIndex >= users[0].files[0].length - 1 ? true : false"
-          (click)="nextFile()"
+          [disabled]="fileIndex < users[0].files[0].length - 1 ? false : true"
+          (click)="nextFile(fileIndex)"
         >
           <img src="assets/right.png" />
         </button>

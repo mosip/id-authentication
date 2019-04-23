@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.5</version>
 	</parent>
 
 	<artifactId>kernel-uingenerator-service</artifactId>
@@ -19,6 +19,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+         <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
@@ -132,11 +137,13 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${jackson.datatype.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${apache.httpcomponents.version}</version>
+		</dependency>
 	</dependencies>
-	<!-- <properties>
-		<sonar.skip>true</sonar.skip>
-
-	</properties> -->
+	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 
 	<build>
 		<plugins>

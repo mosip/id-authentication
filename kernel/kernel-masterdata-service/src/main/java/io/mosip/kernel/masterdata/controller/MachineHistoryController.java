@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,16 +40,14 @@ public class MachineHistoryController {
 	 * Get api to fetch a machine history details based on given Machine ID,
 	 * Language code and effective date time
 	 * 
-	 * @param id
-	 *            input machine Id from User
-	 * @param langCode
-	 *            input Language Code from user
-	 * @param dateAndTime
-	 *            input effective date and time from user
+	 * @param id          input machine Id from User
+	 * @param langCode    input Language Code from user
+	 * @param dateAndTime input effective date and time from user
 	 * 
 	 * @return MachineHistoryResponseDto returning machine history detail based on
 	 *         given Machine ID, Language code and effective date time
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID")

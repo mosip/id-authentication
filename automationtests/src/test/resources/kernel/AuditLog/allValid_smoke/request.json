@@ -1,5 +1,8 @@
 {
-  "eventId": "btnClick_001",
+  "id": "string",
+  "metadata": {},
+  "request": {
+  "eventId": "btnClick_002",
   "eventName": "btnClick",
   "eventType": "click",
   "actionTimeStamp": "2018-12-12T11:11:11.256Z",
@@ -15,4 +18,7 @@
   "moduleName": "kernel",
   "moduleId": "kernel_otp",
   "description": "otpValidationLog"
+},
+  "requesttime": "2018-12-12T11:11:11.256Z",
+  "version": "string"
 }
