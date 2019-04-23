@@ -307,7 +307,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-			description = "Internal error occured in UINGenerator stage while processing registrationId "
+			description = "Internal error occurred in UINGenerator stage while processing registrationId "
 					+ registrationId + "::" + ex.getMessage();
 
 		} catch (IOException e) {
@@ -331,7 +331,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-			description = "Internal error occured in UINGenerator stage while processing registrationId "
+			description = "Internal error occurred in UINGenerator stage while processing registrationId "
 					+ registrationId + ex.getMessage();
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);

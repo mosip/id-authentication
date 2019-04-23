@@ -229,7 +229,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured in virus scanner stage while processing registrationId : "
+			description = "Internal error occurred in virus scanner stage while processing registrationId : "
 					+ registrationId + ex.getMessage();
 		} finally {
 

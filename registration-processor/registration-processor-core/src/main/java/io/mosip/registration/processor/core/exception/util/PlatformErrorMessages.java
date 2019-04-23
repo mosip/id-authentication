@@ -249,7 +249,7 @@ public enum PlatformErrorMessages {
 	RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "003",
 			"Packet biometric insertion to ABIS is failed"),
 
-	RPR_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004", "ABIS Internal error occured"),
+	RPR_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004", "ABIS Internal error occurred"),
 
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
@@ -563,11 +563,11 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pgs encryptor invlaid data exception. */
 	RPR_PGS_ENCRYPTOR_INVLAID_DATA_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "007",
-			"Exception occured while encryting the packet Invalid data"),
+			"Exception occurred while encryting the packet Invalid data"),
 
 	/** The rpr pgs encryptor invlaid key exception. */
 	RPR_PGS_ENCRYPTOR_INVLAID_KEY_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "008",
-			"Exception occured while encryting the packet Invalid Key"),
+			"Exception occurred while encryting the packet Invalid Key"),
 
 	/** The rpr pgs packet meta convertor exception. */
 	RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "009",
