@@ -142,7 +142,7 @@ public class OTPAuthServiceTest {
 		assertNotNull(authStatusInfo);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestValidValidateOtpFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();

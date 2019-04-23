@@ -38,12 +38,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
-import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
@@ -59,6 +58,9 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Sanjay Murali
  */
 public abstract class BaseIDAFilter implements Filter {
+	
+	/** The Constant ERRORS. */
+	private static final String ERRORS = "errors";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -83,9 +85,6 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/** The Constant RES_TIME. */
 	private static final String RES_TIME = "responseTime";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "requestTime";
@@ -153,10 +152,7 @@ public abstract class BaseIDAFilter implements Filter {
 		} catch (IdAuthenticationAppException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
-			AuthError authError = new AuthError();
-			authError.setErrorCode(e.getErrorCode());
-			authError.setErrorMessage(e.getErrorText());
-			sendErrorResponse(response, responseWrapper, requestWrapper, authError, requestTime);
+			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e);
 		} finally {
 			logDataSize(responseWrapper.toString(), RESPONSE);
 		}
@@ -164,28 +160,27 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * sendErrorResponse method is used to construct error response when any
-	 * exception is thrown while deciphering or validating the authenticating
-	 * partner
+	 * sendErrorResponse method is used to construct error response
+	 * when any exception is thrown while deciphering or validating
+	 * the authenticating partner .
 	 *
-	 * @param response        where the response are written
+	 * @param response        where the response is written
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param chain           the chain used to link the request wrapper and
-	 *                        response wrapper
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
-	 * @param authError       the AUTH error is used to set the error details if any
-	 * @param requestTime
+	 * @param requestTime the request time
+	 * @param ex the ex
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @throws ServletException the servlet exception
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
-			ResettableStreamHttpServletRequest requestWrapper, AuthError authError, Temporal requestTime)
-			throws IOException {
-		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setErrors(Collections.singletonList(authError));
+			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationAppException ex) throws IOException {
+		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
+		Map<String, Object> responseMap = mapper.convertValue(responseObj,
+				new TypeReference<Map<String, Object>>() {
+				});
 		Map<String, Object> requestMap = null;
 		try {
+			responseMap = transformResponse(responseMap);
 			requestMap = getRequestBody(requestWrapper.getInputStream());
 			requestWrapper.resetInputStream();
 		} catch (IdAuthenticationAppException e) {
@@ -194,38 +189,30 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 		String resTime = DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
-						env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
-				TimeZone.getTimeZone(ZoneOffset.UTC));
-		ResponseDTO res = new ResponseDTO();
-		res.setAuthStatus(Boolean.FALSE);
-		authResponseDTO.setResponse(res);
+				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(ZoneOffset.UTC));
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
 					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
-			resTime = DateUtils.formatDate(DateUtils.parseToDate(resTime,
-					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
+			resTime = DateUtils.formatDate(
+					DateUtils.parseToDate(resTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
 					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone));
 		}
 
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
-			authResponseDTO.setTransactionID((String) requestMap.get(TRANSACTION_ID));
+			responseMap.replace(TRANSACTION_ID, (String) requestMap.get(TRANSACTION_ID));
 		}
-		authResponseDTO.setResponseTime(resTime);
+		responseMap.replace(RES_TIME, resTime);
 		requestWrapper.resetInputStream();
-		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+		responseMap.replace(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVersion(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
-		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
-				new TypeReference<Map<String, Object>>() {
-				});
+		responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		response.getWriter().write(mapper.writeValueAsString(responseMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		logTime(authResponseDTO.getResponseTime(), RESPONSE, requestTime);
+		logTime(resTime, RESPONSE, requestTime);
 		return responseWrapper;
 	}
 
@@ -267,7 +254,7 @@ public abstract class BaseIDAFilter implements Filter {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
 		long duration = Duration
 				.between(requestTime,
-						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))))
+						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))))
 				.toMillis();
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				"Time difference between request and response in millis:" + duration
@@ -424,6 +411,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper,
 			Temporal requestTime) throws IdAuthenticationAppException {
 		try {
@@ -435,6 +423,12 @@ public abstract class BaseIDAFilter implements Filter {
 			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
 			responseMap.put(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+			if(responseMap.containsKey(ERRORS)) {
+				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List ? (List<AuthError>) responseMap.get(ERRORS) : Collections.emptyList();
+				if(errorList.isEmpty()) {
+					responseMap.put(ERRORS, null);
+				}
+			}
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;

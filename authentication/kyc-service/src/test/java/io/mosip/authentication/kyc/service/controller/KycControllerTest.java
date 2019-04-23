@@ -47,7 +47,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
-import io.mosip.authentication.kyc.service.facade.KycFacade;
+import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 
@@ -73,7 +73,7 @@ public class KycControllerTest {
 	private AuditRequestFactory auditFactory;
 
 	@Mock
-	private KycFacade kycFacade;
+	private KycFacadeImpl kycFacade;
 
 	@InjectMocks
 	private KycAuthController kycAuthController;
@@ -175,7 +175,7 @@ public class KycControllerTest {
 		authResponseDTO.setVersion("1.0");
 		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
-		Mockito.when(kycService.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycAuthResponseDTO);
 //		Mockito.when(kycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
 //				.thenReturn(kycAuthResponseDTO);
@@ -248,7 +248,7 @@ public class KycControllerTest {
 		authResponseDTO.setVersion("1.0");
 		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
-		Mockito.when(kycService.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 //		Mockito.when(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 //				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));

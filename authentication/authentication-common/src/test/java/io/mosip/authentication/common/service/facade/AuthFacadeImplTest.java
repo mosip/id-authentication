@@ -93,9 +93,6 @@ public class AuthFacadeImplTest {
 	@Autowired
 	private Environment env;
 
-//	@InjectMocks
-//	private KycServiceImpl kycServiceImpl;
-
 	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthService otpAuthServiceImpl;
@@ -164,16 +161,11 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
 		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdManager", tokenIdManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
-//		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
-
-//		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
-//		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
-
 		ReflectionTestUtils.setField(notificationService, "env", env);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
