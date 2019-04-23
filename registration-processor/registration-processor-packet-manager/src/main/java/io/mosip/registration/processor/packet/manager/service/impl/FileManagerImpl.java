@@ -1,13 +1,9 @@
 package io.mosip.registration.processor.packet.manager.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Properties;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -35,7 +29,6 @@ import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDe
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInSourceException;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The implementation Class for FileManager.
  *
@@ -311,8 +304,13 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#getFile(java.lang.Object, java.lang.String, io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto)
+	 */
 	public byte[] getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto){
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		Session session = null;
 		Channel channel = null;
@@ -334,39 +332,44 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			System.out.println("Connected");
 			channelSftp = (ChannelSftp)channel;
 			try (InputStream is = channelSftp.get(env.getProperty(workingDirectory.toString())+"/"+getFileName(fileName))){
-             	bytedata=IOUtils.toByteArray(is);
-              }
-			
-		
+				bytedata=IOUtils.toByteArray(is);
+			}
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::exit");
+
 
 		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 		} catch (SftpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 		}finally {
-			
-				if(channel != null)
+
+			if(channel != null)
 				channel.disconnect();
-				if(session != null)
+			if(session != null)
 				session.disconnect(); 
 		}
-
-
-
-
-
 		return bytedata;
 
 	}
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#moveFile(java.lang.String, java.lang.String, io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto)
+	 */
 	public boolean moveFile(String fromFilePath, String toFilePath, SftpJschConnectionDto sftpConnectionDto) {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::moveFile(String fromFilePath, String toFilePath, SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		Session session = null;
 		Channel channel = null;
@@ -395,26 +398,31 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				}
 			}
 
-			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"FileManagerImpl::moveFile(String fromFilePath, String toFilePath, SftpJschConnectionDto sftpConnectionDto)::exit");
+
 
 		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 		} catch (SftpException e) {
-			
+
 			if(e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE){
 				status=false;
 				return status;
 			} else {
-				e.printStackTrace();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 			}
 
 		}
 		finally {
 			if(channel != null)
-			channel.disconnect();
+				channel.disconnect();
 			if(session != null)
-			session.disconnect(); 
+				session.disconnect(); 
 
 		}
 		return status;

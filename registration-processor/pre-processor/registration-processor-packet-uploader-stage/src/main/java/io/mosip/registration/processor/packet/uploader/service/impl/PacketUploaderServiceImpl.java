@@ -64,24 +64,31 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The hdfs adapter. */
 	@Autowired
 	private FileSystemAdapter hdfsAdapter;
 
+	/** The ppk file location. */
 	//@Value("${registration.processor.server.ppk.filelocation}")
 	private String ppkFileLocation;
 
+	/** The ppk file name. */
 	//@Value("${registration.processor.server.ppk.filename}")
 	private String ppkFileName;
 
+	/** The host. */
 	@Value("${registration.processor.dmz.server.host}")
 	private String host;
 
+	/** The dmz port. */
 	@Value("${registration.processor.dmz.server.port}")
 	private String dmzPort;
 
+	/** The dmz server user. */
 	@Value("${registration.processor.dmz.server.user}")
 	private String dmzServerUser;
 
+	/** The dmz server protocal. */
 	@Value("${registration.processor.dmz.server.protocal}")
 	private String dmzServerProtocal;
 
@@ -101,6 +108,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The registration status mapper util. */
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/** The packet receiver stage. */
@@ -126,6 +134,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Autowired
 	private Decryptor decryptor;
 
+	/** The max retry count. */
 	@Value("${registration.processor.uploader.max.retry.count}")
 	private int maxRetryCount;
 
@@ -142,6 +151,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Autowired
 	private PacketArchiver packetArchiver;
 
+	/** The dto. */
 	InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 
 	/*
@@ -309,33 +319,26 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	/**
 	 * Scan file.
 	 *
-	 * @param inputStream
-	 *            the input stream
+	 * @param inputStream            the input stream
+	 * @return true, if successful
 	 */
 	private boolean scanFile(InputStream inputStream) {
 		boolean isInputFileClean=false;
 		try {
 			isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
-				description = "Packet virus scan failed  in packet receiver for registrationId ::" + registrationId
-						+ PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
+				description = "Packet virus scan failed  in packet receiver for registrationId ::" + registrationId	+ PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage();
 				dto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
-				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());}
+				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(), registrationId,PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage());}
 		} catch (VirusScannerException e) {
 
 			description = "Virus scanner service failed ::" + registrationId;
 			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
-			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
+			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
 
 		}
 		return isInputFileClean;
@@ -345,14 +348,20 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 
 
+	/**
+	 * Validate hash code.
+	 *
+	 * @param inputStream the input stream
+	 * @return true, if successful
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private boolean validateHashCode(InputStream inputStream) throws IOException {
 		boolean isValidHash=false;
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
 		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
 		byte[] packetHashSequenceFromEntity = hashSequence;//Todo: PacketHashSequesnce
 		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
-			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
-					+ registrationId;
+			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"	+ registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 
@@ -366,13 +375,20 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	}
 
 
+	/**
+	 * Uploadpacket.
+	 *
+	 * @param dto the dto
+	 * @param decryptedData the decrypted data
+	 * @param object the object
+	 * @return the message DTO
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private MessageDTO uploadpacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object)
 			throws IOException {
 
 		object.setIsValid(false);
-
 		registrationId = dto.getRegistrationId();
-
 		hdfsAdapter.storePacket(registrationId, decryptedData);
 		hdfsAdapter.unpackPacket(registrationId);
 

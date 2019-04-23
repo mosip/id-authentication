@@ -432,6 +432,13 @@ public enum PlatformErrorMessages {
 	RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "003",
 			"The Packet store set by the System is not accessible"),
 
+	/** The prp pkr packet virus scan failed. */
+	RPR_PUM_PACKET_VIRUS_SCAN_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "004",
+			"The Registration Packet virus scan failed"),
+	
+	RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "005",
+			"Virus scanner service failed"),
+
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
 			"ABIS for the Reference ID and Request ID threw an Internal Error"),
