@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.factory;
+package io.mosip.kernel.idrepo.test.builder;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,7 +27,6 @@ import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 
-@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
