@@ -9,7 +9,7 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.10.5</version>
 	</parent>
-	<artifactId>internal-authentication-service</artifactId>
+	<artifactId>internalauthentication-service</artifactId>
 	<name>internal-authentication-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>

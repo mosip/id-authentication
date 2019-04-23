@@ -21,8 +21,8 @@
 		<module>authentication-common</module>
 		<module>authentication-core</module>
 		<module>authentication-service</module>
-		<module>partnerdemo-services</module>
-		<module>internal-authentication-service</module>
+		<module>partnerdemo-service</module>
+		<module>internalauthentication-service</module>
 		<module>kyc-service</module>
 		<module>otp-service</module>
 		<module>vid-service</module>
