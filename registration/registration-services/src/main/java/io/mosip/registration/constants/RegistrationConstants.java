@@ -555,12 +555,21 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
 	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
 	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
+	public static final String TEMPLATE_CONSENT_HEADING = "Consent";
+	public static final String TEMPLATE_CONSENT_DATA = "ConsentData";
+	public static final String TEMPLATE_CONSENT_YES = "Yes";
+	public static final String TEMPLATE_CONSENT_NO = "No";
+	public static final String TEMPLATE_CONSENT_SELECTED_YES = "SelectedYes";
+	public static final String TEMPLATE_CONSENT_SELECTED_NO = "SelectedNo";
+	public static final String TEMPLATE_CONSENT_CHECKED = "checked='checked'";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
 	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
 	public static final String CLICK = "click";
 	public static final String REG_CONSENT = "mosip.registration.consent_";
+	public static final String REG_CONSENT_YES = "consent-yes";
+	public static final String REG_CONSENT_NO = "consent-no";
 	
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -712,6 +721,7 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_1 = "reg-ack-template-part1";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_2 = "reg-ack-template-part2";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
+	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_4 = "reg-ack-template-part4";
 	public static final String EMAIL_TEMPLATE = "reg-email-notification";
 	public static final String SMS_TEMPLATE = "reg-sms-notification";
 

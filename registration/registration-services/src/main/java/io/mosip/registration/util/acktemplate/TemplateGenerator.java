@@ -72,6 +72,16 @@ public class TemplateGenerator extends BaseService {
 	@Autowired
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
+	private String consentText;
+
+	public String getConsentText() {
+		return consentText;
+	}
+
+	public void setConsentText(String consentText) {
+		this.consentText = consentText;
+	}
+
 	/**
 	 * @param templateText
 	 *            - string which contains the data of template that is used to
@@ -656,6 +666,21 @@ public class TemplateGenerator extends BaseService {
 			}
 		}
 
+		templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_HEADING,
+				applicationLanguageProperties.getString("consentHeading"));
+		templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_DATA, consentText);
+		templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_YES, applicationLanguageProperties.getString("yes"));
+		templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_NO, applicationLanguageProperties.getString("no"));
+		if (registration.getRegistrationMetaDataDTO().getConsentOfApplicant() != null) {
+			String consent = registration.getRegistrationMetaDataDTO().getConsentOfApplicant();
+			if (consent.equalsIgnoreCase(RegistrationConstants.YES)) {
+				templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_SELECTED_YES,
+						RegistrationConstants.TEMPLATE_CONSENT_CHECKED);
+			} else if (consent.equalsIgnoreCase(RegistrationConstants.NO)) {
+				templateValues.put(RegistrationConstants.TEMPLATE_CONSENT_SELECTED_NO,
+						RegistrationConstants.TEMPLATE_CONSENT_CHECKED);
+			}
+		}
 	}
 
 	private void setUpAcknowledgementContent(RegistrationDTO registration, Map<String, Object> templateValues,
@@ -1155,5 +1180,4 @@ public class TemplateGenerator extends BaseService {
 				"Getting values of demographic fields has been completed");
 		return value;
 	}
-
 }
