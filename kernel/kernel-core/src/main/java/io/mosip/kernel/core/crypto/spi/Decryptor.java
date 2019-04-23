@@ -39,5 +39,15 @@ public interface Decryptor<K, P, S> {
 	 * @return Processed array
 	 */
 	byte[] symmetricDecrypt(S key, byte[] data);
+	
+	/**
+	 * Symmetric Decrypt with key
+	 * 
+	 * @param key  key for decryption
+	 * @param data data for decryption
+	 * @param randomIV init vector
+	 * @return Processed array
+	 */
+	byte[] symmetricDecrypt(S key, byte[] data,byte[] randomIV);
 
 }

@@ -38,6 +38,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.controller.reg.HomeController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
@@ -211,8 +212,11 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private HomeController homeController;
-	
+
 	private boolean isUserNewToMachine;
+
+	@FXML
+	private ProgressIndicator passwordProgressIndicator;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -232,12 +236,8 @@ public class LoginController extends BaseController implements Initializable {
 			isInitialSetUp = RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
-			//TODO get is New user from reg_center_user_machine table
-			isUserNewToMachine = true;
-			
-			if (!isInitialSetUp || !isUserNewToMachine) {
-				jobConfigurationService.startScheduler();
-			}
+			// TODO get is New user from reg_center_user_machine table
+			isUserNewToMachine = false;
 
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
@@ -293,8 +293,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			if (!isInitialSetUp) {
+			if (!isInitialSetUp && !isUserNewToMachine) {
 				executePreLaunchTask(loginRoot, progressIndicator);
+				jobConfigurationService.startScheduler();
 			}
 
 		} catch (IOException ioException) {
@@ -328,6 +329,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (userId.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else if (isInitialSetUp || isUserNewToMachine) {
+			userIdPane.setVisible(false);
+			loadLoginScreen(LoginMode.PASSWORD.toString());
+
 		} else {
 
 			try {
@@ -453,33 +458,58 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 
-		UserDetail userDetail = loginService.getUserDetail(userId.getText());
+		boolean pwdValidationStatus = false;
+		UserDetail userDetail = null;
+		if (isInitialSetUp || isUserNewToMachine) {
+			LoginUserDTO loginUserDTO = new LoginUserDTO();
+			loginUserDTO.setUserId(userId.getText());
+			loginUserDTO.setPassword(password.getText());
 
-		// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
-		// implemented, getting AuthZ Token by Client ID and Secret Key
-		
-		LoginUserDTO loginUserDTO=new LoginUserDTO();
-//		loginUserDTO.setUserId(userId.getText());
-//		loginUserDTO.setPassword(password.getText());
-		
-		ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+
 			try {
-				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				// Get Auth Token
+				getAuthToken(loginUserDTO, LoginMode.PASSWORD);
+
+				// Execute Sync
+				executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
 			} catch (Exception exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
 						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-				exception.printStackTrace();
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
+
+				loadInitialScreen(Initialization.getPrimaryStage());
 			}
-		}
+		} else {
+			userDetail = loginService.getUserDetail(userId.getText());
 
-		boolean pwdValidationStatus = false;
-		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+			// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
+			// implemented, getting AuthZ Token by Client ID and Secret Key
 
-		if (RegistrationConstants.SUCCESS.equals(status)) {
-			pwdValidationStatus = validateInvalidLogin(userDetail, "");
-		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+			LoginUserDTO loginUserDTO = new LoginUserDTO();
+			// loginUserDTO.setUserId(userId.getText());
+			// loginUserDTO.setPassword(password.getText());
+
+			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				try {
+					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+				}
+			}
+
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+
+			if (RegistrationConstants.SUCCESS.equals(status)) {
+				pwdValidationStatus = validateInvalidLogin(userDetail, "");
+			} else if (RegistrationConstants.FAILURE.equals(status)) {
+				pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+			}
 		}
 
 		if (pwdValidationStatus) {
@@ -829,6 +859,7 @@ public class LoginController extends BaseController implements Initializable {
 			loadLoginScreen(loginList.get(RegistrationConstants.PARAM_ZERO));
 
 		} else {
+
 			if (setInitialLoginInfo(userId.getText())) {
 
 				auditFactory.audit(AuditEvent.NAV_HOME, Components.LOGIN, userId.getText(),
@@ -844,18 +875,6 @@ public class LoginController extends BaseController implements Initializable {
 					// to add events to the stage
 					getStage();
 
-					if (isInitialSetUp) {
-
-						// TODO Need to find out code for initial set up flag
-						 globalParamService.update(RegistrationConstants.INITIAL_SETUP,
-						 RegistrationConstants.DISABLE);
-
-						executePreLaunchTask(homeController.getMainBox(),
-								packetHandlerController.getProgressIndicator());
-
-						// Start Scheduler if it was first Login
-						jobConfigurationService.startScheduler();
-					}
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -1152,14 +1171,23 @@ public class LoginController extends BaseController implements Initializable {
 			public void handle(WorkerStateEvent t) {
 
 				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
+
+					// TODO Need to find out code for initial set up flag
+					if (isInitialSetUp) {
+						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
+					}
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
+							generateAlert(RegistrationUIConstants.SUCCESS, RegistrationUIConstants.RESTART_APPLICATION);
 							restartController.restart();
 						}
 					});
 				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
+					if (isInitialSetUp || isUserNewToMachine) {
+						loadInitialScreen(Initialization.getPrimaryStage());
+					}
 				}
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);
@@ -1185,10 +1213,17 @@ public class LoginController extends BaseController implements Initializable {
 				"Ignoring login method if the configuration is off");
 
 	}
-	
-	
-	private void getAuthToken() {
-		
+
+	private void getAuthToken(LoginUserDTO loginUserDTO, LoginMode loginMode) throws RegBaseCheckedException {
+
+		ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
+			serviceDelegateUtil.getAuthToken(loginMode);
+
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+		}
 	}
 
 }

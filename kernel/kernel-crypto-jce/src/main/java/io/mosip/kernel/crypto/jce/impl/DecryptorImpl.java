@@ -85,7 +85,22 @@ public class DecryptorImpl implements Decryptor<PrivateKey, PublicKey, SecretKey
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data) {
 		if (SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING.getValue().contains(symmetricAlgorithm)) {
 			return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, key, data,
-					Cipher.DECRYPT_MODE);
+					Cipher.DECRYPT_MODE,null);
+		} else {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.crypto.spi.Decryptor#symmetricDecrypt(java.lang.Object, byte[], byte[])
+	 */
+	@Override
+	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] randomIV) {
+		if (SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING.getValue().contains(symmetricAlgorithm)) {
+			return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, key, data,
+					Cipher.DECRYPT_MODE,randomIV);
 		} else {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
