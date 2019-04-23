@@ -13,7 +13,7 @@ import io.mosip.authentication.common.service.filter.DefaultIDAFilter;
  *
  */
 @Configuration
-public class VidServiceConfig {
+public class VidFilterConfig {
 
 	/**
 	 * Gets the Vid filter.

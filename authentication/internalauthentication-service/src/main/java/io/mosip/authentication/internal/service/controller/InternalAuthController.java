@@ -72,7 +72,7 @@ public class InternalAuthController {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/internal/auth/{Auth-Partner-ID}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/auth/internal/{Auth-Partner-ID}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
