@@ -406,6 +406,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setClazz(Object.class);
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
+			requestHTTPDTO.setIsSignRequired(false);
 
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
@@ -568,6 +569,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setUri(new URI(requestURL));
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
+		requestHTTPDTO.setIsSignRequired(false);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);
