@@ -48,9 +48,7 @@ node {
  }
 
 stage ('---------- build ---------------') {
-         dir(branch){
-	 sh "find . -name 'pom.xml' -exec mvn clean -f '{}' \\;"
-	 }
+         
 	// for building java projects
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  	// For building angular project
