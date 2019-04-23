@@ -1,4 +1,7 @@
-package io.mosip.authentication.staticpin.service.config;
+/**
+ * 
+ */
+package io.mosip.authentication.vid.service.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
@@ -6,22 +9,21 @@ import org.springframework.context.annotation.Configuration;
 import io.mosip.authentication.common.service.filter.DefaultIDAFilter;
 
 /**
- * The configuration for adding filters.
+ * @author Dinesh Karuppiah.T
  *
- * @author Manoj SP
  */
 @Configuration
-public class StaticpinFilterConfig {
+public class VidServiceConfig {
 
 	/**
-	 * Gets the otp filter.
+	 * Gets the Vid filter.
 	 *
-	 * @return the otp filter
+	 * @return the Vid filter
 	 */
 	public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 		FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultIDAFilter());
-		registrationBean.addUrlPatterns("/staticpin");
+		registrationBean.addUrlPatterns("/vid/*");
 		return registrationBean;
 	}
 
