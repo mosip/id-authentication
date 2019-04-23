@@ -171,7 +171,11 @@ public class ClientJarEncryption {
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
 					File rxtxJarFolder = new File(args[8]);
+					
+					//lib files
 					LinkedList<File> jars = new LinkedList<>( Arrays.asList(listOfJars.listFiles()));
+					
+					//rxtx files
 					jars.addAll(Arrays.asList(rxtxJarFolder.listFiles()));
 					
 					// Adding lib files into map
