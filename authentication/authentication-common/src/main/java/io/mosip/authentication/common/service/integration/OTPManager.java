@@ -35,6 +35,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class OTPManager {
+	
+	private static final String KER_OTP_KEY_NOT_EXISTS_CODE = "KER-OTV-005";
 
 	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
@@ -181,8 +183,7 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
-		// FIXME change errorcode
-		if (errorCode.filter(code -> code.equals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode()))
+		if (errorCode.filter(code -> code.equalsIgnoreCase(KER_OTP_KEY_NOT_EXISTS_CODE))
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
