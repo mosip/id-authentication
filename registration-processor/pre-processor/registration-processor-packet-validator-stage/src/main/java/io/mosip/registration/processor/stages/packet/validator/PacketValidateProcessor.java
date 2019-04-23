@@ -47,6 +47,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
