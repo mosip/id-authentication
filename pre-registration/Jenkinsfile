@@ -48,13 +48,16 @@ node {
  }
 
 stage ('---------- build ---------------') {
+
+	// Cleaning up all the target folders
+	dir(branch) {
+	sh "find . -name 'target' -a -type d -exec rm -rfv '{}' \\;"
+	}
 	// for building java projects
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  	// For building angular project
 	dir(branch) {
 	
-	        // Cleaning up all the target folders
-		sh "find . -name 'target' -a -type d -exec rm -rfv '{}' \\;"
 		// Looking for angular.json file to to find out if the submodule we are building is an angular project
 		echo "Looking for angular projects to build"
 		sh "find . -name 'angular.json'> directoryAngularFiles"
