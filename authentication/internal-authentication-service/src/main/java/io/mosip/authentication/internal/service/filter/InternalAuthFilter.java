@@ -22,7 +22,7 @@ public class InternalAuthFilter extends IdAuthFilter {
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
-		
+		//Skipping MISP-Partner authentication/authorizations
 	}
 
 }
