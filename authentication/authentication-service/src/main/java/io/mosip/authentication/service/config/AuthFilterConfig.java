@@ -24,7 +24,7 @@ public class AuthFilterConfig {
 	public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
 		FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new IdAuthFilter());
-		registrationBean.addUrlPatterns("/auth/*");
+		registrationBean.addUrlPatterns("/id-authentication/*");
 		return registrationBean;
 	}
 
