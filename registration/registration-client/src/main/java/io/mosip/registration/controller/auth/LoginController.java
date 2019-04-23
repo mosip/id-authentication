@@ -237,7 +237,7 @@ public class LoginController extends BaseController implements Initializable {
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
 			// TODO get is New user from reg_center_user_machine table
-			isUserNewToMachine = true;
+			isUserNewToMachine = false;
 
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
