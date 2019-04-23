@@ -354,16 +354,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 				} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
 					bioType = SingleType.IRIS.value();
 				}
-				if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
+				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+					if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
+						throw new IdAuthenticationAppException(
+								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+										bioType));
+					}
+					String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									bioType));
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
+									IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
 				}
-				String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
-								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
 			}
 		}
 	}
