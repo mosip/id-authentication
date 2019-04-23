@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -76,9 +76,9 @@ public class RestRequestFactory {
 
 	String serviceName = restService.getServiceName();
 
-	String uri = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_URI.getkey()));
-	String httpMethod = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HTTP_METHOD.getkey()));
-	String timeout = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_TIMEOUT.getkey()));
+	String uri = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_URI));
+	String httpMethod = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HTTP_METHOD));
+	String timeout = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_TIMEOUT));
 
 	HttpHeaders headers = constructHttpHeaders(serviceName);
 
@@ -125,12 +125,12 @@ public class RestRequestFactory {
     private HttpHeaders constructHttpHeaders(String serviceName) throws IDDataValidationException {
 	try {
 	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey()))));
+	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE))));
 	    return headers;
 	} catch (InvalidMediaTypeException e) {
 	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 		    "throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
-			    + env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey())));
+			    + env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE)));
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 			    serviceName.concat(REST_HEADERS_MEDIA_TYPE)));

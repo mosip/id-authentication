@@ -20,9 +20,9 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
@@ -87,9 +87,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public String getLanguageCode(LanguageType langType) {
 		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(IdAuthenticationProperties.MOSIP_PRIMARY_LANGUAGE.getkey());
+			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
 		} else {
-			return environment.getProperty(IdAuthenticationProperties.MOSIP_SECONDARY_LANGUAGE.getkey());
+			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		String languagName = null;
 		String key = null;
 		if (languageCode != null) {
-			key = IdAuthenticationProperties.MOSIP_PHONETIC_LANG.getkey().concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
+			key = IdAuthConfigKeyConstants.MOSIP_PHONETIC_LANG.concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				String[] split = property.split("-");

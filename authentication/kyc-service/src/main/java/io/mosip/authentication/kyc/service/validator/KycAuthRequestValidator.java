@@ -18,6 +18,7 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.EkycAuthType;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -39,11 +40,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SECONDARY_LANG_CODE. */
 	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
 	
-	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
-	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
-
-	/** The Constant EKYC_ALLOWED_AUTH_TYPE. */
-	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
+	
 
 	/** The auth request validator. */
 	@Autowired
@@ -128,7 +125,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		String secLangCode = kycAuthRequestDTO.getSecondaryLangCode();
 		if(Objects.nonNull(secLangCode)) {
 			Set<String> allowedLang;
-			String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+			String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES);
 			if (null != languages && languages.contains(",")) {
 				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
 			} else {
@@ -154,7 +151,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String values = environment.getProperty(EKYC_ALLOWED_AUTH_TYPE);
+		String values = environment.getProperty(IdAuthConfigKeyConstants.EKYC_ALLOWED_AUTH_TYPE);
 		List<String> allowedAuthTypesList = Arrays.stream(values.split(",")).collect(Collectors.toList());
 		Map<Boolean, List<EkycAuthType>> authTypes = Stream.of(EkycAuthType.values()).collect(
 				Collectors.partitioningBy(ekycAuthType -> allowedAuthTypesList.contains(ekycAuthType.getType())));

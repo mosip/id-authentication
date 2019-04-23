@@ -84,7 +84,6 @@ public class KeyManagerTest {
 	@Before
 	public void before() {
 		// ReflectionTestUtils.setField(restRequestFactory, "env", environment);
-		ReflectionTestUtils.setField(keyManager, "keySplitter", "#KEY_SPLITTER#");
 		ReflectionTestUtils.setField(keyManager, "environment", environment);
 	}
 

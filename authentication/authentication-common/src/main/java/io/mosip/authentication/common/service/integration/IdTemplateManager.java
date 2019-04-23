@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -132,7 +133,7 @@ public class IdTemplateManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty(IdAuthenticationProperties.MOSIP_NOTIFICATION_LANGUAGE_TYPE.getkey());
+		String languageRequired = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATION_LANGUAGE_TYPE);
 		StringBuilder stringBuilder = new StringBuilder();
 		if (languageRequired.equalsIgnoreCase(BOTH)) {
 			stringBuilder.append(masterDataManager.fetchTemplate(templateName));

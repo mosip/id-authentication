@@ -19,6 +19,7 @@ import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.vid.ResponseDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -45,13 +46,9 @@ public class VIDServiceImpl implements VIDService {
 
 	private static final String IDA = "IDA";
 
-	private static final String MOSIP_IDENTITY_VID = "mosip.identity.vid";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
+
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(VIDServiceImpl.class);
@@ -89,7 +86,7 @@ public class VIDServiceImpl implements VIDService {
 		VIDEntity vidEntityObj = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
-		vidResponseDTO.setId(MOSIP_IDENTITY_VID);
+		vidResponseDTO.setId(IdAuthConfigKeyConstants.MOSIP_IDENTITY_VID);
 		vidResponseDTO.setVersion(VERSION);
 		if (Objects.nonNull(uinMap) && !uinMap.isEmpty()) {
 			List<VIDEntity> vidEntityList = vidRepository.findByUIN(uin, PageRequest.of(0, 1));
@@ -109,7 +106,7 @@ public class VIDServiceImpl implements VIDService {
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
-		vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 		auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
 				IdType.UIN.getType(), IdType.UIN, VID_GENERATION_REQUEST);
 		return vidResponseDTO;
@@ -181,7 +178,7 @@ public class VIDServiceImpl implements VIDService {
 		vidEntityObj.setCreatedBy(IDA);
 		vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
 		vidEntityObj.setExpiryDate(
-				DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
+				DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty(IdAuthConfigKeyConstants.MOSIP_VID_VALIDITY_HOURS, Long.class)));
 		vidEntityObj.setGeneratedOn(DateUtils.getUTCCurrentDateTime());
 		vidEntityObj.setDeleted(false);
 		return vidEntityObj;

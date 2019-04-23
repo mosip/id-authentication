@@ -26,9 +26,9 @@ import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -139,8 +139,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	
 	@PostConstruct	
 	private void initialize() {
-		emailPattern = Pattern.compile(env.getProperty(IdAuthenticationProperties.MOSIP_ID_VALIDATION_IDENTITY_EMAIL.getkey()));
-		phonePattern = Pattern.compile(env.getProperty(IdAuthenticationProperties.MOSIP_ID_VALIDATION_IDENTITY_PHONE.getkey()));
+		emailPattern = Pattern.compile(env.getProperty(IdAuthConfigKeyConstants.MOSIP_ID_VALIDATION_IDENTITY_EMAIL));
+		phonePattern = Pattern.compile(env.getProperty(IdAuthConfigKeyConstants.MOSIP_ID_VALIDATION_IDENTITY_PHONE));
 	}
 
 	/*
@@ -797,7 +797,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			Map<String, List<String>> fetchGenderType) {
 		for (IdentityInfoDTO identityInfoDTO : genderList) {
 			String language = identityInfoDTO.getLanguage() != null ? identityInfoDTO.getLanguage()
-					: env.getProperty(IdAuthenticationProperties.MOSIP_PRIMARY_LANGUAGE.getkey());
+					: env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
 			List<String> genderTypeList = fetchGenderType.get(language);
 			if (null != genderTypeList && !genderTypeList.contains(identityInfoDTO.getValue())) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
@@ -866,7 +866,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
-					DateUtils.parseToDate(identityInfoDTO.getValue(), env.getProperty(IdAuthenticationProperties.DOB_REQ_DATE_PATTERN.getkey()));
+					DateUtils.parseToDate(identityInfoDTO.getValue(), env.getProperty(IdAuthConfigKeyConstants.DOB_REQ_DATE_PATTERN));
 				} catch (ParseException e) {
 					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
 					// format or Age in the acceptable range
@@ -889,7 +889,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors        the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		String priLangCode = env.getProperty(IdAuthenticationProperties.MOSIP_PRIMARY_LANGUAGE.getkey());
+		String priLangCode = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
 
 		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
 			String language = idInfo.getLanguage();
@@ -1071,7 +1071,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			//TODO add property for staticpin.
 			pattern= Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH+ "}");
 		}else if(type.equals(OTP)){
-			pattern= Pattern.compile("^[0-9]{" + env.getProperty(IdAuthenticationProperties.MOSIP_KERNEL_OTP_DEFAULT_LENGTH.getkey())+ "}");
+			pattern= Pattern.compile("^[0-9]{" + env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_DEFAULT_LENGTH)+ "}");
 		}
 		return pattern;
 		

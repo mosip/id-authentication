@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+
 /**
  * The Class IrisProvider.
  *
@@ -96,9 +98,9 @@ public abstract class IrisProvider implements MosipIrisProvider {
 			Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
 
 			if (entityInfoMap.containsKey(IrisProvider.RIGHTEYE)) {
-				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
+				return environment.getProperty(uinType +IdAuthConfigKeyConstants.IRIS_IMG_RIGHT_VALUE, Double.class);
 			} else if (entityInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
-				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
+				return environment.getProperty(uinType + IdAuthConfigKeyConstants.IRIS_IMG_LEFT_VALUE, Double.class);
 			}
 		}
 

@@ -26,9 +26,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.AuditResponseDto;
@@ -89,10 +89,10 @@ public class RestRequestFactoryTest {
 
 		RestRequestDTO testRequest = new RestRequestDTO();
 		String serviceName = RestServicesConstants.AUDIT_MANAGER_SERVICE.getServiceName();
-		String uri = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_URI.getkey()));
-		String httpMethod = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HTTP_METHOD.getkey()));
-		String mediaType = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_HEADERS_MEDIA_TYPE.getkey()));
-		String timeout = env.getProperty(serviceName.concat(IdAuthenticationProperties.REST_TIMEOUT.getkey()));
+		String uri = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_URI));
+		String httpMethod = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HTTP_METHOD));
+		String mediaType = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE));
+		String timeout = env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_TIMEOUT));
 
 		testRequest.setUri(uri);
 		testRequest.setHttpMethod(HttpMethod.valueOf(httpMethod));

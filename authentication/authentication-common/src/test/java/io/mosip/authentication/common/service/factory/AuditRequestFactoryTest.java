@@ -22,9 +22,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -76,13 +76,13 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setActionTimeStamp(null);
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
-			expectedRequest.setApplicationId(env.getProperty(IdAuthenticationProperties.APPLICATION_ID.getkey())); 
-			expectedRequest.setApplicationName(env.getProperty(IdAuthenticationProperties.APPLICATION_NAME.getkey())); 
+			expectedRequest.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID)); 
+			expectedRequest.setApplicationName(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_NAME)); 
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
 			expectedRequest.setIdType(IdType.UIN.name());
-			expectedRequest.setCreatedBy(env.getProperty(IdAuthenticationProperties.USER_NAME.getkey())); 
+			expectedRequest.setCreatedBy(env.getProperty(IdAuthConfigKeyConstants.USER_NAME)); 
 			expectedRequest.setModuleName(AuditModules.FINGERPRINT_AUTH.getModuleName());
 			expectedRequest.setModuleId(AuditModules.FINGERPRINT_AUTH.getModuleId());
 			expectedRequest.setDescription("desc");

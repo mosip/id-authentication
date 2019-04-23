@@ -17,7 +17,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 
 /**
  * Class for defining configurations for the service.
@@ -41,7 +41,7 @@ public class IdAuthConfig {
 	 */
 	@PostConstruct
 	public void setup() {
-		mapper.setDateFormat(new SimpleDateFormat(environment.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())));
+		mapper.setDateFormat(new SimpleDateFormat(environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class IdAuthConfig {
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-		Locale locale = new Locale(environment.getProperty(IdAuthenticationProperties.MOSIP_ERRORMESSAGES_DEFAULT_LANG.getkey()));
+		Locale locale = new Locale(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG));
 		LocaleContextHolder.setLocale(locale);
 		sessionLocaleResolver.setDefaultLocale(locale);
 		return sessionLocaleResolver;

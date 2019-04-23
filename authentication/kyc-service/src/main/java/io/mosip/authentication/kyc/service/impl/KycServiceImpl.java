@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
@@ -33,11 +34,7 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 @Service
 public class KycServiceImpl implements KycService {
 
-	/** The Constant MOSIP_SECONDARY_LANG_CODE. */
-	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary-language";
-
-	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
+	
 
 	/** The env. */
 	@Autowired
@@ -119,9 +116,9 @@ public class KycServiceImpl implements KycService {
 		}
 		if (Objects.nonNull(identityInfo)) {
 			Set<String> allowedLang = idInfoHelper.getAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE)
+			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE)
 					: null;
-			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
+			String primaryLanguage = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
 			identityInfos = identityInfo.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry
 					.getValue().stream()
 					.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())

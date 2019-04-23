@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.MaskUtil;
@@ -113,7 +114,7 @@ public class OTPServiceImpl implements OTPService {
 			String individualIdType = otpRequestDto.getIndividualIdType();
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin"));
-			String productid = env.getProperty("application.id");
+			String productid = env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID);
 			String transactionId = otpRequestDto.getTransactionID();
 			String otpKey = OTPUtil.generateKey(productid, individualId, transactionId, partnerId);
 			Optional<String> otpValue = Optional.ofNullable(otpManager.generateOTP(otpKey));
