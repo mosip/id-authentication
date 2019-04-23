@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -81,7 +82,7 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			if (environment.getProperty(IdAuthenticationProperties.MOSIP_KERNEL_IDREPO_STATUS_REGISTERED.getkey())
+			if (environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_IDREPO_STATUS_REGISTERED)
 					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(STATUS_KEY))) {
 				response.put("uin", uin);
 			} else {

@@ -22,10 +22,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.common.service.policy.dto.KYCAttributes;
 import io.mosip.authentication.common.service.policy.dto.Policies;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -44,6 +44,8 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+
+	private static final String EKYC = "ekyc";
 
 	private static final String BIO_TYPE = "bioType";
 
@@ -156,7 +158,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
 		String mispId;
-		String licensekeyMappingJson = env.getProperty(IdAuthenticationProperties.LICENSE_KEY.getkey() + licenseKey);
+		String licensekeyMappingJson = env.getProperty(IdAuthConfigKeyConstants.LICENSE_KEY + licenseKey);
 		if (Objects.nonNull(licensekeyMappingJson)) {
 			Map<String, Object> licenseKeyMap;
 			try {
@@ -187,7 +189,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson = env.getProperty(IdAuthenticationProperties.PARTNER_KEY.getkey() + partnerId);
+		String partnerIdJson = env.getProperty(IdAuthConfigKeyConstants.PARTNER_KEY + partnerId);
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
 		} else {
@@ -221,11 +223,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
 		Boolean mispPartnerMappingJson = env.getProperty(
-				IdAuthenticationProperties.MISP_PARTNER_MAPPING.getkey() + mispId + "." + partnerId, boolean.class);
+				IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
 		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-		String partnerIdJson = env.getProperty(IdAuthenticationProperties.PARTNER_KEY.getkey() + partnerId);
+		String partnerIdJson = env.getProperty(IdAuthConfigKeyConstants.PARTNER_KEY + partnerId);
 		try {
 			partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
 			policyId = partnerIdMap.get(POLICY_ID);
@@ -441,7 +443,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
 						.filter(id -> id.equals(
-								env.getProperty(IdAuthenticationProperties.MOSIP_IDA_API_IDS.getkey() + "ekyc")))
+							env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
 						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
@@ -483,7 +485,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the policy
 	 */
 	private String getPolicy(String policyId) {
-		return env.getProperty(IdAuthenticationProperties.POLICY.getkey() + policyId);
+		return env.getProperty(IdAuthConfigKeyConstants.POLICY + policyId);
 	}
 
 	/**

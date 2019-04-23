@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.kyc.service.filter.KycAuthFilter;
 
 /**
@@ -15,7 +16,7 @@ import io.mosip.authentication.kyc.service.filter.KycAuthFilter;
 @Configuration
 public class KycFilterConfig {
 
-	@Value("${ida.api.version}")
+	@Value("${"+ IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + "}")
 	private String apiVersion;
 
 	/**

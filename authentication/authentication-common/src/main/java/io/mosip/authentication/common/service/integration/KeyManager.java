@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.SymmetricKeyRequestDto;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -78,12 +79,10 @@ public class KeyManager {
 	/** The secure random. */
 	private static  SecureRandom secureRandom;
 
-	/** KeySplitter. */
-	@Value("${mosip.kernel.data-key-splitter}")
-	private String keySplitter;
+
 
 	/** The app id. */
-	@Value("${application.id}")
+	@Value("${" +IdAuthConfigKeyConstants.APPLICATION_ID+ "}")
 	private String appId;
 
 	/** The rest helper. */
@@ -156,7 +155,7 @@ public class KeyManager {
 		byte[] decryptedSymmetricKey = null;
 		try {
 			symmetricKeyRequestDto.setApplicationId(appId);
-			symmetricKeyRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
+			symmetricKeyRequestDto.setReferenceId(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_PUBLICKEY));
 			symmetricKeyRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
 			symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey);

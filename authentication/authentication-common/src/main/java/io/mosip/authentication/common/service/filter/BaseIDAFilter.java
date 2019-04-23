@@ -39,8 +39,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -189,16 +189,16 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 		String resTime = DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(ZoneOffset.UTC));
+				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
 					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
 			resTime = DateUtils.formatDate(
-					DateUtils.parseToDate(resTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone)),
-					env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()), TimeZone.getTimeZone(zone));
+					DateUtils.parseToDate(resTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
+					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone));
 		}
 
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
@@ -254,7 +254,7 @@ public abstract class BaseIDAFilter implements Filter {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
 		long duration = Duration
 				.between(requestTime,
-						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()))))
+						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN))))
 				.toMillis();
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				"Time difference between request and response in millis:" + duration
@@ -462,9 +462,9 @@ public abstract class BaseIDAFilter implements Filter {
 									.formatDate(
 											DateUtils.parseToDate((String) responseBody.get(RES_TIME),
 													env.getProperty(
-															IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+															IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 													TimeZone.getTimeZone(zone)),
-											env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()),
+											env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 											TimeZone.getTimeZone(zone)));
 			return responseBody;
 		} else {
@@ -512,7 +512,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected boolean isDate(String date) {
 		try {
-			DateUtils.parseToDate(date, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
+			DateUtils.parseToDate(date, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 			return true;
 		} catch (ParseException e) {
 			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));

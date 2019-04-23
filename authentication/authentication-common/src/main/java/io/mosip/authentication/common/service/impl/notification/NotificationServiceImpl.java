@@ -25,10 +25,10 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -96,7 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty(IdAuthenticationProperties.UIN_MASKING_REQUIRED.getkey()));
+		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_REQUIRED));
 
 		Map<String, Object> values = new HashMap<>();
 		
@@ -116,14 +116,14 @@ public class NotificationServiceImpl implements NotificationService {
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
 		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
 		String changedDate = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthenticationProperties.NOTIFICATION_DATE_FORMAT.getkey())));
+				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
 		String changedTime = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthenticationProperties.NOTIFICATION_TIME_FORMAT.getkey())));
+				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
 
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
 		String maskedUin = "";
-		String charCount = env.getProperty(IdAuthenticationProperties.UIN_MASKING_CHARCOUNT.getkey());
+		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
 		if (ismaskRequired && charCount != null) {
 			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
 		}
@@ -149,7 +149,7 @@ public class NotificationServiceImpl implements NotificationService {
 		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
-			notificationType = env.getProperty(IdAuthenticationProperties.MOSIP_NOTIFICATIONTYPE.getkey());
+			notificationType = env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE);
 		} else {
 			// For internal auth no notification is done
 			notificationType = NotificationType.NONE.getName();
@@ -166,20 +166,20 @@ public class NotificationServiceImpl implements NotificationService {
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
-				env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey()));
+				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		String date = dateAndTime.getKey();
 		String time = dateAndTime.getValue();
 
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
 		try {
-			String charCount = env.getProperty(IdAuthenticationProperties.UIN_MASKING_CHARCOUNT.getkey());
+			String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
 			if (charCount != null) {
 				maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
 			}
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
-			Integer timeInSeconds = env.getProperty(IdAuthenticationProperties.MOSIP_KERNEL_OTP_EXPIRY_TIME.getkey(), Integer.class);
+			Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class);
 			int timeInMinutes = (timeInSeconds % 3600) / 60;
 			values.put("validTime", String.valueOf(timeInMinutes));
 			values.put(DATE, date);
@@ -193,7 +193,7 @@ public class NotificationServiceImpl implements NotificationService {
 			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
 			values.put(NAME + "_" + secLang, nameSec);
 
-			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty(IdAuthenticationProperties.MOSIP_NOTIFICATIONTYPE.getkey()));
+			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
@@ -312,8 +312,8 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo)
 			throws IdAuthenticationBusinessException {
-		String authSmsTemplate = env.getProperty(IdAuthenticationProperties.AUTH_SMS_TEMPLATE.getkey());
-		String otpSmsTemplate = env.getProperty(IdAuthenticationProperties.OTP_SMS_TEMPLATE.getkey());
+		String authSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE);
+		String otpSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE);
 		String contentTemplate = "";
 		if (sender == SenderType.AUTH && authSmsTemplate != null) {
 			contentTemplate = authSmsTemplate;
@@ -338,10 +338,10 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender)
 			throws IdAuthenticationBusinessException {
-		String otpContentTemaplate = env.getProperty(IdAuthenticationProperties.OTP_CONTENT_TEMPLATE.getkey());
-		String authEmailSubjectTemplate = env.getProperty(IdAuthenticationProperties.AUTH_EMAIL_SUBJECT_TEMPLATE.getkey());
-		String authEmailContentTemplate = env.getProperty(IdAuthenticationProperties.AUTH_EMAIL_CONTENT_TEMPLATE.getkey());
-		String otpSubjectTemplate = env.getProperty(IdAuthenticationProperties.OTP_SUBJECT_TEMPLATE.getkey());
+		String otpContentTemaplate = env.getProperty(IdAuthConfigKeyConstants.OTP_CONTENT_TEMPLATE);
+		String authEmailSubjectTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_SUBJECT_TEMPLATE);
+		String authEmailContentTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_CONTENT_TEMPLATE);
+		String otpSubjectTemplate = env.getProperty(IdAuthConfigKeyConstants.OTP_SUBJECT_TEMPLATE);
 
 		String contentTemplate = "";
 		String subjectTemplate = "";

@@ -26,9 +26,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -161,7 +161,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			jws.setCompactSerialization(signature);
 			List<X509Certificate> certificateChainHeaderValue = jws.getCertificateChainHeaderValue();
 			if (certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE
-					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(IdAuthenticationProperties.MOSIP_JWS_CERTIFICATE_ALGM.getkey()))) {
+					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_JWS_CERTIFICATE_ALGM))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
 				KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 				keyStore.load(null);
@@ -215,7 +215,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		String[] subject = certNew.getSubjectDN().getName().split(",");
 		return Stream.of(subject).map(s -> s.split("=")).filter(ar -> ar.length == 2)
 				.filter(ar -> ar[0].trim().equals("O"))
-				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(IdAuthenticationProperties.MOSIP_TSP_ORGANIZATION.getkey())));
+				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_TSP_ORGANIZATION)));
 	}
 
 	/**

@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.integration.IdAuthenticationProperties;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -145,11 +145,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateRequestTimedOut(String reqTime, Errors errors) {
 		try {
-			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthenticationProperties.DATE_TIME_PATTERN.getkey())).toInstant();
+			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env.getProperty(IdAuthenticationProperties.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS.getkey(), Long.class);
+			Long reqDateMaxTimeLong = env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS, Long.class);
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,

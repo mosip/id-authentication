@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -34,13 +35,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
-	@Value("${application.env.local:false}")
+	@Value("${" + IdAuthConfigKeyConstants.APP_ENVIRONMENT_LOCAL+ ":false}")
 	private Boolean localEnv;
 
-	@Value("${swagger.base-url:#{null}}")
+	@Value("${" + IdAuthConfigKeyConstants.SWAGGER_BASE_URL + ":#{null}}")
 	private String swaggerUrl;
 
-	@Value("${server.port:8080}")
+	@Value("${" + IdAuthConfigKeyConstants.SERVER_PORT + ":8080}")
 	private int serverPort;
 
 	private String host;

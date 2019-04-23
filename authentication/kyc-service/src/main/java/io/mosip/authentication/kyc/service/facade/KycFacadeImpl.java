@@ -21,6 +21,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -45,8 +46,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class KycFacadeImpl implements KycFacade {
 
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The env. */
 	@Autowired
@@ -116,7 +115,7 @@ public class KycFacadeImpl implements KycFacade {
 			} else {
 				idType = IdType.VID;
 			}
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
 
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
 
@@ -132,7 +131,7 @@ public class KycFacadeImpl implements KycFacade {
 		if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
-			response.setTtl(env.getProperty("ekyc.ttl.hours"));
+			response.setTtl(env.getProperty(IdAuthConfigKeyConstants.EKYC_TTL_HOURS));
 		}
 		if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 			response.setKycStatus(authResponse.isAuthStatus());

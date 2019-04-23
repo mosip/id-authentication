@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.repository.StaticPinHistoryReposit
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -107,7 +108,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 		if (uinValue.isPresent()) {
 			storeSpin(staticPinRequestDTO, uinValue.get());
 		}
-		String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+		String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
 		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
 		String reqTime = staticPinRequestDTO.getRequestTime();
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);

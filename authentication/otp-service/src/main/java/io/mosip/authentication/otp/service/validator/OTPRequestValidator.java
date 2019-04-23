@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -113,8 +114,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 	private void validateRequestTimedOut(String timestamp, Errors errors) {
 		try {
 
-			String maxTimeInMinutes = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS);
-			Instant reqTimeInstance = DateUtils.parseToDate(timestamp, env.getProperty(DATETIME_PATTERN)).toInstant();
+			String maxTimeInMinutes = env.getProperty(IdAuthConfigKeyConstants.OTPREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES);
+			Instant reqTimeInstance = DateUtils.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
