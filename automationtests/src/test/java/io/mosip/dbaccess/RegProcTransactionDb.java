@@ -62,6 +62,7 @@ public class RegProcTransactionDb {
 			 TestData = (Object[]) obj;
 			 statusComment.add((String) TestData[1]);
 			 }
+		 logger.info("DB Status_Codes are :: "+statusComment);
 	        t.commit();
 	        session.close();
 		return false;

@@ -13,7 +13,6 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -96,9 +95,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 @Test(dataProvider="DeactivateUin")
 	 public void packetGenerator(String testSuite, Integer i, JSONObject object){
 	 	 List<String> outerKeys = new ArrayList<String>();
-	 	 List<String> innerKeys = new ArrayList<String>();
-	 	 
-
+	 	 List<String> innerKeys = new ArrayList<String>();	
 	 	 try {
 	 	 	 JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	 
 	 	 	 expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -106,22 +103,24 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 	 	 //outer and inner keys which are dynamic in the actual response
 	 	 	 outerKeys.add("responsetime");
 	 	 	 innerKeys.add("registrationId");
-
+	 		 if(object.get("testCaseName").toString().equals("invalid_deactivatedUin")) {
+		 		 
+		 	 }
 
 	 	 	 //generation of actual response
 	 	 	 actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
-	 	 	 if(actualResponse.getStatusCode()==200) {
+	 	 	 String message=actualResponse.jsonPath().get("response.message").toString();
+	 	  if(message.equals("Packet created and uploaded")) {
 	 	 		 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
 		 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID); 
 	 	 	 }
-	 	 /*	 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
-	 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID);
-	 	 */	 //Asserting actual and expected response
+	 		 //Asserting actual and expected response
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
 	 	 	 	 finalStatus="Pass";
 	 	 	 }else
 	 	 	 	 finalStatus="Fail";
+	 	 	 
 	 	 	 object.put("status", finalStatus);
 	 	 	 arr.add(object);
 	 	 	 boolean setFinalStatus = false;
@@ -134,6 +133,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 	 } catch (IOException | ParseException e) {
 	 	 	 logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
 	 	 }
+	 	 
 	 }
 
 	 /**
