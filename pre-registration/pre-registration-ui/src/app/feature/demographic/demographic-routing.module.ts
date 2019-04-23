@@ -2,18 +2,15 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DemographicComponent } from './demographic/demographic.component';
 
-const routes: Routes = [
-  // {
-  //   path: 'pre-registration/:id',
-  //   component: ParentComponent,
-  //   children: [
-  //     { path: '', pathMatch: 'full', redirectTo: '/' },
-  //     { path: 'demographic', component: DemographicComponent }
-  //   ]
-  // }
-  { path: '', component: DemographicComponent }
-];
+const routes: Routes = [{ path: '', component: DemographicComponent }];
 
+/**
+ * @description This module defines the route path for the demographic module.
+ * @author Shashank Agrawal
+ *
+ * @export
+ * @class DemographicRoutingModule
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

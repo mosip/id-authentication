@@ -56,7 +56,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchRegistrationCenterDeviceHistory = "/masterdata/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}";
+	private static final String fetchRegistrationCenterDeviceHistory = "/v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}";
 	static String dest = "";
 	static String folderPath = "kernel/GetRegistrationCenterDeviceHistory";
 	static String outputFile = "GetRegistrationCenterDeviceHistoryOutput.json";
@@ -67,7 +67,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -120,7 +120,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {          

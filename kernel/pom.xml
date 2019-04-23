@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.3</version>
+		<version>0.10.5</version>
 	</parent>
 
 
@@ -174,23 +174,6 @@
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
-
-
-		<!-- <module>kernel-otpnotification-service</module> -->
-		<!-- <module>kernel-ldap-service</module> -->
-
-		<!-- <module>kernel-idvalidator</module> -->
-		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
-		<!-- <module>kernel-packetserver-http</module> -->
-		<!-- <module>kernel-packetserver-sftp</module> -->
-		<!-- <module>kernel-idgenerator-uin</module> -->
-		<!-- <module>kernel-templatemanager-freemarker</module> -->
-		<!-- <module>kernel-batch-framework</module> -->
-		<!-- <module>kernel-batch-server</module> -->
-		<!--<module>kernel-crypto-bouncycastle</module> -->
-
-
-
 	</modules>
 
 

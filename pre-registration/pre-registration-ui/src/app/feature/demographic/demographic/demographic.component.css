@@ -1,7 +1,11 @@
+:root {
+  --text-size: 0.7rem;
+}
+
 .wrapper {
   background-color: #f4f4f4;
   z-index: -1;
-  /* position: relative; */
+  overflow-x: hidden;
   padding: 10px;
   padding-bottom: 0;
   color: #000000;
@@ -34,7 +38,7 @@
 }
 
 .user__container {
-  font-size: 1rem;
+  font-size: 0.7rem;
   /* box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3); */
   padding: 1rem 0 0.5rem 1.5rem;
   width: 48%;
@@ -64,7 +68,7 @@
   width: 95%;
   padding: 3px;
   color: #000000;
-  font-size: 1rem;
+  font-size: 0.7rem;
 }
 
 .user__age-or-date {
@@ -83,6 +87,7 @@
 
 .user__form .user__date mat-form-field {
   width: 32%;
+  text-align: center;
 }
 
 .user__pref {
@@ -91,18 +96,22 @@
 
 .user__age {
   text-align: end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .user__age mat-form-field {
   width: 32%;
+  text-align: center;
 }
 
-.user__age span {
-  font-size: 1rem;
+.user__age .user__age--years {
+  /* align-items: center; */
+  align-self: center;
 }
 
 .user__age--disabled {
-  font-size: 1rem;
+  font-size: 0.7rem;
   color: #595f6e;
 }
 
@@ -113,23 +122,12 @@
   font-size: 75%;
 }
 
-/* .genderAndForeigner {
-  display: flex;
-}
-
-.genderAndForeigner--foreigner {
-  align-self: center;
-  margin: 0 6%;
-} */
-
 .user__genderAndForeigner {
   font-weight: inherit;
-  font-size: 1rem;
+  font-size: 0.7rem;
   display: flex;
   margin-bottom: 6px;
   margin-top: 0px;
-  /* align-self: center;
-  width: 100%; */
 }
 
 .user__genderAndForeigner mat-button-toggle-group {
@@ -139,7 +137,7 @@
 
 .user__genderAndForeigner mat-button-toggle {
   font-family: Helvetica, Regular;
-  font-size: 1rem;
+  font-size: 0.7rem;
   margin: 10px 10px 10px 10px;
   color: #fd518c;
   width: 80%;
@@ -162,7 +160,7 @@
 
 .user__genderAndForeigner--text {
   width: 37%;
-  font-size: 1rem;
+  font-size: 0.7rem;
   align-self: center;
 }
 
@@ -174,13 +172,14 @@
 
 .user__buttons {
   width: 100%;
-  /* position: fixed;
-  top: 93%; */
-  /* left: 17px; */
+  position: sticky;
+  bottom: 2px;
+  left: -2px;
   display: flex;
   justify-content: space-between;
   margin-top: 0.2rem;
-  background-color: #f4f4f4;
+  background-color: white;
+  border-top: 5px solid #f4f4f4;
 }
 
 .user__btn {
@@ -204,7 +203,7 @@
   cursor: default;
 }
 
-@media (max-width: 599px) {
+@media (max-width: 798px) {
   .user__container {
     width: 100%;
     float: none;
@@ -219,40 +218,7 @@
   }
 }
 
-@media (max-width: 754px) {
-  .user__age-or-date .user__date {
-    width: 100px;
-  }
-
-  .user__age-or-date .user__pref {
-    text-align: center;
-  }
-
-  .user__age-or-date .user__age {
-    width: 78px;
-    text-align: center;
-  }
-
-  .user__gender {
-    font-weight: inherit;
-    font-size: 0.8rem;
-  }
-
-  .user__gender mat-button-toggle-group {
-    box-shadow: none;
-    width: 70%;
-  }
-}
-
 @media (max-width: 1000px) {
-  /* .genderAndForeigner {
-    display: block;
-  }
-
-  .genderAndForeigner--foreigner {
-    margin: 10px 0 0 0%;
-  } */
-
   .user__genderAndForeigner mat-button-toggle {
     margin: 6px 4px 1px 1px;
     padding: 0.2rem 0;
@@ -268,7 +234,7 @@
   }
 
   .genderAndForeigner--foreigner {
-    margin-top: 1rem;
+    margin-top: 0.7rem;
     font-size: 0.8rem;
   }
 }

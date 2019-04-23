@@ -8,7 +8,6 @@
           <h4>{{ 'demographic.language' | translate }}</h4>
 
           <mat-form-field>
-            <!-- maxlength="{{ FULLNAME_LENGTH }}" -->
             <input
               matInput
               #fullName
@@ -18,7 +17,6 @@
               (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
               (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
-            <!-- <mat-hint align="end">{{ fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
           </mat-form-field>
 
@@ -26,7 +24,6 @@
             <div class="user__date">
               <mat-form-field>
                 <input
-                  [readonly]="isReadOnly"
                   matInput
                   placeholder="{{ 'demographic.date_dd' | translate }}"
                   #dd
@@ -36,7 +33,6 @@
               </mat-form-field>
               <mat-form-field>
                 <input
-                  [readonly]="isReadOnly"
                   matInput
                   placeholder="{{ 'demographic.date_mm' | translate }}"
                   #mm
@@ -46,7 +42,6 @@
               </mat-form-field>
               <mat-form-field>
                 <input
-                  [readonly]="isReadOnly"
                   matInput
                   placeholder="{{ 'demographic.date_yyyy' | translate }}"
                   #yyyy
@@ -57,12 +52,11 @@
             </div>
 
             <div class="user__pref">
-              <mat-slide-toggle (change)="onPreferenceChange($event)"></mat-slide-toggle>
+              OR
             </div>
             <div class="user__age">
               <mat-form-field>
                 <input
-                  [readonly]="!isReadOnly"
                   matInput
                   tabindex="-1"
                   [formControlName]="formControlNames.age"
@@ -71,27 +65,8 @@
                   (focusout)="onAgeChange()"
                 />
               </mat-form-field>
-              <span>{{ 'demographic.text_years' | translate }}</span>
+              <div class="user__age--years">{{ 'demographic.text_years' | translate }}</div>
             </div>
-          </div>
-
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.date).valid && userForm.get(formControlNames.date).touched"
-          >
-            {{ 'demographic.validation.date_required' | translate }}
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.month).valid && userForm.get(formControlNames.month).touched"
-          >
-            {{ 'demographic.validation.month_required' | translate }}
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched"
-          >
-            {{ 'demographic.validation.year_required' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
@@ -151,7 +126,6 @@
           </div>
 
           <mat-form-field>
-            <!-- maxlength="{{ ADDRESS_LENGTH }}" -->
             <input
               matInput
               [matKeyboard]="keyboardLang"
@@ -161,13 +135,11 @@
               (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
               (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
             />
-            <!-- <mat-hint align="end">{{ addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine1.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
           </mat-form-field>
           <mat-form-field>
-            <!-- maxlength="{{ ADDRESS_LENGTH }}" -->
             <input
               matInput
               #addressLine2
@@ -177,13 +149,11 @@
               (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
               (change)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
             />
-            <!-- <mat-hint align="end">{{ addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine2.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
           </mat-form-field>
           <mat-form-field>
-            <!-- maxlength="{{ ADDRESS_LENGTH }}" -->
             <input
               matInput
               #addressLine3
@@ -193,7 +163,6 @@
               (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
               (change)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
             />
-            <!-- <mat-hint align="end">{{ addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine3.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
@@ -202,7 +171,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, provinces, regions)"
+                (selectionChange)="onLocationSelect($event, provinces, regions, formControlNames.province)"
                 placeholder="{{ 'demographic.label_region' | translate }}"
                 [formControlName]="formControlNames.region"
                 #region
@@ -218,7 +187,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, cities, provinces)"
+                (selectionChange)="onLocationSelect($event, cities, provinces, formControlNames.city)"
                 placeholder="{{ 'demographic.label_province' | translate }}"
                 [formControlName]="formControlNames.province"
                 #province
@@ -235,7 +204,14 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, cities)"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    localAdministrativeAuthorities,
+                    cities,
+                    formControlNames.localAdministrativeAuthority
+                  )
+                "
                 placeholder="{{ 'demographic.label_city' | translate }}"
                 [formControlName]="formControlNames.city"
                 #city
@@ -270,12 +246,11 @@
                 matInput
                 type="text"
                 #postalCode
-                maxlength="6"
+                maxlength="{{ POSTALCODE_LENGTH }}"
                 placeholder="{{ 'demographic.label_postalCode' | translate }}"
                 [formControlName]="formControlNames.postalCode"
                 #postalCode
               />
-              <!-- <mat-hint align="end">{{ postalCode.value.length }} / {{POSTALCODE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!postalCode.invalid">{{
                 'demographic.validation.postal_code_required' | translate
               }}</mat-error>
@@ -291,7 +266,6 @@
                 placeholder="{{ 'demographic.label_mob_num' | translate }}"
                 [formControlName]="formControlNames.phone"
               />
-              <!-- <mat-hint align="end">{{ mobileNumber.value.length }} / {{MOBILE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!mobileNumber.invalid">{{
                 'demographic.validation.mobile_required' | translate
               }}</mat-error>
@@ -306,7 +280,6 @@
                 placeholder="{{ 'demographic.label_email_id' | translate }}"
                 [formControlName]="formControlNames.email"
               />
-              <!-- <mat-hint align="end">{{ email.value.length }} / {{EMAIL_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!email.invalid">{{ 'demographic.validation.email_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
@@ -320,7 +293,6 @@
                 placeholder="{{ 'demographic.label_pin' | translate }}"
                 [formControlName]="formControlNames.CNIENumber"
               />
-              <!-- <mat-hint align="end">{{ pin.value.length }} / {{CNIE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
@@ -330,7 +302,6 @@
         <form [formGroup]="transUserForm" class="user__form">
           <h4>{{ secondaryLanguagelabels.language }}</h4>
           <mat-form-field>
-            <!-- maxlength="{{ FULLNAME_LENGTH }}" -->
             <input
               matInput
               [matKeyboard]="keyboardSecondaryLang"
@@ -339,7 +310,6 @@
               name="t_fullName"
               #t_fullName
             />
-            <!-- <mat-hint align="end">{{ t_fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!t_fullName.invalid">{{ secondaryLanguagelabels.validation.name_required }}</mat-error>
           </mat-form-field>
 
@@ -371,7 +341,9 @@
               </mat-form-field>
             </div>
 
-            <div class="user__pref"><mat-slide-toggle [disabled]="true" [checked]="isReadOnly"></mat-slide-toggle></div>
+            <div class="user__pref">
+              OR
+            </div>
             <div class="user__age">
               <mat-form-field>
                 <input
@@ -381,23 +353,8 @@
                   [placeholder]="secondaryLanguagelabels.label_age"
                 />
               </mat-form-field>
-              <span class="user__age--disabled">{{ secondaryLanguagelabels.text_years }}</span>
+              <div class="user__age--years user__age--disabled">{{ secondaryLanguagelabels.text_years }}</div>
             </div>
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.date).valid && userForm.get(formControlNames.date).touched"
-          >
-            <br />
-          </div>
-          <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get(formControlNames.month).valid && userForm.get(formControlNames.month).touched"
-          >
-            <br />
-          </div>
-          <div *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched">
-            <br />
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
@@ -457,11 +414,9 @@
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine1
               name="t_addressLine1"
-              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address1"
               [formControlName]="formControlNames.addressLine1Secondary"
             />
-            <!-- <mat-hint align="end">{{ t_addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
@@ -473,13 +428,11 @@
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine2
               name="t_addressLine2"
-              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address2"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
-            <!-- <mat-hint align="end">{{ t_addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
           </mat-form-field>
           <mat-form-field>
             <input
@@ -488,13 +441,11 @@
               matInput
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine3
-              maxlength="{{ ADDRESS_LENGTH }}"
               [placeholder]="secondaryLanguagelabels.label_address3"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
-            <!-- <mat-hint align="end">{{ t_addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
           </mat-form-field>
 
           <div class="user__dropdown">

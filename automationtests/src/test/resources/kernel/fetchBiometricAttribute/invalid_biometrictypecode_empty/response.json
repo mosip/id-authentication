@@ -1,7 +1,7 @@
 {
-    "timestamp": 1549019179178,
+    "timestamp": 1555499852147,
     "status": 404,
     "error": "Not Found",
     "message": "No message available",
-    "path": "/masterdata/v1.0/getbiometricattributesbyauthtype/eng/"
+    "path": "/v1/masterdata/getbiometricattributesbyauthtype/eng/"
 }

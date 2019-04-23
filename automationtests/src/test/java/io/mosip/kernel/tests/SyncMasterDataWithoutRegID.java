@@ -7,6 +7,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -25,15 +27,27 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.base.Verify;
+import com.jayway.jsonpath.internal.filter.ValueNode.JsonNode;
 
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.dbentity.BlacklistedWords;
+import io.mosip.dbentity.UinEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
+import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 
 	public SyncMasterDataWithoutRegID() {
@@ -50,8 +64,8 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchmasterdata = "/syncdata/v1.0/masterdatas";
-	
+	private static final String fetchmasterdata = "/v1/syncdata/masterdata";
+	public KernelMasterDataR dbConnection=new KernelMasterDataR();
 	static String dest = "";
 	static String folderPath = "kernel/SyncMasterDataWithoutRegID";
 	static String outputFile = "SyncMasterDataWithoutRegIDOutput.json";
@@ -62,7 +76,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());
@@ -77,7 +91,7 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 	
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -108,16 +122,57 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 		 */
 		@SuppressWarnings("unchecked")
 		Response res=applicationLibrary.getRequestAsQueryParam(fetchmasterdata, actualRequest);
+		
+		String resultTime = res.jsonPath().get("responsetime").toString();
+		String lastSyncTime = res.jsonPath().get("$response.lastSyncTime");
+		Expectedresponse.put("responsetime", resultTime);
+		Expectedresponse.put("$response.lastSyncTime", lastSyncTime);
+		
 		/*
 		 * Removing the unstable attributes from response	
 		 */
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		
+		innerKeys.add("timestamp");	
+	    outerKeys.add("responsetime");
+		//outerKeys.add("licenseKey");
+		innerKeys.add("lastSyncTime");
+		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		listOfElementToRemove.add("lastSyncTime");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */
-		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		
+		//	status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		
+//		String query1="select m.word from master.blacklisted_words m";
+		/*HashMap<String, String> tableCount=new HashMap();
+		
+		 tableCount=res.jsonPath().get("response");
+		List<String> status_list=null;
+		Set<String> keys = tableCount.keySet();
+		HashMap<String,Class> Dbentity=new HashMap();
+		Dbentity.put("blackListedWords", BlacklistedWords.class);
+		
+		
+		
+		for(String table:keys)
+		{
+			String query1="'select m.code from master."+table+" m'";
+			Class ent = Dbentity.get("blackListedWords");
+			 status_list = dbConnection.getDataFromDB(ent,query1);
+			 System.out.println("black------------------------>"+status_list.size());
+		}*/
+		
+		
+		
+		
+	//	System.out.println("black------------------------>"+status_list.size());
       if (status) {
 	            
 				finalStatus = "Pass";
@@ -137,9 +192,9 @@ public class SyncMasterDataWithoutRegID extends BaseTestCase implements ITest {
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-//		Verify.verify(setFinalStatus);
-//		softAssert.assertAll();
-
+		/*Verify.verify(setFinalStatus);
+		softAssert.assertAll();
+*/
 }
 		@Override
 		public String getTestName() {

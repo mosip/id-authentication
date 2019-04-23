@@ -4,11 +4,11 @@ node{
 	def mvnHome = tool name: 'M2_HOME', type: 'maven'
   def buildInfo
 	def branch = 'master'
-	def gitCredentialsId = env.gitRepoCredentials
-	def gitUrl =env.gitUrl
+	def gitCredentialsId = env.GIT_CREDENTIALS
+	def gitUrl =env.GIT_URL
 
   stage('checkout'){
-	git branch: branch, credentialsId: gitCredentialsId, url: env.gitUrl
+	git branch: branch, credentialsId: gitCredentialsId, url: gitUrl
   }
   stage('--------- Artifactory configuration ----------------') {
   /*

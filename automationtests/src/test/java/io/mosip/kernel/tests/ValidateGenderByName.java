@@ -53,7 +53,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateGenderByName = "/masterdata//v1.0/gendertypes/validate/{gendername}";
+	private static final String validateGenderByName = "/v1/masterdata/gendertypes/validate/{gendername}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/ValidateGenderByName";
@@ -65,7 +65,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());
@@ -79,7 +79,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	@DataProvider(name = "ValidateGenderByName")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -114,7 +114,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
 		/*
 		 * Getting the response time in milliseconds	

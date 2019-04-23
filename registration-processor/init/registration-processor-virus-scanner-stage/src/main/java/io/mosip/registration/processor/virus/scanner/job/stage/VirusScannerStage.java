@@ -170,29 +170,38 @@ public class VirusScannerStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 		} catch (VirusScanFailedException e) {
-
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusComment(VIRUS_SCAN_FAILED);
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_REPROCESSING.toString());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.RPR_PSJ_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			description = PlatformErrorMessages.RPR_PSJ_API_RESOUCE_ACCESS_FAILED.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (PacketDecryptionFailureException e) {
@@ -205,16 +214,20 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusDto.setUpdatedBy(USER);
 
 			isTransactionSuccessful = false;
+			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
 					+ e.getErrorText();
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
+			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured in virus scanner stage while processing registrationId : "
 					+ registrationId + ex.getMessage();
