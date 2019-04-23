@@ -1939,6 +1939,12 @@ public class DemographicDetailController extends BaseController {
 				keyboardNode.setLayoutY(1110.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
+			keyboardNode.visibleProperty().addListener((abs,old,newValue)->{
+				if(old) {
+					keyboardPane.setPrefHeight(parentFlowPane.getHeight());
+					fullNameLocalLanguage.requestFocus();
+				}
+			});
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
