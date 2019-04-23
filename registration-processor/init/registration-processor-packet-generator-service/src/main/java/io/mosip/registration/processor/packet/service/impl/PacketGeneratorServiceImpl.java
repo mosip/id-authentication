@@ -279,7 +279,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getErrorcode(), e);
+						error.get(0).getErrorCode(), e);
 
 			}
 
@@ -319,14 +319,14 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getErrorcode(), new Throwable());
+						error.get(0).getErrorCode(), new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getErrorcode(), e);
+						error.get(0).getErrorCode(), e);
 
 			}
 
@@ -354,7 +354,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getErrorcode(), new Throwable());
+						error.get(0).getErrorCode(), new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {

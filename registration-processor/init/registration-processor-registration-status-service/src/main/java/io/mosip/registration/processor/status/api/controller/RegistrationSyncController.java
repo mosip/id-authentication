@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import com.google.gson.GsonBuilder;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -45,6 +47,7 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncErrorDTO;
+
 /**
  * The Class RegistrationStatusController.
  */
@@ -70,40 +73,46 @@ public class RegistrationSyncController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
+
 	@Autowired
 	private Environment env;
-	
 
+	/** Token validator class */
+	@Autowired
+	TokenValidator tokenValidator;
+	
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	
-	
+
 	/**
 	 * Sync registration ids.
 	 *
-	 * @param syncRegistrationList
-	 *            the sync registration list
+	 * @param syncRegistrationList the sync registration list
 	 * @return the response entity
-	 * @throws RegStatusAppException 
+	 * @throws RegStatusAppException
 	 */
 	@PostMapping(path = "/sync/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
-	public ResponseEntity<Object> syncRegistrationController(@Validated @RequestBody(required = true) RegistrationSyncRequestDTO registrationSyncRequestDTO,@ApiIgnore Errors errors) throws RegStatusAppException {
-
+	public ResponseEntity<Object> syncRegistrationController(
+			@Validated @RequestBody(required = true) RegistrationSyncRequestDTO registrationSyncRequestDTO,
+			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
+			throws RegStatusAppException {
+		tokenValidator.validate(token, "registrationstatus");
 		try {
 			RegStatusValidationUtil.validate(errors);
-			List<SyncResponseDto> syncResponseDtoList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
+			List<SyncResponseDto> syncResponseDtoList = syncRegistrationService
+					.sync(registrationSyncRequestDTO.getRequest());
 			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseDtoList));
-		}catch (RegStatusValidationException | JsonProcessingException e) {
+		} catch (RegStatusValidationException | JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}
 	}
 
-
-	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList) throws JsonProcessingException {
+	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+			throws JsonProcessingException {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
 		if (Objects.isNull(response.getId())) {
@@ -114,12 +123,12 @@ public class RegistrationSyncController {
 		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
 		List<SyncResponseDto> syncResponseList = new ArrayList<SyncResponseDto>();
 		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
-			if(syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
+			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
 				syncResponseList.add(syncResponseDto);
-			}
-			else {
-				if(syncResponseDto instanceof SyncResponseFailureDto) {
-					SyncErrorDTO errors = new SyncErrorDTO(((SyncResponseFailureDto) syncResponseDto).getErrorCode(), syncResponseDto.getMessage());
+			} else {
+				if (syncResponseDto instanceof SyncResponseFailureDto) {
+					SyncErrorDTO errors = new SyncErrorDTO(((SyncResponseFailureDto) syncResponseDto).getErrorCode(),
+							syncResponseDto.getMessage());
 					errors.setRegistrationId(syncResponseDto.getRegistrationId());
 					errors.setStatus(syncResponseDto.getStatus());
 					errors.setParentRegistrationId(syncResponseDto.getParentRegistrationId());
@@ -127,13 +136,13 @@ public class RegistrationSyncController {
 				}
 			}
 		}
-		if(!syncErrorDTOList.isEmpty()) {
+		if (!syncErrorDTOList.isEmpty()) {
 			response.setErrors(syncErrorDTOList);
 		}
-		if(!syncResponseList.isEmpty()) {
+		if (!syncResponseList.isEmpty()) {
 			response.setResponse(syncResponseList);
 		}
-		ObjectMapper objectMapper = new  ObjectMapper();
+		ObjectMapper objectMapper = new ObjectMapper();
 		String objectMapperResponse = null;
 		objectMapperResponse = objectMapper.writeValueAsString(response);
 		return objectMapperResponse;

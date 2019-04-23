@@ -15,11 +15,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
@@ -63,6 +65,25 @@ public class CoreConfigBean {
 	
 	@Bean
 	MosipQueueConnectionFactory<?> getMosipQueueConnectionFactory(){
+		System.setProperty("GETTOKENAPI", "https://dev.mosip.io/v1/authmanager/authenticate/useridPwd");
+		System.setProperty("EMAILNOTIFIER", "https://dev.mosip.io/v1/emailnotifier/email/send");
+		System.setProperty("TOKENVALIDATE","https://dev.mosip.io/v1/authmanager/authorize/validateToken");
+		System.setProperty("token.request.id","io.mosip.registration.processor");
+		System.setProperty("token.request.appid","registrationprocessor");
+		System.setProperty("token.request.username","registrationprocessor");
+		System.setProperty("token.request.password","mosip");
+		System.setProperty("token.request.version","1.0");
 		return new MosipQueueConnectionFactoryImpl();
 	}
+	
+	@Bean
+	public TokenValidator getTokenValidator(){
+		return new TokenValidator();
+	}
+	
+	@Bean
+	public MosipRouter getMosipRouter(){
+		return new MosipRouter();
+	}
+
 }

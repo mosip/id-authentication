@@ -23,6 +23,7 @@ import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -157,6 +158,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	MessageDTO messageDTO;
 	
 	boolean isConnection = false;
@@ -344,9 +349,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/**
@@ -355,19 +360,33 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 * @param router
 	 *            the router
 	 */
-	private void routes(Router router) {
+	private void routes(MosipRouter router) {
+		router.post("/v0.1/registration-processor/print-stage/resend");
+		router.handler(this::reSendPrintPdf, this::failure);
 
-		router.post("/v0.1/registration-processor/print-stage/resend").handler(ctx -> {
-			reSendPrintPdf(ctx);
-		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()));
-		});
+		router.get("/print-stage/health");
+		router.handler(this::health);
 
-		router.get("/print-stage/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		});
 	}
 
+	/**
+	 * This is for health check up
+	 * 
+	 * @param routingContext
+	 */
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
+	}
+	
+	/**
+	 * This is for failure handler
+	 * 
+	 * @param routingContext
+	 */
+	private void failure(RoutingContext routingContext) {
+		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()));
+	}
+	
 	/**
 	 * Re send print pdf.
 	 *
