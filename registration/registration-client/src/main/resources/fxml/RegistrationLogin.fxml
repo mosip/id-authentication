@@ -12,7 +12,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane id="loginScreen" prefHeight="553.0" prefWidth="523.0" styleClass="loginBorderPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
+<BorderPane id="loginScreen"  prefHeight="553.0" prefWidth="523.0" styleClass="loginBorderPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
 	<top>
 		<HBox id="header-section" prefHeight="27.0" prefWidth="523.0">
 			<children>
@@ -48,6 +48,8 @@
       				<PasswordField fx:id="password"  onAction="#validateCredentials" layoutX="57.0" layoutY="116.0" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
                   <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" />
+                  <ProgressIndicator fx:id="passwordProgressIndicator" layoutX="130.0" layoutY="50.0" progress="0.0" visible="false" />
+              
                </children>
             </AnchorPane>
             <AnchorPane fx:id="otpPane" layoutX="-6.0" layoutY="151.0" prefHeight="297.0" prefWidth="366.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
