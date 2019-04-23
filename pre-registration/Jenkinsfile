@@ -49,10 +49,6 @@ node {
 
 stage ('---------- build ---------------') {
 
-	// Cleaning up all the target folders
-	dir(branch) {
-	sh "find . -name 'target' -a -type d -exec rm -rfv '{}' \\;"
-	}
 	// for building java projects
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  	// For building angular project
