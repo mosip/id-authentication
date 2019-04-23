@@ -39,22 +39,22 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * @author M1047697
+ * @author Dinesh Karuppiah.T
  *
  */
 @Component
-public class KycFacadeImpl implements KycFacade{
-	
+public class KycFacadeImpl implements KycFacade {
+
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
-	
+
 	/** The env. */
 	@Autowired
 	Environment env;
 
 	@Autowired
 	private AuthFacade authFacade;
-	
+
 	/** The Kyc Service */
 	@Autowired
 	private KycService kycService;
@@ -73,8 +73,12 @@ public class KycFacadeImpl implements KycFacade{
 	@Autowired
 	private IdService<AutnTxn> idAuthService;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.facade.KycFacade#authenticateIndividual(io.mosip.authentication.core.indauth.dto.AuthRequestDTO, boolean, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.facade.KycFacade#
+	 * authenticateIndividual(io.mosip.authentication.core.indauth.dto.
+	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
 	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId)
@@ -83,8 +87,13 @@ public class KycFacadeImpl implements KycFacade{
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.facade.KycFacade#processKycAuth(io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO, io.mosip.authentication.core.indauth.dto.AuthResponseDTO, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.facade.KycFacade#processKycAuth(io.
+	 * mosip.authentication.core.indauth.dto.KycAuthRequestDTO,
+	 * io.mosip.authentication.core.indauth.dto.AuthResponseDTO, java.lang.String)
 	 */
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
