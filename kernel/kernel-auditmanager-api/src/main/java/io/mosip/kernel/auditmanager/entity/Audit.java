@@ -68,8 +68,8 @@ public class Audit extends BaseAudit {
 	private String applicationName;
 
 	@NotNull
-	@Size(min = 1, max = 64)
-	@Column(name = "session_user_id", nullable = false, updatable = false, length = 64)
+	@Size(min = 1, max = 256)
+	@Column(name = "session_user_id", nullable = false, updatable = false, length = 256)
 	private String sessionUserId;
 
 	@Size(max = 128)
@@ -87,8 +87,8 @@ public class Audit extends BaseAudit {
 	private String idType;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "cr_by", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 256)
+	@Column(name = "cr_by", nullable = false, updatable = false, length = 256)
 	private String createdBy;
 
 	@Size(max = 128)
