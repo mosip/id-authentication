@@ -65,7 +65,7 @@ public class ClientJarDecryption extends Application {
 		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
 		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.DECRYPT_MODE);
+				Cipher.DECRYPT_MODE, null);
 	}
 
 	/**

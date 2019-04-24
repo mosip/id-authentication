@@ -67,6 +67,18 @@ public class SessionContext {
 	public static Map<String, Object> map() {
 		return sessionContext.getMapObject();
 	}
+	
+	/**
+	 * Return the Type casted object based on the input
+	 * 
+	 * @param map
+	 * @param key
+	 * @param returnType
+	 * @return
+	 */
+	public static <T> T getValue(Map<String,Object> map, String key, Class<T> returnType){
+		return returnType.cast(map.get(key));
+	}
 
 	/**
 	 * Reading userContext from sessioncontext

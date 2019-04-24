@@ -66,10 +66,10 @@ public class ClientJarEncryption {
 	 */
 	public byte[] encyrpt(byte[] data, byte[] encodedString) {
 		// Generate AES Session Key
-		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
+		SecretKey symmetricSecretKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.ENCRYPT_MODE);
+		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricSecretKey, data,
+				Cipher.ENCRYPT_MODE, null);
 	}
 
 	/**
