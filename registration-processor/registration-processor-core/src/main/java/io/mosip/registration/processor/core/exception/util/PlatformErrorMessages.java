@@ -193,6 +193,15 @@ public enum PlatformErrorMessages {
 	/** The rpr pkm file not found in source. */
 	RPR_PKM_FILE_NOT_FOUND_IN_SOURCE(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "004",
 			"The File is not present in source folder"),
+	
+	/** The rpr pkm file not found in source. */
+	RPR_PKM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "005",
+			"The JSCH connection failed"),
+
+	/** The rpr pkm file not found in source. */
+	RPR_PKM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "006",
+			"The Sftp operation failed during file processing"),
+
 
 	// Registration processor camel bridge Exception error code and message
 
@@ -438,6 +447,15 @@ public enum PlatformErrorMessages {
 	
 	RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "005",
 			"Virus scanner service failed"),
+
+	
+	/** The rpr pkm file not found in source. */
+	RPR_PUM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "006",
+			"The JSCH connection failed"),
+
+	/** The rpr pkm file not found in source. */
+	RPR_PUM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "007",
+			"The Sftp operation failed during file processing"),
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",

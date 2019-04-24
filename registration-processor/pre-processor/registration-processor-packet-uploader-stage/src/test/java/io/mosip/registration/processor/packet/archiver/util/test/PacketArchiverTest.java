@@ -23,6 +23,8 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -133,10 +135,12 @@ public class PacketArchiverTest {
 	 *             the unable to access path exception
 	 * @throws PacketNotFoundException
 	 *             the packet not found exception
+	 * @throws SftpFileOperationException 
+	 * @throws JschConnectionException 
 	 */
 	@Test
 	public void archivePacketSuccessCheck() throws IOException, IllegalArgumentException, IllegalAccessException,
-			NoSuchFieldException, SecurityException, PacketNotFoundException {
+			NoSuchFieldException, SecurityException, PacketNotFoundException, JschConnectionException, SftpFileOperationException {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
@@ -158,9 +162,11 @@ public class PacketArchiverTest {
 	 *             the packet not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws SftpFileOperationException 
+	 * @throws JschConnectionException 
 	 */
 	@Test(expected = PacketNotFoundException.class)
-	public void archivePacketAdaptedFailureCheck() throws PacketNotFoundException, IOException {
+	public void archivePacketAdaptedFailureCheck() throws PacketNotFoundException, IOException, JschConnectionException, SftpFileOperationException {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		AuditResponseDto auditResponseDto = new AuditResponseDto();

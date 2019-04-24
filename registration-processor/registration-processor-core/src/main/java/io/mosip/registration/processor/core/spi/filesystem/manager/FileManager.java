@@ -3,6 +3,8 @@ package io.mosip.registration.processor.core.spi.filesystem.manager;
 import java.io.File;
 import java.io.IOException;
 
+import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 
 // TODO: Auto-generated Javadoc
@@ -121,11 +123,11 @@ public interface FileManager<D, F> {
 	 */
 	public File getFile(D workingDirectory, String fileName) throws IOException;
 	
-	public byte[] getFile(D workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto);
+	public byte[] getFile(D workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)throws  JschConnectionException, SftpFileOperationException;
 	
-	public boolean copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException;
+	public boolean copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException ;
 
-	public boolean cleanUpFile(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException;
+	public boolean cleanUpFile(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException ;
 
 
 }

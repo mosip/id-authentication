@@ -16,6 +16,8 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
@@ -47,7 +49,7 @@ public class PacketArchiver {
 	@Autowired
 	private Environment env;
 	
-	public boolean archivePacket(String registrationId,SftpJschConnectionDto jschConnectionDto) throws IOException {
+	public boolean archivePacket(String registrationId,SftpJschConnectionDto jschConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException {
 
 		boolean isTransactionSuccessful = false;
 		String description = "";

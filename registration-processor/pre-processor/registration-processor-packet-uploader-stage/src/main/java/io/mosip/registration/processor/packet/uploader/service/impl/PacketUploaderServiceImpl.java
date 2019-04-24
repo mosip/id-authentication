@@ -26,6 +26,8 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
@@ -210,7 +212,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
 
-								messageDTO = uploadpacket(dto,decryptedData, messageDTO,jschConnectionDto);
+								messageDTO = uploadPacket(dto,decryptedData, messageDTO,jschConnectionDto);
 								if (messageDTO.getIsValid()) {
 									dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 									isTransactionSuccessful = true;
@@ -235,6 +237,14 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 						}
 					}
 				}
+			}else {
+
+				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
+				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+				dto.setStatusComment("Packet is not available in landing zone " + registrationId);
+				dto.setUpdatedBy(USER);
+
 			}
 
 
@@ -268,6 +278,24 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + e.getMessage());
 
 			description = "DFS not accessible for registrationId " + registrationId + "::" + e.getMessage();
+		}catch (JschConnectionException e) {
+			dto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.JSCH_CONNECTION));
+			messageDTO.setInternalError(true);
+			messageDTO.setIsValid(false);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.name() + e.getMessage());
+
+			description = "The JSCH connection failed for registrationId " + registrationId + "::" + e.getMessage();
+		}catch (SftpFileOperationException e) {
+			dto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION));
+			messageDTO.setInternalError(true);
+			messageDTO.setIsValid(false);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + e.getMessage());
+
+			description = "The Sftp operation failed during file processing for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
@@ -384,9 +412,11 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @param object the object
 	 * @return the message DTO
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JschConnectionException 
+	 * @throws SftpFileOperationException 
 	 */
-	private MessageDTO uploadpacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,SftpJschConnectionDto jschConnectionDto)
-			throws IOException {
+	private MessageDTO uploadPacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,SftpJschConnectionDto jschConnectionDto)
+			throws IOException, JschConnectionException, SftpFileOperationException {
 
 		object.setIsValid(false);
 		registrationId = dto.getRegistrationId();
@@ -410,7 +440,26 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					description = " packet sent to DFS for registrationId " + registrationId;
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 							registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+				}else {
+					dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+					dto.setStatusComment("Packet " + registrationId + " is failed during cleanup");
+					dto.setUpdatedBy(USER);
+					object.setInternalError(true);
+					object.setIsValid(false);
+					object.setRid(registrationId);
+					description = " packet upload failed during cleanup for registrationId " + registrationId;
 				}
+
+			}else {
+
+				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+				dto.setStatusComment("Packet " + registrationId + " is failed during archival process");
+				dto.setUpdatedBy(USER);
+				object.setInternalError(true);
+				object.setIsValid(false);
+				object.setRid(registrationId);
+				description = " packet upload failed during archival for registrationId " + registrationId;
+
 
 			}
 
