@@ -142,6 +142,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>${apache.httpcomponents.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-health-check</artifactId>
+			<version>${vertx.health.check.version}</version>
+		</dependency>
 	</dependencies>
 	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 

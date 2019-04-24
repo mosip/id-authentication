@@ -19,6 +19,7 @@ import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.uingenerator.config.UINHealthCheckerhandler;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -64,26 +65,41 @@ public class UinGeneratorRouter {
 	@Autowired
 	private UinGeneratorService uinGeneratorService;
 
+
 	/**
 	 * Creates router for vertx server
 	 * 
 	 * @param vertx vertx
 	 * @return Router
 	 */
-
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
+
+		UINHealthCheckerhandler healthCheckHandler = new UINHealthCheckerhandler(vertx, null, objectMapper,environment);
+
+		final String servletPath = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH);
+
+		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
+
+		healthCheckHandler.register("db",healthCheckHandler::databaseHealthChecker);
+		
+		healthCheckHandler.register("diskspace",healthCheckHandler::dispSpaceHealthChecker);
+		
+		healthCheckHandler.register("uingeneratorverticle",future -> healthCheckHandler.verticleHealthHandler(future,vertx));
+
+		String path = servletPath + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
 		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
+
 		router.route().handler(BodyHandler.create());
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
 		}
-		router.put(path).consumes("application/json").handler(this::updateRouter);
+
+		router.put(path).consumes(UinGeneratorConstant.CONTENTTYPE).handler(this::updateRouter);
 		return router;
 	}
 
