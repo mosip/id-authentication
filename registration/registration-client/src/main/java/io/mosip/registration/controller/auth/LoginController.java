@@ -240,14 +240,6 @@ public class LoginController extends BaseController implements Initializable {
 			isInitialSetUp = RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
-			int otpExpirySeconds = Integer
-					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
-			int minutes = otpExpirySeconds / 60;
-			String seconds = String.valueOf(otpExpirySeconds % 60);
-			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
-			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
-					+ RegistrationUIConstants.MINUTES);
-
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (newValue.length() > Integer
@@ -607,7 +599,15 @@ public class LoginController extends BaseController implements Initializable {
 
 			if (otpLoginStatus) {
 				otpPane.setVisible(false);
+				int otpExpirySeconds = Integer
+						.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+				int minutes = otpExpirySeconds / 60;
+				String seconds = String.valueOf(otpExpirySeconds % 60);
+				seconds = seconds.length() < 2 ? "0" + seconds : seconds;
+				otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
+						+ RegistrationUIConstants.MINUTES);
 				loadNextScreen(userDetail, RegistrationConstants.OTP);
+
 			}
 
 		}
