@@ -1279,6 +1279,12 @@ public class RegistrationConstants {
 	// Scheduler
 	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
+	public static final String SCHEDULER_TITLE_STYLE = "schedulerTitleMsg";
+	public static final String SCHEDULER_CONTENT_STYLE = "schedulerMsg";
+	public static final String SCHEDULER_TITLE_BORDER = "schedulerTitle";
+	public static final String SCHEDULER_TIMER_STYLE = "schedulerTimer";
+	public static final String SCHEDULER_BTN_STYLE = "schedulerContinueBtn";
+	public static final String SCHEDULER_BORDER = "schedulerStage";
 	
 	public static final String USER_DETAILS="userDetails";
 	
