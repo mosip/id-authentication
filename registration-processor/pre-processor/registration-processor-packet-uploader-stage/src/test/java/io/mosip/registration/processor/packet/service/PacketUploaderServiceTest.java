@@ -27,6 +27,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -150,7 +152,7 @@ public class PacketUploaderServiceTest {
 	}
 	
 	@Test
-	public void testvalidateAndUploadPacketSuccess() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException
+	public void testvalidateAndUploadPacketSuccess() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, JschConnectionException, SftpFileOperationException
 	{
 		Mockito.when(fileManager.getFile(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(enrypteddata);
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);

@@ -165,7 +165,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 
 	@Override
-	public MessageDTO validateAndUploadPacket(String regId) {
+	public MessageDTO validateAndUploadPacket(String regId, String stageName) {
 
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -205,7 +205,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 							dto.setRetryCount(retrycount);
 							dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
-							dto.setRegistrationStageName(this.getClass().getSimpleName());
+							dto.setRegistrationStageName(stageName);
 							if (retrycount < getMaxRetryCount()) {
 								regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -237,7 +237,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					}
 				}
 			}else {
-
+				messageDTO.setInternalError(Boolean.TRUE);
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
