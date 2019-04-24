@@ -189,7 +189,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);
 			jschConnectionDto.setUser(dmzServerUser);
 			jschConnectionDto.setProtocal(dmzServerProtocal);
-
 			byte[] encryptedByteArray=fileManager.getFile(DirectoryPathDto.LANDING_ZONE, regId, jschConnectionDto);
 
 			if(encryptedByteArray != null) {
@@ -412,8 +411,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @param object the object
 	 * @return the message DTO
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws JschConnectionException 
-	 * @throws SftpFileOperationException 
+	 * @throws JschConnectionException
+	 * @throws SftpFileOperationException
 	 */
 	private MessageDTO uploadPacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,SftpJschConnectionDto jschConnectionDto)
 			throws IOException, JschConnectionException, SftpFileOperationException {
@@ -427,7 +426,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			if(packetArchiver.archivePacket(dto.getRegistrationId(), jschConnectionDto)) {
 
-				if(fileManager.cleanUpFile(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
+				if(fileManager.cleanUp(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
 
 					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 					dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");

@@ -331,7 +331,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		}  catch (SftpException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 			throw new SftpFileOperationException(PlatformErrorMessages.RPR_PKM_SFTP_FILE_OPERATION_FAILED.getMessage());
 
 		} catch (IOException e) {
@@ -370,7 +370,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		} catch (JSchException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
 
@@ -414,8 +414,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 				throw new SftpFileOperationException(PlatformErrorMessages.RPR_PKM_SFTP_FILE_OPERATION_FAILED.getMessage());
-				
-				
+
+
 
 			}
 
@@ -424,14 +424,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			if(channel != null)
 				channel.disconnect();
 			if(session != null)
-				session.disconnect(); 
+				session.disconnect();
 
 		}
 		return status;
 	}
 
 	@Override
-	public boolean cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException {
+	public boolean cleanUp(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
@@ -462,9 +462,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-				
+
 				throw new SftpFileOperationException(PlatformErrorMessages.RPR_PKM_SFTP_FILE_OPERATION_FAILED.getMessage());
-			
+
 			}
 
 		}
