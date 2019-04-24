@@ -415,6 +415,8 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
+			
+			requestHTTPDTO.setIsSignRequired(false);
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -459,6 +461,7 @@ public class ServiceDelegateUtil {
 			} else {
 				SessionContext.setAuthTokenDTO(authTokenDTO);
 			}
+
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| IOException restException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,

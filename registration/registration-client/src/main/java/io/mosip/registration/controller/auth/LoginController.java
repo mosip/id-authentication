@@ -63,6 +63,7 @@ import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
+import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -213,10 +214,13 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private HomeController homeController;
 
-	private boolean isUserNewToMachine;
+	private Boolean isUserNewToMachine;
 
 	@FXML
 	private ProgressIndicator passwordProgressIndicator;
+
+	@Autowired
+	private UserMachineMappingService machineMappingService;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -236,9 +240,8 @@ public class LoginController extends BaseController implements Initializable {
 			isInitialSetUp = RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
-			// TODO get is New user from reg_center_user_machine table
-			isUserNewToMachine = false;
-
+			
+			
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
 			int minutes = otpExpirySeconds / 60;
@@ -293,7 +296,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			if (!isInitialSetUp && !isUserNewToMachine) {
+			if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
@@ -329,116 +332,123 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (userId.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-		} else if (isInitialSetUp || isUserNewToMachine) {
-			userIdPane.setVisible(false);
-			loadLoginScreen(LoginMode.PASSWORD.toString());
-
 		} else {
 
-			try {
+			isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
+					.getErrorResponseDTOs() != null;
 
-				UserDetail userDetail = loginService.getUserDetail(userId.getText());
+			if (isInitialSetUp || isUserNewToMachine) {
+				userIdPane.setVisible(false);
+				loadLoginScreen(LoginMode.PASSWORD.toString());
 
-				Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
+			} else {
+				try {
 
-				String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
+					UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				if (userDetail != null
-						&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
+					Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 
-					ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
+					String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
 
-					if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
-					} else {
+					if (userDetail != null
+							&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
 
-						// Set Dongle Serial Number in ApplicationContext Map
-						for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
-							ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
-									userMachineMapping.getMachineMaster().getSerialNum());
-						}
+						ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
-						Set<String> roleList = new LinkedHashSet<>();
-
-						userDetail.getUserRole().forEach(roleCode -> {
-							if (roleCode.getIsActive()) {
-								roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
-							}
-						});
-
-						LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-								"Validating roles");
-						// Checking roles
-						if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
-								|| roleList.contains(RegistrationConstants.SUPERVISOR)
-								|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
-							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+						if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 						} else {
 
-							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
+							// Set Dongle Serial Number in ApplicationContext Map
+							for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
+								ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
+										userMachineMapping.getMachineMaster().getSerialNum());
+							}
 
-							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
-									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+							Set<String> roleList = new LinkedHashSet<>();
 
-							boolean status = getCenterMachineStatus(userDetail);
-							sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
-							sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-							loginList = status ? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
-									: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
-
-							String fingerprintDisableFlag = getValueFromApplicationContext(
-									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-							String irisDisableFlag = getValueFromApplicationContext(
-									RegistrationConstants.IRIS_DISABLE_FLAG);
-							String faceDisableFlag = getValueFromApplicationContext(
-									RegistrationConstants.FACE_DISABLE_FLAG);
+							userDetail.getUserRole().forEach(roleCode -> {
+								if (roleCode.getIsActive()) {
+									roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
+								}
+							});
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring FingerPrint login if the configuration is off");
-
-							removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
-							removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
-							removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
-
-							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
-									: null;
-
-							LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Retrieved corresponding Login mode");
-
-							if (loginMode == null) {
-								userIdPane.setVisible(false);
-								errorPane.setVisible(true);
+									"Validating roles");
+							// Checking roles
+							if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
+									|| roleList.contains(RegistrationConstants.SUPERVISOR)
+									|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+								generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 							} else {
 
-								if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-										&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
-										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-												&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
-										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
-												&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+								Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
-													.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+								ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
+										centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-								} else {
+								boolean status = getCenterMachineStatus(userDetail);
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+								loginList = status
+										? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
+										: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
+
+								String fingerprintDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+								String irisDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.IRIS_DISABLE_FLAG);
+								String faceDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.FACE_DISABLE_FLAG);
+
+								LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+										"Ignoring FingerPrint login if the configuration is off");
+
+								removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+								removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+								removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
+
+								String loginMode = !loginList.isEmpty()
+										? loginList.get(RegistrationConstants.PARAM_ZERO)
+										: null;
+
+								LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+										"Retrieved corresponding Login mode");
+
+								if (loginMode == null) {
 									userIdPane.setVisible(false);
-									loadLoginScreen(loginMode);
+									errorPane.setVisible(true);
+								} else {
+
+									if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+											&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
+											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+													&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+													&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+
+										generateAlert(RegistrationConstants.ERROR,
+												RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
+														.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+
+									} else {
+										userIdPane.setVisible(false);
+										loadLoginScreen(loginMode);
+									}
 								}
 							}
 						}
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
+				} catch (RegBaseUncheckedException regBaseUncheckedException) {
+
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							regBaseUncheckedException.getMessage()
+									+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 				}
-			} catch (RegBaseUncheckedException regBaseUncheckedException) {
-
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						regBaseUncheckedException.getMessage()
-								+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
 		}
 	}
@@ -458,8 +468,6 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 
-		boolean pwdValidationStatus = false;
-		UserDetail userDetail = null;
 		if (isInitialSetUp || isUserNewToMachine) {
 			LoginUserDTO loginUserDTO = new LoginUserDTO();
 			loginUserDTO.setUserId(userId.getText());
@@ -470,9 +478,15 @@ public class LoginController extends BaseController implements Initializable {
 			try {
 				// Get Auth Token
 				getAuthToken(loginUserDTO, LoginMode.PASSWORD);
+				if (isInitialSetUp) {
+					executePreLaunchTask(credentialsPane, passwordProgressIndicator);
 
-				// Execute Sync
-				executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+				} else {
+					validateUserCredentialsInLocal();
+				}
+
+				// // Execute Sync
+				// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
 
 			} catch (Exception exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
@@ -483,33 +497,40 @@ public class LoginController extends BaseController implements Initializable {
 				loadInitialScreen(Initialization.getPrimaryStage());
 			}
 		} else {
-			userDetail = loginService.getUserDetail(userId.getText());
+			validateUserCredentialsInLocal();
+		}
 
-			// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
-			// implemented, getting AuthZ Token by Client ID and Secret Key
+	}
 
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			// loginUserDTO.setUserId(userId.getText());
-			// loginUserDTO.setPassword(password.getText());
+	private void validateUserCredentialsInLocal() {
+		boolean pwdValidationStatus = false;
+		UserDetail userDetail = null;
+		userDetail = loginService.getUserDetail(userId.getText());
 
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				try {
-					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
-				} catch (Exception exception) {
-					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
-							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+		// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
+		// implemented, getting AuthZ Token by Client ID and Secret Key
 
-				}
+		LoginUserDTO loginUserDTO = new LoginUserDTO();
+		// loginUserDTO.setUserId(userId.getText());
+		// loginUserDTO.setPassword(password.getText());
+
+		ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			try {
+				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			} catch (Exception exception) {
+				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
+						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
 			}
+		}
 
-			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
-			if (RegistrationConstants.SUCCESS.equals(status)) {
-				pwdValidationStatus = validateInvalidLogin(userDetail, "");
-			} else if (RegistrationConstants.FAILURE.equals(status)) {
-				pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
-			}
+		if (RegistrationConstants.SUCCESS.equals(status)) {
+			pwdValidationStatus = validateInvalidLogin(userDetail, "");
+		} else if (RegistrationConstants.FAILURE.equals(status)) {
+			pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 
 		if (pwdValidationStatus) {
@@ -519,6 +540,7 @@ public class LoginController extends BaseController implements Initializable {
 			loadNextScreen(userDetail, RegistrationConstants.PWORD);
 
 		}
+
 	}
 
 	/**
@@ -1185,7 +1207,7 @@ public class LoginController extends BaseController implements Initializable {
 					});
 				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
-					if (isInitialSetUp || isUserNewToMachine) {
+					if (isInitialSetUp) {
 						loadInitialScreen(Initialization.getPrimaryStage());
 					}
 				}
