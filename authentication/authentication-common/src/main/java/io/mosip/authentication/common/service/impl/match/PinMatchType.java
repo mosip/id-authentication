@@ -30,11 +30,11 @@ public enum PinMatchType implements MatchType {
 	// @formatter:off
 
 	/** Primary Pin Match Type. */
-	SPIN(IdaIdMapping.PIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
+	SPIN(IdaIdMapping.PIN, Category.SPIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
 		String staticPin = authReqDTO.getRequest().getStaticPin();
 		return Objects.nonNull(staticPin)? staticPin : "";
 	}),
-	OTP(IdaIdMapping.OTP, setOf(OtpMatchingStrategy.EXACT), 
+	OTP(IdaIdMapping.OTP, Category.OTP, setOf(OtpMatchingStrategy.EXACT), 
 		authReqDTO -> {
 			String tOtp = authReqDTO.getRequest().getOtp();
 			return Objects.nonNull(tOtp)? tOtp : "";
@@ -48,6 +48,8 @@ public enum PinMatchType implements MatchType {
 
 	/** The id mapping. */
 	private IdMapping idMapping;
+	
+	private Category category;
 
 	/**
 	 * Instantiates a new demo match type.
@@ -59,9 +61,10 @@ public enum PinMatchType implements MatchType {
 	 * @param usedBit                 the used bit
 	 * @param matchedBit              the matched bit
 	 */
-	private PinMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+	private PinMatchType(IdMapping idMapping, Category category, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<AuthRequestDTO, String> requestInfoFunction) {
 		this.idMapping = idMapping;
+		this.category = category;
 		this.requestInfoFunction = (AuthRequestDTO authReq) -> {
 			Map<String, String> map = new HashMap<>();
 			map.put(idMapping.getIdname(), requestInfoFunction.apply(authReq));
@@ -117,7 +120,7 @@ public enum PinMatchType implements MatchType {
 	 */
 	@Override
 	public Category getCategory() {
-		return Category.SPIN;
+		return category;
 	}
 
 	@Override
