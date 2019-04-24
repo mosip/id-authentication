@@ -1,0 +1,73 @@
+{
+	"identity": {
+		"fullName": {
+			"documentCategory": "proofOfIdentity";
+		},
+		"gender": {
+			"documentCategory": NULL
+		},
+		"dob": {
+			"documentCategory": NULL
+		},
+		"parentOrGuardianRID": {
+			"documentCategory" : "proofOfRelationship"
+		},
+		"parentOrGuardianUIN": {
+			"documentCategory" : "proofOfRelationship"
+		},
+		"proofOfAddress": {
+			"documentCategory" : NULL
+		},
+		"proofOfIdentity": {
+			"documentCategory" : NULL
+		},
+		"proofOfRelationship": {
+			"documentCategory" : NULL
+		},
+		"proofOfDateOfBirth": {
+			"documentCategory" : NULL
+		},
+		"individualBiometrics": {
+			"documentCategory" : NULL
+		},
+		"age": {
+			"documentCategory" : "proofOfIdentity"
+		},
+		"addressLine1": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"addressLine2": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"addressLine3": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"region": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"province": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"postalCode": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"phone": {
+			"documentCategory" : NULL
+		},
+		"email": {
+			"documentCategory" : NULL
+		},
+		"localAdministrativeAuthority": {
+			"documentCategory" : "proofOfAddress"
+		},
+		"IDSchemaVersion": {
+			"documentCategory" : NULL
+		},
+		"CNIENumber": {
+			"documentCategory" : NULL
+		},
+		"city": {
+			"documentCategory" : "proofOfAddress"
+		}
+	}
+} 
