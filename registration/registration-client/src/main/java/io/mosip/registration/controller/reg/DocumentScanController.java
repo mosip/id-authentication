@@ -1032,18 +1032,11 @@ public class DocumentScanController extends BaseController {
 						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 			}
 
-			if (toggleBiometricException) {
-				((Map<String, Map<String, Boolean>>) ApplicationContext.map()
-						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
-								.put(RegistrationConstants.VISIBILITY, true);
-
+			if (toggleBiometricException) {				
+				updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
 				bioExceptionToggleLabel1.setLayoutX(30);
-
 			} else {
-				((Map<String, Map<String, Boolean>>) ApplicationContext.map()
-						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
-								.put(RegistrationConstants.VISIBILITY, false);
-
+				updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, false);
 				bioExceptionToggleLabel1.setLayoutX(0);
 			}
 
@@ -1054,21 +1047,13 @@ public class DocumentScanController extends BaseController {
 					if (newValue) {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
-								.get(RegistrationConstants.REGISTRATION_MAP))
-										.get(RegistrationConstants.BIOMETRIC_EXCEPTION)
-										.put(RegistrationConstants.VISIBILITY, true);
-
+						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
 					} else {
 						bioExceptionToggleLabel1.setLayoutX(0);
 
 						toggleBiometricException = false;
 						faceCaptureController.clearExceptionImage();
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
-								.get(RegistrationConstants.REGISTRATION_MAP))
-										.get(RegistrationConstants.BIOMETRIC_EXCEPTION)
-										.put(RegistrationConstants.VISIBILITY, false);
-
+						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, false);
 					}
 					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
 							toggleBiometricException);

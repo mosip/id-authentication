@@ -23,6 +23,11 @@
 	-fx-border-color : #C9C9C9;
 }
 
+.dividerTypeTwo{
+	-fx-border-width : 1 0 0 0;
+	-fx-border-color : #C9C9C9;
+}
+
 .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: white;
     -fx-shape: "";
@@ -729,6 +734,15 @@ Working on new Css by taleev
 	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	
+}
+
+#biometricPane{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 	
 }
 

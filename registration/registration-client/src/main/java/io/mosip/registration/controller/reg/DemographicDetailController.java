@@ -1097,6 +1097,9 @@ public class DemographicDetailController extends BaseController {
 										&& RegistrationConstants.DISABLE
 												.equalsIgnoreCase(getValueFromApplicationContext(
 														RegistrationConstants.IRIS_DISABLE_FLAG))) {
+									isChild = true;
+									validation.setChild(isChild);
+									documentScanController.setChild(isChild);
 									generateAlert(RegistrationConstants.ERROR,RegistrationUIConstants.PARENT_BIO_MSG);
 
 								} else {
@@ -2091,6 +2094,15 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 		}
+
+		if (isChild
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+				&& RegistrationConstants.DISABLE
+						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+			isValid = false;
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
+		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(parentUinId, parentRegId, isChild, uinValidator, ridValidator);
 
@@ -2157,14 +2169,6 @@ public class DemographicDetailController extends BaseController {
 	protected String getSelectedNationalityCode() {
 		return residence.getText() != null ? residence.getId() : null;
 
-	}
-	
-	
-	private void updatePageFlow(String pageId, boolean val) {
-		((Map<String, Map<String, Boolean>>) ApplicationContext.map()
-				.get(RegistrationConstants.REGISTRATION_MAP)).get(pageId)
-						.put(RegistrationConstants.VISIBILITY, val);
-		
 	}
 	
 	private void updateBioPageFlow(String flag, String pageId) {

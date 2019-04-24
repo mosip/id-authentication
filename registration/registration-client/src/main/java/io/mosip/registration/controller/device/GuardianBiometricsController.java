@@ -174,13 +174,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 						popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase("Right Iris")) {
-				scanIris(RegistrationConstants.LEFT.concat(RegistrationConstants.IRIS), RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD,
-						popupStage, Double.parseDouble(
-								getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
+				scanIris(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE), popupStage,
+						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase("Left Iris")) {
-				scanIris(RegistrationConstants.RIGHT.concat(RegistrationConstants.IRIS), RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD,
-						popupStage, Double.parseDouble(
-								getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
+				scanIris(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE), popupStage,
+						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			}
 			scanBtn.setDisable(true);
 		} catch (NumberFormatException | RegBaseCheckedException e) {
@@ -209,33 +207,45 @@ public class GuardianBiometricsController extends BaseController implements Init
 		createQualityBox(retryCount, biometricThreshold);
 		qualityScore.setText("-");
 		attemptSlap.setText("-");
+		getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO().clear();
+		getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO().clear();
 	}
 	
-	private void scanIris(String irisType, String[] capturedIris, Stage popupStage, Double thresholdValue) throws RegBaseCheckedException {
+	private void scanIris(String irisType, Stage popupStage, Double thresholdValue)
+			throws RegBaseCheckedException {
 
-		IrisDetailsDTO irisDetailsDTO = null;
+		IrisDetailsDTO detailsDTO = null;
 
 		List<IrisDetailsDTO> irisDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
-				.getApplicantBiometricDTO().getIrisDetailsDTO();
-		
+				.getIntroducerBiometricDTO().getIrisDetailsDTO();
+
 		if (irisDetailsDTOs == null || irisDetailsDTOs.isEmpty()) {
 			irisDetailsDTOs = new ArrayList<>(1);
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setIrisDetailsDTO(irisDetailsDTOs);
-		} else {
-			irisDetailsDTO = irisDetailsDTOs.get(0);
 		}
-		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			irisDetailsDTO.setNumOfIrisRetry(irisDetailsDTO.getNumOfIrisRetry() + 1);
+		if ( irisDetailsDTOs != null) {
+			for (IrisDetailsDTO irisDetailsDTO2 : irisDetailsDTOs) {
+				if (irisDetailsDTO2.getIrisType().equals(irisType)) {
+					detailsDTO = irisDetailsDTO2;
+					detailsDTO.setNumOfIrisRetry(irisDetailsDTO2.getNumOfIrisRetry() + 1);
+					break;
+				}
+			}
+			if (detailsDTO == null) {
+				detailsDTO = new IrisDetailsDTO();
+				detailsDTO.setNumOfIrisRetry(detailsDTO.getNumOfIrisRetry() + 1);
+				irisDetailsDTOs.add(detailsDTO);
+			}
 		}
-		
-		irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType);
-		
-		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+		irisFacade.getIrisImageAsDTO(detailsDTO, irisType);
+
+		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-		
-		setCapturedValues(irisDetailsDTO.getIris(), irisDetailsDTO.getQualityScore(), irisDetailsDTO.getNumOfIrisRetry(), thresholdValue);
-		
+
+		setCapturedValues(detailsDTO.getIris(), detailsDTO.getQualityScore(), detailsDTO.getNumOfIrisRetry(),
+				thresholdValue);
+
 		popupStage.close();
 		
 		scanBtn.setDisable(true);
@@ -272,9 +282,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 							}
 						}
 					}
-					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
-					}
+					detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
 					break;
 				}
 			}

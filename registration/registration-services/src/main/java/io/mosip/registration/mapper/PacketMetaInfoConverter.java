@@ -258,7 +258,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 				exceptionBiometrics.add(buildExceptionBiometric(biometricExceptionDTO.getBiometricType(),
 						biometricExceptionDTO.getMissingBiometric(), biometricExceptionDTO.getExceptionType(),
-						biometricExceptionDTO.getReason()));
+						biometricExceptionDTO.getReason(),biometricExceptionDTO.getIndividualType()));
 			}
 		}
 
@@ -266,13 +266,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 	}
 
 	private BiometricException buildExceptionBiometric(String type, String missingBiometric, String exceptionType,
-			String reason) {
+			String reason, String individualType) {
 		BiometricException exceptionBiometric = new BiometricException();
 		exceptionBiometric.setType(type);
 		exceptionBiometric.setMissingBiometric(missingBiometric);
 		exceptionBiometric.setExceptionType(exceptionType);
 		exceptionBiometric.setReason(reason);
-
+		exceptionBiometric.setIndividualType(individualType);
 		return exceptionBiometric;
 	}
 

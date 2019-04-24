@@ -307,6 +307,7 @@ public class RegistrationConstants {
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
+	public static final String PARENT = "PARENT";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
