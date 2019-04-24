@@ -29,10 +29,6 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 	
-	
-
-
-
 	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParam(ApplnURI + Resource_URI, valueMap);
 	}
@@ -47,7 +43,7 @@ public class ApplicationLibrary extends BaseTestCase {
 
 	public Response getRequestParam2(String Resource_URI, String id, String keyId, String timestamp,
 			String Keytimestamp) {
-		return commonLibrary.get_request_pathParam(ApplnURI + Resource_URI, id, keyId, timestamp, Keytimestamp);
+		return commonLibrary.getRequestPathParam(ApplnURI + Resource_URI, id, keyId, timestamp, Keytimestamp);
 	}
 
 	public Response putRequest(String Resource_URI, HashMap<String, String> valueMap) {
@@ -73,8 +69,8 @@ public class ApplicationLibrary extends BaseTestCase {
 
 	}
 
-	public Response get_RequestWithoutBody(String Resource_URI) {
-		return commonLibrary.get_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+	public Response getRequestWithoutBody(String Resource_URI) {
+		return commonLibrary.getRequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
 
@@ -101,8 +97,8 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 
-	public Response GetRequestNoParameter(String Resource_URI) {
-		return commonLibrary.GET_REQUEST_withoutParameters(ApplnURI + Resource_URI);
+	public Response getRequestNoParameter(String Resource_URI) {
+		return commonLibrary.getRequestWithoutParameters(ApplnURI + Resource_URI);
 
 	}
 
@@ -116,8 +112,8 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, valueMap);
 	}
 
-	public Response putRequest_WithBody(String Resource_URI, JSONObject object) {
-		return commonLibrary.put_RequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+	public Response putRequestWithBody(String Resource_URI, JSONObject object) {
+		return commonLibrary.putRequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, object);
 	}
 
@@ -125,8 +121,8 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.post_RequestWithBodyAsMultipartFormData(jsonString, ApplnURI + serviceUri);
 	}
 
-	public Response putRequest_WithoutBody(String Resource_URI) {
-		return commonLibrary.put_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+	public Response putRequestWithoutBody(String Resource_URI) {
+		return commonLibrary.putRequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
 	public Response adminputRequest_WithoutBody(String Resource_URI) {
@@ -134,10 +130,10 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
-	        return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
+	        return commonLibrary.getRequestPathQueryParam(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
 	 public Response getRequestPathQueryParaString(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value) {
-	        return commonLibrary.get_Request_Path_queryParamString(ApplnURI + Resource_URI , path_value,query_value);
+	        return commonLibrary.getRequestPathQueryParamString(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
 	  //Notify
 	    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {

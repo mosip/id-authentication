@@ -196,7 +196,7 @@ public class BookingControllerTest {
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);
 
-		Mockito.when(service.cancelAppointment(dto,preId)).thenReturn(responseDto);
+		Mockito.when(service.cancelAppointment(preId)).thenReturn(responseDto);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -211,7 +211,7 @@ public class BookingControllerTest {
 	public void cancelAppointmentFailureTest() throws Exception {
 
 		dto.setRequest(null);
-		Mockito.when(service.cancelAppointment(dto,preId)).thenReturn(responseDto);
+		Mockito.when(service.cancelAppointment(preId)).thenReturn(responseDto);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -236,14 +236,14 @@ public class BookingControllerTest {
 	@WithUserDetails("INDIVIDUAL")
 	public void deleteBookingTest() throws Exception {
 		String preId = "3";
-		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> response = new MainResponseDTO<>();
 		List<DeleteBookingDTO> DeleteList = new ArrayList<DeleteBookingDTO>();
 		DeleteBookingDTO deleteDto = new DeleteBookingDTO();
 
 		deleteDto.setPreRegistrationId("3");
 		deleteDto.setDeletedBy("9527832358");
 		DeleteList.add(deleteDto);
-		response.setResponse(DeleteList);
+		response.setResponse(deleteDto);
 		Mockito.when(service.deleteBooking(preId)).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/appointment")

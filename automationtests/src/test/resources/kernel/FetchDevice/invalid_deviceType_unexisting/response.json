@@ -1,10 +1,13 @@
 {
-    "timestamp": 1550051137914,
-    "status": 200,
+    "id": null,
+    "version": null,
+    "responsetime": "2019-04-17T11:35:17.807Z",
+    "metadata": null,
+    "response": null,
     "errors": [
         {
             "errorCode": "KER-MSD-010",
-            "errorMessage": "Device not Found"
+            "message": "Device not Found"
         }
     ]
 }

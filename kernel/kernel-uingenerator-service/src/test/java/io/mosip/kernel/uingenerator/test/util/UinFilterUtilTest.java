@@ -1,7 +1,10 @@
 package io.mosip.kernel.uingenerator.test.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
+import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +19,7 @@ import io.mosip.kernel.uingenerator.util.UinFilterUtil;
 
 /**
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -58,7 +62,11 @@ public class UinFilterUtilTest {
 
 	@Value("${mosip.kernel.uin.test.invalid-adjacent-even-digit-uin}")
 	private String invalidAdjacentEvenDigitUin;
-
+	
+	@Value("${mosip.kernel.uin.test.valid-cyclic-num-uin}")
+	private String invalidrestrictedCyclicNumFilter;
+	
+	
 	@Autowired
 	private UinFilterUtil uinFilterUtils;
 
@@ -144,5 +152,13 @@ public class UinFilterUtilTest {
 		boolean res = uinFilterUtils.isValidId(invalidAdjacentEvenDigitUin);
 		assertThat(res, is(true));
 	}
+		
+	@Test
+    public void restrictedCyclicNumFilterTest() throws Exception {
+		UinFilterUtil  myclass3 = new UinFilterUtil();
+        Method method = UinFilterUtil.class.getDeclaredMethod("restrictedCyclicNumFilter", String.class);
+        method.setAccessible(true);
+        assertEquals(true, method.invoke(myclass3, invalidrestrictedCyclicNumFilter));
+    }
 
 }

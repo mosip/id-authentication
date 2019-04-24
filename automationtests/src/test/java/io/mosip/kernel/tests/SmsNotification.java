@@ -51,7 +51,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	private static final String apiName = "SmsNotification";
 	private static final String requestJsonName = "SmsNotificationRequest";
 	private static final String outputJsonName = "SmsNotificationOutput";
-	private static final String service_URI = "/smsnotifier/v1.0/sms/send";
+	private static final String service_URI = "/v1/smsnotifier/sms/send";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -70,7 +70,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
@@ -157,7 +157,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.validateDB(queryStr, MachineSpecificationDto.class);
+				boolean valid = KernelMasterDataR.masterDataDBConnection( MachineSpecificationDto.class,queryStr);
 				if (valid) {
 					finalStatus = "Pass";
 				} else {

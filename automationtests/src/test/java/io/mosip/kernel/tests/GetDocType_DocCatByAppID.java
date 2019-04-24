@@ -55,7 +55,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getDocType_DocCatByAppID = "/masterdata/v1.0/applicanttype/{applicantId}/languages";
+	private static final String getDocType_DocCatByAppID = "/v1/masterdata/applicanttype/{applicantId}/languages";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetDocType_DocCatByAppID";
@@ -67,7 +67,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());
@@ -129,6 +129,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		/*
 		 * Comparing expected and actual response
 		 */

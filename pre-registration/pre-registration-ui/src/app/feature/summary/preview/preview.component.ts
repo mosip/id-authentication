@@ -17,9 +17,11 @@ export class PreviewComponent implements OnInit {
   secondaryLanguagelabels: any;
   primaryLanguage;
   secondaryLanguage;
+  dateOfBirthPrimary: string = '';
+  dateOfBirthSecondary: string = '';
   user: UserModel;
   files = [];
-  documentTypes;
+  documentTypes = [];
   documentMapObject = [];
 
   constructor(
@@ -45,13 +47,20 @@ export class PreviewComponent implements OnInit {
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
-    this.previewData.dateOfBirth = this.previewData.dateOfBirth.split('/').reverse().join('/');
+    this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
     this.setResidentStatus();
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files[0];
     this.documentsMapping();
+  }
+
+  formatDob(dob: string) {
+    dob = dob.replace(/\//g, '-');
+    this.dateOfBirthPrimary = Utils.getBookingDateTime(dob, '', localStorage.getItem('langCode'));
+    this.dateOfBirthSecondary = Utils.getBookingDateTime(dob, '', localStorage.getItem('secondaryLangCode'));
+    console.log(this.dateOfBirthPrimary, this.dateOfBirthSecondary);
   }
 
   setFieldValues() {
@@ -71,21 +80,23 @@ export class PreviewComponent implements OnInit {
 
   documentsMapping() {
     this.documentMapObject = [];
-    this.documentTypes.forEach(type => {
-      const file = this.files.filter(file => file.docCatCode === type.code);
-      if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
+    if (this.documentTypes.length !== 0) {
+      this.documentTypes.forEach(type => {
+        const file = this.files.filter(file => file.docCatCode === type.code);
+        if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
+          const obj = {
+            docName: appConstants.sameAs[localStorage.getItem('langCode')]
+          };
+          file.push(obj);
+        }
         const obj = {
-          docName: appConstants.sameAs[localStorage.getItem('langCode')]
+          code: type.code,
+          name: type.description,
+          fileName: file.length > 0 ? file[0].docName : undefined
         };
-        file.push(obj);
-      }
-      const obj = {
-        code: type.code,
-        name: type.description,
-        fileName: file.length > 0 ? file[0].docName : undefined
-      };
-      this.documentMapObject.push(obj);
-    });
+        this.documentMapObject.push(obj);
+      });
+    }
     console.log(this.documentMapObject);
   }
 

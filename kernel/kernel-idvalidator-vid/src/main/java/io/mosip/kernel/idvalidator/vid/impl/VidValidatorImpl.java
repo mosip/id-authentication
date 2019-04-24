@@ -96,6 +96,9 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 */
 	@PostConstruct
 	private void vidValidatorImplPostConstruct() {
+		
+		numaricRegEx = "\\d{" + vidLength + "}";
+		
 		/**
 		 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>
 		 * If repeating digit limit is 2, then <b>Regex:</b> (\d)\d{0,2}\1<br/>

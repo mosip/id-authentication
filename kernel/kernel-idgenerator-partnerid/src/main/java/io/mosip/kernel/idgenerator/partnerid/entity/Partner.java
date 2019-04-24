@@ -34,7 +34,7 @@ public class Partner {
 	/**
 	 * The ID created by.
 	 */
-	@Column(name = "cr_by", nullable = false)
+	@Column(name = "cr_by", nullable = false, length = 256)
 	private String createdBy;
 
 	/**
@@ -46,7 +46,7 @@ public class Partner {
 	/**
 	 * The ID updated by.
 	 */
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
 	/**

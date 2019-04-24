@@ -1,10 +1,13 @@
 {
-  "timestamp": 1551938456454,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T10:35:26.121Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-SNC-303",
-      "errorMessage": "Registration center user not found "
+      "message": "Registration center user not found "
     }
   ]
 }

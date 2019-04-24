@@ -56,7 +56,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String otpNotifier = "/otpnotifier/v1.0/otp/send";
+	private static final String otpNotifier = "/v1/otpnotifier/otp/send";
 	static String dest = "";
 	static String folderPath = "kernel/OtpNotificationController";
 	static String outputFile = "OtpNotificationControllerOutput.json";
@@ -67,7 +67,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		

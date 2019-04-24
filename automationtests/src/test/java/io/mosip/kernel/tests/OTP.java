@@ -53,8 +53,8 @@ public class OTP extends BaseTestCase implements ITest {
 	private static final String apiName = "OTP";
 	private static final String requestJsonName = "OTPRequest";
 	private static final String outputJsonName = "OTPOutput";
-	private static final String service_URI_OTPGeneration = "/otpmanager/v1.0/otp/generate";
-	private static final String service_URI_OTPValidation = "/otpmanager/v1.0/otp/validate";
+	private static final String service_URI_OTPGeneration = "/v1/otpmanager/otp/generate";
+	private static final String service_URI_OTPValidation = "/v1/otpmanager/otp/validate";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
