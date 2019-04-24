@@ -61,7 +61,7 @@
 											<children>
 												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}">
 													<content>
-														<AnchorPane fx:id="keyboardPane">
+														<AnchorPane fx:id="keyboardPane" styleClass="paneAtDisplayDemoGraphic">
 															<children>
 																<FlowPane fx:id="parentFlowPane" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
 																	<children>
@@ -1011,9 +1011,9 @@
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="parentNameLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
-                                                                        <TextField fx:id="parentName" prefWidth="${childParentDetail.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="parentNameMessage" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                        <Label fx:id="parentNameLabel" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
+                                                                        <TextField fx:id="parentName" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                        <Label fx:id="parentNameMessage" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
                                                                         <HBox alignment="CENTER" spacing="20.0">
                                                                            <children>
                                                                               <VBox fx:id="applicationRidPane">
@@ -1056,9 +1056,9 @@
                                                                      <children>
                                                                         <VBox spacing="5.0">
                                                                            <children>
-                                                                              <Label fx:id="parentNameLocalLanguageLabel" prefWidth="${childParentDetail.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
-                                                                              <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
-                                                                              <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                              <Label fx:id="parentNameLocalLanguageLabel" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
+                                                                              <TextField fx:id="parentNameLocalLanguage" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="parentNameLocalLanguageMessage" prefWidth="${applicationFullName.width}" maxWidth="${applicationFullName.width}" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
                                                                            </children>
                                                                         </VBox>
                                                                         <HBox alignment="CENTER" spacing="20.0">

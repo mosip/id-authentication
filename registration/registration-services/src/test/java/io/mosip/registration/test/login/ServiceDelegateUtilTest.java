@@ -203,7 +203,7 @@ public class ServiceDelegateUtilTest {
 		delegateUtil.getAuthToken(LoginMode.PASSWORD);
 	}
 	
-	@Test(expected=RegBaseCheckedException.class)
+	@Test(expected=RegBaseUncheckedException.class)
 	public void getAuthTokenByOTP() throws Exception {
 		// Return Object
 		Map<String, Object> responseMap = new HashMap<>();

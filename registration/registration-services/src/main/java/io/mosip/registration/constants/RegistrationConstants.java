@@ -307,6 +307,7 @@ public class RegistrationConstants {
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
+	public static final String PARENT = "PARENT";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
@@ -555,12 +556,21 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
 	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
 	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
+	public static final String TEMPLATE_CONSENT_HEADING = "Consent";
+	public static final String TEMPLATE_CONSENT_DATA = "ConsentData";
+	public static final String TEMPLATE_CONSENT_YES = "Yes";
+	public static final String TEMPLATE_CONSENT_NO = "No";
+	public static final String TEMPLATE_CONSENT_SELECTED_YES = "SelectedYes";
+	public static final String TEMPLATE_CONSENT_SELECTED_NO = "SelectedNo";
+	public static final String TEMPLATE_CONSENT_CHECKED = "checked='checked'";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
 	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
 	public static final String CLICK = "click";
 	public static final String REG_CONSENT = "mosip.registration.consent_";
+	public static final String REG_CONSENT_YES = "consent-yes";
+	public static final String REG_CONSENT_NO = "consent-no";
 	
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -712,6 +722,7 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_1 = "reg-ack-template-part1";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_2 = "reg-ack-template-part2";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
+	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_4 = "reg-ack-template-part4";
 	public static final String EMAIL_TEMPLATE = "reg-email-notification";
 	public static final String SMS_TEMPLATE = "reg-sms-notification";
 
@@ -1269,6 +1280,12 @@ public class RegistrationConstants {
 	// Scheduler
 	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
+	public static final String SCHEDULER_TITLE_STYLE = "schedulerTitleMsg";
+	public static final String SCHEDULER_CONTENT_STYLE = "schedulerMsg";
+	public static final String SCHEDULER_TITLE_BORDER = "schedulerTitle";
+	public static final String SCHEDULER_TIMER_STYLE = "schedulerTimer";
+	public static final String SCHEDULER_BTN_STYLE = "schedulerContinueBtn";
+	public static final String SCHEDULER_BORDER = "schedulerStage";
 	
 	public static final String USER_DETAILS="userDetails";
 	

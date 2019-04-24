@@ -298,8 +298,9 @@ public class RegistrationUIConstants {
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
-	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
-	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
+	public static final String TIMEOUT_INITIAL = bundle.getString("TIMEOUT_INITIAL");
+	public static final String TIMEOUT_MIDDLE = bundle.getString("TIMEOUT_MIDDLE");
+	public static final String TIMEOUT_END = bundle.getString("TIMEOUT_END");
 
 	// Notification
 	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");

@@ -141,7 +141,7 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		sessionContext.authTokenDTO = authTokenDTO;
+		sessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**

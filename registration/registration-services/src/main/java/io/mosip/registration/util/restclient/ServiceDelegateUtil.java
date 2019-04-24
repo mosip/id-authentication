@@ -406,6 +406,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setClazz(Object.class);
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
+			requestHTTPDTO.setIsSignRequired(false);
 
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
@@ -414,6 +415,8 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
+			
+			requestHTTPDTO.setIsSignRequired(false);
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -458,6 +461,7 @@ public class ServiceDelegateUtil {
 			} else {
 				SessionContext.setAuthTokenDTO(authTokenDTO);
 			}
+
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| IOException restException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
@@ -568,6 +572,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setUri(new URI(requestURL));
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
+		requestHTTPDTO.setIsSignRequired(false);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);

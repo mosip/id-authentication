@@ -79,7 +79,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -445,7 +444,6 @@ public class BaseController extends BaseService {
 	/**
 	 * Clear registration data.
 	 */
-	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
@@ -474,9 +472,7 @@ public class BaseController extends BaseService {
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
-		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
-				.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY,
-						(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
+		updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, (boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
 	}
 
 	/**
@@ -1117,6 +1113,10 @@ public class BaseController extends BaseService {
 	 * @return the value from application context
 	 */
 	protected String getValueFromApplicationContext(String key) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching value from application Context");
+		
 		return (String) applicationContext.getApplicationMap().get(key);
 	}
 	
@@ -1127,7 +1127,29 @@ public class BaseController extends BaseService {
 	 * @return the quality score
 	 */
 	protected String getQualityScore(Double qulaityScore) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching Quality score while capturing Biometrics");
+		
 		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+	
+	/**
+	 * Updates the Page Flow
+	 *
+	 * @param pageId id of the page
+	 * @param val value to be set
+	 */
+	@SuppressWarnings("unchecked")
+	protected void updatePageFlow(String pageId, boolean val) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating page flow to naviagate next or previous");
+		
+		((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+				.get(RegistrationConstants.REGISTRATION_MAP)).get(pageId)
+						.put(RegistrationConstants.VISIBILITY, val);
+		
 	}
 
 }
