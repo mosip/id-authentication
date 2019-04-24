@@ -26,7 +26,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 @Component
 public class SwaggerConfigurer {
 	
-	@Value("${uin.swagger.base.url:http://localhost:8080}")
+	@Value("${uin.swagger.base-url:http://localhost:8080}")
 	private String swaggerBaseUrl;
 	
 	@Autowired
