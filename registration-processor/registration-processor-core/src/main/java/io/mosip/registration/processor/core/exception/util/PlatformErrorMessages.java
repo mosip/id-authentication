@@ -432,7 +432,7 @@ public enum PlatformErrorMessages {
 	/** The rpr pum packet not found exception. */
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "001",
 			"Packet Not Found in Packet Store"),
-
+	
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "002",
 			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
@@ -456,6 +456,12 @@ public enum PlatformErrorMessages {
 	/** The rpr pkm file not found in source. */
 	RPR_PUM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "007",
 			"The Sftp operation failed during file processing"),
+	
+
+	RPR_PUM_PACKET_NOT_YET_SYNC(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "008",
+			"Registration packet is not in Sync with Sync table"),
+
+
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
