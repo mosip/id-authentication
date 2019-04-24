@@ -95,7 +95,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));
-		messageDTO=packetUploaderService.validateAndUploadPacket(messageDTO.getRid());
+		messageDTO=packetUploaderService.validateAndUploadPacket(messageDTO.getRid(),this.getClass().getSimpleName());
 		if(messageDTO.getIsValid()) {
 		sendMessage( messageDTO);
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
