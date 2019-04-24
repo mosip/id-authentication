@@ -39,7 +39,8 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @PropertySource(value = { "classpath:bootstrap.properties" })
-@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*" })
+@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*",
+		"io.mosip.kernel.responsesignature.*" })
 public class UinGeneratorConfiguration implements EnvironmentAware {
 
 	/**
@@ -64,7 +65,8 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	 *
 	 * @return PropertySourcesPlaceholderConfigurer
 	 * 
-	 * @throws IOException throw IOException
+	 * @throws IOException
+	 *             throw IOException
 	 */
 	@Bean
 	@Autowired
@@ -124,7 +126,8 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	/**
 	 * Set up a shared JPA EntityManagerFactory in a Spring application context
 	 * 
-	 * @param dataSource dataSource
+	 * @param dataSource
+	 *            dataSource
 	 * @return LocalContainerEntityManagerFactoryBean
 	 */
 	@Bean
@@ -152,7 +155,8 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	/**
 	 * This is the central interface in Spring's transaction infrastructure.
 	 * 
-	 * @param entityManagerFactory entityManagerFactory
+	 * @param entityManagerFactory
+	 *            entityManagerFactory
 	 * @return PlatformTransactionManager
 	 */
 	@Bean
@@ -160,4 +164,5 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
 		return new JpaTransactionManager(entityManagerFactory.getObject());
 	}
+
 }

@@ -20,6 +20,9 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.config.UINHealthCheckerhandler;
 import io.mosip.kernel.uingenerator.config.SwaggerConfigurer;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -67,6 +70,9 @@ public class UinGeneratorRouter {
 	@Autowired
 	private AuthHandler authHandler;
 
+	@Autowired
+	private SignatureUtil signatureUtil;
+
 	/**
 	 * Field for UinGeneratorService
 	 */
@@ -77,7 +83,8 @@ public class UinGeneratorRouter {
 	/**
 	 * Creates router for vertx server
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 * @return Router
 	 */
 	public Router createRouter(Vertx vertx) {
@@ -127,17 +134,31 @@ public class UinGeneratorRouter {
 					@ApiResponse(responseCode = "500", description = "Internal Server Error.") })
 
 	private void getRouter(Vertx vertx, RoutingContext routingContext) {
-		UinResponseDto uin = new UinResponseDto();
+
+		String resWrpJsonString = null;
+		String signedData = null;
+
 		try {
+			UinResponseDto uin = new UinResponseDto();
 			uin = uinGeneratorService.getUin();
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
-					.setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
+			String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+
+			if (!profile.equalsIgnoreCase("test")) {
+				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
+				signedData = signatureUtil.signResponse(resWrpJsonString);
+			}
+			routingContext.response().putHeader("response-signature", signedData)
+					.end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			setError(routingContext, error);
+		} catch (SignatureUtilClientException | SignatureUtilException e1) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					e1.toString());
 			setError(routingContext, error);
 		} catch (Exception e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
@@ -158,7 +179,8 @@ public class UinGeneratorRouter {
 	/**
 	 * update router for update the status of the given UIN
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
@@ -213,7 +235,8 @@ public class UinGeneratorRouter {
 	/**
 	 * Checks and generate uins
 	 * 
-	 * @param vertx vertx
+	 * @param vertx
+	 *            vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);

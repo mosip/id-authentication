@@ -17,15 +17,19 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
@@ -133,7 +137,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * This method will consume a REST API based on the filename passed.
 	 * 
-	 * @param fileName - name of the file
+	 * @param fileName
+	 *            - name of the file
 	 * @return JSONObject
 	 */
 	private JSONObject getConfigDetailsResponse(String fileName) {
@@ -190,7 +195,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 			Optional<String> referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
 
-		PublicKeyResponse publicKeyResponseMapped = null;
+		ResponseWrapper<PublicKeyResponse> publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		try {
@@ -208,24 +213,27 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				throw new SyncInvalidArgumentException(validationErrorsList);
 			}
 
-		} catch (RestClientException ex) {
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.buildMessage(ex.getMessage(), ex.getCause()));
 
 		}
 
 		try {
 			objectMapper.registerModule(new JavaTimeModule());
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
-					PublicKeyResponse.class);
+					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
+					});
 
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException e) {
 			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
 		}
 
-		return publicKeyResponseMapped;
+		return publicKeyResponseMapped.getResponse();
 
 	}
 
