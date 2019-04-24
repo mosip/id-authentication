@@ -30,6 +30,16 @@
 			<artifactId>registration-processor-print-service-impl</artifactId>
 			<version>${registration.processor.print.service.impl.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-core</artifactId>
+			<version>${registration.processor.core.version}</version>
+		</dependency>
   </dependencies>
   <build>
 		<plugins>

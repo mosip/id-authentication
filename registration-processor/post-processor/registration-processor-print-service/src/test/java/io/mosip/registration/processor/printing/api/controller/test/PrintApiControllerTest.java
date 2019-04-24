@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -67,6 +68,7 @@ public class PrintApiControllerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
 
@@ -80,6 +82,7 @@ public class PrintApiControllerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testPdfFailure() throws Exception {
 		this.mockMvc.perform(post("/registration-processor/print/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
