@@ -1738,6 +1738,14 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
 
+			if (moroccoIdentity.getResidenceStatus() != null && !moroccoIdentity.getResidenceStatus().isEmpty()) {
+				if (RegistrationConstants.ATTR_FORINGER
+						.equalsIgnoreCase(moroccoIdentity.getResidenceStatus().get(0).getValue())) {
+					foreigner(null);
+				} else {
+					national(null);
+				}
+			}
 			postalCode.setText(moroccoIdentity.getPostalCode());
 			mobileNo.setText(moroccoIdentity.getPhone());
 			emailId.setText(moroccoIdentity.getEmail());
