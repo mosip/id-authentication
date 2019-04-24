@@ -44,6 +44,7 @@
 
 		<vertx.version>3.6.2</vertx.version>
 		<swagger.version>2.9.2</swagger.version>
+		<swagger-annotations.version>2.0.7</swagger-annotations.version>
 
 		<!-- javax -->
 		<javax.interceptor.version>1.2</javax.interceptor.version>
@@ -78,6 +79,7 @@
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		<json.version>20180813</json.version>
 
 		<!-- utilities -->
 		<commons-math3>3.6.1</commons-math3>
