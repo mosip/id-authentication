@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.core.exception.util;
 
 /**

@@ -100,7 +100,7 @@
 
 		<!-- local -->
 		<registration.status.service.version>0.10.4</registration.status.service.version>
-		<registration.processor.core.version>0.10.4</registration.processor.core.version>
+		<registration.processor.core.version>0.10.5</registration.processor.core.version>
 		<filesystem.adapter.ceph.version>0.10.4</filesystem.adapter.ceph.version>
 		<packet.manager.version>0.10.4</packet.manager.version>
 		<registration.processor.rest.client.version>0.10.4</registration.processor.rest.client.version>
