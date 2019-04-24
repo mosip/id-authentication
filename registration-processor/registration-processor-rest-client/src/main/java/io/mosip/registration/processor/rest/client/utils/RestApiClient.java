@@ -14,6 +14,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
@@ -25,7 +26,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.dto.Metadata;
-import io.mosip.registration.processor.rest.client.audit.dto.Request;
+import io.mosip.registration.processor.rest.client.audit.dto.PasswordRequest;
+import io.mosip.registration.processor.rest.client.audit.dto.SecretKeyRequest;
 import io.mosip.registration.processor.rest.client.audit.dto.TokenRequestDTO;
 import io.mosip.registration.processor.rest.client.exception.TokenGenerationFailedException;
 
@@ -80,7 +82,8 @@ public class RestApiClient {
 		try {
 			restTemplate = getRestTemplate();
 //			 result = (T) restTemplate.getForObject(uri, responseType);
-			result = (T) restTemplate.exchange(uri, HttpMethod.GET, setRequestHeader(null, null), responseType).getBody();
+			result = (T) restTemplate.exchange(uri, HttpMethod.GET, setRequestHeader(null, null), responseType)
+					.getBody();
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -110,6 +113,7 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.postForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
+
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -141,6 +145,8 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.patchForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
+			JSONObject resObj = (JSONObject) result;
+
 		} catch (Exception e) {
 
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -244,21 +250,20 @@ public class RestApiClient {
 	 * @throws IOException
 	 */
 	public String getToken() throws IOException {
-		TokenRequestDTO tokenRequestDTO = new TokenRequestDTO();
+//		TokenRequestDTO<PasswordRequest> tokenRequestDTO = new TokenRequestDTO<PasswordRequest>();
+		TokenRequestDTO<SecretKeyRequest> tokenRequestDTO = new TokenRequestDTO<SecretKeyRequest>();
 		tokenRequestDTO.setId(environment.getProperty("token.request.id"));
 		tokenRequestDTO.setMetadata(new Metadata());
 
 		tokenRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-		Request request = new Request();
-		request.setAppId(environment.getProperty("token.request.appid"));
-		request.setPassword(environment.getProperty("token.request.password"));
-		request.setUserName(environment.getProperty("token.request.username"));
-		tokenRequestDTO.setRequest(request);
+//		tokenRequestDTO.setRequest(setPasswordRequestDTO());
+		tokenRequestDTO.setRequest(setSecretKeyRequestDTO());
 		tokenRequestDTO.setVersion(environment.getProperty("token.request.version"));
 
 		Gson gson = new Gson();
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(environment.getProperty("GETTOKENAPI"));
+//		HttpPost post = new HttpPost(environment.getProperty("PASSWORDBASEDTOKENAPI"));
+		HttpPost post = new HttpPost(environment.getProperty("KEYBASEDTOKENAPI"));
 		try {
 			StringEntity postingString = new StringEntity(gson.toJson(tokenRequestDTO));
 			post.setEntity(postingString);
@@ -275,6 +280,23 @@ public class RestApiClient {
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw e;
 		}
+	}
+
+	private SecretKeyRequest setSecretKeyRequestDTO() {
+		SecretKeyRequest request = new SecretKeyRequest();
+		request.setAppId(environment.getProperty("token.request.appid"));
+		request.setClientId(environment.getProperty("token.request.clientId"));
+		request.setSecretKey(environment.getProperty("token.request.secretKey"));
+		return request;
+	}
+
+	private PasswordRequest setPasswordRequestDTO() {
+
+		PasswordRequest request = new PasswordRequest();
+		request.setAppId(environment.getProperty("token.request.appid"));
+		request.setPassword(environment.getProperty("token.request.password"));
+		request.setUserName(environment.getProperty("token.request.username"));
+		return request;
 	}
 
 }

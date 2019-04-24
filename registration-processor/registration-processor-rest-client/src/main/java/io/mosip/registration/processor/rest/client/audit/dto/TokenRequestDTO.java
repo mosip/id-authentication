@@ -7,10 +7,10 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class TokenRequestDTO {
+public class TokenRequestDTO<T> {
 	public String id;
 	public Metadata metadata;
-	public Request request;
+	public T request;
 	public String requesttime;
 	public String version;
 }

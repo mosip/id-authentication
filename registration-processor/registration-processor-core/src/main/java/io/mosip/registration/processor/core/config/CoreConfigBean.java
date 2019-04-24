@@ -26,7 +26,7 @@ import io.mosip.registration.processor.core.token.validation.TokenValidator;
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class CoreConfigBean {
-	
+
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
 			throws IOException {
@@ -59,30 +59,22 @@ public class CoreConfigBean {
 	}
 
 	@Bean
-	MosipQueueManager<?, ?> getMosipQueueManager(){
+	MosipQueueManager<?, ?> getMosipQueueManager() {
 		return new MosipActiveMqImpl();
 	}
-	
+
 	@Bean
-	MosipQueueConnectionFactory<?> getMosipQueueConnectionFactory(){
-		System.setProperty("GETTOKENAPI", "https://dev.mosip.io/v1/authmanager/authenticate/useridPwd");
-		System.setProperty("EMAILNOTIFIER", "https://dev.mosip.io/v1/emailnotifier/email/send");
-		System.setProperty("TOKENVALIDATE","https://dev.mosip.io/v1/authmanager/authorize/validateToken");
-		System.setProperty("token.request.id","io.mosip.registration.processor");
-		System.setProperty("token.request.appid","registrationprocessor");
-		System.setProperty("token.request.username","registrationprocessor");
-		System.setProperty("token.request.password","mosip");
-		System.setProperty("token.request.version","1.0");
+	MosipQueueConnectionFactory<?> getMosipQueueConnectionFactory() {
 		return new MosipQueueConnectionFactoryImpl();
 	}
-	
+
 	@Bean
-	public TokenValidator getTokenValidator(){
+	public TokenValidator getTokenValidator() {
 		return new TokenValidator();
 	}
-	
+
 	@Bean
-	public MosipRouter getMosipRouter(){
+	public MosipRouter getMosipRouter() {
 		return new MosipRouter();
 	}
 
