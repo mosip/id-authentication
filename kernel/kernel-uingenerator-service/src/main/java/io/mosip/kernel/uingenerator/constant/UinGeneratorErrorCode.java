@@ -23,7 +23,8 @@ public enum UinGeneratorErrorCode {
 	/**
 	 * INTERNAL_SERVER_ERROR
 	 */
-	INTERNAL_SERVER_ERROR("KER-UIG-005", "Internal Server Error");
+	INTERNAL_SERVER_ERROR("KER-UIG-005", "Internal Server Error"),
+	CONFIG_SERVER_FETCH_FAILED("KER-UIG-006", "Error in retrieving from config server");
 
 	/**
 	 * The error code

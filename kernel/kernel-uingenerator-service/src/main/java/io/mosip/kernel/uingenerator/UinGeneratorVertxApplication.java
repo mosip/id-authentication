@@ -25,11 +25,13 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Uin Generator vertx application
+ * Uin Generator Vertx Application
  * 
  * @author Dharmesh Khandelwal
  * @author Urvil Joshi
  * @author Megha Tanga
+ * @author Sagar Mahapatra
+ * 
  * @since 1.0.0
  *
  */
@@ -42,42 +44,63 @@ public class UinGeneratorVertxApplication {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorVertxApplication.class);
 
+	/**
+	 * main method for the application
+	 * 
+	 * @param args
+	 *            the argument
+	 */
 	public static void main(String[] args) {
-		Vertx vertx = Vertx.vertx();
-		List<ConfigStoreOptions> configStores = new ArrayList<>();
-		ConfigServerUrlUtil.getURLs()
-				.forEach(url -> configStores
-						.add(new ConfigStoreOptions().setType(UinGeneratorConstant.CONFIG_STORE_OPTIONS_TYPE)
-								.setConfig(new JsonObject().put(UinGeneratorConstant.URL, url).put(
-										UinGeneratorConstant.TIME_OUT,
-										Long.parseLong(UinGeneratorConstant.CONFIG_SERVER_FETCH_TIME_OUT)))));
-		ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
-		configStores.forEach(configRetrieverOptions::addStore);
-		ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
-		retriever.getConfig(json -> {
-			if (json.succeeded()) {
-				LOGGER.info("Retrieving from Config Server");
-				JsonObject jsonObject = json.result();
-				if (jsonObject != null) {
-					jsonObject.iterator().forEachRemaining(
-							sourceValue -> System.setProperty(sourceValue.getKey(), sourceValue.getValue().toString()));
-				}
-
-				json.mapEmpty();
-				retriever.close();
-				vertx.close();
-				startApplication();
-
-			} else {
-				LOGGER.info(json.cause().getMessage());
-				json.otherwiseEmpty();
-				retriever.close();
-				vertx.close();
-				startApplication();
-			}
-		});
+		loadPropertiesFromConfigServer();
 	}
 
+	/**
+	 * This method retrieves and loads the configuration fetched from
+	 * spring-config-server. If retrievation succeeds, then the local properties
+	 * present are over-ridden. If retrievation fails, the local properties are used
+	 * for running the application.
+	 */
+	private static void loadPropertiesFromConfigServer() {
+		try {
+			Vertx vertx = Vertx.vertx();
+			List<ConfigStoreOptions> configStores = new ArrayList<>();
+			List<String> configUrls = ConfigServerUrlUtil.getURLs();
+			configUrls.forEach(url -> configStores
+					.add(new ConfigStoreOptions().setType(UinGeneratorConstant.CONFIG_STORE_OPTIONS_TYPE)
+							.setConfig(new JsonObject().put(UinGeneratorConstant.URL, url).put(
+									UinGeneratorConstant.TIME_OUT,
+									Long.parseLong(UinGeneratorConstant.CONFIG_SERVER_FETCH_TIME_OUT)))));
+			ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
+			configStores.forEach(configRetrieverOptions::addStore);
+			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
+			retriever.getConfig(json -> {
+				if (json.succeeded()) {
+					LOGGER.info("Retrieving configuration from Spring-Config-Server");
+					JsonObject jsonObject = json.result();
+					if (jsonObject != null) {
+						jsonObject.iterator().forEachRemaining(sourceValue -> System.setProperty(sourceValue.getKey(),
+								sourceValue.getValue().toString()));
+					}
+					json.mapEmpty();
+					retriever.close();
+					vertx.close();
+					startApplication();
+				} else {
+					LOGGER.error(json.cause().getMessage());
+					json.otherwiseEmpty();
+					retriever.close();
+					vertx.close();
+					startApplication();
+				}
+			});
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+	}
+
+	/**
+	 * This method sets the Application Context, delpoys the verticles.
+	 */
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		VertxOptions options = new VertxOptions();

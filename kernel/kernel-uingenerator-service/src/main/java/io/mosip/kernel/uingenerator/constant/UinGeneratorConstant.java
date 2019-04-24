@@ -8,11 +8,11 @@ package io.mosip.kernel.uingenerator.constant;
  * 
  * @author Dharmesh Khandelwal
  * @author Megha Tanga
+ * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
 public final class UinGeneratorConstant {
-
 	/**
 	 * Private constructor for UinGeneratorConstants
 	 */
@@ -27,10 +27,21 @@ public final class UinGeneratorConstant {
 	 * The string field DEFAULTADMIN_MOSIP_IO
 	 */
 	public static final String DEFAULTADMIN_MOSIP_IO = "defaultadmin@mosip.io";
-
+	/**
+	 * The static field for unused UIN
+	 */
 	public static final String UNUSED = "UNUSED";
+	/**
+	 * The static field for issued UIN
+	 */
 	public static final String ISSUED = "ISSUED";
+	/**
+	 * The static field for assigned UIN
+	 */
 	public static final String ASSIGNED = "ASSIGNED";
+	/**
+	 * The static field for unassigned UIN
+	 */
 	public static final String UNASSIGNED = "UNASSIGNED";
 	/**
 	 * The string field for http port
@@ -151,10 +162,25 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String NINE = "9";
 
+	/**
+	 * The string field for numeric digit 0 to 9
+	 */
 	public static final String ZERO_TO_NINE = "1234567890";
+	/**
+	 * The static field for ConfigStoreOptions type to be used in
+	 * ConfigRetriever[viz. spring-config-server , file etc.]
+	 */
 	public static final String CONFIG_STORE_OPTIONS_TYPE = "spring-config-server";
-	public static final String CONFIG_SERVER_FETCH_TIME_OUT = "999999999";
+	/**
+	 * The static field value for time-out
+	 */
+	public static final String CONFIG_SERVER_FETCH_TIME_OUT = "180000";
+	/**
+	 * The static field for url
+	 */
 	public static final String URL = "url";
+	/**
+	 * The static field for time-out
+	 */
 	public static final String TIME_OUT = "timeout";
-
 }
