@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -351,7 +350,7 @@ public class SyncDataServiceTest {
 		// Query parameters
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
 				// Add query parameter
-				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("referenceId", "referenceId")
 				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -359,7 +358,7 @@ public class SyncDataServiceTest {
 				.andRespond(withSuccess().body(
 						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, \"response\": { \"lastSyncTime\": \"2019-04-24T09:07:41.771Z\", \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtzi3nWiNMEcaBV2cWO5ZLTBZe1TEGnT95bTvrpEEr-kJLrn80dn9k156zjQpjSzNfEOFVwugTEhEWdxrdrjDUACpA0cF4tUdAM5XJBB0xmzNGS5s7lmcliAOjXbCGU2VJwOUnYV4DSCgrReMCCe6LD_aApwu45OAZ9_sWG6R-jlIUOHLTdDUs6O8zLk8zl7tOX6Rlp25Zk9CLQw1m9drHJqxCbr9Wc9PQKUHBPqhtvCe9ZZeySsZb83dXpKKAZlkjdbrB25i_4O0pbv9LHk0qQlk0twqaef6D5nCTqcB5KQ4QqVYLcrtAhdbMXaDvpSf9syRQ3P3fAeiGkvUIhUWPwIDAQAB\", \"issuedAt\": \"2019-04-23T06:17:46.753\", \"expiryAt\": \"2020-04-23T06:17:46.753\" }, \"errors\": null }"));
 
-		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", "referenceId");
 	}
 
 	@Test(expected = SyncDataServiceException.class)
@@ -371,14 +370,14 @@ public class SyncDataServiceTest {
 		// Query parameters
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
 				// Add query parameter
-				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("referenceId", "referenceId")
 				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
 				.andRespond(withServerError());
 
-		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", "referenceId");
 	}
 
 	@Test(expected=SyncInvalidArgumentException.class)
@@ -389,7 +388,7 @@ public class SyncDataServiceTest {
 		// Query parameters
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
 				// Add query parameter
-				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("referenceId", "referenceId")
 				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -397,7 +396,7 @@ public class SyncDataServiceTest {
 				.andRespond(withSuccess().body(
 						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T10:24:23.760Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-ATH-401\", \"message\": \"JWT expired at 2019-04-17T14:12:05+0000. Current time: 2019-04-24T10:24:23+0000\" } ] }"));
 
-		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", "referenceId");
 	}
 
 	@Test(expected = SyncDataServiceException.class)
@@ -408,7 +407,7 @@ public class SyncDataServiceTest {
 		// Query parameters
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
 				// Add query parameter
-				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("referenceId", "referenceId")
 				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -416,7 +415,7 @@ public class SyncDataServiceTest {
 				.andRespond(withSuccess().body(
 						" \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, \"response\": { \"lastSyncTime\": \"2019-04-24T09:07:41.771Z\", \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtzi3nWiNMEcaBV2cWO5ZLTBZe1TEGnT95bTvrpEEr-kJLrn80dn9k156zjQpjSzNfEOFVwugTEhEWdxrdrjDUACpA0cF4tUdAM5XJBB0xmzNGS5s7lmcliAOjXbCGU2VJwOUnYV4DSCgrReMCCe6LD_aApwu45OAZ9_sWG6R-jlIUOHLTdDUs6O8zLk8zl7tOX6Rlp25Zk9CLQw1m9drHJqxCbr9Wc9PQKUHBPqhtvCe9ZZeySsZb83dXpKKAZlkjdbrB25i_4O0pbv9LHk0qQlk0twqaef6D5nCTqcB5KQ4QqVYLcrtAhdbMXaDvpSf9syRQ3P3fAeiGkvUIhUWPwIDAQAB\", \"issuedAt\": \"2019-04-23T06:17:46.753\", \"expiryAt\": \"2020-04-23T06:17:46.753\" }, \"errors\": null }"));
 
-		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", "referenceId");
 	}
 
 }
