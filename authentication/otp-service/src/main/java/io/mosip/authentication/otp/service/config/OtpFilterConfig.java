@@ -12,7 +12,7 @@ import io.mosip.authentication.otp.service.filter.OTPFilter;
  * @author Manoj SP
  */
 @Configuration
-public class FilterConfig {
+public class OtpFilterConfig {
 
 	/**
 	 * Gets the otp filter.

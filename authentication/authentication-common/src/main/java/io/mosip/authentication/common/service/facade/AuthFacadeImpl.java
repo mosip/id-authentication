@@ -69,13 +69,8 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
-	
 
- 	/** The Constant DATETIME_PATTERN. */
- 	private static final String DATETIME_PATTERN = "datetime.pattern";
-
-
-	/** The Constant SUCCESS_STATUS. */
+ 	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
 
 	/** The logger. */
