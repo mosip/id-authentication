@@ -69,9 +69,9 @@ public final class HMACUtils {
 	 * @return String converted digest as plain text
 	 */
 	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes, final byte[] salt) {
+		messageDigest.update(bytes);
 		messageDigest.update(salt);
-		byte[] saltedDigest = messageDigest.digest(bytes);
-		return DatatypeConverter.printHexBinary(saltedDigest).toUpperCase();
+		return DatatypeConverter.printHexBinary(messageDigest.digest());
 	}
 
 	/**

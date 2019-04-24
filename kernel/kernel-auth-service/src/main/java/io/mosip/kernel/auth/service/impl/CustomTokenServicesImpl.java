@@ -81,19 +81,33 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	@Override
 	public void StoreToken(AuthToken token) {
 		String userName = checkUser(token.getUserId());
+		if(userName!=null)
+		{
+			UpdateToken(token);
+			
+		}
+		else
+		{
+			jdbcTemplate.update(insertTokenSQL, new MapSqlParameterSource()
+					.addValue("userName", token.getUserId())
+					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
+					.addValue("expTime", new Date(token.getExpirationTime()))
+					.addValue("crdTimes", new Date()));
+		}
+	}
+	
+	@Override
+	public void UpdateToken(AuthToken token) {
+		String userName = checkUser(token.getUserId());
 		if (userName != null) {
 			jdbcTemplate.update(updateTokenSQL,
 					new MapSqlParameterSource().addValue("userName", token.getUserId())
 							.addValue("token", token.getAccessToken()).addValue("refreshToken", token.getRefreshToken())
 							.addValue("expTime", new Date(token.getExpirationTime())).addValue("crdTimes", new Date()));
-
-		} else {
-			jdbcTemplate.update(insertTokenSQL,
-					new MapSqlParameterSource().addValue("userName", token.getUserId())
-							.addValue("token", token.getAccessToken()).addValue("refreshToken", token.getRefreshToken())
-							.addValue("expTime", new Date(token.getExpirationTime())).addValue("crdTimes", new Date()));
 		}
 	}
+	
+	
 
 	private String checkUser(String userId) {
 		return jdbcTemplate.query(checkUserTokenSQL, new MapSqlParameterSource().addValue("userName", userId),
@@ -133,6 +147,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 
 				});
 	}
+	
+	
 
 	@Override
 	@Transactional
@@ -140,23 +156,29 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 		jdbcTemplate.update(updateNewTokenSQL,
 				new MapSqlParameterSource().addValue("userName", userName).addValue("token", newAccessToken.getToken())
 						.addValue("expTime", new Date(newAccessToken.getExpTime())));
+		return getTokenBasedOnName(userName);
+	}
+	
+	@Override
+	public AuthToken getTokenBasedOnName(String userName)
+	{
 		return jdbcTemplate.query(selectTokenFromName, new MapSqlParameterSource().addValue("userName", userName),
 				new ResultSetExtractor<AuthToken>() {
 
-					@Override
-					public AuthToken extractData(ResultSet rs) throws SQLException, DataAccessException {
-						while (rs.next()) {
-							AuthToken authToken = new AuthToken();
-							authToken.setAccessToken(rs.getString("auth_token"));
-							authToken.setUserId(rs.getString("user_id"));
-							authToken.setExpirationTime(rs.getTimestamp("expiration_time").getTime());
-							authToken.setRefreshToken(rs.getString("refresh_token"));
-							return authToken;
-						}
-						return null;
-					}
+			@Override
+			public AuthToken extractData(ResultSet rs) throws SQLException, DataAccessException {
+				while (rs.next()) {
+					AuthToken authToken = new AuthToken();
+					authToken.setAccessToken(rs.getString("auth_token"));
+					authToken.setUserId(rs.getString("user_id"));
+					authToken.setExpirationTime(rs.getTimestamp("expiration_time").getTime());
+					authToken.setRefreshToken(rs.getString("refresh_token"));
+					return authToken;
+				}
+				return null;
+			}
 
-				});
+		});
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -27,8 +28,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.ServletWebRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
@@ -53,10 +52,6 @@ public class IdRepoExceptionHandlerTest {
 
 	@Autowired
 	Environment env;
-
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
 
 	/** The errors. */
 	@Mock
@@ -83,7 +78,6 @@ public class IdRepoExceptionHandlerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(handler, "env", env);
-		ReflectionTestUtils.setField(handler, "mapper", mapper);
 		ReflectionTestUtils.setField(handler, "id", id);
 	}
 
@@ -182,6 +176,20 @@ public class IdRepoExceptionHandlerTest {
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
+		});
+	}
+	
+	@Test
+	public void testHandleAccessDeniedException() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
+		AccessDeniedException ex = new AccessDeniedException("");
+		ResponseEntity<Object> handleAccessDeniedException = ReflectionTestUtils.invokeMethod(handler,
+				"handleAccessDeniedException", ex, request);
+		IdResponseDTO response = (IdResponseDTO) handleAccessDeniedException.getBody();
+		List<ServiceError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.UNAUTHORIZED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.UNAUTHORIZED.getErrorMessage(), e.getMessage());
 		});
 	}
 
