@@ -125,7 +125,7 @@ public interface FileManager<D, F> {
 	
 	public boolean copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException;
 
-	public boolean cleanUpFile(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException;
+	public boolean cleanUp(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException;
 
 
 }

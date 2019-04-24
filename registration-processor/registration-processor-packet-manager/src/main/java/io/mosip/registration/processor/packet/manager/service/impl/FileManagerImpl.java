@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -392,7 +395,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channelSftp.put(new ByteArrayInputStream(bytedata),destinationFilePath);
 
 			if (channelSftp.get( destinationFilePath ) != null) {
-				status=true;	
+				status=true;
 			}
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -415,14 +418,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			if(channel != null)
 				channel.disconnect();
 			if(session != null)
-				session.disconnect(); 
+				session.disconnect();
 
 		}
 		return status;
 	}
 
 	@Override
-	public boolean cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException {
+	public boolean cleanUp(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
@@ -437,7 +440,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 				if (channelSftp.get( sourceFilePath ) != null) {
 					channelSftp.rm(sourceFilePath);
-					status=true;	
+					status=true;
 				}
 
 			}

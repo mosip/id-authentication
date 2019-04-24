@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -184,10 +186,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			SftpJschConnectionDto jschConnectionDto=new SftpJschConnectionDto();
 			jschConnectionDto.setHost(host);
 			jschConnectionDto.setPort(Integer.parseInt(dmzPort));
-			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);
+			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);  
 			jschConnectionDto.setUser(dmzServerUser);
 			jschConnectionDto.setProtocal(dmzServerProtocal);
-
 			byte[] encryptedByteArray=fileManager.getFile(DirectoryPathDto.LANDING_ZONE, regId, jschConnectionDto);
 
 			if(encryptedByteArray != null) {
@@ -396,8 +397,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		if (hdfsAdapter.isPacketPresent(registrationId)) {
 
 			if(packetArchiver.archivePacket(dto.getRegistrationId(), jschConnectionDto)) {
-
-				if(fileManager.cleanUpFile(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
+				if(fileManager.cleanUp(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
 
 					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 					dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");

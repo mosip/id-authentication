@@ -17,13 +17,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
@@ -71,6 +71,9 @@ public class PacketArchiverTest {
 
 	/** The registration id. */
 	private String registrationId = "1001";
+	
+	@Mock
+	private SftpJschConnectionDto jschConnectionDto;
 
 	/**
 	 * Setup.
@@ -87,7 +90,7 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		ReflectionTestUtils.setField(packetArchiver,"dmzPort", "5161");
+		//ReflectionTestUtils.setField(packetArchiver,"dmzPort", "5161"); 
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setDescription("description");
@@ -106,6 +109,7 @@ public class PacketArchiverTest {
 		auditRequestDto.setModuleName(null);
 		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(null);
+		jschConnectionDto = new SftpJschConnectionDto();
 		try {
 			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.AUDIT, "", "",
 					auditRequestDto, AuditResponseDto.class);
@@ -145,7 +149,7 @@ public class PacketArchiverTest {
 				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
         Mockito.when(filemanager.copy(any(),any(),any(),any())).thenReturn(Boolean.TRUE);
-        assertTrue(packetArchiver.archivePacket(registrationId,any()));
+       assertTrue(packetArchiver.archivePacket(registrationId,jschConnectionDto));
         
 	}
 
@@ -169,7 +173,7 @@ public class PacketArchiverTest {
 				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
         Mockito.when(filemanager.copy(any(),any(),any(),any())).thenReturn(Boolean.FALSE);
-        assertFalse(packetArchiver.archivePacket(registrationId,any()));
+        assertFalse(packetArchiver.archivePacket(registrationId,jschConnectionDto));
 
 	}
 
