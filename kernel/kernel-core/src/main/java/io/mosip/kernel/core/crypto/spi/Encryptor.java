@@ -39,5 +39,15 @@ public interface Encryptor<K, P, S> {
 	 * @return Processed array
 	 */
 	byte[] symmetricEncrypt(S key, byte[] data);
+	
+	/**
+	 * Symmetric Encrypt with key
+	 * 
+	 * @param key  key for encryption
+	 * @param data data for encryption
+	 * @param randomIV init vector
+	 * @return Processed array
+	 */
+	byte[] symmetricEncrypt(S key, byte[] data,byte[] randomIV);
 
 }
