@@ -152,5 +152,9 @@ public final class UinGeneratorConstant {
 	public static final String NINE = "9";
 
 	public static final String ZERO_TO_NINE = "1234567890";
+	public static final String CONFIG_STORE_OPTIONS_TYPE = "spring-config-server";
+	public static final String CONFIG_SERVER_FETCH_TIME_OUT = "999999999";
+	public static final String URL = "url";
+	public static final String TIME_OUT = "timeout";
 
 }
