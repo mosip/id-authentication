@@ -15,8 +15,14 @@ import lombok.Data;
 @Data
 public class BaseHealthCheckModel {
 
+	/**
+	 * Final result of check (UP or DOWN)
+	 */
 	private String status;
 
+	/**
+	 * Details about check
+	 */
 	private Map<String, Object> details;
 
 }

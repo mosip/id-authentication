@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.uingenerator.constant.UINHealthConstants;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
+import io.netty.handler.codec.http.HttpResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -89,12 +90,18 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		return this;
 	}
 
+	/**
+	 * Database health check handler
+	 * 
+	 * @param future {@link Future} instance from handler
+	 */
 	public void databaseHealthChecker(Future<Status> future) {
 
 		try {
 			Class.forName(driver);
 		} catch (ClassNotFoundException exception) {
-			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage()).build();
+			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage())
+					.build();
 			future.complete(Status.KO(result));
 		}
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
@@ -112,11 +119,17 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				}
 			}
 		} catch (SQLException exception) {
-			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage()).build();
+			final JsonObject result = resultBuilder.create().add(UINHealthConstants.ERROR, exception.getMessage())
+					.build();
 			future.complete(Status.KO(result));
 		}
 	}
 
+	/**
+	 * Disk-Space health check Handler
+	 * 
+	 * @param future {@link Future} instance from handler
+	 */
 	public void dispSpaceHealthChecker(Future<Status> future) {
 
 		final long diskFreeInBytes = this.currentWorkingDirPath.getUsableSpace();
@@ -133,13 +146,19 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 	}
 
+	/**
+	 * Consumer Verticle health check handler
+	 * 
+	 * @param future {@link Future} instance from handler
+	 * @param vertx  {@link Vertx} instance
+	 */
 	public void verticleHealthHandler(Future<Status> future, Vertx vertx) {
 
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UINHealthConstants.PING, response -> {
 
 			if (response.succeeded()) {
-				final JsonObject result = resultBuilder.create().add(UINHealthConstants.RESPONSE, response.result().body())
-						.build();
+				final JsonObject result = resultBuilder.create()
+						.add(UINHealthConstants.RESPONSE, response.result().body()).build();
 				future.complete(Status.OK(result));
 			} else {
 				future.complete(Status.KO());
@@ -189,6 +208,12 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		}
 	}
 
+	/**
+	 * Create health check summary
+	 * 
+	 * @param rc {@link RoutingContext} instance
+	 * @return {@link Handler}
+	 */
 	private Handler<AsyncResult<JsonObject>> healthSummaryHandler(RoutingContext rc) {
 		return json -> {
 			HttpServerResponse response = rc.response().putHeader(HttpHeaders.CONTENT_TYPE,
@@ -206,6 +231,12 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		};
 	}
 
+	/**
+	 * Create a json response
+	 * 
+	 * @param json     summary json
+	 * @param response {@link HttpResponse}
+	 */
 	private void createResponse(JsonObject json, HttpServerResponse response) {
 		int status = isUp(json) ? 200 : 503;
 
@@ -228,6 +259,12 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		response.setStatusCode(status).end(encode(json));
 	}
 
+	/**
+	 * Copy actual response to Spring actuator like response
+	 * 
+	 * @param json  Summary json
+	 * @param checks Json array of all registered parameters with details
+	 */
 	private void createResponse(JsonObject json, JsonArray checks) {
 		for (int i = 0; i < checks.size(); i++) {
 			JsonObject jsonobject = checks.getJsonObject(i);
@@ -239,7 +276,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 				if (jsonobject.containsKey(UINHealthConstants.DATA)) {
 					healthCheckModel.setDetails(jsonobject.getJsonObject(UINHealthConstants.DATA).getMap());
 					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
-					
+
 				} else {
 					result = new JsonObject(objectMapper.writeValueAsString(healthCheckModel));
 					result.remove(UINHealthConstants.DETAILS);
@@ -259,6 +296,12 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		return this;
 	}
 
+	/**
+	 * Check if error has occurred or not
+	 * 
+	 * @param json Summary json
+	 * @return True if has Error;else False
+	 */
 	private boolean hasErrors(JsonObject json) {
 		JsonObject data = json.getJsonObject(UINHealthConstants.DATA);
 		if (data != null && data.getBoolean("procedure-execution-failure", false)) {
@@ -278,6 +321,12 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		return false;
 	}
 
+	/**
+	 * Encode the json object
+	 * 
+	 * @param json Result json
+	 * @return Encoded Json String
+	 */
 	private String encode(JsonObject json) {
 		final String outcome = json.getString(UINHealthConstants.OUTCOME);
 		json.remove(UINHealthConstants.OUTCOME);
@@ -285,10 +334,11 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		return json.encode();
 	}
 
+
 	class JSONResultBuilder {
 
 		private JsonObject jsonObject;
-		
+
 		public JSONResultBuilder create() {
 			jsonObject = new JsonObject();
 			return this;
