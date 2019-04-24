@@ -57,5 +57,13 @@ public class MultiFingerPrintMatchingStratergyTest {
 		int value3 = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value3);
 	}
+	
+	@Test
+	public void TestInvalidMatchingStrategy() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = MultiFingerprintMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		int value = matchFunction.match("test", "test", matchProperties);
+		assertEquals(0, value);
+	}
 
 }

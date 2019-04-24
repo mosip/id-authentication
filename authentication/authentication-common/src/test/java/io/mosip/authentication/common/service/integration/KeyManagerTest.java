@@ -1,8 +1,9 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -29,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
@@ -38,6 +38,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 // 
@@ -51,25 +52,15 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 @WebMvcTest
 public class KeyManagerTest {
 
-	/** The env. */
-	@Autowired
-	private Environment env;
-
-	/** The decryptor. */
-	@Autowired
-	private DecryptorImpl decryptor;
-
-	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-
-	/** The rest helper. */
-	@Mock
-	private RestHelper restHelper;
 
 	/** The rest request factory. */
 	@Mock
 	private RestRequestFactory restRequestFactory;
+
+	@Mock
+	private RestHelper restHelper;
 
 	/** The key manager. */
 	@InjectMocks
@@ -83,7 +74,6 @@ public class KeyManagerTest {
 	 */
 	@Before
 	public void before() {
-		// ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(keyManager, "environment", environment);
 	}
 
@@ -100,14 +90,19 @@ public class KeyManagerTest {
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(
-				Base64.encodeBase64URLSafeString(("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}").getBytes()));
+		ResponseWrapper<Map<String, Object>> symmetricKeyResponse = new ResponseWrapper<>();
+		Map<String, Object> symKeyMap = new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj2tDM");
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("response", symKeyMap);
+		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(Base64.encodeBase64URLSafeString(
+				("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}")
+						.getBytes()));
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(cryptoResponse);
-		assertEquals(new String(Base64.decodeBase64(cryptoResponse.getData())),
-				mapper.writeValueAsString(keyManager.requestData(reqMap, mapper)));
-
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
+		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper);
+		assertTrue(decryptedReqMap.containsKey("secretKey"));
 	}
 
 	/**
@@ -117,17 +112,19 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestDataMapperTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(
-				Base64.encodeBase64URLSafeString(("dfdfdfgdfgf").getBytes()));
+		Map<String, Object> symKeyMap = new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("response", symKeyMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(cryptoResponse);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
 		keyManager.requestData(reqMap, mapper);
 
 	}
@@ -138,17 +135,15 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestInvalidDataTest1() throws IDDataValidationException, IdAuthenticationAppException {
 		Map<String, Object> reqMap = createRequest();
-		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED,"publickey expired"));
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(
+				new IDDataValidationException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, "publickey expired"));
 		keyManager.requestData(reqMap, mapper);
-	} 
+	}
 
-	
-	
 	/**
 	 * Request invalid data test 2.
 	 *
@@ -157,7 +152,7 @@ public class KeyManagerTest {
 	 *                                      occurred.
 	 * @throws IDDataValidationException    the ID data validation exception
 	 */
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestInvalidDataTest2() throws IdAuthenticationAppException, IOException, IDDataValidationException {
 		Map<String, Object> reqMap = createRequest();
@@ -168,70 +163,71 @@ public class KeyManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
 		keyManager.requestData(reqMap, mapper);
 	}
-	
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
-	public void invalidKernelKeyManagerErrorRequest() throws IdAuthenticationAppException, IOException, IDDataValidationException {
+	public void invalidKernelKeyManagerErrorRequest()
+			throws IdAuthenticationAppException, IOException, IDDataValidationException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		String kernelErrorMapStr="{\r\n" + 
-				"	\"errors\": [{\r\n" + 
-				"			\"errCode\": \"KER-KMS-003\"\r\n" + 
-				"		}\r\n" + 
-				"\r\n" + 
-				"	]\r\n" + 
-				"\r\n" + 
-				"}";
-		RestServiceException restException=new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,kernelErrorMapStr,new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
-		Mockito.when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(restException);
+		String kernelErrorMapStr = "{\r\n" + "	\"errors\": [{\r\n" + "			\"errCode\": \"KER-KMS-003\"\r\n"
+				+ "		}\r\n" + "\r\n" + "	]\r\n" + "\r\n" + "}";
+		RestServiceException restException = new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+				kernelErrorMapStr, new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restException);
 		keyManager.requestData(reqMap, mapper);
 	}
-	
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
-	public void invalidKernelErrorRequest() throws IdAuthenticationAppException, IOException, IDDataValidationException {
+	public void invalidKernelErrorRequest()
+			throws IdAuthenticationAppException, IOException, IDDataValidationException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		String kernelErrorMapStr="{\r\n" + 
-				"	\"errors\": [{\r\n" + 
-				"			\"errCode\": \"KER-KMS-004\"\r\n" + 
-				"		}\r\n" + 
-				"\r\n" + 
-				"	]\r\n" + 
-				"\r\n" + 
-				"}";
-		RestServiceException restException=new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,kernelErrorMapStr,new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
-		Mockito.when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(restException);
+		String kernelErrorMapStr = "{\r\n" + "	\"errors\": [{\r\n" + "			\"errCode\": \"KER-KMS-004\"\r\n"
+				+ "		}\r\n" + "\r\n" + "	]\r\n" + "\r\n" + "}";
+		RestServiceException restException = new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+				kernelErrorMapStr, new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restException);
 		keyManager.requestData(reqMap, mapper);
 	}
-	
-	/*@Test(expected = IdAuthenticationAppException.class)
-	public void TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
-		Map<String, Object> requestBody =
-		 new HashMap<>();
-		keyManager.requestData(requestBody, mapper);
-	}
-	
-	@Ignore
+
 	@Test(expected = IdAuthenticationAppException.class)
-	public void TestTspIdisNull() throws IdAuthenticationAppException {
-		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("tspID", null);
-		keyManager.requestData(requestBody, mapper);
-	}*/
-	
-	/*@Test(expected = IdAuthenticationAppException.class)
-	public void TestTspIdisEmpty() throws IdAuthenticationAppException {
-		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("tspID", "");
-		keyManager.requestData(requestBody, mapper);
-	}*/
+	public void requestInvalidDataIOException() throws IDDataValidationException, IdAuthenticationAppException {
+		Map<String, Object> reqMap = createRequest();
+		RestRequestDTO restRequestDTO = getRestRequestDTO();
+		Map<String, Object> symKeyMap = new HashMap<>();
+		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("response", symKeyMap);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
+		Mockito.when(keyManager.requestData(reqMap, mapper)).thenThrow(IOException.class);
+	}
+
+	/*
+	 * @Test(expected = IdAuthenticationAppException.class) public void
+	 * TestTspIdisNullorEmpty() throws IdAuthenticationAppException { Map<String,
+	 * Object> requestBody = new HashMap<>(); keyManager.requestData(requestBody,
+	 * mapper); }
+	 * 
+	 * @Ignore
+	 * 
+	 * @Test(expected = IdAuthenticationAppException.class) public void
+	 * TestTspIdisNull() throws IdAuthenticationAppException { Map<String, Object>
+	 * requestBody = new HashMap<>(); requestBody.put("tspID", null);
+	 * keyManager.requestData(requestBody, mapper); }
+	 */
+
+	/*
+	 * @Test(expected = IdAuthenticationAppException.class) public void
+	 * TestTspIdisEmpty() throws IdAuthenticationAppException { Map<String, Object>
+	 * requestBody = new HashMap<>(); requestBody.put("tspID", "");
+	 * keyManager.requestData(requestBody, mapper); }
+	 */
 
 	// ====================================================================
 	// ********************** Helper Method *******************************
@@ -243,25 +239,16 @@ public class KeyManagerTest {
 	 * @return the map
 	 */
 	private Map<String, Object> createRequest() {
-		String data = "{\r\n" + 
-				"	\"id\": \"mosip.identity.auth\",\r\n" + 
-				"	\"individualId\": \"2410478395\",\r\n" + 
-				"	\"individualIdType\": \"D\",\r\n" + 
-				"	\"request\": \"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\r\n" + 
-				"	\"requestTime\": \"2019-03-13T10:01:57.086+05:30\",\r\n" + 
-				"	\"requestedAuth\": {\r\n" + 
-				"		\"bio\": false,\r\n" + 
-				"		\"demo\": true,\r\n" + 
-				"		\"otp\": false,\r\n" + 
-				"		\"pin\": false\r\n" + 
-				"	},\r\n" + 
-				"	\"requestSessionKey\": \"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\r\n" + 
-				"	\"transactionID\": \"1234567890\",\r\n" + 
-				"	\"version\": \"1.0\",\r\n" + 
-				"	\"partnerId\": \"1873299273\",\r\n" + 
-				"	\"licenseKey\": \"1873299273\"\r\n" + 
-				"}" + 
-				"}";
+		String data = "{\r\n" + "  \"consentObtained\": true,\r\n" + "  \"id\": \"mosip.identity.auth\",\r\n"
+				+ "  \"individualId\": \"6892738569\",\r\n" + "  \"individualIdType\": \"UIN\",\r\n"
+				+ "  \"keyIndex\": \"string\",\r\n"
+				+ "  \"request\": \"iMw7w2duULAj3tgfJvPpKEmZ_KBdD1RruHE-jQlfssfHTl_pv8_6Ik_TlZbmcH2VyGWtC9sCxIYBoblXLZRkZIF4fErFg5VZgomvYCJ-RzQa78izAGkrehxuMfnXQcY3zaDObkSZPzlA7Law6sokohL6frRAnVcDdZ2kXxfjYgYyRR40CIqKtpuUXnEjBQbmiw8AguaBjTgK6r2pTTH9irfkONSvHjMDGbn6aTQFmGbuCJoOvCBR-qf2jaq9BpaAEXpNNTorr4XoS6Aen3hbdqYQHeyGm8yggmKTeiOZHVatEAaT8LVouYqlMVNV65eZKdmDQmZvY2f18aJu5RcU_XUlz0uvITtPkBIBpIbpVx7KGVIoe3iBKf6n9mmm3xjpGHMIipMZJZSdINMQx8t-pBXiAOr2fvrcR6rbvjLq24pzwBq6jkM3Zg1_QKbX9YwouraWKOhW79AZ8ZmVmDtYQr0DhQNypx-kNQrm2K8_BIjzP-Fvm3YhGudZ7yre1I05TwjNLCr-iLcEnOEl_KWAVNpfNLrotkWgwmaUbz2mZjkMbdGy5JtW5a0-yAg6_zZFiFWhCgOUEvaZ_226PZy1dZpElOrP3W-Mvc0ATJCc76e2F86JoNwpOA8SLpyYsd3j\",\r\n"
+				+ "  \"requestHMAC\": \"TMXTCgmeuswzn2Ls2mWSz6ZXjiV8EWGmqfZoGHqKJEG0E__oDpBsoGjyEBzEK-GuXw70q8bWrPB7MoUuq2t3D7vV3r9X52B5mMezNH_xzsjrc6ruQrdWg-okg0nBasEs\",\r\n"
+				+ "  \"requestSessionKey\": \"rBM6Ekp7xWwyzGgk1E4rgHRFUKUZCU3bAZG_wzRb35HI7tb-280bbTJYTBgik6U_LJIzXhTRmMRt2_sgPB4EmePsS4yC93HpyGF6uJ1yPoA6E--CKqHHaGx1z774moIH_sbB5TJw6fYQSiBGBABKFbrxSdj4FqLhejtIcyIxv5gRLN43Ye-WvIZNioHVOoBxCbRxgPCVESF8AHZK67S-SSy2jk8p-e-47g869C0yp6gYReo4dGIFs-1yD2bNSQC9b1mo-cC528W0iIt5j23PlJdELEj9a2oPI2PqIfU6zFtKEXqqYo_WmvpfA1Wu9r3yuY5MGp_C0F1nD0u_JIRjPw\",\r\n"
+				+ "  \"requestTime\": \"2019-04-12T06:00:22.098Z\",\r\n" + "  \"requestedAuth\": {\r\n"
+				+ "    \"bio\": true,\r\n" + "    \"demo\": false,\r\n" + "    \"otp\": false,\r\n"
+				+ "    \"pin\": false\r\n" + "  },\r\n" + "  \"transactionID\": \"1234567890\",\r\n"
+				+ "  \"version\": \"0.9\"\r\n" + "}" + "}";
 		Map<String, Object> readValue = null;
 		try {
 			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
