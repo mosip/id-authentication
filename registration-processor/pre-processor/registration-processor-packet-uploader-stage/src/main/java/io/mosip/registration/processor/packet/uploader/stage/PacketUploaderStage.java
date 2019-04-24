@@ -29,9 +29,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
-	/**
-	 * server port number
-	 */
+	/** server port number. */
 	@Value("${server.port}")
 	private String port;
 
@@ -39,9 +37,11 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
+	/** The context path. */
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
+	/** The packet uploader service. */
 	@Autowired
 	PacketUploaderService<MessageDTO> packetUploaderService;
 	
@@ -52,6 +52,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
 	@Override
 	public void start() {
 		Router router = this.postUrl(vertx);
@@ -60,8 +63,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains all the routes in this stage
-	 * @param router
+	 * contains all the routes in this stage.
+	 *
+	 * @param router the router
 	 */
 	private void routes(Router router) {
 		router.post(contextPath+ "/securezone").handler(ctx -> {
@@ -80,8 +84,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 
 	/**
-	 * method to process the context received
-	 * @param ctx
+	 * method to process the context received.
+	 *
+	 * @param ctx the ctx
 	 */
 	public void processURL(RoutingContext ctx) {
 		JsonObject obj = ctx.getBodyAsJson();
@@ -95,10 +100,17 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		sendMessage( messageDTO);
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
 		regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage", null, null);
+		}else {
+			this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has not been uploaded to file System");
+			regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has not been uploaded to file System", null, null);
+				
 		}
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 	return null;
@@ -106,9 +118,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 
 	/**
-	 * sends messageDTO to camel bridge
-	 * 
-	 * @param messageDTO
+	 * sends messageDTO to camel bridge.
+	 *
+	 * @param messageDTO the message DTO
 	 */
 	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.PACKET_UPLOADER_OUT, messageDTO);

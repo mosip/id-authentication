@@ -18,7 +18,6 @@
 		<module>registration-processor-packet-validator-stage</module>
 		<module>registration-processor-osi-validator-stage</module>
 		<module>registration-processor-packet-uploader-stage</module>
-		<module>registration-processor-connector-stage</module>
 		<module>registration-processor-external-stage</module>
 		<module>registration-processor-external-integration-service</module>
 	</modules>

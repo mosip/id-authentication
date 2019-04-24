@@ -17,4 +17,6 @@ public class StatusMessage {
 	
 	public static final String PACKET_DECRYPTION_FAILED = "The packet decryption failed";
 
+	public static final String PACKET_SYNC_HASH_VALIDATION_FAILED = "The packet sync hash code vaildation failed";
+
 }

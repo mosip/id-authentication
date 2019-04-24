@@ -46,26 +46,8 @@ public class PacketArchiver {
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	//@Value("${registration.processor.server.ppk.filelocation}")
-	private String ppkFileLocation;
-
-	//@Value("${registration.processor.server.ppk.filename}")
-	private String ppkFileName;
-
-	@Value("${registration.processor.dmz.server.host}")
-	private String host;
-
-	@Value("${registration.processor.dmz.server.port}")
-	private String dmzPort;
-
-	@Value("${registration.processor.dmz.server.user}")
-	private String dmzServerUser;
-
-	@Value("${registration.processor.dmz.server.protocal}")
-	private String dmzServerProtocal;
-
-	public boolean archivePacket(String registrationId) throws IOException {
+	
+	public boolean archivePacket(String registrationId,SftpJschConnectionDto jschConnectionDto) throws IOException {
 
 		boolean isTransactionSuccessful = false;
 		String description = "";
@@ -73,17 +55,9 @@ public class PacketArchiver {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketArchiver::archivePacket()::entry");
 		try {
-
-			String fromFilePath = env.getProperty(DirectoryPathDto.LANDING_ZONE.toString())+"/"+registrationId+ ".zip";
-			String toFilePath = env.getProperty(DirectoryPathDto.ARCHIVE_LOCATION.toString())+"/"+ registrationId+ ".zip";
-			SftpJschConnectionDto jschConnectionDto=new SftpJschConnectionDto();
-			jschConnectionDto.setHost(host);
-			jschConnectionDto.setPort(Integer.parseInt(dmzPort));
-			jschConnectionDto.setPpkFileLocation(ppkFileLocation+File.separator+ppkFileName);
-			jschConnectionDto.setUser(dmzServerUser);
-			jschConnectionDto.setProtocal(dmzServerProtocal);
-
-			if (filemanager.moveFile(fromFilePath, toFilePath, jschConnectionDto)) {
+	
+			if (filemanager.copy(registrationId, DirectoryPathDto.LANDING_ZONE,DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
+				
 				description = "Packet successfully archived for registrationId " + registrationId;
 				isTransactionSuccessful = true;
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -91,7 +65,7 @@ public class PacketArchiver {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, description);
 			} else {
-				description = "Packet not moved from LANDING ZONE ENCRYPTED FOLDER DURING ARCHIVAL " + registrationId + "::"
+				description = "Packet not copied from LANDING ZONE FOLDER DURING ARCHIVAL " + registrationId + "::"
 						+ PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);

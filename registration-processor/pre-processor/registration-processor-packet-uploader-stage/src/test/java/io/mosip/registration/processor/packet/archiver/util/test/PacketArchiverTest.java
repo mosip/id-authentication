@@ -144,8 +144,8 @@ public class PacketArchiverTest {
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
-        Mockito.when(filemanager.moveFile(any(),any(),any())).thenReturn(Boolean.TRUE);
-        assertTrue(packetArchiver.archivePacket(registrationId));
+        Mockito.when(filemanager.copy(any(),any(),any(),any())).thenReturn(Boolean.TRUE);
+        assertTrue(packetArchiver.archivePacket(registrationId,any()));
         
 	}
 
@@ -168,8 +168,8 @@ public class PacketArchiverTest {
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(responseWrapper);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
-        Mockito.when(filemanager.moveFile(any(),any(),any())).thenReturn(Boolean.FALSE);
-        assertFalse(packetArchiver.archivePacket(registrationId));
+        Mockito.when(filemanager.copy(any(),any(),any(),any())).thenReturn(Boolean.FALSE);
+        assertFalse(packetArchiver.archivePacket(registrationId,any()));
 
 	}
 

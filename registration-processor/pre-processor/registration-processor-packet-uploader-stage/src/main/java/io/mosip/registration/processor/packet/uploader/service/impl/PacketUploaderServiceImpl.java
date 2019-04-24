@@ -35,7 +35,6 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
-import io.mosip.registration.processor.packet.uploader.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -211,7 +210,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
 
-								messageDTO = uploadpacket(dto,decryptedData, messageDTO);
+								messageDTO = uploadpacket(dto,decryptedData, messageDTO,jschConnectionDto);
 								if (messageDTO.getIsValid()) {
 									dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 									isTransactionSuccessful = true;
@@ -328,14 +327,14 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
 				description = "Packet virus scan failed  in packet receiver for registrationId ::" + registrationId	+ PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage();
-				dto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
 				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
 				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(), registrationId,PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage());}
 		} catch (VirusScannerException e) {
 
 			description = "Virus scanner service failed ::" + registrationId;
-			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
+			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
@@ -362,6 +361,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		byte[] packetHashSequenceFromEntity = hashSequence;//Todo: PacketHashSequesnce
 		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"	+ registrationId;
+			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+			dto.setStatusComment(StatusMessage.PACKET_SYNC_HASH_VALIDATION_FAILED);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 
@@ -384,7 +385,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @return the message DTO
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private MessageDTO uploadpacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object)
+	private MessageDTO uploadpacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,SftpJschConnectionDto jschConnectionDto)
 			throws IOException {
 
 		object.setIsValid(false);
@@ -394,19 +395,23 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 		if (hdfsAdapter.isPacketPresent(registrationId)) {
 
-			if(packetArchiver.archivePacket(dto.getRegistrationId())) {
+			if(packetArchiver.archivePacket(dto.getRegistrationId(), jschConnectionDto)) {
 
-				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-				dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
-				dto.setUpdatedBy(USER);
-				object.setInternalError(false);
-				object.setIsValid(true);
-				object.setRid(registrationId);
+				if(fileManager.cleanUpFile(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
 
-				isTransactionSuccessful = true;
-				description = " packet sent to DFS for registrationId " + registrationId;
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+					dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
+					dto.setUpdatedBy(USER);
+					object.setInternalError(false);
+					object.setIsValid(true);
+					object.setRid(registrationId);
+
+					isTransactionSuccessful = true;
+					description = " packet sent to DFS for registrationId " + registrationId;
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+							registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+				}
+
 			}
 
 		}
