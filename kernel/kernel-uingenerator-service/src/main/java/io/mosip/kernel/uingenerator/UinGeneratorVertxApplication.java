@@ -93,13 +93,13 @@ public class UinGeneratorVertxApplication {
 					startApplication();
 				}
 			});
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
+		} catch (Exception exception) {
+			LOGGER.error(exception.getMessage());
 		}
 	}
 
 	/**
-	 * This method sets the Application Context, delpoys the verticles.
+	 * This method sets the Application Context, deploys the verticles.
 	 */
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
@@ -108,7 +108,7 @@ public class UinGeneratorVertxApplication {
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
-				LOGGER.info("Succesfully deployed :  {}", verticle.getClass().getSimpleName());
+				LOGGER.info("Successfully deployed :  {}", verticle.getClass().getSimpleName());
 			} else {
 				LOGGER.info("Failed to deploy {} \\nCause: {}", verticle.getClass().getSimpleName(),
 						stringAsyncResult.cause());
