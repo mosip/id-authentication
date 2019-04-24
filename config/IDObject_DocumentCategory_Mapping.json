@@ -60,10 +60,10 @@
 		"localAdministrativeAuthority": {
 			"documentCategory" : "proofOfAddress"
 		},
-		"IDSchemaVersion": {
+		"idschemaVersion": {
 			"documentCategory" : ""
 		},
-		"CNIENumber": {
+		"cnienumber": {
 			"documentCategory" : ""
 		},
 		"city": {
