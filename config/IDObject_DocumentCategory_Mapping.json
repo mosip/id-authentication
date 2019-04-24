@@ -60,7 +60,7 @@
 		"localAdministrativeAuthority": {
 			"documentCategory" : "proofOfAddress"
 		},
-		"idschemaVersion": {
+		"idschemaversion": {
 			"documentCategory" : ""
 		},
 		"cnienumber": {
