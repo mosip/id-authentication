@@ -1113,6 +1113,7 @@ public class DemographicDetailController extends BaseController {
 									parentName.clear();
 									parentRegId.clear();
 									isChild = true;
+									parentNameKeyboardImage.setDisable(!isChild);
 									validation.setChild(isChild);
 									documentScanController.setChild(isChild);
 								}
@@ -1698,6 +1699,8 @@ public class DemographicDetailController extends BaseController {
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 			parentDetailPane
 					.setVisible(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
+			parentDetailPane
+			.setManaged(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 			parentNameKeyboardImage
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 
