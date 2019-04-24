@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.6</version>
 	</parent>
 	<artifactId>kernel-syncdata-service</artifactId>
 	<name>kernel-syncdata-service</name>
@@ -96,6 +96,12 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-responsesignature-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

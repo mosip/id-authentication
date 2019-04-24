@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.6</version>
 	</parent>
 
 
@@ -44,6 +44,7 @@
 
 		<vertx.version>3.6.2</vertx.version>
 		<swagger.version>2.9.2</swagger.version>
+		<swagger-annotations.version>2.0.7</swagger-annotations.version>
 
 		<!-- javax -->
 		<javax.interceptor.version>1.2</javax.interceptor.version>
@@ -78,6 +79,7 @@
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		<json.version>20180813</json.version>
 
 		<!-- utilities -->
 		<commons-math3>3.6.1</commons-math3>
@@ -112,7 +114,8 @@
 		<s3mock.version>0.2.4</s3mock.version>
 		<ignite.version>2.3.0</ignite.version>
 		<findbugs.version>3.0.1</findbugs.version>
-
+        
+        <vertx.health.check.version>3.7.0</vertx.health.check.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -156,6 +159,7 @@
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
+		<module>kernel-responsesignature-api</module>
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
@@ -178,6 +182,15 @@
 
 
 
+	<!-- <module>kernel-idvalidator</module> -->
+	<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
+	<!-- <module>kernel-packetserver-http</module> -->
+	<!-- <module>kernel-packetserver-sftp</module> -->
+	<!-- <module>kernel-idgenerator-uin</module> -->
+	<!-- <module>kernel-templatemanager-freemarker</module> -->
+	<!-- <module>kernel-batch-framework</module> -->
+	<!-- <module>kernel-batch-server</module> -->
+	<!--<module>kernel-crypto-bouncycastle</module> -->
 
 	<dependencies>
 		<dependency>

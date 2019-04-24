@@ -214,8 +214,12 @@ public enum PlatformErrorMessages {
 			"Attribute Value Invalid in Master Data Validation for"),
 
 	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
-			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(
-					PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+			"Not able to access the API resource"),
+	
+	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+	
+	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"A Mandatory Field is missing from ID JSON for NEW registration "),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.

@@ -56,4 +56,6 @@ public class AuthConstant {
 	public static final String SUCCESS_STATUS = "success";
 	
 	public static final String COOKIE="Cookie";
+
+	public static final String FAILURE_STATUS = "failure";
 }
