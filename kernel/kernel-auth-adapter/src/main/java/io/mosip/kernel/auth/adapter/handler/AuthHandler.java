@@ -25,9 +25,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -102,8 +104,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getResponseEntity(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		System.out.println("Token details "+System.currentTimeMillis()+" : "+token);
-		System.out.println("Validate Url "+validateUrl);
+		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
+		System.out.println("Validate Url " + validateUrl);
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
@@ -187,7 +189,9 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			throw new ParseResponseException(AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
 					AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), exception);
 		}
-
+		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,authUserDetails.getPassword(), null);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String[] authorities = mosipUserDto.getRole().split(",");
 		for (String role : roles) {
 			for (String authority : authorities) {
@@ -272,19 +276,21 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
-	public void addAuthFilter(Router router, String path, io.vertx.core.http.HttpMethod httpMethod, String commaSepratedRoles) {
-		Objects.requireNonNull(httpMethod,AuthAdapterConstant.HTTP_METHOD_NOT_NULL);
-		if(EmptyCheckUtils.isNullEmpty(commaSepratedRoles)) {
+	public void addAuthFilter(Router router, String path, io.vertx.core.http.HttpMethod httpMethod,
+			String commaSepratedRoles) {
+		Objects.requireNonNull(httpMethod, AuthAdapterConstant.HTTP_METHOD_NOT_NULL);
+		if (EmptyCheckUtils.isNullEmpty(commaSepratedRoles)) {
 			throw new NullPointerException(AuthAdapterConstant.ROLES_NOT_EMPTY_NULL);
 		}
-		String[] roles=commaSepratedRoles.split(",");
+		String[] roles = commaSepratedRoles.split(",");
 		Route filterRoute = router.route(httpMethod, path);
-		
+
 		filterRoute.handler(routingContext -> {
 			String token = validateToken(routingContext, roles);
 			if (token.isEmpty()) {
 				return;
 			}
+
 			HttpServerResponse httpServerResponse = routingContext.response();
 			httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
 			routingContext.next();

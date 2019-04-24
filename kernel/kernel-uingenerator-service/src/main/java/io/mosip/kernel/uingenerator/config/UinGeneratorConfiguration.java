@@ -13,7 +13,6 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
@@ -27,7 +26,6 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 
@@ -41,7 +39,8 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @PropertySource(value = { "classpath:bootstrap.properties" })
-@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*" })
+@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*",
+		"io.mosip.kernel.responsesignature.*" })
 public class UinGeneratorConfiguration implements EnvironmentAware {
 
 	/**
@@ -166,9 +165,4 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 		return new JpaTransactionManager(entityManagerFactory.getObject());
 	}
 
-	@Bean
-	@Primary
-	public RestTemplate uinRestTemplate() {
-		return new RestTemplate();
-	}
 }

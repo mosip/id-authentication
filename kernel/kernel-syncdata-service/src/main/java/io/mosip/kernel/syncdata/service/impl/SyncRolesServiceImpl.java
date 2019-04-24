@@ -79,7 +79,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange("https://qa.mosip.io/v1/authmanager/roles" + "/registrationclient", HttpMethod.GET, httpRequest,
+			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),

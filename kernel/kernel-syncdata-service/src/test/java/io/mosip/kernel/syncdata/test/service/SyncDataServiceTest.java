@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.test.service;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
@@ -17,7 +16,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,29 +29,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
-import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
-import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
-import io.mosip.kernel.syncdata.test.TestBootApplication;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import net.minidev.json.JSONObject;
 
-@SpringBootTest(classes = TestBootApplication.class)
+@SpringBootTest
 @RunWith(SpringRunner.class)
 public class SyncDataServiceTest {
 
@@ -65,9 +57,6 @@ public class SyncDataServiceTest {
 
 	@MockBean
 	private RegistrationCenterUserService registrationCenterUserService;
-
-	@MockBean
-	private ObjectMapper objectMapper;
 
 	@MockBean
 	MachineRepository machineRespository;
@@ -258,71 +247,79 @@ public class SyncDataServiceTest {
 	}
 
 	// ------------------------------------------UserDetails--------------------------//
-	/*// @Test
-	public void getAllUserDetail() {
-		String response = "{ \"mosipUserDtoList\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\"  } ] }";
-		String regId = "10044";
-		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
-		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
-		registrationCenterUserDto.setIsActive(true);
-		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
-		registrationCenterUserDtos.add(registrationCenterUserDto);
-		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+	/*
+	 * // @Test public void getAllUserDetail() { String response =
+	 * "{ \"mosipUserDtoList\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\"  } ] }"
+	 * ; String regId = "10044"; RegistrationCenterUserResponseDto
+	 * registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+	 * List<RegistrationCenterUserDto> registrationCenterUserDtos = new
+	 * ArrayList<>(); RegistrationCenterUserDto registrationCenterUserDto = new
+	 * RegistrationCenterUserDto(); registrationCenterUserDto.setIsActive(true);
+	 * registrationCenterUserDto.setRegCenterId(regId);
+	 * registrationCenterUserDto.setUserId("M10411022");
+	 * registrationCenterUserDtos.add(registrationCenterUserDto);
+	 * registrationCenterUserResponseDto.setRegistrationCenterUsers(
+	 * registrationCenterUserDtos);
+	 * 
+	 * when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)
+	 * ) .thenReturn(registrationCenterUserResponseDto);
+	 * 
+	 * MockRestServiceServer mockRestServiceServer =
+	 * MockRestServiceServer.bindTo(restTemplate).build();
+	 * mockRestServiceServer.expect(requestTo(userDetailsUri.toString() +
+	 * "/registrationclient"))
+	 * .andRespond(withSuccess().body(response).contentType(MediaType.
+	 * APPLICATION_JSON)); syncUserDetailsService.getAllUserDetail(regId); }
+	 */
 
-		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId))
-				.thenReturn(registrationCenterUserResponseDto);
-
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
-				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		syncUserDetailsService.getAllUserDetail(regId);
-	}*/
-
-/*	// @Test(expected = SyncDataServiceException.class)
-	public void getAllUserDetailExcp() {
-		String response = "{ \"userDetails\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"roles\": [ \"REGISTRATION_ADMIN\", \"INDIVIDUAL\" ] } ] }";
-		String regId = "10044";
-		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
-		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
-		registrationCenterUserDto.setIsActive(true);
-		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
-		registrationCenterUserDtos.add(registrationCenterUserDto);
-		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
-
-		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId))
-				.thenReturn(registrationCenterUserResponseDto);
-
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
-				.andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
-		syncUserDetailsService.getAllUserDetail(regId);
-	}
-*/
-	/*// @Test
-	public void getAllUserDetailNoDetail() {
-		// String response = "{ \"userDetails\": [] }";
-		String regId = "10044";
-		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
-		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
-		registrationCenterUserDto.setIsActive(true);
-		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
-		registrationCenterUserDtos.add(registrationCenterUserDto);
-		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
-
-		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId))
-				.thenReturn(registrationCenterUserResponseDto);
-
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
-				.andRespond(withSuccess());
-		assertNull(syncUserDetailsService.getAllUserDetail(regId));
-	}*/
+	/*
+	 * // @Test(expected = SyncDataServiceException.class) public void
+	 * getAllUserDetailExcp() { String response =
+	 * "{ \"userDetails\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"roles\": [ \"REGISTRATION_ADMIN\", \"INDIVIDUAL\" ] } ] }"
+	 * ; String regId = "10044"; RegistrationCenterUserResponseDto
+	 * registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+	 * List<RegistrationCenterUserDto> registrationCenterUserDtos = new
+	 * ArrayList<>(); RegistrationCenterUserDto registrationCenterUserDto = new
+	 * RegistrationCenterUserDto(); registrationCenterUserDto.setIsActive(true);
+	 * registrationCenterUserDto.setRegCenterId(regId);
+	 * registrationCenterUserDto.setUserId("M10411022");
+	 * registrationCenterUserDtos.add(registrationCenterUserDto);
+	 * registrationCenterUserResponseDto.setRegistrationCenterUsers(
+	 * registrationCenterUserDtos);
+	 * 
+	 * when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)
+	 * ) .thenReturn(registrationCenterUserResponseDto);
+	 * 
+	 * MockRestServiceServer mockRestServiceServer =
+	 * MockRestServiceServer.bindTo(restTemplate).build();
+	 * mockRestServiceServer.expect(requestTo(userDetailsUri.toString() +
+	 * "/registrationclient"))
+	 * .andRespond(withServerError().body(response).contentType(MediaType.
+	 * APPLICATION_JSON)); syncUserDetailsService.getAllUserDetail(regId); }
+	 */
+	/*
+	 * // @Test public void getAllUserDetailNoDetail() { // String response =
+	 * "{ \"userDetails\": [] }"; String regId = "10044";
+	 * RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new
+	 * RegistrationCenterUserResponseDto(); List<RegistrationCenterUserDto>
+	 * registrationCenterUserDtos = new ArrayList<>(); RegistrationCenterUserDto
+	 * registrationCenterUserDto = new RegistrationCenterUserDto();
+	 * registrationCenterUserDto.setIsActive(true);
+	 * registrationCenterUserDto.setRegCenterId(regId);
+	 * registrationCenterUserDto.setUserId("M10411022");
+	 * registrationCenterUserDtos.add(registrationCenterUserDto);
+	 * registrationCenterUserResponseDto.setRegistrationCenterUsers(
+	 * registrationCenterUserDtos);
+	 * 
+	 * when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)
+	 * ) .thenReturn(registrationCenterUserResponseDto);
+	 * 
+	 * MockRestServiceServer mockRestServiceServer =
+	 * MockRestServiceServer.bindTo(restTemplate).build();
+	 * mockRestServiceServer.expect(requestTo(userDetailsUri.toString() +
+	 * "/registrationclient")) .andRespond(withSuccess());
+	 * assertNull(syncUserDetailsService.getAllUserDetail(regId)); }
+	 */
 
 	// ------------------------------------------AllRolesSync--------------------------//
 
@@ -360,13 +357,8 @@ public class SyncDataServiceTest {
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
 				.andRespond(withSuccess().body(
-						"{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
-		PublicKeyResponse<String> publicKeyResp = new PublicKeyResponse<>();
-		publicKeyResp.setExpiryAt(LocalDateTime.parse("2020-09-08T09:00:00"));
-		publicKeyResp.setIssuedAt(LocalDateTime.parse("2019-09-09T09:00:00"));
-		publicKeyResp.setPublicKey("sdfsfsdfsadfdsfsdfasf");
+						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, \"response\": { \"lastSyncTime\": \"2019-04-24T09:07:41.771Z\", \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtzi3nWiNMEcaBV2cWO5ZLTBZe1TEGnT95bTvrpEEr-kJLrn80dn9k156zjQpjSzNfEOFVwugTEhEWdxrdrjDUACpA0cF4tUdAM5XJBB0xmzNGS5s7lmcliAOjXbCGU2VJwOUnYV4DSCgrReMCCe6LD_aApwu45OAZ9_sWG6R-jlIUOHLTdDUs6O8zLk8zl7tOX6Rlp25Zk9CLQw1m9drHJqxCbr9Wc9PQKUHBPqhtvCe9ZZeySsZb83dXpKKAZlkjdbrB25i_4O0pbv9LHk0qQlk0twqaef6D5nCTqcB5KQ4QqVYLcrtAhdbMXaDvpSf9syRQ3P3fAeiGkvUIhUWPwIDAQAB\", \"issuedAt\": \"2019-04-23T06:17:46.753\", \"expiryAt\": \"2020-04-23T06:17:46.753\" }, \"errors\": null }"));
 
-		Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(publicKeyResp);
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
 
@@ -389,8 +381,8 @@ public class SyncDataServiceTest {
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
 
-	// @Test()
-	public void getPublicIoException() throws IOException {
+	@Test(expected=SyncInvalidArgumentException.class)
+	public void getPublicErrorList() throws IOException {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 
@@ -403,7 +395,7 @@ public class SyncDataServiceTest {
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
 				.andRespond(withSuccess().body(
-						"{ \"errors\": [ {   \"errorCode\": \"KER-KMS-002\",  \"message\": \"ApplicationId not found in Key Policy\" }] }"));
+						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T10:24:23.760Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-ATH-401\", \"message\": \"JWT expired at 2019-04-17T14:12:05+0000. Current time: 2019-04-24T10:24:23+0000\" } ] }"));
 
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
@@ -422,9 +414,7 @@ public class SyncDataServiceTest {
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
 				.andRespond(withSuccess().body(
-						"{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
-		Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class)))
-				.thenThrow(new IOException());
+						" \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, \"response\": { \"lastSyncTime\": \"2019-04-24T09:07:41.771Z\", \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtzi3nWiNMEcaBV2cWO5ZLTBZe1TEGnT95bTvrpEEr-kJLrn80dn9k156zjQpjSzNfEOFVwugTEhEWdxrdrjDUACpA0cF4tUdAM5XJBB0xmzNGS5s7lmcliAOjXbCGU2VJwOUnYV4DSCgrReMCCe6LD_aApwu45OAZ9_sWG6R-jlIUOHLTdDUs6O8zLk8zl7tOX6Rlp25Zk9CLQw1m9drHJqxCbr9Wc9PQKUHBPqhtvCe9ZZeySsZb83dXpKKAZlkjdbrB25i_4O0pbv9LHk0qQlk0twqaef6D5nCTqcB5KQ4QqVYLcrtAhdbMXaDvpSf9syRQ3P3fAeiGkvUIhUWPwIDAQAB\", \"issuedAt\": \"2019-04-23T06:17:46.753\", \"expiryAt\": \"2020-04-23T06:17:46.753\" }, \"errors\": null }"));
 
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}

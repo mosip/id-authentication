@@ -50,7 +50,6 @@ mvn javadoc:javadoc
  
  ```
  #The encrypted response is added to the header.
- Response headers
  
  response-signature=response-signature: EoYMjwMJadE-FOYupAuSwQFnUkE87_5jqqDBf9FRK75O4XBcvZws3dd
  ```
