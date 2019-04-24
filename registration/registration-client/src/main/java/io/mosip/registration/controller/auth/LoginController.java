@@ -240,8 +240,6 @@ public class LoginController extends BaseController implements Initializable {
 			isInitialSetUp = RegistrationConstants.ENABLE
 					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.INITIAL_SETUP));
 
-			
-			
 			int otpExpirySeconds = Integer
 					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
 			int minutes = otpExpirySeconds / 60;
@@ -504,41 +502,45 @@ public class LoginController extends BaseController implements Initializable {
 
 	private void validateUserCredentialsInLocal() {
 		boolean pwdValidationStatus = false;
-		UserDetail userDetail = null;
-		userDetail = loginService.getUserDetail(userId.getText());
+		UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-		// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
-		// implemented, getting AuthZ Token by Client ID and Secret Key
+		if (userDetail != null) {
+			// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
+			// implemented, getting AuthZ Token by Client ID and Secret Key
 
-		LoginUserDTO loginUserDTO = new LoginUserDTO();
-		// loginUserDTO.setUserId(userId.getText());
-		// loginUserDTO.setPassword(password.getText());
+			LoginUserDTO loginUserDTO = new LoginUserDTO();
+			// loginUserDTO.setUserId(userId.getText());
+			// loginUserDTO.setPassword(password.getText());
 
-		ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			try {
-				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
-			} catch (Exception exception) {
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
-						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				try {
+					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+				}
+			}
+
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+
+			if (RegistrationConstants.SUCCESS.equals(status)) {
+				pwdValidationStatus = validateInvalidLogin(userDetail, "");
+			} else if (RegistrationConstants.FAILURE.equals(status)) {
+				pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+			}
+
+			if (pwdValidationStatus) {
+
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"Loading next login screen");
+				credentialsPane.setVisible(false);
+				loadNextScreen(userDetail, RegistrationConstants.PWORD);
 
 			}
-		}
-
-		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
-
-		if (RegistrationConstants.SUCCESS.equals(status)) {
-			pwdValidationStatus = validateInvalidLogin(userDetail, "");
-		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
-		}
-
-		if (pwdValidationStatus) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
-			credentialsPane.setVisible(false);
-			loadNextScreen(userDetail, RegistrationConstants.PWORD);
-
+		} else {
+			loadInitialScreen(Initialization.getPrimaryStage());
 		}
 
 	}
@@ -1192,12 +1194,14 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
+				if (isInitialSetUp && RegistrationConstants.SUCCESS.equalsIgnoreCase(taskService.getValue())) {
+					// update initial set up flag
+
+					globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
+
+				}
 				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
 
-					// TODO Need to find out code for initial set up flag
-					if (isInitialSetUp) {
-						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
-					}
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
