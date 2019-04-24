@@ -20,8 +20,7 @@ public class LicenseKeyManagerBootApplication {
 	/**
 	 * Main method
 	 * 
-	 * @param args
-	 *            the input arguments.
+	 * @param args the input arguments.
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(LicenseKeyManagerBootApplication.class, args);

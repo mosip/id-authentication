@@ -63,7 +63,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
@@ -95,7 +95,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByCodeAndLangCode(categoryCode, langCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
@@ -106,7 +106,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 			reasonCategoryDtos = MapperUtils.reasonConverter(reasonCategories);
 
 		} else {
-			throw new DataNotFoundException(PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
+			throw new DataNotFoundException(
+					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
 		reasonResponseDto.setReasonCategories(reasonCategoryDtos);
@@ -120,8 +121,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	@Override
 	@Transactional
 	public CodeAndLanguageCodeID createReasonCategories(PostReasonCategoryDto reasonRequestDto) {
-		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto,
-				ReasonCategory.class);
+		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto, ReasonCategory.class);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		ReasonCategory resultantReasonCategory = null;
@@ -139,8 +139,6 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		}
 
 		MapperUtils.map(resultantReasonCategory, codeAndLanguageCodeId);
-
-		
 
 		return codeAndLanguageCodeId;
 
@@ -169,7 +167,6 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 							+ ExceptionUtils.parseException(e));
 		}
 
-		
 		MapperUtils.map(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;

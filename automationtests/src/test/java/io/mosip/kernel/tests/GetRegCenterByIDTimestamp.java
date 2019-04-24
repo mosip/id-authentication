@@ -57,7 +57,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchRegCenter = "/masterdata/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}";
+	private static final String fetchRegCenter = "/v1/masterdata/registrationcenters/validate/{id}/{langCode}/{timestamp}";
 	static String dest = "";
 	static String folderPath = "kernel/GetRegCenterByID_timestamp";
 	static String outputFile = "GetRegCenterByreg_timeOutput.json";
@@ -68,7 +68,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -83,7 +83,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -129,6 +129,8 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
+		
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {

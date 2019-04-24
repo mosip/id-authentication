@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
-import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -68,7 +66,7 @@ public class AuthResponseBuilderTest {
 		statusInfoBuilder.setStatus(true);
 		statusInfoBuilder.build();
 		statusInfoBuilder.setStatus(false);
-		// statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
+//		 statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
 	}
 
 	@Test

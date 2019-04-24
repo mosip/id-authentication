@@ -5,18 +5,20 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SingleAnySubtypeType.
+ * <p>
+ * Java class for SingleAnySubtypeType.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * 
  * <pre>
  * &lt;simpleType name="SingleAnySubtypeType"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
@@ -36,37 +38,31 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SingleAnySubtypeType {
 
-    @XmlEnumValue("Left")
-    LEFT("Left"),
-    @XmlEnumValue("Right")
-    RIGHT("Right"),
-    @XmlEnumValue("Thumb")
-    THUMB("Thumb"),
-    @XmlEnumValue("IndexFinger")
-    INDEX_FINGER("IndexFinger"),
-    @XmlEnumValue("MiddleFinger")
-    MIDDLE_FINGER("MiddleFinger"),
-    @XmlEnumValue("RingFinger")
-    RING_FINGER("RingFinger"),
-    @XmlEnumValue("LittleFinger")
-    LITTLE_FINGER("LittleFinger");
-    private final String value;
+	@XmlEnumValue("Left")
+	LEFT("Left"), @XmlEnumValue("Right")
+	RIGHT("Right"), @XmlEnumValue("Thumb")
+	THUMB("Thumb"), @XmlEnumValue("IndexFinger")
+	INDEX_FINGER("IndexFinger"), @XmlEnumValue("MiddleFinger")
+	MIDDLE_FINGER("MiddleFinger"), @XmlEnumValue("RingFinger")
+	RING_FINGER("RingFinger"), @XmlEnumValue("LittleFinger")
+	LITTLE_FINGER("LittleFinger");
+	private final String value;
 
-    SingleAnySubtypeType(String v) {
-        value = v;
-    }
+	SingleAnySubtypeType(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static SingleAnySubtypeType fromValue(String v) {
-        for (SingleAnySubtypeType c: SingleAnySubtypeType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static SingleAnySubtypeType fromValue(String v) {
+		for (SingleAnySubtypeType c : SingleAnySubtypeType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

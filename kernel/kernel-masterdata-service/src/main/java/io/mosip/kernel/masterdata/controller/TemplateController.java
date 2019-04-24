@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class TemplateController {
 	 * 
 	 * @return All {@link TemplateDto}
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<TemplateResponseDto> getAllTemplate() {
@@ -57,10 +59,10 @@ public class TemplateController {
 	/**
 	 * Method to fetch all Template details based on language code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * @return All {@link TemplateDto}
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
@@ -74,12 +76,11 @@ public class TemplateController {
 	 * Method to fetch all Template details based on language code and template type
 	 * code
 	 * 
-	 * @param langCode
-	 *            the language code
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param langCode         the language code
+	 * @param templateTypeCode the template type code
 	 * @return All {@link TemplateDto}
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
 	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(
@@ -94,8 +95,7 @@ public class TemplateController {
 	/**
 	 * This method creates template based on provided details.
 	 * 
-	 * @param template
-	 *            the template detail
+	 * @param template the template detail
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -115,8 +115,7 @@ public class TemplateController {
 	/**
 	 * This method update template based on provided details.
 	 * 
-	 * @param template
-	 *            the template detail
+	 * @param template the template detail
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -136,8 +135,7 @@ public class TemplateController {
 	/**
 	 * This method delete template based on provided details.
 	 * 
-	 * @param id
-	 *            the template id
+	 * @param id the template id
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -157,8 +155,7 @@ public class TemplateController {
 	/**
 	 * Method to fetch all Template details based on template type code
 	 * 
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param templateTypeCode the template type code
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/templatetypecodes/{code}")

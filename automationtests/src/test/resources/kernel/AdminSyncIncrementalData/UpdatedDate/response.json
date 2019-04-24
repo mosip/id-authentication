@@ -1,0 +1,33 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-09T10:53:48.237Z",
+  "metadata": null,
+  "response": {
+    "syncJobDefinitions": [
+      {
+        "id": "LER_J00009",
+        "name": "Last Export Registration",
+        "apiName": null,
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      },
+      {
+        "id": "RDJ_J00010",
+        "name": "Registration Packet Deletion Job",
+        "apiName": "registrationDeletionJob",
+        "parentSyncJobId": "NULL",
+        "syncFreq": "0 0 11 * * ?",
+        "lockDuration": "NULL",
+        "isActive": false,
+        "isDeleted": false,
+        "langCode": "eng"
+      }
+    ]
+  },
+  "errors": null
+}

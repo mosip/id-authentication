@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -28,11 +29,16 @@ import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
+import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 
 	public GetusersBasedOnRegCenter() {
@@ -49,7 +55,7 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getusersBasedOnRegCenter = "/syncdata/v1.0/userdetails/{regid}";
+	private static final String getusersBasedOnRegCenter = "/v1/syncdata/userdetails/{regid}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/GetusersBasedOnRegCenter";
@@ -61,7 +67,8 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());
@@ -104,19 +111,24 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 		@SuppressWarnings("unchecked")
 		
 		/*
-		 * Calling GET mathod with path parameters
+		 * Calling GET method with path parameters
 		 */
 		Response res=applicationLibrary.getRequestPathPara(getusersBasedOnRegCenter, actualRequest);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
-		listOfElementToRemove.add("lastSyncTime");
+		listOfElementToRemove.add("responsetime");
+		listOfElementToRemove.add("$.response.lastSyncTime");
+		
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		outerKeys.add("responsetime");
+		innerKeys.add("lastSyncTime");
 		/*
 		 * Comparing expected and actual response
 		 */
-		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
 	            
 				finalStatus = "Pass";

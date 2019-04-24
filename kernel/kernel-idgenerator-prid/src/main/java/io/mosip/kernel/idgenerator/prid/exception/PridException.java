@@ -19,12 +19,9 @@ public class PridException extends BaseUncheckedException {
 	/**
 	 * Constructor for PridException.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            the cause.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
+	 * @param rootCause    the cause.
 	 */
 	public PridException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

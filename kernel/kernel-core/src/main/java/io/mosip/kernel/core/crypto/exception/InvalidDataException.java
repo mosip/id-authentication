@@ -24,28 +24,22 @@ public class InvalidDataException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode and errorMessage
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
-   public InvalidDataException(String errorCode, String errorMessage) {
+	public InvalidDataException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
 	/**
 	 * Constructor with errorCode, errorMessage, and rootCause
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            Cause of this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
+	 * @param rootCause    Cause of this exception
 	 */
-	public InvalidDataException(String errorCode, String errorMessage,
-			Throwable rootCause) {
-		super(errorCode, errorMessage,rootCause);
+	public InvalidDataException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 
 }

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * @author Sidhant Agarwal
  * @since 1.0.0
@@ -17,11 +16,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationCenterHierarchyLevelDto extends BaseDto{
+public class RegistrationCenterHierarchyLevelDto extends BaseDto {
 	private String id;
-	
+
 	private String name;
-	
+
 	private String addressLine1;
 
 	private String addressLine2;
@@ -31,21 +30,21 @@ public class RegistrationCenterHierarchyLevelDto extends BaseDto{
 	private String latitude;
 
 	private String longitude;
-	
+
 	private String centerTypeCode;
-	
+
 	private String workingHours;
-	
+
 	private String contactPhone;
-	
+
 	private Short numberOfKiosks;
-	
+
 	private LocalTime perKioskProcessTime;
 
 	private LocalTime centerStartTime;
 
 	private LocalTime centerEndTime;
-	
+
 	private String timeZone;
 
 	private String contactPerson;
@@ -53,9 +52,5 @@ public class RegistrationCenterHierarchyLevelDto extends BaseDto{
 	private LocalTime lunchStartTime;
 
 	private LocalTime lunchEndTime;
-
-	
-	
-
 
 }

@@ -33,16 +33,21 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
 	private AuthUserDetails getAuthUserDetails() {
-		AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
+		AuthUserDetails authUserDetails = null;
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthUserDetails)
+
+			authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return authUserDetails;
 	}
 
 	private void addHeadersToRequest(HttpRequest httpRequest, byte[] bytes) {
 
 		HttpHeaders headers = httpRequest.getHeaders();
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE,
-				AuthAdapterConstant.AUTH_COOOKIE_HEADER + getAuthUserDetails().getToken());
+		AuthUserDetails authUserDetails = getAuthUserDetails();
+		if (authUserDetails != null)
+			headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE,
+					AuthAdapterConstant.AUTH_COOOKIE_HEADER + authUserDetails.getToken());
 	}
 
 	/*

@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.simple.JSONObject;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -47,7 +47,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
@@ -64,6 +63,7 @@ import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
+import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -103,7 +103,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
 
@@ -141,10 +140,6 @@ public class PacketValidateProcessor {
 	/** The flag check for reg_type. */
 	private boolean regTypeCheck;
 
-	JSONObject identityJson = null;
-
-	JSONObject demographicIdentity = null;
-
 	private static final String VALIDATESCHEMA = "registration.processor.validateSchema";
 
 	private static final String VALIDATEFILE = "registration.processor.validateFile";
@@ -154,6 +149,8 @@ public class PacketValidateProcessor {
 	private static final String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
 
 	private static final String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
+
+	private static final String VALIDATEMANDATORY = "registration-processor.validatemandotary";
 
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
@@ -189,7 +186,6 @@ public class PacketValidateProcessor {
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
-
 			if (isValid) {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -238,9 +234,11 @@ public class PacketValidateProcessor {
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
-			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 		} catch (FSAdapterException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -249,17 +247,24 @@ public class PacketValidateProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId,
 					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode();
 			description = PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_DATA_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -269,23 +274,31 @@ public class PacketValidateProcessor {
 					code + " -- " + registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 		} catch (IdentityNotFoundException | IOException exc) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
-			description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
+			description = PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage();
 			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
 							+ exc.getMessage() + ExceptionUtils.getStackTrace(exc));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (TablenotAccessibleException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
 			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
@@ -293,6 +306,8 @@ public class PacketValidateProcessor {
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (BaseUncheckedException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -301,10 +316,13 @@ public class PacketValidateProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getMessage()
 							+ e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (Exception ex) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			isTransactionSuccessful = false;
@@ -313,12 +331,12 @@ public class PacketValidateProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
 							+ ex.getMessage() + ExceptionUtils.getStackTrace(ex));
+			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} finally {
 
-			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -326,10 +344,7 @@ public class PacketValidateProcessor {
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
 						: 1;
-
 				registrationStatusDto.setRetryCount(retryCount);
-				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
@@ -352,7 +367,7 @@ public class PacketValidateProcessor {
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -384,8 +399,21 @@ public class PacketValidateProcessor {
 
 		}
 
+		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
+				&& !mandatoryValidation(registrationStatusDto)) {
+			return false;
+		}
+
 		return true;
 
+	}
+
+	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
+			throws IOException, JSONException {
+		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
+			return true;
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
+		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 	}
 
 	private boolean schemaValidation(String jsonString)
@@ -532,10 +560,4 @@ public class PacketValidateProcessor {
 
 	}
 
-	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
-		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
-		registrationStatusDto.setApplicantType(applicantType);
-
-	}
 }

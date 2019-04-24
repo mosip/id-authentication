@@ -25,10 +25,8 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	 * Method to find list of Language created , updated or deleted time is greater
 	 * than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            - last updated time
-	 * @param currentTimeStamp
-	 *            - currentTimestamp
+	 * @param lastUpdated      - last updated time
+	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link Language} - list of language
 	 */
 	@Query("FROM Language WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime<=?2)  OR (deletedDateTime > ?1 and deletedDateTime<=?2)")

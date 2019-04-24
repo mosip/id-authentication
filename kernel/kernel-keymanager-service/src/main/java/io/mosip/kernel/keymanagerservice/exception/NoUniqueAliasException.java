@@ -19,10 +19,8 @@ public class NoUniqueAliasException extends BaseUncheckedException {
 	/**
 	 * Constructor the initialize Handler exception
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public NoUniqueAliasException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

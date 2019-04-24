@@ -18,10 +18,8 @@ public class CertificateProcessingException extends BaseUncheckedException {
 	/**
 	 * Constructor initialize CertificateProcessingException
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public CertificateProcessingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

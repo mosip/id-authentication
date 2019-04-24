@@ -26,5 +26,4 @@ public @interface ValidLangCode {
 
 	Class<? extends Payload>[] payload() default {};
 
-
 }

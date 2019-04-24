@@ -9,10 +9,10 @@ import lombok.EqualsAndHashCode;
  * @author Manoj SP
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class ResponseDTO extends BaseRequestResponseDTO {
-	
+
 	/** The entity. */
 	private String entity;
-	
+
 }

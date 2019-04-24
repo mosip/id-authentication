@@ -12,7 +12,8 @@ import org.springframework.util.MultiValueMap;
 import lombok.Data;
 
 /**
- * Rest Request Object which is provided as input to RestUtil for HTTP Request and response
+ * Rest Request Object which is provided as input to RestUtil for HTTP Request
+ * and response
  * 
  * @author Manoj SP
  *
@@ -20,12 +21,12 @@ import lombok.Data;
 @Data
 public class RestRequestDTO {
 
-	@Pattern(regexp = "<\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>", message="{mosip.rest.request.uri.message}")
+	@Pattern(regexp = "<\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>", message = "{mosip.rest.request.uri.message}")
 	@NotNull
 	private String uri;
-	
+
 	MultiValueMap<String, String> params;
-	
+
 	Map<String, String> pathVariables;
 
 	@NotNull
@@ -39,6 +40,6 @@ public class RestRequestDTO {
 	@NotNull
 	private HttpHeaders headers;
 
-	@Pattern(regexp = "^[0-9]*$", message="{mosip.rest.request.timeout.message}")
+	@Pattern(regexp = "^[0-9]*$", message = "{mosip.rest.request.timeout.message}")
 	private Integer timeout;
 }

@@ -1,7 +1,13 @@
 {
-    "timestamp": "2019-03-05T09:44:33.408+0000",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Failed to convert value of type 'java.lang.String' to required type 'java.lang.Boolean'; nested exception is java.lang.IllegalArgumentException: Invalid boolean value [fsadfdf]",
-    "path": "/applicanttype/v1.0/applicanttype/getApplicantType"
+  "id": "getapplicanttype.code",
+  "version": "V1.0",
+  "responsetime": "2019-04-17T11:44:03.199Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-148",
+      "message": "One or more input parameter is invalid or does not exist"
+    }
+  ]
 }

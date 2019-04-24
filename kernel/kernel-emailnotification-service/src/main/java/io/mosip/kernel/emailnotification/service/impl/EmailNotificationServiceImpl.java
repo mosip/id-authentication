@@ -39,16 +39,11 @@ public class EmailNotificationServiceImpl implements EmailNotification<Multipart
 	/**
 	 * SendEmail
 	 * 
-	 * @param mailTo
-	 *            email address to which mail will be sent.
-	 * @param mailCc
-	 *            email addresses to be cc'ed.
-	 * @param mailSubject
-	 *            the subject.
-	 * @param mailContent
-	 *            the content.
-	 * @param attachments
-	 *            the attachments.
+	 * @param mailTo      email address to which mail will be sent.
+	 * @param mailCc      email addresses to be cc'ed.
+	 * @param mailSubject the subject.
+	 * @param mailContent the content.
+	 * @param attachments the attachments.
 	 * @return the response dto.
 	 */
 	@Override

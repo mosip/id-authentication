@@ -12,7 +12,6 @@ import lombok.Data;
  */
 @Data
 
-
 public class TemplateResponseDto {
 	private List<TemplateDto> templates;
 }

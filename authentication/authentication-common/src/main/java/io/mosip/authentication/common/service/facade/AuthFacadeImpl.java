@@ -66,8 +66,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Constant AUTH_FACADE. */
 	private static final String AUTH_FACADE = "AuthFacade";
 
-
-	/** The Constant SUCCESS_STATUS. */
+ 	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
 
 	/** The logger. */

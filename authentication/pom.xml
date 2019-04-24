@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.4</version>
+		<version>0.10.5</version>
 	</parent>
 
 	<groupId>io.mosip.authentication</groupId>
@@ -21,8 +21,8 @@
 		<module>authentication-common</module>
 		<module>authentication-core</module>
 		<module>authentication-service</module>
-		<module>partnerdemo-services</module>
-		<module>internal-authentication-service</module>
+		<module>partnerdemo-service</module>
+		<module>internalauthentication-service</module>
 		<module>kyc-service</module>
 		<module>otp-service</module>
 		<module>vid-service</module>
@@ -31,6 +31,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<ida.version>0.10.5</ida.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -71,7 +73,7 @@
 		<sourceafis.version>3.4.0</sourceafis.version>
 
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java</sonar.exclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
 	</properties>
 
 	<dependencies>

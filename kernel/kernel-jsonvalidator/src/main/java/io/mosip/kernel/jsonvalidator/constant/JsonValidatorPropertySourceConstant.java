@@ -1,37 +1,34 @@
 package io.mosip.kernel.jsonvalidator.constant;
 
+/**
+ * This enum provides all the constants for property source to be used.
+ * 
+ * @author Swati Raj
+ *
+ */
+public enum JsonValidatorPropertySourceConstant {
+	CONFIG_SERVER("CONFIG_SERVER"), APPLICATION_CONTEXT("APPLICATION_CONTEXT"), LOCAL("LOCAL");
+
 	/**
-	 * This enum provides all the constants for property source to be used.
-	 * 
-	 * @author Swati Raj
-	 *
+	 * The property Source.
 	 */
-	public enum JsonValidatorPropertySourceConstant {
-		CONFIG_SERVER("CONFIG_SERVER"), 
-		APPLICATION_CONTEXT("APPLICATION_CONTEXT"), 
-		LOCAL("LOCAL");
+	private final String propertySource;
 
-		/**
-		 * The property Source.
-		 */
-		private final String propertySource;
-
-		/**
-		 * Setter for propertySource.
-		 * 
-		 * @param propertySource
-		 *            The property source to be set
-		 */
-		private JsonValidatorPropertySourceConstant(String propertySource) {
-			this.propertySource = propertySource;
-		}
-
-		/**
-		 * Getter for propertySource.
-		 * 
-		 * @return The propertySource.
-		 */
-		public String getPropertySource() {
-			return propertySource;
-		}
+	/**
+	 * Setter for propertySource.
+	 * 
+	 * @param propertySource The property source to be set
+	 */
+	private JsonValidatorPropertySourceConstant(String propertySource) {
+		this.propertySource = propertySource;
 	}
+
+	/**
+	 * Getter for propertySource.
+	 * 
+	 * @return The propertySource.
+	 */
+	public String getPropertySource() {
+		return propertySource;
+	}
+}

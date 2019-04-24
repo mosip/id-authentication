@@ -57,7 +57,7 @@ import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class KycControllerTest {
 
 	@Mock

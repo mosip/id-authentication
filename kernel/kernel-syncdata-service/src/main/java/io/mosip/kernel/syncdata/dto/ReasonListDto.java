@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReasonListDto extends BaseDto{
+public class ReasonListDto extends BaseDto {
 
 	private String code;
 

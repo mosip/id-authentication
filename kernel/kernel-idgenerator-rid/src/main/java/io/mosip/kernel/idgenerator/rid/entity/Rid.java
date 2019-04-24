@@ -22,7 +22,6 @@ import lombok.Data;
 @Data
 public class Rid {
 
-
 	/**
 	 * the current sequence no.
 	 * 
@@ -30,14 +29,14 @@ public class Rid {
 	@Id
 	@Column(name = "curr_seq_no")
 	private int currentSequenceNo;
-	
-	@Column(name = "cr_by", nullable = false, length = 24)
+
+	@Column(name = "cr_by", nullable = false, length = 256)
 	private String createdBy;
 
 	@Column(name = "cr_dtimes", nullable = false)
 	private LocalDateTime createdDateTime;
 
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
 	@Column(name = "upd_dtimes")

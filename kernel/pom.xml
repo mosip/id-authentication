@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.5</version>
 	</parent>
 
 
@@ -29,6 +31,9 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
+		<javax.interceptor.version>1.2</javax.interceptor.version>
+		<jackson.datatype.version>2.9.8</jackson.datatype.version>
+		<byte.buddy.version>1.9.12</byte.buddy.version>
 
 		<!-- spring -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -169,26 +174,11 @@
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
-
-
-		<module>kernel-otpnotification-service</module>
-		<!-- <module>kernel-ldap-service</module> -->
-
-
 	</modules>
 
-		
-	
-		<!-- <module>kernel-idvalidator</module> -->
-		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
-		<!-- <module>kernel-packetserver-http</module> -->
-		<!-- <module>kernel-packetserver-sftp</module> -->
-		<!-- <module>kernel-idgenerator-uin</module> -->
-		<!-- <module>kernel-templatemanager-freemarker</module> -->
-		<!-- <module>kernel-batch-framework</module> -->
-		<!-- <module>kernel-batch-server</module> -->
-		<!--<module>kernel-crypto-bouncycastle</module> -->
-   
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

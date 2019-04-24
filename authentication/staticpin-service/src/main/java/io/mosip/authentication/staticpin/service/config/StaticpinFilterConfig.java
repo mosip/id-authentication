@@ -1,10 +1,9 @@
 package io.mosip.authentication.staticpin.service.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.authentication.staticpin.service.filter.StaticPinFilter;
+import io.mosip.authentication.common.service.filter.DefaultIDAFilter;
 
 /**
  * The configuration for adding filters.
@@ -19,10 +18,9 @@ public class StaticpinFilterConfig {
 	 *
 	 * @return the otp filter
 	 */
-	@Bean
-	public FilterRegistrationBean<StaticPinFilter> getStaticPinStoreFilter() {
-		FilterRegistrationBean<StaticPinFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new StaticPinFilter());
+	public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
+		FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new DefaultIDAFilter());
 		registrationBean.addUrlPatterns("/staticpin");
 		return registrationBean;
 	}
