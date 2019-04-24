@@ -61,7 +61,7 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	public static Map<String, Object> applicationMap;
+	public static Map<String, Object> applicationMap=new HashMap<>();
 
 	/**
 	 * create error response.
