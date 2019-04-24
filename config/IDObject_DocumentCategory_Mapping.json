@@ -1,13 +1,13 @@
 {
 	"identity": {
 		"fullName": {
-			"documentCategory": "proofOfIdentity";
+			"documentCategory": "proofOfIdentity"
 		},
 		"gender": {
-			"documentCategory": NULL
+			"documentCategory": ""
 		},
 		"dob": {
-			"documentCategory": NULL
+			"documentCategory": ""
 		},
 		"parentOrGuardianRID": {
 			"documentCategory" : "proofOfRelationship"
@@ -16,19 +16,19 @@
 			"documentCategory" : "proofOfRelationship"
 		},
 		"proofOfAddress": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"proofOfIdentity": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"proofOfRelationship": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"proofOfDateOfBirth": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"individualBiometrics": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"age": {
 			"documentCategory" : "proofOfIdentity"
@@ -52,19 +52,19 @@
 			"documentCategory" : "proofOfAddress"
 		},
 		"phone": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"email": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"localAdministrativeAuthority": {
 			"documentCategory" : "proofOfAddress"
 		},
 		"IDSchemaVersion": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"CNIENumber": {
-			"documentCategory" : NULL
+			"documentCategory" : ""
 		},
 		"city": {
 			"documentCategory" : "proofOfAddress"
