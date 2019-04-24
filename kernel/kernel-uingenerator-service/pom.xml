@@ -23,7 +23,7 @@
 			<artifactId>kernel-auth-adapter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-         <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
@@ -148,11 +148,15 @@
 			<version>${vertx.health.check.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-annotations</artifactId>
 			<version>${swagger-annotations.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-core</artifactId>
