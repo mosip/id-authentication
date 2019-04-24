@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -74,14 +72,12 @@ import io.mosip.registration.entity.AppAuthenticationMethod;
 import io.mosip.registration.entity.AppDetail;
 import io.mosip.registration.entity.AppRolePriority;
 import io.mosip.registration.entity.ApplicantValidDocument;
-import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
-import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
@@ -110,7 +106,6 @@ import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.AppRolePriorityId;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
-import io.mosip.registration.entity.id.HolidayID;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 import io.mosip.registration.entity.id.RegMachineSpecId;
@@ -121,7 +116,6 @@ import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.AppDetailRepository;
 import io.mosip.registration.repositories.AppRolePriorityRepository;
 import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
-import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
@@ -132,7 +126,6 @@ import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
-import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
 import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
@@ -177,9 +170,6 @@ public class MasterSyncDaoImplTest {
 
 	@Mock
 	private SyncJobControlRepository syncStatusRepository;
-
-	@Mock
-	private ApplicationRepository masterSyncApplicationRepository;
 	@Mock
 	private BiometricAttributeRepository masterSyncBiometricAttributeRepository;
 	@Mock
@@ -198,8 +188,6 @@ public class MasterSyncDaoImplTest {
 	private DocumentTypeRepository masterSyncDocumentTypeRepository;
 	@Mock
 	private GenderRepository masterSyncGenderTypeRepository;
-	@Mock
-	private HolidayRepository masterSyncHolidayRepository;
 	@Mock
 	private IdTypeRepository masterSyncIdTypeRepository;
 	@Mock
@@ -659,15 +647,6 @@ public class MasterSyncDaoImplTest {
 		codeaLang.setCode("1011");
 		codeaLang.setLangCode("ENG");
 		Time localTime = Time.valueOf(LocalTime.now());
-		// Application
-		List<Application> applications = new ArrayList<>();
-		Application masterApplciation = new Application();
-		masterApplciation.setCode("101");
-		masterApplciation.setName("App1");
-		masterApplciation.setLangCode("ENG");
-		masterApplciation.setCrBy("MOSIP");
-		masterApplciation.setUpdBy("MOSIP");
-		applications.add(masterApplciation);
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
@@ -830,18 +809,6 @@ public class MasterSyncDaoImplTest {
 
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
 
-		// Holiday
-		List<Holiday> holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
-		HolidayID hId = new HolidayID();
-		hId.setHolidayDate(LocalDate.parse("2019-01-01"));
-		// hId.setLangCode("ENG");
-		hId.setLocationCode("LOC01");
-		// holiday.setHolidayId(hId);
-		// holiday.setHolidayName("New Year");
-		holiday.setHolidayDesc("description");
-		holiday.setUpdBy("mosip");
-		holidays.add(holiday);
 		// Blacklisted Words
 		List<BlacklistedWords> blackListedWords = new ArrayList<>();
 		BlacklistedWords MasterBlacklistedWords = new BlacklistedWords();
@@ -1134,9 +1101,9 @@ public class MasterSyncDaoImplTest {
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
 		machines.add(machine);
-		List<Application> masterApplicationDtoEntity = new ArrayList<>();
+		List<Gender> masterApplicationDtoEntity = new ArrayList<>();
 		try {
-			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
+			Mockito.when(masterSyncGenderTypeRepository.saveAll(masterApplicationDtoEntity))
 					.thenThrow(new RuntimeException().getClass());
 			masterSyncDaoImpl.save(masterSyncDto);
 
@@ -1317,9 +1284,9 @@ public class MasterSyncDaoImplTest {
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
 		machines.add(machine);
-		List<Application> masterApplicationDtoEntity = new ArrayList<>();
+		List<Gender> masterApplicationDtoEntity = new ArrayList<>();
 		try {
-			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
+			Mockito.when(masterSyncGenderTypeRepository.saveAll(masterApplicationDtoEntity))
 					.thenThrow(new DataAccessException("...") {
 					});
 			masterSyncDaoImpl.save(masterSyncDto);
@@ -1501,9 +1468,9 @@ public class MasterSyncDaoImplTest {
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
 		machines.add(machine);
-		List<Application> masterApplicationDtoEntity = new ArrayList<>();
+		List<Gender> masterApplicationDtoEntity = new ArrayList<>();
 		try {
-			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
+			Mockito.when(masterSyncGenderTypeRepository.saveAll(masterApplicationDtoEntity))
 					.thenThrow(new NullPointerException("...") {
 					});
 			masterSyncDaoImpl.save(masterSyncDto);
@@ -1691,9 +1658,9 @@ public class MasterSyncDaoImplTest {
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
 		machines.add(machine);
-		List<Application> masterApplicationDtoEntity = new ArrayList<>();
+		List<Gender> masterApplicationDtoEntity = new ArrayList<>();
 		try {
-			Mockito.when(masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity))
+			Mockito.when(masterSyncGenderTypeRepository.saveAll(masterApplicationDtoEntity))
 					.thenThrow(RegBaseUncheckedException.class);
 			masterSyncDaoImpl.save(masterSyncDto);
 
