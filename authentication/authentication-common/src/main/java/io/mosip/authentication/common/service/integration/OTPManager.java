@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -44,8 +45,6 @@ public class OTPManager {
 	/** The Constant STATUS. */
 	private static final String STATUS = "status";
 
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant VALIDATION_UNSUCCESSFUL. */
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
@@ -93,7 +92,7 @@ public class OTPManager {
 					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
 			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = (String) ((Map<String,Object>)otpGeneratorResponsetDto.getResponse()).get("otp");
-			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					"otpGeneratorResponsetDto " + response);
 
 		} catch (RestServiceException e) {
@@ -118,7 +117,7 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 			}
 
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
@@ -150,7 +149,7 @@ public class OTPManager {
 					.map(res -> String.valueOf(res.get(STATUS)))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
 					e.getResponseBodyAsString().orElse(""));
 
 			Optional<Object> responseBody = e.getResponseBody();
@@ -167,7 +166,7 @@ public class OTPManager {
 				}
 			}
 		} catch (IDDataValidationException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return isValidOtp;
@@ -216,7 +215,7 @@ public class OTPManager {
 			try {
 				res = mapper.readValue(str, Map.class);
 			} catch (IOException e) {
-				logger.error(SESSION_ID, this.getClass().getSimpleName(), "Error parsing response body", null);
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "Error parsing response body", null);
 			}
 			return res;
 		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()

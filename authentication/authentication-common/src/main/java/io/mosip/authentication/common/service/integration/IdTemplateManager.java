@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
@@ -43,8 +44,6 @@ public class IdTemplateManager {
 	/** The Constant PRIMARY. */
 	private static final String PRIMARY = "primary";
 
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
 
@@ -162,7 +161,7 @@ public class IdTemplateManager {
 			Objects.requireNonNull(template);
 			return pdfGenerator.generate(new ByteArrayInputStream(template.getBytes()));
 		} catch (IOException e) {
-			logger.error(SESSION_ID, "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
+			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 

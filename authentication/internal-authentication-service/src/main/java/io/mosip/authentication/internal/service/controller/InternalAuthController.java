@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -44,9 +45,6 @@ public class InternalAuthController {
 	/** The internal Auth Request Validator */
 	@Autowired
 	private InternalAuthRequestValidator internalAuthRequestValidator;
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(InternalAuthController.class);
@@ -84,11 +82,11 @@ public class InternalAuthController {
 			DataValidationUtil.validate(e);
 			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, partnerId);
 		} catch (IDDataValidationException e1) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
 		} catch (IdAuthenticationBusinessException e1) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e1);
 		}

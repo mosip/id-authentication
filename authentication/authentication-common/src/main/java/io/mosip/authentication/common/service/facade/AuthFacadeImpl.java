@@ -21,6 +21,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -61,18 +62,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
 
-	/** The Constant IDA. */
-	private static final String IDA = "IDA";
 
 	/** The Constant AUTH_FACADE. */
 	private static final String AUTH_FACADE = "AuthFacade";
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
-	
-
- 	/** The Constant DATETIME_PATTERN. */
- 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 
 	/** The Constant SUCCESS_STATUS. */
@@ -167,7 +159,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authResponseDTO = authResponseBuilder.build(null);
 			}
 
-			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
+			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
@@ -241,7 +233,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = pinValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
+				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
 				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.PIN_AUTH.getDesc());
 				AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.STATIC_PIN_AUTH, staticTokenId,
@@ -274,7 +266,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = bioValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
+				logger.info(IdAuthCommonConstants.SESSION_ID,  env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType,
 						isStatus, staticTokenId);
 			}
@@ -307,7 +299,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
+				logger.info(IdAuthCommonConstants.SESSION_ID,  env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());
 
@@ -340,7 +332,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(DEFAULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				otpValidationStatus = new AuthStatusInfo();
 				otpValidationStatus.setStatus(false);
 				AuthError authError = new AuthError(e.getErrorCode(), e.getErrorText());
@@ -349,7 +341,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = otpValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
+				logger.info(IdAuthCommonConstants.SESSION_ID,  env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE, "OTP Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.OTP_AUTH.getDesc());
 
@@ -420,7 +412,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setRefIdType(idvIdType);
 			String id = createId(uin);
 			autnTxn.setId(id); // FIXME
-			autnTxn.setCrBy(IDA);
+			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			String strUTCDate = DateUtils
@@ -435,7 +427,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 			return autnTxn;
 		} catch (ParseException e) {
-			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
