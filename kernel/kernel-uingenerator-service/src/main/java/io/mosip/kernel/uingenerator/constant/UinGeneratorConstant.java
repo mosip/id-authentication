@@ -172,5 +172,5 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String CURRENT_WORKING_DIRECTORY = "user.dir";
 	
-
+	public static final String APPLICATION_JSON = "application/json";
 }

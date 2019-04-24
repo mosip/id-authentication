@@ -147,6 +147,17 @@
 			<artifactId>vertx-health-check</artifactId>
 			<version>${vertx.health.check.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${swagger-annotations.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>${swagger-annotations.version}</version>
+		</dependency>
 	</dependencies>
 	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 
