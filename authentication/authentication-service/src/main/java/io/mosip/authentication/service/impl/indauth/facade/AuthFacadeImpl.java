@@ -23,6 +23,7 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -359,7 +360,12 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.error(DEFAULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				otpValidationStatus = new AuthStatusInfo();
 				otpValidationStatus.setStatus(false);
-				AuthError authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				AuthError authError;
+				if (e.getActionMessage() != null) {
+					authError = new ActionableAuthError(e.getErrorCode(), e.getErrorText(), e.getActionMessage());
+				} else {
+					authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				}
 				otpValidationStatus.setErr(Collections.singletonList(authError));
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;

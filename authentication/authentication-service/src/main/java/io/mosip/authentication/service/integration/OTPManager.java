@@ -149,6 +149,9 @@ public class OTPManager {
 			isValidOtp = Optional.ofNullable((Map<String, Object>)otpvalidateresponsedto.get(RESPONSE)).filter(res -> res.containsKey(STATUS))
 					.map(res -> String.valueOf(res.get(STATUS)))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
+			if(!isValidOtp) {
+				handleErrorStatus(null, otpvalidateresponsedto);
+			}
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
 					e.getResponseBodyAsString().orElse(""));
@@ -156,21 +159,25 @@ public class OTPManager {
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
-				Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message") : null;
-				if (status instanceof String && message instanceof String) {
-					if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
-						throwOtpException((String) message);
-					}
-				} else {
-					throwKeyNotFound(e);
-				}
+				handleErrorStatus(e, res);
 			}
 		} catch (IDDataValidationException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return isValidOtp;
+	}
+
+	private void handleErrorStatus(RestServiceException e, Map<String, Object> res) throws IdAuthenticationBusinessException {
+		Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
+		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message") : null;
+		if (status instanceof String && message instanceof String) {
+			if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
+				throwOtpException((String) message);
+			}
+		} else if (e != null) {
+			throwKeyNotFound(e);
+		}
 	}
 
 	/**
