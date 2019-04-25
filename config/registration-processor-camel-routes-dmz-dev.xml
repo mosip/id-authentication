@@ -16,7 +16,7 @@
 				<setBody>
 					<simple>${bodyAs(String)}</simple>
 				</setBody>
-				<to uri="http://localhost:8087/v1/uploader/securezone" />
+				<to uri="http://dev.mosip.io/v1/uploader/securezone" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
