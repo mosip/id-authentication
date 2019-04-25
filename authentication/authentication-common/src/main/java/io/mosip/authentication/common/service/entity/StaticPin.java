@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class Instantiates a new Static Pin entity.
@@ -21,6 +22,7 @@ import lombok.Data;
 @Entity
 @Table(name = "static_pin", schema = "ida")
 @AllArgsConstructor
+@NoArgsConstructor
 public class StaticPin {
 	/** The pin. */
 	@Column(name = "pin", nullable = false)

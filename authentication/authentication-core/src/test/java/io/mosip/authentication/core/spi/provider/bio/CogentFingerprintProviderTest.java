@@ -1,11 +1,8 @@
 package io.mosip.authentication.core.spi.provider.bio;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
-
-import io.mosip.authentication.core.spi.provider.bio.CogentFingerprintProvider;
 
 /**
  * The Class CogentFingerprintProviderTest.
@@ -20,10 +17,9 @@ public class CogentFingerprintProviderTest {
 	/**
 	 * Test device info.
 	 */
-	/*@Test
-	public void testDeviceInfo() {
-		assertNull(fp.deviceInfo());
-	}*/
+	/*
+	 * @Test public void testDeviceInfo() { assertNull(fp.deviceInfo()); }
+	 */
 
 	/**
 	 * Test capture fingerprint.
@@ -39,5 +35,10 @@ public class CogentFingerprintProviderTest {
 	@Test
 	public void testSegmentFingerprint() {
 		assertFalse(fp.segmentFingerprint(new byte[1]).isPresent());
+	}
+
+	@Test
+	public void TestcreateMinutiae() {
+		fp.createMinutiae("Test".getBytes());
 	}
 }

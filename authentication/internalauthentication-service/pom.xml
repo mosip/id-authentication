@@ -10,7 +10,7 @@
 		<version>0.10.5</version>
 	</parent>
 	<artifactId>internalauthentication-service</artifactId>
-	<name>internal-authentication-service</name>
+	<name>internalauthentication-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

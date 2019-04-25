@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -24,6 +25,7 @@ import lombok.Data;
 @IdClass(StaticPinHistory.IdClass.class)
 @Table(name = "static_pin_h", schema = "ida")
 @AllArgsConstructor
+@NoArgsConstructor
 public class StaticPinHistory {
 	/** The variable to hold StaticPin. */
 	@Column(name = "pin", nullable = false)
@@ -66,7 +68,7 @@ public class StaticPinHistory {
 	@Id
 	@Column(name = "eff_dtimes")
 	private LocalDateTime effectiveDate;
-	
+
 	@Data
 	static class IdClass implements Serializable {
 		/**
