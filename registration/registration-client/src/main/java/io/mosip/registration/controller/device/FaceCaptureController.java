@@ -608,6 +608,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		biometricExceptionDTO.setMissingBiometric(missingBiometric);
 		biometricExceptionDTO.setReason(RegistrationConstants.LOW_QUALITY_BIOMETRICS);
 		biometricExceptionDTO.setExceptionType(RegistrationConstants.TEMPORARY_EXCEPTION);
+		biometricExceptionDTO.setIndividualType(RegistrationConstants.INDIVIDUAL);
 
 		exceptionBiometrics.add(biometricExceptionDTO);
 

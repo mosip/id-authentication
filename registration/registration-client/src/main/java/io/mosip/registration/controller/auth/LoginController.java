@@ -67,6 +67,7 @@ import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.service.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -221,6 +222,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private UserMachineMappingService machineMappingService;
+	
+	@Autowired
+	private PublicKeySyncImpl PublicKeySyncImpl;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -1163,6 +1167,7 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						String val = null;
+						PublicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {

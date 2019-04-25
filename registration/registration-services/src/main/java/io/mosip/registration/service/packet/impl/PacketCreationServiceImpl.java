@@ -336,9 +336,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							(int) Math.round(applicantDocumentDTO.getQualityScore()),
 							RegistrationConstants.FACE_EXCEPTION);
 				} else {
-					createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
-							(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
-							RegistrationConstants.VALIDATION_TYPE_FACE);
+					if(!(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+						createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
+								(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
+								RegistrationConstants.VALIDATION_TYPE_FACE);
+					}
 				}
 			}
 
