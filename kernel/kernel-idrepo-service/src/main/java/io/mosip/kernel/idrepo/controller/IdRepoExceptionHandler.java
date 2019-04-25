@@ -33,6 +33,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.idrepo.exception.AuthenticationException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
@@ -104,6 +105,16 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
 				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(AuthenticationException.class)
+	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAuthenticationException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(ex.getErrorCode(), ex.getErrorText());
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.valueOf(ex.getStatusCode()));
 	}
 
 	/*
