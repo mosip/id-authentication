@@ -96,7 +96,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

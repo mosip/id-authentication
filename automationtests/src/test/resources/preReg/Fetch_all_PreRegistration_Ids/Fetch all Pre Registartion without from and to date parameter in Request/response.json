@@ -1,10 +1,10 @@
 {
     "id": null,
     "version": null,
-    "err": {
+    "errors": {
         "errorCode": "PRG_DATA_SYNC_010",
         "message": "INVALID_REQUESTED_DATE"
     },
-    "responsetime": "2019-03-29T07:36:29.983Z",
+    "responsetime": "2019-04-24T10:47:40.361Z",
     "response": null
 }

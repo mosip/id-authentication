@@ -77,10 +77,13 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
-		lib.expiredStatus();
+		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
+	
+		/*lib.expiredStatus();
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
-		lib.compareValues(statusCode, "Expired");
+		lib.compareValues(statusCode, "Expired");*/
+	
 	}
 	/**
 	 * Batch Job service Consumed Application

@@ -72,7 +72,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	static String outputFile = "Retrive_PreRegistrationOutput.json";
 	static String requestKeyFile = "Retrive_PreRegistrationRequest.json";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	public RetrivePreRegistration() {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		
@@ -126,17 +126,17 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 			String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response documentResponse = lib.documentUpload(createResponse);
 			Response avilibityResponse = lib.FetchCentre();
-			//lib.BookAppointment(documentResponse, avilibityResponse, preID);
+			lib.BookAppointment(documentResponse, avilibityResponse, preID);
 			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
 			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse, preID, createResponse);
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, GetHeader.getHeader(actualRequest));
+				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, actualRequest);
 
 			} catch (Exception e) {
 				logger.info(e);
 			}
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			innerKeys.add("zip-bytes");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
@@ -194,6 +194,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
+		authToken=lib.getToken();
 	}
 
 	@Override

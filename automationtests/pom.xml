@@ -207,6 +207,7 @@
 				<version>2.19.1</version>
 				<inherited>true</inherited>
 				<configuration>
+				<argLine>-Dfile.encoding=UTF-8</argLine>
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
 

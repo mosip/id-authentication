@@ -1,9 +1,10 @@
 {
-    "err": {
-        "errorCode": "PRG_DATA_SYNC_009",
-        "message": "INVALID_REGISTRATION_CENTER_ID"
+    "id": null,
+    "version": null,
+    "errors": {
+        "errorCode": "PRG_BOOK_RCI_009",
+        "message": "INVALID_DATE_TIME_FORMAT"
     },
-    "status": false,
-    "resTime": "2019-02-06T15:13:48.341Z",
+    "responsetime": "2019-04-24T10:52:06.075Z",
     "response": null
 }

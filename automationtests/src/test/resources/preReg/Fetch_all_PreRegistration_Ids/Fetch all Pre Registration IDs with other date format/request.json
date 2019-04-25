@@ -4,9 +4,8 @@
   "version": "1.0",
   "requesttime": "2019-01-22T07:22:57.086Z",
   "request": {
-    "registration-client-id":"10005",
-    "from-date":"01-01-2018",
-    "to-date":"2019-01-31",
-    "user-id":"Officer"
+    "registrationCenterId":"10001",
+    "fromDate":"31-03-2019",
+    "toDate":"2019-12-31"
   }
 }

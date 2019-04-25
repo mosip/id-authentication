@@ -1,11 +1,10 @@
 {
-  "id": "mosip.pre-registration.demographic.create",
-  "version": "1.0",
-  "requesttime": "2019-01-22T07:22:57.086Z",
-  "request": {
-    "registration-client-id":"10004",
-    "from-date":"2018-01-31",
-    "to-date":"2018-01-31",
-    "user-id":"Officer"
-  }
+    "request": {
+        "fromDate": "2018-10-01",
+        "registrationCenterId": "10001",
+        "toDate": "2018-12-31"
+    },
+    "requesttime": "2019-04-24T16:20:39.687Z",
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0"
 }

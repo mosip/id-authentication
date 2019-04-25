@@ -86,7 +86,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

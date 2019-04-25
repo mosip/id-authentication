@@ -96,7 +96,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -267,7 +267,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			Actualresponse = applicationLibrary.postRequest(actualRequest, preReg_URI);
 
 			// removing the keys for assertion
-			outerKeys.add("responsetime");
+			outerKeys.add("resTime");
 			innerKeys.add("preRegistrationId");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -321,7 +321,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		 * AfterSuite
 		 */
 
-		//preIds.add(preId);
+		preIds.add(preId);
 
 	}
 

@@ -117,9 +117,8 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
-		lib.compareValues(pre_registration_id,
-				updateDemographicDetailsResponse.jsonPath().get("response[0].preRegistrationId").toString());
-		Response getPreRegistrationData = lib.getPreRegistrationData(pre_registration_id);
+		lib.compareValues(
+				updateDemographicDetailsResponse.jsonPath().get("errors.message").toString(),"No data found for the requested pre-registration id");
 	}
 	@Test
 	public void updateDemographicDetailsOfDiscardedApplication() {

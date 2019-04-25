@@ -659,13 +659,12 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Book Appointment
 		response = lib.bookAppointmentInvalidDate(response, fetchCenterResponse, preRegID);
-		System.out.println(response.jsonPath().get("response").toString());
-
-		// Assert.assertNull(response.jsonPath().get("response"));
-		Assert.assertEquals("[]", response.jsonPath().get("response").toString());
+		String errorCode = response.jsonPath().get("errors[0].errorCode").toString();
+		String message = response.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(errorCode, "PRG_BOOK_RCI_009");
+		lib.compareValues(message, "INVALID_DATE_TIME_FORMAT");
 
 	}
-
 	/**
 	 * @author Ashish get pre registration data for discarded application
 	 * 
@@ -921,10 +920,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		String errorCode = getPreRegistrationDataResponse.jsonPath().get("errors[0].errorCode").toString();
-		String message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
+		String errorCode = getPreRegistrationDataResponse.jsonPath().get("errors.errorCode").toString();
+		String message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
 		lib.compareValues(errorCode, "PRG_PAM_APP_005");
-		lib.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		lib.compareValues(message, "No data found for the requested pre-registration id");
 
 	}
 

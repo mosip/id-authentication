@@ -90,7 +90,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	@DataProvider(name = "documentUpload")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		  testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smoke") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			

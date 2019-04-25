@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndregression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

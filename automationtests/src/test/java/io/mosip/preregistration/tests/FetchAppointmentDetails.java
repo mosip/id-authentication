@@ -88,7 +88,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		//testParam="smoke";
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
