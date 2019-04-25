@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<version>0.10.4</version>
+		<version>0.10.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 		<artifactId>registration-parent</artifactId>
 		<groupId>io.mosip.registration</groupId>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>io.mosip.registration</groupId>
 			<artifactId>registration-services</artifactId>
-			<version>0.10.4</version>
+			<version>0.10.6</version>
 		</dependency>
 
 		<!-- Lombok -->
