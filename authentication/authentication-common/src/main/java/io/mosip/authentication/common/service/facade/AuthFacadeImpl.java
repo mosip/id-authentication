@@ -22,10 +22,11 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
@@ -334,7 +335,12 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				otpValidationStatus = new AuthStatusInfo();
 				otpValidationStatus.setStatus(false);
-				AuthError authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				AuthError authError;
+				if (e.getActionMessage() != null) {
+					authError = new ActionableAuthError(e.getErrorCode(), e.getErrorText(), e.getActionMessage());
+				} else {
+					authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				}
 				otpValidationStatus.setErr(Collections.singletonList(authError));
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
