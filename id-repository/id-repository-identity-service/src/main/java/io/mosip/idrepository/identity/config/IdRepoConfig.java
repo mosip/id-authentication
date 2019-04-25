@@ -129,19 +129,20 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		status.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()));
 	}
 
-	/**
-	 * Gets the shard data source resolver.
-	 *
-	 * @return the shard data source resolver
-	 */
-	@Bean
-	public ShardDataSourceResolver getShardDataSourceResolver() {
-		ShardDataSourceResolver resolver = new ShardDataSourceResolver();
-		resolver.setLenientFallback(false);
-		resolver.setTargetDataSources(db.entrySet().parallelStream()
-				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
-		return resolver;
-	}
+	//FIXME Need to check for UIN-Reg ID scenario
+//	/**
+//	 * Gets the shard data source resolver.
+//	 *
+//	 * @return the shard data source resolver
+//	 */
+//	@Bean
+//	public ShardDataSourceResolver getShardDataSourceResolver() {
+//		ShardDataSourceResolver resolver = new ShardDataSourceResolver();
+//		resolver.setLenientFallback(false);
+//		resolver.setTargetDataSources(db.entrySet().parallelStream()
+//				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
+//		return resolver;
+//	}
 
 	/**
 	 * Id.
@@ -201,20 +202,20 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 		return em;
 	}
-
-	/**
-	 * Transaction manager.
-	 *
-	 * @param emf the emf
-	 * @return the platform transaction manager
-	 */
-	@Bean
-	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(emf);
-		return transactionManager;
-	}
-
+//
+//	/**
+//	 * Transaction manager.
+//	 *
+//	 * @param emf the emf
+//	 * @return the platform transaction manager
+//	 */
+//	@Bean
+//	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+//		JpaTransactionManager transactionManager = new JpaTransactionManager();
+//		transactionManager.setEntityManagerFactory(emf);
+//		return transactionManager;
+//	}
+//
 	/**
 	 * Additional properties.
 	 *
@@ -223,6 +224,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	private Map<String, Object> additionalProperties() {
 		Map<String, Object> jpaProperties = new HashMap<>();
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+		jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults",Boolean.FALSE);
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
@@ -242,6 +244,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		dataSource.setPassword(dataSourceValues.get("password"));
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
 		return dataSource;
+	}
+	
+	@Bean
+	public DataSource dataSource() {
+		return buildDataSource(db.get("shard"));
 	}
 
 }

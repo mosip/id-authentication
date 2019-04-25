@@ -13,6 +13,8 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
 public final class IdRepoLogger {
 
 	private static String uin;
+	
+	private static String rid;
 
 	private static RollingFileAppender mosipRollingFileAppender;
 
@@ -41,6 +43,14 @@ public final class IdRepoLogger {
 	 * Instantiates a new id repo logger.
 	 */
 	private IdRepoLogger() {
+	}
+
+	public static String getRid() {
+		return rid;
+	}
+
+	public static void setRid(String rid) {
+		IdRepoLogger.rid = rid;
 	}
 
 	/**

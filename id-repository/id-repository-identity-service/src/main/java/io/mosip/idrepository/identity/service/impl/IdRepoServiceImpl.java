@@ -228,7 +228,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 
-			return retrieveIdentity(uin, null);
+			return retrieveIdentityByUin(uin, null);
 		} else {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
@@ -397,7 +397,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
-	public Uin retrieveIdentity(String uin, String type) throws IdRepoAppException {
+	public Uin retrieveIdentityByUin(String uin, String type) throws IdRepoAppException {
 		return uinRepo.findByUin(uin);
 	}
 
@@ -410,7 +410,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
 	public Uin updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			Uin uinObject = retrieveIdentity(uin, null);
+			Uin uinObject = retrieveIdentityByUin(uin, null);
 			uinObject.setRegId(request.getRequest().getRegistrationId());
 			if (Objects.nonNull(request.getRequest().getStatus())
 					&& !StringUtils.equals(uinObject.getStatusCode(), request.getRequest().getStatus())) {
@@ -785,5 +785,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "convertToBytes", e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.idrepository.core.spi.IdRepoService#retrieveIdentityByRid(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Uin retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

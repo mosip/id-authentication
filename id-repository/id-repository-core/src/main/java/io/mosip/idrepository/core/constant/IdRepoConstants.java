@@ -20,7 +20,7 @@ public enum IdRepoConstants {
 	ROOT_PATH("identity"),
 
 	/** The version pattern. */
-	VERSION_PATTERN("^\\d+(\\.\\d+)?$"),
+	VERSION_PATTERN("^v\\d+(\\.\\d+)?$"),
 
 	/** The datetime timezone. */
 	DATETIME_TIMEZONE("mosip.kernel.idrepo.datetime.timezone"),
@@ -44,8 +44,10 @@ public enum IdRepoConstants {
 	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language"),
 
 	/** The json schema file name. */
-	JSON_SCHEMA_FILE_NAME("mosip.kernel.idrepo.json-schema-fileName");
-
+	JSON_SCHEMA_FILE_NAME("mosip.kernel.idrepo.json-schema-fileName"),
+	
+	/** The Json path value */
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.kernel.idrepo.json.path");
 	/** The value. */
 	private final String value;
 

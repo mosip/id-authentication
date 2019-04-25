@@ -56,7 +56,9 @@ public enum IdRepoErrorConstants {
 
 	CONNECTION_TIMED_OUT("KER-IDR-019", "Connection timed out"),
 
-	FILE_NOT_FOUND("KER-IDR-020", "File(s) not found in DFS");
+	FILE_NOT_FOUND("KER-IDR-020", "File(s) not found in DFS"), 
+	
+	INVALID_REGISTRATION_ID("KER-IDR-021","Invalid Registration ID");
 
 	/** The error code. */
 	private final String errorCode;

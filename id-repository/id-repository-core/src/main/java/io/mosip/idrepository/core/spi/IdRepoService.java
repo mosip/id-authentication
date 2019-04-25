@@ -29,7 +29,16 @@ public interface IdRepoService<REQUEST, RESPONSE> {
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	RESPONSE retrieveIdentity(String uin, String filter) throws IdRepoAppException;
+	RESPONSE retrieveIdentityByUin(String uin, String filter) throws IdRepoAppException;
+	/**
+	 * Retrieve identity by RID
+	 * 
+	 * @param rid
+	 * @param filter
+	 * @return the response
+	 * @throws IdRepoAppException  the id repo app exception
+	 */ 
+	RESPONSE retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException;
 
 	/**
 	 * Update identity.
