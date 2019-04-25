@@ -327,12 +327,8 @@ public class LoginController extends BaseController implements Initializable {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		} else {
 
-			isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
-					.getErrorResponseDTOs() != null;
-
-			if (isInitialSetUp || isUserNewToMachine) {
-				userIdPane.setVisible(false);
-				loadLoginScreen(LoginMode.PASSWORD.toString());
+			if (isInitialSetUp) {
+				initialSetUpOrNewUserLaunch();
 
 			} else {
 				try {
@@ -346,87 +342,95 @@ public class LoginController extends BaseController implements Initializable {
 					if (userDetail != null
 							&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
 
-						ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
-
-						if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+						isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
+								.getErrorResponseDTOs() != null;
+						if (isUserNewToMachine) {
+							initialSetUpOrNewUserLaunch();
 						} else {
 
-							// Set Dongle Serial Number in ApplicationContext Map
-							for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
-								ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
-										userMachineMapping.getMachineMaster().getSerialNum());
-							}
+							ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
-							Set<String> roleList = new LinkedHashSet<>();
-
-							userDetail.getUserRole().forEach(roleCode -> {
-								if (roleCode.getIsActive()) {
-									roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
-								}
-							});
-
-							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Validating roles");
-							// Checking roles
-							if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
-									|| roleList.contains(RegistrationConstants.SUPERVISOR)
-									|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
-								generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+							if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+								generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 							} else {
 
-								Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
+								// Set Dongle Serial Number in ApplicationContext Map
+								for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
+									ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
+											userMachineMapping.getMachineMaster().getSerialNum());
+								}
 
-								ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
-										centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+								Set<String> roleList = new LinkedHashSet<>();
 
-								boolean status = getCenterMachineStatus(userDetail);
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
-								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-								loginList = status
-										? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
-										: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
-
-								String fingerprintDisableFlag = getValueFromApplicationContext(
-										RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-								String irisDisableFlag = getValueFromApplicationContext(
-										RegistrationConstants.IRIS_DISABLE_FLAG);
-								String faceDisableFlag = getValueFromApplicationContext(
-										RegistrationConstants.FACE_DISABLE_FLAG);
+								userDetail.getUserRole().forEach(roleCode -> {
+									if (roleCode.getIsActive()) {
+										roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
+									}
+								});
 
 								LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-										"Ignoring FingerPrint login if the configuration is off");
-
-								removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
-								removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
-								removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
-
-								String loginMode = !loginList.isEmpty()
-										? loginList.get(RegistrationConstants.PARAM_ZERO)
-										: null;
-
-								LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-										"Retrieved corresponding Login mode");
-
-								if (loginMode == null) {
-									userIdPane.setVisible(false);
-									errorPane.setVisible(true);
+										"Validating roles");
+								// Checking roles
+								if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
+										|| roleList.contains(RegistrationConstants.SUPERVISOR)
+										|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+									generateAlert(RegistrationConstants.ERROR,
+											RegistrationUIConstants.ROLES_EMPTY_ERROR);
 								} else {
 
-									if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-											&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
-											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-													&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
-											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
-													&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+									Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-										generateAlert(RegistrationConstants.ERROR,
-												RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
-														.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+									ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
+											centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-									} else {
+									boolean status = getCenterMachineStatus(userDetail);
+									sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
+									sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+									loginList = status
+											? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
+											: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
+
+									String fingerprintDisableFlag = getValueFromApplicationContext(
+											RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+									String irisDisableFlag = getValueFromApplicationContext(
+											RegistrationConstants.IRIS_DISABLE_FLAG);
+									String faceDisableFlag = getValueFromApplicationContext(
+											RegistrationConstants.FACE_DISABLE_FLAG);
+
+									LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+											"Ignoring FingerPrint login if the configuration is off");
+
+									removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+									removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+									removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
+
+									String loginMode = !loginList.isEmpty()
+											? loginList.get(RegistrationConstants.PARAM_ZERO)
+											: null;
+
+									LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+											"Retrieved corresponding Login mode");
+
+									if (loginMode == null) {
 										userIdPane.setVisible(false);
-										loadLoginScreen(loginMode);
+										errorPane.setVisible(true);
+									} else {
+
+										if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+												&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
+												|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+														&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+												|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+														&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+
+											generateAlert(RegistrationConstants.ERROR,
+													RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(
+															RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+
+										} else {
+											userIdPane.setVisible(false);
+											loadLoginScreen(loginMode);
+										}
 									}
 								}
 							}
@@ -444,6 +448,11 @@ public class LoginController extends BaseController implements Initializable {
 				}
 			}
 		}
+	}
+
+	private void initialSetUpOrNewUserLaunch() {
+		userIdPane.setVisible(false);
+		loadLoginScreen(LoginMode.PASSWORD.toString());
 	}
 
 	/**
@@ -1167,7 +1176,6 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						String val = null;
-						PublicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
