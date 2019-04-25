@@ -78,13 +78,15 @@ public final class PlatformConstants {
 
 	/** The Constant RPR_UIN_GENERATOR_STAGE. */
 	public static final String RPR_UIN_GENERATOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "UGS-";
-	
+
 	/** The Constant RPR_UIN_GENERATOR_STAGE. */
 	public static final String RPR_AUTHENTICATION = RPR_REGISTRATION_PROCESSOR_PREFIX + "AUT-";
-	
+
 	public static final String RPR_REPROCESSOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RS-";
 
 	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
+
+	public static final String RPR_UTIL = RPR_REGISTRATION_PROCESSOR_PREFIX + "UTL-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.
