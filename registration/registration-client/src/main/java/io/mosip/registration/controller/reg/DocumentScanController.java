@@ -42,6 +42,7 @@ import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,11 +50,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -168,19 +169,6 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private Button backBtn;
 
-	private TextField scannedField;
-
-	private int totalDocument;
-
-	private boolean isPORUploaded;
-
-	private int documentsCount;
-
-	private int counter;
-
-	private boolean isChild;
-
-	private boolean markedAsChild;
 
 	/*
 	 * (non-Javadoc)
@@ -198,13 +186,7 @@ public class DocumentScanController extends BaseController {
 				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
 						.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
-			counter = 0;
-			totalDocument = 0;
-			documentsCount = 0;
-			isPORUploaded = false;
-			scannedField = new TextField();
-			scannedField.setVisible(false);
-
+		
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
@@ -218,13 +200,7 @@ public class DocumentScanController extends BaseController {
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
 			} else {
-				scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-					if (Integer.parseInt(newValue) <= 0) {
-						continueBtn.setDisable(false);
-					} else {
-						continueBtn.setDisable(true);
-					}
-				});
+				continueBtn.setDisable(true);
 			}
 
 			// populateDocumentCategories();
@@ -237,21 +213,9 @@ public class DocumentScanController extends BaseController {
 	}
 
 	/**
-	 * Set for child.
-	 *
-	 * @param isChild
-	 *            the new child
-	 */
-	public void setChild(boolean isChild) {
-		this.isChild = isChild;
-	}
-
-	/**
 	 * To populate the document categories
 	 */
 	protected <T> void populateDocumentCategories() {
-
-		counter++;
 
 		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
@@ -302,6 +266,7 @@ public class DocumentScanController extends BaseController {
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_DISABLE_FLAG))) {
 			documentPane.setVisible(false);
 		}
+		validateDocumentsPane();
 	}
 
 	private Map<String, DocumentDetailsDTO> getDocumentsMapFromSession() {
@@ -342,6 +307,7 @@ public class DocumentScanController extends BaseController {
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
 				comboBox.setPrefWidth(docScanVbox.getWidth() / 2);
+				comboBox.setId(docCategoryCode);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
@@ -359,31 +325,7 @@ public class DocumentScanController extends BaseController {
 				if (applicationContext.isPrimaryLanguageRightToLeft()) {
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 					documentLabel.setAlignment(Pos.CENTER_RIGHT);
-				}
-
-				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					if (counter == 1) {
-						if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
-								&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
-								|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
-										&& docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
-							totalDocument++;
-							scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-						} else {
-							scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-						}
-					}
-				} else {
-					if (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
-						makePORMandatory();
-					}
-					if (counter == 1 && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-							|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
-							|| (isChild && docCategoryCode.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)))) {
-						totalDocument++;
-						scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-					}
-				}
+				}				
 
 				/*
 				 * adding all the dynamically created combo boxes in a map inorder to show it in
@@ -426,44 +368,6 @@ public class DocumentScanController extends BaseController {
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
-		}
-	}
-
-	private void makePORMandatory() {
-		if (counter == 1) {
-			markedAsChild = isChild;
-		} else {
-			if (markedAsChild) {
-				if (!isChild) {
-					if ((isPORUploaded && documentsCount > 2) || (!isPORUploaded && documentsCount == 2)) {
-						totalDocument = 0;
-					} else if (!isPORUploaded && documentsCount == 1) {
-						totalDocument = 1;
-					} else if (documentsCount == 0 || (isPORUploaded && documentsCount == 1)) {
-						totalDocument = 2;
-					}
-					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-					markedAsChild = isChild;
-				}
-			} else {
-				if (isChild) {
-					switch (documentsCount) {
-					case 0:
-						totalDocument = 3;
-						break;
-					case 1:
-						totalDocument = 2;
-						break;
-					case 2:
-						totalDocument = 1;
-						break;
-					default:
-						totalDocument = 0;
-					}
-					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-					markedAsChild = isChild;
-				}
-			}
 		}
 	}
 
@@ -683,27 +587,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
-					&& document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
-					|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
-							&& document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
-				totalDocument--;
-				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-			}
-		} else {
-			if (document.getCode().equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
-				isPORUploaded = true;
-			}
-			if (document.getCode().equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-
-					|| document.getCode().equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
-					|| (isChild && document.getCode().equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT))) {
-				totalDocument--;
-				scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-			}
-			documentsCount++;
-		}
+		validateDocumentsPane();
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
@@ -860,35 +744,24 @@ public class DocumentScanController extends BaseController {
 			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
-			initializePreviewSection();
+			initializePreviewSection();		
 
 			GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
 			String key = ((VBox) gridpane.getParent()).getId();
 			getDocumentsMapFromSession().remove(key);
+			
+			ObservableList<Node> nodes = ((HBox) vboxElement.getParent()).getChildren();
+			for (Node node : nodes) {
+				if(node instanceof ComboBox<?>) {
+					ComboBox<?> document  = (ComboBox<?>) node;
+					document.setValue(null);
+					document.setPromptText(getDocumentName(key));
+				}
+			}	
 
 			vboxElement.getChildren().remove(gridpane);
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				if ((getRegistrationDTOFromSession().getSelectionListDTO().isAddress()
-						&& key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))
-						|| (getRegistrationDTOFromSession().getSelectionListDTO().isName()
-								&& key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT))) {
-					totalDocument++;
-					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-				}
-			} else {
-				if (key.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)) {
-					isPORUploaded = false;
-				}
-				if (key.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
-
-						|| key.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-						|| (isChild && key.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT))) {
-					totalDocument++;
-					scannedField.setText(RegistrationConstants.EMPTY + (totalDocument));
-				}
-				documentsCount--;
-			}
+			validateDocumentsPane();
 		});
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1118,6 +991,27 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
+	}
+	
+	private String getDocumentName(String documentCode) {
+		if(documentCode.equals(RegistrationConstants.POR_DOCUMENT)) {
+			return "Proof of Relationship";
+		} else if(documentCode.equals(RegistrationConstants.POI_DOCUMENT)) {
+			return "Proof of Identity";
+		} else if(documentCode.equals(RegistrationConstants.POA_DOCUMENT)) {
+			return "Proof of Address";
+		} else if(documentCode.equals(RegistrationConstants.DOB_DOCUMENT)) {
+			return "Proof of Birth";
+		}
+		return documentCode;
+	}
+	
+	private void validateDocumentsPane() {
+		if (registrationController.validateDemographicPane(documentScanPane)) {
+			continueBtn.setDisable(false);
+		} else {
+			continueBtn.setDisable(true);
+		}
 	}
 
 	public List<BufferedImage> getScannedPages() {

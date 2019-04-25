@@ -694,6 +694,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			validation.setChild(false);
 			parentDetailPane.setManaged(false);
 			lostUIN = false;
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
@@ -1072,7 +1073,6 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-	@SuppressWarnings("unchecked")
 	private void ageFieldValidations() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1099,7 +1099,6 @@ public class DemographicDetailController extends BaseController {
 														RegistrationConstants.IRIS_DISABLE_FLAG))) {
 									isChild = true;
 									validation.setChild(isChild);
-									documentScanController.setChild(isChild);
 									generateAlert(RegistrationConstants.ERROR,RegistrationUIConstants.PARENT_BIO_MSG);
 
 								} else {
@@ -1118,7 +1117,6 @@ public class DemographicDetailController extends BaseController {
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
 									validation.setChild(isChild);
-									documentScanController.setChild(isChild);
 								}
 							} else {
 								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
@@ -1130,7 +1128,6 @@ public class DemographicDetailController extends BaseController {
 								parentDetailPane.setDisable(true);
 								isChild = false;
 								validation.setChild(isChild);
-								documentScanController.setChild(isChild);
 								parentName.clear();
 								parentRegId.clear();
 								parentRegIdLocalLanguage.clear();

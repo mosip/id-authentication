@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.service.MasterSyncService;
@@ -113,7 +115,7 @@ public class Validations extends BaseController {
 					isValid = false;
 				}
 			} else if (nodeToValidate(notTovalidate, node) && !validateTheNode(pane, node, node.getId(), isValid)) {
-					isValid = false;
+				isValid = false;
 			}
 		}
 		return isValid;
@@ -144,8 +146,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for
-	 * application specific and secondary specific languages.
+	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for application
+	 * specific and secondary specific languages.
 	 *
 	 * @param pane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -168,8 +170,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method
-	 * will be called for each field.
+	 * Pass the node to check for the validation, specific validation method will be
+	 * called for each field.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -258,9 +260,9 @@ public class Validations extends BaseController {
 								messageBundle.getString(RegistrationConstants.BLACKLISTED_2)));
 			} else {
 				generateInvalidValueAlert(parentPane, id,
-						labelBundle.getString(label)+" "+messageBundle.getString(RegistrationConstants.REG_DDC_004),
+						labelBundle.getString(label) + " " + messageBundle.getString(RegistrationConstants.REG_DDC_004),
 						showAlert);
-				if (isPreviousValid &&  !id.contains(RegistrationConstants.ON_TYPE)) {
+				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
 						return s.equals("demoGraphicTextField");
@@ -304,13 +306,21 @@ public class Validations extends BaseController {
 	private boolean validateComboBox(Pane parentPane, ComboBox<?> node, String id, boolean isPreviousValid) {
 		boolean isComboBoxValueValid = false;
 		try {
-			if (id.matches(RegistrationConstants.POR_DOCUMENTS) && !isChild)
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+					&& ((id.matches(RegistrationConstants.POA_DOCUMENT)
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isAddress())
+							|| (id.matches(RegistrationConstants.POI_DOCUMENT)
+									&& !getRegistrationDTOFromSession().getSelectionListDTO().isName())
+							|| id.matches(RegistrationConstants.POR_DOCUMENT))) {
+				return true;
+			}
+			if (getRegistrationDTOFromSession().getSelectionListDTO() == null
+					&& id.matches(RegistrationConstants.POR_DOCUMENT) && !isChild)
 				return true;
 			if (node.isDisabled())
 				return true;
-			if (isLostUIN) {
+			if (isLostUIN)
 				return true;
-			}
 
 			if (node.getValue() == null) {
 				generateAlert(parentPane, id, applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
@@ -322,16 +332,29 @@ public class Validations extends BaseController {
 					});
 					node.getStyleClass().add("demographicComboboxFocused");
 				}
-				
-			} else {
-				node.getStyleClass().removeIf((s) -> {
-					return s.equals("demographicComboboxFocused");
-				});
-				node.getStyleClass().add("demographicCombobox");
 
-				isComboBoxValueValid = true;
+			} else {
+				if (id.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
+						|| id.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+						|| id.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)
+						|| id.equalsIgnoreCase(RegistrationConstants.DOB_DOCUMENT)) {
+					Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
+							.getApplicantDocumentDTO().getDocuments();
+					if (documents.containsKey(id) && documents.get(id) != null) {
+						isComboBoxValueValid = true;
+					}
+				} else {
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demographicComboboxFocused");
+					});
+					node.getStyleClass().add("demographicCombobox");
+
+					isComboBoxValueValid = true;
+				}
 			}
-		} catch (RuntimeException runtimeException) {
+		} catch (
+
+		RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
@@ -344,18 +367,15 @@ public class Validations extends BaseController {
 	 * @param field
 	 *            the {@link TextField} to be validated
 	 * @param isChild
-	 *            the flag to determine whether the individual or applicant is
-	 *            child
+	 *            the flag to determine whether the individual or applicant is child
 	 * @param uinValidator
-	 *            the instance of {@link UinValidator} required to validate the
-	 *            UIN
+	 *            the instance of {@link UinValidator} required to validate the UIN
 	 * @param ridValidator
-	 *            the instance of {@link RidValidator} required to validate the
-	 *            RID
+	 *            the instance of {@link RidValidator} required to validate the RID
 	 * @return <code>true</code> if UIN or RID is valid, else <code>false</code>
 	 */
-	public boolean validateUinOrRid(TextField uinId, TextField regId , boolean isChild, UinValidator<String> uinValidator,
-			RidValidator<String> ridValidator) {
+	public boolean validateUinOrRid(TextField uinId, TextField regId, boolean isChild,
+			UinValidator<String> uinValidator, RidValidator<String> ridValidator) {
 		boolean isIdValid = false;
 
 		if (isChild) {
@@ -369,7 +389,7 @@ public class Validations extends BaseController {
 					uinId.requestFocus();
 				}
 			} else {
-				if (getRegistrationDTOFromSession().getSelectionListDTO() == null  && !regId.isDisabled()) {
+				if (getRegistrationDTOFromSession().getSelectionListDTO() == null && !regId.isDisabled()) {
 					try {
 						isIdValid = ridValidator.validateId(regId.getText());
 					} catch (InvalidIDException invalidRidException) {
