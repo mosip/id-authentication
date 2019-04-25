@@ -2,7 +2,9 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class contains the constants used in Registration application
@@ -878,6 +880,8 @@ public class RegistrationConstants {
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
 	public static final String FINGER = "finger";
+	public static final String HAND = "Hand";
+	public static final String IRIS_LOWERCASE = "Iris";
 	public static final String FINGERPRINT = "Fingerprint";
 	public static final String FINGERPRINT_UPPERCASE = "FINGERPRINT";
 	public static final String LEFTPALM = "leftSlap";
@@ -909,8 +913,10 @@ public class RegistrationConstants {
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
 	public static final String THUMB = "Thumb";
-	public static final String LEFT_HAND = "Left hand ";
-	public static final String RIGHT_HAND = "Right hand ";
+	public static final String LEFT_HAND = "Left Hand ";
+	public static final String RIGHT_HAND = "Right Hand ";
+	public static final String RIGHT_IRIS = "Right Iris ";
+	public static final String LEFT_IRIS = "Left Iris ";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
 			"/UserOnboard/leftHand/leftIndex/", "/UserOnboard/leftHand/leftLittle/",
 			"/UserOnboard/leftHand/leftMiddle/", "/UserOnboard/leftHand/leftRing/" };
@@ -922,6 +928,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final Set<String> BIO_TYPE = new HashSet<>(Arrays.asList(RegistrationConstants.HAND,RegistrationConstants.THUMB));
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";

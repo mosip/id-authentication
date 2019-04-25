@@ -6,8 +6,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,35 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/** The iris facade. */
 	@Autowired
 	private IrisFacade irisFacade;
+	
+	private static final Map<String, String[]> bioMap = createMap();
+
+	private static Map<String, String[]> createMap() {
+		Map<String, String[]> bioMap = new HashMap<>();
+		bioMap.put(RegistrationConstants.RIGHT_HAND,
+				new String[] { RegistrationConstants.RIGHT_HAND, RegistrationConstants.RIGHTPALM_IMG_PATH,
+						RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD,
+						RegistrationConstants.FINGERPRINT_RETRIES_COUNT });
+		
+		bioMap.put(RegistrationConstants.LEFT_HAND,
+				new String[] { RegistrationConstants.LEFT_HAND, RegistrationConstants.LEFTPALM_IMG_PATH,
+						RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD,
+						RegistrationConstants.FINGERPRINT_RETRIES_COUNT });
+		
+		bioMap.put(RegistrationConstants.THUMB,
+				new String[] { RegistrationConstants.THUMB, RegistrationConstants.THUMB_IMG_PATH,
+						RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD,
+						RegistrationConstants.FINGERPRINT_RETRIES_COUNT });
+		
+		bioMap.put(RegistrationConstants.RIGHT_IRIS,
+				new String[] { RegistrationConstants.RIGHT_IRIS, RegistrationConstants.RIGHT_IRIS_IMG_PATH,
+						RegistrationConstants.IRIS_THRESHOLD, RegistrationConstants.IRIS_RETRY_COUNT });
+		
+		bioMap.put(RegistrationConstants.LEFT_IRIS,
+				new String[] { RegistrationConstants.LEFT_IRIS, RegistrationConstants.LEFT_IRIS_IMG_PATH,
+						RegistrationConstants.IRIS_THRESHOLD, RegistrationConstants.IRIS_RETRY_COUNT });
+		return bioMap;
+	}	
 
 	/*
 	 * (non-Javadoc)
@@ -145,7 +176,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		biometricBox.setVisible(false);	
 		retryBox.setVisible(false);
 		biometricTypecombo.getItems().removeAll(biometricTypecombo.getItems());
-		biometricTypecombo.getItems().addAll("RightHand", "LeftHand", "Thumbs", "RightIris", "LeftIris");
+		biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_HAND, RegistrationConstants.LEFT_HAND, RegistrationConstants.THUMB, RegistrationConstants.RIGHT_IRIS, RegistrationConstants.LEFT_IRIS);
 		continueBtn.setDisable(true);
 		
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -163,32 +194,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying biometrics to capture");
 						
-		switch (biometricTypecombo.getValue()) {
-		case "RightHand":
-			updateBiometric("Right Hand", RegistrationConstants.RIGHTPALM_IMG_PATH,
-					RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD,
-					RegistrationConstants.FINGERPRINT_RETRIES_COUNT);
-			break;
-		case "LeftHand":
-			updateBiometric("Left Hand", RegistrationConstants.LEFTPALM_IMG_PATH,
-					RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD,
-					RegistrationConstants.FINGERPRINT_RETRIES_COUNT);
-			break;
-		case "Thumbs":
-			updateBiometric("Thumbs", RegistrationConstants.THUMB_IMG_PATH,
-					RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD,
-					RegistrationConstants.FINGERPRINT_RETRIES_COUNT);
-			break;
-		case "RightIris":
-			updateBiometric("Right Iris", RegistrationConstants.RIGHT_IRIS_IMG_PATH,
-					RegistrationConstants.IRIS_THRESHOLD, RegistrationConstants.IRIS_RETRY_COUNT);
-			break;
-		case "LeftIris":
-			updateBiometric("Left Iris", RegistrationConstants.LEFT_IRIS_IMG_PATH, RegistrationConstants.IRIS_THRESHOLD,
-					RegistrationConstants.IRIS_RETRY_COUNT);
-			break;
-		default:
-
+		if(bioMap.containsKey(biometricTypecombo.getValue())) {
+			String[] values = bioMap.get(biometricTypecombo.getValue());
+			updateBiometric(values[0], values[1], values[2], values[3]);
 		}
 		
 		biometricBox.setVisible(true);	
@@ -211,9 +219,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Displaying Scan popup for capturing biometrics");
 		
 		String headerText = "";
-		if(biometricType.getText().contains("Hand") || biometricType.getText().contains("Thumbs")) {
+		if(RegistrationConstants.BIO_TYPE.contains(biometricType.getText())) {
 			headerText = RegistrationUIConstants.FINGERPRINT;
-		} else if(biometricType.getText().contains("Iris")) {
+		} else if(biometricType.getText().contains(RegistrationConstants.IRIS_LOWERCASE)) {
 			headerText = RegistrationUIConstants.IRIS_SCAN;
 		}
 		scanPopUpViewController.init(this, headerText);
@@ -235,22 +243,22 @@ public class GuardianBiometricsController extends BaseController implements Init
 			LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scan process started for capturing biometrics");
 			
-			if (biometricType.getText().equalsIgnoreCase("Right Hand")) {
+			if (biometricType.getText().equalsIgnoreCase(RegistrationConstants.RIGHT_HAND)) {
 				scanFingers(RegistrationConstants.RIGHTPALM,
 						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
-			} else if (biometricType.getText().equalsIgnoreCase("Left Hand")) {
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationConstants.LEFT_HAND)) {
 				scanFingers(RegistrationConstants.LEFTPALM,
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
-			} else if (biometricType.getText().equalsIgnoreCase("Thumbs")) {
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationConstants.THUMB)) {
 				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD,
 						popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
-			} else if (biometricType.getText().equalsIgnoreCase("Right Iris")) {
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationConstants.RIGHT_IRIS)) {
 				scanIris(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE), popupStage,
 						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
-			} else if (biometricType.getText().equalsIgnoreCase("Left Iris")) {
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationConstants.LEFT_IRIS)) {
 				scanIris(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE), popupStage,
 						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			}
