@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.util.UinFilterUtil;
 
 /**
@@ -19,8 +19,9 @@ import io.mosip.kernel.uingenerator.util.UinFilterUtil;
  * @since 1.0.0
  *
  */
+
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = UinGeneratorTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = UinGeneratorConfiguration.class, loader = AnnotationConfigContextLoader.class)
 public class UinFilterUtilTest {
 
 	@Value("${mosip.kernel.uin.test.valid-uin}")

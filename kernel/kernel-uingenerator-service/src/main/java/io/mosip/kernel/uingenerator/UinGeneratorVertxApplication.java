@@ -47,8 +47,7 @@ public class UinGeneratorVertxApplication {
 	/**
 	 * main method for the application
 	 * 
-	 * @param args
-	 *            the argument
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
 		loadPropertiesFromConfigServer();
@@ -73,9 +72,9 @@ public class UinGeneratorVertxApplication {
 			ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
 			configStores.forEach(configRetrieverOptions::addStore);
 			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
+			LOGGER.info("Retrieving configuration from Spring-Config-Server");
 			retriever.getConfig(json -> {
 				if (json.succeeded()) {
-					LOGGER.info("Retrieving configuration from Spring-Config-Server");
 					JsonObject jsonObject = json.result();
 					if (jsonObject != null) {
 						jsonObject.iterator().forEachRemaining(sourceValue -> System.setProperty(sourceValue.getKey(),
@@ -86,7 +85,7 @@ public class UinGeneratorVertxApplication {
 					vertx.close();
 					startApplication();
 				} else {
-					LOGGER.error(json.cause().getMessage());
+					LOGGER.error(json.cause().getMessage() + "\n");
 					json.otherwiseEmpty();
 					retriever.close();
 					vertx.close();
@@ -94,7 +93,8 @@ public class UinGeneratorVertxApplication {
 				}
 			});
 		} catch (Exception exception) {
-			LOGGER.error(exception.getMessage());
+			LOGGER.error(exception.getMessage() + "\n");
+			startApplication();
 		}
 	}
 

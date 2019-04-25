@@ -4,18 +4,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 
 /**
  * @author Megha Tanga
@@ -23,8 +25,10 @@ import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
  * 
  */
 
+@SpringBootTest
+@TestPropertySource({ "classpath:application.properties", "classpath:bootstrap.properties" })
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = UinGeneratorTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = UinGeneratorConfiguration.class, loader = AnnotationConfigContextLoader.class)
 public class UinGeneratorServiceTest {
 
 	@Autowired
