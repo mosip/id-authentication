@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -41,8 +42,6 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AgeMatchingStrategy.class);
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant AGE Matching strategy. */
 	private static final String TYPE = "AgeMatchingStrategy";
@@ -64,7 +63,7 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 	 * @param e the e
 	 */
 	private static void logError(NumberFormatException e) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside AgeMathing Strategy", ExceptionUtils.getStackTrace(e));
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside AgeMathing Strategy", ExceptionUtils.getStackTrace(e));
 	}
 
 	/*

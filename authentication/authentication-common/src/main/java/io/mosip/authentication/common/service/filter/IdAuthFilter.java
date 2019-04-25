@@ -25,6 +25,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.common.service.policy.dto.KYCAttributes;
 import io.mosip.authentication.common.service.policy.dto.Policies;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -76,11 +77,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant EXPIRY_DT. */
 	private static final String EXPIRY_DT = "expiryDt";
 
-	/** The Constant STATUS. */
-	private static final String STATUS = "status";
-
-	/** The Constant REQUEST. */
-	private static final String REQUEST = "request";
 
 	/** The Constant KYC. */
 	private static final String KYC = null;
@@ -95,9 +91,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
+			requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
 			requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-			if (null != requestBody.get(REQUEST)) {
+			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				if (null != request.get(SECRET_KEY)) {
 					SecretKey secretKey = (SecretKey) request.get(SECRET_KEY);
@@ -107,7 +103,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 							mapper.writeValueAsString(request));
 
 				}
-				requestBody.replace(REQUEST, request);
+				requestBody.replace(IdAuthCommonConstants.REQUEST, request);
 			}
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
@@ -171,7 +167,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
 			}
-			String lkStatus = String.valueOf(licenseKeyMap.get(STATUS));
+			String lkStatus = String.valueOf(licenseKeyMap.get(IdAuthCommonConstants.STATUS));
 			if (!lkStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED);
 			}
@@ -203,7 +199,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (null == policyId || policyId.equalsIgnoreCase("")) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED);
 			}
-			String partnerStatus = partnerIdMap.get(STATUS);
+			String partnerStatus = partnerIdMap.get(IdAuthCommonConstants.STATUS);
 			if (partnerStatus != null && !partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
 			}
@@ -322,7 +318,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException, IOException {
 
-		Object value = Optional.ofNullable(requestBody.get(REQUEST)).filter(obj -> obj instanceof Map)
+		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
 				.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
 				.orElse(Collections.emptyList());
 		List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
@@ -385,7 +381,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
 					AuthTypeDTO.class);
-			Object value = Optional.ofNullable(requestBody.get(REQUEST)).filter(obj -> obj instanceof Map)
+			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
 					.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
 					.orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),

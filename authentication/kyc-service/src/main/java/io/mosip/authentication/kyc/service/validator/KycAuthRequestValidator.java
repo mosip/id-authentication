@@ -1,5 +1,6 @@
 package io.mosip.authentication.kyc.service.validator;
 
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -17,8 +18,9 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.EkycAuthType;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -49,20 +51,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
 
-	/** The Constant AuthRequest. */
-	private static final String AUTH_REQUEST = "requestedAuth";
 
-	/** The Constant INVALID_INPUT_PARAMETER. */
-	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
 
-	/** The Constant VALIDATE. */
-	private static final String VALIDATE = "VALIDATE";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SESSION_ID";
-
-	/** The Constant eKycAuthType. */
-	private static final String REQUESTEDAUTH = "requestedAuth";
+	
 
 	/** The environment. */
 	@Autowired
@@ -106,10 +97,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			}
 
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), AUTH_REQUEST));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
+			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), IdAuthCommonConstants.REQUESTEDAUTH));
 		}
 
 	}
@@ -134,8 +125,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			
 			if(!allowedLang.contains(secLangCode)) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						INVALID_INPUT_PARAMETER + SECONDARY_LANG_CODE);
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+						IdAuthCommonConstants.INVALID_INPUT_PARAMETER + SECONDARY_LANG_CODE);
 				errors.rejectValue(SECONDARY_LANG_CODE, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
 						new Object[] { SECONDARY_LANG_CODE.concat(" : " + secLangCode) },
 						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
@@ -164,10 +155,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 				ekycAuthType -> ekycAuthType.getAuthTypePredicate().test(kycAuthRequestDTO.getRequestedAuth()));
 		boolean isValidAuthtype = noNotAllowedAuthTypeEnabled && anyAllowedAuthTypeEnabled;
 		if (!isValidAuthtype) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
 			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(at -> at.getType()).collect(Collectors.joining(","));
-			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
+			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
 					.format(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage(), notAllowedAuthTypesStr));
 		}
 

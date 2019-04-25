@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -26,9 +27,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 public class VIDController {
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(VIDController.class);
@@ -60,11 +58,11 @@ public class VIDController {
 			uinValidator.validateId(uin);
 			vidResponse = vidService.generateVID(uin);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "generateVID",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateVID",
 					e.getErrorTexts() == null || e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getMessage(), e);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "generateVID", e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateVID", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
 		return vidResponse;

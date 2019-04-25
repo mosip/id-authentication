@@ -27,8 +27,9 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -65,13 +66,6 @@ public class NotificationServiceImpl implements NotificationService {
 	private static final String TIME = "time";
 	/** The Constant DATE. */
 	private static final String DATE = "date";
-
-	/** Property Name for Auth Email Subject Template */
-	/** The Constant STATUS. */
-	private static final String STATUS = "status";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SessionID";
 
 	@Autowired
 	private Environment env;
@@ -138,9 +132,9 @@ public class NotificationServiceImpl implements NotificationService {
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
 		if (authResponseDTO.getResponse().isAuthStatus()) {
-			values.put(STATUS, "Passed");
+			values.put(IdAuthCommonConstants.STATUS, "Passed");
 		} else {
-			values.put(STATUS, "Failed");
+			values.put(IdAuthCommonConstants.STATUS, "Failed");
 		}
 
 		String phoneNumber = null;
@@ -195,7 +189,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE));
 		} catch (BaseCheckedException e) {
-			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
 	}
 

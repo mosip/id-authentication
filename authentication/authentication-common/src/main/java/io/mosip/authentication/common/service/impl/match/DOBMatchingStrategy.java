@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -87,8 +88,6 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(DOBMatchingStrategy.class);
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant DOB Matching strategy. */
 	private static final String TYPE = "DOBMatchingStrategy";
@@ -99,7 +98,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	 * @param errorConstants the error constants
 	 */
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside DOB Mathing Strategy" + errorConstants.getErrorCode(),
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside DOB Mathing Strategy" + errorConstants.getErrorCode(),
 				errorConstants.getErrorMessage());
 	}
 

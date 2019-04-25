@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -35,10 +36,7 @@ public class IdRepoManager {
 	 */
 	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
 			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), IdRepoErrorConstants.INVALID_UIN.getErrorCode());
-	/**
-	 * The Constant status
-	 */
-	private static final String STATUS_KEY = "status";
+	
 	/**
 	 * The Rest Helper
 	 */
@@ -83,7 +81,7 @@ public class IdRepoManager {
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			if (environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_IDREPO_STATUS_REGISTERED)
-					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(STATUS_KEY))) {
+					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(IdAuthCommonConstants.STATUS))) {
 				response.put("uin", uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);

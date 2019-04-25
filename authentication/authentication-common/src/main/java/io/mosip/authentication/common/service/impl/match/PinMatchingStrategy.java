@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -36,9 +37,6 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant Pin Matching strategy. */
 	private static final String TYPE = "PinMatchingStrategy";
@@ -87,7 +85,7 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 	 * @param errorConstants the error constants
 	 */
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside PinMatchingStrategy" + errorConstants.getErrorCode(),
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside PinMatchingStrategy" + errorConstants.getErrorCode(),
 				errorConstants.getErrorMessage());
 	}
 

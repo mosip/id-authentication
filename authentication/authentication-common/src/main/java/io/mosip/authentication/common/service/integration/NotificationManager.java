@@ -8,6 +8,7 @@ import org.springframework.util.MultiValueMap;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.SmsRequestDto;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -25,10 +26,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class NotificationManager {
 
-	/**
-	 * The Session id constant
-	 */
-	private static final String SESSION_ID = "SESSION_ID";
 
 	/** Rest Helper */
 	@Autowired
@@ -60,7 +57,7 @@ public class NotificationManager {
 					RestRequestFactory.createRequest(smsRequestDto), String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error(SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 	}
@@ -87,7 +84,7 @@ public class NotificationManager {
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
 			// FIXME change error code
-			logger.error(SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 	}

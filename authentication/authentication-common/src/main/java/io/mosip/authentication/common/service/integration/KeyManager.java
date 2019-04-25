@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.SymmetricKeyRequestDto;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -67,14 +68,10 @@ public class KeyManager {
 	/** The Constant SYMMETRIC_ALGORITHM_NAME. */
 	private static final String SYMMETRIC_ALGORITHM_NAME = "AES";
 
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
 
-	/** The Constant REQUEST. */
-	private static final String REQUEST = "request";
 	
 	/** The secure random. */
 	private static  SecureRandom secureRandom;
@@ -118,14 +115,14 @@ public class KeyManager {
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
-			byte[] encryptedRequest = (byte[]) requestBody.get(REQUEST);
+			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(SESSION_KEY))
 					.map(String::valueOf);
 			if (encryptedSessionKey.isPresent()) {
 				request = decipherData(mapper, encryptedRequest, encryptedSessionKey.get());
 			}
 		} catch (IOException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
@@ -168,16 +165,16 @@ public class KeyManager {
 				decryptedData=symmetricDecrypt(secretKey, encryptedRequest);
 		}
 		catch (RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				handleRestError(responseBody.get());
 			}
 
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		} catch (IDDataValidationException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 

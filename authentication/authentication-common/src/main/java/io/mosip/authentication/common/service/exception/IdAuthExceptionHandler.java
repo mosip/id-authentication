@@ -22,6 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
@@ -61,8 +62,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The Constant EVENT_EXCEPTION. */
 	private static final String EVENT_EXCEPTION = "Exception";
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
@@ -86,13 +85,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(), ex.toString() + "\n Request : "
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(), ex.toString() + "\n Request : "
 				+ request + "\n Status returned : " + HttpStatus.OK + "\n" + ExceptionUtils.getStackTrace(ex));
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
 		return new ResponseEntity<>(buildExceptionResponse(unknownException, servletRequest), HttpStatus.OK);
 	}
@@ -116,10 +115,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleExceptionInternal",
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleExceptionInternal",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
-		mosipLogger.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
 						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.OK).toString() + "\n"
@@ -145,10 +144,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdAuthenticationAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationBaseException ex, WebRequest request) {
 
-		mosipLogger.debug(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, "Entered handleIdUsageException",
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, "Entered handleIdUsageException",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
-		mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
 
 		Throwable e = ex;
@@ -169,7 +168,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
-		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String servletPath = request.getServletPath();
 		String[] servletPathArray = servletPath.split("/");
@@ -201,7 +200,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				}
 				
 				response =  frameErrorResponse(requestReceived, errors);
-				mosipLogger.debug(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), response.toString());
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(), response.toString());
 				return response;
 		}
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -34,8 +35,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class OTPController {
 
 	private static final String GENERATE_OTP = "generateOTP";
-
-	private static final String DEAFULT_SESSION_ID = "sessionId";
 
 	private static Logger logger = IdaLogger.getLogger(OTPController.class);
 
@@ -67,14 +66,14 @@ public class OTPController {
 		try {
 			DataValidationUtil.validate(errors);
 			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto,partnerId);
-			logger.info(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					otpResponseDTO.getResponseTime());
 			return otpResponseDTO;
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP, e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP, e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
