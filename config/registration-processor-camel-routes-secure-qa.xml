@@ -87,30 +87,9 @@
 			</otherwise>
 		</choice>
 	</route>
-	<route id="demo-dedupe-->bio-dedupe route">
+
+	<route id="demo-dedupe-->uin-generation route">
 		<from uri="vertx:demo-dedupe-bus-out" />
-		<log
-			message="demo-dedupe-->bio-dedupe route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
-				<to uri="vertx:manual-verification-bus-in"/>
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:bio-dedupe-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<to uri="vertx:retry-bus-in" />
-			</when>
-			<otherwise>
-				<to uri="vertx:error-bus-in" />
-			</otherwise>
-		</choice>
-	</route>
-	<route id="bio-dedupe-->uin-generation route">
-		<from uri="vertx:bio-dedupe-bus-out" />
 		<log
 			message="bio-dedupe-->uin-generation route ${bodyAs(String)}" />
 		<choice>
@@ -169,4 +148,4 @@
 			</otherwise>
 		</choice>
 	</route>
-	</routes>
+</routes>

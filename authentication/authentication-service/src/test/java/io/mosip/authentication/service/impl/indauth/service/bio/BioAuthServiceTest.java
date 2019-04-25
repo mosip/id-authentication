@@ -112,6 +112,7 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentIrisProvider", cogentIrisProvider);
@@ -336,9 +337,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -590,8 +589,6 @@ public class BioAuthServiceTest {
 	 * Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(),
 	 * Mockito.any())) .thenReturn(cbeffValueMap); AuthStatusInfo validateBioDetails
 	 * = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
-	 * System.err.println(validateBioDetails.isStatus());
-	 * System.err.println(validateBioDetails.getErr()); }
 	 */
 
 	@Test
@@ -651,9 +648,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Right_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -871,6 +866,7 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("FACE");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
@@ -917,6 +913,7 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("FACE");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
@@ -957,6 +954,7 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);

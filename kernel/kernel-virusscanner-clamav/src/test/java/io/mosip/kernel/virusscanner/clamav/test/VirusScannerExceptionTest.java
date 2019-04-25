@@ -55,8 +55,8 @@ public class VirusScannerExceptionTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("files/0000.zip").getFile());
 		folder = new File(classLoader.getResource("files").getFile());
-		doc= new File(classLoader.getResource("files/test1.docx").getFile());
-	    byteArray = new byte[(int) doc.length()]; 
+		doc = new File(classLoader.getResource("files/test1.docx").getFile());
+		byteArray = new byte[(int) doc.length()];
 	}
 
 	@Test(expected = VirusScannerException.class)
@@ -70,13 +70,13 @@ public class VirusScannerExceptionTest {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(any(FileInputStream.class));
 		virusScannerService.scanFolder(folder.getAbsolutePath());
 	}
-	
+
 	@Test(expected = VirusScannerException.class)
 	public void serviceUnavailableForScanDocTest() throws ClamavException, IOException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(any(InputStream.class));
 		virusScannerService.scanDocument(byteArray);
 	}
-	
+
 	@Test(expected = VirusScannerException.class)
 	public void serviceUnavailableForScanDocumentTest() throws ClamavException, IOException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(any(FileInputStream.class));

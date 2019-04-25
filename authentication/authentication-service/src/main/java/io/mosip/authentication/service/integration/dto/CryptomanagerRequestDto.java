@@ -6,13 +6,8 @@
  */
 package io.mosip.authentication.service.integration.dto;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-//import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

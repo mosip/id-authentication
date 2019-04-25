@@ -5,7 +5,6 @@
 package io.mosip.preregistration.documents.controller;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.swagger.annotations.Api;
@@ -108,13 +106,13 @@ public class DocumentController {
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> copyDocument(
 			@Valid @PathVariable(required = true, value = "preRegistrationId") String preRegistrationId,
 			@Valid @RequestParam(required = true) String catCode,
-			@Valid @RequestParam(required = true) String sourcePrId) {
+			@Valid @RequestParam(required = true) String sourcePreId) {
 
 		log.info("sessionId", "idType", "id",
 				"In copyDocument method of document controller to copy the document for request " + catCode + ","
-						+ sourcePrId + "," + preRegistrationId);
+						+ sourcePreId + "," + preRegistrationId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(documentUploadService.copyDocument(catCode, sourcePrId, preRegistrationId));
+				.body(documentUploadService.copyDocument(catCode, sourcePreId, preRegistrationId));
 	}
 
 	/**

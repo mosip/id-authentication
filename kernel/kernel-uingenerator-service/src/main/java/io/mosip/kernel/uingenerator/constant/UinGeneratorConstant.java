@@ -7,6 +7,7 @@ package io.mosip.kernel.uingenerator.constant;
  * Constants for Uin generator
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @author Megha Tanga
  * @since 1.0.0
  *
@@ -45,7 +46,7 @@ public final class UinGeneratorConstant {
 	/**
 	 * The string field V1_0_UIN
 	 */
-	public static final String V1_0_UIN = "/v1.0/uin";
+	public static final String VUIN = "/uin";
 
 	/**
 	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS
@@ -150,5 +151,26 @@ public final class UinGeneratorConstant {
 	 * The string field 9
 	 */
 	public static final String NINE = "9";
-
+	
+	/**
+	 * The string field ZERO_TO_NINE
+	 */
+	public static final String ZERO_TO_NINE = "1234567890";
+	
+	/**
+	 * The string field CONTENTTYPE
+	 */
+	public static final String CONTENTTYPE = "application/json";
+	
+	/**
+	 * The string field HEALTH_ENDPOINT
+	 */
+	public static final String HEALTH_ENDPOINT = "/actuator/health";
+	
+	/**
+	 * The string field current working directory
+	 */
+	public static final String CURRENT_WORKING_DIRECTORY = "user.dir";
+	
+	public static final String APPLICATION_JSON = "application/json";
 }

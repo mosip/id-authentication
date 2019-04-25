@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -50,8 +50,7 @@ public class DeviceSpecificationController {
 	/**
 	 * Function to fetch list of device specification details based on language code
 	 * 
-	 * @param langCode
-	 *            pass language code as String
+	 * @param langCode pass language code as String
 	 * 
 	 * @return DeviceSpecificationResponseDto all device Specification details based
 	 *         on given language code
@@ -78,10 +77,8 @@ public class DeviceSpecificationController {
 	 * Function to fetch list of device specification details based on language code
 	 * and device Type Code
 	 * 
-	 * @param langCode
-	 *            pass language code as String
-	 * @param deviceTypeCode
-	 *            pass deviceTypeCode as String
+	 * @param langCode       pass language code as String
+	 * @param deviceTypeCode pass deviceTypeCode as String
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
@@ -105,8 +102,7 @@ public class DeviceSpecificationController {
 	/**
 	 * Post API to insert a new row of DeviceSpecification data
 	 * 
-	 * @param deviceSpecification
-	 *            input parameter deviceRequestDto
+	 * @param deviceSpecification input parameter deviceRequestDto
 	 * 
 	 * @return {@link IdResponseDto}
 	 */

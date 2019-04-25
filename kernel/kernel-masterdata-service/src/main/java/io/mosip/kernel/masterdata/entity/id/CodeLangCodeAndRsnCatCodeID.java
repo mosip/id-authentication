@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 
 public class CodeLangCodeAndRsnCatCodeID implements Serializable {
 
-
 	/**
 	 * 
 	 */

@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -62,7 +63,10 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final String REQUEST = "request";
 
 	/** The Constant MOSIP_IDA_API_IDS. */
-	private static final String MOSIP_IDA_API_IDS = "mosip.ida.api.ids.";
+	private static final String MOSIP_IDA_API_ID = "mosip.ida.api.id.";
+	
+	/** The Constant MOSIP_IDA_API_VERSION. */
+	private static final String MOSIP_IDA_API_VERSION = "mosip.ida.api.version.";
 
 	/** The Constant ID. */
 	private static final String ID = "id";
@@ -207,9 +211,9 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
-		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper)));
+		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVersion(Objects.nonNull(requestMap) && requestMap.get(VERSION) instanceof String ? (String) requestMap.get(VERSION) : null);
+		authResponseDTO.setVersion(env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
 				new TypeReference<Map<String, Object>>() {
 				});
@@ -317,10 +321,9 @@ public abstract class BaseIDAFilter implements Filter {
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		
-			String id = fetchId(requestWrapper);
+			String id = fetchId(requestWrapper, MOSIP_IDA_API_ID);
 			requestWrapper.resetInputStream();
-			if (Objects.nonNull(requestBody) && !requestBody.isEmpty() && requestBody.containsKey(ID)
-					&& requestBody.containsKey(VERSION)) {
+			if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
 				validateId(requestBody, id);
 				validateVersion(requestBody);
 			}
@@ -333,13 +336,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestWrapper the {@link ResettableStreamHttpServletRequest}
 	 * @return the string
 	 */
-	private String fetchId(ResettableStreamHttpServletRequest requestWrapper) {
+	private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
 		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
 		if ((!StringUtils.isEmpty(url)) && (!StringUtils.isEmpty(contextPath))) {
 			String[] splitedUrlByContext = url.split(contextPath);
-			id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
+			id = attribute + splitedUrlByContext[1].split("/")[1];
 		}
 		return id;
 	}
@@ -355,9 +358,12 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private void validateVersion(Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		String verFromRequest = (String) requestBody.get(VERSION);
+		String verFromRequest = requestBody.containsKey(VERSION) ? (String) requestBody.get(VERSION) : null;
+		if(StringUtils.isEmpty(verFromRequest)) {
+			handleException(VERSION, false);
+		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches()) {
-			exceptionHandling(VERSION);
+			handleException(VERSION, true);
 		}
 	}
 
@@ -369,9 +375,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
-		String idFromRequest = (String) requestBody.get(ID);
-		if (Objects.isNull(id) || !env.getProperty(id).equals(idFromRequest)) {
-			exceptionHandling(ID);
+		String idFromRequest = requestBody.containsKey(ID) ? (String) requestBody.get(ID) : null;
+		String property = env.getProperty(id);
+		if(StringUtils.isEmpty(idFromRequest)) {
+			handleException(ID, false);
+		}
+		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+			handleException(ID, true);
 		}
 	}
 
@@ -382,12 +392,20 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param type the type is either ID or Version
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void exceptionHandling(String type) throws IdAuthenticationAppException {
-		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-		throw new IdAuthenticationAppException(
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
+	private void handleException(String type, boolean isPresent) throws IdAuthenticationAppException {
+		if(!isPresent) {
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), type));
+		} else {			
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
+		}
 	}
 
 	/**
@@ -407,13 +425,10 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
-			String version = null;
-			if (Objects.nonNull(requestBody) && requestBody.get(VERSION) instanceof String) {
-				version = (String) requestBody.get(VERSION);
-			}
-			responseMap.replace(VERSION, version);
-			String idType = Objects.nonNull(requestBody)? (String) requestBody.get(ID) : null;
-			responseMap.put(ID, idType);
+			requestWrapper.resetInputStream();
+			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
+			requestWrapper.resetInputStream();
+			responseMap.put(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;
@@ -473,7 +488,10 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(requestBody, new TypeReference<Map<String, Object>>() {});
+			String reqStr = IOUtils.toString(requestBody, Charset.defaultCharset());
+			//requestBody empty for service like VID
+			return reqStr.isEmpty() ? null : mapper.readValue(reqStr, new TypeReference<Map<String, Object>>() {
+			});
 		} catch (IOException | ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);

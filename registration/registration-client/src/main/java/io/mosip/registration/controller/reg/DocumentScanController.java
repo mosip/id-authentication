@@ -30,6 +30,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
@@ -137,6 +139,12 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	@Autowired
 	private MasterSyncService masterSyncService;
@@ -146,6 +154,9 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
+	
+	@Autowired
+	private DemographicDetailController demographicDetailController;
 
 	private List<BufferedImage> docPages;
 
@@ -996,11 +1007,13 @@ public class DocumentScanController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		biometricExceptionController.disableNextBtn();
+		fingerPrintCaptureController.clearImage();
+		irisCaptureController.clearIrisBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
 				updateUINMethodFlow();
-
+				demographicDetailController.saveDetail();
 				registrationController.showUINUpdateCurrentPage();
 
 			}

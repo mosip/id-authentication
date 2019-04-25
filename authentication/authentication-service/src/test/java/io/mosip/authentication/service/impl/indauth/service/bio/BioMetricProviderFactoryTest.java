@@ -18,10 +18,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
-import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 /**
  * The Class BioMetricProviderFactoryTest.
@@ -61,43 +59,18 @@ public class BioMetricProviderFactoryTest {
 		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof CogentIrisProvider);
 	}
 	
-	@Test
-	public void getBiometricProviderTest2() {
-		DataDTO bioInfo = new DataDTO();
-		bioInfo.setBioType("IIR");
-		bioInfo.setDeviceProviderID("morpho");
-		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof MorphoIrisProvider);
-	}
 	
 	@Test
 	public void getBiometricProviderTest3() {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("IIR");
-		bioInfo.setDeviceProviderID("empty");
 		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof CogentIrisProvider);
-	}
-	
-	@Test
-	public void getBiometricProviderTest4() {
-		DataDTO bioInfo = new DataDTO();
-		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("cogent");
-		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof CogentFingerprintProvider);
-	}
-	
-	@Test
-	public void getBiometricProviderTest5() {
-		DataDTO bioInfo = new DataDTO();
-		bioInfo.setBioType("FIR");
-		bioInfo.setDeviceProviderID("cogent");
-		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof CogentFingerprintProvider);
 	}
 	
 	@Test
 	public void getBiometricProviderTest6() {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FIR");
-		bioInfo.setDeviceProviderID("mantra");
 		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof MantraFingerprintProvider);
 	}
 	
@@ -105,7 +78,6 @@ public class BioMetricProviderFactoryTest {
 	public void getBiometricProviderTest7() {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("mantra");
 		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof MantraFingerprintProvider);
 	}
 	
@@ -113,7 +85,6 @@ public class BioMetricProviderFactoryTest {
 	public void getBiometricProviderTest8() {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FIR");
-		bioInfo.setDeviceProviderID("empty");
 		assertTrue(bioMetricProviderFactory.getBiometricProvider(bioInfo) instanceof MantraFingerprintProvider);
 	}
 	

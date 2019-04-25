@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 public class BlacklistedWordListRequestDto {
 
 	private List<String> blacklistedwords;
-	
+
 }

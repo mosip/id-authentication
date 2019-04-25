@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
 import io.mosip.kernel.emailnotification.controller.EmailNotificationController;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
 import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;

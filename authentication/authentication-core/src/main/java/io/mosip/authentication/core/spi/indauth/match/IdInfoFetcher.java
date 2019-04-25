@@ -133,5 +133,14 @@ public interface IdInfoFetcher {
 	 * @return
 	 */
 	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
+	
+	
+	/**
+	 * Gets the matching threshold.
+	 *
+	 * @param key the key
+	 * @return the matching threshold
+	 */
+	public Optional<Integer> getMatchingThreshold(String key);
 
 }

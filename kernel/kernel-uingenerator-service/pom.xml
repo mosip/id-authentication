@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.6</version>
 	</parent>
 
 	<artifactId>kernel-uingenerator-service</artifactId>
@@ -19,9 +19,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>${spring.boot.version}</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
@@ -35,19 +35,9 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-ignite</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
 			<artifactId>vertx-unit</artifactId>
 			<version>${vertx.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -119,11 +109,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
 			<version>${commons-math3}</version>
 		</dependency>
@@ -132,11 +117,43 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${jackson.datatype.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-responsesignature-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${apache.httpcomponents.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-health-check</artifactId>
+			<version>${vertx.health.check.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${swagger-annotations.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>${swagger-annotations.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
 	</dependencies>
-	<!-- <properties>
-		<sonar.skip>true</sonar.skip>
-
-	</properties> -->
+	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 
 	<build>
 		<plugins>

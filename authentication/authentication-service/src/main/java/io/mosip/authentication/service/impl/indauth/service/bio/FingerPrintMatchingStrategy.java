@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			String reqInfoValue = ((Map<String, String>) reqInfo).values().stream().findFirst().orElse("");
@@ -54,10 +55,9 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 		}
 	});
 
-	private final MatchingStrategyType matchStrategyType;
-
-	private final MatchFunction matchFunction;
-
+	/** The matching strategy impl. */
+	private MatchingStrategyImpl matchingStrategyImpl;
+	
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(FingerPrintMatchingStrategy.class);
 
@@ -68,8 +68,7 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	private static final String TYPE = "FingerPrintMatchingStrategy";
 
 	private FingerPrintMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
-		this.matchStrategyType = matchStrategyType;
-		this.matchFunction = matchFunction;
+		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
@@ -78,13 +77,8 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
+	public MatchingStrategy getMatchingStrategy() {
+		return matchingStrategyImpl;
 	}
 
 }

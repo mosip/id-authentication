@@ -44,6 +44,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
@@ -135,7 +136,7 @@ public class CryptomanagerUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp().atOffset(ZoneOffset.UTC))
+				.queryParam("timeStamp", DateUtils.formatToISOString(cryptomanagerRequestDto.getTimeStamp()))
 				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
 		try {
 			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,

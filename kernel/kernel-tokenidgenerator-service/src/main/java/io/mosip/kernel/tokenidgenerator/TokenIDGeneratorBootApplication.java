@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * VID Generator boot application
+ * TokenID Generator boot application
  * 
  * @author Urvil Joshi
  * @author Ritesh Sinha 
@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.tokenidgenerator.*", "io.mosip.kernel.auth.*" })
 public class TokenIDGeneratorBootApplication {
    
    /**

@@ -120,7 +120,7 @@ public class AuthControllerTest {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateApplication(authReqDTO, error,"123456","123456");
+		authController.authenticateIndividual(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -128,9 +128,9 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456"))
+		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true,"123456"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
-		authController.authenticateApplication(authReqDTO, error,"123456","123456");
+		authController.authenticateIndividual(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -138,8 +138,8 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456")).thenReturn(new AuthResponseDTO());
-		authController.authenticateApplication(authReqDTO, error,"123456","123456");
+		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true,"123456")).thenReturn(new AuthResponseDTO());
+		authController.authenticateIndividual(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -149,7 +149,7 @@ public class AuthControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		authFacade.authenticateApplicant(kycAuthReqDTO, true,"123456789");
+		authFacade.authenticateIndividual(kycAuthReqDTO, true,"123456789");
 		authController.processKyc(kycAuthReqDTO, errors,"123456","123456");
 	}
 
@@ -216,7 +216,7 @@ public class AuthControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(authFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789")).thenReturn(kycAuthResponseDTO);
 		authController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
@@ -286,7 +286,7 @@ public class AuthControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 		.thenReturn(authResponseDTO);
 		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));

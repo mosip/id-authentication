@@ -249,13 +249,15 @@ public class DocumentService {
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,authUserDetails().getUserId(),
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
-			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
+			LocalDateTime encryptedTimestamp = DateUtils.getUTCCurrentDateTime();
+			documentEntity.setEncryptedDateTime(encryptedTimestamp);
+			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), encryptedTimestamp);
 			documentEntity.setDocHash(HashUtill.hashUtill(encryptedDocument));
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
@@ -450,10 +452,7 @@ public class DocumentService {
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
 				if (doc.getDocHash().equals(HashUtill.hashUtill(cephBytes))) {
-
-					LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
-
-					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
+					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, doc.getEncryptedDateTime()));
 					allDocRes.add(allDocDto);
 				} else {
 					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - "

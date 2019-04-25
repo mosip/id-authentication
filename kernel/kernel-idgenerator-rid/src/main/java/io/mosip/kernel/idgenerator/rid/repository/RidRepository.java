@@ -29,10 +29,8 @@ public interface RidRepository extends BaseRepository<Rid, Integer> {
 	/**
 	 * Method to update previous sequence no.
 	 * 
-	 * @param currentId
-	 *            the current sequence no.
-	 * @param previousId
-	 *            the previous sequence no.
+	 * @param currentId  the current sequence no.
+	 * @param previousId the previous sequence no.
 	 * @return the number of rows updated.
 	 */
 	@Modifying

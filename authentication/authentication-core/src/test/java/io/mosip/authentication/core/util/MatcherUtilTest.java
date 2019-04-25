@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.codec.EncoderException;
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
 /**

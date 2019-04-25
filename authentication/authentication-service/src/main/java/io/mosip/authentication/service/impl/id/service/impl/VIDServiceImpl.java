@@ -41,7 +41,7 @@ public class VIDServiceImpl implements VIDService {
 
 	private static final String VID_GENERATION_REQUEST = "VID generation request";
 
-	private static final String version = "1.0";
+	private static final String VERSION = "1.0";
 
 	private static final String IDA = "IDA";
 
@@ -87,9 +87,10 @@ public class VIDServiceImpl implements VIDService {
 	public VIDResponseDTO generateVID(String uin) throws IdAuthenticationBusinessException {
 		Map<String, Object> uinMap = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
 		VIDEntity vidEntityObj = null;
+		ResponseDTO responseDTO = new ResponseDTO();
 		VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
 		vidResponseDTO.setId(MOSIP_IDENTITY_VID);
-		vidResponseDTO.setVersion(version);
+		vidResponseDTO.setVersion(VERSION);
 		if (Objects.nonNull(uinMap) && !uinMap.isEmpty()) {
 			List<VIDEntity> vidEntityList = vidRepository.findByUIN(uin, PageRequest.of(0, 1));
 			if (vidEntityList.isEmpty()) {
@@ -101,39 +102,9 @@ public class VIDServiceImpl implements VIDService {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
 							ex);
 				}
-				ResponseDTO responseDTO = new ResponseDTO();
-				responseDTO.setVid(vidEntityObj.getId());
-				vidResponseDTO.setResponse(responseDTO);
-				vidResponseDTO.setErrors(Collections.emptyList());
+				constructResponse(vidEntityObj, vidResponseDTO, responseDTO);
 			} else {
-				vidEntityObj = vidEntityList.get(0);
-				if (vidEntityObj.isActive()
-						&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
-					ResponseDTO responseDTO = new ResponseDTO();
-					responseDTO.setVid(vidEntityObj.getId());
-					vidResponseDTO.setResponse(responseDTO);
-					List<AuthError> listAuthError = new ArrayList<>();
-					AuthError authError = new AuthError();
-					authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
-					authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
-					listAuthError.add(authError);
-					vidResponseDTO.setErrors(listAuthError);
-				} else if (!vidEntityObj.isActive()
-						|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
-					try {
-						vidEntityObj = generateVIDEntity(uin);
-						vidRepository.save(vidEntityObj);
-					} catch (DataAccessException ex) {
-						logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
-					}
-
-					ResponseDTO responseDTO = new ResponseDTO();
-					responseDTO.setVid(vidEntityObj.getId());
-					vidResponseDTO.setResponse(responseDTO);
-					vidResponseDTO.setErrors(Collections.emptyList());
-				}
+				handleIfVIDAlreadyExist(uin, responseDTO, vidResponseDTO, vidEntityList);
 			}
 		}
 
@@ -146,6 +117,62 @@ public class VIDServiceImpl implements VIDService {
 		return vidResponseDTO;
 	}
 
+	/**
+	 * Handle if VID already exist.
+	 *
+	 * @param uin the uin
+	 * @param responseDTO the response DTO
+	 * @param vidResponseDTO the vid response DTO
+	 * @param vidEntityList the vid entity list
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	private void handleIfVIDAlreadyExist(String uin, ResponseDTO responseDTO, VIDResponseDTO vidResponseDTO,
+			List<VIDEntity> vidEntityList) throws IdAuthenticationBusinessException {
+		VIDEntity vidEntityObj;
+		vidEntityObj = vidEntityList.get(0);
+		if (vidEntityObj.isActive()
+				&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
+			constructResponse(vidEntityObj, vidResponseDTO, responseDTO);
+			List<AuthError> listAuthError = new ArrayList<>();
+			AuthError authError = new AuthError();
+			authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
+			authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
+			listAuthError.add(authError);
+			vidResponseDTO.setErrors(listAuthError);
+		} else if (!vidEntityObj.isActive()
+				|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
+			try {
+				vidEntityObj = generateVIDEntity(uin);
+				vidRepository.save(vidEntityObj);
+			} catch (DataAccessException ex) {
+				logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
+			}
+
+			constructResponse(vidEntityObj, vidResponseDTO, responseDTO);
+		}
+	}
+
+	/**
+	 * Construct response.
+	 *
+	 * @param vidEntityObj the vid entity obj
+	 * @param vidResponseDTO the vid response DTO
+	 * @param responseDTO2 
+	 */
+	private void constructResponse(VIDEntity vidEntityObj, VIDResponseDTO vidResponseDTO, ResponseDTO responseDTO) {
+		responseDTO.setVid(vidEntityObj.getId());
+		vidResponseDTO.setResponse(responseDTO);
+		vidResponseDTO.setErrors(Collections.emptyList());
+	}
+
+	/**
+	 * Generate VID entity.
+	 *
+	 * @param uin the uin
+	 * @return the VID entity
+	 */
 	private VIDEntity generateVIDEntity(String uin) {
 		VIDEntity vidEntityObj;
 		vidEntityObj = new VIDEntity();

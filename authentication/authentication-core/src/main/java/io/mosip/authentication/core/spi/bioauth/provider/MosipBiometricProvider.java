@@ -34,7 +34,9 @@ public interface MosipBiometricProvider {
 	 * @param inputImage the input image
 	 * @return the string
 	 */
-	String createMinutiae(byte[] inputImage);
+	default String createMinutiae(byte[] inputImage) {
+		return null;
+	}
 	
 	
 	/**
@@ -53,7 +55,9 @@ public interface MosipBiometricProvider {
 	 * @param entityInfo the entity info
 	 * @return the double
 	 */
-	double matchMinutiae(Object reqInfo,Object entityInfo);
+	default double matchMinutiae(Object reqInfo,Object entityInfo){
+		return 0;
+	}
 	
 	/**
 	 * Match multi minutae.
@@ -62,7 +66,9 @@ public interface MosipBiometricProvider {
 	 * @param entityInfo the entity info
 	 * @return the double
 	 */
-	double matchMultiMinutae( Map<String, String> reqInfo, Map<String, String> entityInfo);
+	default double matchMultiMinutae( Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		return 0;
+	}
 	
 	/**
 	 * Match multi image.
@@ -71,6 +77,8 @@ public interface MosipBiometricProvider {
 	 * @param entityInfo the entity info
 	 * @return the double
 	 */
-	double matchMultiImage( Object reqInfo, Object entityInfo);
+	default double matchMultiImage( Object reqInfo, Object entityInfo){
+		return 0;
+	}
 
 }

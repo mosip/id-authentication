@@ -93,7 +93,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private GridPane imageAnchorPane;
 
 	@FXML
-	private GridPane reRegistrationRootPane;
+	private GridPane reRegistrationChildPane;
 
 	private Map<String, String> reRegisterStatusMap = new HashMap<>();
 
@@ -255,7 +255,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
 		} else {
-			reRegistrationRootPane.disableProperty().set(true);
+			reRegistrationChildPane.disableProperty().set(true);
 			table.getItems().clear();
 		}
 		LOGGER.info("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,

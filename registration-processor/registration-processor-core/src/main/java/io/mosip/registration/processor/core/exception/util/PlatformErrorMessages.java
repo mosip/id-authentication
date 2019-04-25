@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.exception.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -193,15 +192,13 @@ public enum PlatformErrorMessages {
 	/** The rpr pkm file not found in source. */
 	RPR_PKM_FILE_NOT_FOUND_IN_SOURCE(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "004",
 			"The File is not present in source folder"),
-	
+
 	/** The rpr pkm file not found in source. */
-	RPR_PKM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "005",
-			"The JSCH connection failed"),
+	RPR_PKM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "005", "The JSCH connection failed"),
 
 	/** The rpr pkm file not found in source. */
 	RPR_PKM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "006",
 			"The Sftp operation failed during file processing"),
-
 
 	// Registration processor camel bridge Exception error code and message
 
@@ -265,6 +262,8 @@ public enum PlatformErrorMessages {
 	/** The rpr pvm base unchecked exception. */
 	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
 
+	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"A Mandatory Field is missing from ID JSON for NEW registration "),
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
 	UNSUPPORTED_ENCODING("", "json object parsing failed"),
@@ -402,9 +401,8 @@ public enum PlatformErrorMessages {
 
 	/** The rpr mvs decode exception. */
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
-
 	/** The rpr mvs no user id present. */
-	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id can not empty"),
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id cannot be empty"),
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -432,7 +430,7 @@ public enum PlatformErrorMessages {
 	/** The rpr pum packet not found exception. */
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "001",
 			"Packet Not Found in Packet Store"),
-	
+
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "002",
 			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
@@ -444,24 +442,19 @@ public enum PlatformErrorMessages {
 	/** The prp pkr packet virus scan failed. */
 	RPR_PUM_PACKET_VIRUS_SCAN_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "004",
 			"The Registration Packet virus scan failed"),
-	
+
 	RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "005",
 			"Virus scanner service failed"),
 
-	
 	/** The rpr pkm file not found in source. */
-	RPR_PUM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "006",
-			"The JSCH connection failed"),
+	RPR_PUM_JSCH_NOT_CONNECTED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "006", "The JSCH connection failed"),
 
 	/** The rpr pkm file not found in source. */
 	RPR_PUM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "007",
 			"The Sftp operation failed during file processing"),
-	
 
 	RPR_PUM_PACKET_NOT_YET_SYNC(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "008",
 			"Registration packet is not in Sync with Sync table"),
-
-
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
@@ -564,6 +557,21 @@ public enum PlatformErrorMessages {
 
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
+
+	/** The rpr sys data access exception */
+	RPR_SYS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "013", "Data Access Exception"),
+
+	/** The rpr sys api resource exception */
+	RPR_SYS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "014", "API Resource Exception"),
+
+	/** The rpr sys illegal access exception */
+	RPR_SYS_ILLEGAL_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "015", "ILLEGAL ACCESS Exception"),
+
+	/** The rpr sys Invocation target exception */
+	RPR_SYS_INVOCATION_TARGET_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "016", "Invocation target Exception"),
+
+	/** The rpr sys Invocation target exception */
+	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
 
 	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions

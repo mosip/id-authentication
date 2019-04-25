@@ -25,10 +25,8 @@ public enum TokenIDExceptionConstant {
 	 * TokenIDExceptionConstantr constructor with errorCode and errorMessage as the
 	 * arguments.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	TokenIDExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

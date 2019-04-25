@@ -107,6 +107,5 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceHistoryDto> registrationCenterMachineDeviceHistory;
 	private List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenterUserMachineMappingHistory;
 	private List<RegistrationCenterUserHistoryDto> registrationCenterUserHistory;
-	
 
 }

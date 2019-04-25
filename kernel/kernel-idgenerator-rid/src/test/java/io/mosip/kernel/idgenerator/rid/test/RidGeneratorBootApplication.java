@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
  *
  */
 @SpringBootApplication
-@ComponentScan({"io.mosip.kernel.*"})
+@ComponentScan({ "io.mosip.kernel.*" })
 public class RidGeneratorBootApplication {
 
 	public static void main(String[] args) {

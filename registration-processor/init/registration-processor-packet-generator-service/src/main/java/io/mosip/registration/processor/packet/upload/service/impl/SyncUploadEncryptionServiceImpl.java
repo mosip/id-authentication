@@ -115,7 +115,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			if ("success".equalsIgnoreCase(syncStatus)) {
 
 				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
-				enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_DECRYPTED, registartionId);
+				enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_ENCRYPTED, registartionId);
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", new FileSystemResource(enryptedUinZipFile));
 				HttpHeaders headers = new HttpHeaders();

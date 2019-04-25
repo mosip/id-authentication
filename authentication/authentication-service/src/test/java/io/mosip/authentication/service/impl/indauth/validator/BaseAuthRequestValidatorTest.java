@@ -280,7 +280,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -327,7 +326,6 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> data = new ArrayList<DataDTO>();
 		data.add(dataDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFinger", authRequestDTO, data, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1538,7 +1536,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1594,7 +1591,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1628,7 +1624,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1849,7 +1844,6 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(dobIdentityDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOBType", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1888,7 +1882,6 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1923,7 +1916,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1957,7 +1949,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderTypeNull());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1985,7 +1976,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 

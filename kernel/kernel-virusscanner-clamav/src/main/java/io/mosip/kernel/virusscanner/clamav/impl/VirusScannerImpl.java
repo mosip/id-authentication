@@ -51,7 +51,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 
 	/** The Constant ANTIVIRUS_SERVICE_NOT_ACCESSIBLE. */
 	private static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "The anti virus service is not accessible";
-	
+
 	/** The Constant FILE_NOT_PRESENT. */
 	private static final String FILE_NOT_PRESENT = "The file not found for for scanning";
 
@@ -96,9 +96,9 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 
 		return result;
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see 
+	 * @see
 	 * io.mosip.kernel.core.virusscanner.spi.VirusScanner#scanFile(java.io.InputStream)
 	 */
 	@Override
@@ -138,7 +138,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 		for (File file : files) {
 			try {
 				ScanResult scanResult = this.clamavClient.scan(new FileInputStream(file));
-				if(scanResult.getStatus() != Status.OK) {
+				if (scanResult.getStatus() != Status.OK) {
 					result = Boolean.FALSE;
 					break;
 				}
@@ -152,9 +152,10 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 		return result;
 	}
 	/**
-	 * This Method is used to scan byte array.
-	 *
-	 * @param docArray            array
+	 * This Method is used to scan byte array
+	 * 
+	 * @param docArray array
+	 * 
 	 * @return a true if file is virus free and false if file is infected
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -187,9 +188,10 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 	}
 
 	/**
-	 * This Method is used to scan File.
-	 *
-	 * @param doc            object
+	 * This Method is used to scan File
+	 * 
+	 * @param doc object
+	 * 
 	 * @return a true if file is virus free and false if file is infected
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */

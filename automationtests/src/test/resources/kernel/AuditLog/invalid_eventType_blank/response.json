@@ -1,10 +1,13 @@
 {
-  "timestamp": 1549879049654,
-  "status": 200,
-  "errors": [
-    {
-      "errorCode": "KER-AUD-001",
-      "errorMessage": "EventType size must be between 1 and 64"
-    }
-  ]
+    "id": "string",
+    "version": "string",
+    "responsetime": "2019-04-16T12:55:30.815Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-AUD-001",
+            "message": "Request.eventType size must be between 1 and 64"
+        }
+    ]
 }

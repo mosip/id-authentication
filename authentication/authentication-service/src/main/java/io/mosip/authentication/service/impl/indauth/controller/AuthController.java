@@ -89,14 +89,14 @@ public class AuthController {
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
+	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("MISP-LK") String mispLK) throws IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponsedto = null;
 
 		try {
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true,partnerId);
+			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true,partnerId);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -132,7 +132,7 @@ public class AuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true,partnerId);
+			authResponseDTO = authFacade.authenticateIndividual(kycAuthRequestDTO, true,partnerId);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO,partnerId);
 			}

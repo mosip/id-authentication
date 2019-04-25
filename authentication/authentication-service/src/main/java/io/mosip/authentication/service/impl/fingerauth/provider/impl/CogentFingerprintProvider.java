@@ -44,6 +44,7 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
 	 * MosipFingerprintProvider#segmentFingerprint(byte[])
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 		return Optional.empty();
@@ -54,7 +55,6 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	 */
 	@Override
 	public String createMinutiae(byte[] inputImage) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

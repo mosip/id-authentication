@@ -37,6 +37,8 @@ import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,6 +51,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -194,8 +198,20 @@ public class RegistrationApprovalController extends BaseController implements In
 				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
+		table.getSelectionModel().selectFirst();
+
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
+
 		table.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
+				viewAck();
+			}
+		});
+
+		table.setOnKeyReleased(event -> {
+			if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
 				viewAck();
 			}
 		});

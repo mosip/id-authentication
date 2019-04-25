@@ -140,9 +140,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 								/* Add in application map */
 								ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
 
-								if (globalParamId.getCode().contains("kernel") || globalParamId.getCode().contains("mosip.primary")) {
-									isToBeRestarted = true;
-								}
+								isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
 							}
 						}
 						/* Set is deleted true as removed from server */
@@ -156,9 +154,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					for (Entry<String, String> key : globalParamMap.entrySet()) {
 						createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
 
-						if (key.getKey().contains("kernel") || key.getKey().contains("mosip.primary")) {
-							isToBeRestarted = true;
-						}
+						isToBeRestarted = isPropertyRequireRestart(key.getKey());
 						/* Add in application map */
 						ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
 					}
@@ -185,6 +181,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to synch config data as no internet connection and no data in DB");
 		}
+	}
+
+	private boolean isPropertyRequireRestart(String  key) {
+		return (key.contains("kernel") || key.contains("mosip.primary"));
 	}
 
 	private void updateVal(GlobalParam globalParam, String val) {

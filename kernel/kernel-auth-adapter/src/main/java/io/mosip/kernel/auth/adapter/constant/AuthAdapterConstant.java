@@ -34,5 +34,9 @@ public class AuthAdapterConstant {
 	public static final int NOTAUTHENTICATED = 401;
 
 	public static final int INTERNEL_SERVER_ERROR = 500;
+	
+	public static final String HTTP_METHOD_NOT_NULL = "Http Method Cannot Be Null";
+	
+	public static final String ROLES_NOT_EMPTY_NULL = "Roles Cannot Be Empty or Null";
 
 }

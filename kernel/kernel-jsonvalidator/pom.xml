@@ -6,10 +6,15 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.2</version>
+		<version>0.10.6</version>
 	</parent>
 	<dependencies>
 		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>${byte.buddy.version}</version>
+		</dependency>
+         <dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>${json.utility.version}</version>

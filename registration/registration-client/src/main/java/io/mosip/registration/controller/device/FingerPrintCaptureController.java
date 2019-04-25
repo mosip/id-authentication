@@ -32,7 +32,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -277,7 +276,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 
 			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
 
 			scanBtn.setDisable(true);
 
@@ -530,10 +528,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (leftSlapCount == 4 && rightSlapCount == 4 && thumbCount == 2) {
 			continueBtn.setDisable(false);
-			backBtn.setDisable(false);
 		}
 
-		singleBiomtericCaptureCheck();
 		populateException();
 	}
 
@@ -544,7 +540,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (!validateFingerPrints()) {
 			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
 		}
 
 		if (!RegistrationConstants.DISABLE
@@ -553,7 +548,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
-			backBtn.setDisable(false);
 		}
 	}
 
@@ -1002,7 +996,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (validateFingerPrints()) {
 			continueBtn.setDisable(false);
-			backBtn.setDisable(false);
 		}
 
 	}
@@ -1347,9 +1340,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Populate exception.
 	 */
 	private void populateException() {
+		leftSlapException.setText(RegistrationConstants.HYPHEN);
+		rightSlapException.setText(RegistrationConstants.HYPHEN);
+		thumbSlapException.setText(RegistrationConstants.HYPHEN);
+		
 		StringBuilder leftSlapExceptionFingers = new StringBuilder();
 		StringBuilder rightSlapExceptionFingers = new StringBuilder();
 		StringBuilder thumbSlapExceptionFingers = new StringBuilder();
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
 					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO() != null) {
@@ -1385,6 +1383,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					(thumbSlapExceptionFingers.deleteCharAt(thumbSlapExceptionFingers.length() - 1)).toString() + " "
 							+ ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.FINGER));
 		}
+		singleBiomtericCaptureCheck();
 	}
 
 	private void findExceptionFinger(StringBuilder leftSlapExceptionFingers, StringBuilder rightSlapExceptionFingers,

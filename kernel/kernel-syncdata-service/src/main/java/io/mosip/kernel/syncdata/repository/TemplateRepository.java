@@ -21,10 +21,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * Method to find list of Template created , updated or deleted time is greater
 	 * than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            timeStamp - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      timeStamp - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link Template}
 	 */
 	@Query("FROM Template WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime <=?2)  OR (deletedDateTime > ?1 and deletedDateTime <=?2)")

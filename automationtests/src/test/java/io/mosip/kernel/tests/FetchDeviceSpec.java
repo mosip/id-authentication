@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -56,8 +56,8 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	private static final String apiName = "FetchDeviceSpec";
 	private static final String requestJsonName = "FetchDeviceSpecRequest";
 	private static final String outputJsonName = "FetchDeviceSpecOutput";
-	private static final String service_lang_URI = "/masterdata/v1.0/devicespecifications/{langcode}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/devicespecifications/{langcode}/{devicetypecode}";
+	private static final String service_lang_URI = "/v1/masterdata/devicespecifications/{langcode}";
+	private static final String service_id_lang_URI = "/v1/masterdata/devicespecifications/{langcode}/{devicetypecode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -172,10 +172,10 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray deviceSpecFromGet = (JSONArray) responseJson.get("devicespecifications");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + deviceSpecFromGet.size());
@@ -212,6 +212,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}

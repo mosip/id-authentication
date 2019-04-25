@@ -46,7 +46,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchIDlist";
 	private static final String requestJsonName = "fetchIDlistRequest";
 	private static final String outputJsonName = "fetchIDlistOutput";
-	private static final String service_URI = "/masterdata/v1.0/idtypes/{langcode}";
+	private static final String service_URI = "/v1/masterdata/idtypes/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -135,6 +135,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

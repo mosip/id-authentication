@@ -15,10 +15,8 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	 * Method to find list of TemplateFileFormat created , updated or deleted time
 	 * is greater than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            timeStamp - last updated time
-	 * @param currentTimeStamp
-	 *            - current time stamp
+	 * @param lastUpdated      timeStamp - last updated time
+	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TemplateFileFormat} - list of template file format
 	 */
 	@Query(value = "SELECT ff.code, ff.descr, ff.lang_code, ff.is_active, ff.cr_by, ff.cr_dtimes, ff.upd_by, ff.upd_dtimes, ff.is_deleted, ff.del_dtimes FROM master.template_file_format ff where (ff.cr_dtimes >?1 and ff.cr_dtimes<=?2) or (ff.upd_dtimes >?1 and ff.upd_dtimes <=?2) or (ff.del_dtimes > ?1 and ff.del_dtimes<=?2)", nativeQuery = true)

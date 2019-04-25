@@ -66,7 +66,7 @@ public class PacketArchiverTest {
 	/** The packet archiver. */
 	@InjectMocks
 	private PacketArchiver packetArchiver;
-	
+
 
 	/** The source. */
 	private String source = "Sample input Steam";
@@ -113,7 +113,7 @@ public class PacketArchiverTest {
 		auditRequestDto.setSessionUserName(null);
 		jschConnectionDto = new SftpJschConnectionDto();
 		try {
-			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.AUDIT, "", "",
+			auditResponseDto = (AuditResponseDto) registrationProcessorRestService.postApi(ApiName.DMZAUDIT, "", "",
 					auditRequestDto, AuditResponseDto.class);
 		} catch (ApisResourceAccessException e) {
 			// TODO Auto-generated catch block
@@ -154,7 +154,7 @@ public class PacketArchiverTest {
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
         Mockito.when(filemanager.copy(any(),any(),any(),any())).thenReturn(Boolean.TRUE);
        assertTrue(packetArchiver.archivePacket(registrationId,jschConnectionDto));
-        
+
 	}
 
 	/**

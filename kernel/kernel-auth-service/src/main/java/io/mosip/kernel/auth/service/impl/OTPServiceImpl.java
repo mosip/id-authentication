@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.kernel.auth.service.impl;
 
 import java.time.LocalDateTime;
@@ -99,6 +96,7 @@ public class OTPServiceImpl implements OTPService {
 		if(otpGenerateResponseDto!=null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED"))
 		{
 			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
 			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
 			return authNResponseDto;
 		}

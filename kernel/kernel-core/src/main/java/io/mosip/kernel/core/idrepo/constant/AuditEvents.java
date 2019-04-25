@@ -6,23 +6,23 @@ package io.mosip.kernel.core.idrepo.constant;
  * @author Manoj SP
  */
 public enum AuditEvents {
-	
+
 	CREATE_IDENTITY_REQUEST_RESPONSE("IDR-EVT-001", "System Event"),
-	
+
 	UPDATE_IDENTITY_REQUEST_RESPONSE("IDR-EVT-002", "System Event"),
-	
+
 	RETRIEVE_IDENTITY_REQUEST_RESPONSE("IDR-EVT-003", "System Event");
-	
+
 	/** The event id. */
 	private final String eventId;
-	
+
 	/** The event type. */
 	private final String eventType;
 
 	/**
 	 * Instantiates a new audit events.
 	 *
-	 * @param eventId the event id
+	 * @param eventId   the event id
 	 * @param eventType the event type
 	 */
 	private AuditEvents(String eventId, String eventType) {
@@ -47,7 +47,7 @@ public enum AuditEvents {
 	public String getEventType() {
 		return eventType;
 	}
-	
+
 	/**
 	 * Gets the event name.
 	 *
@@ -56,5 +56,5 @@ public enum AuditEvents {
 	public String getEventName() {
 		return this.name();
 	}
-	
+
 }

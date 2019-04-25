@@ -39,7 +39,8 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @PropertySource(value = { "classpath:bootstrap.properties" })
-@ComponentScan("io.mosip.kernel.uingenerator")
+@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*",
+		"io.mosip.kernel.responsesignature.*" })
 public class UinGeneratorConfiguration implements EnvironmentAware {
 
 	/**
@@ -163,4 +164,5 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
 		return new JpaTransactionManager(entityManagerFactory.getObject());
 	}
+
 }

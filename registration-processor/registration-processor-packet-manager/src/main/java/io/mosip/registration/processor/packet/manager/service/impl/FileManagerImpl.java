@@ -343,7 +343,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			if(channel != null)
 				channel.disconnect();
 			if(session != null)
-				session.disconnect(); 
+				session.disconnect();
 		}
 		return bytedata;
 
@@ -398,7 +398,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channelSftp.put(new ByteArrayInputStream(bytedata),destinationFilePath);
 
 			if (channelSftp.get( destinationFilePath ) != null) {
-				status=true;	
+				status=true;
 			}
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -446,7 +446,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 				if (channelSftp.get( sourceFilePath ) != null) {
 					channelSftp.rm(sourceFilePath);
-					status=true;	
+					status=true;
 				}
 
 			}
@@ -472,7 +472,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			if(channel != null)
 				channel.disconnect();
 			if(session != null)
-				session.disconnect(); 
+				session.disconnect();
 
 		}
 		return status;

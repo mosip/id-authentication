@@ -1,6 +1,7 @@
 package io.mosip.kernel.ridgenerator.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,15 +32,14 @@ public class RidGeneratorController {
 	/**
 	 * Api to generate RID.
 	 * 
-	 * @param centerId
-	 *            the registration center id.
-	 * @param machineId
-	 *            the machine id.
+	 * @param centerId  the registration center id.
+	 * @param machineId the machine id.
 	 * @return the response.
 	 */
 	@ResponseFilter
 	@GetMapping("/generate/rid/{centerid}/{machineid}")
 	@ApiOperation(value = "Service to generate RID")
+	@PreAuthorize("hasRole('REGISTRATION_PROCESSOR')")
 	public ResponseWrapper<RidGeneratorResponseDto> generateRid(@PathVariable("centerid") String centerId,
 			@PathVariable("machineid") String machineId) {
 		ResponseWrapper<RidGeneratorResponseDto> responseWrapper = new ResponseWrapper<>();
