@@ -519,6 +519,9 @@ public class PacketValidateProcessor {
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage();
 
 				}
+				else {
+					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()+" as parent registration id is not present";
+				}
 
 			}
 
