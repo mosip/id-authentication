@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,6 +59,12 @@ public class ConfigServerUrlUtil {
 	 * @return the property value.
 	 */
 	private static String getProperty(Class<?> clazz, String fileName, String key) {
+
+		Map<String, String> env = System.getenv();
+		for (String envName : env.keySet()) {
+			System.out.format("%s=%s%n", envName, env.get(envName));
+		}
+
 		String value = System.getProperty(key);
 		if (value != null)
 			return value;
