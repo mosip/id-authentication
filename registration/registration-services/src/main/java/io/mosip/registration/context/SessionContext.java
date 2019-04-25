@@ -343,6 +343,9 @@ public class SessionContext {
 		 * @return userId
 		 */
 		public String getUserId() {
+			if(userId==null) {
+				return RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
 			return userId;
 		}
 

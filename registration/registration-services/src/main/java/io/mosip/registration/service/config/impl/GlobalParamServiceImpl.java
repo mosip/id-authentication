@@ -157,7 +157,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 						isToBeRestarted = isPropertyRequireRestart(key.getKey());
 						/* Add in application map */
-						update(key.getKey(), key.getValue());
+						updateApplicationMap(key.getKey(), key.getValue());
 					}
 
 					/* Save all Global Params */
@@ -275,12 +275,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		if (globalParam == null) {
 			globalParam = new GlobalParam();
+			globalParam.setGlobalParamId(globalParamId);
 			globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 			globalParam.setCrDtime(time);
 
 		}
 		globalParam.setVal(val);
-
+		globalParam.setName(code);
+		globalParam.setIsActive(true);
 		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 		globalParam.setUpdDtimes(time);
 

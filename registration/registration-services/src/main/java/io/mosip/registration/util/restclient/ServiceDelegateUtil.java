@@ -407,6 +407,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
+			requestHTTPDTO.setAuthRequired(true);
 
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
@@ -416,7 +417,6 @@ public class ServiceDelegateUtil {
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
 			
-			requestHTTPDTO.setIsSignRequired(false);
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -573,6 +573,7 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setIsSignRequired(false);
+		requestHTTPDTO.setAuthRequired(true);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);

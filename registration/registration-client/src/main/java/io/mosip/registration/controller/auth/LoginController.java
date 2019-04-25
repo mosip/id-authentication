@@ -227,8 +227,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				boolean hasUpdate = registrationUpdate.hasUpdate();
-				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+				globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException exception) {
@@ -1163,26 +1162,27 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
+						String val = null;
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-							return RegistrationConstants.RESTART;
+							val = RegistrationConstants.RESTART;
+						}
+						ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+								RegistrationConstants.OPT_TO_REG_MDS_J00001,
+								RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+						ResponseDTO userResponseDTO = userDetailService
+								.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+						if ((masterResponseDTO.getErrorResponseDTOs() != null
+								|| userResponseDTO.getErrorResponseDTOs() != null) && val == null) {
+							return RegistrationConstants.FAILURE;
 						} else {
-							ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-									RegistrationConstants.OPT_TO_REG_MDS_J00001,
-									RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-							ResponseDTO userResponseDTO = userDetailService
-									.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-							if (masterResponseDTO.getErrorResponseDTOs() != null
-									|| userResponseDTO.getErrorResponseDTOs() != null) {
-								return RegistrationConstants.FAILURE;
-							}
-
+							return val;
 						}
 
-						return RegistrationConstants.SUCCESS;
+						
 					}
 				};
 			}
@@ -1194,18 +1194,19 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
-				if (isInitialSetUp && RegistrationConstants.SUCCESS.equalsIgnoreCase(taskService.getValue())) {
-					// update initial set up flag
-
-					globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
-
-				}
+				
 				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
 
+					if (isInitialSetUp) {
+						// update initial set up flag
+
+						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
+
+					}
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							generateAlert(RegistrationUIConstants.SUCCESS, RegistrationUIConstants.RESTART_APPLICATION);
+							generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
 							restartController.restart();
 						}
 					});
@@ -1213,6 +1214,7 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 					if (isInitialSetUp) {
 						loadInitialScreen(Initialization.getPrimaryStage());
+						return;
 					}
 				}
 				pane.setDisable(false);
