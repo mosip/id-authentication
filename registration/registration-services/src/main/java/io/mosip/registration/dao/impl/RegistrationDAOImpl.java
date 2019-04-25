@@ -66,7 +66,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Registration registration = new Registration();
 			registration.setId(registrationDTO.getRegistrationId());
 			registration.setRegType(RegistrationType.NEW.getCode());
-			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
+			registration.setStatusCode(registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory());
 			registration.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);

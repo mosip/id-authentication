@@ -331,6 +331,7 @@ public class BaseService {
 		statusDTO.setPacketPath(registration.getAckFilename());
 		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
 		statusDTO.setUploadStatus(registration.getFileUploadStatus());
+		statusDTO.setPacketStatus(registration.getStatusCode());
 		return statusDTO;
 	}
 
