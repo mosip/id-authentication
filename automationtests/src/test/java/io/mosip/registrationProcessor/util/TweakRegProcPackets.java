@@ -122,6 +122,7 @@ public class TweakRegProcPackets {
 	 */
 	public void generateInvalidPacketForPacketValidator(String fileName, String validPacketPath,
 			String invalidPacketPath) {
+	
 		File decryptedPacket = null;
 		JSONObject metaInfo = null;
 		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
@@ -274,6 +275,7 @@ public class TweakRegProcPackets {
 							}
 						} else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
 							try {
+								
 								FileReader metaFileReader = new FileReader(info.getPath());
 								metaInfoBio = (JSONObject) new JSONParser().parse(metaFileReader);
 								metaFileReader.close();
