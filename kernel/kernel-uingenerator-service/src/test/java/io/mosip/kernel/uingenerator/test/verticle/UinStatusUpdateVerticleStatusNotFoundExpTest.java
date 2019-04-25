@@ -12,8 +12,11 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,10 +38,13 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 
 @RunWith(VertxUnitRunner.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 
 	private Vertx vertx;
 	private int port;
+	
+	AbstractApplicationContext context;
 
 	@Before
 	public void before(TestContext testContext) throws IOException {
@@ -48,7 +54,7 @@ public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
 
-		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
+		 context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -56,9 +62,11 @@ public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 	}
 
 	@After
-	public void after(TestContext context) {
-		if (vertx != null && context != null)
-			vertx.close(context.asyncAssertSuccess());
+	public void after(TestContext testContext) {
+		if (vertx != null && testContext != null)
+			vertx.close(testContext.asyncAssertSuccess());
+		if (context != null)
+			context.close();
 	}
 
 	@Test

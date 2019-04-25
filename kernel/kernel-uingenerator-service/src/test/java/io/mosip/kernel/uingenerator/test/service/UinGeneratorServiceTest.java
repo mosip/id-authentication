@@ -1,11 +1,14 @@
 package io.mosip.kernel.uingenerator.test.service;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,7 +20,7 @@ import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
-import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
+import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 
 /**
  * @author Megha Tanga
@@ -29,13 +32,19 @@ import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
 @TestPropertySource({ "classpath:application.properties", "classpath:bootstrap.properties" })
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = UinGeneratorConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinGeneratorServiceTest {
 
 	@Autowired
-	private UinGeneratorServiceImpl uinGeneratorServiceImpl;
+	private UinGeneratorService uinGeneratorServiceImpl;
 
 	@MockBean
 	private UinRepository uinRepository;
+	
+	@After
+	public void after() {
+
+	}
 
 	@Test(expected = UinNotFoundException.class)
 	public void getUinNotFoundTest() {
