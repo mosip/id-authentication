@@ -37,7 +37,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
-@Ignore
+//@Ignore
 @RunWith(VertxUnitRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinStatusUpdateVerticleTest {
@@ -54,7 +54,7 @@ public class UinStatusUpdateVerticleTest {
 
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
 
-		 context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
+		context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -83,6 +83,7 @@ public class UinStatusUpdateVerticleTest {
 
 		ResponseWrapper<?> uinResp = restTemplate.getForObject("http://localhost:" + port + "/v1/uingenerator/uin",
 				ResponseWrapper.class);
+		System.out.println(uinResp);
 		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
 
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
