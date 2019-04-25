@@ -21,6 +21,15 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 */
 	@Query("select uinRefId from Uin where uin = :uin")
 	String getUinRefIdByUin(@Param("uin") String uin);
+	
+	/**
+	 * Gets the uin by refId 
+	 * 
+	 * @param regId
+	 * @return the Uin 
+	 */
+	@Query("select uin from Uin where regId = :regId")
+	String getUinByRid(@Param("regId") String regId);
 
 	/**
 	 * Find by uin.

@@ -23,10 +23,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
-@NoArgsConstructor
 @IdClass(BiometricPK.class)
 @Table(schema = "idrepo")
 public class UinBiometric implements Serializable {
+	
+	public UinBiometric() {
+		
+	}
 
 	/**
 	 * 

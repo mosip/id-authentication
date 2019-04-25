@@ -26,10 +26,13 @@ import lombok.Setter;
  */
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "uin_h", schema = "idrepo")
 @IdClass(HistoryPK.class)
 public class UinHistory {
+	
+	public UinHistory() {
+		
+	}
 
 	public UinHistory(String uinRefId, LocalDateTime effectiveDateTime, String uin, byte[] uinData, String uinDataHash,
 			String regId, String statusCode, String langCode, String createdBy, LocalDateTime createdDateTime,
