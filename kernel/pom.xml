@@ -180,18 +180,6 @@
 		<module>kernel-config-server</module>
 	</modules>
 
-
-
-	<!-- <module>kernel-idvalidator</module> -->
-	<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
-	<!-- <module>kernel-packetserver-http</module> -->
-	<!-- <module>kernel-packetserver-sftp</module> -->
-	<!-- <module>kernel-idgenerator-uin</module> -->
-	<!-- <module>kernel-templatemanager-freemarker</module> -->
-	<!-- <module>kernel-batch-framework</module> -->
-	<!-- <module>kernel-batch-server</module> -->
-	<!--<module>kernel-crypto-bouncycastle</module> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

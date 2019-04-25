@@ -14,23 +14,30 @@
 	<artifactId>kernel-uingenerator-service</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-<!-- 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${project.version}</version>
-		</dependency> -->
-				<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- <dependency> <groupId>io.mosip.kernel</groupId> <artifactId>kernel-dataaccess-hibernate</artifactId> 
+			<version>${project.version}</version> </dependency> -->
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-responsesignature-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -48,6 +55,21 @@
 			<artifactId>vertx-unit</artifactId>
 			<version>${vertx.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config-spring-config-server</artifactId>
+			<version>${vertx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config</artifactId>
+			<version>${vertx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-health-check</artifactId>
+			<version>${vertx.health.check.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -72,21 +94,6 @@
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-responsesignature-api</artifactId>
-			<version>${project.version}</version>
-		</dependency> -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>${apache.httpcomponents.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-health-check</artifactId>
-			<version>${vertx.health.check.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -102,41 +109,7 @@
 			<artifactId>swagger-core</artifactId>
 			<version>${swagger-annotations.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-config-spring-config-server</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-config</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-health-check</artifactId>
-			<version>${vertx.health.check.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>${swagger-annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-core</artifactId>
-			<version>${swagger-annotations.version}</version>
-		</dependency>
+
 	</dependencies>
 	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 
