@@ -13,16 +13,16 @@ ARG active_profile
 ARG spring_config_url
 
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
-ENV active_profile_env=${active_profile}
+ENV spring.profiles.active=${active_profile}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring_config_label_env=${spring_config_label}
+ENV spring.cloud.config.label=${spring_config_label}
 
 # environment variable to pass spring configuration url, at docker runtime
-ENV spring_config_url_env=${spring_config_url}
+ENV spring.cloud.config.uri=${spring_config_url}
 
 COPY ./target/kernel-uingenerator-service-*.jar kernel-uingenerator-service.jar
 
 EXPOSE 8080
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label}","-Dspring.profiles.active=${active_profile}","-Dspring.cloud.config.uri=${spring_config_url}","kernel-uingenerator-service.jar"]
+CMD ["java","-jar","kernel-uingenerator-service.jar"]
