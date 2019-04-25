@@ -4,22 +4,22 @@ FROM openjdk:8
 #FROM openjdk:8-jdk-alpine
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
-ARG spring_config_label
+#ARG spring_config_label
 
 # can be passed during Docker build as build time environment for spring profiles active 
-ARG active_profile
+#ARG active_profile
 
 # can be passed during Docker build as build time environment for config server URL 
-ARG spring_config_url
+#ARG spring_config_url
 
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
-ENV spring.profiles.active=${active_profile}
+ENV spring.profiles.active=${active_profile_env}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring.cloud.config.label=${spring_config_label}
+ENV spring.cloud.config.label=${spring_config_label_env}
 
 # environment variable to pass spring configuration url, at docker runtime
-ENV spring.cloud.config.uri=${spring_config_url}
+ENV spring.cloud.config.uri=${spring_config_url_env}
 
 COPY ./target/kernel-uingenerator-service-*.jar kernel-uingenerator-service.jar
 
