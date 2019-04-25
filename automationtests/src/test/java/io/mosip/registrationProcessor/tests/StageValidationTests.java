@@ -80,7 +80,6 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		  e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath); 
 		  }
 		 e.osiValidatorPropertyFileReader("packetProperties.properties",validPacketPath, invalidPacketFolderPath);
-		
 		try {
 			reader.close();
 		} catch (IOException e1) {
@@ -262,11 +261,13 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		Object[] obj =  (Object[]) testdata[0];
 		String name="";
+		String stageName="";
 		if(obj[0] instanceof File) {
 			File file=(File) obj[0];
 			name=file.getName();
+			stageName=file.getParentFile().getName();
 		} 
-		testCaseName=name+"Test";
+		testCaseName=stageName+"--"+name+"Test";
 	}
 
 	@AfterMethod(alwaysRun = true)

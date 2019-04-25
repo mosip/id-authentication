@@ -5,5 +5,6 @@
 "emptyRegistrationType":"",
 "emptyVersion":"",
 "requestTimeFormat":"",
-"machineId":""
+"machineId":"",
+"deactivatedUin":""
 }
