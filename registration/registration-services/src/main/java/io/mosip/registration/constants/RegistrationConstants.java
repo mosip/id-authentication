@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class RegistrationConstants {
 
-	
 	/**
 	 * private constructor
 	 */
@@ -72,8 +71,8 @@ public class RegistrationConstants {
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
 	public static final String BIOMETRIC_EXCEPTION_FLOW = "biometricExceptionFlow";
 	public static final String GUARDIAN_BIOMETRIC = "guardianBiometric";
-	
-	//css for quality indicator
+
+	// css for quality indicator
 	public static final String RETRY_ATTEMPT = "#retryAttempt_";
 	public static final String RETRY_ATTEMPT_ID = "retryAttempt_";
 	public static final String QUALITY_LABEL_GREY = "qualityLabelGrey";
@@ -193,10 +192,6 @@ public class RegistrationConstants {
 	public static final String SCAN_VBOX = "scanVBox";
 	public static final String DOCUMENT_CONTENT_BUTTON = "documentContentButton";
 
-
-
-	
-
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
 	public static final String PRIMARY_LANGUAGE = "mosip.primary-language";
@@ -262,7 +257,6 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
 
-	
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
@@ -287,7 +281,6 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH = "acknowledgementFormPath";
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
 
-	
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
 	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
@@ -571,7 +564,23 @@ public class RegistrationConstants {
 	public static final String REG_CONSENT = "mosip.registration.consent_";
 	public static final String REG_CONSENT_YES = "consent-yes";
 	public static final String REG_CONSENT_NO = "consent-no";
-	
+	public static final String IRIS_WITH_EXCEPTION = "irisWithException";
+	public static final String IRIS_WITHOUT_EXCEPTION = "irisWithoutException";
+	public static final String IRIS_WITH_EXCEPTION_STYLE = "parentIris2";
+	public static final String IRIS_WITHOUT_EXCEPTION_STYLE = "parentIris1";
+	public static final String IRIS_STYLE = "irisStyle";
+	public static final String TEMPLATE_IRIS = "iris";
+	public static final String TEMPLATE_CHILD_LEFT = "childLeft";
+	public static final String TEMPLATE_CHILD_RIGHT = "childRight";
+	public static final String TEMPLATE_CHILD_THUMBS = "childThumbs";
+	public static final String PARENT_LEFT_SLAP = "parentLeftSlap";
+	public static final String PARENT_RIGHT_SLAP = "parentRightSlap";
+	public static final String PARENT_LEFT_EYE = "parentLeftEye";
+	public static final String PARENT_RIGHT_EYE = "parentRightEye";
+	public static final String PARENT_THUMBS = "parentThumbs";
+	public static final String PARENT_STYLE = "parentStyle";
+	public static final String TEMPLATE_IS_CHILD = "isChild";
+
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
 	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
@@ -585,7 +594,7 @@ public class RegistrationConstants {
 	public static final String WEBCAM_LIBRARY_NAME = "mosip.registration.webcam_library_name";
 	public static final String PHOTO_CAPTUREPANES_SELECTED = "photoCapturePanesSelected";
 	public static final String DEFAULT_EXCEPTION_IMAGE_PATH = "/images/ExceptionPhoto.png";
-	
+
 	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
 
@@ -784,7 +793,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
 	public static final String PROVIDER_NAME = "mosip.registration.provider_name";
-	
+
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
@@ -1033,8 +1042,6 @@ public class RegistrationConstants {
 	public static final String REGEX_ANY = ".*";
 	public static final String ONE = "1";
 
-	
-
 	// master sync
 	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
 	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE = "REG-MDS‌-002";
@@ -1215,10 +1222,14 @@ public class RegistrationConstants {
 			.concat("postalCode");
 	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
 	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
-	public static final String ID_FULL_NAME_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("fullName.[*].value");
-	public static final String ADDRESS_LINE_1_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine1.[*].value");
-	public static final String ADDRESS_LINE_2_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine2.[*].value");
-	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine3.[*].value");
+	public static final String ID_FULL_NAME_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("fullName.[*].value");
+	public static final String ADDRESS_LINE_1_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine1.[*].value");
+	public static final String ADDRESS_LINE_2_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine2.[*].value");
+	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine3.[*].value");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static final String REGEX = "regex";
@@ -1262,10 +1273,9 @@ public class RegistrationConstants {
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
 	public static final String ERRORS = "errors";
-	public static final String ERROR_MSG ="message";
-	public static final String OK_MSG ="ok";
-	public static final String NEW_LINE ="\\n";
-
+	public static final String ERROR_MSG = "message";
+	public static final String OK_MSG = "ok";
+	public static final String NEW_LINE = "\\n";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
@@ -1286,12 +1296,12 @@ public class RegistrationConstants {
 	public static final String SCHEDULER_TIMER_STYLE = "schedulerTimer";
 	public static final String SCHEDULER_BTN_STYLE = "schedulerContinueBtn";
 	public static final String SCHEDULER_BORDER = "schedulerStage";
-	
-	public static final String USER_DETAILS="userDetails";
-	
+
+	public static final String USER_DETAILS = "userDetails";
+
 	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
-	
-	//TODO Need to discuss with Sravya about code
-	public static String INITIAL_SETUP="mosip.registration.initial_setup";
+
+	// TODO Need to discuss with Sravya about code
+	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
 
 }

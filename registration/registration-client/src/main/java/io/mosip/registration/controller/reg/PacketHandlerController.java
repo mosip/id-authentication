@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.LoggerConstants.PACKET_HANDLER;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_2;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_3;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_4;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -41,7 +42,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -167,7 +167,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
-	
+
 	@FXML
 	ProgressIndicator progressIndicator;
 
@@ -212,7 +212,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			lostUINPane.setVisible(false);
 			// vHolder.setManaged(false);
 		}
-		
+
 	}
 
 	/**
@@ -352,6 +352,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
 			templateContent
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 			String ackTemplateText = templateContent.toString();
 
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
@@ -642,14 +644,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			try {
 
-				//Sync and Uploads Packet when EOD Process Configuration is set to OFF
+				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
 					syncAndUploadPacket();
 				}
-				
-				//Deletes the pre registration Data after creation of registration Packet.
+
+				// Deletes the pre registration Data after creation of registration Packet.
 				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
 						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
 
@@ -746,7 +748,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
-			
+
 			getScene(root);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
@@ -865,7 +867,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.ifPresent(message -> generateAlert("ERROR", alertMsg));
 
 	}
-	
+
 	public ProgressIndicator getProgressIndicator() {
 		return progressIndicator;
 	}
