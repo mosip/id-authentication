@@ -847,7 +847,7 @@ public class RegistrationConstants {
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
 	public static final String REGISTRATION_CLIENT_ID = "10";
-	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
+	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync.fetch.ids";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "PRE_REG_TO_GET_ID_ERROR";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "PRE_REG_TO_GET_PACKET_ERROR";
