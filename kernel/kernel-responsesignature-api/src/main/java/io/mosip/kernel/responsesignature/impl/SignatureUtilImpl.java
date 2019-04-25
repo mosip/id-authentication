@@ -146,23 +146,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 	}
 
 	@Override
-	public boolean validate(ResponseEntity<String> response, String publicKey)
-			throws InvalidKeySpecException, NoSuchAlgorithmException {
-		byte[] syncDataBytearray = HMACUtils.generateHash(response.getBody().getBytes());
-		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		// System.out.println("Actual Hash: " + actualHash);
-		PublicKey key = null;
-		key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
-		String encryptedData = response.getHeaders().get(signedHeader).get(0);
-		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(encryptedData);
-		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
-		String signedHash = new String(hashedEncodedData);
-		// System.out.println("Signed Hash: " + signedHash);
-		return signedHash.equals(actualHash);
-	}
-
-	@Override
-	public boolean validate(String responseSignature, String responseBody, String publicKey)
+	public boolean validateWithPublicKey(String responseSignature, String responseBody, String publicKey)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
@@ -177,7 +161,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 	}
 
 	@Override
-	public boolean validate(ResponseEntity<String> response) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public boolean validateWithPublicKey(String responseSignature, String responseBody)
+			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", SignatureUtilConstant.APPLICATION_ID);
 		String localDateTime = DateUtils.getUTCCurrentDateTimeString();
@@ -187,26 +172,25 @@ public class SignatureUtilImpl implements SignatureUtil {
 		ResponseEntity<String> keymanagerresponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
 				HttpMethod.GET, null, String.class);
 
-		String responseBody = response.getBody();
+		String keyResponseBody = keymanagerresponse.getBody();
 		ExceptionUtils.getServiceErrorList(responseBody);
 		KeymanagerPublicKeyResponseDto keyManagerResponseDto = null;
-		ResponseWrapper<?> responseObject;
+		ResponseWrapper<?> keyResponseWrp;
 		try {
-			responseObject = objectMapper.readValue(keymanagerresponse.getBody(), ResponseWrapper.class);
+			keyResponseWrp = objectMapper.readValue(keyResponseBody, ResponseWrapper.class);
 			keyManagerResponseDto = objectMapper.readValue(
-					objectMapper.writeValueAsString(responseObject.getResponse()),
+					objectMapper.writeValueAsString(keyResponseWrp.getResponse()),
 					KeymanagerPublicKeyResponseDto.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		byte[] syncDataBytearray = HMACUtils.generateHash(response.getBody().getBytes());
+		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
 		// System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
-		String encryptedData = response.getHeaders().get(signedHeader).get(0);
-		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(encryptedData);
+		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
 		// System.out.println("Signed Hash: " + signedHash);
