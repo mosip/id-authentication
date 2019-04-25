@@ -1,4 +1,4 @@
-package io.mosip.registration.service.external.impl;
+ package io.mosip.registration.service.external.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -51,6 +51,7 @@ import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -93,7 +94,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		RegistrationDTO registrationDTO = getRegistrationDtoContent();
 		DocumentDetailsDTO documentDetailsDTO;
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(preRegZipFile))) {
-
+ 
 			ZipEntry zipEntry;
 			BufferedReader bufferedReader = null;
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
@@ -133,8 +134,32 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 		
-		/*name after the first '_' considered as the doc type and before '_' as doc category*/
-		String docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+		MoroccoIdentity moroccoIdentity = (MoroccoIdentity) getRegistrationDtoContent().getDemographicDTO()
+				.getDemographicInfoDTO().getIdentity();
+
+		String docTypeName = null;
+		if (moroccoIdentity != null) {
+			if (RegistrationConstants.POA_DOCUMENT.equalsIgnoreCase(docCatgory)
+					&& null != moroccoIdentity.getProofOfAddress()) {
+
+				docTypeName = moroccoIdentity.getProofOfAddress().getType();
+
+			} else if (RegistrationConstants.POI_DOCUMENT.equalsIgnoreCase(docCatgory)
+					&& null != moroccoIdentity.getProofOfIdentity()) {
+				docTypeName = moroccoIdentity.getProofOfIdentity().getType();
+
+			} else if (RegistrationConstants.POR_DOCUMENT.equalsIgnoreCase(docCatgory)
+					&& null != moroccoIdentity.getProofOfRelationship()) {
+				docTypeName = moroccoIdentity.getProofOfRelationship().getType();
+
+			} else if (RegistrationConstants.DOB_DOCUMENT.equalsIgnoreCase(docCatgory)
+					&& null != moroccoIdentity.getProofOfDateOfBirth()) {
+				docTypeName = moroccoIdentity.getProofOfDateOfBirth().getType();
+
+			} else {
+				docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+			}
+		}
 
 		/*
 		 * checking and setting the doc type name based on the reg client primary
