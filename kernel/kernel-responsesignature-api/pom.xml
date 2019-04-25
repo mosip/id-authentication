@@ -43,8 +43,11 @@
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-		<!-- added temporarily will be removed -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

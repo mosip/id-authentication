@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.responsesignature.impl.SignatureUtilImpl,\
-io.mosip.kernel.responsesignature.util.SigningUtil
+io.mosip.kernel.responsesignature.impl.SignatureUtilImpl

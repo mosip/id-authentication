@@ -27,10 +27,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
-import io.mosip.kernel.responsesignature.util.SigningUtil;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -54,7 +54,7 @@ public class SigningUtilTest {
 	private MockRestServiceServer server;
 
 	@Autowired
-	private SigningUtil signingUtil;
+	private SignatureUtil signingUtil;
 
 	private CryptoManagerRequestDto cryptoManagerRequestDto;
 
@@ -87,7 +87,7 @@ public class SigningUtilTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponseData("MOSIP");
+		signingUtil.signResponse("MOSIP");
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -107,7 +107,7 @@ public class SigningUtilTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponseData("MOSIP");
+		signingUtil.signResponse("MOSIP");
 	}
 
 	@Test(expected = ParseResponseException.class)
@@ -117,7 +117,7 @@ public class SigningUtilTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponseData("MOSIP");
+		signingUtil.signResponse("MOSIP");
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -131,7 +131,7 @@ public class SigningUtilTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponseData("MOSIP");
+		signingUtil.signResponse("MOSIP");
 	}
 
 	@Test(expected = SignatureUtilException.class)
@@ -140,8 +140,9 @@ public class SigningUtilTest {
 		List<ServiceError> serviceErrors = new ArrayList<>();
 		responseWrapper.setErrors(serviceErrors);
 		String response = objectMapper.writeValueAsString(responseWrapper);
-		server.expect(requestTo(encryptUrl)).andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
+		server.expect(requestTo(encryptUrl))
+				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponseData("MOSIP");
+		signingUtil.signResponse("MOSIP");
 	}
 }
