@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.PrintResponse;
@@ -52,6 +54,10 @@ public class PrintApiController {
 	@Autowired
 	private Environment env;
 
+	/** Token validator class */
+	@Autowired
+	TokenValidator tokenValidator;
+	
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PRINT_SERVICE_ID = "mosip.registration.processor.print.service.id";
 
@@ -68,12 +74,11 @@ public class PrintApiController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
-	
+
 	/**
 	 * Gets the file.
 	 *
-	 * @param printRequest
-	 *            the print request DTO
+	 * @param printRequest the print request DTO
 	 * @return the file
 	 * @throws RegPrintAppException
 	 */
@@ -83,7 +88,10 @@ public class PrintApiController {
 			@ApiResponse(code = 400, message = "Unable to fetch the uin card"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<PrintResponse> getFile(@Valid @RequestBody(required = true) PrintRequest printRequest,
-			@ApiIgnore Errors errors) throws RegPrintAppException {
+			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
+			throws RegPrintAppException {
+
+		tokenValidator.validate(token, "packetgenerator");
 		try {
 			PrintServiceValidationUtil.validate(errors);
 			RequestDTO request = printRequest.getRequest();
@@ -99,8 +107,7 @@ public class PrintApiController {
 	/**
 	 * Builds the print response.
 	 *
-	 * @param response
-	 *            the pdfbytes
+	 * @param response the pdfbytes
 	 * @return the prints the response
 	 */
 	private PrintResponse buildPrintResponse(ResponseDTO response) {
@@ -112,7 +119,7 @@ public class PrintApiController {
 		printresponse.setVersion(env.getProperty(REG_PRINT_SERVICE_VERSION));
 		printresponse.setResponse(response);
 		printresponse.setErrors(null);
-		
+
 		return printresponse;
 	}
 }
