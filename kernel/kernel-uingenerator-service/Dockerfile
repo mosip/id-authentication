@@ -25,4 +25,4 @@ COPY ./target/kernel-uingenerator-service-*.jar kernel-uingenerator-service.jar
 
 EXPOSE 8080
 
-CMD ['java','-jar','-Dspring.cloud.config.label=${spring_config_label}','-Dspring.profiles.active=${active_profile}','-Dspring.cloud.config.uri=${spring_config_url}','kernel-uingenerator-service.jar']
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label}","-Dspring.profiles.active=${active_profile}","-Dspring.cloud.config.uri=${spring_config_url}","kernel-uingenerator-service.jar"]
