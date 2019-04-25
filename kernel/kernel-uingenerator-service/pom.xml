@@ -113,20 +113,51 @@
 	</dependencies>
 	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
 
-	<!-- <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-		<artifactId>maven-shade-plugin</artifactId> <version>${maven-shade-plugin.version}</version> 
-		<executions> <execution> <phase>package</phase> <goals> <goal>shade</goal> 
-		</goals> <configuration> <filters> <filter> <artifact>*:*</artifact> <excludes> 
-		<exclude>META-INF/*.SF</exclude> <exclude>META-INF/*.DSA</exclude> <exclude>META-INF/*.RSA</exclude> 
-		</excludes> </filter> </filters> <transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
-		<manifestEntries> <Main-Class>io.mosip.kernel.uingenerator.UinGeneratorVertxApplication</Main-Class> 
-		</manifestEntries> </transformer> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> 
-		<resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource> 
-		</transformer> </transformers> <createDependencyReducedPom>false</createDependencyReducedPom> 
-		<shadedArtifactAttached>false</shadedArtifactAttached> </configuration> </execution> 
-		</executions> </plugin> </plugins> </build> -->
-
-	<build>
+<!-- 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>io.mosip.kernel.uingenerator.UinGeneratorVertxApplication</Main-Class>
+									</manifestEntries>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+								</transformer>
+							</transformers>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<shadedArtifactAttached>false</shadedArtifactAttached>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build> -->
+	
+		<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
