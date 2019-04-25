@@ -54,7 +54,7 @@
 				<setBody>
 					<simple>${bodyAs(String)}</simple>
 				</setBody>
-				<to uri="http://localhost:8091/registration-connector/registration-processor/connector/v1.0" />
+				<to uri="http://qa.mosip.io/registration-connector/registration-processor/connector/v1.0" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
