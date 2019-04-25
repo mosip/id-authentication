@@ -31,6 +31,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
@@ -118,6 +119,8 @@ public class BaseController extends BaseService {
 	private IrisCaptureController irisCaptureController;
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
 
 	@Autowired
 	private TemplateService templateService;
@@ -698,6 +701,7 @@ public class BaseController extends BaseService {
 				irisCaptureController.clearIrisData();
 				faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 				faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
+				guardianBiometricsController.clearCapturedBioData();
 			}
 		}
 	}

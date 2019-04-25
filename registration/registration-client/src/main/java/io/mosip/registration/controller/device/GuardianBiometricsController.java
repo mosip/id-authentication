@@ -1,13 +1,20 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -18,6 +25,7 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,6 +50,11 @@ import javafx.stage.Stage;
  */
 @Controller
 public class GuardianBiometricsController extends BaseController implements Initializable{
+	
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(GuardianBiometricsController.class);
 	
 	@FXML
 	private GridPane biometricBox;
@@ -92,11 +105,21 @@ public class GuardianBiometricsController extends BaseController implements Init
 	@FXML
 	private HBox bioRetryBox;
 	
+	@FXML
+	private Button continueBtn;
+	
+	@FXML
+	private Label duplicateCheckLbl;
+	
 	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
 	
 	@Autowired
 	private RegistrationController registrationController;
+	
+	/** The finger print capture service impl. */
+	@Autowired
+	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
 	
 	/** The finger print facade. */
 	@Autowired
@@ -112,6 +135,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		retryBox.setVisible(false);
 		biometricTypecombo.getItems().removeAll(biometricTypecombo.getItems());
 		biometricTypecombo.getItems().addAll("RightHand", "LeftHand", "Thumbs", "RightIris", "LeftIris");
+		continueBtn.setDisable(true);
 	}
 	
 	@FXML
@@ -180,7 +204,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 				scanIris(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE), popupStage,
 						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			}
-			scanBtn.setDisable(true);
 		} catch (NumberFormatException | RegBaseCheckedException e) {
 			// TODO Auto-generated catch block
 		}
@@ -248,7 +271,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		popupStage.close();
 		
-		scanBtn.setDisable(true);
+		if(validateIrisQulaity(detailsDTO, thresholdValue)) {
+			scanBtn.setDisable(true);
+			continueBtn.setDisable(false);
+		} else {
+			scanBtn.setDisable(false);
+			continueBtn.setDisable(true);
+		}
 
 	}
 	
@@ -303,12 +332,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 		setCapturedValues(detailsDTO.getFingerPrint(), detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
 		
 		popupStage.close();
-		
-		scanBtn.setDisable(true);
 
-//		if (validateFingerPrints()) {
-//			continueBtn.setDisable(false);
-//		}
+		if (validateFingerPrintQulaity(detailsDTO, thresholdValue) && fingerdeduplicationCheck(fingerprintDetailsDTOs)) {
+			scanBtn.setDisable(true);
+			continueBtn.setDisable(false);
+		}
 
 	}
 	
@@ -382,6 +410,98 @@ public class GuardianBiometricsController extends BaseController implements Init
 		qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
 
 		bioRetryBox.getChildren().clear();
+	}
+	
+	/**
+	 * Validates QualityScore.
+	 *
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param handThreshold         the hand threshold
+	 * @return boolean
+	 */
+	private Boolean validateFingerPrintQulaity(FingerprintDetailsDTO fingerprintDetailsDTO, Double handThreshold) {
+		return fingerprintDetailsDTO.getQualityScore() >= handThreshold
+				|| (fingerprintDetailsDTO.getQualityScore() < handThreshold)
+						&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
+								getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))
+				|| fingerprintDetailsDTO.isForceCaptured();
+	}
+	
+	/**
+	 * Fingerdeduplication check.
+	 *
+	 * @param segmentedFingerprintDetailsDTOs the segmented fingerprint details
+	 *                                        DTO's
+	 * @param isValid                         the isvalid flag
+	 * @param fingerprintDetailsDTOs          the fingerprint details DT os
+	 * @return true, if successful
+	 */
+	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		
+		List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs = new ArrayList<>();
+		
+		boolean isValid = false;
+		
+		for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
+			for (FingerprintDetailsDTO segmentedFingerprintDetailsDTO : fingerprintDetailsDTO
+					.getSegmentedFingerprints()) {
+				segmentedFingerprintDetailsDTOs.add(segmentedFingerprintDetailsDTO);
+			}
+		}
+			if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+				isValid = true;
+			} else {
+				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
+						.get(RegistrationConstants.DUPLICATE_FINGER);
+
+				Iterator<FingerprintDetailsDTO> iterator = fingerprintDetailsDTOs.iterator();
+
+				while (iterator.hasNext()) {
+					FingerprintDetailsDTO value = iterator.next();
+					for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {
+						if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
+							iterator.remove();
+							break;
+						}
+					}
+				}
+				String finger;
+				if (duplicateFinger.getFingerType().contains(RegistrationConstants.LEFT.toLowerCase())) {
+					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.LEFT.toLowerCase(),
+							RegistrationConstants.LEFT_HAND);
+				} else {
+					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.RIGHT.toLowerCase(),
+							RegistrationConstants.RIGHT_HAND);
+				}
+				duplicateCheckLbl.setText(finger + " " + RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
+			}
+		return isValid;
+	}
+	
+	private boolean validateIrisQulaity(IrisDetailsDTO irisDetailsDTO, Double irisThreshold) {
+			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Validating the quality score of the captured iris");
+
+			return irisDetailsDTO.getQualityScore() >= irisThreshold
+					|| (Double.compare(irisDetailsDTO.getQualityScore(), irisThreshold) < 0
+							&& irisDetailsDTO.getNumOfIrisRetry() == Integer.parseInt(
+									getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT))
+					|| irisDetailsDTO.isForceCaptured());
+	}
+	
+	public void clearCapturedBioData() {
+		
+		if (getRegistrationDTOFromSession() != null) {
+			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+			.setFingerprintDetailsDTO(new ArrayList<>());
+			
+			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+			.setIrisDetailsDTO(new ArrayList<>());
+		}
+		duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
+		clearCaptureData();
+		biometricBox.setVisible(false);	
+		retryBox.setVisible(false);
 	}
 
 

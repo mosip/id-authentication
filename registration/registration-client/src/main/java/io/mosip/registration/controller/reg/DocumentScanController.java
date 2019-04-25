@@ -927,6 +927,9 @@ public class DocumentScanController extends BaseController {
 						toggleBiometricException = false;
 						faceCaptureController.clearExceptionImage();
 						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, false);
+						if((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+							updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
+						}
 					}
 					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
 							toggleBiometricException);
