@@ -205,7 +205,7 @@ public class ClientJarDecryption extends Application {
 							decryptedRegServiceBytes);
 
 					String libPath = new File("lib").getAbsolutePath();
-					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -cp " + tempPath + "/*;" + libPath
+					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -Dmosip.dbpath="+properties.getProperty("mosip.dbpath")+" -cp " + tempPath + "/*;" + libPath
 							+ "/* io.mosip.registration.controller.Initialization";
 					System.out.println("Command-->>" + cmd);
 					Process process = Runtime.getRuntime().exec(cmd);
