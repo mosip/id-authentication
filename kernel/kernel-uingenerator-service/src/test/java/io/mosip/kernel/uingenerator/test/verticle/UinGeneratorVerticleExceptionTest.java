@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
@@ -23,6 +23,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+
 
 @RunWith(VertxUnitRunner.class)
 public class UinGeneratorVerticleExceptionTest {
@@ -38,7 +39,7 @@ public class UinGeneratorVerticleExceptionTest {
 
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
 
-		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorTestConfiguration.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -47,14 +48,15 @@ public class UinGeneratorVerticleExceptionTest {
 
 	@After
 	public void after(TestContext context) {
-		vertx.close(context.asyncAssertSuccess());
+		if (vertx != null &&  context != null)
+			vertx.close(context.asyncAssertSuccess());
 	}
 
 	@Test
 	public void getUinExceptionTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/uingenerator/uin").send(ar -> {
+		client.get(port, "localhost", "/v1/uingenerator/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());

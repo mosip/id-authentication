@@ -1,10 +1,6 @@
 package io.mosip.kernel.uingenerator.config;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -13,13 +9,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -38,7 +28,6 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
-@PropertySource(value = { "classpath:bootstrap.properties" })
 @ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*",
 		"io.mosip.kernel.responsesignature.*" })
 public class UinGeneratorConfiguration implements EnvironmentAware {
@@ -58,52 +47,6 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	@Override
 	public void setEnvironment(final Environment environment) {
 		this.env = environment;
-	}
-
-	/**
-	 * Loads config server values
-	 *
-	 * @return PropertySourcesPlaceholderConfigurer
-	 * 
-	 * @throws IOException
-	 *             throw IOException
-	 */
-	@Bean
-	@Autowired
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer() throws IOException {
-
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
-		List<String> applicationNames = getAppNames();
-		Resource[] appResources = new Resource[applicationNames.size()];
-		try {
-			for (int i = 0; i < applicationNames.size(); i++) {
-				String loc = env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_URI) + UinGeneratorConstant.KERNEL
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
-						+ UinGeneratorConstant.FORWARD_SLASH
-						+ env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_LABEL)
-						+ UinGeneratorConstant.FORWARD_SLASH + applicationNames.get(i) + UinGeneratorConstant.DASH
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
-						+ UinGeneratorConstant.PROPERTIES;
-				appResources[i] = resolver.getResources(loc)[0];
-				((AbstractEnvironment) env).getPropertySources()
-						.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
-			}
-			pspc.setLocations(appResources);
-		} catch (Exception e) {
-			System.err.println("Failed to load ResourcePropertySource : " + e.getMessage());
-		}
-		return pspc;
-	}
-
-	/**
-	 * Gets list of application name mentioned in bootstrap.properties
-	 * 
-	 * @return AppNames
-	 */
-	public List<String> getAppNames() {
-		String names = env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);
-		return Stream.of(names.split(UinGeneratorConstant.COMMA)).collect(Collectors.toList());
 	}
 
 	/**

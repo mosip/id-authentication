@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -37,7 +37,7 @@ public class UinGeneratorVerticleTest {
 		port = socket.getLocalPort();
 		socket.close();
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorTestConfiguration.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -46,6 +46,7 @@ public class UinGeneratorVerticleTest {
 
 	@After
 	public void after(TestContext context) {
+		if (vertx != null &&  context != null)
 		vertx.close(context.asyncAssertSuccess());
 	}
 
@@ -53,7 +54,7 @@ public class UinGeneratorVerticleTest {
 	public void getUinTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/uingenerator/uin").send(ar -> {
+		client.get(port, "localhost", "/v1/uingenerator/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());
