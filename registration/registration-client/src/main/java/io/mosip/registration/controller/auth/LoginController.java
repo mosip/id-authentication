@@ -1177,12 +1177,10 @@ public class LoginController extends BaseController implements Initializable {
 
 						if ((masterResponseDTO.getErrorResponseDTOs() != null
 								|| userResponseDTO.getErrorResponseDTOs() != null) && val == null) {
-							return RegistrationConstants.FAILURE;
-						} else {
-							return val;
+							val = RegistrationConstants.FAILURE;
 						}
+						return val;
 
-						
 					}
 				};
 			}
@@ -1194,7 +1192,6 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
-				
 				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
 
 					if (isInitialSetUp) {
@@ -1206,7 +1203,8 @@ public class LoginController extends BaseController implements Initializable {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
+							generateAlert(RegistrationConstants.SUCCESS.toUpperCase(),
+									RegistrationUIConstants.RESTART_APPLICATION);
 							restartController.restart();
 						}
 					});
