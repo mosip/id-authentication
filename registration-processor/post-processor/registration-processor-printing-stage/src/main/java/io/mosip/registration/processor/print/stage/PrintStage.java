@@ -271,7 +271,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			description = CLASSNAME + SEPERATOR + "Internal error occured while processing registration id " + regId
+			description = CLASSNAME + SEPERATOR + "Internal error occurred while processing registration id " + regId
 					+ SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} finally {
@@ -438,7 +438,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			description = CLASSNAME + SEPERATOR + "Internal error occured while processing registration id "
+			description = CLASSNAME + SEPERATOR + "Internal error occurred while processing registration id "
 					+ registrationId + SEPERATOR + e.getMessage();
 		} finally {
 			String eventId = "";

@@ -37,7 +37,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
-//@Ignore
+@Ignore
 @RunWith(VertxUnitRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinStatusUpdateVerticleTest {

@@ -79,29 +79,15 @@ public class UinGeneratorRouter {
 	@Autowired
 	private UinGeneratorService uinGeneratorService;
 
-
 	/**
 	 * Creates router for vertx server
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-
-		UINHealthCheckerhandler healthCheckHandler = new UINHealthCheckerhandler(vertx, null, objectMapper,environment);
-
 		final String servletPath = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH);
-
-		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
-
-		healthCheckHandler.register("db",healthCheckHandler::databaseHealthChecker);
-		
-		healthCheckHandler.register("diskspace",healthCheckHandler::dispSpaceHealthChecker);
-		
-		healthCheckHandler.register("uingeneratorverticle",future -> healthCheckHandler.verticleHealthHandler(future,vertx));
-
 		String path = servletPath + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
 
@@ -121,7 +107,18 @@ public class UinGeneratorRouter {
 		}
 		router.put(path).consumes(UinGeneratorConstant.APPLICATION_JSON).handler(this::updateRouter);
 
+		configureHealthCheckEndpoint(vertx, router, servletPath);
 		return swaggerConfigurer.configure(router);
+	}
+
+	private void configureHealthCheckEndpoint(Vertx vertx, Router router, final String servletPath) {
+		UINHealthCheckerhandler healthCheckHandler = new UINHealthCheckerhandler(vertx, null, objectMapper,
+				environment);
+		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
+		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
+		healthCheckHandler.register("diskspace", healthCheckHandler::dispSpaceHealthChecker);
+		healthCheckHandler.register("uingeneratorverticle",
+				future -> healthCheckHandler.verticleHealthHandler(future, vertx));
 	}
 
 	@Operation(summary = "Generate UIN", method = "GET", operationId = "v1/uingenerator/uin", tags = {
@@ -179,8 +176,7 @@ public class UinGeneratorRouter {
 	/**
 	 * update router for update the status of the given UIN
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
@@ -235,8 +231,7 @@ public class UinGeneratorRouter {
 	/**
 	 * Checks and generate uins
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);

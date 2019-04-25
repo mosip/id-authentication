@@ -201,7 +201,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.PACKET_UPLOAD_FAILED.name() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing for registrationId " + registrationId + "::"
+			description = "Internal error occurred while processing for registrationId " + registrationId + "::"
 					+ e.getMessage();
 		} finally {
 			registrationStatusService.updateRegistrationStatus(dto);

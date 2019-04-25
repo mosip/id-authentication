@@ -52,17 +52,17 @@ public class ConfigServerUrlUtil {
 	/**
 	 * Method to get property values.
 	 * 
-	 * @param clazz
-	 *            the class.
-	 * @param fileName
-	 *            file name from which property values are to be fetched.
-	 * @param key
-	 *            the key for which value needs to be fetched.
+	 * @param clazz    the class.
+	 * @param fileName file name from which property values are to be fetched.
+	 * @param key      the key for which value needs to be fetched.
 	 * @return the property value.
 	 */
 	private static String getProperty(Class<?> clazz, String fileName, String key) {
+		String value = System.getProperty(key);
+		if (value != null)
+			return value;
+
 		Properties prop = new Properties();
-		String value = null;
 		try (InputStream input = clazz.getClassLoader().getResourceAsStream(fileName)) {
 			if (input == null) {
 				throw new UinGeneratorServiceException("", "File Not Available : " + fileName);
