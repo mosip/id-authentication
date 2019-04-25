@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.uploader.stage.test;
+/*package io.mosip.registration.processor.packet.uploader.stage.test;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -47,11 +47,10 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import static org.junit.Assert.assertEquals;
-/**
+*//**
  * The Class PacketUploaderJobTest.
- * 
  * @author Rishabh Keshari
- */
+ *//*
 @RunWith(SpringRunner.class)
 public class PacketUploaderStageTest {
 
@@ -75,9 +74,9 @@ public class PacketUploaderStageTest {
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
 		
-		/* (non-Javadoc)
+		 (non-Javadoc)
 		 * @see io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager#getEventBus(java.lang.Object, java.lang.String, int)
-		 */
+		 
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
@@ -380,3 +379,4 @@ public class PacketUploaderStageTest {
 		assertTrue(responseObject);
 	}
 }
+*/

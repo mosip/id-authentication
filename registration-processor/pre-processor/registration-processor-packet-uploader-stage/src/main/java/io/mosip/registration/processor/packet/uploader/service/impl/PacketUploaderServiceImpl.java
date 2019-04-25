@@ -189,64 +189,63 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			dto = registrationStatusService.getRegistrationStatus(registrationId);
 
-			if(validatePacketWithSync()) {
 
-				byte[] encryptedByteArray=fileManager.getFile(DirectoryPathDto.LANDING_ZONE, regId, jschConnectionDto);
+			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
+			dto.setRegistrationStageName(stageName);
 
-				if(encryptedByteArray != null) {
+			byte[] encryptedByteArray=fileManager.getFile(DirectoryPathDto.LANDING_ZONE, regId, jschConnectionDto);
 
-					if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
+			if(encryptedByteArray != null) {
 
-						if(scanFile(new ByteArrayInputStream(encryptedByteArray))) {
+				if(validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
 
-							decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),registrationId);
+					if(scanFile(new ByteArrayInputStream(encryptedByteArray))) {
 
-							if(scanFile(decryptedData)) {
+						decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),registrationId);
 
-								int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
-								dto.setRetryCount(retrycount);
-								dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
-								dto.setRegistrationStageName(stageName);
-								if (retrycount < getMaxRetryCount()) {
+						if(scanFile(decryptedData)) {
+							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
+							dto.setRetryCount(retrycount);
+							if (retrycount < getMaxRetryCount()) {
+								regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
+
+								messageDTO = uploadPacket(dto,decryptedData, messageDTO,jschConnectionDto);
+								if (messageDTO.getIsValid()) {
+									dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+									isTransactionSuccessful = true;
+									description = "Packet uploaded to DFS successfully for registrationId " + this.registrationId;
+									regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+											LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 									regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 											LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-											"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
+											"PacketUploaderServiceImpl::validateAndUploadPacket()::exit");
 
-									messageDTO = uploadPacket(dto,decryptedData, messageDTO,jschConnectionDto);
-									if (messageDTO.getIsValid()) {
-										dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-										isTransactionSuccessful = true;
-										description = "Packet uploaded to DFS successfully for registrationId " + this.registrationId;
-										regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-												LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
-										regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-												LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-												"PacketUploaderServiceImpl::validateAndUploadPacket()::exit");
-
-									}
-								} else {
-
-									messageDTO.setInternalError(Boolean.TRUE);
-									description = "Failure in uploading the packet to Packet Store" + registrationId;
-									dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-											.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-									dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
-									dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
-									dto.setUpdatedBy(USER);
 								}
+							} else {
+
+								messageDTO.setInternalError(Boolean.TRUE);
+								description = "Failure in uploading the packet to Packet Store" + registrationId;
+								dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+										.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
+								dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+								dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
+								dto.setUpdatedBy(USER);
 							}
 						}
 					}
-				}else {
-					messageDTO.setInternalError(Boolean.TRUE);
-					dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-					dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-					dto.setStatusComment("Packet is not available in landing zone " + registrationId);
-					dto.setUpdatedBy(USER);
-
 				}
+			}else {
+				messageDTO.setInternalError(Boolean.TRUE);
+				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
+				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+				dto.setStatusComment("Packet is not available in landing zone " + registrationId);
+				dto.setUpdatedBy(USER);
+
 			}
+
 
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -339,27 +338,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		return messageDTO;
 	}
 
-
-
-	/**
-	 * validate packet with reg entity.
-	 */
-	private boolean validatePacketWithSync() {
-		boolean isPacketSync=false;
-
-		if (regEntity == null) {
-
-			description = "PacketNotSync exception in packet Uploader for registartionId " + registrationId + "::"
-					+ PlatformErrorMessages.RPR_PUM_PACKET_NOT_YET_SYNC.getMessage();
-			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-			dto.setStatusComment(StatusMessage.PACKET_NOT_SYNC);
-			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),registrationId, PlatformErrorMessages.RPR_PUM_PACKET_NOT_YET_SYNC.getMessage());
-		}else {
-			isPacketSync=true;
-		}
-		return isPacketSync;
-	}
 
 	/**
 	 * Scan file.
