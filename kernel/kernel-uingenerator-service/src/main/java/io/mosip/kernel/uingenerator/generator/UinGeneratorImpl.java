@@ -105,7 +105,7 @@ public class UinGeneratorImpl implements UinGenerator {
 			}
 		}
 		uinWriter.closeSession();
-		LOGGER.info("Generated {} uins ", uinsCount);
+		//LOGGER.info("Generated {} uins ", uinsCount);
 	}
 
 	/**

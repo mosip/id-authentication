@@ -173,4 +173,22 @@ public final class UinGeneratorConstant {
 	public static final String CURRENT_WORKING_DIRECTORY = "user.dir";
 	
 	public static final String APPLICATION_JSON = "application/json";
+
+	/**
+	 * The static field for ConfigStoreOptions type to be used in
+	 * ConfigRetriever[viz. spring-config-server , file etc.]
+	 */
+	public static final String CONFIG_STORE_OPTIONS_TYPE = "spring-config-server";
+	/**
+	 * The static field value for time-out
+	 */
+	public static final String CONFIG_SERVER_FETCH_TIME_OUT = "180000";
+	/**
+	 * The static field for url
+	 */
+	public static final String URL = "url";
+	/**
+	 * The static field for time-out
+	 */
+	public static final String TIME_OUT = "timeout";
 }
