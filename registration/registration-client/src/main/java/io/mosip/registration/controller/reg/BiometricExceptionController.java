@@ -37,6 +37,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -120,6 +121,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	private TableView<ExceptionListDTO> exceptionTable;
 	@FXML
 	private TableColumn<ExceptionListDTO, String> exceptionTableColumn;
+	@FXML
+	private Label irisExceptionLabel;
+	@FXML
+	private Label fpExceptionLabel;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -211,12 +216,14 @@ public class BiometricExceptionController extends BaseController implements Init
 							.get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
 				fingerPane.setVisible(false);
+				fpExceptionLabel.setVisible(false);
 			}
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 							.get(RegistrationConstants.IRIS_PANE)) {
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
+				irisExceptionLabel.setVisible(false);
 			}
 			onboardTrackerImg.setVisible(false);
 			registrationTrackerImg.setVisible(true);
