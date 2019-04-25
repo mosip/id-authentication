@@ -1,6 +1,7 @@
-package io.mosip.kernel.syncdata.test.utils;
+package io.mosip.kernel.responsesignature.test.utils;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.util.ArrayList;
@@ -23,12 +24,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.dto.CryptoManagerRequestDto;
-import io.mosip.kernel.syncdata.dto.CryptoManagerResponseDto;
-import io.mosip.kernel.syncdata.exception.CryptoManagerServiceException;
-import io.mosip.kernel.syncdata.exception.ParseResponseException;
-import io.mosip.kernel.syncdata.utils.SigningUtil;
+import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
+import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
+import io.mosip.kernel.responsesignature.util.SigningUtil;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -37,13 +39,13 @@ public class SigningUtilTest {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${mosip.kernel.syncdata.syncdata-request-id:SYNCDATA.REQUEST}")
+	@Value("${mosip.kernel.signature.signature-request-id}")
 	private String syncDataRequestId;
 
-	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
+	@Value("${mosip.kernel.signature.signature-version-id}")
 	private String syncDataVersionId;
 
-	@Value("${mosip.kernel.syncdata.cryptomanager-encrypt-url:http://localhost:8087/cryptomanager/encrypt/private}")
+	@Value("${mosip.kernel.signature.cryptomanager-encrypt-url}")
 	private String encryptUrl;
 
 	@Autowired
@@ -88,7 +90,7 @@ public class SigningUtilTest {
 		signingUtil.signResponseData("MOSIP");
 	}
 
-	@Test(expected = CryptoManagerServiceException.class)
+	@Test(expected = SignatureUtilClientException.class)
 	public void signResponseDataErrorTest() throws JsonProcessingException {
 
 		requestWrapper.setId(syncDataRequestId);
@@ -114,6 +116,31 @@ public class SigningUtilTest {
 		String response = "{\"id\": \"string\",\"version\": \"string\",\"responsetime\": \"2019-04-06T12:52:32.450Z\",\"metadata\": null,\"response\": {\"data\": \"n7AvMtZ_nHb2AyD9IrXfA6sG9jc8IEgmkIYN2pVFaJ9Qw8v1JEMgneL0lVR-},\"errors\": null}";
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
+		signingUtil.signResponseData("MOSIP");
+	}
+
+	@Test(expected = SignatureUtilClientException.class)
+	public void signResponseDataClientTest() throws JsonProcessingException {
+		ResponseWrapper<List<ServiceError>> responseWrapper = new ResponseWrapper<>();
+		ServiceError serviceError = new ServiceError("KER-KYM-004", "No such alias found---->sdasd-dsfsdf-sdfdsf");
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		serviceErrors.add(serviceError);
+		responseWrapper.setErrors(serviceErrors);
+		String response = objectMapper.writeValueAsString(responseWrapper);
+		server.expect(requestTo(encryptUrl))
+				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
+
+		signingUtil.signResponseData("MOSIP");
+	}
+
+	@Test(expected = SignatureUtilException.class)
+	public void signResponseDataClientServiceErrorTest() throws JsonProcessingException {
+		ResponseWrapper<List<ServiceError>> responseWrapper = new ResponseWrapper<>();
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		responseWrapper.setErrors(serviceErrors);
+		String response = objectMapper.writeValueAsString(responseWrapper);
+		server.expect(requestTo(encryptUrl)).andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		signingUtil.signResponseData("MOSIP");
 	}
