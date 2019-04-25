@@ -78,8 +78,14 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Value("${mosip.signed.header:response-signature}")
+	@Value("${mosip.sign.header:response-signature}")
 	private String signedHeader;
+
+	@Value("${mosip.sign.applicationid:KERNEL}")
+	private String signApplicationid;
+
+	@Value("${mosip.sign.refid:KER}")
+	private String signRefid;
 
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
@@ -100,8 +106,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 	public String signResponse(String response) {
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
 		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
-		cryptoManagerRequestDto.setApplicationId(SignatureUtilConstant.APPLICATION_ID);
-		cryptoManagerRequestDto.setReferenceId(SignatureUtilConstant.REFERENCE_ID);
+		cryptoManagerRequestDto.setApplicationId(signApplicationid);
+		cryptoManagerRequestDto.setReferenceId(signRefid);
 		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));
 		cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		RequestWrapper<CryptoManagerRequestDto> requestWrapper = new RequestWrapper<>();
@@ -164,10 +170,10 @@ public class SignatureUtilImpl implements SignatureUtil {
 	public boolean validateWithPublicKey(String responseSignature, String responseBody)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("applicationId", SignatureUtilConstant.APPLICATION_ID);
+		uriParams.put("applicationId", signApplicationid);
 		String localDateTime = DateUtils.getUTCCurrentDateTimeString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", localDateTime).queryParam("referenceId", SignatureUtilConstant.REFERENCE_ID);
+				.queryParam("timeStamp", localDateTime).queryParam("referenceId", signRefid);
 
 		ResponseEntity<String> keymanagerresponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
 				HttpMethod.GET, null, String.class);

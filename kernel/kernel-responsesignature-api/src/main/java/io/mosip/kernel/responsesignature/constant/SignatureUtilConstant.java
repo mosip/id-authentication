@@ -15,9 +15,9 @@ public class SignatureUtilConstant {
 	}
 	
 	/** The Constant APPLICATION_ID. */
-	public static final String APPLICATION_ID = "KERNEL";
+	//public static final String APPLICATION_ID = "KERNEL";
 	
 	/** The Constant REFERENCE_ID. */
-	public static final String REFERENCE_ID = "KER";
+	//public static final String REFERENCE_ID = "KER";
 	
 }
