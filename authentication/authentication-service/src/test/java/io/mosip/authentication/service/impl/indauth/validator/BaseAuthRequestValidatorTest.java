@@ -47,6 +47,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -60,7 +61,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @Import(IDAMappingConfig.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
-
 
 	/** The validator. */
 	@Mock
@@ -77,6 +77,9 @@ public class BaseAuthRequestValidatorTest {
 	/** The base auth request validator. */
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
+
+	@InjectMocks
+	PinValidatorImpl pinValidatorImpl;
 
 	/** The id info helper. */
 	@InjectMocks
@@ -104,6 +107,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "initialize");
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "pinvalidator", pinValidatorImpl);
 
 	}
 
@@ -467,9 +471,7 @@ public class BaseAuthRequestValidatorTest {
 		assertFalse(error.hasErrors());
 
 	}
-	
-	
-	
+
 	/**
 	 * Test validate face if more than one face data is present.
 	 */
@@ -477,7 +479,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFaceReq() {
 
 		authRequestDTO = getAuthRequestDTO();
-		
+
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
 		faceData.setBioValue("face img");
@@ -485,9 +487,9 @@ public class BaseAuthRequestValidatorTest {
 		faceData.setBioType("FID");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
-		
+
 		BioIdentityInfoDTO faceValue1 = new BioIdentityInfoDTO();
-		
+
 		faceData.setBioValue("face img");
 		faceData.setBioSubType("face");
 		faceData.setBioType("FID");
@@ -501,7 +503,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(faceIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-        List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
+		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(faceData);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);

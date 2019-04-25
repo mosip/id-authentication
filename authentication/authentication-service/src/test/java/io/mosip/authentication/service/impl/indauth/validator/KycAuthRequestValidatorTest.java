@@ -42,6 +42,7 @@ import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * 
@@ -64,11 +65,17 @@ public class KycAuthRequestValidatorTest {
 	@InjectMocks
 	RollingFileAppender appender;
 
+	@Mock
+	private PinValidatorImpl pinValidatorImpl;
+
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;
 
 	@Mock
 	IdInfoHelper idInfoHelper;
+
+	@InjectMocks
+	BaseAuthRequestValidator baseAuthRequestValidator;
 
 	@InjectMocks
 	AuthRequestValidator authRequestValidator;
@@ -154,6 +161,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		Mockito.when(pinValidatorImpl.validatePin(Mockito.anyString())).thenReturn(true);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -414,7 +422,7 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testForIsValidAuthtype() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -461,12 +469,12 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-		
+
 		MockEnvironment mockenv = new MockEnvironment();
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.auth.types.allowed", "");
-		
+
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);

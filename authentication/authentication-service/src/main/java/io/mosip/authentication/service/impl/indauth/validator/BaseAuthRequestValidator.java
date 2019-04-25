@@ -45,7 +45,9 @@ import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * The Class BaseAuthRequestValidator.
@@ -140,6 +142,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	@Autowired
 	private MasterDataManager masterDataManager;
 
+	@Autowired
+	private PinValidatorImpl pinvalidator;
+
 	/** The email Pattern. */
 	private Pattern emailPattern;
 
@@ -197,7 +202,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 						new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(pinOpt.get(), PIN_VALUE, errors, getPattern(STATICPIN));
+				try {
+					pinvalidator.validatePin(pinOpt.get());
+				} catch (InvalidPinException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
+							"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinOpt.get());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { PIN_VALUE },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
@@ -209,24 +223,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(otp.get(), OTP2, errors, getPattern(OTP));
+				try {
+					pinvalidator.validatePin(otp.get());
+				} catch (InvalidPinException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateOtpValue",
+							"INVALID_INPUT_PARAMETER - OtppinValue - value -> " + otp.get());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { OTP2 },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
 			}
-		}
-	}
-
-	/**
-	 * checks the static Pin value.
-	 * 
-	 * @param pinInfo
-	 * @param errors
-	 * @param pattern
-	 */
-	private void checkAdditionalFactorsValue(String info, String type, Errors errors, Pattern pattern) {
-		if (Objects.nonNull(pattern) && !pattern.matcher(info).matches()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"Invalid Input " + type + " pin Value");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { type }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -315,13 +321,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 					}
 				} else {
-					/*errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
-							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());*/
-						errors.rejectValue(REQUEST,
-								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { BIO_SUB_TYPE  },
-								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					/*
+					 * errors.rejectValue(REQUEST,
+					 * IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new
+					 * Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
+					 * IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					 */
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { BIO_SUB_TYPE },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 			}
 		}
@@ -555,8 +563,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
-		return bioInfoList.parallelStream()
-				.anyMatch(bio ->bio.getBioType() != null && !bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()));
+		return bioInfoList.parallelStream().anyMatch(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty()
+				&& bio.getBioType().equals(bioType.getType()));
 	}
 
 	/**
