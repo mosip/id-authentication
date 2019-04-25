@@ -192,7 +192,7 @@ public class DateValidation extends BaseController {
 				if (year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
-					int minYear = 1900;
+					int minYear = localDate.getYear()-Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
