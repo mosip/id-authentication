@@ -3,6 +3,7 @@ package io.mosip.kernel.uingenerator.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -63,6 +64,16 @@ public class ConfigServerUrlUtil {
 		Map<String, String> env = System.getenv();
 		for (String envName : env.keySet()) {
 			System.out.format("%s=%s%n", envName, env.get(envName));
+		}
+
+		System.out.println("----------------------------------------------");
+
+		Properties p = System.getProperties();
+		Enumeration keys = p.keys();
+		while (keys.hasMoreElements()) {
+			String keyS = (String) keys.nextElement();
+			String value = (String) p.get(keyS);
+			System.out.println(keyS + ": " + value);
 		}
 
 		String value = System.getProperty(key);
