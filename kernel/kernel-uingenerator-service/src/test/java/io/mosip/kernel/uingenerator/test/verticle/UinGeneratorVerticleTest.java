@@ -8,10 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -26,10 +28,13 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
 @RunWith(VertxUnitRunner.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinGeneratorVerticleTest {
 
 	private Vertx vertx;
 	private int port;
+
+	AbstractApplicationContext context;
 
 	@Before
 	public void before(TestContext testContext) throws IOException {
@@ -37,7 +42,7 @@ public class UinGeneratorVerticleTest {
 		port = socket.getLocalPort();
 		socket.close();
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorTestConfiguration.class);
+		context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -45,15 +50,18 @@ public class UinGeneratorVerticleTest {
 	}
 
 	@After
-	public void after(TestContext context) {
-		vertx.close(context.asyncAssertSuccess());
+	public void after(TestContext testContext) {
+		if (vertx != null && testContext != null)
+			vertx.close(testContext.asyncAssertSuccess());
+		if (context != null)
+			context.close();
 	}
 
 	@Test
 	public void getUinTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/uingenerator/uin").send(ar -> {
+		client.get(port, "localhost", "/v1/uingenerator/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());
