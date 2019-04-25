@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.core.exception.util;
 
 /**
@@ -346,6 +347,10 @@ public enum PlatformErrorMessages {
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 
 	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id cannot be empty"),
+	
+	RPR_MVS_NO_MATCH_TYPE_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "Match Type is Invalid"),
+	
+	
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -594,7 +599,13 @@ public enum PlatformErrorMessages {
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
-
+	
+	/** invalid token present in header */
+	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
+	
+	/** Access denied for the token present*/
+	RPR_AUT_ACCESS_DENIED(PlatformConstants.RPR_AUTHENTICATION + "02", "Access Denied For Role - %s"),
+	
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
 
 	EXTERNAL_STAGE_FAILED("", "External Stage Failed");

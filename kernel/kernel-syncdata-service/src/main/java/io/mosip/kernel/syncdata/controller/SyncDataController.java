@@ -242,8 +242,8 @@ public class SyncDataController {
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+			@ApiParam("Timestamp as metadata") @RequestParam(value="timeStamp",required=false) String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam(value="referenceId",required=false) String referenceId) {
 
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,

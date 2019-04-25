@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -22,6 +23,7 @@ import io.mosip.registration.processor.manual.verification.exception.InvalidFiel
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
+import io.mosip.registration.processor.manual.verification.exception.MatchTypeNotFoundException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.verification.exception.PacketNotFoundException;
 import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
@@ -90,7 +92,7 @@ public class ManualVerificationExceptionHandler {
 	 */
 	public ManualVerificationExceptionHandler(String id) {
 		this.id=id;
-		}
+	}
 
 
 	/**
@@ -124,7 +126,7 @@ public class ManualVerificationExceptionHandler {
 	 * @return the string
 	 */
 	public String noRecordAssignedExceptionHandler(NoRecordAssignedException e) {
-	return buildAssignDecisionExceptionResponse((Exception)e);
+		return buildAssignDecisionExceptionResponse((Exception)e);
 	}
 
 	/**
@@ -134,9 +136,9 @@ public class ManualVerificationExceptionHandler {
 	 * @return the string
 	 */
 	public String UserIDNotPresentException(UserIDNotPresentException e) {
-	return buildAssignDecisionExceptionResponse((Exception)e);
+		return buildAssignDecisionExceptionResponse((Exception)e);
 	}
-	
+
 	/**
 	 * Data exception handler.
 	 *
@@ -146,6 +148,11 @@ public class ManualVerificationExceptionHandler {
 	public String decodeExceptionHandler(DecodeException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 JSON DATA DECODE exception",e.getMessage());
 		ManualVerificationAppException ex=new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_DECODE_EXCEPTION,e);
+		return buildAssignDecisionExceptionResponse((Exception)ex);
+	}
+
+	public String matchTypeNotFoundExceptionHandler(MatchTypeNotFoundException e) {
+		MatchTypeNotFoundException ex=new MatchTypeNotFoundException(PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getCode(),PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
 		return buildAssignDecisionExceptionResponse((Exception)ex);
 	}
 
@@ -282,6 +289,9 @@ public class ManualVerificationExceptionHandler {
 			return invalidIllegalArgumentException((IllegalArgumentException)exe);
 		if(exe instanceof DecodeException)
 			return decodeExceptionHandler((DecodeException) exe);
+		if(exe instanceof MatchTypeNotFoundException)
+			return matchTypeNotFoundExceptionHandler((MatchTypeNotFoundException) exe);
+
 		else
 			return unknownExceptionHandler((Exception) exe);
 	}

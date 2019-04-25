@@ -62,7 +62,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	public void postObjecSuccessTest() throws Exception {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
-		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(auditResponseDto);
 		AuditResponseDto resultDto = (AuditResponseDto) registrationProcessorRestClientService.postApi(ApiName.AUDIT,
 				"query1", "12345", auditRequestDto, AuditResponseDto.class);
@@ -84,7 +84,7 @@ public class RegistrationProcessorRestClientServiceTest {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
-		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenThrow(exp);
 		registrationProcessorRestClientService.postApi(ApiName.AUDIT, "query1", "12345", auditRequestDto,
 				AuditResponseDto.class);
@@ -94,7 +94,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	public void postObjectSuccessTest() throws Exception {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
-		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(auditResponseDto);
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add("test");
@@ -110,7 +110,7 @@ public class RegistrationProcessorRestClientServiceTest {
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add("test");
-		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenThrow(exp);
 		registrationProcessorRestClientService.postApi(ApiName.AUDIT, pathSegments, "query1", "12345", auditRequestDto,
 				AuditResponseDto.class);

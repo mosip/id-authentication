@@ -268,7 +268,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
-			description = "Internal error occured while processing packet id" + idValue;
+			description = "Internal error occurred while processing packet id" + idValue;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));

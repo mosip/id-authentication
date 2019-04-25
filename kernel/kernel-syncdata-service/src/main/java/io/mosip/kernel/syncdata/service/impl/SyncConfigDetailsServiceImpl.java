@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -191,8 +190,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
-			Optional<String> referenceId) {
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, String referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
 
 		ResponseWrapper<PublicKeyResponse> publicKeyResponseMapped = null;

@@ -2,9 +2,11 @@ package io.mosip.registration.processor.printing.api.controller.test;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.printing.config.PrintServiceBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 
+import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -24,4 +26,6 @@ public class PrintServiceConfigTest {
 	@MockBean
 	public ConnectionUtils connectionUtil;
 
+	@MockBean
+	public TokenValidator tokenValidator;
 }

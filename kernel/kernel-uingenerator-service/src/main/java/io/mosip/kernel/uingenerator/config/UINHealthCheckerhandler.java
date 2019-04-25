@@ -335,7 +335,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 	}
 
 
-	class JSONResultBuilder {
+	static class JSONResultBuilder {
 
 		private JsonObject jsonObject;
 
