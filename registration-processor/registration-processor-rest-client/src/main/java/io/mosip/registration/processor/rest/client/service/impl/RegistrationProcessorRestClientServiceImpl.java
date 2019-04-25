@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -42,10 +43,10 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.processor.core.spi.restclient.
-	 * RegistrationProcessorRestClientService#getApi(io.mosip.registration.processor
-	 * .core.code.ApiName,
-	 * io.mosip.registration.processor.core.code.RestUriConstant, java.lang.String,
-	 * java.lang.String, java.lang.Class)
+	 * RegistrationProcessorRestClientService#getApi(io.mosip.registration.
+	 * processor .core.code.ApiName,
+	 * io.mosip.registration.processor.core.code.RestUriConstant,
+	 * java.lang.String, java.lang.String, java.lang.Class)
 	 */
 	@Override
 	public Object getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
@@ -99,18 +100,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		return obj;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.processor.core.spi.restclient.
-	 * RegistrationProcessorRestClientService#postApi(io.mosip.registration.
-	 * processor.core.code.ApiName,
-	 * io.mosip.registration.processor.core.code.RestUriConstant, java.lang.String,
-	 * java.lang.String, java.lang.Object, java.lang.Class)
-	 */
-	@Override
 	public Object postApi(ApiName apiName, String queryParamName, String queryParamValue, Object requestedData,
-			Class<?> responseType) throws ApisResourceAccessException {
+			Class<?> responseType, MediaType mediaType) throws ApisResourceAccessException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationProcessorRestClientServiceImpl::postApi()::entry");
 
@@ -131,7 +122,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 			try {
-				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
+				obj = restApiClient.postApi(builder.toUriString(), mediaType, requestedData, responseType);
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -146,6 +137,21 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
 		return obj;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.restclient.
+	 * RegistrationProcessorRestClientService#postApi(io.mosip.registration.
+	 * processor.core.code.ApiName,
+	 * io.mosip.registration.processor.core.code.RestUriConstant,
+	 * java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	 */
+	@Override
+	public Object postApi(ApiName apiName, String queryParamName, String queryParamValue, Object requestedData,
+			Class<?> responseType) throws ApisResourceAccessException {
+		return postApi(apiName, queryParamName, queryParamValue, requestedData, responseType, null);
 	}
 
 	/*
@@ -187,7 +193,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 			try {
-				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
+				obj = restApiClient.postApi(builder.toUriString(), null, requestedData, responseType);
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -258,9 +264,14 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
 		return obj;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService#putApi(io.mosip.registration.processor.core.code.ApiName, java.util.List, java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.restclient.
+	 * RegistrationProcessorRestClientService#putApi(io.mosip.registration.
+	 * processor.core.code.ApiName, java.util.List, java.lang.String,
+	 * java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	public Object putApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
 			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
@@ -298,7 +309,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
-				
+
 				throw new ApisResourceAccessException(
 						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);
 			}
