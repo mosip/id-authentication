@@ -122,11 +122,12 @@
 	</properties>
 
 	<modules>
-<!-- 		<module>kernel-core</module>
+		<module>kernel-core</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-auth-adapter</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
+
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
@@ -141,6 +142,7 @@
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
 		<module>kernel-idvalidator-mispid</module>
+
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
@@ -157,10 +159,10 @@
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
-		<module>kernel-responsesignature-api</module> -->
+		<module>kernel-responsesignature-api</module>
 
 		<module>kernel-uingenerator-service</module>
-<!-- 		<module>kernel-masterdata-service</module>
+		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
@@ -175,7 +177,7 @@
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-admin-service</module>
-		<module>kernel-config-server</module> -->
+		<module>kernel-config-server</module>
 	</modules>
 
 	<dependencies>
