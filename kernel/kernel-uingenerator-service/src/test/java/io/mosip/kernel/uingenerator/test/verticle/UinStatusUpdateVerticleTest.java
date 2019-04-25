@@ -100,7 +100,8 @@ public class UinStatusUpdateVerticleTest {
 				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
 					context.assertEquals(response.statusCode(), 200);
 					response.bodyHandler(body -> {
-						JsonObject json = body.toJsonObject();
+						System.out.println(body);
+						JsonObject jsonResponse = body.toJsonObject();
 						async.complete();
 					});
 				}).write(reqJson).end();
