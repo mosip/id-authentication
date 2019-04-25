@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
+
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
@@ -41,6 +42,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 private static Logger logger = Logger.getLogger(PacketReceiver.class);	 
 	 protected static String testCaseName = "";
 	 boolean status = false;
+	 boolean dbStatus=false;
 	 String finalStatus = "";	 
 	 JSONArray arr = new JSONArray();	 
 	 ObjectMapper mapper = new ObjectMapper();
@@ -96,6 +98,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 public void packetGenerator(String testSuite, Integer i, JSONObject object){
 	 	 List<String> outerKeys = new ArrayList<String>();
 	 	 List<String> innerKeys = new ArrayList<String>();	
+	 	 String currentTestCaseName=object.get("testCaseName").toString();
 	 	 try {
 	 	 	 JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	 
 	 	 	 expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -103,17 +106,19 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 	 	 //outer and inner keys which are dynamic in the actual response
 	 	 	 outerKeys.add("responsetime");
 	 	 	 innerKeys.add("registrationId");
-	 		 if(object.get("testCaseName").toString().equals("invalid_deactivatedUin")) {
-		 		 
-		 	 }
+	 		
 
 	 	 	 //generation of actual response
 	 	 	 actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
+	 	 	 if(object.get("testCaseName").toString().equals("invalid_deactivatedUin")) {
+		 		
+		 	 }
 	 	 	 String message=actualResponse.jsonPath().get("response.message").toString();
 	 	  if(message.equals("Packet created and uploaded")) {
 	 	 		 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
-		 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID); 
+		 	 	 dbStatus=regProcDbRead.compareTransactionOfDeactivatePackets(regID,currentTestCaseName); 
 	 	 	 }
+	 	
 	 		 //Asserting actual and expected response
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {

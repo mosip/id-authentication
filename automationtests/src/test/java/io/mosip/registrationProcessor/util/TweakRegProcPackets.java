@@ -438,7 +438,9 @@ public class TweakRegProcPackets {
 			property.setProperty("StageBits", demoDedupeStageString.toString());
 			property.store(stageBitFile, null);
 			stageBitFile.close();
+			demoDedupeStageString.delete(0, demoDedupeStageString.length());
 			encryptDecrypt.destroyFiles(filesToBeDestroyed);
+			
 		} catch (IOException e1) {
 			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
 		}
@@ -528,13 +530,13 @@ public class TweakRegProcPackets {
 		String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
 		FileReader reader = new FileReader(new File(propertyFilePath));
 		property.load(reader);
-		String validPacketPath = property.getProperty("pathForValidRegProcPackets");
+		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-	//	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		/*for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}*/
-		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		//e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		reader.close();
 
 	}
