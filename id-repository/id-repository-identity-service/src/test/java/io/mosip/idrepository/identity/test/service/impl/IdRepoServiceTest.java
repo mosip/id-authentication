@@ -399,7 +399,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", null);
+		proxyService.retrieveIdentityByUin("1234", null);
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -413,7 +413,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
-		proxyService.retrieveIdentity("1234", null);
+		proxyService.retrieveIdentityByUin("1234", null);
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -426,7 +426,7 @@ public class IdRepoServiceTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes());
 		when(uinRepo.existsByUin(Mockito.any())).thenThrow(new JDBCConnectionException("", null));
-		proxyService.retrieveIdentity("1234", null);
+		proxyService.retrieveIdentityByUin("1234", null);
 	}
 
 	@Test
@@ -448,7 +448,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentityByUin("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -471,7 +471,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentityByUin("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -494,7 +494,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentityByUin("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -517,7 +517,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentityByUin("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -539,7 +539,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentityByUin("1234", "bio");
 	}
 
 	@Test
@@ -561,7 +561,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentityByUin("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -584,7 +584,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentityByUin("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -607,7 +607,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentityByUin("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -630,7 +630,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentityByUin("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -652,7 +652,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentityByUin("1234", "demo");
 	}
 
 	@Test
@@ -680,7 +680,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "all");
+		proxyService.retrieveIdentityByUin("1234", "all");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -706,7 +706,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		proxyService.retrieveIdentity("1234", "a");
+		proxyService.retrieveIdentityByUin("1234", "a");
 	}
 
 	@Test
@@ -1216,4 +1216,41 @@ public class IdRepoServiceTest {
 			throw e.getCause();
 		}
 	}
+
+	@Test
+	public void testRetriveIdentityByRid_Valid() {
+		String value = "6158236213";
+		String ridValue = "27847657360002520190320095029";
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin(value);
+		uinObj.setUinRefId(ridValue);
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		Mockito.when(uinRepo.getUinByRid(Mockito.anyString())).thenReturn(value);
+		ReflectionTestUtils.invokeMethod(proxyService, "retrieveIdentityByRid", ridValue,
+				"demo");
+	}
+	
+	@Test(expected=IdRepoAppException.class)
+	public void testRetrieveIdentityByRid_Invalid() throws Throwable{
+		try {
+		Mockito.when(uinRepo.getUinByRid(Mockito.anyString())).thenReturn(null);
+		ReflectionTestUtils.invokeMethod(proxyService, "retrieveIdentityByRid", "27847657360002520190320095029",
+				"demo");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
 }

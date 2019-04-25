@@ -3,6 +3,7 @@ package io.mosip.idrepository.identity.test.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -78,18 +79,28 @@ public class IdRequestValidatorTest {
 	private Map<String, String> id;
 
 	List<String> status;
+	
+	List<String> allowedTypes;
+
+	public List<String> getAllowedTypes() {
+		return allowedTypes;
+	}
+
+	public void setAllowedTypes(List<String> allowedTypes) {
+		this.allowedTypes = allowedTypes;
+	}
 
 	@Autowired
 	ObjectMapper mapper;
 
 	@Mock
-	private UinValidatorImpl uinValidatorImpl;
+	private UinValidatorImpl uinValidator;
 
 	@Mock
 	private JsonValidatorImpl jsonValidator;
 
 	@Mock
-	private RidValidatorImpl ridValidatorImpl;
+	private RidValidatorImpl ridValidator;
 
 	public Map<String, String> getId() {
 		return id;
@@ -112,9 +123,10 @@ public class IdRequestValidatorTest {
 	@Before
 	public void setup() {
 		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
+		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
 		ReflectionTestUtils.setField(validator, "status", status);
-		ReflectionTestUtils.setField(validator, "env", env);
+		ReflectionTestUtils.setField(validator, "allowedTypes", allowedTypes);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
 		ReflectionTestUtils.setField(validator, "validation",
 				Stream.of(new String[][] { { "identity.dateOfBirth", "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$" },
@@ -154,14 +166,14 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRegIdValidRegId() {
-		when(ridValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		when(ridValidator.validateId(Mockito.anyString())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(validator, "validateRegId", "1234", errors);
 		assertFalse(errors.hasErrors());
 	}
 
 	@Test
 	public void testValidateRegIdInvalidRegId() {
-		when(ridValidatorImpl.validateId(Mockito.anyString()))
+		when(ridValidator.validateId(Mockito.anyString()))
 				.thenThrow(new InvalidIDException("errorCode", "errorMessage"));
 		ReflectionTestUtils.invokeMethod(validator, "validateRegId", "1234", errors);
 		assertTrue(errors.hasErrors());
@@ -415,11 +427,11 @@ public class IdRequestValidatorTest {
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport value = new ValidationReport(true, null);
 		Mockito.when(jsonValidator.validateJson(Mockito.any())).thenReturn(value);
-		Mockito.when(ridValidatorImpl.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(ridValidator.validateId(Mockito.any())).thenReturn(true);
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
-		request.setVersion("1.0");
+		request.setVersion("v1");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -440,11 +452,11 @@ public class IdRequestValidatorTest {
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport value = new ValidationReport(true, null);
 		Mockito.when(jsonValidator.validateJson(Mockito.any())).thenReturn(value);
-		Mockito.when(ridValidatorImpl.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(ridValidator.validateId(Mockito.any())).thenReturn(true);
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.update");
-		request.setVersion("1.0");
+		request.setVersion("v1");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -459,5 +471,69 @@ public class IdRequestValidatorTest {
 		validator.validate(request, errors);
 		assertFalse(errors.hasErrors());
 	}
+	
+	@Test
+	public void testValidateIdNullId() {
+		ReflectionTestUtils.invokeMethod(validator, "validateId", null, errors, "read");
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
+					error.getDefaultMessage());
+			assertEquals("id", ((FieldError) error).getField());
+		});
+	}
+
+	@Test
+	public void testValidateIdInvalidId() {
+		ReflectionTestUtils.invokeMethod(validator, "validateId", "abc", errors, "read");
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
+					error.getDefaultMessage());
+			assertEquals("id", ((FieldError) error).getField());
+		});
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testInvalidUin() throws IdRepoAppException {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		validator.validateUin("1234");
+	}
+	
+
+	/**
+	 * Test retrieve identity null id.
+	 *
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testValidateNullId() throws IdRepoAppException {
+		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
+		validator.validateUin(null);
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testInvalidType() throws IdRepoAppException {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		validator.validateType("1234", "dem");
+	}
+	
+	@Test
+	public void testMultipleValidType() throws IdRepoAppException {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		validator.validateType("1234", "demo,all,bio");
+	}
+
+	
+
+	@Test(expected = IdRepoAppException.class)
+	public void testMultipleInvalidType() throws IdRepoAppException {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		validator.validateType("1234", "dem,abc");
+
+	}
+	
 
 }
