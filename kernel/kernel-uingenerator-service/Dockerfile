@@ -13,13 +13,13 @@ FROM openjdk:8
 #ARG spring_config_url
 
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
-ENV spring.profiles.active=${active_profile_env}
+#ENV spring.profiles.active=${active_profile_env}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring.cloud.config.label=${spring_config_label_env}
+#ENV spring.cloud.config.label=${spring_config_label_env}
 
 # environment variable to pass spring configuration url, at docker runtime
-ENV spring.cloud.config.uri=${spring_config_url_env}
+#ENV spring.cloud.config.uri=${spring_config_url_env}
 
 COPY ./target/kernel-uingenerator-service-*.jar kernel-uingenerator-service.jar
 
