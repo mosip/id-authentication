@@ -87,26 +87,6 @@ public class ConfigUtil {
 	 * @return the app names.
 	 */
 	public static List<String> getAppNames() {
-
-		System.out.println("\n\n----------------------------------------------\n\n");
-
-		Properties p = System.getProperties();
-		Enumeration keys = p.keys();
-		while (keys.hasMoreElements()) {
-			String keyS = (String) keys.nextElement();
-			String value = (String) p.get(keyS);
-			System.out.println(keyS + ": " + value);
-		}
-
-		System.out.println("\n\n----------------------------------------------\n\n");
-
-		Map<String, String> env = System.getenv();
-		for (String envName : env.keySet()) {
-			System.out.format("%s=%s%n", envName, env.get(envName));
-		}
-
-		System.out.println("\n\n----------------------------------------------\n\n");
-
 		String names = System.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);
 		if (names == null) {
 			names = getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);
