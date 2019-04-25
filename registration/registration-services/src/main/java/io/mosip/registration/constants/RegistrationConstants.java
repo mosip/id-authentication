@@ -1303,5 +1303,14 @@ public class RegistrationConstants {
 
 	// TODO Need to discuss with Sravya about code
 	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
+	
+	public static final String SIGNED_KEY="signed-key";
+	public static final String TIME_STAMP="timeStamp";
+	public static final String REF_ID="referenceId";
+	public static final String PUBLIC_KEY_ISSUES_DATE="issuedAt";
+	public static final String PUBLIC_KEY_EXPIRE_DATE="expiryAt";
+	public static final String PUBLIC_KEY="publicKey";
+	public static final String PUBLIC_KEY_REST="public_key";
+	public static final String KER="KER";
 
 }

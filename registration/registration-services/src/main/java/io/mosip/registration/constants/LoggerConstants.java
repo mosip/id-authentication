@@ -126,5 +126,7 @@ public class LoggerConstants {
 	public static final String LOG_SERVICE_DELEGATE_VALIDATE_TOKEN = SERVICE_DELEGATE_UTIL + "IS_AUTH_TOKEN_VALID";
 	public static final String DATE_VALIDATION = UI_VALIDATIONS + "DATE_VALIDATIONS";
 	public static final String RESPONSE_SIGNATURE_VALIDATION = "RESPONSE_SIGNATURE_VALIDATION";
+	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
+	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
 
 }

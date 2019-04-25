@@ -98,13 +98,14 @@ public class ResponseSignatureAdviceTest {
 		Map<String, Object> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
-		
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenReturn("rqN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
-		responseSignatureAdvice.responseSignature(joinPointMock, linkedMap);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+				.thenReturn("rqN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
+
+		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
 
 	}
-	
+
 	@Test
 	public void responseSignatureTestFalse() throws RegBaseCheckedException, URISyntaxException {
 
@@ -134,13 +135,14 @@ public class ResponseSignatureAdviceTest {
 		Map<String, Object> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
-		
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
-		responseSignatureAdvice.responseSignature(joinPointMock, linkedMap);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
+
+		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
 
 	}
-	
+
 	@Test
 	public void responseSignatureTestFail() throws RegBaseCheckedException, URISyntaxException {
 
@@ -170,15 +172,16 @@ public class ResponseSignatureAdviceTest {
 		Map<String, Object> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
-		
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
-		responseSignatureAdvice.responseSignature(joinPointMock, linkedMap);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
+
+		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	@Test(expected=Throwable.class)
+	@Test(expected = Throwable.class)
 	public void responseSignatureTestException() throws RegBaseCheckedException, URISyntaxException {
 
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
@@ -207,10 +210,11 @@ public class ResponseSignatureAdviceTest {
 		Map<String, Object> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
-		
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any())).thenThrow(JsonProcessingException.class);
 
-		responseSignatureAdvice.responseSignature(joinPointMock, linkedMap);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+				.thenThrow(JsonProcessingException.class);
+
+		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
 
 	}
 
