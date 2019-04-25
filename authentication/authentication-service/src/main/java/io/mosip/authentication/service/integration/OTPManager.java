@@ -92,7 +92,7 @@ public class OTPManager {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
 			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
-			response = (String) ((Map<String,Object>)otpGeneratorResponsetDto.getResponse()).get("otp");
+			response = (String) ((Map<String, Object>) otpGeneratorResponsetDto.getResponse()).get("otp");
 			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					"otpGeneratorResponsetDto " + response);
 
@@ -146,10 +146,10 @@ public class OTPManager {
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
 			Map<String, Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable((Map<String, Object>)otpvalidateresponsedto.get(RESPONSE)).filter(res -> res.containsKey(STATUS))
-					.map(res -> String.valueOf(res.get(STATUS)))
+			isValidOtp = Optional.ofNullable((Map<String, Object>) otpvalidateresponsedto.get(RESPONSE))
+					.filter(res -> res.containsKey(STATUS)).map(res -> String.valueOf(res.get(STATUS)))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
-			if(!isValidOtp) {
+			if (!isValidOtp) {
 				handleErrorStatus(null, otpvalidateresponsedto);
 			}
 		} catch (RestServiceException e) {
@@ -168,12 +168,16 @@ public class OTPManager {
 		return isValidOtp;
 	}
 
-	private void handleErrorStatus(RestServiceException e, Map<String, Object> res) throws IdAuthenticationBusinessException {
+	private void handleErrorStatus(RestServiceException e, Map<String, Object> res)
+			throws IdAuthenticationBusinessException {
 		Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
-		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message") : null;
+		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message")
+				: null;
 		if (status instanceof String && message instanceof String) {
 			if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
 				throwOtpException((String) message);
+			} else {
+				throwKeyNotFound(e);
 			}
 		} else if (e != null) {
 			throwKeyNotFound(e);
@@ -191,8 +195,7 @@ public class OTPManager {
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
 		// FIXME change errorcode
-		if (errorCode.filter(code -> code.equalsIgnoreCase(KER_OTP_KEY_NOT_EXISTS_CODE))
-				.isPresent()) {
+		if (errorCode.filter(code -> code.equalsIgnoreCase(KER_OTP_KEY_NOT_EXISTS_CODE)).isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
 		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
