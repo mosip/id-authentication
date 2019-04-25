@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -85,7 +85,7 @@ public class UinGeneratorVertxApplication {
 					vertx.close();
 					startApplication();
 				} else {
-					LOGGER.error(json.cause().getMessage() + "\n");
+					LOGGER.warn(json.cause().getMessage() + "\n");
 					json.otherwiseEmpty();
 					retriever.close();
 					vertx.close();
@@ -93,7 +93,7 @@ public class UinGeneratorVertxApplication {
 				}
 			});
 		} catch (Exception exception) {
-			LOGGER.error(exception.getMessage() + "\n");
+			LOGGER.warn(exception.getMessage() + "\n");
 			startApplication();
 		}
 	}
@@ -108,10 +108,10 @@ public class UinGeneratorVertxApplication {
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
-				LOGGER.info("Successfully deployed :  {}", verticle.getClass().getSimpleName());
+				LOGGER.info("Successfully deployed: " + verticle.getClass().getSimpleName());
 			} else {
-				LOGGER.info("Failed to deploy {} \\nCause: {}", verticle.getClass().getSimpleName(),
-						stringAsyncResult.cause());
+				LOGGER.info("Failed to deploy:" + verticle.getClass().getSimpleName() + "\nCause: "
+						+ stringAsyncResult.cause());
 			}
 		}));
 	}

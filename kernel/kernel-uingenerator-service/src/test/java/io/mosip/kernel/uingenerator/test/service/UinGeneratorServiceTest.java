@@ -41,10 +41,6 @@ public class UinGeneratorServiceTest {
 	@MockBean
 	private UinRepository uinRepository;
 	
-	@After
-	public void after() {
-
-	}
 
 	@Test(expected = UinNotFoundException.class)
 	public void getUinNotFoundTest() {
