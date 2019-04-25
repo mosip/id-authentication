@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -36,13 +37,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
 
-	private static final String SESSION_ID = "session_id";
-
-	private static final String REQ_TIME = "requestTime";
-
-	private static final String INDIVIDUAL_ID = "individualId";
-
-	private static final String TRANSACTION_ID = "transactionID";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
@@ -69,9 +63,9 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			OtpRequestDTO otpRequestDto = (OtpRequestDTO) target;
 
-			validateReqTime(otpRequestDto.getRequestTime(), errors, REQ_TIME);
+			validateReqTime(otpRequestDto.getRequestTime(), errors, IdAuthCommonConstants.REQ_TIME);
 
-			validateTxnId(otpRequestDto.getTransactionID(), errors, TRANSACTION_ID);
+			validateTxnId(otpRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(otpRequestDto.getRequestTime(), errors);
@@ -81,7 +75,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 				validateId(otpRequestDto.getId(), errors);
 
 				validateIdvId(otpRequestDto.getIndividualId(), otpRequestDto.getIndividualIdType(), errors,
-						INDIVIDUAL_ID);
+						IdAuthCommonConstants.IDV_ID);
 			}
 
 			if (!errors.hasErrors()) {
@@ -117,25 +111,25 @@ public class OTPRequestValidator extends IdAuthValidator {
 			String maxTimeInMinutes = env.getProperty(IdAuthConfigKeyConstants.OTPREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES);
 			Instant reqTimeInstance = DateUtils.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
-			mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			if (maxTimeInMinutes != null
 					&& Duration.between(reqTimeInstance, now).toMinutes() > Integer.parseInt(maxTimeInMinutes)) {
-				mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
-				errors.rejectValue(REQ_TIME,
+				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
-			mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
-					"INVALID_INPUT_PARAMETER -- " + REQ_TIME);
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQ_TIME },
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+					"INVALID_INPUT_PARAMETER -- " + IdAuthCommonConstants.REQ_TIME);
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IdAuthCommonConstants.REQ_TIME },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}

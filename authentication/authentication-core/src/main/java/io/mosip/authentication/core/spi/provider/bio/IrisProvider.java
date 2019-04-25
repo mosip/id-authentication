@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 
 /**
@@ -35,11 +36,6 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		this.environment = environment;
 	}
 
-	/** The Constant IRISIMG_LEFT_MATCH_VALUE. */
-	private static final String IRISIMG_LEFT_MATCH_VALUE = ".irisimg.left.match.value";
-
-	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */
-	private static final String IRISIMG_RIGHT_MATCH_VALUE = ".irisimg.right.match.value";
 
 	/** The Constant LEFTTEYE. */
 	static final String LEFTTEYE = "LEFT"; //FIXME Hardcoded
@@ -47,11 +43,8 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	/** The Constant RIGHTEYE. */
 	static final String RIGHTEYE = "RIGHT"; //FIXME Hardcoded
 	
-	/** The Constant UNKNOWNEYE. */
-	static final String UNKNOWNEYE = "UNKNOWN"; //FIXME Hardcoded
+	
 
-	/** The Constant IDVID. */
-	private static final String IDVID = "idvid";
 
 	/*
 	 * (non-Javadoc)
@@ -92,7 +85,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 		if (reqInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			String uin = reqInfoMap.get(IDVID);
+			String uin = reqInfoMap.get(IdAuthCommonConstants.IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
 			
 			Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
@@ -134,13 +127,13 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			if (reqInfoMap.keySet().stream().noneMatch(key -> key.startsWith(UNKNOWNEYE))) {
-				String uin = reqInfoMap.get(IDVID);
+			if (reqInfoMap.keySet().stream().noneMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
+				String uin = reqInfoMap.get(IdAuthCommonConstants.IDVID);
 				for (Entry<String, String> entry : reqInfoMap.entrySet()) {
-					if(!entry.getKey().equals(IDVID)) {
+					if(!entry.getKey().equals(IdAuthCommonConstants.IDVID)) {
 						Map<String, String> requestInfo = new HashMap<>();
 						requestInfo.put(entry.getKey(), entry.getValue());
-						requestInfo.put(IDVID, uin);
+						requestInfo.put(IdAuthCommonConstants.IDVID, uin);
 						match += matchImage(requestInfo, entityInfo);
 					}
 				} 
@@ -164,14 +157,14 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		double score = 0;
 		double individualScore=0;
 		Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
-		String uin = reqInfoMap.get(IDVID);
+		String uin = reqInfoMap.get(IdAuthCommonConstants.IDVID);
 		for (Entry<String, String> reqEntry : reqInfoMap.entrySet()) {
-			if (!reqEntry.getKey().equals(IDVID)) {
+			if (!reqEntry.getKey().equals(IdAuthCommonConstants.IDVID)) {
 				for (Entry<String, String> entry : entityInfoMap.entrySet()) {
 					Map<String, String> requestInfo = new HashMap<>();
 					Map<String, String> entityMap = new HashMap<>();
 					requestInfo.put(reqEntry.getKey(), reqEntry.getValue());
-					requestInfo.put(IDVID, uin);
+					requestInfo.put(IdAuthCommonConstants.IDVID, uin);
 					entityMap.put(entry.getKey(), entry.getValue());
 					score = matchImage(requestInfo, entityMap);
 					if (score > individualScore) {

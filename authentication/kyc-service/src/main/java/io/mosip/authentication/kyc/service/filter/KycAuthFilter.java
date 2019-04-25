@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -34,8 +35,7 @@ public class KycAuthFilter extends IdAuthFilter {
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
-	/** The Constant RESPONSE. */
-	private static final String RESPONSE = "response";
+	
 
 	/*
 	 * (non-Javadoc)
@@ -49,12 +49,12 @@ public class KycAuthFilter extends IdAuthFilter {
 	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
 		try {
-			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
+			Map<String, Object> response = (Map<String, Object>) responseBody.get(IdAuthCommonConstants.RESPONSE);
 			if (Objects.nonNull(response)) {
 				if (Objects.nonNull(publicKey)) {
 					encryptKycResponse(response);
 				} else {
-					responseBody.put(RESPONSE, encode(toJsonString(response)));
+					responseBody.put(IdAuthCommonConstants.RESPONSE, encode(toJsonString(response)));
 				}
 			}
 			return responseBody;
@@ -79,7 +79,7 @@ public class KycAuthFilter extends IdAuthFilter {
 		}
 
 		if (Objects.nonNull(asymmetricKeyEncrypt) && Objects.nonNull(symmetricDataEncrypt)) {
-			response.replace(RESPONSE, CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
+			response.replace(IdAuthCommonConstants.RESPONSE, CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
 					.concat(CryptoUtil.encodeBase64String(symmetricDataEncrypt)));
 		}
 	}
@@ -107,8 +107,8 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
 		setKycParams(responseParams);
-		Object response = responseParams.get(RESPONSE);
-		responseParams.put(RESPONSE, response);
+		Object response = responseParams.get(IdAuthCommonConstants.RESPONSE);
+		responseParams.put(IdAuthCommonConstants.RESPONSE, response);
 		return responseParams;
 	}
 
@@ -121,7 +121,7 @@ public class KycAuthFilter extends IdAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> setKycParams(Map<String, Object> response) {
-		Object kyc = response.get(RESPONSE);
+		Object kyc = response.get(IdAuthCommonConstants.RESPONSE);
 		Map<String, Object> kycDetails = null;
 		if (kyc instanceof Map) {
 			kycDetails = (Map<String, Object>) kyc;

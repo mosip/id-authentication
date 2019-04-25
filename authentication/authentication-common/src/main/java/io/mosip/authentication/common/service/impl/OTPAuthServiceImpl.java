@@ -19,8 +19,9 @@ import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.VIDRepository;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.OTPUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -49,8 +50,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	private static final String AUTHENTICATE = "authenticate";
 
-	/** The Constant DEAFULT_SESSSION_ID. */
-	private static final String DEAFULT_SESSSION_ID = "sessionID";
 
 	/** The autntxnrepository. */
 	@Autowired
@@ -115,9 +114,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				return AuthStatusInfoBuilder.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values(), idaMappingConfig);
 			} else {
-				mosipLogger.debug(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
 						getClass().toString());
-				mosipLogger.error(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "Key Invalid");
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "Key Invalid");
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {

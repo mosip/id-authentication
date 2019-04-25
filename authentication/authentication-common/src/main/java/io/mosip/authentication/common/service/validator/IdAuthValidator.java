@@ -1,5 +1,10 @@
 package io.mosip.authentication.common.service.validator;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISSING_INPUT_PARAMETER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
+
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -13,8 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -35,36 +41,7 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
-	private static final String REQUEST = "request";
-
-	/** The Constant IDV_ID_TYPE. */
-	private static final String IDV_ID_TYPE = "individualIdType";
-
-	/** The Constant IDV_ID. */
-	private static final String IDV_ID = "individualId";
-
-	/** The Constant MISSING_INPUT_PARAMETER. */
-	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
-
-	/** The Constant VALIDATE. */
-	private static final String VALIDATE = "VALIDATE";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SESSION_ID";
-
-	/** The Constant DATETIME_PATTERN. */
-	protected static final String DATETIME_PATTERN = "datetime.pattern";
-
-	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "requestTime";
-
-	/** The Constant TXN_ID. */
-	private static final String TXN_ID = "transactionID";
-
-	/** The Constant ID. */
-	private static final String ID = "id";
-
-	/** The Constant A_Z0_9_10. */
+	
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
 
 	/** The mosip logger. */
@@ -91,7 +68,7 @@ public abstract class IdAuthValidator implements Validator {
 	public void validateId(String id, Errors errors) {
 		// TODO check id based on the request and add validation for version.
 		if (Objects.isNull(id) || id.isEmpty()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -128,14 +105,14 @@ public abstract class IdAuthValidator implements Validator {
 	protected void validateTxnId(String txnID, Errors errors, String paramName) {
 		if (Objects.isNull(txnID)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					MISSING_INPUT_PARAMETER + TXN_ID + paramName);
-			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					MISSING_INPUT_PARAMETER + TRANSACTION_ID + paramName);
+			errors.rejectValue(TRANSACTION_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID + paramName);
-			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(TRANSACTION_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -272,8 +249,8 @@ public abstract class IdAuthValidator implements Validator {
 	protected void validateTxnId(String transactionID, String requestTransactionID, Errors errors) {
 		if (!StringUtils.isEmpty(requestTransactionID) && !StringUtils.isEmpty(transactionID)
 				&& !transactionID.equals(requestTransactionID)) {
-			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(TRANSACTION_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { TRANSACTION_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

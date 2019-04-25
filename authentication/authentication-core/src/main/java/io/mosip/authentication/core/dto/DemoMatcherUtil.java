@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.codec.EncoderException;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -26,7 +27,6 @@ public final class DemoMatcherUtil {
 	private static final Integer EXACT_MATCH_VALUE = 100;
 
 	private static Logger mosipLogger = IdaLogger.getLogger(DemoMatcherUtil.class);
-	private static final String SESSION_ID = "sessionId";
 
 	/**
 	 * Instantiates a new demo matcher util.
@@ -154,7 +154,7 @@ public final class DemoMatcherUtil {
 		try {
 			value = TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
 		} catch (EncoderException e) {
-			mosipLogger.error(SESSION_ID, "doPhoneticsMatch", "EncoderException", e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "doPhoneticsMatch", "EncoderException", e.getMessage());
 		}
 
 		return value;

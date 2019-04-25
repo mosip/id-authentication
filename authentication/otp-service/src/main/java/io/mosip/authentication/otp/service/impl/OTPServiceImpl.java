@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -49,22 +50,9 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class OTPServiceImpl implements OTPService {
 
-	private static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
-
 	private static final String OTP_GENERATION_FAILED_DESC = "OTP_GENERATION_FAILED";
 
 	private static final String OTP_GENERATION_FAILED_STATUS = "N";
-
-	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.flooding.max-count";
-
-	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.flooding.duration";
-
-	private static final String DATETIME_PATTERN = "datetime.pattern";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SessionID";
-
-	private static final String IDA = "IDA";
 
 	/** The id auth service. */
 	@Autowired
@@ -122,7 +110,7 @@ public class OTPServiceImpl implements OTPService {
 				otpResponseDTO.setId(otpRequestDto.getId());
 				otpResponseDTO.setErrors(Collections.emptyList());
 				otpResponseDTO.setTransactionID(transactionId);
-				String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
+				String responseTime = formatDate(new Date(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
 				Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 				String email = getEmail(idInfo);
@@ -138,14 +126,14 @@ public class OTPServiceImpl implements OTPService {
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId, "Y",
 						"OTP_GENERATED", RequestType.OTP_REQUEST);
 				idAuthService.saveAutnTxn(authTxn);
-				mosipLogger.info(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 						"generated OTP is: " + otpValue.get());
 				notificationService.sendOtpNotification(otpRequestDto, otpValue.get(), uin, email, phoneNumber, idInfo);
 			} else {
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId,
 						OTP_GENERATION_FAILED_STATUS, OTP_GENERATION_FAILED_DESC, RequestType.OTP_REQUEST);
 				idAuthService.saveAutnTxn(authTxn);
-				mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 						"OTP Generation failed");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
@@ -189,16 +177,16 @@ public class OTPServiceImpl implements OTPService {
 		Date requestDateTime;
 		LocalDateTime reqTime;
 		try {
-			requestDateTime = DateUtils.parseToDate(requestTime, env.getProperty(DATETIME_PATTERN));
+			requestDateTime = DateUtils.parseToDate(requestTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 			reqTime = DateUtils.parseDateToLocalDateTime(requestDateTime);
 		} catch (ParseException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
+		int addMinutes = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_DURATION));
 		Date addMinutesInOtpRequestDTime = addMinutes(requestDateTime, -addMinutes);
 		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
-		int maxCount = Integer.parseInt(env.getProperty(OTP_REQUEST_MAX_COUNT));
+		int maxCount = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_MAX_COUNT));
 		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, individualId) > maxCount) {
 			isOtpFlooded = true;
 		}
@@ -227,9 +215,9 @@ public class OTPServiceImpl implements OTPService {
 			String id = createId(uin);
 			autnTxn.setId(id); // FIXME
 			// TODO check
-			autnTxn.setCrBy(IDA);
+			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
+			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
@@ -237,10 +225,10 @@ public class OTPServiceImpl implements OTPService {
 			autnTxn.setStatusCode(status);
 			autnTxn.setStatusComment(comment);
 			// FIXME
-			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANGUAGE));
+			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 			return autnTxn;
 		} catch (ParseException | DateTimeParseException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -252,7 +240,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @return
 	 */
 	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		String uinAndDate = uin + "-" + currentDate;
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
 	}

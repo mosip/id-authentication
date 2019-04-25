@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -40,10 +41,6 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 		}
 	});
 
-	/**
-	 * Session id
-	 */
-	private final static String DEFAULT_SESSION_ID = "sessionId";
 
 	/**
 	 * Otp Matching Strategy
@@ -71,7 +68,7 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 	}
 
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE,
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE,
 				"Inside OtpMatchingStrategy Strategy" + errorConstants.getErrorCode(),
 				errorConstants.getErrorMessage());
 	}

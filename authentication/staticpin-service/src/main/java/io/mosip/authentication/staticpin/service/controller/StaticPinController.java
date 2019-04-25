@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -39,8 +40,6 @@ public class StaticPinController {
 	/** The logger */
 	private static Logger logger = IdaLogger.getLogger(StaticPinController.class);
 
-	/** The Constant DEAFULT_SESSION_ID */
-	private static final String DEAFULT_SESSION_ID = "sessionId";
 
 	/** The Static Pin Facade */
 	@Autowired
@@ -77,10 +76,10 @@ public class StaticPinController {
 			DataValidationUtil.validate(errors);
 			return staticPinService.storeSpin(staticPinRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 

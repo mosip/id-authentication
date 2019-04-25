@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
@@ -26,7 +27,7 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 			if (object instanceof BiFunction) {
 				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
 				Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-				reqInfoMap.put(getIdvid(), (String) props.get(getIdvid()));
+				reqInfoMap.put(IdAuthCommonConstants.IDVID, (String) props.get(IdAuthCommonConstants.IDVID));
 				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
@@ -37,8 +38,6 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
-	/** The Constant IDVID. */
-	private static final String IDVID = "idvid";
 	
 	/** The matching strategy impl. */
 	private MatchingStrategyImpl matchingStrategyImpl;
@@ -54,14 +53,7 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
-	/**
-	 * Gets the idvid.
-	 *
-	 * @return the idvid
-	 */
-	public static String getIdvid() {
-		return IDVID;
-	}
+	
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchingStrategy()

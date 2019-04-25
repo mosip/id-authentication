@@ -7,6 +7,9 @@ import org.springframework.core.env.Environment;
 
 import com.google.gson.JsonSyntaxException;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+
 /**
  * The Class FingerprintProvider - An Abstract class which contains default
  * implementation for calculating score based on ISO Template and Fingerprint
@@ -17,8 +20,6 @@ import com.google.gson.JsonSyntaxException;
  */
 public abstract class FaceProvider implements MosipFaceProvider {
 
-	/** The Constant UNKNOWN. */
-	private static final String UNKNOWN = "UNKNOWN";
 	/**
 	 * The Odd Uin constant
 	 */
@@ -28,8 +29,6 @@ public abstract class FaceProvider implements MosipFaceProvider {
 	 */
 	private static final String EVEN_UIN = "evenuin";
 
-	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */
-	private static final String FACE_MATCH_VALUE = ".faceimg.match.value";
 
 	/** The Constant LEFTTEYE. */
 	static final String FACE = "FACE"; // FIXME Hardcoded
@@ -37,8 +36,6 @@ public abstract class FaceProvider implements MosipFaceProvider {
 	/** The environment. */
 	private Environment environment;
 
-	/** The Constant idvid. */
-	private static final String IDVID = "idvid";
 
 	/**
 	 * Constructor for IrisProvider
@@ -87,10 +84,10 @@ public abstract class FaceProvider implements MosipFaceProvider {
 
 		if (reqInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			String uin = reqInfoMap.get(IDVID);
+			String uin = reqInfoMap.get(IdAuthCommonConstants.IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
-			if (reqInfoMap.containsKey(FaceProvider.FACE) || reqInfoMap.keySet().stream().anyMatch(key -> key.startsWith(UNKNOWN))) {
-				return environment.getProperty(uinType + FACE_MATCH_VALUE, Double.class);
+			if (reqInfoMap.containsKey(FaceProvider.FACE) || reqInfoMap.keySet().stream().anyMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
+				return environment.getProperty(uinType + IdAuthConfigKeyConstants.FACE_IMG_VALUE, Double.class);
 			}
 		}
 

@@ -8,6 +8,8 @@ import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+
 /**
  * The Class FingerprintProvider - An Abstract class which contains default
  * implementation for calculating score based on ISO Template and Fingerprint
@@ -18,8 +20,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
  */
 public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
-	/** The Constant UNKNOWN. */
-	private static final String UNKNOWN = "UNKNOWN";
+	
 
 	/*
 	 * (non-Javadoc)
@@ -122,7 +123,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 * matchMultiMinutae(java.util.Map, java.util.Map)
 	 */
 	public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(UNKNOWN))) {
+		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
 			double matchScore = 0;
 			matchScore = matchMultiMinutaeKnownFinger(reqInfo, entityInfo, matchScore); 
 			return matchScore;
@@ -145,7 +146,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 		double matchScore = 0;
 		double individualScore;
 		for (Map.Entry<String, String> reqInfoEntry : reqInfo.entrySet()) {
-			if (!reqInfoEntry.getKey().startsWith(UNKNOWN)) {
+			if (!reqInfoEntry.getKey().startsWith(IdAuthCommonConstants.UNKNOWN_BIO)) {
 				Map<String, String> reqMap = new HashMap<>();
 				reqMap.put(reqInfoEntry.getKey(), reqInfoEntry.getValue());
 				matchScore = matchMultiMinutaeKnownFinger(reqMap, entityInfo,

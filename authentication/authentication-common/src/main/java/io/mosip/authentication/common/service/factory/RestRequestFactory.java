@@ -17,8 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -42,8 +43,6 @@ public class RestRequestFactory {
 
     private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 
-    /** The Constant DEFAULT_SESSION_ID. */
-    private static final String DEFAULT_SESSION_ID = "sessionId";
 
     /** The Constant METHOD_BUILD_REQUEST. */
     private static final String METHOD_BUILD_REQUEST = "buildRequest";
@@ -128,7 +127,7 @@ public class RestRequestFactory {
 	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE))));
 	    return headers;
 	} catch (InvalidMediaTypeException e) {
-	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+	    mosipLogger.error(IdAuthCommonConstants.SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 		    "throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
 			    + env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE)));
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -188,7 +187,7 @@ public class RestRequestFactory {
 	    request.setResponseType(returnType);
 	} else {
 
-	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+	    mosipLogger.error(IdAuthCommonConstants.SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 		    "throwing IDDataValidationException - INVALID_RETURN_TYPE");
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 	}
@@ -209,7 +208,7 @@ public class RestRequestFactory {
 	    request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 	} else {
 
-	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
+	    mosipLogger.error(IdAuthCommonConstants.SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
 		    "throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
 	}
@@ -229,7 +228,7 @@ public class RestRequestFactory {
 	if (checkIfEmptyOrWhiteSpace(uri)) {
 	    request.setUri(uri);
 	} else {
-	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
+	    mosipLogger.error(IdAuthCommonConstants.SESSION_ID, METHOD_BUILD_REQUEST, "uri",
 		    "throwing IDDataValidationException - uri is empty or whitespace" + uri);
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_URI);
 	}

@@ -27,8 +27,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -52,9 +53,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The Constant EVENT_FILTER. */
 	private static final String EVENT_FILTER = "Event_filter";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SessionId";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
@@ -99,10 +97,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 
@@ -134,12 +132,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		try {
 			requestWrapper.resetInputStream();
 			if (!validateSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
-				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
 			}
 
 		} catch (IOException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}
@@ -172,12 +170,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				jws.setKey(publicKey);
 				isSigned = checkValidSign(requestAsByte, isSigned, certificate, jws);
 			} else {
-				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 			}
 		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
 				| NoSuchProviderException | SignatureException | KeyStoreException | IOException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE, e);
 		}
 		return isSigned;
@@ -233,7 +231,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				return stringToDecode;
 			}
 		} catch (IllegalArgumentException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}
@@ -254,7 +252,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				return stringToEncode;
 			}
 		} catch (IllegalArgumentException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}

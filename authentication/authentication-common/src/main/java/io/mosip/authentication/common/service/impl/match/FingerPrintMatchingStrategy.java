@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -61,8 +62,6 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(FingerPrintMatchingStrategy.class);
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant AGE Matching strategy. */
 	private static final String TYPE = "FingerPrintMatchingStrategy";
@@ -73,7 +72,7 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	}
 
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside Fingerprint Strategy" + errorConstants.getErrorCode(),
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside Fingerprint Strategy" + errorConstants.getErrorCode(),
 				errorConstants.getErrorMessage());
 	}
 

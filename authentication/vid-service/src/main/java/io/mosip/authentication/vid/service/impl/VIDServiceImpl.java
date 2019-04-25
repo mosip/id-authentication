@@ -18,6 +18,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.vid.ResponseDTO;
@@ -43,11 +44,6 @@ public class VIDServiceImpl implements VIDService {
 	private static final String VID_GENERATION_REQUEST = "VID generation request";
 
 	private static final String VERSION = "1.0";
-
-	private static final String IDA = "IDA";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 
 	/** The logger. */
@@ -95,7 +91,7 @@ public class VIDServiceImpl implements VIDService {
 					vidEntityObj = generateVIDEntity(uin);
 					vidRepository.save(vidEntityObj);
 				} catch (DataAccessException ex) {
-					logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+					logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
 							ex);
 				}
@@ -140,7 +136,7 @@ public class VIDServiceImpl implements VIDService {
 				vidEntityObj = generateVIDEntity(uin);
 				vidRepository.save(vidEntityObj);
 			} catch (DataAccessException ex) {
-				logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
 			}
@@ -175,7 +171,7 @@ public class VIDServiceImpl implements VIDService {
 		vidEntityObj.setId((String) vidGenerator.generateId());
 		vidEntityObj.setUin(uin);
 		vidEntityObj.setActive(true);
-		vidEntityObj.setCreatedBy(IDA);
+		vidEntityObj.setCreatedBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 		vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
 		vidEntityObj.setExpiryDate(
 				DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty(IdAuthConfigKeyConstants.MOSIP_VID_VALIDITY_HOURS, Long.class)));

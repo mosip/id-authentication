@@ -22,6 +22,7 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
@@ -48,8 +49,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdServiceImpl implements IdService<AutnTxn> {
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "SESSION_ID";
 
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
@@ -160,14 +159,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			try {
 				idResDTO = getIdByUin(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else {
 			try {
 				idResDTO = getIdByVid(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
@@ -207,7 +206,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					ResponseWrapper.class);
 		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 		}
 

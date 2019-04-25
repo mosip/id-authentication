@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
@@ -62,8 +63,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant ERRORS. */
 	private static final String ERRORS = "errors";
 
-	/** The Constant REQUEST. */
-	private static final String REQUEST = "request";
 
 	/** The Constant MOSIP_IDA_API_IDS. */
 	private static final String MOSIP_IDA_API_ID = "mosip.ida.api.id.";
@@ -71,23 +70,21 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant MOSIP_IDA_API_VERSION. */
 	private static final String MOSIP_IDA_API_VERSION = "mosip.ida.api.version.";
 
-	/** The Constant ID. */
-	private static final String ID = "id";
 
 	/** The Constant VERSION. */
 	private static final String VERSION = "version";
 
 	/** The Constant TRANSACTION_ID. */
-	private static final String TRANSACTION_ID = "transactionID";
+
 
 	/** The Constant RESPONSE. */
-	private static final String RESPONSE = "response";
+
 
 	/** The Constant RES_TIME. */
 	private static final String RES_TIME = "responseTime";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "requestTime";
+	
 
 	/** The Constant BASE_IDA_FILTER. */
 	private static final String BASE_IDA_FILTER = "BaseIDAFilter";
@@ -95,8 +92,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant EVENT_FILTER. */
 	private static final String EVENT_FILTER = "Event_filter";
 
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "SessionId";
 
 	/** The Constant EMPTY_JSON_OBJ_STRING. */
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
@@ -139,7 +134,7 @@ public abstract class BaseIDAFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, REQUEST + " at : " + requestTime);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, IdAuthCommonConstants.REQUEST + " at : " + requestTime);
 
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
@@ -150,11 +145,11 @@ public abstract class BaseIDAFilter implements Filter {
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
 			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e);
 		} finally {
-			logDataSize(responseWrapper.toString(), RESPONSE);
+			logDataSize(responseWrapper.toString(), IdAuthCommonConstants.RESPONSE);
 		}
 
 	}
@@ -184,7 +179,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestMap = getRequestBody(requestWrapper.getInputStream());
 			requestWrapper.resetInputStream();
 		} catch (IdAuthenticationAppException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					"Cannot log time \n" + ExceptionUtils.getStackTrace(e));
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
@@ -192,27 +187,27 @@ public abstract class BaseIDAFilter implements Filter {
 				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
-		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
-				&& isDate((String) requestMap.get(REQ_TIME))) {
+		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(IdAuthCommonConstants.REQ_TIME))
+				&& isDate((String) requestMap.get(IdAuthCommonConstants.REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
-					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
+					.parse((CharSequence) requestMap.get(IdAuthCommonConstants.REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
 			resTime = DateUtils.formatDate(
 					DateUtils.parseToDate(resTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
 					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone));
 		}
 
-		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
-			responseMap.replace(TRANSACTION_ID, (String) requestMap.get(TRANSACTION_ID));
+		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(IdAuthCommonConstants.TRANSACTION_ID))) {
+			responseMap.replace(IdAuthCommonConstants.TRANSACTION_ID, (String) requestMap.get(IdAuthCommonConstants.TRANSACTION_ID));
 		}
 		responseMap.replace(RES_TIME, resTime);
 		requestWrapper.resetInputStream();
-		responseMap.replace(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+		responseMap.replace(IdAuthCommonConstants.ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 		requestWrapper.resetInputStream();
 		responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		response.getWriter().write(mapper.writeValueAsString(responseMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		logTime(resTime, RESPONSE, requestTime);
+		logTime(resTime, IdAuthCommonConstants.RESPONSE, requestTime);
 		return responseWrapper;
 	}
 
@@ -238,7 +233,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private void logDataSize(String data, String type) {
 		double size = ((double) data.length()) / 1024;
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				"Data size of " + type + " : " + ((size > 0) ? size : 1) + " kb");
 	}
 
@@ -251,12 +246,12 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestTime
 	 */
 	private void logTime(String time, String type, Temporal requestTime) {
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
 		long duration = Duration
 				.between(requestTime,
 						LocalDateTime.parse(time, DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN))))
 				.toMillis();
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				"Time difference between request and response in millis:" + duration
 						+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
@@ -273,7 +268,7 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			return mapper.readValue(responseBody, Map.class);
 		} catch (IOException | ClassCastException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -290,12 +285,12 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IdAuthenticationAppException {
 		try {
 			byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
-			logDataSize(new String(requestAsByte), REQUEST);
+			logDataSize(new String(requestAsByte), IdAuthCommonConstants.REQUEST);
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			validateRequest(requestWrapper, requestBody);
 		} catch (IOException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -368,13 +363,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
-		String idFromRequest = requestBody.containsKey(ID) ? (String) requestBody.get(ID) : null;
+		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID) ? (String) requestBody.get(IdAuthCommonConstants.ID) : null;
 		String property = env.getProperty(id);
 		if (StringUtils.isEmpty(idFromRequest)) {
-			handleException(ID, false);
+			handleException(IdAuthCommonConstants.ID, false);
 		}
 		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
-			handleException(ID, true);
+			handleException(IdAuthCommonConstants.ID, true);
 		}
 	}
 
@@ -387,13 +382,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private void handleException(String type, boolean isPresent) throws IdAuthenticationAppException {
 		if (!isPresent) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), type));
 		} else {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -422,7 +417,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestWrapper.resetInputStream();
 			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
-			responseMap.put(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+			responseMap.put(IdAuthCommonConstants.ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
 			if(responseMap.containsKey(ERRORS)) {
 				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List ? (List<AuthError>) responseMap.get(ERRORS) : Collections.emptyList();
 				if(errorList.isEmpty()) {
@@ -430,10 +425,10 @@ public abstract class BaseIDAFilter implements Filter {
 				}
 			}
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
-			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
+			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE, requestTime);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -449,13 +444,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TRANSACTION_ID))) {
-			responseBody.replace(TRANSACTION_ID, requestBody.get(TRANSACTION_ID));
+		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.TRANSACTION_ID))) {
+			responseBody.replace(IdAuthCommonConstants.TRANSACTION_ID, requestBody.get(IdAuthCommonConstants.TRANSACTION_ID));
 		}
 
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
-				&& isDate((String) requestBody.get(REQ_TIME))) {
-			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
+		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.REQ_TIME))
+				&& isDate((String) requestBody.get(IdAuthCommonConstants.REQ_TIME))) {
+			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(IdAuthCommonConstants.REQ_TIME)).getZone();
 			responseBody
 					.replace(RES_TIME,
 							DateUtils

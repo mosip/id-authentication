@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -80,8 +81,6 @@ public class MasterDataManager {
 	@Autowired
 	private RestRequestFactory restFactory;
 
-	private static final String SESSION_ID = "sessionId";
-
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
@@ -123,7 +122,7 @@ public class MasterDataManager {
 
 			return masterDataMap;
 		} catch (IDDataValidationException | RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 	}

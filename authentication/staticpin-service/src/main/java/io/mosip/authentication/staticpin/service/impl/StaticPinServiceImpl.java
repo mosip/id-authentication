@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.repository.StaticPinHistoryReposit
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -45,17 +46,10 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Service
 public class StaticPinServiceImpl implements StaticPinService {
 
-	/** The Constant for IDA */
-	private static final String IDA = "IDA";
+	
 
 	/** The Constant UIN_Key */
 	private static final String UIN_KEY = "uin";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(StaticPinServiceImpl.class);
@@ -115,7 +109,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 		ZoneId zone = zonedDateTime2.getZone();
 		String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 		StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
-		logger.info(SESSION_ID, this.getClass().getSimpleName(), "STATICPIN STORE--", "AUDIT REQUESTED");
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "STATICPIN STORE--", "AUDIT REQUESTED");
 		auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId,
 				idType, AuditModules.STATIC_PIN_STORAGE.getDesc());
 		staticPinResponseDTO.setStatus(true);
@@ -154,13 +148,13 @@ public class StaticPinServiceImpl implements StaticPinService {
 		String hashedPin = hashStaticPin(pinValue.getBytes());
 		Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);
 		if (!entityValues.isPresent()) {
-			StaticPin staticPin = new StaticPin(hashedPin, uinValue, true, IDA, now(), IDA, now(), false, now());
+			StaticPin staticPin = new StaticPin(hashedPin, uinValue, true, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), now(), env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), now(), false, now());
 			staticPinRepo.save(staticPin);
 		} else {
 			StaticPin staticPinEntity = entityValues.get();
 			staticPinEntity.setPin(hashedPin);
 			staticPinEntity.setUpdatedOn(now());
-			staticPinEntity.setUpdatedBy(IDA);
+			staticPinEntity.setUpdatedBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			staticPinRepo.update(staticPinEntity);
 		}
 		status = true;
@@ -198,7 +192,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private StaticPinHistory getPinHistory(String uinValue, String hashedPin) throws IdAuthenticationBusinessException {
-		StaticPinHistory staticPinHistory = new StaticPinHistory(hashedPin,uinValue,true,IDA,now(),IDA,now(),false,now(),now());
+		StaticPinHistory staticPinHistory = new StaticPinHistory(hashedPin,uinValue,true,env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),now(),env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),now(),false,now(),now());
 		return staticPinHistory;
 	}
 
