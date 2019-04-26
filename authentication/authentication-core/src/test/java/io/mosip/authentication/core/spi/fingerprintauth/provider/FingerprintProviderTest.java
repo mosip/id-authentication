@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintTemplate;
@@ -20,7 +22,7 @@ import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
  * @author Manoj SP
  */
 public class FingerprintProviderTest {
-	
+
 	/** The finger 1. */
 	byte[] finger1 = new byte[] { 70, 77, 82, 0, 32, 50, 48, 0, 0, 0, 1, 8, 0, 0, 1, 60, 1, 98, 0, -59, 0, -59, 1, 0, 0,
 			0, 40, 39, -128, -124, 0, -21, 60, 80, -128, -94, 1, 1, -105, 80, -128, 115, 0, -43, -56, 87, -128, -90, 1,
@@ -295,6 +297,16 @@ public class FingerprintProviderTest {
 		Map<String, String> entityInfo = new HashMap<>();
 		entityInfo.put("UNKNOWN", leftIndex);
 		fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
+	}
+
+	@Test
+	public void TestmatchMultiMinutaeUnKnownFinger() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String encodedString = Base64.getEncoder().encodeToString(finger1);
+		reqInfo.put("UNKNOWN", encodedString);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("UNKNOWN", encodedString);
+		ReflectionTestUtils.invokeMethod(fingerPrint, "matchMultiMinutaeUnKnownFinger", reqInfo, entityInfo);
 	}
 
 }
