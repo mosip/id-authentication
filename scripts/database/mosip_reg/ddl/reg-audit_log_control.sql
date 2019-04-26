@@ -6,9 +6,9 @@ CREATE TABLE reg.audit_log_control(
 	audit_log_to_dtimes timestamp NOT NULL,
 	audit_log_sync_dtimes timestamp,
 	audit_log_purge_dtimes timestamp,
-	cr_by character varying(32) NOT NULL,
+	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(32),
+	upd_by character varying(256),
 	upd_dtimes timestamp,
 	CONSTRAINT pk_algc PRIMARY KEY (reg_id)
 
