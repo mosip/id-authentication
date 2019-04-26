@@ -6,10 +6,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosio.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
+import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.service.mdm.util.MdmRequestResponseBuilder;
 
 /**
