@@ -41,8 +41,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.RestartController;
-import io.mosip.registration.controller.reg.HomeController;
-import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -68,7 +66,6 @@ import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
-import io.mosip.registration.service.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -210,12 +207,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	private BorderPane loginRoot;
 
-	@Autowired
-	private PacketHandlerController packetHandlerController;
-
-	@Autowired
-	private HomeController homeController;
-
 	private Boolean isUserNewToMachine;
 
 	@FXML
@@ -223,9 +214,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private UserMachineMappingService machineMappingService;
-
-	@Autowired
-	private PublicKeySyncImpl PublicKeySyncImpl;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -1213,26 +1201,32 @@ public class LoginController extends BaseController implements Initializable {
 						loadInitialScreen(Initialization.getPrimaryStage());
 						return;
 					}
-				} else if (taskService.getValue().contains(RegistrationConstants.RESTART)
-						|| taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
+				} else if (taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
 
 					if (isInitialSetUp) {
 						// update initial set up flag
 
 						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
-
+						restartApplication();
 					}
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							generateAlert(RegistrationConstants.SUCCESS.toUpperCase(),
-									RegistrationUIConstants.RESTART_APPLICATION);
-							restartController.restart();
-						}
-					});
+					if (taskService.getValue().contains(RegistrationConstants.RESTART)) {
+						restartApplication();
+					}
 				}
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);
+			}
+
+		});
+
+	}
+
+	private void restartApplication() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
+				restartController.restart();
 			}
 		});
 
