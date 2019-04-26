@@ -23,6 +23,8 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -319,9 +321,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
-
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());
@@ -352,6 +352,19 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo otpValidationStatus;
 			try {
 				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
+				authStatusList.add(otpValidationStatus);
+				statusInfo = otpValidationStatus;
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(DEFAULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				otpValidationStatus = new AuthStatusInfo();
+				otpValidationStatus.setStatus(false);
+				AuthError authError;
+				if (e.getActionMessage() != null) {
+					authError = new ActionableAuthError(e.getErrorCode(), e.getErrorText(), e.getActionMessage());
+				} else {
+					authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				}
+				otpValidationStatus.setErr(Collections.singletonList(authError));
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {

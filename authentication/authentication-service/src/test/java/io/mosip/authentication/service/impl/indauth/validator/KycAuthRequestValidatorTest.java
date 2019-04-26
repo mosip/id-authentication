@@ -42,6 +42,7 @@ import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * 
@@ -63,6 +64,9 @@ public class KycAuthRequestValidatorTest {
 
 	@InjectMocks
 	RollingFileAppender appender;
+
+	@Mock
+	private PinValidatorImpl pinValidatorImpl;
 
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;
@@ -87,9 +91,9 @@ public class KycAuthRequestValidatorTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
@@ -154,6 +158,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		Mockito.when(pinValidatorImpl.validatePin(Mockito.anyString())).thenReturn(true);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -220,7 +225,7 @@ public class KycAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -414,7 +419,7 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testForIsValidAuthtype() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -461,12 +466,12 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-		
+
 		MockEnvironment mockenv = new MockEnvironment();
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.auth.types.allowed", "");
-		
+
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);

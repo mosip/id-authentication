@@ -9,12 +9,12 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class IndividualTypeDto extends BaseDto{
+@EqualsAndHashCode(callSuper = true)
+public class IndividualTypeDto extends BaseDto {
 
 	private String code;
-	
+
 	private String name;
-	
+
 	private String langCode;
 }

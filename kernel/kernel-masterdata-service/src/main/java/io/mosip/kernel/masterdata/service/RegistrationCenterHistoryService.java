@@ -18,24 +18,23 @@ public interface RegistrationCenterHistoryService {
 	 * center id
 	 * 
 	 * @param registrationCenterId registrationCenterId
-	 * @param langCode langCode
-	 * @param effectiveDate effectiveDate
+	 * @param langCode             langCode
+	 * @param effectiveDate        effectiveDate
 	 * @return {@link RegistrationCenterDto}
 	 */
 	RegistrationCenterHistoryResponseDto getRegistrationCenterHistory(String registrationCenterId, String langCode,
 			String effectiveDate);
-	
+
 	/**
 	 * Abstract method to save RegistrationCenter History to the Database
 	 * 
-	 * @param entityHistory
-	 *            machine History entity
+	 * @param entityHistory machine History entity
 	 * 
-	 * @return IdResponseDto returning RegistrationCenter History id which is inserted
-	 *         successfully {@link IdResponseDto}
+	 * @return IdResponseDto returning RegistrationCenter History id which is
+	 *         inserted successfully {@link IdResponseDto}
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving RegistrationCenter History
+	 * @throws MasterDataServiceException if any error occurred while saving
+	 *                                    RegistrationCenter History
 	 */
 	public IdResponseDto createRegistrationCenterHistory(RegistrationCenterHistory entityHistory);
 }

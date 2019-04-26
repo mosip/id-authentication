@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -66,14 +67,18 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				body.setVersion(requestWrapper.getVersion());
 			}
 			body.setErrors(null);
-			  	
-			
+
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());
 		}
-		if(body!=null) {
-		response.getHeaders().add("Response-Signature", hashUtil.signResponseData(body.toString()));
+		if (body != null) {
+			try {
+				response.getHeaders().add("Response-Signature",
+						hashUtil.signResponseData(objectMapper.writeValueAsString(body)));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
 		return body;
 	}

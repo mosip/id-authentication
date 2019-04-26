@@ -23,11 +23,11 @@ export class LoginComponent implements OnInit {
   timer: any;
   inputOTP: string;
   inputContactDetails = '';
-  secondaryLangCode = 'ar';
-  secondaryDir = 'rtl';
+  secondaryLangCode = '';
+  secondaryDir = '';
   selectedLanguage = '';
-  langCode = 'ara';
-  dir = 'ltr';
+  langCode = '';
+  dir = '';
   primaryLangFromConfig = '';
   primaryLang = '';
   secondaryLangFromConfig = '';
@@ -54,33 +54,19 @@ export class LoginComponent implements OnInit {
     private regService: RegistrationService,
     private configService: ConfigService
   ) {
-    const loggedOut = localStorage.getItem('loggedOut');
-    this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
-    localStorage.setItem('loggedOut', loggedOut);
-    localStorage.setItem('langCode', this.langCode);
-//    this.showMessage();
   }
 
   ngOnInit() {
     this.showSpinner = true;
-    if (localStorage.getItem('langCode')) {
-      this.langCode = localStorage.getItem('langCode');
-      if (this.loggedOutLang) {
-        this.translate.use(this.loggedOutLang);
-      } else {
-        this.translate.use(localStorage.getItem('langCode'));
-      }
-    }
-    localStorage.setItem('loggedIn', 'false');
     this.loadConfigs();
-    this.loadValidationMessages();
   }
 
   loadValidationMessages() {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.validationMessages = response['login'];
-    })
+      console.log(this.validationMessages);
+    });
   }
 
   loginIdValidator() {
@@ -135,6 +121,8 @@ export class LoginComponent implements OnInit {
     this.setLanguageDirection(this.primaryLangFromConfig, this.secondaryLangFromConfig);
     localStorage.setItem('langCode', this.primaryLangFromConfig);
     localStorage.setItem('secondaryLangCode', this.secondaryLangFromConfig);
+    this.translate.use(this.primaryLang);
+    this.selectedLanguage = appConstants.languageMapping[this.primaryLang].langName;
     if (
       appConstants.languageMapping[this.primaryLangFromConfig] &&
       appConstants.languageMapping[this.secondaryLangFromConfig]
@@ -144,6 +132,7 @@ export class LoginComponent implements OnInit {
     }
     this.translate.addLangs([this.primaryLangFromConfig, this.secondaryLangFromConfig]);
     this.showSpinner = false;
+    this.loadValidationMessages();
   }
 
   setLanguageDirection(primaryLang: string, secondaryLang: string) {

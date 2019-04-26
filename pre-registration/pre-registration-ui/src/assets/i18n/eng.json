@@ -275,7 +275,6 @@
     "invalidMobile": "Invalid mobile number Entered",
     "invalidInput": "Invalid email id or mobile number Entered"
   },
-
   "stepper": {
     "link_demographic": "Demographics Details",
     "link_upload_doc": "Upload Document",
@@ -287,9 +286,9 @@
     "language": "English",
     "label_name": "Full Name",
     "label_age": "Age",
-    "date_dd": "dd",
-    "date_mm": "mm",
-    "date_yyyy": "yyyy",
+    "date_dd": "DD",
+    "date_mm": "MM",
+    "date_yyyy": "YYYY",
     "text_or": "OR",
     "text_years": "Years",
     "text_gender": "Gender",
@@ -327,7 +326,7 @@
       "age_validation": "Age should be less than 150",
       "gender_validation": "Please select gender",
       "nationality_validation": "Please select nationality",
-      "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
+      "DOB_validation": "Enter Valid date of birth or age",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
       "year_required": "Enter 4 numeric digits for year",
@@ -340,11 +339,16 @@
       "mobile_required": "Please enter valid mobile number",
       "email_required": "Please enter valid email id",
       "pin_required": "Please enter valid pin"
+    },
+    "error": {
+      "error": "Application can not be created. Please try after some time",
+      "button_ok": "OK"
     }
   },
   "documents": {
     "title_document": "Upload Documents",
-    "text_filetype": "Allowed file type Pdf,Max size 1MB",
+    "text_filetype": "Allowed file type ",
+    "text_filesize": "allowed file size",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",
@@ -442,9 +446,16 @@
       "title_confirm": "Confirm",
       "title_success": "Success",
       "title_error": "Error",
-      "msg_confirm": "The selected application will be deleted. Please confirm.",
-      "msg_deleted": "The selected application has been successfully deleted",
-      "msg_could_not_deleted": "The selected application could not be deleted",
+      "cancelAppointment": {
+        "msg_confirm": "Appointment for The selected application will be deleted. Please confirm.",
+        "msg_deleted": "Appointment for The selected application has been successfully deleted",
+        "msg_could_not_deleted": "Appointment for The selected application could not be deleted"
+      },
+      "deletePreregistration": {
+        "msg_confirm": "The selected application will be deleted. Please confirm.",
+        "msg_deleted": "The selected application has been successfully deleted",
+        "msg_could_not_deleted": "The selected application could not be deleted"
+      },
       "button_confirm": "Confirm",
       "button_cancel": "Cancel"
     },
@@ -452,6 +463,10 @@
       "pendingAppointment": "Pending Appointment",
       "booked": "Booked",
       "expired": "Expired"
+    },
+    "error": {
+      "error": "Internal server error. Please try again after  some time.",
+      "button_ok": "OK"
     }
   },
   "timeSelection": {
@@ -520,6 +535,10 @@
     "action_back": "Back",
     "action_book_later": "Book Later",
     "action_continue": "Continue"
+  },
+  "autologout": {
+    "preview": "You will be timed out in 60 secs due to inactivity. Please click anywhere to re-activate your session",
+    "post": "You have been LoggedOut due to inactivity."
   },
   "helpText": {
     "applicationId": "Application ID for your pre-registration",

@@ -346,8 +346,13 @@
 	-fx-background-color: white;
 }
 
-.scanPopupHeader {
-	-fx-font-size: 18.0px;
+.documentScanHeader{
+	-fx-background-color : #175768;
+}
+
+.scanPopupHeaderTitle {
+	-fx-text-fill: white;
+	-fx-font-size: 16.0px;
 	-fx-font-weight: bold;
 	-fx-font-family: System;
 }
@@ -623,13 +628,13 @@ Working on new Css by taleev
   	-fx-background-color: #FFFFFF;
   	-fx-padding: 5 0 5 0;
   	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 15px;
-  	
+  	-fx-font-size: 15px;  	
 }
 
 .demographicLangHeader{
-	-fx-font-size : 20px;
+	-fx-font-size : 14px;
 	-fx-text-fill : #2F3033;
+	-fx-font-weight: bold;
 }
 
 .demographicMiscTexts{

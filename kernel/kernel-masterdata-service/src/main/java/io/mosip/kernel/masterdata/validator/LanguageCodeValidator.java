@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ValidLangCodeErrorCode;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
 import lombok.Data;
 
 /**

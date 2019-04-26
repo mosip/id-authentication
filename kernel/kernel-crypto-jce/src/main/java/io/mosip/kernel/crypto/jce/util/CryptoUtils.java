@@ -26,20 +26,17 @@ public class CryptoUtils {
 
 	}
 
-   /**
+	/**
 	 * Verify if data is null or empty
 	 * 
-	 * @param data
-	 *            data provided by user
+	 * @param data data provided by user
 	 */
 	public static void verifyData(byte[] data) {
 		if (data == null) {
-			throw new NullDataException(
-					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
+			throw new NullDataException(SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
 		} else if (data.length == 0) {
-			throw new InvalidDataException(
-					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
+			throw new InvalidDataException(SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
 		}
 	}

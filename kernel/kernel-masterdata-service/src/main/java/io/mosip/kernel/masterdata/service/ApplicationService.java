@@ -23,8 +23,7 @@ public interface ApplicationService {
 	/**
 	 * Get All Applications by language code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String langCode);
@@ -32,10 +31,8 @@ public interface ApplicationService {
 	/**
 	 * Get An Application by code and language code
 	 * 
-	 * @param code
-	 *            the code
-	 * @param langCode
-	 *            the language code
+	 * @param code     the code
+	 * @param langCode the language code
 	 * @return {@link ApplicationResponseDto}
 	 */
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String langCode);
@@ -43,8 +40,7 @@ public interface ApplicationService {
 	/**
 	 * To create an Application
 	 * 
-	 * @param application
-	 *            the application data
+	 * @param application the application data
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createApplication(ApplicationDto application);

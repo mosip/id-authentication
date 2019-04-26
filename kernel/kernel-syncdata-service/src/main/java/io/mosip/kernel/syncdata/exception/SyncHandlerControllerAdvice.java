@@ -47,7 +47,7 @@ public class SyncHandlerControllerAdvice {
 			final HttpServletRequest httpServletRequest) throws IOException {
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
-	
+
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final RequestException e,
 			final HttpServletRequest httpServletRequest) throws IOException {
@@ -82,6 +82,14 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> syncServiceException(
 			HttpServletRequest httpServletRequest, final SyncServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(SyncInvalidArgumentException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> syncInvalidArgumentException(
+			HttpServletRequest httpServletRequest, final SyncInvalidArgumentException exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

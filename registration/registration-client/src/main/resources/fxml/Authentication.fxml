@@ -26,7 +26,7 @@
 			<children>
 				<GridPane fx:id="pwdBasedLogin" styleClass="subMainComponent" visible="true">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
 								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
@@ -36,7 +36,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -67,7 +67,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%pwdAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%pwdAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -147,7 +147,7 @@
 
 				<GridPane fx:id="otpBasedLogin" visible="false">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
 								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
@@ -157,7 +157,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -188,7 +188,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%otpAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%otpAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -256,7 +256,7 @@
 				</GridPane>
 				<GridPane fx:id="fingerprintBasedLogin" visible="false">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
 								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
@@ -266,7 +266,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -297,7 +297,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%fpAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%fpAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -411,7 +411,7 @@
 
 				<GridPane fx:id="irisBasedLogin" visible="false">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
 								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
@@ -421,7 +421,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -452,7 +452,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -543,7 +543,7 @@
 
 				<GridPane fx:id="faceBasedLogin" visible="false">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
 								<Label text="%photoAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -552,7 +552,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -583,7 +583,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -691,7 +691,7 @@
 											<graphic>
 												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@../images/Close.png" />
+														<Image url="@../images/DocumentClose.png" />
 													</image>
 												</ImageView>
 											</graphic>

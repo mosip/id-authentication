@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -52,7 +53,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetRegCenterByIDTimestamp.class);
+	private static Logger logger = Logger.getLogger(OtpGenerate.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
@@ -66,13 +67,14 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
-	private static final String otpGenerate_URI = "/otpmanager/v1.0/otp/generate";
-	private static final String otpValidate_URI = "/otpmanager/v1.0/otp/validate";
+	private static final String otpGenerate_URI = "/v1/otpmanager/otp/generate";
+	private static final String otpValidate_URI = "/v1/otpmanager/otp/validate";
+	private Response res=null;
 	
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
@@ -84,7 +86,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "otpGenerate")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -113,14 +114,15 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-			Response res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
+//			Response res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
 			
 		/*
 		 *  Removing of unstable attributes from response
 		 */
 		
-		outerKeys.add("otp");
+		outerKeys.add("responsetime");
 		outerKeys.add("timestamp");
+		innerKeys.add("otp");
 		
 		/*
 		 *  Comparing expected and actual response
@@ -129,16 +131,35 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("otp");
 		listOfElementToRemove.add("timestamp");
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
-      if (status) {
 	            
-				finalStatus = "Pass";
-			}	
+    	  if(testCaseName.equalsIgnoreCase("invalid_key_frozen"))
+    	  {
+    		  res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
+    		  HashMap<String, String> otp=new HashMap<>();
+    		  JSONObject requestArray = (JSONObject)actualRequest.get("request");
+    		  String key = requestArray.get("key").toString();
+    		  otp.put("key", key);
+    		  otp.put("otp", "123456");
+    		  for(int k=0;k<3;k++)
+    		  {
+    			  applicationLibrary.getRequestAsQueryParam(otpValidate_URI, otp);
+    		  }
+    		   res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
+    		  
+    	  }
+    	  else
+    		   res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
+    	  
+    	  
+    	  
+    		  status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);	
 		
-		else {
-			finalStatus="Fail";
-			//softAssert.assertTrue(false);
-		}
+    	  if(status)
+    		  finalStatus="Pass";
+    	  else
+    		  finalStatus="Fail";
+		
+		
 		
 		softAssert.assertAll();
 		object.put("status", finalStatus);

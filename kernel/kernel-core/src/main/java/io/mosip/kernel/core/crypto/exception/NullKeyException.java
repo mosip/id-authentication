@@ -27,10 +27,8 @@ public class NullKeyException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode and errorMessage
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public NullKeyException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

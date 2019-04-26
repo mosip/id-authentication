@@ -28,17 +28,13 @@ public class MosipTWOFISH extends SymmetricProcessor {
 	/**
 	 * TWOFISH Engine Initialization with PKCS7Padding
 	 * 
-	 * @param key
-	 *            key for encryption/decryption
-	 * @param data
-	 *            data for encryption/decryption
-	 * @param mode
-	 *            if true process mode is Encrypt ,else process mode is Decrypt
+	 * @param key  key for encryption/decryption
+	 * @param data data for encryption/decryption
+	 * @param mode if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
-	 * @throws MosipInvalidDataException
-	 *             if data is not valid in length,corrupted
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid in length,corrupted and wrong
+	 * @throws MosipInvalidDataException if data is not valid in length,corrupted
+	 * @throws MosipInvalidKeyException  if key is not valid in length,corrupted and
+	 *                                   wrong
 	 */
 	public static byte[] twoFishWithCBCandPKCS7Padding(byte[] key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {

@@ -19,12 +19,9 @@ public class DataAccessLayerException extends BaseUncheckedException {
 	/**
 	 * Constructor for DataAccessLayerException
 	 * 
-	 * @param errorCode
-	 *            The errorcode
-	 * @param errorMessage
-	 *            The errormessage
-	 * @param cause
-	 *            The cause
+	 * @param errorCode    The errorcode
+	 * @param errorMessage The errormessage
+	 * @param cause        The cause
 	 */
 	public DataAccessLayerException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);

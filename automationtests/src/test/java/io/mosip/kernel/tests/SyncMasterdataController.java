@@ -53,7 +53,7 @@ public class SyncMasterdataController extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchmasterdata = "/syncdata/v1.0/masterdata/{machineId}";
+	private static final String fetchmasterdata = "/v1/syncdata/masterdata/{machineId}";
 	
 	static String dest = "";
 	static String folderPath = "kernel/SNCMasterdataController";
@@ -65,7 +65,7 @@ public class SyncMasterdataController extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());

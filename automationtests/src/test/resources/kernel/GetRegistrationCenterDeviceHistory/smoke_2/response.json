@@ -1,9 +1,16 @@
 {
-  "registrationCenterDeviceHistoryDetails": {
-    "regCenterId": "10001",
-    "deviceId": "3000021",
-    "isActive": true,
-    "langCode": "eng",
-    "effectivetimes": "2019-02-28T10:24:38.420Z"
-  }
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T10:29:59.503Z",
+  "metadata": null,
+  "response": {
+    "registrationCenterDeviceHistoryDetails": {
+      "regCenterId": "10001",
+      "deviceId": "3000021",
+      "isActive": true,
+      "langCode": "eng",
+      "effectivetimes": "2019-04-10T11:54:11.217Z"
+    }
+  },
+  "errors": null
 }

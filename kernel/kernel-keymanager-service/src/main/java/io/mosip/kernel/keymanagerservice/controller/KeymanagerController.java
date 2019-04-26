@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * This class provides controller methods for Key manager.
  * 
  * @author Dharmesh Khandelwal
- * @author Bal Viaksh Sharma
  * @since 1.0.0
  *
  */
@@ -50,14 +50,12 @@ public class KeymanagerController {
 	/**
 	 * Request mapping to get Public Key
 	 * 
-	 * @param applicationId
-	 *            Application id of the application requesting publicKey
-	 * @param timeStamp
-	 *            Timestamp of the request
-	 * @param referenceId
-	 *            Reference id of the application requesting publicKey
+	 * @param applicationId Application id of the application requesting publicKey
+	 * @param timeStamp     Timestamp of the request
+	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
@@ -74,11 +72,11 @@ public class KeymanagerController {
 	/**
 	 * Request mapping to decrypt symmetric key
 	 * 
-	 * @param symmetricKeyRequestDto
-	 *            having encrypted symmetric key
+	 * @param symmetricKeyRequestDto having encrypted symmetric key
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
 	@PostMapping(value = "/decrypt")
 	public ResponseWrapper<SymmetricKeyResponseDto> decryptSymmetricKey(
@@ -102,7 +100,7 @@ public class KeymanagerController {
 	 * @return {@link EncryptDataResponseDto}
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Encrypt data", response = EncryptDataResponseDto.class)
+	@ApiOperation(value = "Encrypt data")
 	@PostMapping("/encrypt")
 	public ResponseWrapper<EncryptDataResponseDto> encrypt(
 			@RequestBody RequestWrapper<EncryptDataRequestDto> encryptDataRequestDto) {

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -44,10 +44,8 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode
-	 *            input from user
-	 * @param documentCategoryCode
-	 *            input from user
+	 * @param langCode             input from user
+	 * @param documentCategoryCode input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -59,7 +57,7 @@ public class DocumentTypeController {
 			@PathVariable("documentcategorycode") String documentCategoryCode) {
 		List<DocumentTypeDto> validDocumentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
 				langCode);
-		
+
 		ResponseWrapper<ValidDocumentTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(new ValidDocumentTypeResponseDto(validDocumentTypes));
 		return responseWrapper;
@@ -69,8 +67,7 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types
-	 *            the DTO of document type.
+	 * @param types the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
@@ -79,7 +76,7 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to create document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.createDocumentType(types.getRequest()));
 		return responseWrapper;
@@ -88,8 +85,7 @@ public class DocumentTypeController {
 	/**
 	 * Api to update document type.
 	 * 
-	 * @param types
-	 *            the DTO of document type.
+	 * @param types the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	@ResponseFilter
@@ -97,7 +93,7 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to update document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.updateDocumentType(types.getRequest()));
 		return responseWrapper;
@@ -106,8 +102,7 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code
-	 *            the document type code.
+	 * @param code the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter

@@ -8,8 +8,8 @@ package io.mosip.kernel.masterdata.constant;
  * @since 1.0.0
  */
 public enum BlacklistedWordsErrorCode {
-	NO_BLACKLISTED_WORDS_FOUND("KER-MSD-008", "Blacklisted word not found"), 
-	BLACKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blacklisted words"), 
+	NO_BLACKLISTED_WORDS_FOUND("KER-MSD-008", "Blacklisted word not found"),
+	BLACKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blacklisted words"),
 	BLACKLISTED_WORDS_INSERT_EXCEPTION("KER-MSD-070", "Error occurred while inserting Blacklisted words"),
 	BLACKLISTED_WORDS_UPDATE_EXCEPTION("KER-MSD-105", "Error occurred while updating Blacklisted Word"),
 	BLACKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting Blacklisted Word");
@@ -25,10 +25,8 @@ public enum BlacklistedWordsErrorCode {
 	/**
 	 * Constructor for BlacklistedWordsErrorCode.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	private BlacklistedWordsErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

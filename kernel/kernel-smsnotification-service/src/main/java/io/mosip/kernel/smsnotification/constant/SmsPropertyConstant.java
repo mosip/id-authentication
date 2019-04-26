@@ -9,16 +9,9 @@ package io.mosip.kernel.smsnotification.constant;
  */
 public enum SmsPropertyConstant {
 
-	AUTH_KEY("authkey"), 
-	SMS_MESSAGE("message"),
-	RECIPIENT_NUMBER("mobiles"),
-	COUNTRY_CODE("country"),
-	ROUTE("route"),
-	SENDER_ID("sender"),
-	VENDOR_RESPONSE_SUCCESS("success"),
-	SUCCESS_RESPONSE("Sms Request Sent"), 
-	PROJECT_NAME("kernel-notification-sms"),
-	SUFFIX_MESSAGE(" digits");
+	AUTH_KEY("authkey"), SMS_MESSAGE("message"), RECIPIENT_NUMBER("mobiles"), COUNTRY_CODE("country"), ROUTE("route"),
+	SENDER_ID("sender"), VENDOR_RESPONSE_SUCCESS("success"), SUCCESS_RESPONSE("Sms Request Sent"),
+	PROJECT_NAME("kernel-notification-sms"), SUFFIX_MESSAGE(" digits");
 
 	/**
 	 * The property for sms notification.
@@ -28,8 +21,7 @@ public enum SmsPropertyConstant {
 	/**
 	 * The constructor to set sms property.
 	 * 
-	 * @param property
-	 *            the property to set.
+	 * @param property the property to set.
 	 */
 	private SmsPropertyConstant(String property) {
 		this.property = property;

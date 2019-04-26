@@ -1,39 +1,18 @@
 {
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T11:52:08.016Z",
+  "metadata": null,
+  "response": {
     "documentcategories": [
-        {
-            "code": "POA",
-            "name": "Proof of Address",
-            "description": "Address Proof",
-            "langCode": "eng",
-            "isActive": true
-        },
-        {
-            "code": "POI",
-            "name": "Proof of Identity",
-            "description": "Identity Proof",
-            "langCode": "eng",
-            "isActive": true
-        },
-        {
-            "code": "POR",
-            "name": "Proof of Relationship",
-            "description": "Proof Relationship of the person",
-            "langCode": "eng",
-            "isActive": true
-        },
-        {
-            "code": "POB",
-            "name": "Proof of Birth",
-            "description": "Proof date of birth of the person",
-            "langCode": "eng",
-            "isActive": true
-        },
-        {
-            "code": "POE",
-            "name": "Proof of Biometric Exception",
-            "description": "Proof of Biometric Exception",
-            "langCode": "eng",
-            "isActive": true
-        }
+      {
+        "code": "POA",
+        "name": "Proof of Address",
+        "description": "Address Proof",
+        "langCode": "eng",
+        "isActive": true
+      }
     ]
+  },
+  "errors": null
 }

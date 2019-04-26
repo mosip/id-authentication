@@ -33,8 +33,6 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
@@ -66,15 +64,11 @@ public class IDAuthExceptionHandlerTest {
 	@Mock
 	private HttpServletRequest servletRequest;
 	
-	@Autowired
-	private ObjectMapper mapper;
-
 	@Before
 	public void before() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("errormessages");
 		ReflectionTestUtils.setField(handler, "servletRequest", servletRequest);
-		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
 	@Test

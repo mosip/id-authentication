@@ -47,6 +47,7 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * This class validates the AuthRequestValidator
@@ -59,7 +60,6 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthRequestValidatorTest {
-
 
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -81,6 +81,9 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
+
+	@Mock
+	private PinValidatorImpl pinValidatorImpl;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;
@@ -142,8 +145,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setOtp("123456");
-		reqDTO.setStaticPin("123456");
+		reqDTO.setOtp("473928");
+		reqDTO.setStaticPin("473928");
 		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -1049,7 +1052,7 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setConsentObtained(true);
-		
+
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());

@@ -22,14 +22,16 @@ public class ServiceError {
 	/**
 	 * Constructor for ErrorBean.
 	 * 
-	 * @param errorCode
-	 *            The error code.
-	 * @param errorMessage
-	 *            The error message.
+	 * @param errorCode    The error code.
+	 * @param errorMessage The error message.
 	 */
 	public ServiceError(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.message = errorMessage;
+	}
+
+	public ServiceError() {
+
 	}
 
 }

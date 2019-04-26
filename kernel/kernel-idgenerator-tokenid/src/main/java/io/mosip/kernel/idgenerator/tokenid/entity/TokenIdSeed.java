@@ -30,7 +30,7 @@ public class TokenIdSeed {
 	/**
 	 * Created by.
 	 */
-	@Column(name = "cr_by", nullable = false)
+	@Column(name = "cr_by", nullable = false, length = 256)
 	private String createdBy;
 
 	/**

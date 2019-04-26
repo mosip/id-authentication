@@ -22,8 +22,7 @@ public class LoggerConfiguration {
 	/**
 	 * This method sets the logger target, and returns appender.
 	 * 
-	 * @param clazz
-	 *            the class.
+	 * @param clazz the class.
 	 * @return the appender.
 	 */
 	public static Logger logConfig(Class<?> clazz) {

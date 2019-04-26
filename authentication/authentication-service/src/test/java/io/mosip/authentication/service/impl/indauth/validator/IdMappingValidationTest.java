@@ -42,6 +42,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.integration.MasterDataManager;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -56,6 +57,9 @@ public class IdMappingValidationTest {
 
 	@InjectMocks
 	private static ObjectMapper mapper;
+
+	@InjectMocks
+	private PinValidatorImpl pinValidatorImpl;
 
 	@Mock
 	private IDAMappingConfig idMappingConfig;
@@ -80,6 +84,7 @@ public class IdMappingValidationTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
+		ReflectionTestUtils.setField(authRequestValidator, "pinvalidator", pinValidatorImpl);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 

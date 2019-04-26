@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.exception.IdAuthExceptionHandler;
@@ -55,6 +57,9 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Sanjay Murali
  */
 public abstract class BaseIDAFilter implements Filter {
+
+	/** The Constant ERRORS. */
+	private static final String ERRORS = "errors";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -171,7 +176,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
 			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationAppException ex) throws IOException {
-		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper, mapper);
+		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
 		Map<String, Object> responseMap = mapper.convertValue(responseObj,
 				new TypeReference<Map<String, Object>>() {
 				});
@@ -407,6 +412,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, Temporal requestTime)
 			throws IdAuthenticationAppException {
 		try {
@@ -418,6 +424,12 @@ public abstract class BaseIDAFilter implements Filter {
 			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
 			responseMap.put(ID, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_ID)));
+			if(responseMap.containsKey(ERRORS)) {
+				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List ? (List<AuthError>) responseMap.get(ERRORS) : Collections.emptyList();
+				if(errorList.isEmpty()) {
+					responseMap.put(ERRORS, null);
+				}
+			}
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;

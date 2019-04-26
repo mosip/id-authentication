@@ -64,8 +64,8 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		if (registrationCenters == null || registrationCenters.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -76,7 +76,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		}
 		return registrationCenterDto;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

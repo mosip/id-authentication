@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,8 +33,9 @@ import springfox.documentation.annotations.ApiIgnore;
 /**
  * Sync Handler Controller
  * 
- * @author Abhishek Kumar
+ * 
  * @author Srinivasan
+ * @author Abhishek Kumar
  * @author Bal Vikash Sharma
  * @author Megha Tanga
  * @since 1.0.0
@@ -69,6 +71,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
@@ -86,6 +89,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
@@ -100,10 +104,10 @@ public class SyncDataController {
 	 * * This API method would fetch all synced registration center config details
 	 * from server
 	 * 
-	 * @param regId
-	 *            registration Id
+	 * @param regId registration Id
 	 * @return JSONObject
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
@@ -115,6 +119,7 @@ public class SyncDataController {
 		return response;
 	}
 
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@GetMapping("/configuration/{registrationCenterId}")
@@ -127,18 +132,14 @@ public class SyncDataController {
 
 	/**
 	 * 
-	 * @param macId
-	 *            - MAC address of the machine
-	 * @param serialNumber
-	 *            - Serial number of the machine
-	 * @param lastUpdated
-	 *            - last updated time stamp
+	 * @param macId        - MAC address of the machine
+	 * @param serialNumber - Serial number of the machine
+	 * @param lastUpdated  - last updated time stamp
 	 * @return {@link MasterDataResponseDto}
-	 * @throws InterruptedException
-	 *             - this method will throw interrupted Exception
-	 * @throws ExecutionException
-	 *             - this method will throw exeution exception
+	 * @throws InterruptedException - this method will throw interrupted Exception
+	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/masterdata")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
@@ -162,20 +163,15 @@ public class SyncDataController {
 
 	/**
 	 * 
-	 * @param macId
-	 *            - MAC address of the machine
-	 * @param serialNumber
-	 *            - Serial number of the machine
-	 * @param regCenterId
-	 *            - reg Center Id
-	 * @param lastUpdated
-	 *            - last updated time stamp
+	 * @param macId        - MAC address of the machine
+	 * @param serialNumber - Serial number of the machine
+	 * @param regCenterId  - reg Center Id
+	 * @param lastUpdated  - last updated time stamp
 	 * @return {@link MasterDataResponseDto}
-	 * @throws InterruptedException
-	 *             - this method will throw interrupted Exception
-	 * @throws ExecutionException
-	 *             - this method will throw exeution exception
+	 * @throws InterruptedException - this method will throw interrupted Exception
+	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/masterdata/{regcenterId}")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterDataWithRegCenterId(
@@ -202,6 +198,7 @@ public class SyncDataController {
 	 * 
 	 * @return RolesResponseDto
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/roles")
 	public ResponseWrapper<RolesResponseDto> getAllRoles() {
@@ -216,11 +213,11 @@ public class SyncDataController {
 	/**
 	 * API will all the userDetails from LDAP server
 	 * 
-	 * @param regId
-	 *            - registration center Id
+	 * @param regId - registration center Id
 	 * 
 	 * @return UserDetailResponseDto - user detail response
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/userdetails/{regid}")
 	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regid") String regId) {
@@ -235,20 +232,18 @@ public class SyncDataController {
 	/**
 	 * Request mapping to get Public Key
 	 * 
-	 * @param applicationId
-	 *            Application id of the application requesting publicKey
-	 * @param timeStamp
-	 *            Timestamp of the request
-	 * @param referenceId
-	 *            Reference id of the application requesting publicKey
+	 * @param applicationId Application id of the application requesting publicKey
+	 * @param timeStamp     Timestamp of the request
+	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+			@ApiParam("Timestamp as metadata") @RequestParam(value="timeStamp",required=false) String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam(value="referenceId",required=false) String referenceId) {
 
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,

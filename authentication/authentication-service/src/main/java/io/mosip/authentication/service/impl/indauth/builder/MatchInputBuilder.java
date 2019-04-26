@@ -57,8 +57,8 @@ public class MatchInputBuilder {
 	 */
 	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
 			MatchType[] matchTypes) {
+		Set<String> languages = idInfoHelper.getAllowedLang();
 		return Stream.of(matchTypes).flatMap(matchType -> {
-			Set<String> languages = idInfoHelper.getAllowedLang();
 			List<MatchInput> matchInputs = new ArrayList<>();
 			if (matchType.isMultiLanguage()) {
 				for (String language : languages) {

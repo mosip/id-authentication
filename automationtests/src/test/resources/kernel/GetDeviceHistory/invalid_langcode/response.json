@@ -1,10 +1,13 @@
 {
-  "timestamp": 1548577122589,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T12:58:58.886Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-129",
-      "errorMessage": "Device History not found"
+      "message": "Device History not found"
     }
   ]
 }

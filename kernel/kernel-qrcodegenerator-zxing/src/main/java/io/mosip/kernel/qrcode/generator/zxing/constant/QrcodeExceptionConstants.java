@@ -36,10 +36,8 @@ public enum QrcodeExceptionConstants {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *            {@link #errorCode}
-	 * @param errorMessage
-	 *            {@link #errorMessage}
+	 * @param errorCode    {@link #errorCode}
+	 * @param errorMessage {@link #errorMessage}
 	 */
 	private QrcodeExceptionConstants(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
