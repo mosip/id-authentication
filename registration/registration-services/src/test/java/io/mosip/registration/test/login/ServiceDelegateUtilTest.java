@@ -203,15 +203,17 @@ public class ServiceDelegateUtilTest {
 		delegateUtil.getAuthToken(LoginMode.PASSWORD);
 	}
 	
-	@Test(expected=RegBaseUncheckedException.class)
+	@Test(expected=RegBaseCheckedException.class)
 	public void getAuthTokenByOTP() throws Exception {
 		// Return Object
 		Map<String, Object> responseMap = new HashMap<>();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(RegistrationConstants.AUTH_SET_COOKIE, "Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMTEiLCJtb2JpbGUiOiI5NzkxOTQxODE1IiwibWFpbCI6ImJhbGFqaS5zcmlkaGFyYW5AbWluZHRyZWUuY29tIiwicm9sZSI6IlNVUEVSQURNSU4iLCJuYW1lIjoiMTEwMDExIiwiaWF0IjoxNTUyOTc2NDM0LCJleHAiOjE1NTI5NzgyMzR9.csY86SauoeLayfdKO2hALz9nvTipM2Rx9Ri4KkZKTAK5CDegx_AgkaGXPgKDSxtIbFNQtZHRDjVDuaRfd5_z8A; Max-Age=1800000; Expires=Tue, 09-Apr-2019 02:20:34 GMT; Path=/; Secure; HttpOnly");
 		responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, httpHeaders);
-		Map<String, String> responseBody = new LinkedHashMap<>();
-		responseBody.put("message", "OTP expired");
+		Map<String, Object> responseBody = new LinkedHashMap<>();
+		Map<String, String> response = new LinkedHashMap<>();
+		response.put("message", "OTP expired");
+		responseBody.put("response", response);
 		responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseBody);
 
 		// Mocking Method Calls
