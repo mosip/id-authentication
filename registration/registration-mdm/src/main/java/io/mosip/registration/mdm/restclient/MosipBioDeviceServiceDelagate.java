@@ -1,4 +1,4 @@
-package io.mosio.registration.mdm.restclient;
+package io.mosip.registration.mdm.restclient;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;

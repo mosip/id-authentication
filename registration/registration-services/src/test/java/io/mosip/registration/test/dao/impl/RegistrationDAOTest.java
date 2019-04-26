@@ -33,6 +33,7 @@ import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
@@ -86,6 +87,7 @@ public class RegistrationDAOTest {
 	@Test
 	public void testSaveRegistration() throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
+		RegistrationMetaDataDTO registrationMetaDataDTO=new RegistrationMetaDataDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		MoroccoIdentity identity = new MoroccoIdentity();
@@ -98,7 +100,8 @@ public class RegistrationDAOTest {
 		demographicInfoDTO.setIdentity(identity);
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
-
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
+		registrationDTO.getRegistrationMetaDataDTO().setRegistrationCategory("New");
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenReturn(new Registration());
 
 		registrationDAOImpl.save("../PacketStore/28-Sep-2018/111111", registrationDTO);

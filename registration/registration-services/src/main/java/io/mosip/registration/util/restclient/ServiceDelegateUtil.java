@@ -572,7 +572,6 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setIsSignRequired(false);
-		requestHTTPDTO.setAuthRequired(true);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);

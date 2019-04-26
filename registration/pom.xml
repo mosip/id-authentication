@@ -64,6 +64,9 @@
 
 		<!-- webcam-capture version -->
 		<webcam-capture.version>0.3.12</webcam-capture.version>
+		
+		<!-- TSS Version -->
+		<tss.version>0.3.0</tss.version>
 
 		<sonar.exclusions>
 			src/main/java/io/mosip/registration/util/**/*,
@@ -80,8 +83,10 @@
 			src/main/java/io/mosip/registration/device/**/*,
 			src/main/java/io/mosip/registration/cipher/**/*,
 			src/main/java/io/mosip/registration/update/**/*,
-			src/main/java/io/mosip/registration/config/**/*
-			
+			src/main/java/io/mosip/registration/config/**/*,
+			src/main/java/io/mosip/registration/tpm/**/*,
+			src/main/java/io/mosip/registration/mdm/**/*,
+			src/main/java/io/mosip/registration/service/mdm/**/*
 		</sonar.exclusions>
 	</properties>
 
@@ -299,6 +304,13 @@
 				<artifactId>kernel-cbeffutil-api</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+			<dependency>
+			    <groupId>com.github.microsoft</groupId>
+			    <artifactId>TSS.Java</artifactId>
+			    <version>${tss.version}</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
