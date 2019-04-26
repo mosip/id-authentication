@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
@@ -370,8 +372,10 @@ public final class DateUtilTest {
 	public void testParseUTCToLocalDateTime() {
 		LocalDateTime exp = LocalDateTime.parse("2018/11/20 20:02:39",
 				DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-		LocalDateTime act = DateUtils.parseUTCToLocalDateTime("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
-		//compareTwoLocalDateTime(exp, act);
+		ZonedDateTime z1 = exp.atZone(ZoneId.of(TimeZone.getDefault().getID()));
+		LocalDateTime utcDateTime = LocalDateTime.ofInstant(z1.toInstant(), ZoneOffset.UTC);
+		LocalDateTime act = DateUtils.parseUTCToLocalDateTime(utcDateTime.toString(), "yyyy-MM-dd'T'HH:mm:ss");
+		compareTwoLocalDateTime(exp, act);
 	}
 
 	@Test
@@ -381,7 +385,7 @@ public final class DateUtilTest {
 		Date actualDate = DateUtils.parseToDate("2018/11/20 20:02:39", "yyyy/MM/dd HH:mm:ss", TimeZone.getDefault());
 		LocalDateTime exp = convertToLocalDateTimeViaInstant(expectedDate);
 		LocalDateTime act = convertToLocalDateTimeViaInstant(actualDate);
-		//compareTwoLocalDateTime(exp, act);
+		// compareTwoLocalDateTime(exp, act);
 	}
 
 	private void compareTwoLocalDateTime(LocalDateTime exp, LocalDateTime act) {
