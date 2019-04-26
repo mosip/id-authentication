@@ -19,14 +19,14 @@
 		}
 	],
 	"paths": {
-		"/v1/uingenerator/uin": {
+		"$servletpath/uin": {
 			"get": {
 				"tags": [
 					"Generate UIN"
 				],
 				"summary": "Generate UIN",
 				"description": "",
-				"operationId": "v1/uingenerator/uin",
+				"operationId": "$servletpath/uin",
 				"parameters": [],
 				"responses": {
 					"200": {
@@ -71,7 +71,7 @@
 				],
 				"summary": "Update an UIN status",
 				"description": "Update UIN Status",
-				"operationId": "v1/uingenerator/uin",
+				"operationId": "$servletpath/uin",
 				"parameters": [],
 				"requestBody": {
 					"description": "JSON object of product",
@@ -112,14 +112,14 @@
 				"deprecated": false
 			}
 		},
-		"/v1/uingenerator/actuator/health": {
+		"$servletpath/actuator/health": {
 			"get": {
 				"tags": [
 					"Operation-handler"
 				],
 				"summary": "Health Checks",
 				"description": "Health Status Checks",
-				"operationId": "/v1/uingenerator/actuator/health",
+				"operationId": "$servletpath/actuator/health",
 				"parameters": [],
 				"responses": {
 					"200": {

@@ -151,27 +151,27 @@ public final class UinGeneratorConstant {
 	 * The string field 9
 	 */
 	public static final String NINE = "9";
-	
+
 	/**
 	 * The string field ZERO_TO_NINE
 	 */
 	public static final String ZERO_TO_NINE = "1234567890";
-	
+
 	/**
 	 * The string field CONTENTTYPE
 	 */
 	public static final String CONTENTTYPE = "application/json";
-	
+
 	/**
 	 * The string field HEALTH_ENDPOINT
 	 */
 	public static final String HEALTH_ENDPOINT = "/actuator/health";
-	
+
 	/**
 	 * The string field current working directory
 	 */
 	public static final String CURRENT_WORKING_DIRECTORY = "user.dir";
-	
+
 	public static final String APPLICATION_JSON = "application/json";
 
 	/**
@@ -191,4 +191,14 @@ public final class UinGeneratorConstant {
 	 * The static field for time-out
 	 */
 	public static final String TIME_OUT = "timeout";
+
+	/**
+	 * The swagger ui json file path.
+	 */
+	public static final String SWAGGER_UI_JSON_PATH = "webroot/node_modules/swagger-ui-dist/swagger.json";
+
+	/**
+	 * The swagger json template file.
+	 */
+	public static final String SWAGGER_JSON_TEMPLATE = "swagger-template.vm";
 }
