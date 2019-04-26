@@ -181,8 +181,11 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>javafx</artifactId>
+			<version>${javafx.version}</version>
+			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+			<scope>system</scope>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
