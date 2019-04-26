@@ -210,10 +210,10 @@ public class SignatureUtilImpl implements SignatureUtil {
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			if (ex.getRawStatusCode() == 401) {
-				throw new BadCredentialsException("Authentication failed from CryptoManager");
+				throw new BadCredentialsException("Authentication failed for PublicKey");
 			}
 			if (ex.getRawStatusCode() == 403) {
-				throw new AccessDeniedException("Authentication failed from CryptoManager");
+				throw new AccessDeniedException("Authentication failed for PublicKey");
 			}
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 			if (!validationErrorsList.isEmpty()) {
