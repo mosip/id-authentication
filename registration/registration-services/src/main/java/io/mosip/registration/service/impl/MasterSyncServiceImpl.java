@@ -410,7 +410,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 		masterDocuments.forEach(gender -> {
 			GenderDto genders = new GenderDto();
-			genders.setCode(gender.getCode().trim());
+			genders.setCode(gender.getCode());
 			genders.setGenderName(gender.getGenderName());
 			genders.setIsActive(gender.getIsActive());
 			genders.setLangCode(gender.getLangCode());
