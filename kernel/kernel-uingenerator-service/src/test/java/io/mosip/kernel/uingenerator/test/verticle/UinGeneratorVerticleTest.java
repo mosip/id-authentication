@@ -77,7 +77,7 @@ public class UinGeneratorVerticleTest {
 					exception.printStackTrace();
 				}
 				context.assertEquals(200, httpResponse.statusCode());
-				context.assertEquals(error.getMessage(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
+				context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
 				client.close();
 				async.complete();
 			} else {
