@@ -1,23 +1,11 @@
--- NOTE: the code below contains the SQL for the selected object
--- as well for its dependencies and children (if applicable).
--- 
--- This feature is only a convinience in order to permit you to test
--- the whole object's SQL definition at once.
--- 
--- When exporting or generating the SQL for the whole database model
--- all objects will be placed at their original positions.
-
-
 -- object: idrepo.uin | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin CASCADE;
 CREATE TABLE idrepo.uin(
 	uin_ref_id character varying(36) NOT NULL,
-	uin character varying(500) NOT NULL,
-	uin_hash character varying(128) NOT NULL,
+	uin character varying(28) NOT NULL,
 	uin_data bytea NOT NULL,
 	uin_data_hash character varying(64) NOT NULL,
 	reg_id character varying(39) NOT NULL,
-	bio_ref_id character varying(128),
 	status_code character varying(32) NOT NULL,
 	lang_code character varying(3) NOT NULL,
 	cr_by character varying(256) NOT NULL,
@@ -32,47 +20,27 @@ CREATE TABLE idrepo.uin(
 
 );
 -- ddl-end --
-COMMENT ON TABLE idrepo.uin IS 'UIN: Information related to an individual (demographic, biometric, and uploaded documents) are stored. The information is stored in JSON format. A hash value of the JSON file is also maintained as a separate column as an added security to prevent data tampering.';
+COMMENT ON TABLE idrepo.uin IS 'Table to store individual data and the assigned UIN. This table will also contain the latest registration id that was used to update individual''s information.';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.uin_ref_id IS 'UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file.';
+COMMENT ON COLUMN idrepo.uin.uin_ref_id IS 'UIN reference identification, a unique identity field that will be used in all reference tables within id repository db and in file store.';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.uin IS 'Unique Identification Number : Unique identification number assigned to individual.';
+COMMENT ON COLUMN idrepo.uin.uin IS 'Unique identification number of an individual';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.uin_hash IS 'Unique Identification Number Hash: Hash value of Unique identification number assigned to individual.';
+COMMENT ON COLUMN idrepo.uin.status_code IS 'Status code of the UIN. This field refers to the master list of status defined in master schema.';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.uin_data IS 'UIN Data: Information of an individual stored in JSON file as per ID definition defined by the country in the system';
+COMMENT ON COLUMN idrepo.uin.lang_code IS 'Language code of the status code field. Refernces status master table from master DB.';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.uin_data_hash IS 'UIN Data Hash:  Hash value of the UIN data which is stored in uin_data field. While reading the JSON file, hash value of the file is verified with this hash value to ensure file validity.';
+COMMENT ON COLUMN idrepo.uin.cr_by IS 'record created by';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.reg_id IS 'Registration ID: Latest registration ID through which individual information got processed and registered';
+COMMENT ON COLUMN idrepo.uin.cr_dtimes IS 'record created datetime';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.bio_ref_id IS 'Biometric Reference Id: Biometric reference id generated which will be used as a reference id in ABIS systems';
+COMMENT ON COLUMN idrepo.uin.upd_by IS 'Record updated by';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.status_code IS 'Status Code:  Current Status code of the UIN. Refers to master.status_list.code';
+COMMENT ON COLUMN idrepo.uin.upd_dtimes IS 'record updated datetime';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.lang_code IS 'Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ';
+COMMENT ON COLUMN idrepo.uin.is_deleted IS 'Field to indicate whether the record is deleted (soft delete) or not.';
 -- ddl-end --
-COMMENT ON COLUMN idrepo.uin.cr_by IS 'Created By : ID or name of the user who create / insert record';
--- ddl-end --
-COMMENT ON COLUMN idrepo.uin.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
--- ddl-end --
-COMMENT ON COLUMN idrepo.uin.upd_by IS 'Updated By : ID or name of the user who update the record with new values';
--- ddl-end --
-COMMENT ON COLUMN idrepo.uin.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
--- ddl-end --
-COMMENT ON COLUMN idrepo.uin.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
--- ddl-end --
-COMMENT ON COLUMN idrepo.uin.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+COMMENT ON COLUMN idrepo.uin.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE idrepo.uin OWNER TO sysadmin;
 -- ddl-end --
-
--- object: idx_uin_uin_hash | type: INDEX --
--- DROP INDEX IF EXISTS idrepo.idx_uin_uin_hash CASCADE;
-CREATE INDEX idx_uin_uin_hash ON idrepo.uin
-	USING btree
-	(
-	  uin_hash
-	);
--- ddl-end --
-
