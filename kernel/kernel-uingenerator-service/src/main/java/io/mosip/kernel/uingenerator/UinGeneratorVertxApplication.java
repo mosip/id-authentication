@@ -82,6 +82,7 @@ public class UinGeneratorVertxApplication {
 			FileUtils.writeStringToFile(new File(url.toString()), merged, StandardCharsets.UTF_8.name());
 
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
+			LOGGER.error(e.getMessage());
 		}
 
 	}
