@@ -67,22 +67,24 @@ public class IdRepoManager {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
-		RestRequestDTO buildRequest = null;
+		RestRequestDTO buildRequest = new RestRequestDTO();
 		Map<String, Object> response = null;
 
 		try {
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
 			Map<String, String> params = new HashMap<>();
 			params.put("uin", uin);
 			if (isBio) {
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
 				params.put("type", "bio");
+
 			} else {
-				params.put("type", "demo");
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE_WITHOUT_TYPE, null,
+						Map.class);
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			if (environment.getProperty("mosip.kernel.idrepo.status.registered")
-					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(STATUS_KEY))) {
+					.equalsIgnoreCase((String) ((Map<String, Object>) response.get("response")).get(STATUS_KEY))) {
 				response.put("uin", uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
