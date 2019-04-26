@@ -298,7 +298,7 @@ public class BaseController extends BaseService {
 		if (id.contains(RegistrationConstants.ONTYPE)) {
 			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
 		}
-		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+		if (id.matches(RegistrationConstants.DTAE_MONTH_YEAR_REGEX)) {
 			id = RegistrationConstants.DOB;
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
