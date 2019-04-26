@@ -35,7 +35,7 @@ public interface SignatureUtil {
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
 	 */
-	boolean validateWithPublicKey(String responseSignature, String responseBody, String publicKey)
+	public boolean validateWithPublicKey(String responseSignature, String responseBody, String publicKey)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
 
 	/**
@@ -51,6 +51,6 @@ public interface SignatureUtil {
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
 	 */
-	boolean validateWithPublicKey(String responseSignature, String responseBody)
+	public boolean validateWithPublicKey(String responseSignature, String responseBody)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
 }
