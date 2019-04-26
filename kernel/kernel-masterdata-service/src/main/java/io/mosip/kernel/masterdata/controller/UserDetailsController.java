@@ -28,7 +28,7 @@ public class UserDetailsController {
 
 	@ResponseFilter
 	@GetMapping(value = "/users/{id}/{eff_dtimes}")
-	@PreAuthorize("hasRole('REGISTRATION_ADMIN')")
+	@PreAuthorize("hasRole('REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
 	public ResponseWrapper<UserDetailsResponseDto> getTitlesBylangCode(@PathVariable("id") String userId,
 			@PathVariable("eff_dtimes") String date) {
 		ResponseWrapper<UserDetailsResponseDto> responseWrapper = new ResponseWrapper<>();
