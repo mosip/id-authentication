@@ -221,8 +221,9 @@ public class ClientJarEncryption {
 
 					writeManifest(fileOutputStream, manifest);
 
-					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
-							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
+					//Removed manifest file from zip content
+//					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
+//							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
 
 					aes.writeFileToZip(fileNameByBytes, zipFilename);
 
