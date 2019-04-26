@@ -13,6 +13,7 @@ import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
  */
 public class IdRepoDataValidationExceptionTest {
 
+
 	/**
 	 * Test id repo data validation exception.
 	 *
@@ -50,7 +51,7 @@ public class IdRepoDataValidationExceptionTest {
 	 */
 	@Test(expected = IdRepoDataValidationException.class)
 	public void testIdRepoDataValidationExceptionWithConstant() throws IdRepoAppException {
-		throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_UIN);
+		throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_REQUEST);
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class IdRepoDataValidationExceptionTest {
 	 */
 	@Test(expected = IdRepoDataValidationException.class)
 	public void testIdRepoDataValidationExceptionWithConstantAndCause() throws IdRepoAppException {
-		throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_UIN, new IdRepoDataValidationException());
+		throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoDataValidationException());
 	}
 
 }

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Maps;
@@ -60,6 +61,11 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @ActiveProfiles("test")
 public class IdRepoControllerTest {
 
+
+	private static final String REGISTRATION_ID = "registrationId";
+
+	private static final String UIN = "UIN";
+
 	@Mock
 	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
@@ -81,18 +87,22 @@ public class IdRepoControllerTest {
 	@Autowired
 	private Environment env;
 
+	List<String> allowedTypes;
+	
 	@Before
 	public void before() {
 		Map<String, String> id = Maps.newHashMap("read", "mosip.id.read");
 		id.put("create", "mosip.id.create");
 		id.put("update", "mosip.id.update");
 		ReflectionTestUtils.setField(controller, "id", id);
+		ReflectionTestUtils.setField(controller, "allowedTypes", allowedTypes);
 		ReflectionTestUtils.setField(controller, "mapper", mapper);
 		ReflectionTestUtils.setField(controller, "validator", validator);
 		ReflectionTestUtils.setField(controller, "env", env);
 		ReflectionTestUtils.setField(validator, "id", id);
-
+		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "allowedTypes", Lists.newArrayList("bio", "demo", "all"));
+		ReflectionTestUtils.setField(controller, "allowedTypes", Lists.newArrayList("bio", "demo", "all"));
 	}
 
 	@Test
@@ -321,8 +331,8 @@ public class IdRepoControllerTest {
 			when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
 			controller.retrieveIdentityByRid("1234", "demo");
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_UIN.getErrorMessage()));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		}
 	}
 
@@ -342,7 +352,7 @@ public class IdRepoControllerTest {
 			when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
 			controller.retrieveIdentityByRid("1234", "dem");
 		} catch (IdRepoAppException e) {
-			assertEquals("KER-IDR-002 --> Invalid Input Parameter - type", e.getCause().getMessage());
+			assertEquals("IDR-IDS-002 --> Invalid Input Parameter - type", e.getCause().getMessage());
 		}
 	}
 
@@ -358,11 +368,11 @@ public class IdRepoControllerTest {
 	public void testRetrieveIdentityByRidNullId() throws Throwable {
 		try {
 			when(ridValidator.validateId(null))
-					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_REGISTRATION_ID.getErrorCode(),
-							IdRepoErrorConstants.INVALID_REGISTRATION_ID.getErrorMessage()));
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID)));
 			controller.retrieveIdentityByRid(null, null);
 		} catch (IdRepoAppException e) {
-			assertEquals("KER-IDR-021 --> Invalid Registration ID", e.getCause().getMessage());
+			assertEquals("IDR-IDS-002 --> Invalid Input Parameter - registrationId", e.getMessage());
 		}
 	}
 
@@ -391,7 +401,7 @@ public class IdRepoControllerTest {
 			requestDTO.setIdentity(identity);
 			ReflectionTestUtils.invokeMethod(controller, "getUin", requestDTO);
 		} catch (UndeclaredThrowableException e) {
-			assertEquals("KER-IDR-001 --> Missing Input Parameter - /identity/UIN", e.getCause().getMessage());
+			assertEquals("IDR-IDS-001 --> Missing Input Parameter - /identity/UIN", e.getCause().getMessage());
 		}
 	}
 
@@ -405,7 +415,7 @@ public class IdRepoControllerTest {
 			ReflectionTestUtils.setField(controller, "mapper", mockMapper);
 			ReflectionTestUtils.invokeMethod(controller, "getUin", "");
 		} catch (UndeclaredThrowableException e) {
-			assertEquals("KER-IDR-007 --> Invalid Request; \n"
+			assertEquals("IDR-IDS-007 --> Invalid Request; \n"
 					+ "nested exception is io.mosip.idrepository.identity.test.controller.IdRepoControllerTest$1: Invalid Request",
 					e.getCause().getMessage());
 		}

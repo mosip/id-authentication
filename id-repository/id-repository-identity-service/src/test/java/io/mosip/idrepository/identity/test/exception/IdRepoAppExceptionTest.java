@@ -49,7 +49,7 @@ public class IdRepoAppExceptionTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testIdRepoAppExceptionWithConstant() throws IdRepoAppException {
-		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class IdRepoAppExceptionTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testIdRepoAppExceptionWithConstantAndCause() throws IdRepoAppException {
-		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, new IdRepoAppException());
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoAppException());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class IdRepoAppExceptionTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testIdRepoAppExceptionWithConstantAndId() throws IdRepoAppException {
-		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST);
 	}
 
 	/**
@@ -79,6 +79,6 @@ public class IdRepoAppExceptionTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testIdRepoAppExceptionWithConstantAndCauseAndId() throws IdRepoAppException {
-		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, new IdRepoAppException());
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoAppException());
 	}
 }

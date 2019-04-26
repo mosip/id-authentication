@@ -50,7 +50,7 @@ public class IdRepoUnknownExceptionTest {
 	 */
 	@Test(expected = IdRepoUnknownException.class)
 	public void testIdRepoUnknownExceptionWithConstant() throws IdRepoAppException {
-		throw new IdRepoUnknownException(IdRepoErrorConstants.INVALID_UIN);
+		throw new IdRepoUnknownException(IdRepoErrorConstants.INVALID_REQUEST);
 	}
 
 	/**
@@ -60,6 +60,6 @@ public class IdRepoUnknownExceptionTest {
 	 */
 	@Test(expected = IdRepoUnknownException.class)
 	public void testIdRepoUnknownExceptionWithConstantAndCause() throws IdRepoAppException {
-		throw new IdRepoUnknownException(IdRepoErrorConstants.INVALID_UIN, new IdRepoUnknownException());
+		throw new IdRepoUnknownException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoUnknownException());
 	}
 }

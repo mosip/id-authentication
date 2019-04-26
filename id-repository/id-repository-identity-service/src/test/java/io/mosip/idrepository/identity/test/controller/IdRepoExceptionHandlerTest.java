@@ -49,6 +49,8 @@ import io.mosip.kernel.core.exception.ServiceError;
 @ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoExceptionHandlerTest {
 
+	private static final String UIN = "UIN";
+
 	private Map<String, String> id;
 
 	@Autowired
@@ -128,12 +130,13 @@ public class IdRepoExceptionHandlerTest {
 	public void testHandleIdAppException() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
-				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN), request);
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)), request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
 		});
 	}
 
@@ -143,45 +146,45 @@ public class IdRepoExceptionHandlerTest {
 	@Test
 	public void testHandleIdAppExceptionWithCause() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.GET);
-		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN,
-				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN));
+		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
 		});
 	}
 
 	@Test
 	public void testHandleIdAppExceptionWithUncheckedCause() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
-		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN,
-				new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN));
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
 		});
 	}
 
 	@Test
 	public void testHandleIdAppUncheckedException() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
-		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN,
-				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN));
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		ResponseEntity<Object> handleIdAppUncheckedException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
 		});
 	}
 

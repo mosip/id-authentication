@@ -126,6 +126,7 @@ public class IdRequestValidatorTest {
 		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
 		ReflectionTestUtils.setField(validator, "status", status);
+		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "allowedTypes", allowedTypes);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
 		ReflectionTestUtils.setField(validator, "validation",
@@ -512,27 +513,6 @@ public class IdRequestValidatorTest {
 	public void testValidateNullId() throws IdRepoAppException {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
 		validator.validateUin(null);
-	}
-	
-	@Test(expected = IdRepoAppException.class)
-	public void testInvalidType() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		validator.validateType("1234", "dem");
-	}
-	
-	@Test
-	public void testMultipleValidType() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		validator.validateType("1234", "demo,all,bio");
-	}
-
-	
-
-	@Test(expected = IdRepoAppException.class)
-	public void testMultipleInvalidType() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		validator.validateType("1234", "dem,abc");
-
 	}
 	
 
