@@ -298,7 +298,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private void updateApplicationMap(String code, String val) {
 		ApplicationContext.setGlobalConfigValueOf(code, val);
-		applicationMap.put(code, val);
+		getBaseGlobalMap().put(code, val);
 
 	}
 }
