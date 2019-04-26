@@ -134,8 +134,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if (registrationType.equals(RegistrationType.ACTIVATED.toString())
-				|| registrationType.equals(RegistrationType.DEACTIVATED.toString())) {
+		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equals(RegistrationType.ACTIVATED.toString())
+				|| registrationType.equals(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {
 
@@ -261,6 +261,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		RegistrationCenterResponseDto rcpdto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {
+			if(centerId!=null && !centerId.isEmpty()) {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
 					"", ResponseWrapper.class);
 			rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterResponseDto.class);
@@ -273,8 +274,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getMessage(), new Throwable());
+			  }
+			}else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						 "Center id is mandatory", new Throwable());
 			}
-
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				List<ErrorDTO> error = responseWrapper.getErrors();
@@ -310,6 +314,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		MachineResponseDto machinedto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {
+			
+			if(machine!=null && !machine.isEmpty())  {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MACHINEDETAILS, pathsegments, "", "",
 					ResponseWrapper.class);
 			machinedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), MachineResponseDto.class);
@@ -319,7 +325,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getErrorcode(), new Throwable());
+						error.get(0).getMessage(), new Throwable());
+			}
+			}else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						 "Machine id is mandatory", new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
