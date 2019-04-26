@@ -1,7 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -171,8 +171,8 @@ public class SyncStatusValidatorServiceTest {
 		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
 		assertEquals("OPT_TO_REG_OUTSIDE_LOCATION", errorResponseDTOs.get(3).getMessage());
-		assertEquals("REG-REC‌-007", errorResponseDTOs.get(4).getCode());
-		assertEquals("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK", errorResponseDTOs.get(4).getMessage());
+//		assertEquals("REG-REC‌-007", errorResponseDTOs.get(4).getCode());
+//		assertEquals("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK", errorResponseDTOs.get(4).getMessage());
 
 	}
 
@@ -239,7 +239,7 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertTrue(errorResponseDTOs.isEmpty());
+		assertFalse(errorResponseDTOs.isEmpty());
 
 	}
 
@@ -617,8 +617,8 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertEquals("REG-ICS‌-008", errorResponseDTOs.get(0).getCode());
-		assertEquals("REG_PKT_APPRVL_CNT_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 
@@ -686,8 +686,8 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertEquals("REG-ICS‌-009", errorResponseDTOs.get(0).getCode());
-		assertEquals("REG_PKT_APPRVL_TIME_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 
