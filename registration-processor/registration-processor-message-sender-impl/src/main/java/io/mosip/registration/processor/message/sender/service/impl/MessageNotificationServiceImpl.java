@@ -261,11 +261,7 @@ public class MessageNotificationServiceImpl
 
 		params.add("attachments", attachment);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(), requestEntity,
+		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),MediaType.MULTIPART_FORM_DATA, params,
 				ResponseWrapper.class);
 		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
 
