@@ -33,6 +33,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.JschConnectionException;
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
@@ -41,6 +42,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
+import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.service.impl.PacketUploaderServiceImpl;
@@ -59,7 +61,7 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 //@RunWith(PowerMockRunner.class)
 
 public class PacketUploaderServiceTest {
-	
+
 	@InjectMocks
 	private PacketUploaderService<MessageDTO> packetuploaderservice = new PacketUploaderServiceImpl();
 	@Mock
@@ -100,26 +102,26 @@ public class PacketUploaderServiceTest {
 
 	/** The entry. */
 	InternalRegistrationStatusDto entry = new InternalRegistrationStatusDto();
-	
+
 	@Mock
 	private InputStream is;
-	
+
 	private byte[] enrypteddata;
-	
+
 	@Mock
 	private VirusScanner<Boolean, InputStream> virusScannerService;
-	
+
 	@Mock
 	private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
-	
+
 	@Mock
 	private Decryptor decryptor;
-	
+
 	@Mock 
 	private SftpJschConnectionDto sftpDTO;
-	
+
 	private File file;
-	
+
 	@Mock
 	private ChannelSftp channelSftp = new ChannelSftp();
 
@@ -128,9 +130,9 @@ public class PacketUploaderServiceTest {
 	public void setUp() throws IOException
 	{
 		//ReflectionTestUtils.setField(packetuploaderservice, "extention", ".zip");
-	    ReflectionTestUtils.setField(packetuploaderservice, "host", "localhost");
-	    ReflectionTestUtils.setField(packetuploaderservice, "dmzPort","7878");
-	    //ReflectionTestUtils.setField(packetuploaderservice, "host", "5");
+		ReflectionTestUtils.setField(packetuploaderservice, "host", "localhost");
+		ReflectionTestUtils.setField(packetuploaderservice, "dmzPort","7878");
+		//ReflectionTestUtils.setField(packetuploaderservice, "host", "5");
 		file = new File("src/test/resources/1001.zip");
 		dto.setRid("1001");
 		entry.setRegistrationId("1001");
@@ -247,12 +249,28 @@ public class PacketUploaderServiceTest {
 	}
 
 	@Test
-	@Ignore
-	public void testIOException() throws SftpException, JschConnectionException, SftpFileOperationException
+	public void testPacketDecryptionException() throws  PacketDecryptionFailureException, ApisResourceAccessException, JschConnectionException, SftpFileOperationException
 	{
-		//Mockito.when(channelSftp.get(Mockito.any())).thenThrow(new IOException());
-		Mockito.when(fileManager.getFile(Mockito.any(),Mockito.any(),Mockito.any())).thenThrow(new IOException());
-		//Mockito.doThrow(new IOException()).when(channelSftp.get(Mockito.any()));
+		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);	
+		Mockito.when(fileManager.getFile(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(enrypteddata);
+		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
+		Mockito.when(decryptor.decrypt(Mockito.any(),Mockito.any())).thenThrow(new PacketDecryptionFailureException("",""));
+		MessageDTO result=packetuploaderservice.validateAndUploadPacket(dto.getRid(),"PacketUploaderStage");
+		assertFalse(result.getIsValid());
+	}
+
+	@Test
+	public void testIOException() throws SftpException, JschConnectionException, SftpFileOperationException, IOException, PacketDecryptionFailureException, ApisResourceAccessException
+	{
+		ReflectionTestUtils.setField(packetuploaderservice, "maxRetryCount",3);
+		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);	
+		Mockito.when(fileManager.getFile(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(enrypteddata);
+		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
+		Mockito.when(decryptor.decrypt(Mockito.any(),Mockito.any())).thenReturn(is);
+		Mockito.when(adapter.storePacket(Mockito.any(),Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
+		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
+		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
+		Mockito.when(packetArchiver.archivePacket(Mockito.any(),Mockito.any())).thenThrow(new IOException());
 		MessageDTO result=packetuploaderservice.validateAndUploadPacket(dto.getRid(),"PacketUploaderStage");
 		assertFalse(result.getIsValid());
 	}
@@ -329,5 +347,5 @@ public class PacketUploaderServiceTest {
 		MessageDTO result=packetuploaderservice.validateAndUploadPacket(dto.getRid(),"PacketUploaderStage");
 		assertFalse(result.getIsValid());
 	}
-	
+
 }

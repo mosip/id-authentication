@@ -455,6 +455,10 @@ public enum PlatformErrorMessages {
 
 	RPR_PUM_PACKET_NOT_YET_SYNC(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "008",
 			"Registration packet is not in Sync with Sync table"),
+	
+	RPR_PUM_PACKET_DECRYPTION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "009",
+			"Registration packet decryption failed"),
+
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",

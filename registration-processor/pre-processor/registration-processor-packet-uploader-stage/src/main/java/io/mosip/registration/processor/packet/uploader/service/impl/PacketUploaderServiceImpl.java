@@ -36,6 +36,7 @@ import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
+import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
@@ -293,6 +294,14 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + e.getMessage());
+
+			description = "The Sftp operation failed during file processing for registrationId " + registrationId + "::" + e.getMessage();
+		}catch (PacketDecryptionFailureException e) {
+			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
+			messageDTO.setInternalError(true);
+			messageDTO.setIsValid(false);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DECRYPTION_FAILED.name() + e.getMessage());
 
 			description = "The Sftp operation failed during file processing for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {
