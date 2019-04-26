@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -195,7 +196,7 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private ProgressIndicator progressIndicator;
 
-	private Service<String> taskService;
+	private Service<List<String>> taskService;
 
 	private List<String> loginList = new ArrayList<>();
 
@@ -222,7 +223,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private UserMachineMappingService machineMappingService;
-	
+
 	@Autowired
 	private PublicKeySyncImpl PublicKeySyncImpl;
 
@@ -295,13 +296,11 @@ public class LoginController extends BaseController implements Initializable {
 			}
 
 		} catch (IOException ioException) {
-
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		} catch (RuntimeException runtimeException) {
-
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -1156,30 +1155,30 @@ public class LoginController extends BaseController implements Initializable {
 		 * progress.
 		 * 
 		 */
-		taskService = new Service<String>() {
+		taskService = new Service<List<String>>() {
 			@Override
-			protected Task<String> createTask() {
+			protected Task<List<String>> createTask() {
 				return /**
 						 * @author SaravanaKumar
 						 *
 						 */
-				new Task<String>() {
+				new Task<List<String>>() {
 					/*
 					 * (non-Javadoc)
 					 * 
 					 * @see javafx.concurrent.Task#call()
 					 */
 					@Override
-					protected String call() {
+					protected List<String> call() {
 
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						String val = null;
+						List<String> val = new LinkedList<>();
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-							val = RegistrationConstants.RESTART;
+							val.add(RegistrationConstants.RESTART);
 						}
 						ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
 								RegistrationConstants.OPT_TO_REG_MDS_J00001,
@@ -1188,9 +1187,12 @@ public class LoginController extends BaseController implements Initializable {
 						ResponseDTO userResponseDTO = userDetailService
 								.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-						if ((masterResponseDTO.getErrorResponseDTOs() != null
-								|| userResponseDTO.getErrorResponseDTOs() != null) && val == null) {
-							val = RegistrationConstants.FAILURE;
+						if (((masterResponseDTO.getErrorResponseDTOs() != null
+								|| userResponseDTO.getErrorResponseDTOs() != null)
+								|| responseDTO.getErrorResponseDTOs() != null)) {
+							val.add(RegistrationConstants.FAILURE);
+						} else {
+							val.add(RegistrationConstants.SUCCESS);
 						}
 						return val;
 
@@ -1205,7 +1207,14 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
-				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
+				if (taskService.getValue().contains(RegistrationConstants.FAILURE)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
+					if (isInitialSetUp) {
+						loadInitialScreen(Initialization.getPrimaryStage());
+						return;
+					}
+				} else if (taskService.getValue().contains(RegistrationConstants.RESTART)
+						|| taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
 
 					if (isInitialSetUp) {
 						// update initial set up flag
@@ -1221,12 +1230,6 @@ public class LoginController extends BaseController implements Initializable {
 							restartController.restart();
 						}
 					});
-				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
-					if (isInitialSetUp) {
-						loadInitialScreen(Initialization.getPrimaryStage());
-						return;
-					}
 				}
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);
