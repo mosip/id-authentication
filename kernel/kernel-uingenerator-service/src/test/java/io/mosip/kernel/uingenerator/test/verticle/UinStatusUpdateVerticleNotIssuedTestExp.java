@@ -11,7 +11,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.MediaType;
@@ -22,9 +21,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
+import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
@@ -32,21 +33,23 @@ import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.ext.web.client.HttpResponse;
+import io.vertx.ext.web.client.WebClient;
 
-@Ignore
 @RunWith(VertxUnitRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinStatusUpdateVerticleNotIssuedTestExp {
 
 	private Vertx vertx;
 	private int port;
-	
+
 	AbstractApplicationContext context;
-	
+
 	@Before
 	public void before(TestContext testContext) throws IOException {
 		ServerSocket socket = new ServerSocket(0);
@@ -55,13 +58,13 @@ public class UinStatusUpdateVerticleNotIssuedTestExp {
 
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
 
-		 context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
+		context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
 	}
-	
+
 	@After
 	public void after(TestContext testContext) {
 		if (vertx != null && testContext != null)
@@ -72,6 +75,7 @@ public class UinStatusUpdateVerticleNotIssuedTestExp {
 
 	@Test
 	public void updateVerticle(TestContext context) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 		Async async = context.async();
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -95,17 +99,28 @@ public class UinStatusUpdateVerticleNotIssuedTestExp {
 		requestWrp.setId("mosip.kernel.uinservice");
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
-
 		String reqJson = mapper.writeValueAsString(requestWrp);
 
 		final String length = Integer.toString(reqJson.length());
-		vertx.createHttpClient().put(port, "localhost", "/v1/uingenerator/uin")
-				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
-					context.assertEquals(response.statusCode(), 200);
-					response.bodyHandler(body -> {
-						JsonObject json = body.toJsonObject();
-					});
-				}).write(reqJson).end();
+		WebClient client = WebClient.create(vertx);
+		client.put(port, "localhost", "/v1/uingenerator/uin").putHeader("content-type", "application/json")
+				.putHeader("content-length", length).sendJson(requestWrp, response -> {
+					ServiceError error = null;
+					if (response.succeeded()) {
+						HttpResponse<Buffer> httpResponse = response.result();
+						try {
+							error = objectMapper.readValue(httpResponse.bodyAsJsonObject().getValue("errors").toString()
+									.replace("[", "").replace("]", ""), ServiceError.class);
+						} catch (IOException exception) {
+							exception.printStackTrace();
+						}
+						context.assertEquals(httpResponse.statusCode(), 200);
+						context.assertEquals(error.getMessage(), "Given UIN is not in ISSUED status");
+						client.close();
+					} else {
+						System.out.println("Something went wrong " + response.cause().getMessage());
+					}
+				});
 
 		UinStatusUpdateReponseDto requestDtoIssue = new UinStatusUpdateReponseDto();
 		requestDtoIssue.setUin(dto.getUin());
@@ -115,19 +130,29 @@ public class UinStatusUpdateVerticleNotIssuedTestExp {
 		requestWrpIssue.setId("mosip.kernel.uinservice");
 		requestWrpIssue.setVersion("1.0");
 		requestWrpIssue.setRequest(requestDto);
-
 		String reqIssueJson = mapper.writeValueAsString(requestWrpIssue);
 
-		final String length1 = Integer.toString(reqIssueJson.length());
-		vertx.createHttpClient().put(port, "localhost", "/v1/uingenerator/uin")
-				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
-					context.assertEquals(response.statusCode(), 200);
-					response.bodyHandler(body -> {
-						JsonObject json = body.toJsonObject();
+		final String assignedRequestLength = Integer.toString(reqIssueJson.length());
+		WebClient webClient = WebClient.create(vertx);
+		webClient.put(port, "localhost", "/v1/uingenerator/uin").putHeader("content-type", "application/json")
+				.putHeader("content-length", assignedRequestLength).sendJson(requestWrp, response -> {
+					UinStatusUpdateReponseDto uinStatusUpdateReponseDto = null;
+					if (response.succeeded()) {
+						HttpResponse<Buffer> httpResponse = response.result();
+						try {
+							uinStatusUpdateReponseDto = objectMapper.readValue(
+									httpResponse.bodyAsJsonObject().getValue("response").toString(),
+									UinStatusUpdateReponseDto.class);
+						} catch (IOException exception) {
+							exception.printStackTrace();
+						}
+						context.assertEquals(httpResponse.statusCode(), 200);
+						context.assertEquals(uinStatusUpdateReponseDto.getStatus(), UinGeneratorConstant.ASSIGNED);
+						webClient.close();
 						async.complete();
-					});
-				}).write(reqJson).end();
-
+					} else {
+						System.out.println("Something went wrong " + response.cause().getMessage());
+					}
+				});
 	}
-
 }
