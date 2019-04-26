@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.assertj.core.util.Arrays;
 import org.bridj.cpp.std.list;
 import org.springframework.stereotype.Component;
 
@@ -334,10 +335,12 @@ public class Validations extends BaseController {
 				}
 
 			} else {
-				if (id.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)
-						|| id.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-						|| id.equalsIgnoreCase(RegistrationConstants.POR_DOCUMENT)
-						|| id.equalsIgnoreCase(RegistrationConstants.DOB_DOCUMENT)) {
+
+				;
+				if (Arrays
+						.asList(new String[] { RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POI_DOCUMENT,
+								RegistrationConstants.POR_DOCUMENT, RegistrationConstants.DOB_DOCUMENT })
+						.contains(id)) {
 					Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
 							.getApplicantDocumentDTO().getDocuments();
 					if (documents.containsKey(id) && documents.get(id) != null) {
