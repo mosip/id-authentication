@@ -26,7 +26,7 @@ public class SigningUtil {
 	 */
 	public String signResponseData(String response) {
 
-		return signatureUtil.signResponse(response);
+		return null;
 	}
 
 

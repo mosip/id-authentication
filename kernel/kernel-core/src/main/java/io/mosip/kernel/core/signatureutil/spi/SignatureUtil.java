@@ -3,6 +3,8 @@ package io.mosip.kernel.core.signatureutil.spi;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import io.mosip.kernel.core.signatureutil.dto.CryptoManagerResponseDto;
+
 /**
  * SignatureUtil interface.
  * 
@@ -18,7 +20,7 @@ public interface SignatureUtil {
 	 *            the response
 	 * @return the string
 	 */
-	public String signResponse(String response);
+	public CryptoManagerResponseDto signResponse(String response);
 
 	/**
 	 * Validate with public key.
@@ -51,6 +53,6 @@ public interface SignatureUtil {
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
 	 */
-	public boolean validateWithPublicKey(String responseSignature, String responseBody)
+	public boolean validate(String responseSignature, String responseBody,String responseTime)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
 }

@@ -22,11 +22,6 @@ import javax.crypto.SecretKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +39,7 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.signatureutil.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
@@ -53,14 +49,11 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
-import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 
 @SpringBootTest
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest(DateUtils.class)
-@PowerMockIgnore("javax.net.ssl.*")
+@RunWith(SpringRunner.class)
+
 public class SigningUtilImplTest {
 
 	@Autowired
@@ -221,13 +214,10 @@ public class SigningUtilImplTest {
 	}
 
 	@Test
-	public void validateWithPublicKey2ArgumentsMethodTest()
-			throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
-		PowerMockito.mockStatic(DateUtils.class);
-		PowerMockito.when(DateUtils.getUTCCurrentDateTimeString()).thenReturn("2019-09-09T09:09:09.000Z");
+	public void validateMethodTest() throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
-				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
-				LocalDateTime.now().plusDays(100));
+				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now().toString(),
+				LocalDateTime.now().plusDays(100).toString());
 		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
@@ -236,32 +226,29 @@ public class SigningUtilImplTest {
 		byte[] hashedData = HMACUtils.generateHash("signedData".getBytes());
 		String hashedString = CryptoUtil.encodeBase64(hashedData);
 		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedString.getBytes());
-		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "signedData");
+		boolean isVerfied = signingUtil.validate(CryptoUtil.encodeBase64(encryptedData), "signedData",
+				"2019-09-09T09:09:09.000Z");
 		assertTrue(isVerfied);
 	}
 
 	@Test(expected = SignatureUtilException.class)
-	public void validateWithPublicKey2ArgumentsMethodExceptionTest()
+	public void validateMethodExceptionTest()
 			throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
-		PowerMockito.mockStatic(DateUtils.class);
-		PowerMockito.when(DateUtils.getUTCCurrentDateTimeString()).thenReturn("2019-09-09T09:09:09.000Z");
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
-				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
-				LocalDateTime.now().plusDays(100));
+				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now().toString(),
+				LocalDateTime.now().plusDays(100).toString());
 		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withServerError());
-		signingUtil.validateWithPublicKey("dfdsfdsfdsfds", "signedData");
+		signingUtil.validate("dfdsfdsfdsfds", "signedData", "2019-09-09T09:09:09.000Z");
 	}
 
 	@Test(expected = SignatureUtilException.class)
-	public void validateWithPublicKey2ArgumentsMethodIOExceptionTest()
+	public void validateIOExceptionTest()
 			throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
-		PowerMockito.mockStatic(DateUtils.class);
-		PowerMockito.when(DateUtils.getUTCCurrentDateTimeString()).thenReturn("2019-09-09T09:09:09.000Z");
 
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess().body(
 				"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-25T16:58:11.344Z\", \"metadata\": null, \"response\": { \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB\", \"issuedAt\": \"2019-04-09T05:51:17.334\", \"expiryAt\": \"2020-04-09T05:51:17.334\" , \"errors\": null }"));
-		signingUtil.validateWithPublicKey("dfdsfdsfdsfds", "signedData");
+		signingUtil.validate("dfdsfdsfdsfds", "signedData", "2019-09-09T09:09:09.000Z");
 	}
 }
