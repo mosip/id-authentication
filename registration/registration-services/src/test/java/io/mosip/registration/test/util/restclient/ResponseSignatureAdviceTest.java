@@ -3,15 +3,16 @@ package io.mosip.registration.test.util.restclient;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.aspectj.lang.JoinPoint;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,16 +20,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ResponseSignatureAdvice;
@@ -62,15 +62,12 @@ public class ResponseSignatureAdviceTest {
 	@Mock
 	private Logger LOGGER;
 
-	@Before
-	public void initialize() throws IOException, URISyntaxException {
-
-		ReflectionTestUtils.setField(responseSignatureAdvice, "publicKey",
-				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB");
-	}
+	@Mock
+	private PolicySyncDAO policySyncDAO;
 
 	@Test
-	public void responseSignatureTest() throws RegBaseCheckedException, URISyntaxException {
+	public void responseSignatureTest()
+			throws RegBaseCheckedException, URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
 
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		requestHTTPDTO.setIsSignRequired(true);
@@ -98,7 +95,12 @@ public class ResponseSignatureAdviceTest {
 		Map<String, Object> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
+		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
+				.getBytes();
+		KeyStore keys = new KeyStore();
+		keys.setPublicKey(key);
 
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("rqN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
@@ -107,7 +109,8 @@ public class ResponseSignatureAdviceTest {
 	}
 
 	@Test
-	public void responseSignatureTestFalse() throws RegBaseCheckedException, URISyntaxException {
+	public void responseSignatureTestFalse()
+			throws RegBaseCheckedException, URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
 
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		requestHTTPDTO.setIsSignRequired(true);
@@ -136,6 +139,53 @@ public class ResponseSignatureAdviceTest {
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
 
+		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
+				.getBytes();
+		KeyStore keys = new KeyStore();
+		keys.setPublicKey(key);
+
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
+		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
+
+		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
+
+	}
+
+	@Test
+	public void responseSignatureTestNewKey()
+			throws RegBaseCheckedException, URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
+
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setIsSignRequired(true);
+		requestHTTPDTO.setUri(new URI("/v1/mosip/test"));
+		Object[] args = new Object[1];
+		args[0] = requestHTTPDTO;
+		Mockito.when(joinPointMock.getArgs()).thenReturn(args);
+		Map<String, Object> mapResponse = new LinkedHashMap<>();
+		mapResponse.put("lastSyncTime", "2019-04-23T06:20:28.633Z");
+		mapResponse.put("publicKey", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB");
+		mapResponse.put("issuedAt", null);
+		mapResponse.put("expiryAt", null);
+		Map<String, Object> linkedMapResponse = new LinkedHashMap<>();
+		linkedMapResponse.put("id", null);
+		linkedMapResponse.put("version", null);
+		linkedMapResponse.put("responsetime", "2019-04-23T06:20:28.660Z");
+		linkedMapResponse.put("metadata", null);
+		linkedMapResponse.put("response", mapResponse);
+		linkedMapResponse.put("errors", null);
+		Map<String, Object> linkedMapHeader = new LinkedHashMap<>();
+		linkedMapHeader.put("pragma", "no-cache");
+		linkedMapHeader.put("response-signature",
+				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB");
+
+		Map<String, Object> linkedMap = new LinkedHashMap<>();
+		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
+		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
+
+		KeyStore keys = null;
+
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
@@ -173,6 +223,12 @@ public class ResponseSignatureAdviceTest {
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
 
+		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
+				.getBytes();
+		KeyStore keys = new KeyStore();
+		keys.setPublicKey(key);
+
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
@@ -211,8 +267,7 @@ public class ResponseSignatureAdviceTest {
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_BODY, linkedMapResponse);
 		linkedMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, linkedMapHeader);
 
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
-				.thenThrow(JsonProcessingException.class);
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenThrow(IOException.class);
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
 
