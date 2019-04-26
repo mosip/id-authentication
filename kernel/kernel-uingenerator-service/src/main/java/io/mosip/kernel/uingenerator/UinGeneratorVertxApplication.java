@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
-import io.mosip.kernel.uingenerator.util.ConfigServerUrlUtil;
+import io.mosip.kernel.uingenerator.util.ConfigUtil;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.config.ConfigRetriever;
@@ -63,7 +63,7 @@ public class UinGeneratorVertxApplication {
 		try {
 			Vertx vertx = Vertx.vertx();
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
-			List<String> configUrls = ConfigServerUrlUtil.getURLs();
+			List<String> configUrls = ConfigUtil.getURLs();
 			configUrls.forEach(url -> configStores
 					.add(new ConfigStoreOptions().setType(UinGeneratorConstant.CONFIG_STORE_OPTIONS_TYPE)
 							.setConfig(new JsonObject().put(UinGeneratorConstant.URL, url).put(
