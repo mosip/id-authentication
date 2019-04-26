@@ -190,10 +190,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			if (!syncActiveJobMap.isEmpty()) {
 
-				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
-
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
+				
+				
+				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
 				// Will be launch post successful LOGIN
 				/*
