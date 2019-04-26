@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
+import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
@@ -102,7 +103,7 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 							exception.printStackTrace();
 						}
 						context.assertEquals(httpResponse.statusCode(), 200);
-						context.assertEquals(error.getMessage(), "UIN could not be found");
+						context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
 						client.close();
 						async.complete();
 					} else {

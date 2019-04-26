@@ -25,6 +25,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
+import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
@@ -114,7 +115,7 @@ public class UinStatusUpdateVerticleNotIssuedTestExp {
 							exception.printStackTrace();
 						}
 						context.assertEquals(httpResponse.statusCode(), 200);
-						context.assertEquals(error.getMessage(), "Given UIN is not in ISSUED status");
+						context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode());
 						client.close();
 					} else {
 						System.out.println("Something went wrong " + response.cause().getMessage());
