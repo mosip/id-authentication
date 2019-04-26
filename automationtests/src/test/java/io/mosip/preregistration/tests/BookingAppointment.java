@@ -41,316 +41,283 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
-* Test Class to perform Booking Appointment related Positive and Negative test
-* cases
-* 
+ * Test Class to perform Booking Appointment related Positive and Negative test
+ * cases
+ * 
  * @author Lavanya R
-* @since 1.0.0
-*/
+ * @since 1.0.0
+ */
 
 public class BookingAppointment extends BaseTestCase implements ITest {
-              /**
-              * Declaration of all variables
-              **/
+	/**
+	 * Declaration of all variables
+	 **/
 
-              static String preId = "";
-              static SoftAssert softAssert = new SoftAssert();
-              protected static String testCaseName = "";
-              private static Logger logger = Logger.getLogger(BookingAppointment.class);
-              boolean status = false;
-              boolean statuOfSmokeTest = false;
-              String finalStatus = "";
-              public static JSONArray arr = new JSONArray();
-              ObjectMapper mapper = new ObjectMapper();
-              static Response Actualresponse = null;
-              static JSONObject Expectedresponse = null;
-              private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-              private static CommonLibrary commonLibrary = new CommonLibrary();
-              private static String preReg_URI;
-              static String dest = "";
-              static String configPaths = "";
-              static String folderPath = "preReg/BookingAppointment";
-              static String outputFile = "BookingAppointmentOutput.json";
-              static String requestKeyFile = "BookingAppointmentRequest.json";
-              String testParam = null;
-              boolean status_val = false;
-              static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-              JSONParser parser = new JSONParser();
+	static String preId = "";
+	static SoftAssert softAssert = new SoftAssert();
+	protected static String testCaseName = "";
+	private static Logger logger = Logger.getLogger(BookingAppointment.class);
+	boolean status = false;
+	boolean statuOfSmokeTest = false;
+	String finalStatus = "";
+	public static JSONArray arr = new JSONArray();
+	ObjectMapper mapper = new ObjectMapper();
+	static Response Actualresponse = null;
+	static JSONObject Expectedresponse = null;
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private static CommonLibrary commonLibrary = new CommonLibrary();
+	private static String preReg_URI;
+	static String dest = "";
+	static String configPaths = "";
+	static String folderPath = "preReg/BookingAppointment";
+	static String outputFile = "BookingAppointmentOutput.json";
+	static String requestKeyFile = "BookingAppointmentRequest.json";
+	String testParam = null;
+	boolean status_val = false;
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	JSONParser parser = new JSONParser();
 
-              /* implement,IInvokedMethodListener */
-              public BookingAppointment() {
+	/* implement,IInvokedMethodListener */
+	public BookingAppointment() {
 
-              }
+	}
 
-              /**
-              * Data Providers to read the input json files from the folders
-              * 
-               * @param context
-              * @return input request file
-              * @throws JsonParseException
-              * @throws JsonMappingException
-              * @throws IOException
-              * @throws ParseException
-              */
-              @DataProvider(name = "bookAppointment")
-              public Object[][] readData(ITestContext context)
-                                           throws JsonParseException, JsonMappingException, IOException, ParseException {
-                             testParam = context.getCurrentXmlTest().getParameter("testType");
-                             switch (testParam) {
-                             case "smoke":
-                                           return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+	/**
+	 * Data Providers to read the input json files from the folders
+	 * 
+	 * @param context
+	 * @return input request file
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	@DataProvider(name = "bookAppointment")
+	public Object[][] readData(ITestContext context)
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
+		testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
+		case "smoke":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
-                             case "regression":
-                                           return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-                             default:
-                                           return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-                             }
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+		default:
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		}
 
-              }
+	}
 
-              @SuppressWarnings("unchecked")
-              @Test(dataProvider = "bookAppointment")
-              public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
+	@SuppressWarnings("unchecked")
+	@Test(dataProvider = "bookAppointment")
+	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
 
-                             List<String> outerKeys = new ArrayList<String>();
-                             List<String> innerKeys = new ArrayList<String>();
-                             JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
-                             Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-                             
-                             String val=null;
-                             String name=null;
-                             if(testCaseName.contains("smoke"))
-                             {
-                                           val=testCaseName;
-                             }
-                             else
-                             {
-                                           String[] parts = testCaseName.split("_");
-                                  val = parts[0];
-                                  name= parts[1];
-                             }
-       
-                                                          
-                             /*String val = testCaseName.contains("smoke")
-                                                                        ?(testCaseName="BookAppmt-AllValidId"):testCaseName.contains("BookAnAppointmentByPassingInvalidId")
-                                                                        ?(testCaseName="BookAppmt-InvalidId"):testCaseName.contains("BookAnAppointmentByPassingInvalidStatusCode")
-                                                                        ?(testCaseName="BookAppmt-InvalidStatusCode"):testCaseName.contains("BookAnAppointmentByPassingInvalidPreRegistrationId")
-                                                                        ?(testCaseName="BookAppmt-InvalidPreRegId"):testCaseName.contains("BookAnAppointmentByPassingInvalidRegistrationCenterId")
-                                                                        ?(testCaseName="BookAppmt-InvalidRegCenterId"):testCaseName.contains("BookAnAppointmentByPassingInvalidAppointmentDate")              
-                                                                        ?(testCaseName="BookAppmt-InvalidAppmtDate"):testCaseName.contains("BookAnAppointmentByPassingInvalidTimeSlotFrom")                             
-                                                                        ?(testCaseName="BookAppmt-InvalidTimeSlotFrom"):(testCaseName="cond8");
-                                                          */
-                             // Creating the Pre-Registration Application
-                             Response createApplicationResponse = preRegLib.CreatePreReg();
-                             preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String val = null;
+		String name = null;
+		if (testCaseName.contains("smoke")) {
+			val = testCaseName;
+		} else {
+			String[] parts = testCaseName.split("_");
+			val = parts[0];
+			name = parts[1];
+		}
+		// Creating the Pre-Registration Application
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
-                             
-                             /* Fetch availability[or]center details */
-                             Response fetchCenter = preRegLib.FetchCentre();
+		/* Fetch availability[or]center details */
+		Response fetchCenter = preRegLib.FetchCentre();
 
-                             /* Book An Appointment for the available data */
-                             Response bookAppointmentResponse = preRegLib.BookAppointment( fetchCenter, preId.toString());
+		/* Book An Appointment for the available data */
+		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 
-                             
-                             
-                             switch (val) {
+		switch (val) {
 
-                             case "BookingAppointment_smoke":
+		case "BookingAppointment_smoke":
 
-                                           outerKeys.add("responsetime");
-                                           innerKeys.add("preRegistrationId");
-                                           status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
-                                           
-                             
-                                           break;
-                             case "BookAnAppointmentByPassingInvalidPreRegistrationId":
-                                           String preRegBookingAppointmentURI=preReg_URI+preId;
-                                           
-                                           
-                             Response response = applicationLibrary.postRequest(actualRequest, preRegBookingAppointmentURI);
-                             
-                             outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+			break;
+		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
+			String preRegBookingAppointmentURI = preReg_URI + preId;
 
-                             
-                             break;
+			Response response = applicationLibrary.postRequest(actualRequest, preRegBookingAppointmentURI);
 
-                             case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
-                                           
-                                           preRegLib.updateStatusCode("Consumed", preId);
-                                           /* Fetch availability[or]center details */
-                                           Response fetchCen = preRegLib.FetchCentre();
-           
-                                           /* Book An Appointment for the available data */
-                                           Response bookAppointmentRes = preRegLib.BookAppointment( fetchCen, preId.toString());
-                                           outerKeys.add("responsetime");
-                                           innerKeys.add("preRegistrationId");
-                                           status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
-                                           break;
-         case "cond4":
-                                           
-               String preRegBookingAppURI=preReg_URI+"ABCD";
-                                          
-                                           
-                             Response res = applicationLibrary.postRequest(actualRequest, preRegBookingAppURI);
-                                           
-                             outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+			break;
 
-                                           break;
-         case "cond5":
-                                          
-               String preRegBookAppURI=preReg_URI+preId;
-                                          
-                                           
-                             Response resp = applicationLibrary.postRequest(actualRequest, preRegBookAppURI);
-                                           outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
+		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
 
-                                           break;
-         case "cond6":
-                                           
-               String preRegiBookAppURI=preReg_URI+preId;
-                                          
-                                           
-                             Response respo = applicationLibrary.postRequest(actualRequest, preRegiBookAppURI);
-                             outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(respo, Expectedresponse, outerKeys, innerKeys);
+			preRegLib.updateStatusCode("Consumed", preId);
+			/* Fetch availability[or]center details */
+			Response fetchCen = preRegLib.FetchCentre();
 
-                                           break;   
-         case "cond7":
-                                           
-               String preRegisBookAppURI=preReg_URI+preId;
-                                          
-                                           
-                             Response respon = applicationLibrary.postRequest(actualRequest, preRegisBookAppURI);
-                             outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(respon, Expectedresponse, outerKeys, innerKeys);
+			/* Book An Appointment for the available data */
+			Response bookAppointmentRes = preRegLib.BookAppointment(fetchCen, preId.toString());
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
-                                           break;   
-                                           
-                                           
-         case "cond8":
-                                           
-               String preRegistBookAppURI=preReg_URI+preId;
-                                          
-                                           
-                             Response respons = applicationLibrary.postRequest(actualRequest, preRegistBookAppURI);
-                             outerKeys.add("responsetime");
-                             innerKeys.add("preRegistrationId");
-                             status = AssertResponses.assertResponses(respons, Expectedresponse, outerKeys, innerKeys);
+			break;
+		case "cond4":
 
-                                           break;
-                                           
-                             
+			String preRegBookingAppURI = preReg_URI + "ABCD";
 
-                             default:
+			Response res = applicationLibrary.postRequest(actualRequest, preRegBookingAppURI);
 
-                                           
-                                           break;
-                             }
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
 
-                             if (status) {
-                                           finalStatus = "Pass";
-                                           softAssert.assertAll();
-                                           object.put("status", finalStatus);
-                                           arr.add(object);
-                             } else {
-                                           finalStatus = "Fail";
-                             }
+			break;
+		case "cond5":
 
-                             boolean setFinalStatus = false;
+			String preRegBookAppURI = preReg_URI + preId;
 
-                             setFinalStatus = finalStatus.equals("Pass") ? true : false;
+			Response resp = applicationLibrary.postRequest(actualRequest, preRegBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
 
-                             Verify.verify(setFinalStatus);
-                             softAssert.assertAll();
+			break;
+		case "cond6":
 
-              }
+			String preRegiBookAppURI = preReg_URI + preId;
 
-              /**
-              * Writing output into configpath
-              * 
-               * @throws IOException
-              * @throws NoSuchFieldException
-              * @throws SecurityException
-              * @throws IllegalArgumentException
-              * @throws IllegalAccessException
-              */
+			Response respo = applicationLibrary.postRequest(actualRequest, preRegiBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respo, Expectedresponse, outerKeys, innerKeys);
 
-              @AfterClass
-              public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-                                           IllegalAccessException {
+			break;
+		case "cond7":
 
-                             String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
+			String preRegisBookAppURI = preReg_URI + preId;
 
-                             try (FileWriter file = new FileWriter(configPath)) {
-                                           file.write(arr.toString());
-                                           logger.info("Successfully updated Results to " + outputFile);
-                             }
+			Response respon = applicationLibrary.postRequest(actualRequest, preRegisBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respon, Expectedresponse, outerKeys, innerKeys);
 
-                             String source = "src/test/resources/" + folderPath + "/";
-                             CommonLibrary.backUpFiles(source, folderPath);
+			break;
 
-                             /*
-                             * Add generated PreRegistrationId to list to be Deleted from DB
-                             * AfterSuite
-                             */
+		case "cond8":
 
-                             preIds.add(preId);
+			String preRegistBookAppURI = preReg_URI + preId;
 
-              }
+			Response respons = applicationLibrary.postRequest(actualRequest, preRegistBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respons, Expectedresponse, outerKeys, innerKeys);
 
-              /**
-              * Writing test case name into testng
-              * 
-               * @param result
-              */
-              @AfterMethod(alwaysRun = true)
-              public void setResultTestName(ITestResult result) {
-                             try {
-                                           Field method = TestResult.class.getDeclaredField("m_method");
-                                           method.setAccessible(true);
-                                           method.set(result, result.getMethod().clone());
-                                           BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-                                           Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-                                           f.setAccessible(true);
-                                           f.set(baseTestMethod, BookingAppointment.testCaseName);
-                             } catch (Exception e) {
-                                           Reporter.log("Exception : " + e.getMessage());
-                             }
-              }
+			break;
 
-              /**
-              * Declaring the Booking Appointment Resource URI and getting the test case
-              * name
-              * 
-               * @param result
-              */
-              @BeforeMethod(alwaysRun = true)
-              public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-                             JSONObject object = (JSONObject) testdata[2];
-                             testCaseName = object.get("testCaseName").toString();
+		default:
 
-                             /**
-                             * Booking Appointment Resource URI
-                             */
+			break;
+		}
 
-                             preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
-                             authToken=preRegLib.getToken();
-              }
+		if (status) {
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
 
-              @Override
-              public String getTestName() {
-                             return this.testCaseName;
-              }
+		boolean setFinalStatus = false;
+
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
+
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
+
+	}
+
+	/**
+	 * Writing output into configpath
+	 * 
+	 * @throws IOException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+
+	@AfterClass
+	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+			IllegalAccessException {
+
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
+
+		try (FileWriter file = new FileWriter(configPath)) {
+			file.write(arr.toString());
+			logger.info("Successfully updated Results to " + outputFile);
+		}
+
+		String source = "src/test/resources/" + folderPath + "/";
+		CommonLibrary.backUpFiles(source, folderPath);
+
+		/*
+		 * Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		 */
+
+	/*	preIds.add(preId);*/
+
+	}
+
+	/**
+	 * Writing test case name into testng
+	 * 
+	 * @param result
+	 */
+	@AfterMethod(alwaysRun = true)
+	public void setResultTestName(ITestResult result) {
+		try {
+			Field method = TestResult.class.getDeclaredField("m_method");
+			method.setAccessible(true);
+			method.set(result, result.getMethod().clone());
+			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(baseTestMethod, BookingAppointment.testCaseName);
+		} catch (Exception e) {
+			Reporter.log("Exception : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Declaring the Booking Appointment Resource URI and getting the test case name
+	 * 
+	 * @param result
+	 */
+	@BeforeMethod(alwaysRun = true)
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+		testCaseName = object.get("testCaseName").toString();
+
+		/**
+		 * Booking Appointment Resource URI
+		 */
+
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
+		authToken = preRegLib.getToken();
+	}
+
+	@Override
+	public String getTestName() {
+		return this.testCaseName;
+	}
 }

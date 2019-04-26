@@ -126,6 +126,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_translitrationRequestURI;
 	private static String invalidateToken_URI;
 	private static String preReg_GetDocByDocId;
+	private static String preReg_CancelAppointmenturi;
 	private static String preReg_RetriveBookedPreIdsByRegId;
 	private static String preReg_GetPreRegistrationConfigData;
 	private static String preReg_BookingAppointmenturi;
@@ -727,13 +728,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		List<String> appointmentDetails = new ArrayList<>();
 		String date = getDate(-1);
 
-		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[19].fromTime");
+		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 		appointmentDetails.add(date);
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[19].fromTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime").toString());
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[19].toTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].toTime").toString());
 		return appointmentDetails;
 	}
 
@@ -1108,7 +1109,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String appDate = null;
 		String timeSlotFrom = null;
 		String timeSlotTo = null;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
 		testSuite = "BookingAppointment/BookingAppointment_smoke";
 		JSONObject object = null;
 		request = getRequest(testSuite);
@@ -1126,19 +1126,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("time_slot_from", timeSlotFrom);
 				object.put("time_slot_to", timeSlotTo);
 				object.put("preRegistrationId", preID);
-				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
 				request.replace(key, objArr);
 				request.put("requesttime", getCurrentDate());
-
 			}
 		}
 
 		System.out.println("Request::Value Of book App::" + request.toString());
 
-		preReg_BookingAppointmenturi = preReg_BookingAppointmenturi + preID;
-		response = applnLib.postRequest(request, preReg_BookingAppointmenturi);
+		String preReg_BookingAppURI = preReg_BookingAppointmentURI + preID;
+		response = applnLib.postRequest(request, preReg_BookingAppURI);
 		return response;
 	}
 
@@ -1283,7 +1281,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response CancelBookingAppointment(String preID) {
 
-		String preReg_CancelAppURI = preReg_CancelAppointmentURI + preID;
+		String preReg_CancelAppURI = preReg_CancelAppointmenturi + preID;
 		response = applnLib.putRequest_WithoutBody(preReg_CancelAppURI);
 		return response;
 	}
@@ -1925,6 +1923,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_translitrationRequestURI = commonLibrary.fetch_IDRepo().get("preReg_translitrationRequestURI");
 		invalidateToken_URI = commonLibrary.fetch_IDRepo().get("invalidateToken_URI");
 		preReg_GetDocByDocId = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
+		preReg_CancelAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmenturi");
 		preReg_RetriveBookedPreIdsByRegId = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
 		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
