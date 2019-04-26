@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -116,7 +117,10 @@ public class VirusScannerStage extends MosipVerticleManager {
 		String extension = env.getProperty("registration.processor.packet.ext");
 		String encryptedPacketPath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator
 				+ registrationId + extension;
-		File encryptedFile = new File(encryptedPacketPath);
+		
+		String filepath=env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString());
+		File encryptedFile=FileUtils.getFile(filepath, registrationId+extension);
+		//File encryptedFile = new File(encryptedPacketPath);
 		boolean isEncryptedFileCleaned;
 		boolean isUnpackedFileCleaned;
 
@@ -127,7 +131,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
-			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
+			isEncryptedFileCleaned =virusScannerService.scanFile(encryptedPacketPath);
 			if (isEncryptedFileCleaned) {
 				decryptedData = decryptor.decrypt(encryptedPacket, registrationId);
 
@@ -138,7 +142,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 						+ File.separator + registrationId;
 
 				ZipUtils.unZipDirectory(decryptedPacketPath, unpackedPacketPath);
-				isUnpackedFileCleaned = virusScannerService.scanFolder(unpackedPacketPath);
+				isUnpackedFileCleaned =virusScannerService.scanFolder(unpackedPacketPath);
 
 				if (isUnpackedFileCleaned) {
 					sendToPacketUploaderStage(registrationStatusDto);
