@@ -54,7 +54,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 	 * @see io.mosip.registration.service.PublicKeySync#getPublicKey()
 	 */
 	@Override
-	synchronized public ResponseDTO getPublicKey(String triggerPoint) {
+	public synchronized ResponseDTO getPublicKey(String triggerPoint) {
 
 		LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into get public key method.....");
@@ -128,7 +128,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 					"Calling public key rest call.....");
 
 			LinkedHashMap<String, Object> publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, "system");
+					.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, triggerPoint);
 
 			if (null != publicKeyResponse && publicKeyResponse.size() > 0
 					&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
@@ -155,12 +155,12 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 						"Public key sync succesfull...");
 			} else {
 
-				responseDTO = setErrorResponse(responseDTO, publicKeyResponse.size() > 0
+				responseDTO = setErrorResponse(responseDTO, (null != publicKeyResponse && publicKeyResponse.size() > 0)
 						? ((List<LinkedHashMap<String, String>>) publicKeyResponse.get(RegistrationConstants.ERRORS))
 								.get(0).get(RegistrationConstants.ERROR_MSG)
 						: "Public key Sync Restful service error", null);
 				LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						(publicKeyResponse.size() > 0
+						((null != publicKeyResponse && publicKeyResponse.size() > 0)
 								? ((List<LinkedHashMap<String, String>>) publicKeyResponse
 										.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
 								: "Public key Sync Restful service error"));
