@@ -310,7 +310,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = ApplicationContext.map();
+			setBaseGlobalMap(ApplicationContext.map());
 		}
 
 		return (String) applicationMap.get(key);
