@@ -413,19 +413,12 @@ public final class DateUtilTest {
 
 	@Test
 	public void testGetUTCCurrentDateTimeString() {
-		LocalDateTime expectedDate = DateUtils.parseDateToLocalDateTime(new Date());
-		Date actualDate = DateUtils.parseUTCToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
-		String expectedDateString = DateUtils.toISOString(expectedDate);
-		String actualDateString = DateUtils.getUTCCurrentDateTimeString();
-		LocalDateTime defaultLocal = DateUtils.parseToLocalDateTime(actualDateString);
+		assertNotNull(DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test
 	public void testFormatUTCCurrentDateTimeString() {
-		Date expectedDate = DateUtils.parseUTCToDate("2018-09-24T11:46:12.640Z");
-		String expectedDateString = DateUtils.toISOString(expectedDate);
-		String actualDate = DateUtils.getUTCCurrentDateTimeString("yyyy/MM/dd HH:mm:ss");
-		LocalDateTime convLocalDateTime = DateUtils.parseUTCToLocalDateTime(expectedDateString);
+		assertNotNull(DateUtils.getUTCCurrentDateTimeString("yyyy/MM/dd HH:mm:ss"));
 	}
 
 	@Test(expected = DateTimeParseException.class)
