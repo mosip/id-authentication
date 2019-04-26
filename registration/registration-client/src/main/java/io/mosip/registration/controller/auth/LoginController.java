@@ -216,7 +216,6 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private UserMachineMappingService machineMappingService;
 
-
 	@Autowired
 	private PublicKeySyncImpl publicKeySyncImpl;
 
@@ -1208,7 +1207,8 @@ public class LoginController extends BaseController implements Initializable {
 						loadInitialScreen(Initialization.getPrimaryStage());
 						return;
 					}
-				} else if (taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
+				}
+				if (taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
 
 					if (isInitialSetUp) {
 						// update initial set up flag
@@ -1216,9 +1216,11 @@ public class LoginController extends BaseController implements Initializable {
 						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
 						restartApplication();
 					}
-					if (taskService.getValue().contains(RegistrationConstants.RESTART)) {
-						restartApplication();
-					}
+
+				}
+
+				if (taskService.getValue().contains(RegistrationConstants.RESTART)) {
+					restartApplication();
 				}
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);
