@@ -45,6 +45,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * 
@@ -81,6 +82,9 @@ public class KycAuthRequestValidatorTest {
 
 	@Mock
 	VidValidatorImpl vidValidator;
+	
+	@Mock
+	PinValidatorImpl pinValidator;
 
 	@Autowired
 	Environment env;
@@ -417,7 +421,6 @@ public class KycAuthRequestValidatorTest {
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 

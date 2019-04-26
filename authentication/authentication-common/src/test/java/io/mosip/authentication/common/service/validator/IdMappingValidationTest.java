@@ -43,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -51,6 +52,9 @@ public class IdMappingValidationTest {
 
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
+
+	@Mock
+	private PinValidatorImpl pinValidator;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;
@@ -66,6 +70,9 @@ public class IdMappingValidationTest {
 
 	@Autowired
 	private Environment env;
+
+	@Mock
+	private PinValidatorImpl pinValidatorImpl;
 
 	/**
 	 * The Rest Helper
@@ -108,7 +115,6 @@ public class IdMappingValidationTest {
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -139,7 +145,7 @@ public class IdMappingValidationTest {
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
-		request.setOtp("");
+		request.setOtp(null);
 		authRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
@@ -155,10 +161,11 @@ public class IdMappingValidationTest {
 		requestedAuth.setPin(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
-		request.setStaticPin("");
+		request.setStaticPin(null);
 		authRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
+		Mockito.when(pinValidator.validatePin(Mockito.anyString())).thenReturn(false);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				errors);
 		assertTrue(errors.hasErrors());
@@ -178,7 +185,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -197,7 +203,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors.hasErrors());
 		assertTrue(errors.hasErrors());
 	}
 

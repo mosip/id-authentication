@@ -48,6 +48,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -65,6 +66,9 @@ public class BaseAuthRequestValidatorTest {
 	/** The validator. */
 	@Mock
 	private SpringValidatorAdapter validator;
+	
+	@Mock
+	private PinValidatorImpl pinValidator;
 
 	/** The auth request DTO. */
 	@Mock
