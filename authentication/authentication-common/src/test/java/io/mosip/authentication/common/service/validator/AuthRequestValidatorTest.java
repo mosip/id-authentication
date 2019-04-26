@@ -47,6 +47,7 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * This class validates the AuthRequestValidator
@@ -62,6 +63,9 @@ public class AuthRequestValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
+
+	@Mock
+	private PinValidatorImpl pinValidator;
 
 	@Mock
 	Errors error;
@@ -100,7 +104,6 @@ public class AuthRequestValidatorTest {
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
 	}
-
 
 	@Test
 	public void testValidUin() {
