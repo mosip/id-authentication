@@ -296,8 +296,9 @@ public class RestHelper {
 			return Mono.just(responseEntity.getBody());
 		} catch (RestClientResponseException e) {
 			if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
-				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
-						e.getResponseBodyAsString());
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
+						"request failed with status code :" + e.getRawStatusCode() + " -- For request -> " + request,
+						"\n\n" + e.getResponseBodyAsString());
 				throw new AuthenticationException(
 						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString(),
 						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString(),

@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	private Map<String, Object> applicationMap;
+	private static Map<String, Object> applicationMap=new HashMap<>();
 
 	/**
 	 * create error response.
@@ -309,7 +310,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = applicationContext.map();
+			setBaseGlobalMap(ApplicationContext.map());
 		}
 
 		return (String) applicationMap.get(key);
@@ -330,7 +331,16 @@ public class BaseService {
 		statusDTO.setPacketPath(registration.getAckFilename());
 		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
 		statusDTO.setUploadStatus(registration.getFileUploadStatus());
+		statusDTO.setPacketStatus(registration.getStatusCode());
 		return statusDTO;
 	}
+	
+	public static void setBaseGlobalMap(Map<String,Object> map) {
+		applicationMap = map;
+	}
 
+	public static Map<String,Object> getBaseGlobalMap() {
+		return applicationMap;
+	}
+	
 }

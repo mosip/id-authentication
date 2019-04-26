@@ -87,8 +87,8 @@
                                         <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="onboardPageBioTitle" text="%fingerprintexception" GridPane.halignment="CENTER" />
-                                          <Label styleClass="onboardPageBioTitle" text="%irisexception" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                          <Label fx:id="fpExceptionLabel" styleClass="onboardPageBioTitle" text="%fingerprintexception" GridPane.halignment="CENTER" />
+                                          <Label fx:id="irisExceptionLabel" styleClass="onboardPageBioTitle" text="%irisexception" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                                        </children>
                                     </GridPane>
                                     <GridPane alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
@@ -321,21 +321,6 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <HBox spacing="2.0" GridPane.rowIndex="5">
-                                       <children>
-                                          <Label styleClass="onboardInfoDetails" text="%clicktomarktheparticular">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../images/infoSymbol.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Label>
-                                          <Label styleClass="onboardInfoDetailsName" text="%finger/Iris" />
-                                          <Label styleClass="onboardInfoDetails" text="%asException" />
-                                       </children>
-                                    </HBox>
                                     <GridPane GridPane.rowIndex="6">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />

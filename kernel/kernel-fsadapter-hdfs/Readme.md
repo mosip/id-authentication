@@ -26,22 +26,22 @@ mosip.kernel.fsadapter.hdfs.user-name=mosipuser
 mosip.kernel.fsadapter.hdfs.authentication-enabled=false 
 
 # If HDFS is security is configured with Kerberos, Key Distribution Center domain
-mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM
+mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.EXAMPLE.COM
 
-# Password for hdfs user
-mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123
+#keytab file path, must be set if authentication-enable is true
+#read keytab file both classpath and physical path ,append appropriate prefix
+#for classpath prefix classpath:mosip.keytab
+#for physical path prefix file:/home/keys/mosip.keytab
+mosip.kernel.fsadapter.hdfs.keytab-file=classpath:mosip.keytab
 
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn
-
-
-
 ```
 
 #### To check files in hdfs, follow these steps:
 
-1. Login to hdfs name-node (104.211.240.243) using default username (madmin) & privatekey
-2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password (Mosip@dev123) 
+1. Login to hdfs name-node (ip-address) using default username & privatekey
+2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password) 
 ```
 > kinit ${username}
 ```

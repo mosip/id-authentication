@@ -1,16 +1,27 @@
 package io.mosip.kernel.uingenerator;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.util.ConfigUtil;
@@ -23,6 +34,9 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
 /**
  * Uin Generator Vertx Application
@@ -31,7 +45,6 @@ import io.vertx.core.json.JsonObject;
  * @author Urvil Joshi
  * @author Megha Tanga
  * @author Sagar Mahapatra
- * 
  * @since 1.0.0
  *
  */
@@ -41,8 +54,37 @@ public class UinGeneratorVertxApplication {
 
 	/**
 	 * The field for Logger
+	 * 
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorVertxApplication.class);
+	private static Logger LOGGER;
+
+	/**
+	 * Server context path.
+	 */
+	@Value("${server.servlet.path}")
+	private String contextPath;
+
+	/**
+	 * This method create or update swagger json for swagger ui after service start.
+	 */
+	//@PostConstruct
+	private void swaggerJSONFileUpdate() {
+		try {
+			TemplateManager templateManager;
+			URL url = this.getClass().getClassLoader().getResource(UinGeneratorConstant.SWAGGER_UI_JSON_PATH);
+			templateManager = new TemplateManagerBuilderImpl().build();
+			Map<String, Object> map = new HashMap<>();
+			map.put("servletpath", contextPath);
+			InputStream is = this.getClass().getClassLoader()
+					.getResourceAsStream(UinGeneratorConstant.SWAGGER_JSON_TEMPLATE);
+			InputStream out = templateManager.merge(is, map);
+			String merged = IOUtils.toString(out, StandardCharsets.UTF_8.name());
+			FileUtils.writeStringToFile(new File(url.toString()), merged, StandardCharsets.UTF_8.name());
+
+		} catch (Exception e) {
+			LOGGER.warn(e.getMessage());
+		}
+	}
 
 	/**
 	 * main method for the application
@@ -50,6 +92,8 @@ public class UinGeneratorVertxApplication {
 	 * @param args the argument
 	 */
 	public static void main(String[] args) {
+		System.setProperty("vertx.logger-delegate-factory-class-name", SLF4JLogDelegateFactory.class.getName());
+		LOGGER = LoggerFactory.getLogger(UinGeneratorVertxApplication.class);
 		loadPropertiesFromConfigServer();
 	}
 

@@ -38,5 +38,14 @@ public class PolicySyncDAOTest {
 		policySyncDAOImpl.updatePolicy(keyStore);
 
 	}
+	
+	@Test
+	public void getPublicKey() {
+		KeyStore keyStore = new KeyStore();
+		keyStore.setCreatedBy("createdBy");
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		policySyncDAOImpl.getPublicKey(Mockito.anyString());
+
+	}
 
 }

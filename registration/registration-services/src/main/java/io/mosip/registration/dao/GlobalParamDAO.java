@@ -64,5 +64,12 @@ public interface GlobalParamDAO {
 	 * @return the global param
 	 */
 	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable);
+	
+	/**
+	 * Update Global Param
+	 * @param globalParam to be updated
+	 * @return global Param
+	 */
+	GlobalParam update(GlobalParam globalParam);
 
 }

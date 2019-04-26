@@ -103,7 +103,6 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 							+ packetToBeSynch.getClientStatusComments());
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
 					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
@@ -171,6 +170,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketServerStatus(reg.getServerStatusCode());
 			packetStatusDTO.setPacketPath(reg.getAckFilename());
 			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
+			packetStatusDTO.setPacketStatus(reg.getStatusCode());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;

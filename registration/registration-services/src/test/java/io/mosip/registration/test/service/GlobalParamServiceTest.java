@@ -214,5 +214,17 @@ public class GlobalParamServiceTest {
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 	}
+	
+	@Test
+	public void updatetest() {
+		GlobalParam globalParam=new GlobalParam();
+		GlobalParamId globalParamId=new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.INITIAL_SETUP);
+		globalParamId.setLangCode("en");
+		globalParam.setGlobalParamId(globalParamId);
+		Mockito.when(globalParamDAOImpl.update(globalParam)).thenReturn(globalParam);
+		
+		gloablContextParamServiceImpl.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
+	}
 
 }
