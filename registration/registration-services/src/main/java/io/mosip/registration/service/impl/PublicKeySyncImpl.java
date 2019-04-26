@@ -130,8 +130,6 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			LinkedHashMap<String, Object> publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, "system");
 
-			System.out.println(publicKeyResponse);
-
 			if (null != publicKeyResponse && publicKeyResponse.size() > 0
 					&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
