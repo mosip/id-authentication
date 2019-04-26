@@ -18,6 +18,7 @@ public class PacketStatusDTO {
 	private String packetPath;
 	private String uploadStatus;
 	private String clientStatusComments;
+	private String packetStatus;
 
 	public String getFileName() {
 		return fileName;
@@ -78,5 +79,14 @@ public class PacketStatusDTO {
 	public void setStatus(Boolean status) {
 		this.status.set(status);
 	}
+
+	public String getPacketStatus() {
+		return packetStatus;
+	}
+
+	public void setPacketStatus(String packetStatus) {
+		this.packetStatus = packetStatus;
+	}
+	
 	
 }

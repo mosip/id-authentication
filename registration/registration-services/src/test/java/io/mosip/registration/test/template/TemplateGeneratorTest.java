@@ -1,6 +1,7 @@
 package io.mosip.registration.test.template;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.awt.image.BufferedImage;
@@ -126,7 +127,7 @@ public class TemplateGeneratorTest {
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
 
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNotNull(response.getSuccessResponseDTO());
+		assertNull(response.getSuccessResponseDTO());
 	}
 
 	@Test

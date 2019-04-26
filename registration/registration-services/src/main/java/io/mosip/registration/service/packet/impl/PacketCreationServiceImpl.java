@@ -336,9 +336,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							(int) Math.round(applicantDocumentDTO.getQualityScore()),
 							RegistrationConstants.FACE_EXCEPTION);
 				} else {
-					createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
-							(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
-							RegistrationConstants.VALIDATION_TYPE_FACE);
+					if(!(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+						createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
+								(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
+								RegistrationConstants.VALIDATION_TYPE_FACE);
+					}
 				}
 			}
 
@@ -402,7 +404,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			Map<String, String> birUUIDs) {
 		if (isListNotEmpty(fingerprints)) {
 			for (FingerprintDetailsDTO fingerprint : fingerprints) {
-				if (personType.equals(RegistrationConstants.INDIVIDUAL)
+				if ((personType.equals(RegistrationConstants.INDIVIDUAL) || personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
 						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());

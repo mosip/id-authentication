@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service.packet;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -233,4 +234,17 @@ public class PreRegistrationDataSyncServiceTest {
 		}
 	}
 
+	@Test
+	public void getPreRegistrationRecordForDeletionTest() throws java.io.IOException {
+
+		PreRegistrationList preRegistrationList = new PreRegistrationList();
+		preRegistrationList.setId("123456789");
+		preRegistrationList.setPreRegId("987654321");
+		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(preRegistrationList);
+		PreRegistrationList preRegistration =preRegistrationDataSyncServiceImpl.getPreRegistrationRecordForDeletion("987654321");
+
+		assertTrue(preRegistration.getId().equals("123456789"));
+		assertTrue(preRegistration.getPreRegId().equals("987654321"));
+		
+	}
 }

@@ -295,6 +295,11 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+		<dependency>
+		    <groupId>com.github.microsoft</groupId>
+		    <artifactId>TSS.Java</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -317,7 +322,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.20</version>
 						<configuration>
-							<skipTests>false</skipTests>
+							<!-- <skipTests>false</skipTests> -->
 							<!-- Excludes integration tests when unit tests are run -->
 							<excludes>
 								<exclude>**/integrationtest/*.java</exclude>
