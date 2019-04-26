@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.LoggerConstants.PACKET_HANDLER;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_2;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_3;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_4;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +49,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PolicySyncService;
@@ -164,7 +167,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
-	
+
 	@FXML
 	ProgressIndicator progressIndicator;
 
@@ -209,7 +212,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			lostUINPane.setVisible(false);
 			// vHolder.setManaged(false);
 		}
-		
+
 	}
 
 	/**
@@ -349,6 +352,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
 			templateContent
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 			String ackTemplateText = templateContent.toString();
 
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
@@ -639,10 +644,25 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			try {
 
+				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
 					syncAndUploadPacket();
+				}
+
+				// Deletes the pre registration Data after creation of registration Packet.
+				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
+						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
+
+					ResponseDTO responseDTO = new ResponseDTO();
+					List<PreRegistrationList> preRegistrationLists = new ArrayList<>();
+					PreRegistrationList preRegistrationList = preRegistrationDataSyncService
+							.getPreRegistrationRecordForDeletion(
+									getRegistrationDTOFromSession().getPreRegistrationId());
+					preRegistrationLists.add(preRegistrationList);
+					preRegistrationDataSyncService.deletePreRegRecords(responseDTO, preRegistrationLists);
+
 				}
 
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
@@ -728,7 +748,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
-			
+
 			getScene(root);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
@@ -847,7 +867,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.ifPresent(message -> generateAlert("ERROR", alertMsg));
 
 	}
-	
+
 	public ProgressIndicator getProgressIndicator() {
 		return progressIndicator;
 	}

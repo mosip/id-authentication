@@ -37,7 +37,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Component
 public class RegistrationUpdate {
 
-	
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
@@ -63,8 +62,12 @@ public class RegistrationUpdate {
 	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
+		try {
+			return !getCurrentVersion().equals(getLatestVersion());
+		} catch (RuntimeException runtimeException) {
+			return false;
+		}
 
-		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {

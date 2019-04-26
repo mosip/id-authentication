@@ -10,9 +10,10 @@ import io.mosip.registration.entity.KeyStore;
  * @since 1.0.0
  *
  */
-public interface PolicySyncRepository extends BaseRepository<KeyStore, String>{
-	
+public interface PolicySyncRepository extends BaseRepository<KeyStore, String> {
+
 	KeyStore findFirst1ByOrderByValidTillDtimesDesc();
-	
+
+	KeyStore findByRefIdOrderByValidTillDtimesDesc(String refId);
 
 }

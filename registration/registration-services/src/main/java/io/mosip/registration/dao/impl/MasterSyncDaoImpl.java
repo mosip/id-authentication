@@ -66,7 +66,6 @@ import io.mosip.registration.entity.AppAuthenticationMethod;
 import io.mosip.registration.entity.AppDetail;
 import io.mosip.registration.entity.AppRolePriority;
 import io.mosip.registration.entity.ApplicantValidDocument;
-import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
 import io.mosip.registration.entity.BlacklistedWords;
@@ -74,7 +73,6 @@ import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
-import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
@@ -114,7 +112,6 @@ import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.AppDetailRepository;
 import io.mosip.registration.repositories.AppRolePriorityRepository;
 import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
-import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
@@ -125,7 +122,6 @@ import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
-import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
 import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
@@ -167,10 +163,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private SyncJobControlRepository syncStatusRepository;
 
-	/** Object for Sync Application Repository. */
-	@Autowired
-	private ApplicationRepository applicationRepository;
-
 	/** Object for Sync Biometric Attribute Repository. */
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
@@ -206,10 +198,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync Gender Type Repository. */
 	@Autowired
 	private GenderRepository genderRepository;
-
-	/** Object for Sync Holiday Repository. */
-	@Autowired
-	private HolidayRepository holidayRepository;
 
 	/** Object for Sync Id Type Repository. */
 	@Autowired
@@ -427,13 +415,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			languageRepository.saveAll(masterLangauge);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Application details syncing....");
-
-			List<Application> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
-					Application.class);
-			applicationRepository.saveAll(masterApplicationDtoEntity);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric Type details syncing....");
 
 			List<BiometricType> masterBiometricTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterBiometricTypeDto,
@@ -487,11 +468,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					"Gender details syncing....");
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Holiday details syncing....");
-			List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
-			holidayRepository.saveAll(masterHolidaysDtoEntity);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"IdType details syncing....");

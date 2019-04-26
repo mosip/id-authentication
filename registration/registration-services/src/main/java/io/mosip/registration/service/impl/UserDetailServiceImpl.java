@@ -56,7 +56,6 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * 
 	 * @see io.mosip.registration.service.UserDetailService#save()
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized ResponseDTO save(String triggerPoint) {
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -79,11 +78,10 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			try {
 
-				Object userDetail = getUsrDetails(regCenterId, triggerPoint);
+				LinkedHashMap<String, Object> userDetailSyncResponse = getUsrDetails(regCenterId, triggerPoint);
 
-				LinkedHashMap<String, Object> userDetailSyncResponse = (LinkedHashMap<String, Object>) userDetail;
-
-				if (null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (userDetailSyncResponse.size() > 0
+						&& null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
 					String jsonString = new ObjectMapper().writeValueAsString(
 							userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
@@ -137,14 +135,15 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	@SuppressWarnings("unchecked")
-	private Object getUsrDetails(String regCentrId, String triggerPoint) throws RegBaseCheckedException {
+	private LinkedHashMap<String, Object> getUsrDetails(String regCentrId, String triggerPoint)
+			throws RegBaseCheckedException {
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into user detail rest calling method");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
-		Object userDetail = null;
+		LinkedHashMap<String, Object> userDetailResponse = null;
 
 		// Setting uri Variables
 
@@ -153,10 +152,8 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 		try {
 
-			userDetail = serviceDelegateUtil.get(RegistrationConstants.USER_DETAILS_SERVICE_NAME, requestParamMap, true,
-					triggerPoint);
-
-			LinkedHashMap<String, Object> userDetailResponse = (LinkedHashMap<String, Object>) userDetail;
+			userDetailResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+					.get(RegistrationConstants.USER_DETAILS_SERVICE_NAME, requestParamMap, true, triggerPoint);
 
 			if (null != userDetailResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
@@ -168,9 +165,11 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
-				errorResponseDTO.setMessage(
-						((List<LinkedHashMap<String, String>>) userDetailResponse.get(RegistrationConstants.ERRORS))
-								.get(0).get(RegistrationConstants.ERROR_MSG));
+
+				errorResponseDTO.setMessage(userDetailResponse.size() > 0
+						? ((List<LinkedHashMap<String, String>>) userDetailResponse.get(RegistrationConstants.ERRORS))
+								.get(0).get(RegistrationConstants.ERROR_MSG)
+						: "User Detail Restful service error");
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}
@@ -192,7 +191,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Leaving into user detail rest calling method");
 
-		return userDetail;
+		return userDetailResponse;
 	}
 
 }

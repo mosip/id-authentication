@@ -193,12 +193,13 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
-		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId())) {
+		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(), true)) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())
 								.getSuccessResponseDTO() != null) {
+							userAuthenticationTypeListValidation.remove(0);
 							userNameField = otpUserId.getText();
 							if (!isEODAuthentication) {
 								getOSIData().setSupervisorID(userNameField);
@@ -220,6 +221,7 @@ public class AuthenticationController extends BaseController implements Initiali
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
 					}
+					userAuthenticationTypeListValidation.remove(0);
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
@@ -261,6 +263,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		}
 
 		if (RegistrationConstants.SUCCESS.equals(status)) {
+			userAuthenticationTypeListValidation.remove(0);
 			userNameField = username.getText();
 			loadNextScreen();
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
@@ -284,6 +287,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
+						userAuthenticationTypeListValidation.remove(0);
 						userNameField = fpUserId.getText();
 						if (!isEODAuthentication) {
 							getOSIData().setSupervisorID(userNameField);
@@ -300,6 +304,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			if (captureAndValidateFP(fpUserId.getText())) {
+				userAuthenticationTypeListValidation.remove(0);
 				loadNextScreen();
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -322,6 +327,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateIris(fpUserId.getText())) {
+						userAuthenticationTypeListValidation.remove(0);
 						userNameField = fpUserId.getText();
 						if (!isEODAuthentication) {
 							getOSIData().setSupervisorID(userNameField);
@@ -338,6 +344,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			if (captureAndValidateIris(fpUserId.getText())) {
+				userAuthenticationTypeListValidation.remove(0);
 				loadNextScreen();
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
@@ -360,6 +367,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFace(fpUserId.getText())) {
+						userAuthenticationTypeListValidation.remove(0);
 						userNameField = fpUserId.getText();
 						if (!isEODAuthentication) {
 							getOSIData().setSupervisorID(userNameField);
@@ -376,6 +384,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			if (captureAndValidateFace(fpUserId.getText())) {
+				userAuthenticationTypeListValidation.remove(0);
 				loadNextScreen();
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
@@ -936,22 +945,19 @@ public class AuthenticationController extends BaseController implements Initiali
 		switch (userAuthenticationTypeListValidation.get(0).toUpperCase()) {
 		case RegistrationConstants.OTP:
 			validateOTP();
-			userAuthenticationTypeListValidation.remove(0);
 			break;
 		case RegistrationConstants.PWORD:
 			validatePwd();
-			userAuthenticationTypeListValidation.remove(0);
+			
 			break;
 		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			validateFingerprint();
 			break;
 		case RegistrationConstants.IRIS:
 			validateIris();
-			userAuthenticationTypeListValidation.remove(0);
 			break;
 		case RegistrationConstants.FACE:
 			validateFace();
-			userAuthenticationTypeListValidation.remove(0);
 			break;
 		default:
 

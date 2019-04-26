@@ -125,4 +125,16 @@ public class GlobalParamDAOTest {
 		GlobalParam globalParam2 = globalContextParamDAOImpl.updateSoftwareUpdateStatus(false);
 		assertEquals(globalParam2.getVal(),globalParam1.getVal());
 	}
+	
+	@Test
+	public void updatetest() {
+		GlobalParam globalParam=new GlobalParam();
+		GlobalParamId globalParamId=new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.INITIAL_SETUP);
+		globalParamId.setLangCode("en");
+		globalParam.setGlobalParamId(globalParamId);
+		Mockito.when(globalParamRepository.update(globalParam)).thenReturn(globalParam);
+		
+		assertEquals(globalContextParamDAOImpl.update(globalParam),globalParam);
+	}
 }

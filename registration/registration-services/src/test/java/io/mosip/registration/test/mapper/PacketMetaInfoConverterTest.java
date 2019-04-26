@@ -17,6 +17,7 @@ import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -43,6 +44,7 @@ public class PacketMetaInfoConverterTest {
 		cbeffBIRS.put("individualexceptionface", "fgfgf-1gyu1210-1uu13hgziu1");
 		HashMap<String, Object> sessionMap = new HashMap<>();
 		sessionMap.put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, cbeffBIRS);
+		sessionMap.put(RegistrationConstants.IS_Child, true);
 
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		SelectionListDTO selectionListDTO=new SelectionListDTO();
@@ -83,6 +85,7 @@ public class PacketMetaInfoConverterTest {
 	public void emptyObjectTest() throws Exception {
 		HashMap<String, Object> sessionMap = new HashMap<>();
 		sessionMap.put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, new HashMap<>());
+		sessionMap.put(RegistrationConstants.IS_Child, true);
 
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
@@ -94,8 +97,10 @@ public class PacketMetaInfoConverterTest {
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
 		biometricDTO.setApplicantBiometricDTO(new BiometricInfoDTO());
-		biometricDTO.setIntroducerBiometricDTO(new BiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(biometricInfoDTO);
 		biometricDTO.setOperatorBiometricDTO(new BiometricInfoDTO());
 		biometricDTO.setSupervisorBiometricDTO(new BiometricInfoDTO());
 		registrationDTO.setBiometricDTO(biometricDTO);

@@ -3,6 +3,7 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_2;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_3;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_4;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -36,8 +37,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
@@ -48,9 +47,6 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private WebView webView;
-
-	@FXML
-	private Label consent;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -68,30 +64,21 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	private Text registrationNavlabel;
 
 	@FXML
-	private RadioButton noRadio;
-
-	@FXML
-	private RadioButton yesRadio;
-
-	@FXML
 	private Button nextButton;
+
+	private String consentText;
+	
+	private StringBuilder templateContent;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		nextButton.setDisable(true);
-		yesRadio.selectedProperty().addListener((abs, old, newValue) -> {
-			noRadio.setSelected(!newValue.booleanValue());
-			nextButton.setDisable(false);
-		});
-
-		noRadio.selectedProperty().addListener((abs, old, newValue) -> {
-			yesRadio.setSelected(!newValue.booleanValue());
-			nextButton.setDisable(false);
-		});
 
 		String key = RegistrationConstants.REG_CONSENT + applicationContext.getApplicationLanguage();
+		consentText = getValueFromApplicationContext(key);
+		
+		templateContent = new StringBuilder();
 
-		consent.setText(getValueFromApplicationContext(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
@@ -157,15 +144,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	public void goToNextPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-		if (yesRadio.isSelected() || noRadio.isSelected()) {
-			if (yesRadio.isSelected()) {
-				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.YES);
-			} else {
-				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-						.setConsentOfApplicant(RegistrationConstants.NO);
-			}
-
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getConsentOfApplicant() != null) {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE, true);
@@ -184,14 +163,21 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Setting up preview content has been started");
 
-		StringBuilder templateContent = new StringBuilder();
-		String platformLanguageCode = ApplicationContext.applicationLanguage();
-		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
-		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
-		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+		if (templateContent.length() == 0) {
+			String platformLanguageCode = ApplicationContext.applicationLanguage();
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
+		}
 		String ackTemplateText = templateContent.toString();
 
 		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
+			templateGenerator.setConsentText(consentText);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
 					getRegistrationDTOFromSession(), templateManagerBuilder, RegistrationConstants.TEMPLATE_PREVIEW);
 			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
@@ -219,6 +205,11 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		if (document == null) {
 			return;
 		}
+
+		Element yes = document.getElementById(RegistrationConstants.REG_CONSENT_YES);
+		Element no = document.getElementById(RegistrationConstants.REG_CONSENT_NO);
+		((EventTarget) yes).addEventListener(RegistrationConstants.CLICK, event -> enableConsent(), false);
+		((EventTarget) no).addEventListener(RegistrationConstants.CLICK, event -> disableConsent(), false);
 
 		List<String> modifyElements = new ArrayList<>();
 		modifyElements.add(RegistrationConstants.MODIFY_DEMO_INFO);
@@ -317,9 +308,29 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-					RegistrationConstants.FINGERPRINT_CAPTURE);
+			if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.FINGERPRINT_CAPTURE);
+			} else if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.IRIS_CAPTURE);
+			} else if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						RegistrationConstants.FACE_CAPTURE);
+			}
 		}
+	}
 
+	private void enableConsent() {
+		getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.YES);
+		nextButton.setDisable(false);
+	}
+
+	private void disableConsent() {
+		getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.NO);
+		nextButton.setDisable(false);
 	}
 }

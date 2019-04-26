@@ -272,9 +272,13 @@ public class RegistrationController extends BaseController {
 							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 									outputStream);
 							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-							applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-							applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-							applicantDocumentDTO.setHasExceptionPhoto(true);
+							if((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO().setFace(exceptionPhotoInBytes);
+							} else {
+								applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+								applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+								applicantDocumentDTO.setHasExceptionPhoto(true);
+							}
 							outputStream.close();
 						} else {
 							applicantDocumentDTO.setHasExceptionPhoto(false);

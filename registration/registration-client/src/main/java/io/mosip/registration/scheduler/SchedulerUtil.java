@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -18,14 +17,34 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 /**
  * The Class SchedulerUtil.
@@ -40,21 +59,21 @@ public class SchedulerUtil extends BaseController {
 
 	/** The start time. */
 	private static long startTime = System.currentTimeMillis();
-	
+
 	/** The refresh time. */
 	private static long refreshTime;
-	
+
 	/** The session time out. */
 	private static long sessionTimeOut;
-	
-	/** The alert. */
-	private static Alert alert;
-	
+
 	/** The timer. */
 	private static Timer timer;
-	
-	
-	private static Optional<ButtonType> res = Optional.empty();
+
+	private Timeline timeline;
+	private Stage stage;
+	private boolean isShowing;
+	private PauseTransition delay;
+	private int duration;
 
 	/**
 	 * Constructor to invoke scheduler method once login success.
@@ -64,10 +83,11 @@ public class SchedulerUtil extends BaseController {
 	public void startSchedulerUtil() throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
-		alert = new Alert(AlertType.WARNING);		
 		timer = new Timer("Timer");
 		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.refreshedLoginTime());
 		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.idealTime());
+		isShowing = false;
+		duration = (int) ((sessionTimeOut - refreshTime) / 1000);
 		startTimerForSession();
 	}
 
@@ -83,31 +103,14 @@ public class SchedulerUtil extends BaseController {
 
 						long endTime = System.currentTimeMillis();
 
-						if ((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut) {
+						if (((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut)
+								&& isShowing == false) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task remainder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
-							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT, APPLICATION_NAME,
-									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT,
+									APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 							alert();
-							if (res.isPresent())
-								if (res.get().getText().equals("OK")) {
-									startTime = System.currentTimeMillis();
-									alert.close();
-									res = Optional.empty();
-								}
-						} else if ((endTime - startTime) >= sessionTimeOut) {
-							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task auto logout login called at interval of seconds "
-											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
-							auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
-									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-							alert.close();
-							stopScheduler();
-							// to clear the session object
-							SessionContext.destroySession();
-							// load login screen
-							loadLoginScreen();
 						}
 					});
 				}
@@ -122,7 +125,7 @@ public class SchedulerUtil extends BaseController {
 	/**
 	 * To find the scheduler duration to run the scheduler interval.
 	 *
-	 * @param refreshTime the refresh time
+	 * @param refreshTime    the refresh time
 	 * @param sessionTimeOut the session time out
 	 * @return the int
 	 */
@@ -136,12 +139,87 @@ public class SchedulerUtil extends BaseController {
 	/**
 	 * To show the warning alert to user about session expire.
 	 */
-	private static void alert() {
-		alert.setTitle(RegistrationUIConstants.TIMEOUT_TITLE);
-		alert.setHeaderText(RegistrationUIConstants.TIMEOUT_HEADER);
-		alert.setContentText(RegistrationUIConstants.TIMEOUT_CONTENT);
-		if (!alert.isShowing()) {
-			res = alert.showAndWait();
+	private void alert() {
+		IntegerProperty timeSeconds = new SimpleIntegerProperty(duration);
+
+		if (!isShowing) {
+			stage = new Stage();
+			stage.initStyle(StageStyle.UNDECORATED);
+			isShowing = true;
+			closeStage();
+			GridPane root = new GridPane();
+			Scene scene = new Scene(root, 340, 120);
+			Label titleLbl = new Label();
+			Label timerLabel = new Label();
+			Label initialContent = new Label();
+			Label middleContent = new Label();
+			Label endContent = new Label();
+			titleLbl.setText(RegistrationUIConstants.TIMEOUT_TITLE);
+			initialContent.setText(RegistrationUIConstants.TIMEOUT_INITIAL);
+			middleContent.setText(RegistrationUIConstants.TIMEOUT_MIDDLE);
+			endContent.setText(RegistrationUIConstants.TIMEOUT_END);
+			titleLbl.getStyleClass().addAll(RegistrationConstants.SCHEDULER_TITLE_STYLE);
+			initialContent.getStyleClass().addAll(RegistrationConstants.SCHEDULER_CONTENT_STYLE);
+			middleContent.getStyleClass().addAll(RegistrationConstants.SCHEDULER_CONTENT_STYLE);
+			endContent.getStyleClass().addAll(RegistrationConstants.SCHEDULER_CONTENT_STYLE);
+			timerLabel.getStyleClass().addAll(RegistrationConstants.SCHEDULER_TIMER_STYLE);
+			timerLabel.textProperty().bind(timeSeconds.asString());
+			VBox vbox = new VBox(20);
+			HBox title = new HBox(20);
+			HBox hbox = new HBox(20);
+			HBox hboxContent = new HBox(20);
+			hbox.setAlignment(Pos.CENTER);
+			hboxContent.setAlignment(Pos.CENTER);
+			title.getStyleClass().add(RegistrationConstants.SCHEDULER_TITLE_BORDER);
+			hbox.setPrefWidth(scene.getWidth());
+			hbox.setSpacing(3);
+			hbox.getChildren().addAll(initialContent, timerLabel, middleContent);
+			hboxContent.getChildren().add(endContent);
+			title.getChildren().add(titleLbl);
+			Button btn = new Button();
+			btn.getStyleClass().addAll(RegistrationConstants.SCHEDULER_BTN_STYLE);
+			btn.setText("OK");
+			btn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					if (stage.isShowing()) {
+						stage.close();
+						isShowing = false;
+						delay.stop();
+						setCurrentTimeToStartTime();
+					}
+				}
+			});
+
+			vbox.setSpacing(5);
+			vbox.setAlignment(Pos.CENTER);
+			vbox.setLayoutY(15);
+			vbox.getChildren().addAll(title, hbox, hboxContent, btn);
+			root.getStyleClass().add(RegistrationConstants.SCHEDULER_BORDER);
+			root.getChildren().add(vbox);
+
+			stage.setOnShowing((WindowEvent event) -> {
+				if (timeline != null) {
+					timeline.stop();
+				}
+				timeSeconds.set(duration);
+				timeline = new Timeline();
+				timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(duration), new KeyValue(timeSeconds, 0)));
+				timeline.play();
+			});
+
+			stage.setScene(scene);
+			scene.setOnKeyPressed((KeyEvent event) -> {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					stage.close();
+				}
+			});
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+			scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(fXComponents.getStage());
+			stage.resizableProperty().set(false);
+			stage.show();
 		}
 	}
 
@@ -160,4 +238,26 @@ public class SchedulerUtil extends BaseController {
 			timer.cancel();
 		}
 	}
+
+	protected void closeStage() {
+		delay = new PauseTransition(Duration.seconds((duration)));
+		delay.setOnFinished(event -> stop());
+		delay.play();
+	}
+
+	private void stop() {
+		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, "The time task auto logout login called ");
+		auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+		delay.stop();
+		stage.close();
+		// to stop scheduler
+		stopScheduler();
+		// to clear the session object
+		SessionContext.destroySession();
+		// load login screen
+		loadLoginScreen();
+		isShowing = false;
+	}
+
 }

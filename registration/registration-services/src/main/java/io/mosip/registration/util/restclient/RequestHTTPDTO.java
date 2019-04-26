@@ -24,6 +24,21 @@ public class RequestHTTPDTO {
 	private String triggerPoint;
 	private HttpHeaders httpHeaders;
 	private Object requestBody;
+	private Boolean isSignRequired;
+	
+	/**
+	 * @return the isSignRequired
+	 */
+	public Boolean getIsSignRequired() {
+		return isSignRequired;
+	}
+
+	/**
+	 * @param isSignRequired the isSignRequired to set
+	 */
+	public void setIsSignRequired(Boolean isSignRequired) {
+		this.isSignRequired = isSignRequired;
+	}
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
