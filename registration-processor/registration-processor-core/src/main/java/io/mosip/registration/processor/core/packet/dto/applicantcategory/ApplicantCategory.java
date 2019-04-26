@@ -10,7 +10,7 @@ import lombok.Data;
 @Component
 public class ApplicantCategory {
 
-	private String applicanttype;
-	private List<DocumentCategory> documentcategory;
+	private String applicantType;
+	private List<DocumentCategory> documentCategory;
 
 }

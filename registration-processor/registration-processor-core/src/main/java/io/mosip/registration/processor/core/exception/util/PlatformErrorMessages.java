@@ -121,7 +121,7 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_REGISTRATION_STATUS_NOT_EXIST(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "025",
 			"RegistrationStatusCode is null"),
-	
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
@@ -215,6 +215,17 @@ public enum PlatformErrorMessages {
 	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(
 					PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+
+	RPR_PVM_DOCUMENT_TYPE_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "008",
+			"Document type Value Invalid in Applicant Document Validation for"),
+
+	RPR_PVM_IDJSON_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "009",
+			"IDJSON is null in Applicant document validation"),
+
+	RPR_PVM_APPLICANTDOCUMENT_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"Applicant document validation failed for"),
+
+	RPR_PVM_INVALID_UIN(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011", "Invalid UIN"),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.

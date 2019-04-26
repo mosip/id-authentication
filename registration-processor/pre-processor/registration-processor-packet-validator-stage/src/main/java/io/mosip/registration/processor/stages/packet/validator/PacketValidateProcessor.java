@@ -2,12 +2,14 @@ package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -47,8 +49,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
@@ -103,7 +105,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
 
@@ -128,6 +129,9 @@ public class PacketValidateProcessor {
 
 	@Autowired
 	private Utilities utility;
+
+	@Autowired
+	ApplicantTypeDocument applicantTypeDocument;
 
 	/** The registration id. */
 	private String registrationId = "";
@@ -318,7 +322,6 @@ public class PacketValidateProcessor {
 
 		} finally {
 
-			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -352,7 +355,8 @@ public class PacketValidateProcessor {
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, NoSuchFieldException,
+			IllegalAccessException, ParseException, org.json.simple.parser.ParseException, JSONException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -377,7 +381,7 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			if (!applicantDocumentValidation(identity, registrationStatusDto))
+			if (!applicantDocumentValidation(jsonString))
 				return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
@@ -424,22 +428,15 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException {
+	private boolean applicantDocumentValidation(String jsonString)
+			throws IOException, ApisResourceAccessException, NoSuchFieldException, IllegalAccessException,
+			ParseException, org.json.simple.parser.ParseException, JSONException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		InputStream documentInfoStream = null;
-		List<Document> documentList = null;
-		documentInfoStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytes = null;
-		bytes = IOUtils.toByteArray(documentInfoStream);
-		documentList = documentUtility.getDocumentList(bytes);
 
-		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-				registrationStatusDto);
-		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(identity, documentList,
-				registrationId);
+		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(utility, env,
+				applicantTypeDocument);
+		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(registrationId, jsonString);
 
 		return isApplicantDocumentValidation;
 
