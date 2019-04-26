@@ -15,7 +15,7 @@ create table regprc.reg_manual_verification (
 	reg_id				character varying(39) not null, 	-- regprc.registration.id
 	matched_ref_id		character varying(39) not null,
 	matched_ref_type	character varying(36) not null,
-	mv_usr_id			character varying (36), 			-- master.user_detail.id
+	mv_usr_id			character varying (256), 			-- master.user_detail.id
 	matched_score      	numeric(6,3) ,
 	status_code    	character varying(36),		-- master.status_list.code
 	reason_code    	character varying(36),		-- master.reason_list.code
@@ -25,9 +25,9 @@ create table regprc.reg_manual_verification (
 	lang_code 		character varying(3) not null,	-- master.language.code
 	
 	is_active	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes 	timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp

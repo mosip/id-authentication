@@ -12,16 +12,16 @@ create schema if not exists reg
 -- table section -------------------------------------------------
 create table reg.user_role (
 
-	usr_id 		character varying (36) not null,	-- reg.user_detail.id
+	usr_id 		character varying (256) not null,	-- reg.user_detail.id
 
 	role_code 	character varying (36) not null,  	-- master.role_list.code
 
 	lang_code 	character varying (3) not null,		-- master.language.code
 	
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes  timestamp,
 	is_deleted 	boolean,
 	del_dtimes  timestamp

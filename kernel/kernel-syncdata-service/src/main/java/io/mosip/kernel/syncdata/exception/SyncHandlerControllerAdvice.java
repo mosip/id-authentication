@@ -19,6 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.utils.EmptyCheckUtils;
 
@@ -98,6 +99,14 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(CryptoManagerServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServiceException(
 			HttpServletRequest httpServletRequest, final CryptoManagerServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(SignatureUtilClientException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> signatureUtilClientException(
+			HttpServletRequest httpServletRequest, final SignatureUtilClientException exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

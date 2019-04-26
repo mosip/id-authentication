@@ -22,6 +22,7 @@ import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import org.springframework.context.annotation.Primary;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
@@ -54,6 +55,7 @@ public class CoreConfigBean {
 	}
 
 	@Bean
+	@Primary
 	public RegistrationProcessorIdentity getRegProcessorIdentityJson() {
 		return new RegistrationProcessorIdentity();
 	}

@@ -86,7 +86,7 @@ public final class ExceptionUtils {
 					validationErrorsList.add(serviceError);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// There is no Service error
 		}
 

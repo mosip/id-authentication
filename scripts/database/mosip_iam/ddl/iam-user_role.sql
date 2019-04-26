@@ -12,15 +12,15 @@ create schema if not exists iam
 -- table section -------------------------------------------------
 create table iam.user_role (
 
-	usr_id 		character varying (36) not null,	-- iam.user_detail.id
+	usr_id 		character varying (256) not null,	-- iam.user_detail.id
 	role_code 	character varying (36) not null,  	-- iam.role_list.code
 
 	lang_code 	character varying (3) not null,		-- master.language.code
 	
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes  timestamp,
 	is_deleted 	boolean,
 	del_dtimes  timestamp
