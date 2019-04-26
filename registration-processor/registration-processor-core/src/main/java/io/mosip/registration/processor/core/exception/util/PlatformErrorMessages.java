@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.core.exception.util;
 
 /**
@@ -213,8 +214,12 @@ public enum PlatformErrorMessages {
 			"Attribute Value Invalid in Master Data Validation for"),
 
 	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
-			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(
-					PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+			"Not able to access the API resource"),
+
+	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+
+	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"A Mandatory Field is missing from ID JSON for NEW registration "),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -342,6 +347,10 @@ public enum PlatformErrorMessages {
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 
 	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id cannot be empty"),
+	
+	RPR_MVS_NO_MATCH_TYPE_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "Match Type is Invalid"),
+	
+	
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -492,7 +501,14 @@ public enum PlatformErrorMessages {
 	/** The rpr sys Invocation target exception*/
 	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
 
-	/** The rpr prt pdf not generated. */
+	//Cbeff Util Exceptions
+	/** The rpr utl biometric tag match. */
+	RPR_UTL_BIOMETRIC_TAG_MATCH(PlatformConstants.RPR_UTIL + "001", "Both Files have same biometrics"),
+
+	/** The rpr utl cbeff version mismatch. */
+	RPR_UTL_CBEFF_VERSION_MISMATCH(PlatformConstants.RPR_UTIL + "002", "Both Files have different versions"),
+
+    /** The rpr prt pdf not generated. */
 	// Printing stage exceptions
 	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
 
@@ -583,7 +599,13 @@ public enum PlatformErrorMessages {
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
-
+	
+	/** invalid token present in header */
+	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
+	
+	/** Access denied for the token present*/
+	RPR_AUT_ACCESS_DENIED(PlatformConstants.RPR_AUTHENTICATION + "02", "Access Denied For Role - %s"),
+	
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
 
 	EXTERNAL_STAGE_FAILED("", "External Stage Failed");

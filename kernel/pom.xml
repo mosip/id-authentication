@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.6</version>
 	</parent>
 
 
@@ -44,6 +44,7 @@
 
 		<vertx.version>3.6.2</vertx.version>
 		<swagger.version>2.9.2</swagger.version>
+		<swagger-annotations.version>2.0.7</swagger-annotations.version>
 
 		<!-- javax -->
 		<javax.interceptor.version>1.2</javax.interceptor.version>
@@ -78,6 +79,7 @@
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		<json.version>20180813</json.version>
 
 		<!-- utilities -->
 		<commons-math3>3.6.1</commons-math3>
@@ -112,19 +114,19 @@
 		<s3mock.version>0.2.4</s3mock.version>
 		<ignite.version>2.3.0</ignite.version>
 		<findbugs.version>3.0.1</findbugs.version>
-
+        
+        <vertx.health.check.version>3.7.0</vertx.health.check.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
-		<module>kernel-core</module>
+  		<module>kernel-core</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-auth-adapter</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
-
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
@@ -139,7 +141,6 @@
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
 		<module>kernel-idvalidator-mispid</module>
-
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
@@ -156,9 +157,10 @@
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
+		<module>kernel-responsesignature-api</module>
 
 		<module>kernel-uingenerator-service</module>
-		<module>kernel-masterdata-service</module>
+ 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
@@ -175,9 +177,6 @@
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
 	</modules>
-
-
-
 
 	<dependencies>
 		<dependency>

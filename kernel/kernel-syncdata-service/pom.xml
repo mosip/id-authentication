@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.6</version>
 	</parent>
 	<artifactId>kernel-syncdata-service</artifactId>
 	<name>kernel-syncdata-service</name>
@@ -32,11 +32,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -96,6 +91,12 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-responsesignature-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

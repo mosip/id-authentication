@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
@@ -55,6 +57,10 @@ public class PacketGeneratorController {
 	@Autowired
 	private Environment env;
 
+	/** Token validator class */
+	@Autowired
+	TokenValidator tokenValidator;
+
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
 
@@ -76,13 +82,11 @@ public class PacketGeneratorController {
 	/**
 	 * Gets the status.
 	 *
-	 * @param packerGeneratorRequestDto
-	 *            the packer generator request dto
-	 * @param errors
-	 *            the errors
+	 * @param packerGeneratorRequestDto the packer generator request dto
+	 * @param errors                    the errors
 	 * @return the status
 	 * @throws RegBaseCheckedException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@PostMapping(path = "/packetgenerator/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
@@ -91,24 +95,24 @@ public class PacketGeneratorController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
-			@ApiIgnore Errors errors) throws RegBaseCheckedException, IOException {
+			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
+			throws RegBaseCheckedException, IOException {
+		tokenValidator.validate(token, "packetgenerator");
+		try {
+			PacketGeneratorValidationUtil.validate(errors);
+			PacketGeneratorResDto packerGeneratorResDto;
+			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
+			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
+		} catch (PacketGeneratorValidationException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
-				try {
-					PacketGeneratorValidationUtil.validate(errors);
-					PacketGeneratorResDto packerGeneratorResDto;
-					packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-					return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-				} catch (PacketGeneratorValidationException e) {
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
-
-				}
-			}
+		}
+	}
 
 	/**
 	 * Builds the packet generator response.
 	 *
-	 * @param packerGeneratorResDto
-	 *            the packer generator res dto
+	 * @param packerGeneratorResDto the packer generator res dto
 	 * @return the string
 	 */
 	public String buildPacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
