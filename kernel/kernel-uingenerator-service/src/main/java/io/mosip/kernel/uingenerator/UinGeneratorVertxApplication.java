@@ -67,7 +67,7 @@ public class UinGeneratorVertxApplication {
 	/**
 	 * This method create or update swagger json for swagger ui after service start.
 	 */
-	@PostConstruct
+	//@PostConstruct
 	private void swaggerJSONFileUpdate() {
 		try {
 			TemplateManager templateManager;
