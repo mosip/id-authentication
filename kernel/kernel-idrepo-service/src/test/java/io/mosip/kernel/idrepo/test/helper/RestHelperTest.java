@@ -78,9 +78,6 @@ public class RestHelperTest {
 	@InjectMocks
 	RestHelper restHelper;
 
-	// @Mock
-	// RestTemplate restTemplate;
-
 	/** The environment. */
 	@Autowired
 	Environment environment;
@@ -372,10 +369,6 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsync() throws IdRepoDataValidationException, RestServiceException {
-		// when(restTemplate.exchange(Mockito.anyString(),
-		// Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class),
-		// Mockito.any(Class.class))).thenReturn(new ResponseEntity(new
-		// AuditResponseDto(true), HttpStatus.OK));
 		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 
@@ -394,11 +387,6 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsyncAndReturn() throws IdRepoDataValidationException, RestServiceException {
-		// when(restTemplate.exchange(Mockito.anyString(),
-		// Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class),
-		// Mockito.any(Class.class))).thenReturn(new ResponseEntity(new
-		// AuditResponseDto(true), HttpStatus.OK));
-
 		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 
