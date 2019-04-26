@@ -8,6 +8,10 @@ package io.mosip.authentication.core.constant;
  */
 public final class IdAuthConfigKeyConstants {
 	
+	private IdAuthConfigKeyConstants() {
+		
+	}
+	
 	public static final String APPLICATION_ID = "application.id";
 	public static final String DATE_TIME_PATTERN = "datetime.pattern";
 	public static final String REST_URI = ".rest.uri";

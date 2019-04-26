@@ -195,7 +195,7 @@ public class KeyManager {
 		Map<String, Object> responseMap = errorBody instanceof Map ? (Map<String, Object>) errorBody : Collections.emptyMap();
 		if (responseMap.containsKey("errors")) {
 			List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) responseMap.get("errors");
-			String keyExpErrorCode = "KER-KMS-003"; // TODO FIXME integrate with kernel error constant
+			String keyExpErrorCode = IdAuthCommonConstants.KER_PUBLIC_KEY_EXPIRED; // TODO FIXME integrate with kernel error constant
 			if (!idRepoerrorList.isEmpty()
 					&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
 							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase(keyExpErrorCode))) {
@@ -203,7 +203,7 @@ public class KeyManager {
 						IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED);
 			} if (!idRepoerrorList.isEmpty()
 					&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
-							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase("KER-FSE-003"))) {
+							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase(IdAuthCommonConstants.KER_DECRYPTION_FAILURE))) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.INVALID_ENCRYPTION);
 			} else {

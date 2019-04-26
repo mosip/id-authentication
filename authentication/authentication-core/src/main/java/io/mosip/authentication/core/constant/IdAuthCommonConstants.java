@@ -5,7 +5,11 @@ package io.mosip.authentication.core.constant;
  *
  * @author Arun Bose S
  */
-public class IdAuthCommonConstants {
+public final class IdAuthCommonConstants {
+	
+	private IdAuthCommonConstants() {
+
+	}
 	
 	/** The Constant SESSION_ID. */
 	public static final String SESSION_ID = "sessionId";
@@ -39,4 +43,13 @@ public class IdAuthCommonConstants {
 	public static final String ID = "id";
 	
 	public static final String RESPONSE = "response";
+	
+	/** The Constant KER_OTP_KEY_NOT_EXISTS_CODE. */
+	public static final String KER_OTP_KEY_NOT_EXISTS_CODE = "KER-OTV-005";
+	
+	/** The Constant KER_PUBLIC_KEY_EXPIRED. */
+	public static final String KER_PUBLIC_KEY_EXPIRED = "KER-KMS-003";
+	
+	/** The Constant KER_DECRYPTION_FAILURE. */
+	public static final String KER_DECRYPTION_FAILURE = "KER-FSE-003";
 }

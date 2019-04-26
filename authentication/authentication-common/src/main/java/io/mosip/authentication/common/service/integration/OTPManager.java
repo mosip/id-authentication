@@ -37,8 +37,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
-	private static final String KER_OTP_KEY_NOT_EXISTS_CODE = "KER-OTV-005";
-
 	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
 
@@ -120,6 +118,7 @@ public class OTPManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 
 		} catch (IDDataValidationException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return response;
@@ -167,6 +166,7 @@ public class OTPManager {
 		return isValidOtp;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void handleErrorStatus(RestServiceException e, Map<String, Object> res)
 			throws IdAuthenticationBusinessException {
 		Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
@@ -193,7 +193,8 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
-		if (errorCode.filter(code -> code.equalsIgnoreCase(KER_OTP_KEY_NOT_EXISTS_CODE)).isPresent()) {
+		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+		if (errorCode.filter(code -> code.equalsIgnoreCase(IdAuthCommonConstants.KER_OTP_KEY_NOT_EXISTS_CODE)).isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
 		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -201,12 +202,20 @@ public class OTPManager {
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
 		if (message.equalsIgnoreCase(USER_BLOCKED)) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), VALIDATION_UNSUCCESSFUL);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		} else {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorCode(), IdAuthenticationErrorConstants.SERVER_ERROR.getErrorMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 	}
