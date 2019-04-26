@@ -21,7 +21,6 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantCategory;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
-import io.mosip.registration.processor.core.packet.dto.documetycategory.identity.DocumentCategoryValues;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
@@ -49,9 +48,6 @@ public class ApplicantDocumentValidation {
 
 	/** The env. */
 	Environment env;
-
-	/** The document category values. */
-	DocumentCategoryValues documentCategoryValues;
 
 	/** The reg id. */
 	String regId;
