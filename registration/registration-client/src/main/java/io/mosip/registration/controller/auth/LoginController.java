@@ -225,7 +225,7 @@ public class LoginController extends BaseController implements Initializable {
 	private UserMachineMappingService machineMappingService;
 
 	@Autowired
-	private PublicKeySyncImpl PublicKeySyncImpl;
+	private PublicKeySyncImpl publicKeySyncImpl;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -1175,6 +1175,8 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						List<String> val = new LinkedList<>();
+						publicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
