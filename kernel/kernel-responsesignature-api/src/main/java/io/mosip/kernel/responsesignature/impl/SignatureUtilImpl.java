@@ -40,7 +40,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.responsesignature.constant.SignatureUtilConstant;
 import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
@@ -67,7 +66,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Value("${mosip.kernel.signature.cryptomanager-encrypt-url}")
 	private String encryptUrl;
 
-	@Value("${mosip.kernel.keymanager-service-publickey-url")
+	/** The get public key url. */
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 
 	/** The rest template. */
@@ -78,28 +78,35 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	/** The signed header. */
 	@Value("${mosip.sign.header:response-signature}")
 	private String signedHeader;
 
+	/** The sign applicationid. */
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
 
+	/** The sign refid. */
 	@Value("${mosip.sign.refid:KER}")
 	private String signRefid;
 
+	/** The decryptor. */
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
+	/** The encryptor. */
 	@Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
+	/** The key gen. */
 	@Autowired
 	KeyGenerator keyGen;
 
 	/**
 	 * Sign response.
 	 *
-	 * @param response the response
+	 * @param response
+	 *            the response
 	 * @return the string
 	 */
 	@Override
@@ -151,34 +158,53 @@ public class SignatureUtilImpl implements SignatureUtil {
 		return cryptoManagerResponseDto.getData();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.signatureutil.spi.SignatureUtil#validateWithPublicKey(
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean validateWithPublicKey(String responseSignature, String responseBody, String publicKey)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		// System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		// System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.signatureutil.spi.SignatureUtil#validateWithPublicKey(
+	 * java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean validateWithPublicKey(String responseSignature, String responseBody)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		Map<String, String> uriParams = new HashMap<>();
+		ResponseEntity<String> keyManagerResponse = null;
 		uriParams.put("applicationId", signApplicationid);
 		String localDateTime = DateUtils.getUTCCurrentDateTimeString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 				.queryParam("timeStamp", localDateTime).queryParam("referenceId", signRefid);
 
-		ResponseEntity<String> keymanagerresponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
-				HttpMethod.GET, null, String.class);
-
-		String keyResponseBody = keymanagerresponse.getBody();
+		try {
+			keyManagerResponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			throw new SignatureUtilException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
+					SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage() + "" + e.getResponseBodyAsString());
+		}
+		String keyResponseBody = keyManagerResponse.getBody();
 		ExceptionUtils.getServiceErrorList(responseBody);
 		KeymanagerPublicKeyResponseDto keyManagerResponseDto = null;
 		ResponseWrapper<?> keyResponseWrp;
@@ -188,18 +214,19 @@ public class SignatureUtilImpl implements SignatureUtil {
 					objectMapper.writeValueAsString(keyResponseWrp.getResponse()),
 					KeymanagerPublicKeyResponseDto.class);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new SignatureUtilException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
+					SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorMessage());
 		}
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		// System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		// System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
