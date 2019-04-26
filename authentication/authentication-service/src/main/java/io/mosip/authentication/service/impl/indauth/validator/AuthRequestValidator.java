@@ -66,7 +66,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
+	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_HOURS = "authrequest.received-time-allowed.in-hours";
 
 	/** The Constant INVALID_AUTH_REQUEST. */
 	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
@@ -109,17 +109,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, TRANSACTION_ID);
-				// Validation for TransaactionId in the RequestDTO.
-				validateTxnId(authRequestDto.getRequest().getTransactionID(), errors, REQUEST_TRANSACTION_ID);
-				validateTxnId(authRequestDto.getTransactionID(), authRequestDto.getRequest().getTransactionID(), errors);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);
 			}
-			if (!errors.hasErrors()) {
-				validateRequestTimedOut(authRequestDto.getRequestTime(), errors);
-			}
-
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 				String individualId = authRequestDto.getIndividualId();
@@ -138,6 +131,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
+	
+	@Override
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+		super.validateReqTime(reqTime, errors, paramName);
+		if (!errors.hasErrors()) {
+			validateRequestTimedOut(reqTime, errors);
+		}
+	}
 
 	/**
 	 * Validate request timed out.
@@ -151,17 +152,17 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
+			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_HOURS, Long.class);
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
-								+ String.format(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
+								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
-				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,

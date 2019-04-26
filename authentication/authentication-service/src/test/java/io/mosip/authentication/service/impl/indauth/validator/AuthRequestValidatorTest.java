@@ -147,7 +147,6 @@ public class AuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		reqDTO.setOtp("473928");
 		reqDTO.setStaticPin("473928");
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -198,7 +197,6 @@ public class AuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		reqDTO.setOtp("123456");
 		reqDTO.setStaticPin("123456");
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -243,7 +241,6 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType(IdType.VID.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -478,7 +475,6 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);

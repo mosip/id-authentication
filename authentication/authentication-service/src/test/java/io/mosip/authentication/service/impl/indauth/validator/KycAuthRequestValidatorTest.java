@@ -149,7 +149,6 @@ public class KycAuthRequestValidatorTest {
 		request.setOtp(otp);
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
-		request.setTransactionID("1234567890");
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
@@ -459,14 +458,12 @@ public class KycAuthRequestValidatorTest {
 		request.setOtp(otp);
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
-		request.setTransactionID("1234567890");
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-
 		MockEnvironment mockenv = new MockEnvironment();
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		mockenv.merge(((AbstractEnvironment) mockenv));

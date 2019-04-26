@@ -47,6 +47,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -61,6 +62,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @Import(IDAMappingConfig.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
+
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
 	/** The validator. */
 	@Mock
@@ -248,13 +251,14 @@ public class BaseAuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		authRequestDTO.setRequestedAuth(authType);
-
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
@@ -262,6 +266,8 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO1.setBioSubType("LEFT");
 		dataDTO1.setBioType("IIR");
 		dataDTO1.setDeviceProviderID("provider001");
+		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		irisValue.setData(dataDTO1);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO2 = new DataDTO();
@@ -269,6 +275,8 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO2.setBioType("FID");
 		dataDTO2.setBioSubType("Face");
 		dataDTO2.setDeviceProviderID("provider001");
+		dataDTO2.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		faceValue.setData(dataDTO2);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -282,7 +290,6 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
