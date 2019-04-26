@@ -151,7 +151,7 @@ public class DemodedupeProcessor {
 					int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
-					description = registrationStatusDto.getStatusComment() + registrationId;
+					description = registrationStatusDto.getStatusComment() + " -- " +registrationId;
 					registrationStatusDto.setRetryCount(retryCount);
 
 					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED);
@@ -172,7 +172,9 @@ public class DemodedupeProcessor {
 					code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
 					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()
 							+ " -- " + registrationId;
-
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), code, registrationId, description);
+					registrationStatusDto.setUpdatedBy(USER);
+					isTransactionSuccessful = true;
 				}
 
 			} else {
@@ -181,12 +183,13 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 
 				code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
-				description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage() + registrationId;
+				description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage() + " -- " +registrationId;
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), code, registrationId, description);
+				registrationStatusDto.setUpdatedBy(USER);
+				isTransactionSuccessful = true;
 			}
 
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), code, registrationId, description);
-			registrationStatusDto.setUpdatedBy(USER);
-			isTransactionSuccessful = true;
+			
 
 		} catch (IOException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.name());
@@ -293,8 +296,7 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setLatestTransactionStatusCode("SUCCESS");
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
-			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage()
-					: description;
+			
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
