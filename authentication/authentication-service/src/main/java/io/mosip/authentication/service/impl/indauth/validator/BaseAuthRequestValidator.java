@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -58,6 +60,9 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+	
+	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
+	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
 	private static final String BIO_SUB_TYPE = "bioSubType";
 
@@ -883,6 +888,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 			return new SimpleEntry<>(language, idInfo);
 		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
+		
+		langCount.keySet().forEach(langCode -> validateLangCode(langCode, errors, "request", "request/demographics/" + demoMatchType.getIdMapping().getIdname() + "/language"));
 
 		for (long value : langCount.values()) {
 			if (value > 1) {
@@ -1048,5 +1055,35 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private Set<String> getAllowedAuthTypes(String configKey) {
 		String intAllowedAuthType = env.getProperty(configKey);
 		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
+	}
+	
+	/**
+	 * validateSecondayLangCode method used to validate secondaryLangCode 
+	 * for kyc request
+	 *
+	 * @param string the {@link KycAuthRequestDTO}
+	 * @param errors the errors
+	 * @param field the field
+	 */
+	protected void validateLangCode(String langCode, Errors errors, String field, String fieldHierarchy) {
+		if(Objects.nonNull(langCode)) {
+			Set<String> allowedLang;
+			String languages = env.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+			if (null != languages && languages.contains(",")) {
+				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+			} else {
+				allowedLang = new HashSet<>();
+				allowedLang.add(languages);
+			}
+			
+			if(!allowedLang.contains(langCode)) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						INVALID_INPUT_PARAMETER + field + " : " + langCode);
+				errors.rejectValue(field, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
+						new Object[] { field.concat(" : " + langCode) },
+						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
+			}
+		}
+		
 	}
 }
