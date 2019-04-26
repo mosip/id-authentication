@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,12 +40,11 @@ import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 
 /**
- * @author M1047697
+ * @author Dinesh Karuppiah.T
  *
  */
 @RunWith(SpringRunner.class)
