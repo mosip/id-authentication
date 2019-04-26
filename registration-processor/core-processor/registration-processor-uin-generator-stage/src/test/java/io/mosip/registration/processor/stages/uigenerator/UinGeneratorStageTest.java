@@ -233,7 +233,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setVersion("1.0");
 
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
@@ -278,7 +278,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
@@ -312,7 +312,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(adapter.getFile("27847657360002520181210094052",
 				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi( any(), any(), any(), any(), any()))
 		.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
@@ -479,7 +479,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponse(null);
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi( any(), any(), any(), any(), any()))
 		.thenReturn(idResponseDTO);
 
 		String Str = "{\"uin\":\"6517036426\"}";
@@ -545,7 +545,7 @@ public class UinGeneratorStageTest {
 				HibernateErrorCode.ERR_DATABASE.getErrorCode());
 		String Str = "{\"uin\":\"6517036426\"}";
 		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(Str);
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi( any(), any(), any(), any(), any()))
 		.thenThrow(exp);
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
@@ -569,7 +569,7 @@ public class UinGeneratorStageTest {
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
 		.thenReturn(idJsonStream1);
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any()))
 		.thenThrow(exp);
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
@@ -797,7 +797,7 @@ public class UinGeneratorStageTest {
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type("DEACTIVATED");
 		IdResponseDTO responsedto = new IdResponseDTO();
-		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":\"4215839851}}";
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
 		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
 
 		IdResponseDTO idResponseDTO = new IdResponseDTO();
@@ -854,7 +854,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setVersion("1.0");
 
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any()))
 		.thenReturn(idResponseDTO);
 
 		uinGeneratorStage.process(messageDTO);

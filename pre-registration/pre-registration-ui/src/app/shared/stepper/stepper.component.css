@@ -52,6 +52,7 @@ p {
 .inline-icon-background-incomplete {
   background: grey;
   opacity: 0.5;
+  padding: 1px;
 }
 
 .active {

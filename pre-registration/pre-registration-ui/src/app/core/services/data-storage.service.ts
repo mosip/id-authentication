@@ -33,8 +33,7 @@ export class DataStorageService {
   ) {}
 
   //need to remove
-  // BASE_URL2 = 'https://dev.mosip.io/';
-  // BASE_URL2 = 'https://qa.mosip.io/';
+  // BASE_URL = 'https://qa.mosip.io/';
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];

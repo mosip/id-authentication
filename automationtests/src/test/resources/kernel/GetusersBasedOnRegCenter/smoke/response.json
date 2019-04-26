@@ -1,18 +1,57 @@
 {
-  "lastSyncTime": "2019-03-07T05:59:43.967Z",
-  "userDetails": [
-    {
-      "isDeleted": null,
-      "langCode": null,
-      "isActive": null,
-      "userName": "110001",
-      "mail": "user@mosip.com",
-      "mobile": "987654321",
-      "userPassword": "e1NIQTI1Nn05SmN0UmJRb01OR0FOZzhxSzE2U0hsOW5xaGl0Q2VsTjBjME1CQi90RXlrPQ==",
-      "name": "user",
-      "roles": [
-        "REGISTRATION_ADMIN"
-      ]
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-15T10:33:16.280Z",
+  "metadata": null,
+  "response": {
+    "lastSyncTime": "2019-04-15T10:33:15.244Z",
+    "userDetails": [
+      {
+        "isDeleted": null,
+        "langCode": null,
+        "isActive": null,
+        "userName": "110001",
+        "mail": "hortense.dauenhauer@xyz.com",
+        "mobile": "975366148",
+        "userPassword": "e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3",
+        "name": "Hortense Dauenhauer",
+        "roles": [
+          "REGISTRATION_ADMIN",
+          "REGISTRATION_OFFICER",
+          "REGISTRATION_SUPERVISOR"
+        ]
+      },
+      {
+        "isDeleted": null,
+        "langCode": null,
+        "isActive": null,
+        "userName": "110030",
+        "mail": "jane.smith@xyz.com",
+        "mobile": "818876432",
+        "userPassword": "e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3",
+        "name": "Jane Smith",
+        "roles": [
+          "REGISTRATION_ADMIN",
+          "REGISTRATION_OFFICER",
+          "REGISTRATION_SUPERVISOR"
+        ]
+      },
+      {
+        "isDeleted": null,
+        "langCode": null,
+        "isActive": null,
+        "userName": "110031",
+        "mail": "john.doe@xyz.com",
+        "mobile": "818876431",
+        "userPassword": "e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3",
+        "name": "John Doe",
+        "roles": [
+          "REGISTRATION_ADMIN",
+          "REGISTRATION_OFFICER",
+          "REGISTRATION_SUPERVISOR"
+        ]
+      }
+    ]
+  },
+  "errors": null
 }

@@ -46,7 +46,7 @@ public class LicenseKeyTspMap {
 	/**
 	 * The map created by.
 	 */
-	@Column(name = "cr_by", nullable = false, length = 32)
+	@Column(name = "cr_by", nullable = false, length = 256)
 	private String createdBy;
 	/**
 	 * The map created at.
@@ -56,7 +56,7 @@ public class LicenseKeyTspMap {
 	/**
 	 * The map updated by.
 	 */
-	@Column(name = "upd_by", length = 32)
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 	/**
 	 * The map updated at.

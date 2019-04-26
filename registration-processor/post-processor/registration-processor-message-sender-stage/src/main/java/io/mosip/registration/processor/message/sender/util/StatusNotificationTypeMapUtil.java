@@ -60,7 +60,6 @@ public class StatusNotificationTypeMapUtil {
 		NotificationTemplateType type = null;
 		Map<RegistrationStatusCode, NotificationTemplateType> map = StatusNotificationTypeMapUtil.statusMapper();
 		type = map.get(RegistrationStatusCode.valueOf(code));
-
 		return type;
 	}
 

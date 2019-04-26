@@ -160,7 +160,7 @@ public class Decryptor {
 					IO_EXCEPTION);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Internal Error Occured ");
+					registrationId, "Internal Error occurred ");
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = DECRYPTION_FAILURE + registrationId + "::"

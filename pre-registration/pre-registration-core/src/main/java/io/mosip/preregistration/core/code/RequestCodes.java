@@ -17,6 +17,8 @@ public final class RequestCodes {
 	public static final String STATUS_CODE = "statusCode";
 	public static final String FROM_DATE = "fromDate";
 	public static final String TO_DATE = "toDate";
+	public static final String SMS = "sms";
+	public static final String EMAIL = "email";
 	private RequestCodes() {
 	}
 }

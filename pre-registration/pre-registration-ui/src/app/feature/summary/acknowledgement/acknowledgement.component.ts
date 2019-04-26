@@ -111,7 +111,7 @@ export class AcknowledgementComponent implements OnInit {
   automaticNotification() {
     setTimeout(() => {
       console.log('Timeout hit after 3 seconds. Sending notification');
-      this.sendNotification([]);
+      this.sendNotification([], false);
     }, 3000);
   }
 
@@ -181,7 +181,7 @@ export class AcknowledgementComponent implements OnInit {
       .subscribe(applicantNumber => {
         console.log(applicantNumber);
         if (applicantNumber !== undefined) {
-          this.sendNotification(applicantNumber);
+          this.sendNotification(applicantNumber, true);
         }
       });
   }
@@ -194,7 +194,7 @@ export class AcknowledgementComponent implements OnInit {
     });
   }
 
- async sendNotification(applicantNumber) {
+ async sendNotification(applicantNumber, additionalRecipient: boolean) {
     console.log(this.usersInfo);
     this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
@@ -205,7 +205,8 @@ export class AcknowledgementComponent implements OnInit {
         user.bookingDataPrimary,
         user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
-        applicantNumber[0] === undefined ? null : applicantNumber[0]
+        applicantNumber[0] === undefined ? null : applicantNumber[0],
+        additionalRecipient
         );
       console.log(notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);

@@ -1,5 +1,8 @@
 package io.mosip.kernel.crypto.jce.test;
 
+import static org.hamcrest.CoreMatchers.isA;
+import static org.junit.Assert.assertThat;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -63,6 +66,14 @@ public class EncryptorExceptionTest {
 	public void testAESSymmetricEncrypt() throws java.security.NoSuchAlgorithmException {
 
 		encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data);
+	}
+	
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testAESSymmetricSaltEncrypt() throws java.security.NoSuchAlgorithmException {
+        SecureRandom random = new SecureRandom();
+		byte[] keyBytes = new byte[16];
+		random.nextBytes(keyBytes);
+		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data,keyBytes), isA(byte[].class));
 	}
 
 }

@@ -1,71 +1,62 @@
 {
-  "appTypeCode": "001",
-  "langCode": "eng",
-  "isActive": true,
-  "documentCategories": [
-    {
-      "code": "POI",
-      "name": "Proof of Identity",
-      "description": "Identity Proof",
-      "langCode": "eng",
-      "isActive": true,
-      "documentTypes": [
-        {
-          "code": "CIN",
-          "name": "CNIE card",
-          "description": "Moroccan National Electronic ID Card",
-          "langCode": "eng",
-          "isActive": true
-        }
-      ]
-    },
-    {
-      "code": "POA",
-      "name": "Proof of Address",
-      "description": "Address Proof",
-      "langCode": "eng",
-      "isActive": true,
-      "documentTypes": [
-        {
-          "code": "RNC",
-          "name": "Rental contract",
-          "description": "Rental Agreement of address",
-          "langCode": "eng",
-          "isActive": true
-        }
-      ]
-    },
-    {
-      "code": "POB",
-      "name": "Proof of Birth",
-      "description": "Proof date of birth of the person",
-      "langCode": "eng",
-      "isActive": true,
-      "documentTypes": [
-        {
-          "code": "COB",
-          "name": "Certificate of Birth",
-          "description": "Proof birth and age of a person",
-          "langCode": "eng",
-          "isActive": true
-        }
-      ]
-    },
-    {
-      "code": "POR",
-      "name": "Proof of Relationship",
-      "description": "Proof Relationship of the person",
-      "langCode": "eng",
-      "isActive": true,
-      "documentTypes": [
-        {
-          "code": "CRN",
-          "name": "Certificate of Relationship",
-          "description": "Proof relationship of a person",
-          "langCode": "eng",
-          "isActive": true
-        }
-      ]
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T13:15:20.075Z",
+  "metadata": null,
+  "response": {
+    "appTypeCode": "001",
+    "langCode": "eng",
+    "isActive": true,
+    "documentCategories": [
+      {
+        "code": "POI",
+        "name": "Proof of Identity",
+        "description": "Identity Proof",
+        "langCode": "eng",
+        "isActive": true,
+        "documentTypes": [
+          {
+            "code": "CIN",
+            "name": "CNIE card",
+            "description": "Moroccan National Electronic ID Card",
+            "langCode": "eng",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "code": "POA",
+        "name": "Proof of Address",
+        "description": "Address Proof",
+        "langCode": "eng",
+        "isActive": true,
+        "documentTypes": [
+          {
+            "code": "RNC",
+            "name": "Rental contract",
+            "description": "Rental Agreement of address",
+            "langCode": "eng",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "code": "POR",
+        "name": "Proof of Relationship",
+        "description": "Proof Relationship of the person",
+        "langCode": "eng",
+        "isActive": true,
+        "documentTypes": [
+          {
+            "code": "CRN",
+            "name": "Certificate of Relationship",
+            "description": "Proof relationship of a person",
+            "langCode": "eng",
+            "isActive": true
+          }
+        ]
+      }
+    ]
+  },
+  "errors": null
 }
