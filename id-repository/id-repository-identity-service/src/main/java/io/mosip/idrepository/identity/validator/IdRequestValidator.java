@@ -3,7 +3,6 @@ package io.mosip.idrepository.identity.validator;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +15,7 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -92,15 +92,6 @@ public class IdRequestValidator implements Validator {
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
-	/** The Constant ALL. */
-	private static final String ALL = "all";
-
-	/** The Constant TYPE. */
-	private static final String TYPE = "type";
-
-	/** The Constant CHECK_TYPE. */
-	private static final String CHECK_TYPE = "checkType";
-
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRequestValidator.class);
 
@@ -146,6 +137,9 @@ public class IdRequestValidator implements Validator {
 	/** The uin validator. */
 	@Autowired
 	private UinValidator<String> uinValidator;
+
+	@Autowired
+	Environment env;
 
 	/**
 	 * Sets the validation.
@@ -463,35 +457,16 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
-	public void validateType(String id, String type) throws IdRepoAppException {
-		if (Objects.nonNull(type)) {
-			List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
-			if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
-				mosipLogger.error(id, ID_REQUEST_VALIDATOR, CHECK_TYPE,
-						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
-			} else {
-				if (typeList.contains(ALL) || allowedTypes.parallelStream()
-						.filter(allowedType -> !allowedType.equals(ALL)).allMatch(typeList::contains)) {
-					type = ALL;
-				} else if (!allowedTypes.containsAll(typeList)) {
-					mosipLogger.error(id, ID_REQUEST_VALIDATOR, CHECK_TYPE,
-							IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
-				}
-			}
-		}
-	}
-
 	public void validateUin(String uin) throws IdRepoAppException {
 		try {
 			uinValidator.validateId(uin);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateUin",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							"/" + env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
+							.replace(".", "/"));
 		}
 	}
 
