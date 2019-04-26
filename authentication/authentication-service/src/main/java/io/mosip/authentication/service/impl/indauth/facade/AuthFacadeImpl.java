@@ -321,9 +321,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
-
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());

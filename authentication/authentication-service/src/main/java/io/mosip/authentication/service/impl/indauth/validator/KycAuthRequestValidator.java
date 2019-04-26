@@ -37,9 +37,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SECONDARY_LANG_CODE. */
 	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
 	
-	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
-	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
-
 	/** The Constant EKYC_ALLOWED_AUTH_TYPE. */
 	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 
@@ -103,7 +100,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateAuthType(errors, kycAuthRequestDTO);
-				validateSecondayLangCode(kycAuthRequestDTO, errors);
+				validateLangCode(kycAuthRequestDTO.getSecondaryLangCode(), errors, SECONDARY_LANG_CODE, SECONDARY_LANG_CODE);
 			}
 
 		} else {
@@ -115,36 +112,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	}
 	
-	/**
-	 * validateSecondayLangCode method used to validate secondaryLangCode 
-	 * for kyc request
-	 *
-	 * @param kycAuthRequestDTO the {@link KycAuthRequestDTO}
-	 * @param errors the errors
-	 */
-	private void validateSecondayLangCode(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
-		String secLangCode = kycAuthRequestDTO.getSecondaryLangCode();
-		if(Objects.nonNull(secLangCode)) {
-			Set<String> allowedLang;
-			String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
-			if (null != languages && languages.contains(",")) {
-				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
-			} else {
-				allowedLang = new HashSet<>();
-				allowedLang.add(languages);
-			}
-			
-			if(!allowedLang.contains(secLangCode)) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						INVALID_INPUT_PARAMETER + SECONDARY_LANG_CODE);
-				errors.rejectValue(SECONDARY_LANG_CODE, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
-						new Object[] { SECONDARY_LANG_CODE.concat(" : " + secLangCode) },
-						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
-			}
-		}
-		
-	}
-
 	/**
 	 * Validates the KycAuthrequest against the Authtype on the request.
 	 *
