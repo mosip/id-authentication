@@ -62,10 +62,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant eKycAuthType. */
 	private static final String REQUESTEDAUTH = "requestedAuth";
 
-	/** The environment. */
-	@Autowired
-	private Environment environment;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -119,7 +115,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String values = environment.getProperty(EKYC_ALLOWED_AUTH_TYPE);
+		String values = env.getProperty(EKYC_ALLOWED_AUTH_TYPE);
 		List<String> allowedAuthTypesList = Arrays.stream(values.split(",")).collect(Collectors.toList());
 		Map<Boolean, List<EkycAuthType>> authTypes = Stream.of(EkycAuthType.values()).collect(
 				Collectors.partitioningBy(ekycAuthType -> allowedAuthTypesList.contains(ekycAuthType.getType())));
