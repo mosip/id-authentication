@@ -105,7 +105,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAuthenticationException - \n" + ExceptionUtils.getStackTrace(ex));
-		IdRepoUnknownException e = new IdRepoUnknownException("KER-ATH-401", "Authentication Failed");
+		IdRepoUnknownException e = new IdRepoUnknownException(
+				ex.getErrorTexts().isEmpty() ? "KER-ATH-401" : ex.getErrorCode(),
+				ex.getErrorTexts().isEmpty() ? "Authentication Failed" : ex.getErrorText());
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
 				HttpStatus.valueOf(ex.getStatusCode()));
