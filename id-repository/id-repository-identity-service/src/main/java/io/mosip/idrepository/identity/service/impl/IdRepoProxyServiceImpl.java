@@ -57,6 +57,8 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 @Service
 public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO> {
 
+	private static final String RID = "rid";
+
 	private static final String GET_FILES = "getFiles";
 
 	/** The Constant UPDATE_IDENTITY. */
@@ -253,7 +255,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		if (Objects.nonNull(uin)) {
 			return retrieveIdentityByUin(uin, type);
 		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REGISTRATION_ID);
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), RID));
 		}
 	}
 
