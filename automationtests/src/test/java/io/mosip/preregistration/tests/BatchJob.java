@@ -78,11 +78,10 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
-	
-		/*lib.expiredStatus();
+		lib.expiredStatus();
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
-		lib.compareValues(statusCode, "Expired");*/
+		lib.compareValues(statusCode, "Expired");
 	
 	}
 	/**
@@ -107,6 +106,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
+	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

@@ -320,11 +320,11 @@ public class prereg_dbread {
 
 	}
 	@SuppressWarnings("deprecation")
-	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String intdbConfig,String qadbConfig )
+	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure(intdbConfig)
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure(devdbConfig)
 		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else
 				{
@@ -365,14 +365,13 @@ public class prereg_dbread {
 	
 	}
 	
+	
 	public static List<?> validateDB(String queryStr)
 	{
 		List<?> flag;
 		
 		factory = new Configuration().configure("preregqa.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
-		/*factory = new Configuration().configure("prereg.cfg.xml")
-				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateDBdata(session, queryStr);

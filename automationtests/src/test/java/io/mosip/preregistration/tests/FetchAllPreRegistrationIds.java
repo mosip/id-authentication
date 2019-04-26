@@ -89,7 +89,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	@DataProvider(name = "Fetch_all_PreRegistration_Ids")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smokeAndRegression") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			

@@ -1,60 +1,97 @@
 package io.mosip.preregistration.tests;
 
-
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestTemplate;
+import org.apache.log4j.Logger;
+import org.apache.maven.plugins.assembly.io.AssemblyReadException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.testng.Assert;
+import org.testng.ITest;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+
+import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
-public class Sample {
+import io.mosip.util.PreRegistrationLibrary;
+import io.restassured.response.Response;
+
+/**
+ * @author Ashish Rastogi
+ *
+ */
+
+public class Sample extends BaseTestCase implements ITest {
+	Logger logger = Logger.getLogger(Sample.class);
+	PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	String testSuite;
+	String preRegID = null;
+	String createdBy = null;
+	Response response = null;
+	String preID = null;
+	protected static String testCaseName = "";
+	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	HashMap<String, String>  parm =new HashMap<>();
-	static Map<String, String> configParamMap= new HashMap<>();
-	
-	@Value("${ui.config.params}")
-	private static String uiConfigParams;
-	
-	public  HashMap<String, String> readConfigProperty(String url,String configParameter) {
-		List<String> reqParams = new ArrayList<>();
-		Map<String, String> configParamMap= new HashMap<>();
-		uiConfigParams=commonLibrary.fetch_IDRepo().get(configParameter);
-		String[] uiParams = uiConfigParams.split(",");
-		for (int i = 0; i < uiParams.length; i++) {
-			reqParams.add(uiParams[i]);
-		}
-		RestTemplate restTemplate = new RestTemplate();
-	
-		String s=restTemplate.getForObject(url, String.class);
-		final Properties p = new Properties();
-		try {
-			p.load(new StringReader(s));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		for (Entry<Object, Object> e : p.entrySet()) {
-			if (reqParams.contains(String.valueOf(e.getKey()))) {
-				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
-			}
-			
-		}
-		return (HashMap<String, String>) configParamMap;
+	ApplicationLibrary applnLib = new ApplicationLibrary();
+
+	@BeforeClass
+	public void readPropertiesFile() {
+		initialize();
+		authToken = lib.getToken();
 	}
-	public static void main(String[] args) throws IOException
-	{
-		String uiConfigParameter = "ui.config.params";
-		String url = "http://104.211.212.28:51000/pre-registration/qa/0.10.0/pre-registration-qa.properties";
-		Map<String, String> configParams = new HashMap<>();
-		List<String> reqParams = new ArrayList<>();
-		System.out.println("===========");
-		
-	}	
+	/**
+	 * Batch job service for expired application
+	 */
+	@Test(groups = { "IntegrationScenarios" })
+	public void retrivePreRegistrationDataForCancelAppointment() {
+		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);*/
+		Response avilibityResponse = lib.FetchCentre();
+		/*lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
+		lib.CancelBookingAppointment(FetchAppointmentDetails, preID);
+		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message"), "Booking data not found");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode"), "PRG_BOOK_RCI_013");
+*/
+	}
+	@Override
+	public String getTestName() {
+		return this.testCaseName;
+
+	}
+
+	@AfterMethod
+	public void afterMethod(ITestResult result) {
+		System.out.println("method name:" + result.getMethod().getMethodName());
+	}
 }

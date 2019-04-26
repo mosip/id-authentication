@@ -753,10 +753,10 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.compareValues(
 				retrivePreRegistrationDataResponse.jsonPath().get("response.registration-client-id").toString(),
 				FetchAppointmentDetails.jsonPath().get("response.registration_center_id").toString());
-		// lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("response.appointment_date").toString(),
-		// FetchAppointmentDetails.jsonPath().get("response.appointment_date").toString());
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("response.zip-filename").toString(), preID);
+		boolean status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataResponse, preID, createResponse);
+		lib.compareValues(Boolean.toString(status), "true");
 	}
+
 
 	/**
 	 * @author Ashish Retrive Pre Registration of discarded application
@@ -1154,7 +1154,8 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
 			lib.deleteAllDocumentByPreId(PreID);
 			Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(PreID);
-			lib.fetchDocs(retrivePreRegistrationDataResponse, "PreRegDocs");
+			boolean status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataResponse, preID, createPregResponse);
+			lib.compareValues(Boolean.toString(status), "true");
 		}
 	/**
 	 * @author Ashish Consumed multiple pre registration ids with some invalid PRID

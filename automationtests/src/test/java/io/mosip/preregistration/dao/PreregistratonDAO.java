@@ -21,12 +21,9 @@ public class PreregistratonDAO
 	public int updateStatusCode(String statusCode,String preRegId)
 	{
 		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
-		//String hql="UPDATE DemographicEntity SET statusCode = 'Consumed' WHERE preRegistrationId = '52182457031403'";
 		System.out.println("My info::"+hql);
 		int result = prereg_dbread.validateDBUpdate(hql);
-		
 		return result;
-		
 	}
 	
 	
