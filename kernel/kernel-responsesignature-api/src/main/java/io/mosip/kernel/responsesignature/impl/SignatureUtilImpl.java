@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -105,8 +107,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 	/**
 	 * Sign response.
 	 *
-	 * @param response
-	 *            the response
+	 * @param response the response
 	 * @return the string
 	 */
 	@Override
@@ -126,8 +127,15 @@ public class SignatureUtilImpl implements SignatureUtil {
 		try {
 			responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			if (ex.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed from CryptoManager");
+			}
+			if (ex.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed from CryptoManager");
+			}
+
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
 			} else {
@@ -170,13 +178,13 @@ public class SignatureUtilImpl implements SignatureUtil {
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		//System.out.println("Actual Hash: " + actualHash);
+		// System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		//System.out.println("Signed Hash: " + signedHash);
+		// System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
@@ -200,9 +208,20 @@ public class SignatureUtilImpl implements SignatureUtil {
 		try {
 			keyManagerResponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw new SignatureUtilException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
-					SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage() + "" + e.getResponseBodyAsString());
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			if (ex.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed from CryptoManager");
+			}
+			if (ex.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed from CryptoManager");
+			}
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+			if (!validationErrorsList.isEmpty()) {
+				throw new SignatureUtilClientException(validationErrorsList);
+			} else {
+				throw new SignatureUtilException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
+						SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage());
+			}
 		}
 		String keyResponseBody = keyManagerResponse.getBody();
 		ExceptionUtils.getServiceErrorList(responseBody);
@@ -219,14 +238,14 @@ public class SignatureUtilImpl implements SignatureUtil {
 		}
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		//System.out.println("Actual Hash: " + actualHash);
+		// System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		//System.out.println("Signed Hash: " + signedHash);
+		// System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 

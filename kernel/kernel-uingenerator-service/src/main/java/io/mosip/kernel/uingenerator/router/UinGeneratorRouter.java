@@ -153,7 +153,9 @@ public class UinGeneratorRouter {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			setError(routingContext, error);
-		} catch (SignatureUtilClientException | SignatureUtilException e1) {
+		} catch (SignatureUtilClientException e1) {
+			setError(routingContext, e1.getList().get(0));
+		} catch (SignatureUtilException e1) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					e1.toString());
 			setError(routingContext, error);

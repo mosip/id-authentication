@@ -28,7 +28,7 @@ public interface SignatureUtil {
 	 * @param responseBody
 	 *            the response body
 	 * @param publicKey
-	 *            the public key
+	 *            the base64 encoded public key string
 	 * @return true, if successful
 	 * @throws InvalidKeySpecException
 	 *             the invalid key spec exception
