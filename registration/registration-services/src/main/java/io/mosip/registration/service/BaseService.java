@@ -61,7 +61,7 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	public static Map<String, Object> applicationMap=new HashMap<>();
+	private static Map<String, Object> applicationMap=new HashMap<>();
 
 	/**
 	 * create error response.
@@ -310,7 +310,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = applicationContext.map();
+			applicationMap = ApplicationContext.map();
 		}
 
 		return (String) applicationMap.get(key);
@@ -334,5 +334,13 @@ public class BaseService {
 		statusDTO.setPacketStatus(registration.getStatusCode());
 		return statusDTO;
 	}
+	
+	public static void setBaseGlobalMap(Map<String,Object> map) {
+		applicationMap = map;
+	}
 
+	public static Map<String,Object> getBaseGlobalMap() {
+		return applicationMap;
+	}
+	
 }

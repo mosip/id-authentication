@@ -226,7 +226,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG, "N");
 		applicationMap.put(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE, "N");
 		applicationMap.put(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ, "5");
-		when(context.map()).thenReturn(applicationMap);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
 
 		Mockito.when(globalParamDAO.get(globalParamId)).thenReturn(globalParam);
 

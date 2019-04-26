@@ -318,7 +318,7 @@ public class ApplicationContext {
 	 */
 	public void setApplicationMap(Map<String, Object> applicationMap) {
 		this.applicationMap = applicationMap;
-		BaseService.applicationMap = applicationMap;
+		BaseService.setBaseGlobalMap(applicationMap);
 	}
 
 	/**
