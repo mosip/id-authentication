@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.validator;
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,6 +21,7 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -88,7 +88,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	public void validateId(String id, Errors errors) {
 		// TODO check id based on the request and add validation for version.
-		if (Objects.isNull(id) || id.isEmpty()) {
+		if (StringUtils.isEmpty(id)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -108,7 +108,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
-		if (Objects.isNull(id) || id.isEmpty()) {
+		if (StringUtils.isEmpty(id)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -124,7 +124,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	protected void validateTxnId(String txnID, Errors errors, String paramName) {
-		if (Objects.isNull(txnID)) {
+		if (StringUtils.isEmpty(txnID)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + TXN_ID + paramName);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -147,7 +147,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
 
-		if (Objects.isNull(reqTime)) {
+		if (StringUtils.isEmpty(reqTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + paramName);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -180,9 +180,8 @@ public abstract class IdAuthValidator implements Validator {
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { paramName },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
 	}
 
@@ -198,7 +197,7 @@ public abstract class IdAuthValidator implements Validator {
 		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
 		// Checks for null IdType
-		if (Objects.isNull(idType)) {
+		if (StringUtils.isEmpty(idType)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -259,6 +258,21 @@ public abstract class IdAuthValidator implements Validator {
 			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(),
 							CONSENT_OBTAINED));
+		}
+	}
+	
+	/**
+	 * Validate txn id.
+	 *
+	 * @param transactionID the transaction ID
+	 * @param requestTransactionID the request transaction ID
+	 * @param errors the errors
+	 */
+	protected void validateTxnId(String transactionID, String requestTransactionID, Errors errors) {
+		if (!StringUtils.isEmpty(requestTransactionID) && !StringUtils.isEmpty(transactionID)
+				&& !transactionID.equals(requestTransactionID)) {
+			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

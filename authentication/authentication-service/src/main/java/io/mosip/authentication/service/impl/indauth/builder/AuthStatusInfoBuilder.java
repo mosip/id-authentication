@@ -176,12 +176,10 @@ public class AuthStatusInfoBuilder {
 
 		if (authTypeForMatchType.isPresent()) {
 			authType = authTypeForMatchType.get();
-			AuthError errors = null;
-
 			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.PIN_MISMATCH, "");
+				AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.PIN_MISMATCH, "");
+				statusInfoBuilder.addErrors(errors);
 			}
-			statusInfoBuilder.addErrors(errors);
 		}
 	}
 

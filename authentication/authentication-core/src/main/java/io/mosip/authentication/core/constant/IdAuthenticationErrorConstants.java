@@ -47,11 +47,11 @@ public enum IdAuthenticationErrorConstants {
 			"Please register your %s and try again"),
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-017", "Identity Type - %s not configured for the country"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "Please provide valid Language"),
-	
+
 	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
 			"Please re-enter your %s in %s"),
 	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
-	
+
 	DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
 
@@ -80,7 +80,7 @@ public enum IdAuthenticationErrorConstants {
 
 	DSIGN_FALIED("IDA-MPA-001", "Digital signature verification failed"),
 	INVALID_CERTIFICATE("IDA-MPA-002", "Invalid certificate in digital signature"),
-	INVALID_ENCRYPTION("IDA-MPA-003", "Unable to decrypt Authentication Request"),
+	INVALID_ENCRYPTION("IDA-MPA-003", "Unable to decrypt Request"),
 	PUBLICKEY_EXPIRED("IDA-MPA-004", "MOSIP Public key expired"),
 	OTPREQUEST_NOT_ALLOWED("IDA-MPA-005", "OTP Request Usage not allowed as per policy"),
 	AUTHTYPE_NOT_ALLOWED("IDA-MPA-006", "%s-authentiation usage not allowed as per policy",
@@ -152,14 +152,10 @@ public enum IdAuthenticationErrorConstants {
 	public String getActionMessage() {
 		return actionMessage;
 	}
-	
+
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {
-		return Stream.of(values())
-						.filter(ele -> ele.getErrorCode().equals(errorCode))
-						.map(ele -> ele.getActionMessage())
-						.filter(act -> act != null)
-						.findAny();
+		return Stream.of(values()).filter(ele -> ele.getErrorCode().equals(errorCode))
+				.map(ele -> ele.getActionMessage()).filter(act -> act != null).findAny();
 	}
-	
 
 }

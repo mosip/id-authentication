@@ -28,6 +28,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Component
 public class KycAuthFilter extends IdAuthFilter {
 
+	/** The Constant KYC. */
 	private static final String KYC = "kyc";
 
 	/** The Constant IDENTITY. */
@@ -49,13 +50,15 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
-			if (Objects.nonNull(response)) {
+			Map<String, Object> identity = response.get(IDENTITY) instanceof Map ? (Map<String, Object>) response.get(IDENTITY) : null;
+			if (Objects.nonNull(identity)) {
 				if (Objects.nonNull(publicKey)) {
-					encryptKycResponse(response);
+					response.put(IDENTITY, encryptKycResponse(identity));
 				} else {
-					responseBody.put(RESPONSE, encode(toJsonString(response)));
+					response.put(IDENTITY, encode(toJsonString(identity)));
 				}
 			}
+			responseBody.put(RESPONSE, response);
 			return responseBody;
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -64,24 +67,26 @@ public class KycAuthFilter extends IdAuthFilter {
 
 	/**
 	 * encryptKycResponse method is used to encode and encipher the
-	 * response
+	 * response.
 	 *
-	 * @param response the response
+	 * @param identity the response
+	 * @return the string
 	 * @throws JsonProcessingException the json processing exception
 	 */
-	private void encryptKycResponse(Map<String, Object> response) throws JsonProcessingException {
+	private String encryptKycResponse(Map<String, Object> identity) throws JsonProcessingException {
 		byte[] symmetricDataEncrypt = null;
 		byte[] asymmetricKeyEncrypt = null;
-		if (Objects.nonNull(response)) {
+		if (Objects.nonNull(identity)) {
 			SecretKey symmetricKey = keyManager.getSymmetricKey();
-			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(response).getBytes());
+			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(identity).getBytes());
 			asymmetricKeyEncrypt = encryptor.asymmetricPublicEncrypt(publicKey, symmetricKey.getEncoded());
 		}
 
 		if (Objects.nonNull(asymmetricKeyEncrypt) && Objects.nonNull(symmetricDataEncrypt)) {
-			response.replace(RESPONSE, CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
-					.concat(CryptoUtil.encodeBase64String(symmetricDataEncrypt)));
+			return CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
+					.concat(CryptoUtil.encodeBase64String(symmetricDataEncrypt));
 		}
+		return null;
 	}
 
 	/**
