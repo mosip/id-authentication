@@ -24,8 +24,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -72,10 +70,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
 
 	@Resource
 	private Map<String, String> id;

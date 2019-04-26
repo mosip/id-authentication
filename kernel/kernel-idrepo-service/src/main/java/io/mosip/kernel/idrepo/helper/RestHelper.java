@@ -295,11 +295,18 @@ public class RestHelper {
 					new HttpEntity<>(request.getRequestBody(), request.getHeaders()), request.getResponseType());
 			return Mono.just(responseEntity.getBody());
 		} catch (RestClientResponseException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate", e.getMessage());
-			throw new AuthenticationException(
-					JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString(),
-					JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString(),
-					e.getRawStatusCode());
+			if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
+						e.getResponseBodyAsString());
+				throw new AuthenticationException(
+						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString(),
+						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString(),
+						e.getRawStatusCode());
+			} else {
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
+						e.getResponseBodyAsString());
+				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);
+			}
 		} catch (RestClientException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate", e.getMessage());
 			throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);
