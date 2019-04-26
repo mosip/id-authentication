@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -41,6 +42,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
+@Ignore
 @RunWith(VertxUnitRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinStatusUpdateVerticleNotIssuedTestExp {
