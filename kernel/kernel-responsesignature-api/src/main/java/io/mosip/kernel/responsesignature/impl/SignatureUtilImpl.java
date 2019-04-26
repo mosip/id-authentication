@@ -57,11 +57,11 @@ import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 public class SignatureUtilImpl implements SignatureUtil {
 
 	/** The sync data request id. */
-	@Value("${mosip.kernel.signature.signature-request-id}")
+	@Value("${mosip.kernel.signature.signature-request-id:sign.response}")
 	private String syncDataRequestId;
 
 	/** The sync data version id. */
-	@Value("${mosip.kernel.signature.signature-version-id}")
+	@Value("${mosip.kernel.signature.signature-version-id:v1.0}")
 	private String syncDataVersionId;
 
 	/** The encrypt url. */
