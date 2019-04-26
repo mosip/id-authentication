@@ -301,7 +301,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-	//	Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
+		// Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
 		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
 		ReverseDatasyncReponseDTO reverseDatasyncReponseDTO = new ReverseDatasyncReponseDTO();
 		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("2");
@@ -328,7 +328,7 @@ public class PacketValidateProcessorTest {
 		when(env.getProperty(VALIDATESCHEMA)).thenReturn("true");
 		when(env.getProperty(VALIDATEFILE)).thenReturn("true");
 		when(env.getProperty(VALIDATECHECKSUM)).thenReturn("true");
-		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("true");
+		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
 		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("true");
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
 

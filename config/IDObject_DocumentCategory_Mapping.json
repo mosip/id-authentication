@@ -3,32 +3,11 @@
 		"fullName": {
 			"documentCategory": "proofOfIdentity"
 		},
-		"gender": {
-			"documentCategory": ""
-		},
-		"dateOfBirth": {
-			"documentCategory": ""
-		},
 		"parentOrGuardianRID": {
 			"documentCategory" : "proofOfRelationship"
 		},
 		"parentOrGuardianUIN": {
 			"documentCategory" : "proofOfRelationship"
-		},
-		"proofOfAddress": {
-			"documentCategory" : ""
-		},
-		"proofOfIdentity": {
-			"documentCategory" : ""
-		},
-		"proofOfRelationship": {
-			"documentCategory" : ""
-		},
-		"proofOfDateOfBirth": {
-			"documentCategory" : ""
-		},
-		"individualBiometrics": {
-			"documentCategory" : ""
 		},
 		"age": {
 			"documentCategory" : "proofOfIdentity"
@@ -51,20 +30,8 @@
 		"postalCode": {
 			"documentCategory" : "proofOfAddress"
 		},
-		"phone": {
-			"documentCategory" : ""
-		},
-		"email": {
-			"documentCategory" : ""
-		},
 		"localAdministrativeAuthority": {
 			"documentCategory" : "proofOfAddress"
-		},
-		"idschemaversion": {
-			"documentCategory" : ""
-		},
-		"cnienumber": {
-			"documentCategory" : ""
 		},
 		"city": {
 			"documentCategory" : "proofOfAddress"
