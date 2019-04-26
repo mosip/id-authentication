@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosio.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
 import io.mosip.registration.service.mdm.util.MdmRequestResponseBuilder;
 
@@ -40,8 +41,27 @@ public class MosipBioDeviceIntegrator {
 
 	}
 
-	public List<MosipBioCaptureResponseDto> getDeviceDiscovery() {
-		return null;
+	/**
+	 * discovers the device for the given device type
+	 * 
+	 * @param url
+	 *            - device info MDM service url
+	 * @param serviceName
+	 *            - MDM service name
+	 * @param deviceType
+	 *            - type of bio device
+	 * @param responseType
+	 *            - response format
+	 * 
+	 * @return List - list of device details
+	 * @throws RegBaseCheckedException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String serviceName, String deviceType,
+			Class<?> responseType) throws RegBaseCheckedException {
+
+		return (List<DeviceDiscoveryResponsetDto>) mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName,
+				MdmRequestResponseBuilder.buildDeviceDiscoveryRequest(deviceType), Object[].class);
 
 	}
 

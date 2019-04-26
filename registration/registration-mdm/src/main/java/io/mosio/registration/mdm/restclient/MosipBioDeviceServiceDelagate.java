@@ -50,6 +50,20 @@ public class MosipBioDeviceServiceDelagate {
 
 	private static final Logger LOGGER = AppConfig.getLogger(MosipBioDeviceServiceDelagate.class);
 
+	/**
+	 * Builds the request and passess it to REST client util
+	 * 
+	 * @param url
+	 *            - MDM service url
+	 * @param serviceName
+	 *            - MDM service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 * @return
+	 * @throws RegBaseCheckedException
+	 */
 	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
 
@@ -81,6 +95,18 @@ public class MosipBioDeviceServiceDelagate {
 
 	}
 
+	/**
+	 * prepares the request
+	 * 
+	 * @param requestHTTPDTO
+	 *            - holds the request data for a REST call
+	 * @param serviceName
+	 *            - service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
 			Class<?> responseType) {
 		requestHTTPDTO.setHttpMethod(

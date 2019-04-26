@@ -3,27 +3,20 @@ package io.mosip.registration.mdm.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Holds the dEvice details response from the MDM service
- * 
- * @author balamurugan.ramamoorthy
- *
- */
 @Getter
 @Setter
-public class DeviceInfoResponseData {
+public class DeviceDiscoveryResponsetDto {
 
 	/* type - “Fingerprint” “Face”, ,”Iris”, “Vein”  */
 	private String type;
+	private String deviceId;
 	/*
 	 * subType-(Fingerprint-“Slab”,“Single”,“Touchless”) (Iris-“Single”,“Double”)
 	 */
 	private String subType;
-	private String status;
-	private DeviceInfo deviceInfo;
-	private String deviceInfoSignature;
+	private String deviceStatus;
+	private String certification;
 	private String serviceVersion;
-	private String callbackId;
 	private String deviceSubId;
-
+	private String callbackId;
 }

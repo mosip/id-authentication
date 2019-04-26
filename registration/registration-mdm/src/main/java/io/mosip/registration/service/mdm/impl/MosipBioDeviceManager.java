@@ -12,6 +12,7 @@ import io.mosio.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
+import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegrator;
 import io.mosip.registration.service.mdm.util.MosioBioDeviceHelperUtil;
@@ -169,6 +170,33 @@ public class MosipBioDeviceManager {
 		}
 
 		return null;
+
+	}
+
+	/**
+	 * discovers the device for the given device type
+	 * 
+	 * @param deviceType
+	 *            - type of bio device
+	 * @return List - list of device details
+	 * @throws RegBaseCheckedException
+	 */
+	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String deviceType) throws RegBaseCheckedException {
+
+		List<DeviceDiscoveryResponsetDto> deviceDiscoveryResponsetDtos = null;
+		String url;
+		for (int port = portFrom; port <= portTo; port++) {
+
+			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_DISCOVERY_ENDPOINT);
+
+			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
+				deviceDiscoveryResponsetDtos = mosipBioDeviceIntegrator.getDeviceDiscovery(url,
+						MosipBioDeviceConstants.DEVICE_DISCOVERY_SERVICENAME, deviceType, null);
+				break;
+			}
+
+		}
+		return deviceDiscoveryResponsetDtos;
 
 	}
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureRequestDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponse;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
@@ -62,6 +63,13 @@ public class MdmRequestResponseBuilder {
 			}
 		}
 		return responseBioData;
+	}
+
+	public static DeviceDiscoveryRequestDto buildDeviceDiscoveryRequest(String deviceType) {
+		DeviceDiscoveryRequestDto deviceDiscoveryRequestDto = new DeviceDiscoveryRequestDto();
+		deviceDiscoveryRequestDto.setType(deviceType);
+
+		return deviceDiscoveryRequestDto;
 	}
 
 }
