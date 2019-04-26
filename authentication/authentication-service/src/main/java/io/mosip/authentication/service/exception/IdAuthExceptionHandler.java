@@ -181,8 +181,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
-
-			Collections.reverse(errorCodes);	
+			//Retrived error codes and error messages are in reverse order.
+			Collections.reverse(errorCodes);
+			Collections.reverse(errorMessages);
 				if (ex instanceof IDDataValidationException) {
 					IDDataValidationException validationException = (IDDataValidationException) ex;
 					List<Object[]> args = validationException.getArgs();
