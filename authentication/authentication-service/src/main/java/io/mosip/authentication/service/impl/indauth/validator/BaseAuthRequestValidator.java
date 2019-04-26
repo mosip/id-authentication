@@ -61,9 +61,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String BIO_SUB_TYPE = "bioSubType";
 
-	/** The Constant OTP. */
-	private static final String OTP = "otp";
-
 	/** The Constant UNKNOWN. */
 	private static final String UNKNOWN = "UNKNOWN";
 
@@ -111,8 +108,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
-	private static final Integer STATIC_PIN_LENGTH = 6;
-
 	/** The Constant finger. */
 	private static final String FINGER = "finger";
 
@@ -127,8 +122,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
-
-	private static final String STATICPIN = "staticPin";
 
 	/** The id info helper. */
 	@Autowired
@@ -371,15 +364,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
-		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
 			if (!errors.hasErrors()) {
 				validateFingerRequestCount(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
 			}
 		}
-		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors, BioAuthType.FGR_IMG.getType());
 			if (!errors.hasErrors()) {
 				validateFingerRequestCount(authRequestDTO, errors, BioAuthType.FGR_IMG.getType());
@@ -395,8 +386,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
-		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -460,8 +450,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
 
-		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -565,28 +554,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
 		return bioInfoList.parallelStream().anyMatch(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty()
 				&& bio.getBioType().equals(bioType.getType()));
-	}
-
-	/**
-	 * If DemoAuthType is Bio, then check same bio request type should not be
-	 * requested again.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param bioType        the bio type
-	 * @return true, if is duplicate bio type
-	 */
-	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioAuthType bioType) {
-		List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
-		List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-		;
-		Long bioTypeCount = Optional.ofNullable(bioData).map(List::parallelStream)
-				.map(stream -> stream
-						.filter(bio -> bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()))
-						.count())
-				.orElse((long) 0);
-
-		return bioTypeCount <= 1;
-
 	}
 
 	/**
@@ -1081,17 +1048,5 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private Set<String> getAllowedAuthTypes(String configKey) {
 		String intAllowedAuthType = env.getProperty(configKey);
 		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
-	}
-
-	private Pattern getPattern(String type) {
-		Pattern pattern = null;
-		if (type.equals(STATICPIN)) {
-			// TODO add property for staticpin.
-			pattern = Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH + "}");
-		} else if (type.equals(OTP)) {
-			pattern = Pattern.compile("^[0-9]{" + env.getProperty("mosip.kernel.otp.default-length") + "}");
-		}
-		return pattern;
-
 	}
 }
