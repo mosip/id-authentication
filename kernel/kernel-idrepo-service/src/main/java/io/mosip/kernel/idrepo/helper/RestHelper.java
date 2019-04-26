@@ -297,10 +297,16 @@ public class RestHelper {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
 						"request failed with status code :" + e.getRawStatusCode() + " -- For request -> " + request,
 						"\n\n" + e.getResponseBodyAsString());
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
+						"Throwing AuthenticationException",
+						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString()
+						+ " -- message --> "
+						+ JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString());
 				throw new AuthenticationException(
 						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString(),
 						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString(),
 						e.getRawStatusCode());
+				
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
 						e.getResponseBodyAsString());
