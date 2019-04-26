@@ -124,3 +124,8 @@ ID Repo provides default shard implementation where shards are decided based on 
 **2.4.	Encrypting/Decrypting Identity**    
 
 Identity stored in UIN DB is encrypted/decrypted outside the DB. Details on the approach of encryption/decryption is available here - [Identity Encryption/Decryption](https://github.com/mosip/mosip/wiki/Security#database-encryption)
+
+**2.5.	Database Model**
+
+ID Repo DB contains tables to store ID JSON, references to CBEFF and proof documents in DFS and salts to be used for hashing and encrypting UIN. Details DB model is as below.
+![ID Repo DB Model](_images/idrepo_datamodel.PNG)  
