@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.MediaType;
@@ -20,18 +19,23 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
+import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.ext.web.client.HttpResponse;
+import io.vertx.ext.web.client.WebClient;
 
 @Ignore
 @RunWith(VertxUnitRunner.class)
@@ -42,7 +46,7 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 	private int port;
 
 	AbstractApplicationContext context;
-	
+
 	@Before
 	public void before(TestContext testContext) throws IOException {
 		ServerSocket socket = new ServerSocket(0);
@@ -51,7 +55,7 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
 
-		 context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
+		context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
@@ -87,14 +91,27 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 		String reqJson = mapper.writeValueAsString(requestWrp);
 
 		final String length = Integer.toString(reqJson.length());
-		vertx.createHttpClient().put(port, "localhost", "/v1/uingenerator/uin")
-				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
-					context.assertEquals(response.statusCode(), 200);
-					response.bodyHandler(body -> {
-						JsonObject json = body.toJsonObject();
+		WebClient client = WebClient.create(vertx);
+		client.put(port, "localhost", "/v1/uingenerator/uin").putHeader("content-type", "application/json")
+				.putHeader("content-length", length).sendJson(requestWrp, response -> {
+					ServiceError error = null;
+					if (response.succeeded()) {
+						ObjectMapper objectMapper = new ObjectMapper();
+						HttpResponse<Buffer> httpResponse = response.result();
+						try {
+							error = objectMapper.readValue(httpResponse.bodyAsJsonObject().getValue("errors").toString()
+									.replace("[", "").replace("]", ""), ServiceError.class);
+						} catch (IOException exception) {
+							exception.printStackTrace();
+						}
+						context.assertEquals(httpResponse.statusCode(), 200);
+						context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
+						client.close();
 						async.complete();
-					});
-				}).write(reqJson).end();
+					} else {
+						System.out.println("Something went wrong " + response.cause().getMessage());
+					}
+				});
 
 	}
 

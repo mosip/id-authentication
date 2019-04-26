@@ -17,9 +17,9 @@ create schema if not exists regprc
 		machine_id 		character varying (10) not null,	-- no fk.  only populate dummy value.
 		curr_seq_no 	integer NOT NULL, 
 		
-		cr_by 		character varying (32) not null,
+		cr_by 		character varying (256) not null,
 		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (32),
+		upd_by  	character varying (256),
 		upd_dtimes 	timestamp
 		
 	)

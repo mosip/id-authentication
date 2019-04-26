@@ -1,6 +1,5 @@
 package io.mosip.kernel.uingenerator.test.service;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -40,7 +39,6 @@ public class UinGeneratorServiceTest {
 
 	@MockBean
 	private UinRepository uinRepository;
-	
 
 	@Test(expected = UinNotFoundException.class)
 	public void getUinNotFoundTest() {

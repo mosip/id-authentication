@@ -20,20 +20,26 @@ mvn javadoc:javadoc
 			<version>${project.version}</version>
 		</dependency>
  ```
- 
- **Prerequisite**
- 
- ```
- For successful digital signature, 
- cryptomanagerservice and keymanagerservice should be running.
- 
-```
- 
+
+
  **Application Properties**
  
  ```
- # Cryptomanager url
- mosip.kernel.signature.cryptomanager-encrypt-url=https://{environment}/cryptomanager/private/encrypt
+mosip.kernel.keygenerator.asymmetric-algorithm-name=RSA
+mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
+mosip.kernel.keygenerator.symmetric-algorithm-name=AES
+mosip.kernel.keygenerator.symmetric-algorithm-length=256
+mosip.kernel.crypto.symmetric-algorithm-name=AES
+mosip.kernel.crypto.asymmetric-algorithm-name=RSA
+
+mosip.kernel.signature.signature-request-id=SIGNATURE.REQUEST
+mosip.kernel.signature.signature-version-id=v1.0
+
+mosip.signed.header=response-signature
+
+mosip.kernel.signature.cryptomanager-encrypt-url=https://host/v1/cryptomanager/private/encrypt
+mosip.kernel.keymanager-service-publickey-url=https://host/v1/keymanager/publickey/{applicationId}
+auth.server.validate.url=https://host/v1.0/authorize/validateToken
  ```
  
  **Sample Usage**

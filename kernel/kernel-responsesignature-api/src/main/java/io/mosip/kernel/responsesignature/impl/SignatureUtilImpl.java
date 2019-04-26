@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -127,8 +129,15 @@ public class SignatureUtilImpl implements SignatureUtil {
 		try {
 			responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			if (ex.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed from CryptoManager");
+			}
+			if (ex.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed from CryptoManager");
+			}
+
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
 			} else {
@@ -201,9 +210,21 @@ public class SignatureUtilImpl implements SignatureUtil {
 		try {
 			keyManagerResponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw new SignatureUtilException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
-					SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage());
+		}
+		 catch (HttpClientErrorException | HttpServerErrorException ex) {
+			if (ex.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed for PublicKey");
+			}
+			if (ex.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed for PublicKey");
+			}
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+			if (!validationErrorsList.isEmpty()) {
+				throw new SignatureUtilClientException(validationErrorsList);
+			} else {
+				throw new SignatureUtilException(SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorCode(),
+						SigningDataErrorCode.REST_CLIENT_EXCEPTION.getErrorMessage());
+			}
 		}
 		String keyResponseBody = keyManagerResponse.getBody();
 		ExceptionUtils.getServiceErrorList(responseBody);

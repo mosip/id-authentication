@@ -2,7 +2,7 @@
 -- DROP TABLE IF EXISTS prereg.prid_seq CASCADE;
 CREATE TABLE prereg.prid_seq(
 	seq_no character varying(32) NOT NULL,
-	cr_by character varying(32) NOT NULL,
+	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	is_deleted boolean,
 	del_dtimes timestamp,

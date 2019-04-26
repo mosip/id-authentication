@@ -32,14 +32,14 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * Implementation for {@link UserMachineMappingService} 
+ * Implementation for {@link UserMachineMappingService}
  * 
  * @author Brahmananda Reddy
  *
  */
 @Service
 public class UserMachineMappingServiceImpl extends BaseService implements UserMachineMappingService {
-	
+
 	@Autowired
 	private BaseService baseService;
 	@Autowired
@@ -125,6 +125,22 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 		response.setErrorResponseDTOs(errorResponses);
 
 		return response;
+	}
+
+	@Override
+	public ResponseDTO isUserNewToMachine(String userId) {
+		LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+				"Started to find whether the user to machine or not");
+		ResponseDTO responseDTO = new ResponseDTO();
+		boolean isExists = machineMappingDAO.isExists(userId);
+
+		if (isExists) {
+			setSuccessResponse(responseDTO, null, null);
+		} else {
+			setErrorResponse(responseDTO, null, null);
+		}
+		return responseDTO;
+
 	}
 
 }

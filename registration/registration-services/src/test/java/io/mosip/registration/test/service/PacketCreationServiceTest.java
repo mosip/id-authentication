@@ -101,9 +101,12 @@ public class PacketCreationServiceTest {
 	public void intializeForTest() throws Exception {
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
+		
+		Map<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.IS_Child, true);
 
 		PowerMockito.mockStatic(SessionContext.class, ApplicationContext.class);
-		PowerMockito.doReturn(new HashMap<>()).when(SessionContext.class, "map");
+		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),

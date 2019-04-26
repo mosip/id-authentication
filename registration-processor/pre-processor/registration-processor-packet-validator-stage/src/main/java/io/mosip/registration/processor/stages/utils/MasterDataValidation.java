@@ -187,8 +187,7 @@ public class MasterDataValidation {
 				List<String> pathsegmentsEng = new ArrayList<>();
 
 				pathsegmentsEng.add(value);
-				ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
-				responseWrapper = (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
+                ResponseWrapper<StatusResponseDto> responseWrapper =  (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
 						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", ResponseWrapper.class);
 				statusResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 						StatusResponseDto.class);
