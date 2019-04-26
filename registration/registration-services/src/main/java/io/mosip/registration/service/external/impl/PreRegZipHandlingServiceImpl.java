@@ -139,32 +139,19 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 		String docTypeName = null;
 		if (moroccoIdentity != null) {
-			if (RegistrationConstants.POA_DOCUMENT.equalsIgnoreCase(docCatgory)
-					&& null != moroccoIdentity.getProofOfAddress()) {
-
-				docTypeName = moroccoIdentity.getProofOfAddress().getType();
-
-			} else if (RegistrationConstants.POI_DOCUMENT.equalsIgnoreCase(docCatgory)
-					&& null != moroccoIdentity.getProofOfIdentity()) {
-				docTypeName = moroccoIdentity.getProofOfIdentity().getType();
-
-			} else if (RegistrationConstants.POR_DOCUMENT.equalsIgnoreCase(docCatgory)
-					&& null != moroccoIdentity.getProofOfRelationship()) {
-				docTypeName = moroccoIdentity.getProofOfRelationship().getType();
-
-			} else if (RegistrationConstants.DOB_DOCUMENT.equalsIgnoreCase(docCatgory)
-					&& null != moroccoIdentity.getProofOfDateOfBirth()) {
-				docTypeName = moroccoIdentity.getProofOfDateOfBirth().getType();
-
-			} else {
-				docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
-			}
+			docTypeName = getDocTypeName(fileName, docCatgory, moroccoIdentity);
 		}
 
 		/*
 		 * checking and setting the doc type name based on the reg client primary
 		 * language irrespective of pre reg language
 		 */
+		docTypeName = getDocTypeForPrimaryLanguage(docTypeName);
+		documentDetailsDTO.setValue(docCatgory.concat("_")
+				.concat(docTypeName));
+	}
+
+	private String getDocTypeForPrimaryLanguage(String docTypeName) {
 		if (StringUtils.isNotEmpty(docTypeName)) {
 			List<DocumentType> documentTypes = documentTypeDAO.getDocTypeByName(docTypeName);
 			if (isListNotEmpty(documentTypes)
@@ -176,8 +163,32 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				}
 			}
 		}
-		documentDetailsDTO.setValue(docCatgory.concat("_")
-				.concat(docTypeName));
+		return docTypeName;
+	}
+
+	private String getDocTypeName(String fileName, String docCatgory, MoroccoIdentity moroccoIdentity) {
+		String docTypeName;
+		if (RegistrationConstants.POA_DOCUMENT.equalsIgnoreCase(docCatgory)
+				&& null != moroccoIdentity.getProofOfAddress()) {
+
+			docTypeName = moroccoIdentity.getProofOfAddress().getType();
+
+		} else if (RegistrationConstants.POI_DOCUMENT.equalsIgnoreCase(docCatgory)
+				&& null != moroccoIdentity.getProofOfIdentity()) {
+			docTypeName = moroccoIdentity.getProofOfIdentity().getType();
+
+		} else if (RegistrationConstants.POR_DOCUMENT.equalsIgnoreCase(docCatgory)
+				&& null != moroccoIdentity.getProofOfRelationship()) {
+			docTypeName = moroccoIdentity.getProofOfRelationship().getType();
+
+		} else if (RegistrationConstants.DOB_DOCUMENT.equalsIgnoreCase(docCatgory)
+				&& null != moroccoIdentity.getProofOfDateOfBirth()) {
+			docTypeName = moroccoIdentity.getProofOfDateOfBirth().getType();
+
+		} else {
+			docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+		}
+		return docTypeName;
 	}
 
 	/**
@@ -331,7 +342,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-	}
+	} 
 
 	private boolean isListNotEmpty(List<?> values) {
 		return values != null && !values.isEmpty();
