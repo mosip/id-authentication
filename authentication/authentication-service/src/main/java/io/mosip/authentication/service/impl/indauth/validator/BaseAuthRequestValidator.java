@@ -61,6 +61,8 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
 	
+	private static final String BIOMETRICS_TIMESTAMP = "biometrics/timestamp";
+	
 	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
 	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
@@ -256,11 +258,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			} else {
 
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-
 				validateDeviceInfo(bioData, errors);
-
 				validateBioType(bioData, errors);
-
 				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
 					validateFinger(authRequestDTO, bioData, errors);
 				}
@@ -270,7 +269,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				if (isMatchtypeEnabled(BioMatchType.FACE)) {
 					validateFace(authRequestDTO, bioData, errors);
 				}
-
+				bioData.parallelStream().forEach(bio -> validateReqTime(bio.getTimestamp(), errors, BIOMETRICS_TIMESTAMP));
 			}
 		}
 
