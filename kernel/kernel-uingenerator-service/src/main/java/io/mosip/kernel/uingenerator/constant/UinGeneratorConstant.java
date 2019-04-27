@@ -192,10 +192,14 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String TIME_OUT = "timeout";
 
+	public static final String SWAGGER_UI_JSON_FILENAME = "swagger.json";
+
+	public static final String SWAGGER_UI_PATH = "swagger-ui";
+
 	/**
 	 * The swagger ui json file path.
 	 */
-	public static final String SWAGGER_UI_JSON_PATH = "webroot/node_modules/swagger-ui-dist/swagger.json";
+	public static final String SWAGGER_UI_JSON_PATH = SWAGGER_UI_PATH + "/" + SWAGGER_UI_JSON_FILENAME;
 
 	/**
 	 * The swagger json template file.

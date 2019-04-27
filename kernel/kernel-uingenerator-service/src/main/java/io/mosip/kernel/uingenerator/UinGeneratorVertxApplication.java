@@ -2,7 +2,6 @@ package io.mosip.kernel.uingenerator;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,11 +66,11 @@ public class UinGeneratorVertxApplication {
 	/**
 	 * This method create or update swagger json for swagger ui after service start.
 	 */
-	//@PostConstruct
+	@PostConstruct
 	private void swaggerJSONFileUpdate() {
 		try {
 			TemplateManager templateManager;
-			URL url = this.getClass().getClassLoader().getResource(UinGeneratorConstant.SWAGGER_UI_JSON_PATH);
+			File swaggerJsonnFile = new File(UinGeneratorConstant.SWAGGER_UI_JSON_PATH);
 			templateManager = new TemplateManagerBuilderImpl().build();
 			Map<String, Object> map = new HashMap<>();
 			map.put("servletpath", contextPath);
@@ -79,7 +78,7 @@ public class UinGeneratorVertxApplication {
 					.getResourceAsStream(UinGeneratorConstant.SWAGGER_JSON_TEMPLATE);
 			InputStream out = templateManager.merge(is, map);
 			String merged = IOUtils.toString(out, StandardCharsets.UTF_8.name());
-			FileUtils.writeStringToFile(new File(url.toString()), merged, StandardCharsets.UTF_8.name());
+			FileUtils.writeStringToFile(swaggerJsonnFile, merged, StandardCharsets.UTF_8.name());
 
 		} catch (Exception e) {
 			LOGGER.warn(e.getMessage());
