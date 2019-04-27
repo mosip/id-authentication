@@ -36,6 +36,7 @@ import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -154,7 +155,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Throwable e = ex;
 		while (e.getCause() != null) {
-			if (e.getCause() instanceof BaseCheckedException) {
+			if (e.getCause() instanceof BaseCheckedException
+					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
 			} else {
 				break;
