@@ -74,8 +74,7 @@ public class UinGeneratorRouter {
 	/**
 	 * Creates router for vertx server
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 	public Router createRouter(Vertx vertx) {
@@ -103,7 +102,7 @@ public class UinGeneratorRouter {
 		configureHealthCheckEndpoint(vertx, router, servletPath);
 
 		router.route(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/*").handler(
-				StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot/node_modules/swagger-ui-dist"));
+				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH));
 		return router;
 	}
 
@@ -158,8 +157,7 @@ public class UinGeneratorRouter {
 	/**
 	 * update router for update the status of the given UIN
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
@@ -214,8 +212,7 @@ public class UinGeneratorRouter {
 	/**
 	 * Checks and generate uins
 	 * 
-	 * @param vertx
-	 *            vertx
+	 * @param vertx vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
 		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);
