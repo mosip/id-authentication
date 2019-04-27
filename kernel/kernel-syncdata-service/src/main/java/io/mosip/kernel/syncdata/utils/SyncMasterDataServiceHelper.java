@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -1540,15 +1544,20 @@ public class SyncMasterDataServiceHelper {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 			// Query parameters
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromUriString(baseUri)
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUri)
 					// Add query parameter
 					.queryParam("lastupdatedtimestamp", DateUtils.formatToISOString(lastUpdatedTime));
 
 			response = restTemplate.getForEntity(builder.toUriString(), String.class);
-		} catch (RestClientException ex) {
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
+			if (e.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed from AdminService");
+			}
+			if (e.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed from AdminService");
+			}
 			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
+					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + e.getMessage());
 		}
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;

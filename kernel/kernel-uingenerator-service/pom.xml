@@ -29,6 +29,16 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>${vertx.version}</version>
@@ -91,15 +101,14 @@
 			<artifactId>swagger-core</artifactId>
 			<version>${swagger-annotations.version}</version>
 		</dependency>
-     <dependency>
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<!-- <properties> <sonar.skip>true</sonar.skip> </properties> -->
-
-<!-- 	<build>
+<!-- 
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -142,8 +151,8 @@
 			</plugin>
 		</plugins>
 	</build> -->
-	
-		<build>
+
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
