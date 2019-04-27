@@ -2,17 +2,20 @@ package io.mosip.kernel.uingenerator.test.verticle;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.stream.Stream;
+
+import javax.sql.DataSource;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,9 +35,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
-@Ignore
 @RunWith(VertxUnitRunner.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinGeneratorExceptionTest {
 
 	private static Vertx vertx;
@@ -55,6 +56,37 @@ public class UinGeneratorExceptionTest {
 		Verticle[] verticles = { new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
+		cleanAllUins();
+	}
+
+	private static void cleanAllUins() {
+		DataSource dataSource = (DataSource) context.getBean("dataSource");
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			con = dataSource.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM kernel.uin");
+			while (rs.next()) {
+				System.out.println("UIN=" + rs.getString("uin") + ", Status=" + rs.getString("uin_status"));
+			}
+			System.out.println("Deleting all UINs..");
+			stmt.executeUpdate("TRUNCATE TABLE kernel.uin");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (stmt != null)
+					stmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@AfterClass
