@@ -9,7 +9,6 @@
 		<version>0.10.6</version>
 	</parent>
 
-	<groupId>registration-mdm</groupId>
 	<artifactId>registration-mdm</artifactId>
 	<name>registration-mdm</name>
 	<description>Maven project of MOSIP Registration MDM</description>
