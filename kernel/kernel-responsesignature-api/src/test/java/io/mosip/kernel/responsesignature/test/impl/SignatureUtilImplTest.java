@@ -61,7 +61,7 @@ import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest(DateUtils.class)
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.management.*" })
-public class SigningUtilImplTest {
+public class SignatureUtilImplTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
