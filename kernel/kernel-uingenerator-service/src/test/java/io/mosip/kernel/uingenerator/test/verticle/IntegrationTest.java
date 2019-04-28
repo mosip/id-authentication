@@ -1,8 +1,11 @@
 package io.mosip.kernel.uingenerator.test.verticle;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.AfterClass;
@@ -18,7 +21,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -34,6 +39,8 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.logging.SLF4JLogDelegateFactory;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -47,10 +54,14 @@ public class IntegrationTest {
 	private static Vertx vertx;
 	private static int port;
 	private static AbstractApplicationContext context;
+	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static Logger LOGGER;
 
 	@BeforeClass
 	public static void setup(TestContext testContext) throws IOException {
 		System.setProperty("vertx.logger-delegate-factory-class-name", SLF4JLogDelegateFactory.class.getName());
+		objectMapper.registerModule(new JavaTimeModule());
+		LOGGER = LoggerFactory.getLogger(IntegrationTest.class);
 		ServerSocket socket = new ServerSocket(0);
 		port = socket.getLocalPort();
 		socket.close();
@@ -61,8 +72,8 @@ public class IntegrationTest {
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
 		try {
-			System.out.println("\nWaiting for UIN generation : 15s\n");
-			Thread.sleep(15000);
+			LOGGER.info("Waiting for UIN generation : 5s");
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -78,30 +89,34 @@ public class IntegrationTest {
 
 	@Test
 	public void getUinSuccessTest(TestContext context) {
-		System.out.println("getUinSuccessTest execution...");
-		ObjectMapper objectMapper = new ObjectMapper();
+		LOGGER.info("getUinSuccessTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
 		client.get(port, "localhost", "/v1/uingenerator/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> httpResponse = ar.result();
-				System.out.println(httpResponse.bodyAsString());
+				LOGGER.info(httpResponse.bodyAsString());
 				context.assertEquals(200, httpResponse.statusCode());
-				// TODO: check for uin fetched
+				try {
+					ResponseWrapper<?> uinResp = objectMapper.readValue(httpResponse.bodyAsString(),
+							ResponseWrapper.class);
+					UinResponseDto dto = objectMapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+					context.assertNotNull(dto.getUin());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				client.close();
 				async.complete();
 			} else {
-				System.out.println("Something went wrong " + ar.cause().getMessage());
+				LOGGER.error(ar.cause().getMessage());
 			}
 		});
 	}
 
 	@Test
 	public void uinStatusUpdateSuccessTest(TestContext context) throws JsonProcessingException {
-		System.out.println("uinStatusUpdateSuccessTest execution...");
+		LOGGER.info("uinStatusUpdateSuccessTest execution...");
 		Async async = context.async();
-		ObjectMapper mapper = new ObjectMapper();
-
 		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setSupportedMediaTypes(
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
@@ -111,7 +126,7 @@ public class IntegrationTest {
 
 		ResponseWrapper<?> uinResp = restTemplate.getForObject("http://localhost:" + port + "/v1/uingenerator/uin",
 				ResponseWrapper.class);
-		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+		UinResponseDto dto = objectMapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
 
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
 		requestDto.setUin(dto.getUin());
@@ -122,7 +137,7 @@ public class IntegrationTest {
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
-		String reqJson = mapper.writeValueAsString(requestWrp);
+		String reqJson = objectMapper.writeValueAsString(requestWrp);
 
 		final String length = Integer.toString(reqJson.length());
 		WebClient client = WebClient.create(vertx);
@@ -130,9 +145,9 @@ public class IntegrationTest {
 				.putHeader("content-length", length).sendJson(requestWrp, response -> {
 					UinStatusUpdateReponseDto uinStatusUpdateReponseDto = null;
 					if (response.succeeded()) {
-						ObjectMapper objectMapper = new ObjectMapper();
 						HttpResponse<Buffer> httpResponse = response.result();
-						System.out.println(httpResponse.bodyAsString());
+						LOGGER.info(httpResponse.bodyAsString());
+						context.assertEquals(httpResponse.statusCode(), 200);
 						try {
 							uinStatusUpdateReponseDto = objectMapper.readValue(
 									httpResponse.bodyAsJsonObject().getValue("response").toString(),
@@ -140,12 +155,11 @@ public class IntegrationTest {
 						} catch (IOException exception) {
 							exception.printStackTrace();
 						}
-						context.assertEquals(httpResponse.statusCode(), 200);
 						context.assertEquals(uinStatusUpdateReponseDto.getStatus(), UinGeneratorConstant.ASSIGNED);
 						client.close();
 						async.complete();
 					} else {
-						System.out.println("Something went wrong " + response.cause().getMessage());
+						LOGGER.error( response.cause().getMessage());
 					}
 				});
 
@@ -153,10 +167,8 @@ public class IntegrationTest {
 
 	@Test
 	public void uinStausUpdateUinNotFoundExpTest(TestContext context) throws IOException {
-		System.out.println("uinStausUpdateUinNotFoundExpTest execution...");
+		LOGGER.info("uinStausUpdateUinNotFoundExpTest execution...");
 		Async async = context.async();
-		ObjectMapper mapper = new ObjectMapper();
-
 		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setSupportedMediaTypes(
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
@@ -170,29 +182,31 @@ public class IntegrationTest {
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
-		String reqJson = mapper.writeValueAsString(requestWrp);
+		String reqJson = objectMapper.writeValueAsString(requestWrp);
 
 		final String length = Integer.toString(reqJson.length());
 		WebClient client = WebClient.create(vertx);
 		client.put(port, "localhost", "/v1/uingenerator/uin").putHeader("content-type", "application/json")
 				.putHeader("content-length", length).sendJson(requestWrp, response -> {
-					ServiceError error = null;
 					if (response.succeeded()) {
-						ObjectMapper objectMapper = new ObjectMapper();
 						HttpResponse<Buffer> httpResponse = response.result();
-						System.out.println(httpResponse.bodyAsString());
-						try {
-							error = objectMapper.readValue(httpResponse.bodyAsJsonObject().getValue("errors").toString()
-									.replace("[", "").replace("]", ""), ServiceError.class);
-						} catch (IOException exception) {
-							exception.printStackTrace();
-						}
+						LOGGER.info(httpResponse.bodyAsString());
 						context.assertEquals(httpResponse.statusCode(), 200);
-						context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
+						List<ServiceError> validationErrorsList = ExceptionUtils
+								.getServiceErrorList(httpResponse.bodyAsString());
+						assertTrue(validationErrorsList.size() > 0);
+						boolean errorFound = false;
+						for (ServiceError sr : validationErrorsList) {
+							if (sr.getErrorCode().equals(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode())) {
+								errorFound = true;
+								break;
+							}
+						}
+						context.assertTrue(errorFound);
 						client.close();
 						async.complete();
 					} else {
-						System.out.println("Something went wrong " + response.cause().getMessage());
+						LOGGER.error( response.cause().getMessage());
 					}
 				});
 
@@ -200,10 +214,8 @@ public class IntegrationTest {
 
 	@Test
 	public void uinStatusUpdateStatusNotFoundExpTest(TestContext context) throws IOException {
-		System.out.println("uinStatusUpdateStatusNotFoundExpTest execution...");
+		LOGGER.info("uinStatusUpdateStatusNotFoundExpTest execution...");
 		Async async = context.async();
-		ObjectMapper mapper = new ObjectMapper();
-
 		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setSupportedMediaTypes(
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
@@ -213,7 +225,7 @@ public class IntegrationTest {
 
 		ResponseWrapper<?> uinResp = restTemplate.getForObject("http://localhost:" + port + "/v1/uingenerator/uin",
 				ResponseWrapper.class);
-		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+		UinResponseDto dto = objectMapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
 
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
 		requestDto.setUin(dto.getUin());
@@ -224,31 +236,32 @@ public class IntegrationTest {
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
-		String reqJson = mapper.writeValueAsString(requestWrp);
+		String reqJson = objectMapper.writeValueAsString(requestWrp);
 
 		final String length = Integer.toString(reqJson.length());
 
 		WebClient client = WebClient.create(vertx);
 		client.put(port, "localhost", "/v1/uingenerator/uin").putHeader("content-type", "application/json")
 				.putHeader("content-length", length).sendJson(requestWrp, response -> {
-					ServiceError error = null;
 					if (response.succeeded()) {
-						ObjectMapper objectMapper = new ObjectMapper();
 						HttpResponse<Buffer> httpResponse = response.result();
-						System.out.println(httpResponse.bodyAsString());
-						try {
-							error = objectMapper.readValue(httpResponse.bodyAsJsonObject().getValue("errors").toString()
-									.replace("[", "").replace("]", ""), ServiceError.class);
-						} catch (IOException exception) {
-							exception.printStackTrace();
-						}
+						LOGGER.info(httpResponse.bodyAsString());
 						context.assertEquals(httpResponse.statusCode(), 200);
-						context.assertEquals(error.getErrorCode(),
-								UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode());
+						List<ServiceError> validationErrorsList = ExceptionUtils
+								.getServiceErrorList(httpResponse.bodyAsString());
+						context.assertTrue(validationErrorsList.size() > 0);
+						boolean errorFound = false;
+						for (ServiceError sr : validationErrorsList) {
+							if (sr.getErrorCode().equals(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode())) {
+								errorFound = true;
+								break;
+							}
+						}
+						context.assertTrue(errorFound);
 						client.close();
 						async.complete();
 					} else {
-						System.out.println("Something went wrong " + response.cause().getMessage());
+						LOGGER.error(response.cause().getMessage());
 					}
 				});
 	}

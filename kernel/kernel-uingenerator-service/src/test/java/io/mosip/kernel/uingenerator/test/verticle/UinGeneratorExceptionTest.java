@@ -1,11 +1,14 @@
 package io.mosip.kernel.uingenerator.test.verticle;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -17,8 +20,7 @@ import org.junit.runner.RunWith;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
@@ -28,6 +30,8 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.logging.SLF4JLogDelegateFactory;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -41,11 +45,13 @@ public class UinGeneratorExceptionTest {
 	private static Vertx vertx;
 	private static int port;
 	private static AbstractApplicationContext context;
+	private static Logger LOGGER;
 
 	@BeforeClass
 	public static void setup(TestContext testContext) throws IOException {
 		System.setProperty("vertx.logger-delegate-factory-class-name", SLF4JLogDelegateFactory.class.getName());
 		System.setProperty("mosip.kernel.uin.uins-to-generate", "0");
+		LOGGER = LoggerFactory.getLogger(UinGeneratorExceptionTest.class);
 		ServerSocket socket = new ServerSocket(0);
 		port = socket.getLocalPort();
 		socket.close();
@@ -99,28 +105,29 @@ public class UinGeneratorExceptionTest {
 
 	@Test
 	public void getUinExceptionTest(TestContext context) {
-		System.out.println("getUinExceptionTest execution...");
-		ObjectMapper objectMapper = new ObjectMapper();
+		LOGGER.info("getUinExceptionTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
 		client.get(port, "localhost", "/v1/uingenerator/uin").send(ar -> {
-			ServiceError error = null;
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> httpResponse = ar.result();
 				System.out.println(httpResponse.bodyAsString());
-				try {
-					httpResponse.bodyAsJsonObject().getValue("errors");
-					error = objectMapper.readValue(httpResponse.bodyAsJsonObject().getValue("errors").toString()
-							.replace("[", "").replace("]", ""), ServiceError.class);
-				} catch (IOException exception) {
-					exception.printStackTrace();
+				context.assertEquals(httpResponse.statusCode(), 200);
+				List<ServiceError> validationErrorsList = ExceptionUtils
+						.getServiceErrorList(httpResponse.bodyAsString());
+				assertTrue(validationErrorsList.size() > 0);
+				boolean errorFound = false;
+				for (ServiceError sr : validationErrorsList) {
+					if (sr.getErrorCode().equals(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode())) {
+						errorFound = true;
+						break;
+					}
 				}
-				context.assertEquals(200, httpResponse.statusCode());
-				context.assertEquals(error.getErrorCode(), UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
+				context.assertTrue(errorFound);
 				client.close();
 				async.complete();
 			} else {
-				System.out.println("Something went wrong " + ar.cause().getMessage());
+				LOGGER.error(ar.cause().getMessage());
 			}
 		});
 	}
