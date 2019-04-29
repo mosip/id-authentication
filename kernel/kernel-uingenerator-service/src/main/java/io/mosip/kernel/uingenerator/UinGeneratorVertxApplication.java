@@ -1,9 +1,7 @@
 package io.mosip.kernel.uingenerator;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +35,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
 /**
  * Uin Generator Vertx Application
@@ -54,8 +53,9 @@ public class UinGeneratorVertxApplication {
 
 	/**
 	 * The field for Logger
+	 * 
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorVertxApplication.class);
+	private static Logger LOGGER;
 
 	/**
 	 * Server context path.
@@ -68,10 +68,9 @@ public class UinGeneratorVertxApplication {
 	 */
 	@PostConstruct
 	private void swaggerJSONFileUpdate() {
-
 		try {
 			TemplateManager templateManager;
-			URL url = this.getClass().getClassLoader().getResource(UinGeneratorConstant.SWAGGER_UI_JSON_PATH);
+			File swaggerJsonnFile = new File(UinGeneratorConstant.SWAGGER_UI_JSON_PATH);
 			templateManager = new TemplateManagerBuilderImpl().build();
 			Map<String, Object> map = new HashMap<>();
 			map.put("servletpath", contextPath);
@@ -79,21 +78,21 @@ public class UinGeneratorVertxApplication {
 					.getResourceAsStream(UinGeneratorConstant.SWAGGER_JSON_TEMPLATE);
 			InputStream out = templateManager.merge(is, map);
 			String merged = IOUtils.toString(out, StandardCharsets.UTF_8.name());
-			FileUtils.writeStringToFile(new File(url.toString()), merged, StandardCharsets.UTF_8.name());
+			FileUtils.writeStringToFile(swaggerJsonnFile, merged, StandardCharsets.UTF_8.name());
 
-		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
-			LOGGER.error(e.getMessage());
+		} catch (Exception e) {
+			LOGGER.warn(e.getMessage());
 		}
-
 	}
 
 	/**
 	 * main method for the application
 	 * 
-	 * @param args
-	 *            the argument
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
+		System.setProperty("vertx.logger-delegate-factory-class-name", SLF4JLogDelegateFactory.class.getName());
+		LOGGER = LoggerFactory.getLogger(UinGeneratorVertxApplication.class);
 		loadPropertiesFromConfigServer();
 	}
 

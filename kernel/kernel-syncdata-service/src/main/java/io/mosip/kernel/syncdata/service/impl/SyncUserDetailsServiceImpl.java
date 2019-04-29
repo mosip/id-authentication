@@ -11,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -103,7 +105,12 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			response = restTemplate.postForEntity(userDetailsUri.toString()+ "/registrationclient",
 					userDetailReqEntity, String.class);
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
-
+			if (e.getRawStatusCode() == 401) {
+				throw new BadCredentialsException("Authentication failed from AuthManager");
+			}
+			if (e.getRawStatusCode() == 403) {
+				throw new AccessDeniedException("Authentication failed from AuthManager");
+			}
 			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), e);
 		}

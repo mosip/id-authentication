@@ -59,7 +59,7 @@ public class OldEncrypt {
 	 * @throws InvalidKeySpecException  the invalid key spec exception
 	 * @throws IOException              Signals that an I/O exception has occurred.
 	 */
-	@PostMapping(path = "/identity/oldEncrypt")
+	@PostMapping(path = "/oldEncrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto oldEncrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {

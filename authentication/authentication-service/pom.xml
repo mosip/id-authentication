@@ -72,10 +72,14 @@
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-cryptomanager-service</artifactId>
+			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-crypto-jce</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 

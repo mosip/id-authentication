@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -45,7 +47,9 @@ import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * The Class BaseAuthRequestValidator.
@@ -56,11 +60,13 @@ import io.mosip.kernel.core.util.DateUtils;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+	
+	private static final String BIOMETRICS_TIMESTAMP = "biometrics/timestamp";
+	
+	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
+	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
 	private static final String BIO_SUB_TYPE = "bioSubType";
-
-	/** The Constant OTP. */
-	private static final String OTP = "otp";
 
 	/** The Constant UNKNOWN. */
 	private static final String UNKNOWN = "UNKNOWN";
@@ -109,8 +115,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
-	private static final Integer STATIC_PIN_LENGTH = 6;
-
 	/** The Constant finger. */
 	private static final String FINGER = "finger";
 
@@ -126,8 +130,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
 
-	private static final String STATICPIN = "staticPin";
-
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
@@ -139,6 +141,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The master Data Manager. */
 	@Autowired
 	private MasterDataManager masterDataManager;
+
+	@Autowired
+	private PinValidatorImpl pinvalidator;
 
 	/** The email Pattern. */
 	private Pattern emailPattern;
@@ -197,7 +202,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 						new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(pinOpt.get(), PIN_VALUE, errors, getPattern(STATICPIN));
+				try {
+					pinvalidator.validatePin(pinOpt.get());
+				} catch (InvalidPinException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
+							"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinOpt.get());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { PIN_VALUE },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
@@ -209,24 +223,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(otp.get(), OTP2, errors, getPattern(OTP));
+				try {
+					pinvalidator.validatePin(otp.get());
+				} catch (InvalidPinException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateOtpValue",
+							"INVALID_INPUT_PARAMETER - OtppinValue - value -> " + otp.get());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { OTP2 },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
 			}
-		}
-	}
-
-	/**
-	 * checks the static Pin value.
-	 * 
-	 * @param pinInfo
-	 * @param errors
-	 * @param pattern
-	 */
-	private void checkAdditionalFactorsValue(String info, String type, Errors errors, Pattern pattern) {
-		if (Objects.nonNull(pattern) && !pattern.matcher(info).matches()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"Invalid Input " + type + " pin Value");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { type }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -252,11 +258,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			} else {
 
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-
 				validateDeviceInfo(bioData, errors);
-
 				validateBioType(bioData, errors);
-
 				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
 					validateFinger(authRequestDTO, bioData, errors);
 				}
@@ -266,7 +269,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				if (isMatchtypeEnabled(BioMatchType.FACE)) {
 					validateFace(authRequestDTO, bioData, errors);
 				}
-
+				bioData.parallelStream().forEach(bio -> validateReqTime(bio.getTimestamp(), errors, BIOMETRICS_TIMESTAMP));
 			}
 		}
 
@@ -315,13 +318,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 					}
 				} else {
-					/*errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
-							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());*/
-						errors.rejectValue(REQUEST,
-								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { BIO_SUB_TYPE  },
-								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					/*
+					 * errors.rejectValue(REQUEST,
+					 * IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new
+					 * Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
+					 * IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					 */
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { BIO_SUB_TYPE },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 			}
 		}
@@ -363,15 +368,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
-		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
 			if (!errors.hasErrors()) {
 				validateFingerRequestCount(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
 			}
 		}
-		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors, BioAuthType.FGR_IMG.getType());
 			if (!errors.hasErrors()) {
 				validateFingerRequestCount(authRequestDTO, errors, BioAuthType.FGR_IMG.getType());
@@ -387,8 +390,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
-		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -452,8 +454,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
 
-		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -555,30 +556,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
-		return bioInfoList.parallelStream()
-				.anyMatch(bio ->bio.getBioType() != null && !bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()));
-	}
-
-	/**
-	 * If DemoAuthType is Bio, then check same bio request type should not be
-	 * requested again.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param bioType        the bio type
-	 * @return true, if is duplicate bio type
-	 */
-	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioAuthType bioType) {
-		List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
-		List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-		;
-		Long bioTypeCount = Optional.ofNullable(bioData).map(List::parallelStream)
-				.map(stream -> stream
-						.filter(bio -> bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()))
-						.count())
-				.orElse((long) 0);
-
-		return bioTypeCount <= 1;
-
+		return bioInfoList.parallelStream().anyMatch(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty()
+				&& bio.getBioType().equals(bioType.getType()));
 	}
 
 	/**
@@ -908,6 +887,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 			return new SimpleEntry<>(language, idInfo);
 		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
+		
+		langCount.keySet().forEach(langCode -> validateLangCode(langCode, errors, "request", "request/demographics/" + demoMatchType.getIdMapping().getIdname() + "/language"));
 
 		for (long value : langCount.values()) {
 			if (value > 1) {
@@ -1074,16 +1055,34 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		String intAllowedAuthType = env.getProperty(configKey);
 		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
 	}
-
-	private Pattern getPattern(String type) {
-		Pattern pattern = null;
-		if (type.equals(STATICPIN)) {
-			// TODO add property for staticpin.
-			pattern = Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH + "}");
-		} else if (type.equals(OTP)) {
-			pattern = Pattern.compile("^[0-9]{" + env.getProperty("mosip.kernel.otp.default-length") + "}");
+	
+	/**
+	 * validateSecondayLangCode method used to validate secondaryLangCode 
+	 * for kyc request
+	 *
+	 * @param string the {@link KycAuthRequestDTO}
+	 * @param errors the errors
+	 * @param field the field
+	 */
+	protected void validateLangCode(String langCode, Errors errors, String field, String fieldHierarchy) {
+		if(Objects.nonNull(langCode)) {
+			Set<String> allowedLang;
+			String languages = env.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+			if (null != languages && languages.contains(",")) {
+				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+			} else {
+				allowedLang = new HashSet<>();
+				allowedLang.add(languages);
+			}
+			
+			if(!allowedLang.contains(langCode)) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						INVALID_INPUT_PARAMETER + field + " : " + langCode);
+				errors.rejectValue(field, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
+						new Object[] { field.concat(" : " + langCode) },
+						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
+			}
 		}
-		return pattern;
-
+		
 	}
 }
