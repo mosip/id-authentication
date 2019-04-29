@@ -176,7 +176,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 		biometricBox.setVisible(false);	
 		retryBox.setVisible(false);
 		biometricTypecombo.getItems().removeAll(biometricTypecombo.getItems());
-		biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_HAND, RegistrationConstants.LEFT_HAND, RegistrationConstants.THUMB, RegistrationConstants.RIGHT_IRIS, RegistrationConstants.LEFT_IRIS);
+		if(RegistrationConstants.DISABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+			biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_IRIS, RegistrationConstants.LEFT_IRIS);
+		} else if(RegistrationConstants.DISABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+			biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_HAND, RegistrationConstants.LEFT_HAND, RegistrationConstants.THUMB);
+		} else {
+			biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_HAND, RegistrationConstants.LEFT_HAND, RegistrationConstants.THUMB, RegistrationConstants.RIGHT_IRIS, RegistrationConstants.LEFT_IRIS);
+		}
 		continueBtn.setDisable(true);
 		
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
