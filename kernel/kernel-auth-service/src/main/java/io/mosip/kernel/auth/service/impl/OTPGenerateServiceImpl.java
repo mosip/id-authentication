@@ -83,7 +83,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			}
 			return otpGenerateResponseDto;
 		} catch (Exception exp) {
-			throw new RuntimeException(exp);
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
 		}
 	}
 

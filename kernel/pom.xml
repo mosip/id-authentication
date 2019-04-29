@@ -149,7 +149,7 @@
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
-		<module>kernel-responsesignature-api</module>
+		<module>kernel-crypto-signature</module>
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>

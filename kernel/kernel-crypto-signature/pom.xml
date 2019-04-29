@@ -10,8 +10,8 @@
 		<version>0.10.7</version>
 	</parent>
 
-	<artifactId>kernel-responsesignature-api</artifactId>
-	<name>kernel-responsesignature-api</name>
+	<artifactId>kernel-crypto-signature</artifactId>
+	<name>kernel-crypto-signature</name>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

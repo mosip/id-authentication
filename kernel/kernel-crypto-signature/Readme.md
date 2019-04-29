@@ -1,8 +1,6 @@
 ## kernel-responsesignature-api
-This api can be used to digitally sign the response of a microservice.
 
-
-[Background & Design](../../docs/design/kernel/kernel-responsesignature.md)
+[Background & Design](../../docs/design/kernel/kernel-cryptography-digitalsignature.md)
 
 
 **Api Documentation**

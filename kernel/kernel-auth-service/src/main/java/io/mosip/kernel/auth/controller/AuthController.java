@@ -239,9 +239,6 @@ public class AuthController {
 			res.addCookie(cookie);
 		} catch (NonceExpiredException exp) {
 			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
-		} catch (AuthManagerException e) {
-
-			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		}
 		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
 		return responseWrapper;

@@ -7,6 +7,7 @@ import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
@@ -61,7 +62,15 @@ public class TokenValidator {
 		} catch (SignatureException e) {
 			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		} catch (JwtException e) {
-			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
+			if( e instanceof ExpiredJwtException)
+			{
+				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(), AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
+			}
+			else
+			{
+				throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
+			}
+			
 		}
 		return claims;
 	}
@@ -73,7 +82,7 @@ public class TokenValidator {
 			MosipUser mosipUser = buildMosipUser(claims);
 			return new MosipUserWithToken(mosipUser, token);
 		} else {
-			throw new RuntimeException("Invalid Token");
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 	}
 
@@ -84,12 +93,11 @@ public class TokenValidator {
 			MosipUser mosipUser = buildMosipUser(claims);
 			return new MosipUserWithToken(mosipUser, token);
 		} else {
-			throw new RuntimeException("Invalid Token");
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 	}
 
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		System.out.println("Test token at "+System.currentTimeMillis()+" : "+token);
 		Claims claims = getClaims(token);
 		MosipUserDto mosipUserDto = buildDto(claims);
 		return new MosipUserDtoToken(mosipUserDto, token, null, 0, null, null);
