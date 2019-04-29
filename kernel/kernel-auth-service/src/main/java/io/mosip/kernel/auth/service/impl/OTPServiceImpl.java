@@ -369,4 +369,34 @@ public class OTPServiceImpl implements OTPService {
 		}
 		return authNResponseDto;
 	}
+	
+	private String getOtpMessage(String appId) {
+		String template = null;
+		OtpTemplateResponseDto otpTemplateResponseDto = null;
+		final String url = mosipEnvironment.getMasterDataTemplateApi()
+				+"/"+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
+		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);  
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			try {
+				otpTemplateResponseDto = mapper.readValue(responseBody, OtpTemplateResponseDto.class);
+			}catch(Exception e)
+			{
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+			}
+		}
+		List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
+		for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
+			if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
+				template = otpTemplateDto.getFileText();
+
+			}
+		}
+		return template;
+}
 }
