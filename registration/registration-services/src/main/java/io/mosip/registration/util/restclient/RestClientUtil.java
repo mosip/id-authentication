@@ -8,6 +8,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -88,7 +89,7 @@ public class RestClientUtil {
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
 		if (responseEntity != null && responseEntity.hasBody()) {
-			responseMap = new HashMap<>();
+			responseMap = new LinkedHashMap<>();
 			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
 			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}

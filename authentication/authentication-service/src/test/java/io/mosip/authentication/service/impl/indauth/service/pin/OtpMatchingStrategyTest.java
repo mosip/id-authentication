@@ -64,7 +64,7 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException, RestServiceException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -73,7 +73,8 @@ public class OtpMatchingStrategyTest {
 		otpResponseDTO.put("status", "success");
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
-		matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
+		int matchScore = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
+		assertEquals(0, matchScore);
 	}
 
 	@Test

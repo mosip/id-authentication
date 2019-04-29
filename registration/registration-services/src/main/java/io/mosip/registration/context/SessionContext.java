@@ -67,6 +67,18 @@ public class SessionContext {
 	public static Map<String, Object> map() {
 		return sessionContext.getMapObject();
 	}
+	
+	/**
+	 * Return the Type casted object based on the input
+	 * 
+	 * @param map
+	 * @param key
+	 * @param returnType
+	 * @return
+	 */
+	public static <T> T getValue(Map<String,Object> map, String key, Class<T> returnType){
+		return returnType.cast(map.get(key));
+	}
 
 	/**
 	 * Reading userContext from sessioncontext
@@ -129,7 +141,7 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		sessionContext.authTokenDTO = authTokenDTO;
+		sessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**
@@ -331,6 +343,9 @@ public class SessionContext {
 		 * @return userId
 		 */
 		public String getUserId() {
+			if(userId==null) {
+				return RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
 			return userId;
 		}
 

@@ -40,6 +40,10 @@ public class RegistrationUpdate {
 
 	public RegistrationUpdate() throws IOException {
 		getLocalManifest();
+
+		if (localManifest != null) {
+			deleteUnNecessaryJars();
+		}
 	}
 
 	private static String SLASH = "/";
@@ -170,17 +174,15 @@ public class RegistrationUpdate {
 	}
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
-		Long t1=System.currentTimeMillis();
+		Long t1 = System.currentTimeMillis();
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		for (String jarFile : checkableJars) {
-
-			
 
 			executorService.execute(new Runnable() {
 				public void run() {
 
 					try {
-						System.out.println("Current Thread*****"+Thread.currentThread());
+						System.out.println("Current Thread*****" + Thread.currentThread());
 						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
 						checkForJarFile(version, folder, jarFile);
 					} catch (IOException e) {
@@ -188,7 +190,7 @@ public class RegistrationUpdate {
 					}
 				}
 			});
-			
+
 		}
 		try {
 			executorService.shutdown();
@@ -197,7 +199,7 @@ public class RegistrationUpdate {
 			e.printStackTrace();
 		}
 		Long t2 = System.currentTimeMillis() - t1;
-		System.out.println("Time in Millis-------->>>>"+t2/(1000));
+		System.out.println("Time in Millis-------->>>>" + t2 / (1000));
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
@@ -351,6 +353,47 @@ public class RegistrationUpdate {
 			throw new IOException("No Disk Space");
 		}
 
+	}
+
+	private void deleteUnNecessaryJars() {
+		
+		//Bin Folder
+		File bin = new File(binFolder);
+		
+		//Lib Folder
+		File lib = new File(libFolder);
+
+		//Manifest's Attributes
+		Map<String, Attributes> localManifestAttributes = null;
+		if (localManifest != null) {
+			localManifestAttributes = localManifest.getEntries();
+		}
+
+		List<String> deletableJars = new LinkedList<>();
+
+		if (bin.listFiles().length != 0) {
+			addDeletableJars(bin.listFiles(), deletableJars, localManifestAttributes);
+		}
+		if (lib.listFiles().length != 0) {
+			addDeletableJars(lib.listFiles(), deletableJars, localManifestAttributes);
+		}
+
+		if (!deletableJars.isEmpty()) {
+			try {
+				deleteJars(deletableJars);
+			} catch (io.mosip.kernel.core.exception.IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void addDeletableJars(File[] jarFiles, List<String> deletableJars,
+			Map<String, Attributes> localManifestAttributes) {
+		for (File jar : jarFiles) {
+			if (localManifestAttributes == null || !localManifestAttributes.containsKey(jar.getName())) {
+				deletableJars.add(jar.getName());
+			}
+		}
 	}
 
 }

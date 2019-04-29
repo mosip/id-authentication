@@ -134,21 +134,14 @@ export class TimeSelectionComponent implements OnInit {
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
-      // const cutOffDate = new Date();
-      // cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
-      // if (new Date(Date.parse(element.date)) < cutOffDate) {
-      //   element.inActive = true;
-      // } else {
-      //   element.inActive = false;
-      // }
       element.inActive = false;
-      element.displayDate =
-        element.date.split('-')[2] +
-        ' ' +
-        appConstants.MONTHS[Number(element.date.split('-')[1])] +
-        ', ' +
-        element.date.split('-')[0];
-      element.displayDay = appConstants.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
+        // element.date.split('-')[2] +
+        // ' ' +
+        // appConstants.MONTHS[Number(element.date.split('-')[1])] +
+        // ', ' +
+        // element.date.split('-')[0];
+      element.displayDay = appConstants.DAYS[localStorage.getItem('langCode')][new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -251,13 +244,11 @@ export class TimeSelectionComponent implements OnInit {
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
                 if (booking[0]) {
                   this.sharedService.addNameList(name);
-                  const appointmentDateTime = Utils.getBookingDateTime(
-                    booking[0].appointment_date,
-                    booking[0].time_slot_from
-                  );
+                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
                   this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
                 }
               });
+              this.sharedService.setSendNotification(true);
               const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
             });

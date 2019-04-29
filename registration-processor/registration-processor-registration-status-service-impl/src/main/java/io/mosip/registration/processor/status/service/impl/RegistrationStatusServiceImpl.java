@@ -343,8 +343,6 @@ public class RegistrationStatusServiceImpl
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
-		String statusCode = entity.getStatusCode();
-		Integer retryCount = entity.getRetryCount() != null ? entity.getRetryCount() : 0;
 		
 		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(
 				entity);

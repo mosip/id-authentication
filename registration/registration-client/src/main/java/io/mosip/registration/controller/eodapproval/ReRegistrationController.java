@@ -113,6 +113,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - PAGE_LOADING - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		reloadTableView();
+		id.setResizable(false);
+		acknowledgementFormPath.setResizable(false);
 	}
 
 	/**

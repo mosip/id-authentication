@@ -25,9 +25,6 @@ public class RequestDTO {
 	/** variable to hold timestamp value */
 	private String timestamp;
 
-	/** variable to hold transactionID value */
-	private String transactionID;
-
 	/** variable to hold identity value */
 	private IdentityDTO demographics;
 

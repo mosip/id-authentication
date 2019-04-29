@@ -17,13 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -32,6 +31,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.idrepo.exception.AuthenticationException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
@@ -71,10 +71,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Autowired
 	private Environment env;
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
-
 	@Resource
 	private Map<String, String> id;
 
@@ -93,6 +89,28 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
 				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNAUTHORIZED);
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(AuthenticationException.class)
+	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAuthenticationException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(
+				ex.getErrorTexts().isEmpty() ? "KER-ATH-401" : ex.getErrorCode(),
+				ex.getErrorTexts().isEmpty() ? "Authentication Failed" : ex.getErrorText());
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.valueOf(ex.getStatusCode()));
 	}
 
 	/*

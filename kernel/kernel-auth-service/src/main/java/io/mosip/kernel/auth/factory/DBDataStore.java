@@ -21,6 +21,7 @@ import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -213,6 +214,12 @@ public class DBDataStore implements IDataStore {
 
 	@Override
 	public MosipUserListDto getListOfUsersDetails(List<String> userDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MosipUserSaltList getAllUserDetailsWithSalt() throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

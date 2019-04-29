@@ -1,7 +1,5 @@
 package io.mosip.preregistration.notification.dto;
 
-import java.util.List;
-
 import lombok.Data;
 
 /**
@@ -15,5 +13,5 @@ public class ResponseDTO {
 	/**
 	 * The list of {@link TemplateResponseDTO}.
 	 */
-	List<TemplateResponseDTO> templates;
+	String message;
 }

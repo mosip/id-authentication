@@ -6,8 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -66,10 +69,10 @@ public class ClientJarEncryption {
 	 */
 	public byte[] encyrpt(byte[] data, byte[] encodedString) {
 		// Generate AES Session Key
-		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
+		SecretKey symmetricSecretKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.ENCRYPT_MODE);
+		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricSecretKey, data,
+				Cipher.ENCRYPT_MODE, null);
 	}
 
 	/**
@@ -167,8 +170,16 @@ public class ClientJarEncryption {
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
+					File rxtxJarFolder = new File(args[8]);
+					
+					//lib files
+					LinkedList<File> jars = new LinkedList<>( Arrays.asList(listOfJars.listFiles()));
+					
+					//rxtx files
+					jars.addAll(Arrays.asList(rxtxJarFolder.listFiles()));
+					
 					// Adding lib files into map
-					for (File files : listOfJars.listFiles()) {
+					for (File files : jars) {
 
 						if (files.getName().contains(REGISTRATION)) {
 
@@ -210,8 +221,9 @@ public class ClientJarEncryption {
 
 					writeManifest(fileOutputStream, manifest);
 
-					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
-							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
+					//Removed manifest file from zip content
+//					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
+//							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
 
 					aes.writeFileToZip(fileNameByBytes, zipFilename);
 

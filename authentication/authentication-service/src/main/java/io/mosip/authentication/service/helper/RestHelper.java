@@ -3,6 +3,7 @@ package io.mosip.authentication.service.helper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
@@ -10,9 +11,13 @@ import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
@@ -27,8 +32,10 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -82,6 +89,13 @@ public class RestHelper {
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
+	
+	private String authToken;
+	
+	private int retry;
+	
+	@Autowired
+	private Environment env;
 
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
@@ -93,30 +107,34 @@ public class RestHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
-		Object response;
+		Object response = null;
 		try {
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
 			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
-			if (request.getTimeout() != null) {
-				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				checkErrorResponse(response, request.getResponseType());
-				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-				return (T) response;
-			} else {
-				response = request(request, getSslContext()).block();
-				checkErrorResponse(response, request.getResponseType());
-				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-				return (T) response;
+			if (retry <= 1) {
+				if (request.getTimeout() != null) {
+					response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout()))
+							.block();
+				} else {
+					response = request(request, getSslContext()).block();
+				}
 			}
+			checkErrorResponse(response, request.getResponseType());
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					PREFIX_RESPONSE + response);
+			return (T) response;
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
 							+ " \n Response Body : \n" + e.getResponseBodyAsString());
-			throw handleStatusError(e, request.getResponseType());
+			Object statusError = handleStatusError(e, request.getResponseType());
+			if (statusError instanceof RestServiceException) {
+				throw ((RestServiceException) statusError);
+			} else {
+				return requestSync(request);
+			}
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
@@ -129,6 +147,7 @@ public class RestHelper {
 				throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 		} finally {
+			retry = 0;
 			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Response sent at : " + responseTime);
@@ -168,7 +187,10 @@ public class RestHelper {
 	 */
 	private SslContext getSslContext() throws RestServiceException {
 		try {
-			return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+			return SslContextBuilder
+					.forClient()
+					.trustManager(InsecureTrustManagerFactory.INSTANCE)
+					.build();
 		} catch (SSLException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
@@ -209,16 +231,75 @@ public class RestHelper {
 		} else {
 			uri = method.uri(builder -> builder.build());
 		}
+		
+		uri.cookie("Authorization", getAuthToken());
 
 		if (request.getRequestBody() != null) {
 			exchange = uri.syncBody(request.getRequestBody()).retrieve();
 		} else {
 			exchange = uri.retrieve();
 		}
-
+		
 		monoResponse = exchange.bodyToMono(request.getResponseType());
 
 		return monoResponse;
+	}
+
+	private String getAuthToken() {
+		if (EmptyCheckUtils.isNullEmpty(authToken)) {
+			generateAuthToken();
+			return authToken;
+		} else {
+			return authToken;
+		}
+	}
+
+	private void generateAuthToken() {
+		ObjectNode requestBody = mapper.createObjectNode();
+		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));
+		requestBody.put("secretKey", env.getProperty("auth-token-generator.rest.secretKey"));
+		requestBody.put("appId", env.getProperty("auth-token-generator.rest.appId"));
+		RequestWrapper<ObjectNode> request = new RequestWrapper<>();
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequest(requestBody);
+		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri"))
+			.post()
+			.syncBody(request)
+			.exchange()
+			.block();
+		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
+		ResponseCookie responseCookie = response
+			.cookies()
+			.get("Authorization")
+			.get(0);
+		if (responseBody.get("response").get("status").asText().contentEquals("success")) {
+			authToken = responseCookie.getValue();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "generateAuthToken",
+					"Auth token generated successfully and set");
+		}
+	}
+	
+	private boolean checkAuthTokenExpired() {
+		ClientResponse response = WebClient.create(env.getProperty("auth-token-validator.rest.uri"))
+			.post()
+			.cookie("Authorization", getAuthToken())
+			.exchange()
+			.block();
+		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
+		if (!responseBody.get("errors").isNull()
+				&& responseBody.get("errors").size() > 0
+				&& Objects.nonNull(responseBody.get("errors").get(0).get("errorCode"))
+				&& !responseBody.get("errors").get(0).get("errorCode").isNull()
+				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+			authToken = null;
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+					"Auth token expired. setting authToken as null to regenerate.");
+			return true;
+		} else {
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+					"Auth token is valid.");
+			return false;
+		}
 	}
 
 	/**
@@ -232,12 +313,20 @@ public class RestHelper {
 		try {
 			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
-					&& responseNode.get(ERRORS).size() > 0) {
+					&& responseNode.get(ERRORS).size() > 0
+					&& !responseNode.get(ERRORS).get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
 				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, responseNode.toString(),
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
+			} else if (responseNode.has(ERRORS) && responseNode.get(ERRORS).size() > 0
+					&& responseNode.get(ERRORS).get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+				retry++;
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+						"errorCode -> KER-ATH-401" + " - retry++");
 			}
 		} catch (IOException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
@@ -250,16 +339,23 @@ public class RestHelper {
 	 * @param responseType the response type
 	 * @return the mono<? extends throwable>
 	 */
-	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) {
+	private Object handleStatusError(WebClientResponseException e, Class<?> responseType) {
 		try {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
+				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1 && checkAuthTokenExpired()) {
+					retry++;
+					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "METHOD_HANDLE_STATUS_ERROR",
+							"token expired" + " - retry++");
+					return true;
+				} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - CLIENT_ERROR");
-				return new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+				return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 						e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
+				}
 			} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR");

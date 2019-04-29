@@ -56,7 +56,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	private static final String apiName = "AuditLog";
 	private static final String requestJsonName = "AuditLogRequest";
 	private static final String outputJsonName = "AuditLogOutput";
-	private static final String auditLog_URI = "/auditmanager/v1.0/audits";
+	private static final String auditLog_URI = "/v1/auditmanager/audits";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -151,7 +151,8 @@ public class AuditLog extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
+		
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
 		if (status) {
@@ -159,12 +160,11 @@ public class AuditLog extends BaseTestCase implements ITest {
 			logger.info("Status Code is : " + statusCode);
 
 			if (statusCode == 201) {
-				// varible part
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
-				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.validateDB(queryStr, DeviceDto.class);
-				if (valid) {
+				String queryStr = "SELECT count(*) FROM master.machine_spec WHERE id='" + id + "'";
+				long count = KernelMasterDataR.validateDBCount(queryStr);
+				if (count==1) {
 					finalStatus = "Pass";
 				} else {
 					finalStatus = "Fail";

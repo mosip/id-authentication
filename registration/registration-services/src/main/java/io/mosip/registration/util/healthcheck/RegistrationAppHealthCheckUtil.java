@@ -68,12 +68,16 @@ public class RegistrationAppHealthCheckUtil {
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Network Checker had been called.");
+		return checkServiceAvailability("https://www.mosip.io/");
+	}
+
+	public static boolean checkServiceAvailability(String serviceUrl) {
 		boolean isNWAvailable = false;
 		try {
 			RestClientUtil.turnOffSslChecking();
-			//acceptAnySSLCerticficate();
+			// acceptAnySSLCerticficate();
 			System.setProperty("java.net.useSystemProxies", "true");
-			URL url = new URL("https://www.mosip.io/");
+			URL url = new URL(serviceUrl);
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);

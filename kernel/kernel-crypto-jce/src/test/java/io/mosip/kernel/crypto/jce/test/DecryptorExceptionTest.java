@@ -63,4 +63,12 @@ public class DecryptorExceptionTest {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
 		decryptorImpl.symmetricDecrypt(secretKeySpec, data);
 	}
+	@Test(expected = NoSuchAlgorithmException.class)
+	public void testAESSymmetricSaltDecrypt() throws java.security.NoSuchAlgorithmException {
+		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
+		SecureRandom random = new SecureRandom();
+		byte[] keyBytes = new byte[16];
+		random.nextBytes(keyBytes);
+		decryptorImpl.symmetricDecrypt(secretKeySpec, data,keyBytes);
+	}
 }

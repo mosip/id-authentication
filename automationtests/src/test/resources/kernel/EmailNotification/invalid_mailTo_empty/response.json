@@ -1,10 +1,13 @@
 {
-    "timestamp": 1550219750037,
-    "status": 200,
-    "errors": [
-        {
-            "errorCode": "KER-NOE-001",
-            "errorMessage": "To must be valid. It can't be empty or null."
-        }
-    ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-16T13:49:37.139Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-NOE-001",
+      "message": "To must be valid. It can't be empty or null."
+    }
+  ]
 }

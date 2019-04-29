@@ -33,6 +33,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 
 	public SyncMasterDataWithTimestamp() {
@@ -49,7 +53,7 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchmasterdata = "/syncdata/v1.0/masterdata/10001/";
+	private static final String fetchmasterdata = "/v1/syncdata/masterdata/10001/";
 	
 	static String dest = "";
 	static String folderPath = "kernel/SyncMasterDataWithTimestamp";
@@ -61,7 +65,7 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		// testName.set(object.get("testCaseName").toString());

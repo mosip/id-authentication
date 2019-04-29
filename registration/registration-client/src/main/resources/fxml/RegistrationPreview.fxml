@@ -28,23 +28,6 @@
          <children>
             <GridPane GridPane.columnIndex="1">
                <children>
-                  <GridPane styleClass="consent" GridPane.rowIndex="1">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <RadioButton fx:id="yesRadio" mnemonicParsing="false" text="%yes" />
-                              <RadioButton fx:id="noRadio" mnemonicParsing="false" text="%no" />
-                              <Label fx:id="consent" text="%consent" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </GridPane>
                   <GridPane fx:id="mainContent">
                      <children>
                         <WebView fx:id="webView" prefHeight="545.0" prefWidth="912.0" />
@@ -79,7 +62,7 @@
          <children>
             <GridPane GridPane.columnIndex="1">
                <children>
-                  <GridPane fx:id="backButton" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                  <GridPane fx:id="backButton" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPrevPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">                           
                            <graphic>
@@ -98,7 +81,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                   </GridPane>
-                  <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Button fx:id="nextButton" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                         	<graphic>
@@ -119,9 +102,11 @@
                   </GridPane>
                </children>
                <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints percentHeight="10.0" />
