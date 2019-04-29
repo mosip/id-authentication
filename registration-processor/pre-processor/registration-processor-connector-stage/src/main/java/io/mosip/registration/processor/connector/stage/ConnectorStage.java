@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.connector.stage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.core.json.JsonObject;
@@ -39,6 +41,10 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	 */
 	private MosipEventBus mosipEventBus;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	/**
 	 * deploys this verticle
 	 */
@@ -56,27 +62,39 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 	/**
 	 * contains all the routes in this stage
 	 * @param router
 	 */
-	private void routes(Router router) {
-		router.post("/registration-connector/registration-processor/connector/v1.0").handler(ctx -> {
-			processURL(ctx);
-		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, failureHandler.failure().getMessage());	
-		});
+	private void routes(MosipRouter router) {
+		router.post("/registration-connector/registration-processor/connector/v1.0");
+		router.handler(this::processURL, this::failure);
 		
-		router.get("/registration-connector/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(context->{
-			this.setResponse(context, context.failure().getMessage());
-		});
+		router.get("/registration-connector/health");
+		router.handler(this::health);
 		
+	}
+	
+	/**
+	 * This is for failure handler
+	 * 
+	 * @param routingContext
+	 */
+	private void failure(RoutingContext routingContext) {
+		this.setResponse(routingContext, routingContext.failure().getMessage());
+	}
+
+	/**
+	 * This is for health check up
+	 * 
+	 * @param routingContext
+	 */
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
 	}
 
 	/**

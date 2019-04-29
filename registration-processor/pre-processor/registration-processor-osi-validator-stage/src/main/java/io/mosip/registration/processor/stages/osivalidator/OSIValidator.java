@@ -357,7 +357,7 @@ public class OSIValidator {
 	
 	private String bigIntegerToString(BigInteger number ) {
 
-		return String.valueOf(number);
+		return number!=null?String.valueOf(number):null;
 	}
 
 	private int getApplicantAge(String registrationId) throws IOException {

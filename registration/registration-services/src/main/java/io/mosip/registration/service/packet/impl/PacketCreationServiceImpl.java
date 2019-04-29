@@ -8,6 +8,7 @@ import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -17,7 +18,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
@@ -94,7 +94,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private CbeffImpl cbeffI;
 	@Autowired
 	private JsonValidator jsonValidator;
-	private static Random random = new Random(5000);
+	private static SecureRandom random = new SecureRandom(String.valueOf(5000).getBytes());
 	@Autowired
 	private AuditFactory auditFactory;
 	@Autowired
@@ -336,9 +336,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							(int) Math.round(applicantDocumentDTO.getQualityScore()),
 							RegistrationConstants.FACE_EXCEPTION);
 				} else {
-					createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
-							(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
-							RegistrationConstants.VALIDATION_TYPE_FACE);
+					if(!(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+						createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
+								(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
+								RegistrationConstants.VALIDATION_TYPE_FACE);
+					}
 				}
 			}
 
@@ -402,7 +404,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			Map<String, String> birUUIDs) {
 		if (isListNotEmpty(fingerprints)) {
 			for (FingerprintDetailsDTO fingerprint : fingerprints) {
-				if (personType.equals(RegistrationConstants.INDIVIDUAL)
+				if ((personType.equals(RegistrationConstants.INDIVIDUAL) || personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
 						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());

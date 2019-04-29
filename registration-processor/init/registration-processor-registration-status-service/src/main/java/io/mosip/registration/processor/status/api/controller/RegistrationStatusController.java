@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -44,6 +46,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
+
 /**
  * The Class RegistrationStatusController.
  */
@@ -65,21 +68,22 @@ public class RegistrationStatusController {
 	@Autowired
 	RegistrationStatusRequestValidator registrationStatusRequestValidator;
 
-	
+	/** Token validator class */
+	@Autowired
+	TokenValidator tokenValidator;
 
 	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.processor.registration.status.id";
 	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	@Autowired
 	private Environment env;
-	
-Gson gson = new GsonBuilder().create();
+
+	Gson gson = new GsonBuilder().create();
 
 	/**
 	 * Search.
 	 *
-	 * @param registrationIds
-	 *            the registration ids
+	 * @param registrationIds the registration ids
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
@@ -87,15 +91,20 @@ Gson gson = new GsonBuilder().create();
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
-	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest) throws RegStatusAppException {
+	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest,
+			@CookieValue(value = "Authorization") String token) throws RegStatusAppException {
+		tokenValidator.validate(token, "registrationstatus");
 		try {
-			RegistrationStatusRequestDTO registrationStatusRequestDTO =gson.fromJson(jsonRequest, RegistrationStatusRequestDTO.class);
-			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
-			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
+			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,
+					RegistrationStatusRequestDTO.class);
+			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
+					env.getProperty(REG_STATUS_SERVICE_ID));
+			List<RegistrationStatusDto> registrations = registrationStatusService
+					.getByIds(registrationStatusRequestDTO.getRequest());
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_UNKNOWN_EXCEPTION, e);
 		}
 	}

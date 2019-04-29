@@ -2,8 +2,10 @@ package io.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
+@Setter
 public class RegistrationStatusSubRequestDto implements Serializable {
 
 	

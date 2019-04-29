@@ -45,6 +45,8 @@ export class AcknowledgementComponent implements OnInit {
   fileBlob: Blob;
 
   notificationRequest = new FormData();
+  bookingDataPrimary = '';
+  bookingDataSecondary = '';
 
   constructor(private sharedService: SharedService, 
               private dialog: MatDialog, 
@@ -62,9 +64,7 @@ export class AcknowledgementComponent implements OnInit {
     } else {
       this.getRegistrationCenterInSecondaryLanguage(this.usersInfo[0].registrationCenter.id, this.secondaryLang);
     }
-    if (!this.usersInfo[0].bookingData) {
-      this.usersInfo[0].bookingData = Utils.getBookingDateTime(this.usersInfo[0].regDto.appointment_date, this.usersInfo[0].regDto.time_slot_from);
-    }
+    this.formatDateTime();
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
@@ -78,7 +78,41 @@ export class AcknowledgementComponent implements OnInit {
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['acknowledgement'];
     });
+    
     this.getTemplate();
+    
+    if (this.sharedService.getSendNotification()) {
+      this.sharedService.resetSendNotification();
+      this.automaticNotification();
+    }
+  }
+
+  formatDateTime() {
+    for(let i = 0; i < this.usersInfo.length; i++) {
+      if (!this.usersInfo[i].bookingData) {
+        this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(this.usersInfo[i].regDto.appointment_date, 
+          this.usersInfo[i].regDto.time_slot_from, 
+          localStorage.getItem('langCode'));
+        this.usersInfo[i].bookingTimePrimary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
+        this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(this.usersInfo[i].regDto.appointment_date, 
+          this.usersInfo[i].regDto.time_slot_from, 
+          localStorage.getItem('secondaryLangCode'));
+          this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
+        } else {
+          const date = this.usersInfo[i].bookingData.split(',');
+          this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(date[0], date[1], localStorage.getItem('langCode'));
+          this.usersInfo[i].bookingTimePrimary = Utils.formatTime(date[1]);
+          this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(date[0], date[1], localStorage.getItem('secondaryLangCode'));
+          this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(date[1]);
+        }
+    }
+  }
+
+  automaticNotification() {
+    setTimeout(() => {
+      console.log('Timeout hit after 3 seconds. Sending notification');
+      this.sendNotification([], false);
+    }, 3000);
   }
 
   getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
@@ -147,7 +181,7 @@ export class AcknowledgementComponent implements OnInit {
       .subscribe(applicantNumber => {
         console.log(applicantNumber);
         if (applicantNumber !== undefined) {
-          this.sendNotification(applicantNumber);
+          this.sendNotification(applicantNumber, true);
         }
       });
   }
@@ -160,19 +194,19 @@ export class AcknowledgementComponent implements OnInit {
     });
   }
 
- async sendNotification(applicantNumber: string) {
+ async sendNotification(applicantNumber, additionalRecipient: boolean) {
     console.log(this.usersInfo);
     this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
       console.log(user);
-      const bookingData = user.bookingData.split(',');
       const notificationDto = new NotificationDtoModel(
         user.fullName,
         user.preRegId,
-        bookingData[0] + bookingData[1],
-        bookingData[2],
+        user.bookingDataPrimary,
+        user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
-        applicantNumber[0] === undefined ? null : applicantNumber[0]
+        applicantNumber[0] === undefined ? null : applicantNumber[0],
+        additionalRecipient
         );
       console.log(notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);
@@ -183,8 +217,8 @@ export class AcknowledgementComponent implements OnInit {
       this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
         console.log(response);
-        this.notificationRequest = new FormData();
-      })
+      });
+      this.notificationRequest = new FormData();
     });
   }
 }

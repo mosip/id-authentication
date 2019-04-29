@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,8 +72,8 @@ public class CheckSumValidation {
 		
 		byte[] packetOsiHash = checkSumGeneration.generatePacketOSIHash(hashSequence2, registrationId);
 
-		Boolean isDataCheckSumEqual = Arrays.equals(generatedHash, packetDataHashByte);
-		Boolean isOsiCheckSumEqual = Arrays.equals(packetOsiHash, packetOsiHashByte);
+		Boolean isDataCheckSumEqual = MessageDigest.isEqual(generatedHash, packetDataHashByte);
+		Boolean isOsiCheckSumEqual = MessageDigest.isEqual(packetOsiHash, packetOsiHashByte);
 
 		if ((!isDataCheckSumEqual) || (!isOsiCheckSumEqual)) {
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);

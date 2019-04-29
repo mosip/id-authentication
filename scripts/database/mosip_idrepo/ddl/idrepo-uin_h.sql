@@ -9,9 +9,9 @@ CREATE TABLE idrepo.uin_h(
 	reg_id character varying(39) NOT NULL,
 	status_code character varying(32) NOT NULL,
 	lang_code character varying(3) NOT NULL,
-	cr_by character varying(32) NOT NULL,
+	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(32),
+	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
@@ -44,4 +44,3 @@ COMMENT ON COLUMN idrepo.uin_h.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE idrepo.uin_h OWNER TO sysadmin;
 -- ddl-end --
-

@@ -158,6 +158,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void initialize(URL location, ResourceBundle resources) {
 		reloadTableView();
 		tableCellColorChangeListener();
+		id.setResizable(false);
+		statusComment.setResizable(false);
 	}
 
 	private void tableCellColorChangeListener() {

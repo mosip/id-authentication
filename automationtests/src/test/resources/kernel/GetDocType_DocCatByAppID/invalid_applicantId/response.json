@@ -1,10 +1,13 @@
 {
-  "timestamp": 1551440883149,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T13:13:33.379Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-150",
-      "errorMessage": "Document Category- Document Type mapping not found"
+      "message": "Document Category- Document Type mapping not found"
     }
   ]
 }

@@ -17,7 +17,7 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
  */
 @SpringBootApplication
 
-@ComponentScan(basePackages= {"io.mosip.registration.processor.status.*","io.mosip.registration.processor.rest.client.*"},
+@ComponentScan(basePackages= {"io.mosip.registration.processor.status.*","io.mosip.registration.processor.rest.client.*","io.mosip.registration.processor.core.token.*"},
 excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {RegistrationStatusBeanConfig.class, RestConfigBean.class}))public class RegistrationStatusApiApplication
 {
     public static void main( String[] args )

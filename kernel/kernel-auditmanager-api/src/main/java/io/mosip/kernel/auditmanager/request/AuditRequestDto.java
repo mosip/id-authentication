@@ -56,7 +56,7 @@ public class AuditRequestDto {
 	private String applicationName;
 
 	@NotNull
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 256)
 	private String sessionUserId;
 
 	@Size(min = 1, max = 128)
@@ -71,7 +71,7 @@ public class AuditRequestDto {
 	private String idType;
 
 	@NotNull
-	@Size(min = 1, max = 255)
+	@Size(min = 1, max = 256)
 	private String createdBy;
 
 	@Size(max = 128)

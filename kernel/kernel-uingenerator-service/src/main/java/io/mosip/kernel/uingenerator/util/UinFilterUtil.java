@@ -1,5 +1,6 @@
 package io.mosip.kernel.uingenerator.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * Filter class to validate a uin against custom filters
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -89,6 +91,15 @@ public class UinFilterUtil {
 	private static final String SEQ_DEC = "98765432109876543210";
 
 	/**
+	 * List of Cyclic numbers
+	 */
+	private static final String[] CYCLIC_NUM = { "142857", "0588235294117647", "052631578947368421",
+			"0434782608695652173913", "0344827586206896551724137931", "0212765957446808510638297872340425531914893617",
+			"0169491525423728813559322033898305084745762711864406779661",
+			"016393442622950819672131147540983606557377049180327868852459",
+			"010309278350515463917525773195876288659793814432989690721649484536082474226804123711340206185567" };
+
+	/**
 	 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>
 	 * If repeating digit limit is 2, then <b>Regex:</b> (\d)\d{0,2}\1<br/>
 	 * <b>Explanation:</b><br/>
@@ -142,7 +153,8 @@ public class UinFilterUtil {
 	/**
 	 * Checks if the input id is valid by passing the id through the filters
 	 * 
-	 * @param id The input id to validate
+	 * @param id
+	 *            The input id to validate
 	 * @return true if the input id is valid
 	 */
 	public boolean isValidId(String id) {
@@ -150,13 +162,14 @@ public class UinFilterUtil {
 				|| regexFilter(id, conjugativeEvenDigitsLimitPattern)
 				|| firstAndLastDigitsValidation(id, digitsGroupLimit)
 				|| firstAndLastDigitsReverseValidation(id, reverseDigitsGroupLimit) || restrictedAdminFilter(id)
-				|| validateNotStartWith(id) || validateLength(id));
+				|| validateNotStartWith(id) || validateLength(id) || restrictedCyclicNumFilter(id));
 	}
 
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id The input id to validate
+	 * @param id
+	 *            The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {
@@ -166,7 +179,8 @@ public class UinFilterUtil {
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
-	 * @param id The input id to validate
+	 * @param id
+	 *            The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
@@ -179,8 +193,10 @@ public class UinFilterUtil {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #repeatingPattern}, {@link #repeatingBlockPattern})
 	 * 
-	 * @param id      The input id to validate
-	 * @param pattern The input regex Pattern
+	 * @param id
+	 *            The input id to validate
+	 * @param pattern
+	 *            The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private static boolean regexFilter(String id, Pattern pattern) {
@@ -191,8 +207,10 @@ public class UinFilterUtil {
 	 * Checks whether the first x digits are different from the last x digits
 	 * reversed
 	 * 
-	 * @param id                      The input UIN id to validate
-	 * @param reverseDigitsGroupLimit reverseDigitsGroupLimit
+	 * @param id
+	 *            The input UIN id to validate
+	 * @param reverseDigitsGroupLimit
+	 *            reverseDigitsGroupLimit
 	 * @return true if the filter matches
 	 */
 	private boolean firstAndLastDigitsReverseValidation(String id, int reverseDigitsGroupLimit) {
@@ -206,8 +224,10 @@ public class UinFilterUtil {
 	 * Check whether the first x digits are different from the last x digits
 	 * 
 	 * 
-	 * @param id               The input UIN id to validate
-	 * @param digitsGroupLimit digitsGroupLimit
+	 * @param id
+	 *            The input UIN id to validate
+	 * @param digitsGroupLimit
+	 *            digitsGroupLimit
 	 * @return true if filter matches
 	 */
 
@@ -216,30 +236,69 @@ public class UinFilterUtil {
 	}
 
 	/**
-	 * Method to validate that the prid should not contains the specified digit at
+	 * Method to validate that the uin id should not contains the specified digit at
 	 * first index
 	 * 
-	 * @param id The input id to validate
+	 * @param id
+	 *            The input id to validate
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {
 		if (notStartWith != null && !notStartWith.isEmpty()) {
 			for (String str : notStartWith) {
-				if (id.startsWith(str))
+				if (id.startsWith(str)) {
 					return true;
+
+				}
+
 			}
 		}
 		return false;
 	}
 
 	/**
-	 * to check whether the generated id is same as configured length
+	 * To check whether the generated id is same as configured length
 	 * 
-	 * @param id generated uin
+	 * @param id
+	 *            generated uin
 	 * @return true if generated uin length is same as configured length ,otherwise
 	 *         false
 	 */
 	private boolean validateLength(String id) {
 		return id.length() != uinLength;
+	}
+
+	/**
+	 * Checks the input id for {@link #restrictedCyclicNumFilter} filter
+	 * 
+	 * @param id
+	 *            generated uin
+	 * 
+	 * @return true if the id contain any Cyclic number
+	 * 
+	 */
+	private boolean restrictedCyclicNumFilter(String id) {
+
+		List<String> cyclicNumList = new ArrayList<>();
+		cyclicNumList.add(CYCLIC_NUM[0]);// (6 digit)
+		cyclicNumList.add(CYCLIC_NUM[1]);// (16 digit)
+		cyclicNumList.add(CYCLIC_NUM[2]);// (18 digit)
+		cyclicNumList.add(CYCLIC_NUM[3]);// (22 digit)
+		cyclicNumList.add(CYCLIC_NUM[4]); // (28 digit)
+		cyclicNumList.add(CYCLIC_NUM[5]); // (46 digit)
+		cyclicNumList.add(CYCLIC_NUM[6]);// (58 digit)
+		cyclicNumList.add(CYCLIC_NUM[7]);// (60 digit)
+		cyclicNumList.add(CYCLIC_NUM[8]); // (96 digit)
+
+		for (String cyclicNum : cyclicNumList) {
+			if (id.length() >= cyclicNum.length()) {
+				String cyclicNumRegex = "(" + cyclicNum + ")";
+				Pattern cyclicNumPattern = Pattern.compile(cyclicNumRegex);
+				if (regexFilter(id, cyclicNumPattern)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

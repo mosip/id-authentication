@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -32,13 +31,10 @@ import io.mosip.registration.processor.packet.manager.exception.FilePathNotAcces
 @Service
 public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStream> {
 
+	private static final String EXTENSION = "registration.processor.packet.ext";
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
-
-	/** The extention. */
-	@Value("${registration.processor.packet.ext}")
-	private String extention;
-	/** The path. */
 
 	/** The env. */
 	@Autowired
@@ -63,8 +59,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public void put(String fileName, InputStream file, DirectoryPathDto workingDirectory) throws IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::put()::entry");
-		File destinationDirectory = new File(
-				env.getProperty(workingDirectory.toString()) + File.separator + getFileName(fileName));
+
+		String filepath = env.getProperty(workingDirectory.toString());
+		File destinationDirectory = FileUtils.getFile(filepath, getFileName(fileName));
 		FileUtils.copyToFile(file, destinationDirectory);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::put()::exit");
@@ -143,8 +140,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	private void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 
-		File filePath = new File(
-				env.getProperty(destinationDirectory.toString()) + File.separator + getFileName(fileName));
+		String filepath = env.getProperty(destinationDirectory.toString());
+		File filePath = FileUtils.getFile(filepath, getFileName(fileName));
 
 		FileUtils.forceDelete(filePath);
 	}
@@ -157,7 +154,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @return the file name
 	 */
 	private String getFileName(String fileName) {
-		return fileName + extention;
+		return fileName + env.getProperty(EXTENSION);
 	}
 
 	/*
@@ -173,10 +170,12 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::copy()::entry");
 		if (checkIfFileExists(sourceWorkingDirectory, fileName)) {
-			File srcFile = new File(
-					env.getProperty(sourceWorkingDirectory.toString()) + File.separator + getFileName(fileName));
-			File destFile = new File(
-					env.getProperty(destinationWorkingDirectory.toString()) + File.separator + getFileName(fileName));
+
+			String filepath = env.getProperty(sourceWorkingDirectory.toString());
+			File srcFile = FileUtils.getFile(filepath, getFileName(fileName));
+
+			String filepath1 = env.getProperty(destinationWorkingDirectory.toString());
+			File destFile = FileUtils.getFile(filepath1, getFileName(fileName));
 			FileUtils.copyFile(srcFile, destFile);
 
 		}
@@ -270,6 +269,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public void deleteFolder(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::deleteFolder()::entry");
+
+		// String filepath=env.getProperty(destinationDirectory.toString());
+		// File srcFile=FileUtils.getFile(filepath, getFileName(fileName));
 		File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
 
 		FileUtils.forceDelete(filePath);

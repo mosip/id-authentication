@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiParam;
 public class TokenIDGeneratorController {
 
 	@Autowired
-	private TokenIDGeneratorService vidGeneratorService;
+	private TokenIDGeneratorService tokenIDGeneratorService;
 
 	
 	@ResponseFilter
@@ -25,7 +25,7 @@ public class TokenIDGeneratorController {
 	public ResponseWrapper<TokenIDResponseDto> generateTokenID(@ApiParam("uin of user") @PathVariable("uin") String uin,
 			@ApiParam("Partner Code") @PathVariable("partnercode") String partnerCode) {
 		ResponseWrapper<TokenIDResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(vidGeneratorService.generateTokenID(uin.trim(), partnerCode.trim()));
+		response.setResponse(tokenIDGeneratorService.generateTokenID(uin.trim(), partnerCode.trim()));
 		return response;
 	}
 

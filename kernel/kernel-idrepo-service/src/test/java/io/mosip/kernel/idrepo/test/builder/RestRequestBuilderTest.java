@@ -1,0 +1,196 @@
+package io.mosip.kernel.idrepo.test.builder;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
+
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.idrepo.constant.AuditEvents;
+import io.mosip.kernel.core.idrepo.constant.AuditModules;
+import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
+import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
+import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
+import io.mosip.kernel.idrepo.dto.AuditRequestDto;
+import io.mosip.kernel.idrepo.dto.AuditResponseDto;
+import io.mosip.kernel.idrepo.dto.RestRequestDTO;
+
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class RestRequestBuilderTest {
+
+	@InjectMocks
+	RestRequestBuilder restBuilder;
+
+	@Autowired
+	ConfigurableEnvironment env;
+
+	@Autowired
+	MockMvc mockMvc;
+
+	@InjectMocks
+	AuditRequestBuilder auditBuilder;
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(auditBuilder, "env", env);
+		ReflectionTestUtils.setField(restBuilder, "env", env);
+	}
+
+	@Test
+	public void testBuildRequest() throws IdRepoDataValidationException {
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		auditRequest.getRequest().setActionTimeStamp(null);
+
+		RestRequestDTO request = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+
+		RestRequestDTO testRequest = new RestRequestDTO();
+		String serviceName = RestServicesConstants.AUDIT_MANAGER_SERVICE.getServiceName();
+		String uri = env.getProperty(serviceName.concat(".rest.uri"));
+		String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
+		String mediaType = env.getProperty(serviceName.concat(".rest.headers.mediaType"));
+		String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
+
+		testRequest.setUri(uri);
+		testRequest.setHttpMethod(HttpMethod.valueOf(httpMethod));
+		testRequest.setRequestBody(auditRequest);
+		testRequest.setResponseType(AuditResponseDto.class);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.valueOf(mediaType));
+		testRequest.setHeaders(headers);
+		testRequest.setTimeout(Integer.parseInt(timeout));
+
+		request.setHeaders(null);
+		testRequest.setHeaders(null);
+	}
+
+	@Test(expected = IdRepoDataValidationException.class)
+	public void testBuildRequestWithMultiValueMap() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.queryparam.test", "yes");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.pathparam.test", "yes");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		auditRequest.getRequest().setActionTimeStamp(null);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+
+	}
+
+	@Test(expected = IdRepoDataValidationException.class)
+	public void testBuildRequestEmptyUri() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri", "");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
+				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				AuditResponseDto.class);
+	}
+
+	@Test(expected = IdRepoDataValidationException.class)
+	@DirtiesContext
+	public void testBuildRequestNullProperties() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
+				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				AuditResponseDto.class);
+	}
+
+	@Test(expected = IdRepoDataValidationException.class)
+	public void testBuildRequestEmptyHttpMethod() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.httpMethod", "");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
+				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				AuditResponseDto.class);
+	}
+
+	@Test(expected = IdRepoDataValidationException.class)
+	public void testBuildRequestEmptyResponseType() throws IdRepoDataValidationException {
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder.buildRequest(
+				AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"), null);
+	}
+	
+	@Test
+	public void testBuildRequestMultiValueMap() throws IdRepoDataValidationException {
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.queryparam.test", "yes");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.pathparam.test", "yes");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, new LinkedMultiValueMap<String, String>(),
+				Object.class);
+	}
+
+	@Test
+	public void testBuildRequestEmptyTimeout() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.timeout", "");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
+				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				AuditResponseDto.class);
+	}
+
+	@Test
+	public void testBuildRequestHeaders() throws IdRepoDataValidationException {
+
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.accept", "application/json");
+
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
+
+		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
+				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				AuditResponseDto.class);
+	}
+
+}

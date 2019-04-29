@@ -19,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
@@ -78,6 +79,22 @@ public class UserMachineMappingServiceTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 		assertNotNull(userMachineMappingServiceImpl.syncUserDetails());
 
+	}
+	
+	@Test
+	public void isUserNewToMachineSuccessTest() {
+		
+		Mockito.when(machineMappingDAO.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER)).thenReturn(true);
+		
+		assertNotNull(userMachineMappingServiceImpl.isUserNewToMachine(RegistrationConstants.JOB_TRIGGER_POINT_USER).getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void isUserNewToMachineFailureTest() {
+		
+		Mockito.when(machineMappingDAO.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER)).thenReturn(false);
+		
+		assertNotNull(userMachineMappingServiceImpl.isUserNewToMachine(RegistrationConstants.JOB_TRIGGER_POINT_USER).getErrorResponseDTOs());
 	}
 
 }

@@ -378,6 +378,10 @@ public class PacketUploadController extends BaseController implements Initializa
 	public void initialize(URL location, ResourceBundle resources) {
 		selectedPackets.clear();
 		loadInitialPage();
+		fileNameColumn.setResizable(false);
+		checkBoxColumn.setResizable(false);
+		fileColumn.setResizable(false);
+		statusColumn.setResizable(false);
 	}
 
 	@SuppressWarnings("unchecked")

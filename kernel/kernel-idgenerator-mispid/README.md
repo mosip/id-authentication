@@ -1,6 +1,6 @@
 # kernel-idgenerator-mispid
 
-[Background & Design](../../docs/design/kernel/Kernel-idgenerator-mispid.md)
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-mispid.md)
 
 API Documentation
 

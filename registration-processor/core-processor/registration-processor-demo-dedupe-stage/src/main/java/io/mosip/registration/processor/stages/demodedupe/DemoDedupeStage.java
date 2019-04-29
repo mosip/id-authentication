@@ -36,7 +36,6 @@ public class DemoDedupeStage extends MosipVerticleManager {
 	@Autowired
 	DemodedupeProcessor demodedupeProcessor;
 
-	private static final String INTERNAL_OCCURED = "Internal error occured in demo dedupe stage while processing registrationId ";
 
 	/**
 	 * Deploy verticle.

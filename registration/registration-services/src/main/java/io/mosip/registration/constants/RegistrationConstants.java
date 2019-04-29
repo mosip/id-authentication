@@ -2,7 +2,9 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class contains the constants used in Registration application
@@ -70,8 +72,9 @@ public class RegistrationConstants {
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
 	public static final String BIOMETRIC_EXCEPTION_FLOW = "biometricExceptionFlow";
-	
-	//css for quality indicator
+	public static final String GUARDIAN_BIOMETRIC = "guardianBiometric";
+
+	// css for quality indicator
 	public static final String RETRY_ATTEMPT = "#retryAttempt_";
 	public static final String RETRY_ATTEMPT_ID = "retryAttempt_";
 	public static final String QUALITY_LABEL_GREY = "qualityLabelGrey";
@@ -174,13 +177,9 @@ public class RegistrationConstants {
 	public static final String POR_BOX = "porBox";
 	public static final String VALIDATION_LOGGER = "VALIDATIONS";
 	public static final String REG_LGN_001 = "REG_LGN_001";
-	public static final String REG_DDC_002_1 = "REG_DDC_002_1";
 	public static final String IS_BLOCKED_WORD = "IS_BLOCKED_WORD";
 	public static final String BLACKLISTED_1 = "BLACKLISTED_1";
 	public static final String BLACKLISTED_2 = "BLACKLISTED_2";
-	public static final String REG_DDC_002_2 = "REG_DDC_002_2";
-	public static final String REG_DDC_003_1 = "REG_DDC_003_1";
-	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
 	public static final String REG_DDC_004 = "REG_DDC_004";
 	public static final String AGE_FIELD = "ageField";
 	public static final String MOBILE_NUMBER = "mobileNo";
@@ -194,10 +193,6 @@ public class RegistrationConstants {
 	public static final String DEMOGRAPHIC_FIELD_LABEL = "demoGraphicFieldLabel";
 	public static final String SCAN_VBOX = "scanVBox";
 	public static final String DOCUMENT_CONTENT_BUTTON = "documentContentButton";
-
-
-
-	
 
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
@@ -264,7 +259,6 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
 
-	
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
@@ -289,7 +283,6 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH = "acknowledgementFormPath";
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
 
-	
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
 	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
@@ -309,6 +302,7 @@ public class RegistrationConstants {
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
+	public static final String PARENT = "PARENT";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
@@ -368,6 +362,7 @@ public class RegistrationConstants {
 	public static final String REQUEST_TYPE = "service.requestType";
 	public static final String AUTH_HEADER = "service.authheader";
 	public static final String AUTH_REQUIRED = "service.authrequired";
+	public static final String SIGN_REQUIRED = "service.signrequired";
 	public static final String AUTH_TYPE = "BASIC";
 
 	// OTP Related Details
@@ -556,13 +551,38 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
 	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
 	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
+	public static final String TEMPLATE_CONSENT_HEADING = "Consent";
+	public static final String TEMPLATE_CONSENT_DATA = "ConsentData";
+	public static final String TEMPLATE_CONSENT_YES = "Yes";
+	public static final String TEMPLATE_CONSENT_NO = "No";
+	public static final String TEMPLATE_CONSENT_SELECTED_YES = "SelectedYes";
+	public static final String TEMPLATE_CONSENT_SELECTED_NO = "SelectedNo";
+	public static final String TEMPLATE_CONSENT_CHECKED = "checked='checked'";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
 	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
 	public static final String CLICK = "click";
 	public static final String REG_CONSENT = "mosip.registration.consent_";
-	
+	public static final String REG_CONSENT_YES = "consent-yes";
+	public static final String REG_CONSENT_NO = "consent-no";
+	public static final String IRIS_WITH_EXCEPTION = "irisWithException";
+	public static final String IRIS_WITHOUT_EXCEPTION = "irisWithoutException";
+	public static final String IRIS_WITH_EXCEPTION_STYLE = "parentIris2";
+	public static final String IRIS_WITHOUT_EXCEPTION_STYLE = "parentIris1";
+	public static final String IRIS_STYLE = "irisStyle";
+	public static final String TEMPLATE_IRIS = "iris";
+	public static final String TEMPLATE_CHILD_LEFT = "childLeft";
+	public static final String TEMPLATE_CHILD_RIGHT = "childRight";
+	public static final String TEMPLATE_CHILD_THUMBS = "childThumbs";
+	public static final String PARENT_LEFT_SLAP = "parentLeftSlap";
+	public static final String PARENT_RIGHT_SLAP = "parentRightSlap";
+	public static final String PARENT_LEFT_EYE = "parentLeftEye";
+	public static final String PARENT_RIGHT_EYE = "parentRightEye";
+	public static final String PARENT_THUMBS = "parentThumbs";
+	public static final String PARENT_STYLE = "parentStyle";
+	public static final String TEMPLATE_IS_CHILD = "isChild";
+
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
 	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
@@ -576,7 +596,7 @@ public class RegistrationConstants {
 	public static final String WEBCAM_LIBRARY_NAME = "mosip.registration.webcam_library_name";
 	public static final String PHOTO_CAPTUREPANES_SELECTED = "photoCapturePanesSelected";
 	public static final String DEFAULT_EXCEPTION_IMAGE_PATH = "/images/ExceptionPhoto.png";
-	
+
 	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
 
@@ -713,6 +733,7 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_1 = "reg-ack-template-part1";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_2 = "reg-ack-template-part2";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
+	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_4 = "reg-ack-template-part4";
 	public static final String EMAIL_TEMPLATE = "reg-email-notification";
 	public static final String SMS_TEMPLATE = "reg-sms-notification";
 
@@ -774,7 +795,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
 	public static final String PROVIDER_NAME = "mosip.registration.provider_name";
-	
+
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
@@ -828,7 +849,7 @@ public class RegistrationConstants {
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
 	public static final String REGISTRATION_CLIENT_ID = "10";
-	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
+	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync.fetch.ids";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "PRE_REG_TO_GET_ID_ERROR";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "PRE_REG_TO_GET_PACKET_ERROR";
@@ -859,6 +880,8 @@ public class RegistrationConstants {
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
 	public static final String FINGER = "finger";
+	public static final String HAND = "Hand";
+	public static final String IRIS_LOWERCASE = "Iris";
 	public static final String FINGERPRINT = "Fingerprint";
 	public static final String FINGERPRINT_UPPERCASE = "FINGERPRINT";
 	public static final String LEFTPALM = "leftSlap";
@@ -890,8 +913,10 @@ public class RegistrationConstants {
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
 	public static final String THUMB = "Thumb";
-	public static final String LEFT_HAND = "Left hand ";
-	public static final String RIGHT_HAND = "Right hand ";
+	public static final String LEFT_HAND = "Left Hand ";
+	public static final String RIGHT_HAND = "Right Hand ";
+	public static final String RIGHT_IRIS = "Right Iris ";
+	public static final String LEFT_IRIS = "Left Iris ";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
 			"/UserOnboard/leftHand/leftIndex/", "/UserOnboard/leftHand/leftLittle/",
 			"/UserOnboard/leftHand/leftMiddle/", "/UserOnboard/leftHand/leftRing/" };
@@ -903,6 +928,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final Set<String> BIO_TYPE = new HashSet<>(Arrays.asList(RegistrationConstants.HAND,RegistrationConstants.THUMB));
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -1022,8 +1048,6 @@ public class RegistrationConstants {
 	public static final String POSTAL_CODE_REGEX_INITIAL = "\\d{1,5}";
 	public static final String REGEX_ANY = ".*";
 	public static final String ONE = "1";
-
-	
 
 	// master sync
 	public static final String MASTER_SYNC_SUCESS_MSG_CODE = "REG-MDS‌-001";
@@ -1205,10 +1229,14 @@ public class RegistrationConstants {
 			.concat("postalCode");
 	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
 	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
-	public static final String ID_FULL_NAME_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("fullName.[*].value");
-	public static final String ADDRESS_LINE_1_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine1.[*].value");
-	public static final String ADDRESS_LINE_2_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine2.[*].value");
-	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("addressLine3.[*].value");
+	public static final String ID_FULL_NAME_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("fullName.[*].value");
+	public static final String ADDRESS_LINE_1_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine1.[*].value");
+	public static final String ADDRESS_LINE_2_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine2.[*].value");
+	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("addressLine3.[*].value");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static final String REGEX = "regex";
@@ -1252,10 +1280,9 @@ public class RegistrationConstants {
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
 	public static final String ERRORS = "errors";
-	public static final String ERROR_MSG ="message";
-	public static final String OK_MSG ="ok";
-	public static final String NEW_LINE ="\\n";
-
+	public static final String ERROR_MSG = "message";
+	public static final String OK_MSG = "ok";
+	public static final String NEW_LINE = "\\n";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
@@ -1270,8 +1297,28 @@ public class RegistrationConstants {
 	// Scheduler
 	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
-	
-	public static final String USER_DETAILS="userDetails";
-	
+	public static final String SCHEDULER_TITLE_STYLE = "schedulerTitleMsg";
+	public static final String SCHEDULER_CONTENT_STYLE = "schedulerMsg";
+	public static final String SCHEDULER_TITLE_BORDER = "schedulerTitle";
+	public static final String SCHEDULER_TIMER_STYLE = "schedulerTimer";
+	public static final String SCHEDULER_BTN_STYLE = "schedulerContinueBtn";
+	public static final String SCHEDULER_BORDER = "schedulerStage";
+
+	public static final String USER_DETAILS = "userDetails";
+
 	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
+
+	// TODO Need to discuss with Sravya about code
+	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
+	
+	public static final String SIGNED_KEY="signed-key";
+	public static final String TIME_STAMP="timeStamp";
+	public static final String REF_ID="referenceId";
+	public static final String PUBLIC_KEY_ISSUES_DATE="issuedAt";
+	public static final String PUBLIC_KEY_EXPIRE_DATE="expiryAt";
+	public static final String PUBLIC_KEY="publicKey";
+	public static final String PUBLIC_KEY_REST="public_key";
+	public static final String KER="KER";
+	public static final String DTAE_MONTH_YEAR_REGEX="dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
+
 }

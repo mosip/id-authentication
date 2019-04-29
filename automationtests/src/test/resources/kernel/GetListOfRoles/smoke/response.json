@@ -1,50 +1,62 @@
 {
-  "lastSyncTime": "2019-03-07T07:38:54.575Z",
-  "roles": [
-    {
-      "roleId": "REGISTRATION_ADMIN",
-      "roleName": "REGISTRATION_ADMIN",
-      "roleDescription": "Registration administrator"
-    },
-    {
-      "roleId": "MISP",
-      "roleName": "MISP",
-      "roleDescription": "Trusted Service Provider"
-    },
-    {
-      "roleId": "REGISTRATION_PROCESSOR",
-      "roleName": "REGISTRATION_PROCESSOR",
-      "roleDescription": "REG PROC"
-    },
-    {
-      "roleId": "TEST",
-      "roleName": "TEST",
-      "roleDescription": "test"
-    },
-    {
-      "roleId": "IDA",
-      "roleName": "IDA",
-      "roleDescription": "Trusted Service Provider"
-    },
-    {
-      "roleId": "REGISTRATION_SUPERVISOR",
-      "roleName": "REGISTRATION_SUPERVISOR",
-      "roleDescription": "Registration supervisor"
-    },
-    {
-      "roleId": "SUPERADMIN",
-      "roleName": "SUPERADMIN",
-      "roleDescription": "Super administrator"
-    },
-    {
-      "roleId": "ID_AUTHENTICATION",
-      "roleName": "ID_AUTHENTICATION",
-      "roleDescription": "IDA"
-    },
-    {
-      "roleId": "REGISTRATION_OFFICER",
-      "roleName": "REGISTRATION_OFFICER",
-      "roleDescription": "Registration officer"
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T07:37:02.799Z",
+  "metadata": null,
+  "response": {
+    "lastSyncTime": "2019-04-11T07:37:01.767Z",
+    "roles": [
+      {
+        "roleId": "REGISTRATION_ADMIN",
+        "roleName": "REGISTRATION_ADMIN",
+        "roleDescription": "Registration administrator"
+      },
+      {
+        "roleId": "MISP",
+        "roleName": "MISP",
+        "roleDescription": "Trusted Service Provider"
+      },
+      {
+        "roleId": "AUTH",
+        "roleName": "AUTH",
+        "roleDescription": "Auth User role"
+      },
+      {
+        "roleId": "REGISTRATION_PROCESSOR",
+        "roleName": "REGISTRATION_PROCESSOR",
+        "roleDescription": "REG PROC"
+      },
+      {
+        "roleId": "TEST",
+        "roleName": "TEST",
+        "roleDescription": "test"
+      },
+      {
+        "roleId": "REGISTRATION_SUPERVISOR",
+        "roleName": "REGISTRATION_SUPERVISOR",
+        "roleDescription": "Registration supervisor"
+      },
+      {
+        "roleId": "SUPERADMIN",
+        "roleName": "SUPERADMIN",
+        "roleDescription": "Super administrator"
+      },
+      {
+        "roleId": "ID_AUTHENTICATION",
+        "roleName": "ID_AUTHENTICATION",
+        "roleDescription": "IDA"
+      },
+      {
+        "roleId": "PRE_REGISTRATION_ADMIN",
+        "roleName": "PRE_REGISTRATION_ADMIN",
+        "roleDescription": "preregistration admin"
+      },
+      {
+        "roleId": "REGISTRATION_OFFICER",
+        "roleName": "REGISTRATION_OFFICER",
+        "roleDescription": "Registration officer"
+      }
+    ]
+  },
+  "errors": null
 }

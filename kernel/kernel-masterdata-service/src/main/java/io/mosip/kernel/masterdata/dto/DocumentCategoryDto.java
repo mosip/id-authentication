@@ -12,8 +12,9 @@ import lombok.Data;
 /**
  * Response dto for Document Category Detail
  * 
- * @author Neha
+ * @author Neha Sinha
  * @author Ritesh Sinha
+ * 
  * @since 1.0.0
  *
  */

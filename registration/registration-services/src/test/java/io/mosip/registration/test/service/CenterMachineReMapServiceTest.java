@@ -40,6 +40,7 @@ import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.impl.CenterMachineReMapServiceImpl;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
@@ -80,6 +81,8 @@ public class CenterMachineReMapServiceTest {
 	private PreRegistrationDataSyncDAO preRegistrationDataSyncDAO;
 	@Autowired
 	FileUtils fileUtils;
+	@Mock
+	GlobalParamService globalParamService;
 
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
@@ -150,6 +153,8 @@ public class CenterMachineReMapServiceTest {
 		Mockito.when(registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenReturn(regList);
 
 		PowerMockito.doNothing().when(FileUtils.class, "deleteDirectory", Mockito.any(File.class));
+
+		Mockito.doNothing().when(globalParamService).update("mosip.registration.initial_setup", "Y");
 
 		for (int i = 1; i < 5; i++) {
 			centerMachineReMapServiceImpl.handleReMapProcess(i);

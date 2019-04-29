@@ -75,7 +75,6 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
@@ -142,7 +141,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
-			// RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -222,7 +221,6 @@ public class BookingServiceUtil {
 				log.error("sessionId", "idType", "id",
 						"In callGetHolidayListRestService method of Booking Service Util for JsonParseException- "
 								+ ex.getMessage());
-				e1.printStackTrace();
 			}
 
 		}
@@ -584,23 +582,14 @@ public class BookingServiceUtil {
 	 * @param cancelBookingDTO
 	 * @return true or false
 	 */
-	public boolean mandatoryParameterCheckforCancel(CancelBookingDTO cancelBookingDTO, String preRegistrationId) {
+	public boolean mandatoryParameterCheckforCancel(String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In mandatoryParameterCheckforCancel method of Booking Service Util");
 		boolean flag = true;
 
 		if (isNull(preRegistrationId)) {
 			throw new BookingPreIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_006.getCode(),
 					ErrorMessages.PREREGISTRATION_ID_NOT_ENTERED.getMessage());
-		} else if (isNull(cancelBookingDTO.getRegistrationCenterId())) {
-			throw new BookingRegistrationCenterIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_007.getCode(),
-					ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.getMessage());
-		} else if (isNull(cancelBookingDTO.getRegDate())) {
-			throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.getCode(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.getMessage());
-		} else if (isNull(cancelBookingDTO.getSlotFromTime()) || isNull(cancelBookingDTO.getSlotToTime())) {
-			throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.getCode(),
-					ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.getMessage());
-		}
+		} 
 
 		return flag;
 

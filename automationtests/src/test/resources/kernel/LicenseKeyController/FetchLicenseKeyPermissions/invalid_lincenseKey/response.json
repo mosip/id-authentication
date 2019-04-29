@@ -1,10 +1,13 @@
 {
-  "timestamp": 1549886206086,
-  "status": 200,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-15T11:06:55.749Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-LKM-004",
-      "errorMessage": "LicenseKey Not Found."
+      "message": "LicenseKey Not Found."
     }
   ]
 }

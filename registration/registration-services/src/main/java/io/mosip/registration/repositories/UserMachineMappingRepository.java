@@ -18,4 +18,5 @@ public interface UserMachineMappingRepository extends BaseRepository<UserMachine
 	
 	List<UserMachineMapping>findByIsActiveTrueAndUserMachineMappingIdMachineID(String machineId);
 
+	UserMachineMapping findByUserMachineMappingIdUserID(String userId);
 }

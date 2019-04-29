@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
@@ -277,7 +280,7 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private ScreenDetailRepository screenDetailRepo;
 	@MockBean
-	private SigningUtil signingUtil;
+	private SignatureUtil signatureUtil;
 
 	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8099/v1/admin/syncjobdef}")
 	private String baseUri;
@@ -311,9 +314,13 @@ public class SyncDataIntegrationTest {
 	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
 	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463";
 	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata";
+	private SignatureResponse signResponse;
 
 	@Before
 	public void setup() {
+		signResponse=new SignatureResponse();
+		signResponse.setData("asdasdsadf4e");
+		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		LocalTime localTime = LocalTime.parse("09:00:00");
 		applications = new ArrayList<>();
@@ -733,7 +740,7 @@ public class SyncDataIntegrationTest {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUri).queryParam("lastupdatedtimestamp",
 				"1970-01-01T00:00:00.000Z");
 		server.expect(requestTo(builder.toUriString())).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		when(signatureUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 	}
 	
     @Test
