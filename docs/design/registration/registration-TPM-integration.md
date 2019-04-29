@@ -1,12 +1,13 @@
-**Design - TPM Device Integration **
+**Design - TPM Device Integration **   
 
 A Trusted Platform Module (TPM) is a specialized chip on a local machines that stores RSA encryption keys specific to the host system for hardware authentication. Each TPM chip contains an RSA key pair called the Endorsement Key (EK). The pair is maintained inside the chip and cannot be accessed by software.   
 
-The Registration client application leverages this TPM capabilities and secure the application, data and mark the senders identity in the request before sending to external system.  
+The Registration client application leverages this TPM capabilities and secure the application, data and mark the senders identity in the request before sending to external system  .  
 
 This document covers the technical design of Registration client application integration with TPM [Truster Platform Module]. 
 
 The following functionalities would be implemented by integrating with the TPM:  
+
 
    1. Secure the symmetric key using encryption.  
    2. Decryption of Symmetric key during runtime.  
