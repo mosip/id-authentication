@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -275,7 +274,7 @@ public class PacketValidateProcessor {
 							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
-		} catch (IdentityNotFoundException | IOException exc) {
+		} catch (IdentityNotFoundException | ParseException | org.json.simple.parser.ParseException | IOException exc) {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
@@ -354,9 +353,9 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException, NoSuchFieldException,
-			IllegalAccessException, ParseException, org.json.simple.parser.ParseException, JSONException {
+			MessageDTO object)
+			throws IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException,
+			FileIOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -429,8 +428,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean applicantDocumentValidation(String jsonString)
-			throws IOException, ApisResourceAccessException, NoSuchFieldException, IllegalAccessException,
-			ParseException, org.json.simple.parser.ParseException, JSONException {
+			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 
