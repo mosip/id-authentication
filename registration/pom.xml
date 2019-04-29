@@ -64,7 +64,7 @@
 
 		<!-- webcam-capture version -->
 		<webcam-capture.version>0.3.12</webcam-capture.version>
-		
+
 		<!-- TSS Version -->
 		<tss.version>0.3.0</tss.version>
 
@@ -201,6 +201,12 @@
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-templatemanager-velocity</artifactId>
 				<version>${mosip.core.kernel.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>dom4j</groupId>
+						<artifactId>dom4j</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
@@ -299,11 +305,11 @@
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
 			<dependency>
-			    <groupId>com.github.microsoft</groupId>
-			    <artifactId>TSS.Java</artifactId>
-			    <version>${tss.version}</version>
+				<groupId>com.github.microsoft</groupId>
+				<artifactId>TSS.Java</artifactId>
+				<version>${tss.version}</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
