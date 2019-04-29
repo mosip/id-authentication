@@ -13,6 +13,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
@@ -202,7 +203,10 @@ public class Encrypt {
 			@Override
 			public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
 					throws IOException {
-				request.getHeaders().set("Cookie", "Authorization=" + generateAuthToken());
+				String authToken = generateAuthToken();
+				if(authToken != null && !authToken.isEmpty()) {
+					request.getHeaders().set("Cookie", "Authorization=" + authToken);
+				}
 				return execution.execute(request, body);
 			}
 		};
@@ -233,10 +237,15 @@ public class Encrypt {
 		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		request.setRequest(requestBody);
 		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri")).post()
-				.syncBody(request).exchange().block();
-		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-		ResponseCookie responseCookie = response.cookies().get("Authorization").get(0);
-		return responseCookie.getValue();
+				.syncBody(request)
+				.exchange().block();
+		System.out.println("AuthResponse :" +  response.toEntity(String.class).block().getBody());
+		List<ResponseCookie> list = response.cookies().get("Authorization");
+		if(list != null && !list.isEmpty()) {
+			ResponseCookie responseCookie = list.get(0);
+			return responseCookie.getValue();
+		}
+		return "";
 	}
 
 	/**
