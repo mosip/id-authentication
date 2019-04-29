@@ -167,8 +167,37 @@ public class RegProcStageDb {
 			logger.info("demoDedupeDtoList : "+demoDedupeDtoList);
 		}
 
-		session.getTransaction().commit();
 
 		return demoDedupeDtoList;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public String regproc_getUIN(String regId)
+	{
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+
+		String uin = getUINByRegId(session, regId);
+		if(uin!=null)
+		{
+			session.close();
+			factory.close();
+			return uin;
+		}
+		return null;
+	}
+
+	private String getUINByRegId(Session session2, String regId) {
+		String uin = null;
+		String queryString = "Select regprc.individual_demographic_dedup.uin from regprc.individual_demographic_dedup "
+				+ "where regprc.individual_demographic_dedup.reg_id =:regId";
+		
+		Query query = session.createSQLQuery(queryString);
+		query.setParameter("regId", regId);
+		uin = (String) query.getResultList().get(0);
+		logger.info("UIN : "+uin);
+		session.getTransaction().commit();
+		return uin;
 	}
 }
