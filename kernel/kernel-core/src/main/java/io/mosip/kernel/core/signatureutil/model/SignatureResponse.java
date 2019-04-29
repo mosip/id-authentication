@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.signatureutil.dto;
+package io.mosip.kernel.core.signatureutil.model;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoManagerResponseDto {
+public class SignatureResponse {
 	
 	/**
 	 * encrypted data

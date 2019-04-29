@@ -22,12 +22,11 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.signatureutil.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
-import io.mosip.kernel.syncdata.utils.SigningUtil;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
@@ -78,7 +77,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 		}
 		if (body != null) {
 			try {
-				CryptoManagerResponseDto cryptoManagerResponseDto = signatureUtil
+				SignatureResponse cryptoManagerResponseDto = signatureUtil
 						.signResponse(objectMapper.writeValueAsString(body));
 				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
 				body.setResponsetime(cryptoManagerResponseDto.getResponseTime());

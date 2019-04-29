@@ -39,10 +39,10 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.signatureutil.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -132,12 +132,12 @@ public class SigningUtilImplTest {
 		requestWrapper.setId(syncDataRequestId);
 		requestWrapper.setVersion(syncDataVersionId);
 		requestWrapper.setRequest(cryptoManagerRequestDto);
-		CryptoManagerResponseDto cryptoManagerResponseDto = new CryptoManagerResponseDto();
-		cryptoManagerResponseDto.setData(
+		SignatureResponse signatureResponse = new SignatureResponse();
+		signatureResponse.setData(
 				"jxAq1SysvWKK78C-2TduZDn2ACJLXReYjM4rWsd2KBSVat_wFxU5D_tiNUvI7gZ9hEGZbhcnQ5n0z8TsAMD3VYFc8WBVIjGsskE7ijhlVHjP3wsP4G1llj0eWcwLAido9K5iwSeeGbT7bJzsiVJTsqtZKRvHFj8gBW0T76jpviri2joYxJY3xD7f2HiA0dbVHzUiD5D8NkYZmQwlYMTeSNoHPYn2hq4Bt22YAjdIlQNNTxlUu1XM7P7eR-unRXXPsl9wDw6Gl1xzgN3SOE-WqmI3oIq61JvZiXhi_SKIt_RqMwymUHmTlb1MQfGB32ip6nPR1xdU3ArGRAuvYnmIGA");
 
-		ResponseWrapper<CryptoManagerResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(cryptoManagerResponseDto);
+		ResponseWrapper<SignatureResponse> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(signatureResponse);
 		String response = objectMapper.writeValueAsString(responseWrapper);
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));

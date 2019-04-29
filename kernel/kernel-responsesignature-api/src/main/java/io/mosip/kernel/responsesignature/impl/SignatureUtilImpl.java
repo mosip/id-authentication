@@ -35,10 +35,10 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.signatureutil.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -113,7 +113,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 	 * @return the string
 	 */
 	@Override
-	public CryptoManagerResponseDto signResponse(String response) {
+	public SignatureResponse signResponse(String response) {
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
 		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId(signApplicationid);
@@ -151,22 +151,22 @@ public class SignatureUtilImpl implements SignatureUtil {
 		if (!validationErrorsList.isEmpty()) {
 			throw new SignatureUtilClientException(validationErrorsList);
 		}
-		CryptoManagerResponseDto cryptoManagerResponseDto = null;
-		ResponseWrapper<CryptoManagerResponseDto> responseObject;
+		SignatureResponse SignatureResponse = null;
+		ResponseWrapper<SignatureResponse> responseObject;
 		try {
 
 			responseObject = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<CryptoManagerResponseDto>>() {
+					new TypeReference<ResponseWrapper<SignatureResponse>>() {
 					});
 
-			cryptoManagerResponseDto = responseObject.getResponse();
-			cryptoManagerResponseDto.setResponseTime(responseObject.getResponsetime());
+			SignatureResponse = responseObject.getResponse();
+			SignatureResponse.setResponseTime(responseObject.getResponsetime());
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 					SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorMessage());
 		}
 
-		return cryptoManagerResponseDto;
+		return SignatureResponse;
 	}
 
 	/*
@@ -204,7 +204,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		ResponseEntity<String> keyManagerResponse = null;
 		uriParams.put("applicationId", signApplicationid);
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://qa.mosip.io/v1/keymanager/publickey/KERNEL")
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
 				.queryParam("timeStamp", responsetime).queryParam("referenceId", signRefid);
 
 		try {
