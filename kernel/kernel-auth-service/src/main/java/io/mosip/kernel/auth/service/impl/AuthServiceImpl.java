@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
@@ -186,9 +187,17 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public AuthNResponseDto authenticateUserWithOtp(UserOtp userOtp) throws Exception {
 		AuthNResponseDto authNResponseDto = new AuthNResponseDto();
+		MosipUserDtoToken mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
-		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
+		if(mosipUser!=null)
+		{
+		mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
+		}
+		else
+		{
+			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+		}
 		if (mosipToken != null && mosipToken.getMosipUserDto() != null) {
 			authNResponseDto.setMessage(mosipToken.getMessage());
 			authNResponseDto.setStatus(mosipToken.getStatus());
@@ -220,6 +229,10 @@ public class AuthServiceImpl implements AuthService {
 		BasicTokenDto basicTokenDto = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
+		if(mosipUser==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+		}
 		if(mosipUser!=null)
 		{
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
