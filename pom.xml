@@ -14,6 +14,7 @@
 		<module>pre-registration</module>
 		<module>registration</module>
 		<module>registration-processor</module>
-		<module>authentication</module>		
+		<module>authentication</module>
+		<module>id-repository</module>
 	</modules>
 </project>
