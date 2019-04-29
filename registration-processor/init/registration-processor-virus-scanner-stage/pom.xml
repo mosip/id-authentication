@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>init</artifactId>
-		<version>0.10.7</version>
+		<version>0.10.8</version>
 	</parent>
 	<artifactId>registration-processor-virus-scanner-stage</artifactId>
 	<properties>
