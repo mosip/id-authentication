@@ -448,6 +448,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 							registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 				}else {
 					dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+					dto.setLatestTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 					dto.setStatusComment("Packet " + registrationId + " is failed during cleanup");
 					dto.setUpdatedBy(USER);
 					object.setInternalError(true);
@@ -459,6 +460,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			}else {
 
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
+				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 				dto.setStatusComment("Packet " + registrationId + " is failed during archival process");
 				dto.setUpdatedBy(USER);
 				object.setInternalError(true);
