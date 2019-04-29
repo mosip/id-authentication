@@ -29,28 +29,57 @@ import io.mosip.registration.processor.core.packet.dto.applicantcategory.Applica
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
+/**
+ * The Class ApplicantDocumentValidationTest.
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class })
 public class ApplicantDocumentValidationTest {
 
+	/** The utility. */
 	@Mock
 	Utilities utility;
 
+	/** The map identity json string to object. */
 	@Mock
 	ObjectMapper mapIdentityJsonStringToObject;
 
+	/** The env. */
 	@Mock
 	private Environment env;
 
+	/** The applicant type document. */
 	@Mock
 	ApplicantTypeDocument applicantTypeDocument;
+
+	/** The dto. */
 	MessageDTO dto = new MessageDTO();
+
+	/** The json string ID. */
 	String jsonStringID = null;
+
+	/** The json string id mapping. */
 	String jsonStringIdMapping = null;
+
+	/** The json string app. */
 	String jsonStringApp = null;
+
+	/** The Constant AGE_THRESHOLD. */
 	private static final String AGE_THRESHOLD = "mosip.kernel.applicant.type.age.limit";
+
+	/** The applicant document validation. */
 	ApplicantDocumentValidation applicantDocumentValidation;
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws ParseException
+	 *             the parse exception
+	 */
 	@Before
 	public void setUp() throws IOException, ApisResourceAccessException, ParseException {
 
@@ -80,6 +109,24 @@ public class ApplicantDocumentValidationTest {
 		applicantDocumentValidation = new ApplicantDocumentValidation(utility, env, applicantTypeDocument);
 	}
 
+	/**
+	 * Test applicant document validation adult success.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws NoSuchFieldException
+	 *             the no such field exception
+	 * @throws IllegalAccessException
+	 *             the illegal access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws JSONException
+	 *             the JSON exception
+	 */
 	@Test
 	public void testApplicantDocumentValidationAdultSuccess() throws ApisResourceAccessException, NoSuchFieldException,
 			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
@@ -87,6 +134,24 @@ public class ApplicantDocumentValidationTest {
 		assertTrue("Test for successful Applicant Document Validation success for adult", isApplicantDocumentValidated);
 	}
 
+	/**
+	 * Test applicant document validation child success.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws NoSuchFieldException
+	 *             the no such field exception
+	 * @throws IllegalAccessException
+	 *             the illegal access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws JSONException
+	 *             the JSON exception
+	 */
 	@Test
 	public void testApplicantDocumentValidationChildSuccess() throws ApisResourceAccessException, NoSuchFieldException,
 			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
@@ -95,6 +160,24 @@ public class ApplicantDocumentValidationTest {
 		assertTrue("Test for successful Applicant Document Validation for child", isApplicantDocumentValidated);
 	}
 
+	/**
+	 * Test applicant document validation IDJSON null.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws NoSuchFieldException
+	 *             the no such field exception
+	 * @throws IllegalAccessException
+	 *             the illegal access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws JSONException
+	 *             the JSON exception
+	 */
 	@Test(expected = IdentityNotFoundException.class)
 	public void testApplicantDocumentValidationIDJSONNull() throws ApisResourceAccessException, NoSuchFieldException,
 			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
@@ -103,6 +186,24 @@ public class ApplicantDocumentValidationTest {
 
 	}
 
+	/**
+	 * Test invalid type.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws NoSuchFieldException
+	 *             the no such field exception
+	 * @throws IllegalAccessException
+	 *             the illegal access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws ParseException
+	 *             the parse exception
+	 * @throws JSONException
+	 *             the JSON exception
+	 */
 	@Test
 	public void testInvalidType() throws ApisResourceAccessException, NoSuchFieldException, IllegalAccessException,
 			IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
