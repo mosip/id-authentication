@@ -172,14 +172,10 @@ public class ClientJarEncryption {
 
 					File rxtxJarFolder = new File(args[8]);
 					
-					//lib files
-					LinkedList<File> jars = new LinkedList<>( Arrays.asList(listOfJars.listFiles()));
-					
-					//rxtx files
-					jars.addAll(Arrays.asList(rxtxJarFolder.listFiles()));
+					FileUtils.copyDirectory(rxtxJarFolder, listOfJars);
 					
 					// Adding lib files into map
-					for (File files : jars) {
+					for (File files : listOfJars.listFiles()) {
 
 						if (files.getName().contains(REGISTRATION)) {
 
