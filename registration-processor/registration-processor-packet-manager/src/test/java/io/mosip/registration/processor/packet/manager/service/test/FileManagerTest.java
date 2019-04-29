@@ -26,7 +26,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
@@ -63,7 +66,6 @@ public class FileManagerTest {
 	@Mock 
 	private Environment env1;
 
-	@Mock
 	private SftpJschConnectionDto sftpDto = new SftpJschConnectionDto();
 
 	/** The virus scan enc. */
@@ -73,7 +75,6 @@ public class FileManagerTest {
 	/** The virus scan dec. */
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
-	//@InjectMocks
 	
 
 	@Mock
@@ -82,11 +83,15 @@ public class FileManagerTest {
 	@Mock
 	private Session session;
 	
+	private Channel channel;
+	
+	
+	JSch jSch=new JSch();
+	
 	@InjectMocks
 	private FileManagerImpl impl=new FileManagerImpl() {
 		@Override
 		public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
-			System.out.println("Hello");
 			return sftp;
 		
 	}};
@@ -94,7 +99,6 @@ public class FileManagerTest {
 	@Mock
 	private InputStream is;
 
-	//SshServer sshd;
 	/**
 	 * Sets the up.
 	 *
@@ -111,51 +115,11 @@ public class FileManagerTest {
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
 		when(env1.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
 		when(env1.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
-		//when(env.getProperty(Mockito.a))
 		sftpDto.setHost("localhost");
-		sftpDto.setPort(9700);
-		sftpDto.setPpkFileLocation("src/test/resources");
+		sftpDto.setPort(8080);
 		sftpDto.setProtocal("http");
 		sftpDto.setUser("System");
-		/*sshd = SshServer.setUpDefaultServer();
-		sshd.setPort(22999);
-		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
-		sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
-			
-		public boolean authenticate(String username, String password, ServerSession session) {
-		// TODO Auto-generated method stub
-		return true;
-		}
-		});
-		CommandFactory myCommandFactory = new CommandFactory() {
-		public Command createCommand(String command) {
-		System.out.println("Command: " + command);
-		return null;
-		}
-		};
-		sshd.setCommandFactory(new ScpCommandFactory(myCommandFactory));
-		List<NamedFactory<Command>> namedFactoryList = new ArrayList<NamedFactory<Command>>(); 
-		namedFactoryList.add(new SftpSubsystem.Factory()); 
-		sshd.setSubsystemFactories(namedFactoryList); sshd.start(); 		
-		JSch jsch=new JSch();
-		Channel channel;
-		Hashtable<String,String> config = new Hashtable<>();
-		config.put("StrictHostKeyChecking", "no");
-		JSch.setConfig(config);
-		//jsch.addIdentity("src/test/resources/Mosip_Private_key.ppk");
-		session=jsch.getSession("remote-username", "localhost", 7878);
-        session.setPassword("remote-password");
-		
-		session.connect();
-		channel=session.openChannel("http");
-		channel.connect();
-		sftp=(ChannelSftp) channel;
-		sftp.connect();*/
-
 	}
-//@After
-//public void teardown() throws Exception { sshd.stop(); }
-
 	/**
 	 * Gets the put and if file exists and copy method check.
 	 *
@@ -207,7 +171,6 @@ public class FileManagerTest {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
@@ -222,7 +185,6 @@ public class FileManagerTest {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
@@ -236,7 +198,6 @@ public class FileManagerTest {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
@@ -264,12 +225,19 @@ public class FileManagerTest {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenThrow(new SftpException(0, fileNameWithoutExtn));
 		impl.cleanUp(fileNameWithoutExtn,DirectoryPathDto.VIRUS_SCAN_ENC,DirectoryPathDto.VIRUS_SCAN_DEC ,sftpDto);	
+	}
+	
+	@Test(expected=JschConnectionException.class)
+	public void testgetSftpConnectionException() throws IOException, JSchException, JschConnectionException
+	{
+		
+		FileManagerImpl manager=new FileManagerImpl();
+				manager.getSftpConnection(sftpDto);
 	}
 
 }
