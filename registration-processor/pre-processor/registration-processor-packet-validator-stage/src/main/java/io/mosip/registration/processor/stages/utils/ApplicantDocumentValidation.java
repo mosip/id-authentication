@@ -26,7 +26,6 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ApplicantDocumentValidation.
  * 
@@ -54,6 +53,8 @@ public class ApplicantDocumentValidation {
 
 	/** The Constant AGE_THRESHOLD. */
 	private static final String AGE_THRESHOLD = "mosip.kernel.applicant.type.age.limit";
+
+	private static final String DOCUMENT_CATEGORY = "documentCategory";
 
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";
@@ -168,7 +169,7 @@ public class ApplicantDocumentValidation {
 
 			JSONObject attributesJsonObject = (JSONObject) identityJsonObject.get(key);
 			if (attributesJsonObject != null) {
-				String documentCategory = attributesJsonObject.get("documentCategory").toString();
+				String documentCategory = attributesJsonObject.get(DOCUMENT_CATEGORY).toString();
 
 				if (documentCategory != null && !documentCategory.isEmpty())
 					documentCategoryList.add(documentCategory);
