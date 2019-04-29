@@ -37,6 +37,9 @@ mosip.kernel.signature.signature-version-id=v1.0
 
 mosip.signed.header=response-signature
 
+mosip.sign.applicationid=KERNEL
+mosip.sign.refid=KER
+
 mosip.kernel.signature.cryptomanager-encrypt-url=https://host/v1/cryptomanager/private/encrypt
 mosip.kernel.keymanager-service-publickey-url=https://host/v1/keymanager/publickey/{applicationId}
 auth.server.validate.url=https://host/v1.0/authorize/validateToken
@@ -60,9 +63,6 @@ auth.server.validate.url=https://host/v1.0/authorize/validateToken
    **Sample response**
  
  ```
- 
- #The encrypted response is added to the header.
- 
  {
   "id": "string",
   "version": "string",
@@ -82,7 +82,7 @@ auth.server.validate.url=https://host/v1.0/authorize/validateToken
    @Autowired
    private SignatureUtil signingUtil;
    
-   boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData),
+   boolean isVerfied = signingUtil.validateWithPublicKey(responseSignature,
    responseBody ,publicKey);
    
    ```
@@ -94,7 +94,7 @@ auth.server.validate.url=https://host/v1.0/authorize/validateToken
    @Autowired
    private SignatureUtil signingUtil;
    
-   boolean isVerfied = signingUtil.validate(CryptoUtil.encodeBase64(encryptedData), responseBody,
+   boolean isVerfied = signingUtil.validate(responseSignature, responseBody,
 				responseTime);
   ```
   
