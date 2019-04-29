@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.test.builder;
+package io.mosip.idrepository.core.test.builder;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,22 +14,24 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
-import io.mosip.idrepository.identity.builder.AuditRequestBuilder;
-import io.mosip.idrepository.identity.dto.AuditRequestDto;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("test")
 public class AuditRequestBuilderTest {
 
 	@InjectMocks

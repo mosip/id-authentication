@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.test.controller;
+package io.mosip.idrepository.core.test.exception;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -28,13 +28,11 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
-import io.mosip.idrepository.identity.controller.IdRepoExceptionHandler;
+import io.mosip.idrepository.core.exception.IdRepoExceptionHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 
 /**
@@ -55,10 +53,6 @@ public class IdRepoExceptionHandlerTest {
 
 	@Autowired
 	Environment env;
-
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
 
 	/** The errors. */
 	@Mock
@@ -85,7 +79,6 @@ public class IdRepoExceptionHandlerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(handler, "env", env);
-		ReflectionTestUtils.setField(handler, "mapper", mapper);
 		ReflectionTestUtils.setField(handler, "id", id);
 	}
 

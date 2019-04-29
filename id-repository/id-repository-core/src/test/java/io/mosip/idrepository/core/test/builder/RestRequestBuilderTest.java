@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.test.builder;
+package io.mosip.idrepository.core.test.builder;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,21 +23,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.idrepository.core.builder.AuditRequestBuilder;
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
+import io.mosip.idrepository.core.dto.AuditResponseDto;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
-import io.mosip.idrepository.identity.builder.AuditRequestBuilder;
-import io.mosip.idrepository.identity.builder.RestRequestBuilder;
-import io.mosip.idrepository.identity.dto.AuditRequestDto;
-import io.mosip.idrepository.identity.dto.AuditResponseDto;
-import io.mosip.idrepository.identity.dto.RestRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("test")
 public class RestRequestBuilderTest {
 
 	@InjectMocks

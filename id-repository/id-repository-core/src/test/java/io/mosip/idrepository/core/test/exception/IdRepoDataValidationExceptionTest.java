@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.test.exception;
+package io.mosip.idrepository.core.test.exception;
 
 import org.junit.Test;
 

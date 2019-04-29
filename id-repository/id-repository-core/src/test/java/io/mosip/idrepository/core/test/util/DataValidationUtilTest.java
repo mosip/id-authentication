@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.test.util;
+package io.mosip.idrepository.core.test.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
-import io.mosip.idrepository.identity.util.DataValidationUtil;
+import io.mosip.idrepository.core.util.DataValidationUtil;
 
 /**
  * The Class DataValidationUtilTest.

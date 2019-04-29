@@ -26,16 +26,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.identity.builder.RestRequestBuilder;
-import io.mosip.idrepository.identity.dto.RestRequestDTO;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.identity.entity.Uin;
 import io.mosip.idrepository.identity.entity.UinDocument;
 import io.mosip.idrepository.identity.entity.UinHistory;
-import io.mosip.idrepository.identity.helper.RestHelper;
 import io.mosip.idrepository.identity.interceptor.IdRepoEntityInterceptor;
 import io.mosip.idrepository.identity.security.IdRepoSecurityManager;
 
