@@ -49,9 +49,9 @@ import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.spi.IdRepoService;
 import io.mosip.idrepository.core.spi.MosipFingerprintProvider;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
 import io.mosip.idrepository.identity.entity.Uin;
 import io.mosip.idrepository.identity.entity.UinBiometric;
 import io.mosip.idrepository.identity.entity.UinBiometricHistory;
@@ -106,9 +106,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoProxyServiceImpl.class);
-
-	/** The Constant ID_REPO_SERVICE. */
-	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";

@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * The Class UinBiometric.

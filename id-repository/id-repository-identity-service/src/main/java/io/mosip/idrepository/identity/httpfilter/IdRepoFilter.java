@@ -26,7 +26,9 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
+import io.mosip.idrepository.core.httpfilter.CharResponseWrapper;
+import io.mosip.idrepository.core.httpfilter.ResettableStreamHttpServletRequest;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -50,9 +52,6 @@ public class IdRepoFilter extends OncePerRequestFilter {
 
 	/** The Constant READ. */
 	private static final String READ = "read";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";

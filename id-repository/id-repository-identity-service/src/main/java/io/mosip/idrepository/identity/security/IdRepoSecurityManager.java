@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.identity.builder.RestRequestBuilder;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
-import io.mosip.idrepository.identity.dto.RestRequestDTO;
-import io.mosip.idrepository.identity.helper.RestHelper;
+import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -36,9 +36,6 @@ public class IdRepoSecurityManager {
 	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoSecurityManager.class);
 
 	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
-
-	/** The Constant ID_REPO_SERVICE. */
-	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant ID_REPO_SECURITY_MANAGER. */
 	private static final String ID_REPO_SECURITY_MANAGER = "IdRepoSecurityManager";

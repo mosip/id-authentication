@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.identity.entity.Uin;
 import io.mosip.idrepository.identity.entity.UinHistory;
 import io.mosip.idrepository.identity.security.IdRepoSecurityManager;
@@ -29,8 +29,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
 
 	private static final String ID_REPO_ENTITY_INTERCEPTOR = "IdRepoEntityInterceptor";
-
-	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	private static final String UIN_DATA_HASH = "uinDataHash";
 
