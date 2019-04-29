@@ -180,7 +180,7 @@ public class TokenGenerator {
 		String secret = mosipEnvironment.getJwtSecret();
 
 		if (token == null || !token.startsWith(token_base)) {
-			throw new RuntimeException("Invalid Token");
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 
 		try {
