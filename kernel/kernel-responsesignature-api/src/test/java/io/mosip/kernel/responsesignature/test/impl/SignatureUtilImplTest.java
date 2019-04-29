@@ -54,7 +54,7 @@ import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 
-public class SigningUtilImplTest {
+public class SignatureUtilImplTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
