@@ -181,13 +181,13 @@ public class SignatureUtilImpl implements SignatureUtil {
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
@@ -242,14 +242,14 @@ public class SignatureUtilImpl implements SignatureUtil {
 		}
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
