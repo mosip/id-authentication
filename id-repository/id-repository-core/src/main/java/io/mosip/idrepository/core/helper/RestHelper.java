@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.helper;
+package io.mosip.idrepository.core.helper;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -23,9 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
-import io.mosip.idrepository.identity.dto.RestRequestDTO;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -68,9 +68,6 @@ public class RestHelper {
 
 	/** The Constant CLASS_REST_HELPER. */
 	private static final String CLASS_REST_HELPER = "RestHelper";
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
 	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";

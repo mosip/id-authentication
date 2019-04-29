@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.config;
+package io.mosip.idrepository.core.logger;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;

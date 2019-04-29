@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.builder;
+package io.mosip.idrepository.core.builder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,9 +19,9 @@ import org.springframework.util.MultiValueMap;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
-import io.mosip.idrepository.identity.config.IdRepoLogger;
-import io.mosip.idrepository.identity.dto.RestRequestDTO;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import lombok.NoArgsConstructor;

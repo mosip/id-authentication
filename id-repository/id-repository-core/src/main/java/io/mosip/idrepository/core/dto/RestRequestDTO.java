@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.dto;
+package io.mosip.idrepository.core.dto;
 
 import java.util.Map;
 

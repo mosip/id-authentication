@@ -1,4 +1,4 @@
-package io.mosip.idrepository.identity.httpfilter;
+package io.mosip.idrepository.core.httpfilter;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -19,7 +19,7 @@ import org.springframework.util.StreamUtils;
  *
  * @author Loganathan Sekar
  */
-class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
+public class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 
 	/** The raw data. */
 	private byte[] rawData;
