@@ -22,7 +22,11 @@ import org.json.simple.parser.JSONParser;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
-
+/**
+ * 
+ * @author M1047227
+ *
+ */
 public class OsiValidator extends BaseTestCase{
 	private static Logger logger = Logger.getLogger(OsiValidator.class);
 	EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();
