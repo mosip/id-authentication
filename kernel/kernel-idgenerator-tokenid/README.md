@@ -1,6 +1,6 @@
 ## kernel-idgenerator-tokenid
 
-[Background & Design](../../docs/design/kernel/Kernel-idgenerator-tokenid.md)
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-tokenid.md)
 
 [API Documentation]
 
