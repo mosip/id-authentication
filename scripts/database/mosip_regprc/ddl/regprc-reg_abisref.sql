@@ -16,9 +16,9 @@ create table regprc.reg_abisref (
 	abis_ref_id character varying(36) not null,
 	
 	is_active boolean not null,
-	cr_by character varying (32) not null,
+	cr_by character varying (256) not null,
 	cr_dtimes timestamp not null,
-	upd_by  character varying (32),
+	upd_by  character varying (256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp

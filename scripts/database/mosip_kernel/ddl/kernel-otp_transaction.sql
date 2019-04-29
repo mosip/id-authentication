@@ -27,9 +27,9 @@ create table kernel.otp_transaction (
 	lang_code 				character varying(3),		-- master.language.code
 	
 	-- is_active boolean,
-	cr_by character varying (32),
+	cr_by character varying (256),
 	cr_dtimes timestamp,
-	upd_by  character varying (32),
+	upd_by  character varying (256),
 	upd_dtimes timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp

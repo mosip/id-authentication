@@ -4,6 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -18,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.utils.SigningUtil;
 
@@ -33,10 +38,12 @@ public class UserConfigIntegrationTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	SigningUtil signingUtil;
+	SignatureUtil signingUtil;
 	
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
+	
+	private SignatureResponse signResponse;
 	
 	// ###########################CONFIG START#########################
 		private static final String JSON_CONFIG_RESPONSE = "{\r\n" + "\"registrationConfiguration\":\r\n"
@@ -52,7 +59,10 @@ public class UserConfigIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGetConfig() throws Exception {
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		signResponse=new SignatureResponse();
+		signResponse.setData("asdasdsadf4e");
+		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -66,7 +76,10 @@ public class UserConfigIntegrationTest {
 	public void testGlobalConfig() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		signResponse=new SignatureResponse();
+		signResponse.setData("asdasdsadf4e");
+		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -96,7 +109,10 @@ public class UserConfigIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testRegistrationConfig() throws Exception {
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		signResponse=new SignatureResponse();
+		signResponse.setData("asdasdsadf4e");
+		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.7</version>
 	</parent>
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
@@ -181,8 +181,11 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>javafx</artifactId>
+			<version>${javafx.version}</version>
+			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+			<scope>system</scope>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
@@ -295,6 +298,11 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+		<dependency>
+		    <groupId>com.github.microsoft</groupId>
+		    <artifactId>TSS.Java</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -317,7 +325,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.20</version>
 						<configuration>
-							<skipTests>false</skipTests>
+							<!-- <skipTests>false</skipTests> -->
 							<!-- Excludes integration tests when unit tests are run -->
 							<excludes>
 								<exclude>**/integrationtest/*.java</exclude>

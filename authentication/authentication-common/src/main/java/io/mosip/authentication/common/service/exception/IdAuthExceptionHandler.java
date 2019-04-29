@@ -40,6 +40,7 @@ import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -152,7 +153,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Throwable e = ex;
 		while (e.getCause() != null) {
-			if (e.getCause() instanceof BaseCheckedException) {
+			if (e.getCause() instanceof BaseCheckedException
+					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
 			} else {
 				break;
@@ -180,7 +182,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
 
-			Collections.reverse(errorCodes);	
+			//Retrived error codes and error messages are in reverse order.
+			Collections.reverse(errorCodes);
+			Collections.reverse(errorMessages);
 				if (ex instanceof IDDataValidationException) {
 					IDDataValidationException validationException = (IDDataValidationException) ex;
 					List<Object[]> args = validationException.getArgs();

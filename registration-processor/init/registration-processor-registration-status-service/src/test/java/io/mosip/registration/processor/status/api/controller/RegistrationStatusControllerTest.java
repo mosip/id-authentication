@@ -5,6 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+
+import javax.servlet.http.Cookie;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.status.api.config.RegistrationStatusConfigTest;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -85,6 +89,9 @@ public class RegistrationStatusControllerTest {
 	@Mock
 	private Environment env;
 
+	@Mock
+	private TokenValidator tokenValidator;
+
 	@MockBean
 	RegistrationStatusRequestValidator registrationStatusRequestValidator;
 
@@ -102,7 +109,7 @@ public class RegistrationStatusControllerTest {
 		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
 				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
-
+		doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 		List<RegistrationStatusSubRequestDto> request = new ArrayList<>();
 		RegistrationStatusSubRequestDto regitrationid1 = new RegistrationStatusSubRequestDto();
 		RegistrationStatusSubRequestDto regitrationid2 = new RegistrationStatusSubRequestDto();
@@ -114,8 +121,9 @@ public class RegistrationStatusControllerTest {
 		registrationStatusRequestDTO.setRequest(request);
 		registrationStatusRequestDTO.setId("mosip.registration.status");
 		registrationStatusRequestDTO.setVersion("1.0");
-		registrationStatusRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		regStatusToJson=gson.toJson(registrationStatusRequestDTO);
+		registrationStatusRequestDTO
+				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		regStatusToJson = gson.toJson(registrationStatusRequestDTO);
 		registrationDtoList = new ArrayList<>();
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
 		registrationStatusDto1.setRegistrationId("1001");
@@ -140,37 +148,38 @@ public class RegistrationStatusControllerTest {
 	/**
 	 * Search success test.
 	 *
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	@Test
 	public void searchSuccessTest() throws Exception {
-        doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),"mosip.registration.status");
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .get("/registration-processor/registrationstatus/v1.0")
-                .param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
+				"mosip.registration.status");
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+						.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	/**
 	 * Search failure test.
 	 *
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	@Test
 	public void searchFailureTest() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .get("/registration-processor/registrationstatus/v1.0").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+						.accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
-	
+
 	@Test
 	public void searchRegstatusException() throws Exception {
 
-		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-		this.mockMvc.perform(MockMvcRequestBuilders
-                .get("/registration-processor/registrationstatus/v1.0").param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
+		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
+				.validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
 	}
 
 }

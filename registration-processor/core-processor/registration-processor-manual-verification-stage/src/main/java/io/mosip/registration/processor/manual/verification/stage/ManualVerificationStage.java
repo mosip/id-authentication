@@ -9,6 +9,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -74,11 +75,16 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	@Autowired
 	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
 	/**
 	 * server port number
 	 */
 	@Value("${server.port}")
 	private String port;
+	
 	private static final String APPLICATION_JSON = "application/json";
 
 	/**
@@ -90,24 +96,22 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
-	private void routes(Router router) {
-		router.post("/manual-verification/applicantBiometric/v1.0").blockingHandler(ctx -> {
-			processBiometric(ctx);
-		}).failureHandler(handlerObj -> {
+	private void routes(MosipRouter router) {
+		router.post("/manual-verification/applicantBiometric/v1.0");
+		router.handler(this::processBiometric, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
 
-		router.post("/manual-verification/applicantDemographic/v1.0").blockingHandler(ctx -> {
-			processDemographic(ctx);
-		}, false).failureHandler(handlerObj -> {
+		router.post("/manual-verification/applicantDemographic/v1.0");
+		router.handler(this::processDemographic, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
@@ -115,9 +119,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 		});
 
-		router.post("/manual-verification/assignment/v1.0").blockingHandler(ctx -> {
-			processAssignment(ctx);
-		}, false).failureHandler(handlerObj -> {
+		router.post("/manual-verification/assignment/v1.0");
+		router.handler(this::processAssignment, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
@@ -125,32 +128,35 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 		});
 
-		router.post("/manual-verification/decision/v1.0").blockingHandler(ctx -> {
-			processDecision(ctx);
-		}, false).failureHandler(handlerObj -> {
+		router.post("/manual-verification/decision/v1.0");
+		router.handler(this::processDecision, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
-
-		router.post("/manual-verification/packetInfo/v1.0").blockingHandler(ctx -> {
-			processPacketInfo(ctx);
-		}, false).failureHandler(handlerObj -> {
+		
+		router.post("/manual-verification/packetInfo/v1.0");
+		router.handler(this::processPacketInfo, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
 
-		router.get("/manual-verification/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(handlerObj -> {
-			this.setResponse(handlerObj, handlerObj.failure().getMessage());
-		});
+		router.get("/manual-verification/health");
+		router.handler(this::health);
 
 	}
-
+	/**
+	 * This is for health check up
+	 * 
+	 * @param routingContext
+	 */
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
+	}
+	
 	public void processBiometric(RoutingContext ctx) {
 
 		JsonObject obj = ctx.getBodyAsJson();

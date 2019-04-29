@@ -51,7 +51,10 @@ public class ClientJarDecryption extends Application {
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
 
-	private Service<String> taskService;
+	ProgressBar progressBar = new ProgressBar();
+	Stage primaryStage = new Stage();
+
+	static String tempPath;
 
 	/**
 	 * Decrypt the bytes
@@ -65,7 +68,7 @@ public class ClientJarDecryption extends Application {
 		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
 		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.DECRYPT_MODE);
+				Cipher.DECRYPT_MODE, null);
 	}
 
 	/**
@@ -118,140 +121,129 @@ public class ClientJarDecryption extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		System.out.println("before Decryption");
+		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
+		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		System.out.println("properties file path--->>");
+		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		Properties properties = new Properties();
+		properties.load(fileInputStream);
+		try {
+		String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
+		if (!new File(dbpath).exists()) {
+			System.out.println("coming alert");
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setHeaderText(null);
+			alert.setContentText("Please provide correct path for Database");
+			alert.setTitle("INFO");
+			alert.setGraphic(null);
+			alert.setResizable(true);
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.showAndWait();
+			throw new RuntimeException();
+		}
+
+		// TODO Check Internet Connectivity
+		
+			showDialog();
+			
+			System.out.println("Inside try statement");
+			Task<Void> task = new Task<Void>() {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see javafx.concurrent.Task#call()
+				 */
+				@Override
+				protected Void call() throws IOException, InterruptedException {
+					try {
+						checkForJars();
+					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
+							| SAXException e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			};
+			activateProgressBar(task);
+			Thread t=new Thread(task);
+			t.start();
+			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent t) {
+					System.out.println("Inside Task thread--->>>>");
+					primaryStage.close();
+					System.out.println("Inside try statement1");
+				
+					File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
+
+					File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
+
+					tempPath = FileUtils.getTempDirectoryPath();
+					tempPath = tempPath + UUID.randomUUID();
+
+					System.out.println(tempPath);
+
+					System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
+					byte[] decryptedRegFileBytes;
+					try {
+						decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
+								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+					
+
+					String clientJar = tempPath + SLASH + UUID.randomUUID();
+					System.out.println("clientJar ---> " + clientJar);
+					FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
+
+					System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+					byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
+							Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+
+					FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
+							decryptedRegServiceBytes);
+
+					String libPath = new File("lib").getAbsolutePath();
+					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -Dmosip.dbpath="+properties.getProperty("mosip.dbpath")+" -cp " + tempPath + "/*;" + libPath
+							+ "/* io.mosip.registration.controller.Initialization";
+					System.out.println("Command-->>" + cmd);
+					Process process = Runtime.getRuntime().exec(cmd);
+					System.out.println("the output stream is " + process.getOutputStream().getClass());
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+					String s;
+					while ((s = bufferedReader.readLine()) != null) {
+						System.out.println("The stream is : " + s);
+					}
+					if (0 == process.waitFor()) {
+
+						process.destroyForcibly();
+
+						FileUtils.deleteDirectory(new File(tempPath));
+
+					}
+					} catch (IOException | InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
+		}
+	}
+	
+	private void activateProgressBar(final Task<?> task) {
+		progressBar.progressProperty().bind(task.progressProperty());
+		primaryStage.show();
+	}
+
+	private void showDialog() {
+
 		StackPane stackPane = new StackPane();
 		stackPane.setAlignment(Pos.CENTER);
-		ProgressBar progressBar = new ProgressBar();
 		stackPane.getChildren().add(progressBar);
-		progressBar.setVisible(false);
 		Scene scene = new Scene(stackPane, 400, 500);
-
 		primaryStage.setScene(scene);
-		primaryStage.show();
-
-		/**
-		 * This anonymous service class will do the pre application launch task
-		 * progress.
-		 * 
-		 */
-		taskService = new Service<String>() {
-			@Override
-			protected Task<String> createTask() {
-				return new Task<String>() {
-					/*
-					 * (non-Javadoc)
-					 * 
-					 * @see javafx.concurrent.Task#call()
-					 */
-					@Override
-					protected String call() throws IOException, InterruptedException {
-						progressBar.setVisible(true);
-						System.out.println("before Decryption");
-						ClientJarDecryption aesDecrypt = new ClientJarDecryption();
-						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
-
-						String propsFilePath = new File(System.getProperty("user.dir"))
-								+ "/props/mosip-application.properties";
-
-						FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-						Properties properties = new Properties();
-						properties.load(fileInputStream);
-
-						String dbpath = new File(System.getProperty("user.dir")) + SLASH
-								+ properties.getProperty("mosip.dbpath");
-
-						if (!new File(dbpath).exists()) {
-							return "NOTEXISTS";
-						}
-
-						// TODO Check Internet Connectivity
-
-						try {
-							checkForJars();
-
-							File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
-
-							File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
-
-							String tempPath = FileUtils.getTempDirectoryPath();
-							tempPath = tempPath + UUID.randomUUID();
-
-							System.out.println(tempPath);
-
-							System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
-							byte[] decryptedRegFileBytes = aesDecrypt.decrypt(
-									FileUtils.readFileToByteArray(encryptedClientJar),
-									Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
-
-							String clientJar = tempPath + SLASH + UUID.randomUUID();
-							System.out.println("clientJar ---> " + clientJar);
-							FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
-
-							System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
-							byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(
-									FileUtils.readFileToByteArray(encryptedServicesJar),
-									Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
-
-							FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
-									decryptedRegServiceBytes);
-
-							String libPath = new File("lib").getAbsolutePath();
-							String javaHomePath = (System.getProperty("java.home").replaceAll("jre", "")
-									.replaceAll("jdk", "jre").replaceAll(" ", "%20") + "lib/ext").replace("\\", "/");
-
-							Process process = Runtime.getRuntime()
-									.exec("java -Dspring.profiles.active=qa -Dmosip.dbpath="
-											+ properties.getProperty("mosip.dbpath") + " -Djava.ext.dirs=" + libPath
-											+ ";" + tempPath + ";" + javaHomePath + " -jar " + clientJar + ".jar");
-
-							System.out.println("the output stream is " + process.getOutputStream().getClass());
-							BufferedReader bufferedReader = new BufferedReader(
-									new InputStreamReader(process.getInputStream()));
-							String s;
-							while ((s = bufferedReader.readLine()) != null) {
-								System.out.println("The stream is : " + s);
-							}
-
-							if (0 == process.waitFor()) {
-
-								process.destroyForcibly();
-
-								FileUtils.deleteDirectory(new File(tempPath));
-
-							}
-						} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-								| SAXException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch(RuntimeException runtimeException) {
-							runtimeException.printStackTrace();
-						}
-
-						return "";
-					}
-				};
-			}
-		};
-		progressBar.progressProperty().bind(taskService.progressProperty());
-		taskService.start();
-		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent t) {
-				progressBar.setVisible(false);
-				primaryStage.close();
-
-				if ("NOTEXISTS".equalsIgnoreCase(taskService.getValue())) {
-					System.out.println("coming alert");
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setHeaderText(null);
-					alert.setContentText("Please provide correct path for Database");
-					alert.setTitle("INFO");
-					alert.setGraphic(null);
-					alert.setResizable(true);
-					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-					alert.showAndWait();
-				}
-			}
-		});
-
 	}
 }

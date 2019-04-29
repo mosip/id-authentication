@@ -87,17 +87,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
-				// Validation for TransaactionId in the RequestDTO.
-				validateTxnId(authRequestDto.getRequest().getTransactionID(), errors, REQUEST_TRANSACTION_ID);
-				validateTxnId(authRequestDto.getTransactionID(), authRequestDto.getRequest().getTransactionID(), errors);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);
 			}
-			if (!errors.hasErrors()) {
-				validateRequestTimedOut(authRequestDto.getRequestTime(), errors);
-			}
-
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 				String individualId = authRequestDto.getIndividualId();
@@ -114,6 +107,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		}
+	}
+	
+	@Override
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+		super.validateReqTime(reqTime, errors, paramName);
+		if (!errors.hasErrors()) {
+			validateRequestTimedOut(reqTime, errors);
 		}
 	}
 
@@ -136,10 +137,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
-								+ String.format(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
+								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
-				errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+				errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,

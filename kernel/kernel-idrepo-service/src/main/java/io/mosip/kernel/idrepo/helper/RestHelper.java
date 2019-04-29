@@ -26,9 +26,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jayway.jsonpath.JsonPath;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.exception.AuthenticationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -124,6 +126,8 @@ public class RestHelper {
 					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
 							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
+		} catch (AuthenticationException e) {
+			throw e;
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
@@ -239,7 +243,8 @@ public class RestHelper {
 		try {
 			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
-					&& responseNode.get(ERRORS).size() > 0) {
+					&& responseNode.get(ERRORS).size() > 0
+					&& !responseNode.get(ERRORS).get(0).get("errorCode").asText().startsWith("KER-ATH")) {
 				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
 						responseNode.toString(),
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
@@ -290,9 +295,19 @@ public class RestHelper {
 					new HttpEntity<>(request.getRequestBody(), request.getHeaders()), request.getResponseType());
 			return Mono.just(responseEntity.getBody());
 		} catch (RestClientResponseException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate", e.getMessage());
-			throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
-					e.getResponseBodyAsByteArray());
+			if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
+						"request failed with status code :" + e.getRawStatusCode() + " -- For request -> " + request,
+						"\n\n" + e.getResponseBodyAsString());
+				throw new AuthenticationException(
+						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].errorCode").toString(),
+						JsonPath.read(e.getResponseBodyAsString(), "$.errors.[0].message").toString(),
+						e.getRawStatusCode());
+			} else {
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
+						e.getResponseBodyAsString());
+				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);
+			}
 		} catch (RestClientException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate", e.getMessage());
 			throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintTemplate;
@@ -286,6 +287,16 @@ public class FingerprintProviderTest {
 		Map<String, String> entityInfo = new HashMap<>();
 		entityInfo.put("UNKNOWN", leftIndex);
 		fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
+	}
+	
+	@Test
+	public void TestmatchMultiMinutaeUnKnownFinger() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String encodedString = Base64.getEncoder().encodeToString(finger1);
+		reqInfo.put("UNKNOWN", encodedString);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("UNKNOWN", encodedString);
+		ReflectionTestUtils.invokeMethod(fingerPrint, "matchMultiMinutaeUnKnownFinger", reqInfo, entityInfo);
 	}
 
 }

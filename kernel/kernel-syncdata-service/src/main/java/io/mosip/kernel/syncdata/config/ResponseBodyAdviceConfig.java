@@ -22,8 +22,11 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.syncdata.utils.SigningUtil;
+import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
@@ -32,7 +35,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private SigningUtil hashUtil;
+	SignatureUtil signatureUtil;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -74,10 +77,13 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 		}
 		if (body != null) {
 			try {
-				response.getHeaders().add("Response-Signature",
-						hashUtil.signResponseData(objectMapper.writeValueAsString(body)));
+				SignatureResponse cryptoManagerResponseDto = signatureUtil
+						.signResponse(objectMapper.writeValueAsString(body));
+				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
+				body.setResponsetime(cryptoManagerResponseDto.getResponseTime());
 			} catch (JsonProcessingException e) {
-				e.printStackTrace();
+				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
+						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());
 			}
 		}
 		return body;

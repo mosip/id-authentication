@@ -40,7 +40,12 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
-	
+	/** The Constant MISSING_INPUT_PARAMETER. */
+	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
+
+	/** The Constant VALIDATE. */
+	private static final String VALIDATE = "VALIDATE";
+
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
 
 	/** The mosip logger. */

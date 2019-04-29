@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.7</version>
 	</parent>
 
 	<groupId>io.mosip.authentication</groupId>
@@ -32,7 +32,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<ida.version>0.10.5</ida.version>
+		<ida.version>0.10.7</ida.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -45,7 +45,7 @@
 		<powermock.version>2.0.0</powermock.version>
 
 		<!-- Kernel components -->
-		<kernel.version>0.10.4</kernel.version>
+		<kernel.version>0.10.6</kernel.version>
 		<kernel.core.version>${kernel.version}</kernel.core.version>
 		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
 		<kernel.template.version>${kernel.version}</kernel.template.version>

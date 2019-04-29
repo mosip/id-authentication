@@ -137,7 +137,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -241,7 +240,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -338,7 +336,6 @@ public class InternalAuthRequestValidatorTest {
 		fingerIdentityInfoDtoList.add(irisValue);
 		fingerIdentityInfoDtoList.add(faceValue);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
-		requestDTO.setTransactionID("1234567890");
 		requestDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -365,7 +362,6 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setDemo(true);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(identitydto);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -509,7 +505,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);

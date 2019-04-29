@@ -17,9 +17,9 @@ create table prereg.language_transliteration (
 	
 	lang_id 		character varying(30) not null,
 
-	cr_by 		character varying (32) not null,      
+	cr_by 		character varying (256) not null,      
 	cr_dtimes 	timestamp not null,
-	upd_by 		character varying (32),
+	upd_by 		character varying (256),
 	upd_dtimes 	timestamp
 )
 ;

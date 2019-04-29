@@ -307,7 +307,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-			description = "Internal error occured in UINGenerator stage while processing registrationId "
+			description = "Internal error occurred in UINGenerator stage while processing registrationId "
 					+ registrationId + "::" + ex.getMessage();
 
 		} catch (IOException e) {
@@ -331,7 +331,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-			description = "Internal error occured in UINGenerator stage while processing registrationId "
+			description = "Internal error occurred in UINGenerator stage while processing registrationId "
 					+ registrationId + ex.getMessage();
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -572,7 +572,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * @throws ApisResourceAccessException
 	 */
 	private IdResponseDTO deactivateUin(String regId, Long uin, MessageDTO object) throws ApisResourceAccessException {
-		IdResponseDTO idResponseDto = new IdResponseDTO();
+		IdResponseDTO idResponseDto;
 		List<String> pathsegments = new ArrayList<>();
 		RequestDto requestDto = new RequestDto();
 		String statusComment ="";
@@ -640,7 +640,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 *             the apis resource access exception
 	 */
 	private IdResponseDTO getIdRepoDataByUIN(Long uin) throws ApisResourceAccessException {
-		IdResponseDTO response = new IdResponseDTO();
+		IdResponseDTO response;
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(Long.toString(uin));

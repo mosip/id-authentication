@@ -28,6 +28,7 @@ import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -195,8 +196,8 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			AuthToken token = getAuthToken(authResponseDto);
-			customTokenServices.StoreToken(token);
+			//AuthToken token = getAuthToken(authResponseDto);
+			//customTokenServices.StoreToken(token);
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -319,6 +320,16 @@ public class AuthController {
 		ResponseWrapper<MosipUserListDto> responseWrapper = new ResponseWrapper<>();
 		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails.getRequest().getUserDetails(),
 				appId);
+		responseWrapper.setResponse(mosipUsers);
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@GetMapping(value = "/usersaltdetails/{appid}")
+	public ResponseWrapper<MosipUserSaltList> getUserDetailsWithSalt(@PathVariable("appid") String appId)
+			throws Exception {
+		ResponseWrapper<MosipUserSaltList> responseWrapper = new ResponseWrapper<>();
+		MosipUserSaltList mosipUsers = authService.getAllUserDetailsWithSalt(appId);
 		responseWrapper.setResponse(mosipUsers);
 		return responseWrapper;
 	}

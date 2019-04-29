@@ -12,13 +12,13 @@ create schema if not exists master
 -- table section -------------------------------------------------
 create table master.user_detail_h (
 	
-	id 			character varying (36) not null,
+	id 			character varying (256) not null,
 	
 	uin		 	character varying (28),					--	UIN of indivisuals and referenced from idrepo database 
 	
 	name 		character varying (64) not null,
 	
-	email 		character varying (64),
+	email 		character varying (256),
 	mobile 		character varying (16),
 	
 	status_code character varying(36) not null,			-- master.status_list.code
@@ -29,9 +29,9 @@ create table master.user_detail_h (
 	last_login_method character varying (64),			-- master.login_method.code
 
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes  timestamp,
 	is_deleted 	boolean,
 	del_dtimes  timestamp,

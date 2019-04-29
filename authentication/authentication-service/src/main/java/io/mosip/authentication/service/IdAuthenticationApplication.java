@@ -40,6 +40,8 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -56,7 +58,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class,
 		AuthRequestValidator.class, AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class,
 		DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class })
-
+@ComponentScan(basePackages = "io.mosip.*", excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "io.mosip.kernel.datamapper.orika.*"))
 public class IdAuthenticationApplication {
 
 	/**

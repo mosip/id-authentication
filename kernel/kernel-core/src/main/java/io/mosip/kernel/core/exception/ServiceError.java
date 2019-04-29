@@ -30,4 +30,8 @@ public class ServiceError {
 		this.message = errorMessage;
 	}
 
+	public ServiceError() {
+
+	}
+
 }
