@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
@@ -71,8 +74,10 @@ public class SyncDataControllerTest {
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
 	
+	private SignatureResponse signResponse;
+	
 	@MockBean
-	private SigningUtil signingUtil;
+	private SignatureUtil signingUtil;
 
 	JSONObject globalConfigMap = null;
 	JSONObject regCentreConfigMap = null;
@@ -83,6 +88,9 @@ public class SyncDataControllerTest {
 		configDetialsSyncSetup();
 		syncMasterDataSetup();
 		getUsersBasedOnRegCenterSetUp();
+		signResponse=new SignatureResponse();
+		signResponse.setData("asdasdsadf4e");
+		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
 
 	}
 
@@ -176,7 +184,8 @@ public class SyncDataControllerTest {
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
 	}
@@ -184,7 +193,7 @@ public class SyncDataControllerTest {
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncRegistrationConfigDetailsSuccess() throws Exception {
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString()))
 				.thenReturn(globalConfigMap);
 		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
@@ -202,7 +211,7 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	public void getUsersBasedOnRegCenter() throws Exception {
 		String regId = "110044";
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(syncUserDetailsService.getAllUserDetail(regId)).thenReturn(syncUserDetailDto);
 		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isOk());
 
@@ -259,7 +268,7 @@ public class SyncDataControllerTest {
 	public void getPublicKey() throws Exception {
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		publicKeyResponse.setPublicKey("aasfdsfsadfdsaf");
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		Mockito.when(syncConfigDetailsService.getPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn(publicKeyResponse);
 		mockMvc.perform(get("/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z"))
@@ -271,7 +280,7 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void getAllRoles() throws Exception{
-		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF");
+		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		RolesResponseDto rolesResponseDto= new RolesResponseDto();
 		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
 		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);

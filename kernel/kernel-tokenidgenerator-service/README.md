@@ -1,6 +1,6 @@
 ## kernel-uingenerator-service
 
-[Background & Design](../../docs/design/kernel/kernel-uingenerator.md)
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-statictoken.md)
 
 [Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#4-uin)
 

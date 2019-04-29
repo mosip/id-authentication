@@ -20,6 +20,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.uingenerator.config.UINHealthCheckerhandler;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
@@ -131,7 +132,9 @@ public class UinGeneratorRouter {
 
 			if (!profile.equalsIgnoreCase("test")) {
 				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
-				signedData = signatureUtil.signResponse(resWrpJsonString);
+				SignatureResponse cryptoManagerResponseDto=signatureUtil.signResponse(resWrpJsonString);
+				signedData = cryptoManagerResponseDto.getData();
+				reswrp.setResponsetime(cryptoManagerResponseDto.getResponseTime());
 			}
 			routingContext.response().putHeader("response-signature", signedData)
 					.end(objectMapper.writeValueAsString(reswrp));

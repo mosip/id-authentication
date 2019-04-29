@@ -82,7 +82,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
+			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			if (ex.getRawStatusCode() == 401) {

@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -117,7 +118,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
-				HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
+				LinkedHashMap<String, Object> globalParamJsonMap = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
 				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 					HashMap<String, String> globalParamMap = new HashMap<>();
@@ -290,7 +291,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		globalParamDAO.update(globalParam);
 
 		updateApplicationMap(code, val);
-		
+
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Update global param ended");
 
