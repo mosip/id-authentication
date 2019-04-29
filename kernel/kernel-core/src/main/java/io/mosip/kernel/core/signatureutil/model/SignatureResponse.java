@@ -1,4 +1,6 @@
-package io.mosip.kernel.responsesignature.dto;
+package io.mosip.kernel.core.signatureutil.model;
+
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,10 +15,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoManagerResponseDto {
+public class SignatureResponse {
 	
 	/**
 	 * encrypted data
 	 */
 	private String data;
+	
+	/**
+	 * response time.
+	 */
+	private LocalDateTime responseTime;
 }

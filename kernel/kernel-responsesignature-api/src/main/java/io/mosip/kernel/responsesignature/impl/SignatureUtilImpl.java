@@ -27,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -37,6 +38,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -44,7 +46,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
-import io.mosip.kernel.responsesignature.dto.CryptoManagerResponseDto;
 import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 
 /**
@@ -57,11 +58,11 @@ import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 public class SignatureUtilImpl implements SignatureUtil {
 
 	/** The sync data request id. */
-	@Value("${mosip.kernel.signature.signature-request-id:sign.response}")
+	@Value("${mosip.kernel.signature.signature-request-id}")
 	private String syncDataRequestId;
 
 	/** The sync data version id. */
-	@Value("${mosip.kernel.signature.signature-version-id:v1.0}")
+	@Value("${mosip.kernel.signature.signature-version-id}")
 	private String syncDataVersionId;
 
 	/** The encrypt url. */
@@ -107,11 +108,12 @@ public class SignatureUtilImpl implements SignatureUtil {
 	/**
 	 * Sign response.
 	 *
-	 * @param response the response
+	 * @param response
+	 *            the response
 	 * @return the string
 	 */
 	@Override
-	public String signResponse(String response) {
+	public SignatureResponse signResponse(String response) {
 		byte[] responseByteArray = HMACUtils.generateHash(response.getBytes());
 		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId(signApplicationid);
@@ -149,21 +151,22 @@ public class SignatureUtilImpl implements SignatureUtil {
 		if (!validationErrorsList.isEmpty()) {
 			throw new SignatureUtilClientException(validationErrorsList);
 		}
-		CryptoManagerResponseDto cryptoManagerResponseDto = null;
-		ResponseWrapper<CryptoManagerResponseDto> responseObject;
+		SignatureResponse SignatureResponse = null;
+		ResponseWrapper<SignatureResponse> responseObject;
 		try {
 
 			responseObject = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<CryptoManagerResponseDto>>() {
+					new TypeReference<ResponseWrapper<SignatureResponse>>() {
 					});
 
-			cryptoManagerResponseDto = responseObject.getResponse();
+			SignatureResponse = responseObject.getResponse();
+			SignatureResponse.setResponseTime(responseObject.getResponsetime());
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 					SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorMessage());
 		}
 
-		return cryptoManagerResponseDto.getData();
+		return SignatureResponse;
 	}
 
 	/*
@@ -178,13 +181,13 @@ public class SignatureUtilImpl implements SignatureUtil {
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		// System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		// System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 
@@ -196,19 +199,19 @@ public class SignatureUtilImpl implements SignatureUtil {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean validateWithPublicKey(String responseSignature, String responseBody)
+	public boolean validate(String responseSignature, String responseBody, String responsetime)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		Map<String, String> uriParams = new HashMap<>();
 		ResponseEntity<String> keyManagerResponse = null;
 		uriParams.put("applicationId", signApplicationid);
-		String localDateTime = DateUtils.getUTCCurrentDateTimeString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", localDateTime).queryParam("referenceId", signRefid);
+				.queryParam("timeStamp", responsetime).queryParam("referenceId", signRefid);
 
 		try {
 			keyManagerResponse = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+		}
+		 catch (HttpClientErrorException | HttpServerErrorException ex) {
 			if (ex.getRawStatusCode() == 401) {
 				throw new BadCredentialsException("Authentication failed for PublicKey");
 			}
@@ -229,6 +232,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 		ResponseWrapper<?> keyResponseWrp;
 		try {
 			keyResponseWrp = objectMapper.readValue(keyResponseBody, ResponseWrapper.class);
+			objectMapper.registerModule(new JavaTimeModule());
 			keyManagerResponseDto = objectMapper.readValue(
 					objectMapper.writeValueAsString(keyResponseWrp.getResponse()),
 					KeymanagerPublicKeyResponseDto.class);
@@ -238,14 +242,14 @@ public class SignatureUtilImpl implements SignatureUtil {
 		}
 		byte[] syncDataBytearray = HMACUtils.generateHash(responseBody.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		// System.out.println("Actual Hash: " + actualHash);
+		//System.out.println("Actual Hash: " + actualHash);
 		PublicKey key = null;
 		key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseSignature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = new String(hashedEncodedData);
-		// System.out.println("Signed Hash: " + signedHash);
+		//System.out.println("Signed Hash: " + signedHash);
 		return signedHash.equals(actualHash);
 	}
 

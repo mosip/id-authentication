@@ -6,8 +6,6 @@
  */
 package io.mosip.kernel.responsesignature.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,11 +30,11 @@ public class KeymanagerPublicKeyResponseDto {
 	/**
 	 * Timestamp of issuance
 	 */
-	private LocalDateTime issuedAt;
+	private String issuedAt;
 
 	/**
 	 * Timestamp of expiry
 	 */
-	private LocalDateTime expiryAt;
+	private String expiryAt;
 
 }

@@ -44,19 +44,69 @@ auth.server.validate.url=https://host/v1.0/authorize/validateToken
  
  **Sample Usage**
  
+   1. *Signing the response*
+   
   ```
    #Instance of signatureUtil
    @Autowired
-   SignatureUtil signatureUtil
+   private SignatureUtil signingUtil;
    
-   #Call method below
-   signatureUtil.signResponseData(response);
+   String responseBody = "\"response\": { \"roles\": [ { \"roleId\": \"REGISTRATION_ADMIN\", \"roleName\": \"REGISTRATION_ADMIN\", \"roleDescription\": \"Registration administrator\" }, { \"roleId\": \"TSP\", \"roleName\": \"TSP\", \"roleDescription\": \"Trusted Service Provider\" } ] }"
+  
+    #Pass the response body to sign the response with private key.
+    SignatureResponse signatureResponse=signingUtil.signResponse( responseBody);
    ```
- **Sample response**
+   
+   **Sample response**
  
  ```
+ 
  #The encrypted response is added to the header.
  
- response-signature=response-signature: EoYMjwMJadE-FOYupAuSwQFnUkE87_5jqqDBf9FRK75O4XBcvZws3dd
+ {
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-29T04:37:16.141Z",
+  "metadata": null,
+  "response": {
+    "data": "SvYBeeZTl-ao4loe981MkTTBZ507Om7HaZAzxQ1Dj9M9KNuxgslYbQgFdcsaSnoCiUM5nZRDVl2-GgyUJdlqd9cb5kvnAZQjubV2ZYsZfqu2W8MJnsglXK1iUrD6jPf0KNCQ86UmlHOc9BIFi9u1Wh87b8kKmIdbkL8Jv4x2Yqqvufp5kkFja4udXcIVJhhSmsYS4Z0DtDv6p9eGZ18Gcrz-Nf9G9ZRcGpllOIvZfo7Jq4-MW94TJNBq0FA-H0qwdHFJIDJaCT5lN_dGzD4mFu-9CPL4xpeA76V1E7D_vT_v7UQcFgAu4ewdw4-Qew9guOSCUrrcJ-PF5sYxxyT9Fg"
+    "responseTime":"2019:09:09:09.000Z
+  },
+  "errors": null
+}
  ```
+   2. *Validate with public key*
+   
+   ```
+    #Instance of signatureUtil
+   @Autowired
+   private SignatureUtil signingUtil;
+   
+   boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData),
+   responseBody ,publicKey);
+   
+   ```
+ 3. *Validate*
+ 
+ 
+   ```
+   #Instance of signatureUtil
+   @Autowired
+   private SignatureUtil signingUtil;
+   
+   boolean isVerfied = signingUtil.validate(CryptoUtil.encodeBase64(encryptedData), responseBody,
+				responseTime);
+  ```
+  
+  **Sample response**
+ 
+ ```
+ #if the signature is verified the response will be true
+ boolean isVerified= true;
+ ```
+ 
+  
+  
+   
+ 
    
