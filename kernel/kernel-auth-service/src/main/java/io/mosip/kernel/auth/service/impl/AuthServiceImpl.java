@@ -229,6 +229,10 @@ public class AuthServiceImpl implements AuthService {
 		BasicTokenDto basicTokenDto = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
+		if(mosipUser==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+		}
 		if(mosipUser!=null)
 		{
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
