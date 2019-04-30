@@ -156,4 +156,10 @@ public interface MachineMappingDAO {
 	 */
 	List<RegDeviceMaster> getDevicesMappedToRegCenter(String langCode);
 
+	/**Find whether the user exists or not
+	 * @param userId userId
+	 * @return is exists or not
+	 */
+	boolean isExists(String userId);
+
 }

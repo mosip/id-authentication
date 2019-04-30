@@ -7,6 +7,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
@@ -16,7 +17,7 @@ import io.vertx.ext.web.RoutingContext;
 
 /**
  * The Class PacketUploaderStage.
- * 
+ *
  * @author Rishabh Keshari
  */
 @Component
@@ -34,6 +35,10 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	private String port;
 
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
@@ -44,7 +49,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	/** The packet uploader service. */
 	@Autowired
 	PacketUploaderService<MessageDTO> packetUploaderService;
-	
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -57,9 +62,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/**
@@ -67,19 +72,31 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 *
 	 * @param router the router
 	 */
-	private void routes(Router router) {
-		router.post(contextPath+ "/securezone").handler(ctx -> {
-			processURL(ctx);
-		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, failureHandler.failure().getMessage());	
-		});
+	private void routes(MosipRouter router) {
+		router.post(contextPath+ "/securezone");
+		router.handler(this::processURL, this::failure);
 
-		router.get(contextPath+"/securezone/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(context->{
-			this.setResponse(context, context.failure().getMessage());
-		});
+		router.get(contextPath+"/securezone/health");
+		router.handler(this::health);
 
+	}
+
+	/**
+	 * This is for failure handler
+	 *
+	 * @param routingContext
+	 */
+	private void failure(RoutingContext routingContext) {
+		this.setResponse(routingContext, routingContext.failure().getMessage());
+	}
+
+	/**
+	 * This is for health check up
+	 *
+	 * @param routingContext
+	 */
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
 	}
 
 
@@ -103,7 +120,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		}else {
 			this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has not been uploaded to file System");
 			regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has not been uploaded to file System", null, null);
-				
+
 		}
 
 	}

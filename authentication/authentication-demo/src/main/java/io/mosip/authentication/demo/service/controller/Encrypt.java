@@ -11,7 +11,9 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
@@ -27,38 +29,51 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.demo.service.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 import io.mosip.authentication.demo.service.helper.CryptoUtility;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.swagger.annotations.ApiOperation;
 
 /**
- *  The Class Encrypt is used to encrypt the identity block using Kernel Api.
+ * The Class Encrypt is used to encrypt the identity block using Kernel Api.
  *
  * @author Dinesh Karuppiah
  */
 
 @RestController
 public class Encrypt {
+
+	@Autowired
+	private Environment env;
 
 	private static final String ASYMMETRIC_ALGORITHM_NAME = "RSA";
 
@@ -81,7 +96,7 @@ public class Encrypt {
 	/** The app ID. */
 	@Value("${application.id}")
 	private String appID;
-	
+
 	/** The IDA Public Key. */
 	@Value("${mosip.ida.publickey}")
 	private String publicKeyId;
@@ -104,17 +119,18 @@ public class Encrypt {
 	 *             the rest client exception
 	 * @throws JSONException
 	 *             the JSON exception
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws NoSuchPaddingException 
-	 * @throws InvalidKeyException 
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
 	 */
-	@PostMapping(path = "/identity/encrypt")
+	@PostMapping(path = "/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
-			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			IllegalBlockSizeException, BadPaddingException {
 		return kernelEncrypt(encryptionRequestDto);
 	}
 
@@ -142,7 +158,7 @@ public class Encrypt {
 			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
 			InvalidKeySpecException {
 		String identityBlock = objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
-		CryptoUtility cryptoUtil = new CryptoUtility(); //TODO FIXME
+		CryptoUtility cryptoUtil = new CryptoUtility(); // TODO FIXME
 		SecretKey secretKey = cryptoUtil.genSecKey();
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
@@ -158,7 +174,6 @@ public class Encrypt {
 		return encryptionResponseDto;
 	}
 
-	
 	/**
 	 * Gets the encrypted value.
 	 *
@@ -183,6 +198,21 @@ public class Encrypt {
 			throws IOException, KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
+		ClientHttpRequestInterceptor interceptor = new ClientHttpRequestInterceptor() {
+
+			@Override
+			public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+					throws IOException {
+				String authToken = generateAuthToken();
+				if(authToken != null && !authToken.isEmpty()) {
+					request.getHeaders().set("Cookie", "Authorization=" + authToken);
+				}
+				return execution.execute(request, body);
+			}
+		};
+
+		restTemplate.setInterceptors(Collections.singletonList(interceptor));
+
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
@@ -194,9 +224,28 @@ public class Encrypt {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyURL)
 				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
 				.queryParam("referenceId", publicKeyId);
-		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
-				null, Map.class);
+		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET, null, Map.class);
 		return (String) ((Map<String, Object>) response.getBody().get("response")).get("publicKey");
+	}
+
+	private String generateAuthToken() {
+		ObjectNode requestBody = objMapper.createObjectNode();
+		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));
+		requestBody.put("secretKey", env.getProperty("auth-token-generator.rest.secretKey"));
+		requestBody.put("appId", env.getProperty("auth-token-generator.rest.appId"));
+		RequestWrapper<ObjectNode> request = new RequestWrapper<>();
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequest(requestBody);
+		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri")).post()
+				.syncBody(request)
+				.exchange().block();
+		System.out.println("AuthResponse :" +  response.toEntity(String.class).block().getBody());
+		List<ResponseCookie> list = response.cookies().get("Authorization");
+		if(list != null && !list.isEmpty()) {
+			ResponseCookie responseCookie = list.get(0);
+			return responseCookie.getValue();
+		}
+		return "";
 	}
 
 	/**
@@ -228,7 +277,7 @@ public class Encrypt {
 
 		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String arg1)
 				throws CertificateException {
-			}
+		}
 	} };
 
 	/**

@@ -20,7 +20,7 @@ create table audit.app_audit_log (
 	action_dtimes    timestamp not null ,
 	host_name         character varying(128) not null ,
 	host_ip           character varying(16) not null ,
-	session_user_id   character varying(64) not null ,
+	session_user_id   character varying(256) not null ,
 	session_user_name character varying(128) ,
 	app_id            character varying(64) not null ,
 	app_name          character varying(128) not null ,
@@ -28,7 +28,7 @@ create table audit.app_audit_log (
 	module_name       character varying(128) ,
 	ref_id            character varying(64) ,
 	ref_id_type       character varying(64) ,
-	cr_by             character varying(32) not null
+	cr_by             character varying(256) not null
 )
 ;
 

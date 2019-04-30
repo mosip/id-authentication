@@ -45,6 +45,7 @@
            	<fx:include fx:id="demographicDetail" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="DemographicDetail.fxml" visible="true" />
          	<fx:include fx:id="documentScan" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="DocumentScan.fxml" visible="false" />
          	<fx:include fx:id="biometricException" source="BiometricException.fxml" visible="false" />
+         	<fx:include fx:id="guardianBiometric" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="GuardianBiometrics.fxml" visible="false" />
             <fx:include fx:id="fingerPrintCapture" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="FingerPrintCapture.fxml" visible="false" />
             <fx:include fx:id="irisCapture" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="IrisCapture.fxml" visible="false" />
             <fx:include fx:id="faceCapture" prefHeight="${registrationId.height}" prefWidth="${registrationId.width}" source="FaceCapture.fxml" visible="false" />

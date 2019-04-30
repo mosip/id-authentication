@@ -11,7 +11,7 @@ public final class StatusMessage {
 	private StatusMessage() {
 		
 	}
-	public static final String POTENTIAL_MATCH_FOUND="Potential match found in DB";
+	public static final String POTENTIAL_MATCH_FOUND="Potential match found for registration id";
 
 	/** The Constant PACKET_DEMO_DEDUPE_SUCCESSFUL. */
 	public static final String DEMO_DEDUPE_SUCCESS = "Packet demo dedupe sucessful";

@@ -151,26 +151,58 @@ public final class UinGeneratorConstant {
 	 * The string field 9
 	 */
 	public static final String NINE = "9";
-	
+
 	/**
 	 * The string field ZERO_TO_NINE
 	 */
 	public static final String ZERO_TO_NINE = "1234567890";
-	
+
 	/**
 	 * The string field CONTENTTYPE
 	 */
 	public static final String CONTENTTYPE = "application/json";
-	
+
 	/**
 	 * The string field HEALTH_ENDPOINT
 	 */
 	public static final String HEALTH_ENDPOINT = "/actuator/health";
-	
+
 	/**
 	 * The string field current working directory
 	 */
 	public static final String CURRENT_WORKING_DIRECTORY = "user.dir";
-	
+
 	public static final String APPLICATION_JSON = "application/json";
+
+	/**
+	 * The static field for ConfigStoreOptions type to be used in
+	 * ConfigRetriever[viz. spring-config-server , file etc.]
+	 */
+	public static final String CONFIG_STORE_OPTIONS_TYPE = "spring-config-server";
+	/**
+	 * The static field value for time-out
+	 */
+	public static final String CONFIG_SERVER_FETCH_TIME_OUT = "180000";
+	/**
+	 * The static field for url
+	 */
+	public static final String URL = "url";
+	/**
+	 * The static field for time-out
+	 */
+	public static final String TIME_OUT = "timeout";
+
+	public static final String SWAGGER_UI_JSON_FILENAME = "swagger.json";
+
+	public static final String SWAGGER_UI_PATH = "swagger-ui";
+
+	/**
+	 * The swagger ui json file path.
+	 */
+	public static final String SWAGGER_UI_JSON_PATH = SWAGGER_UI_PATH + "/" + SWAGGER_UI_JSON_FILENAME;
+
+	/**
+	 * The swagger json template file.
+	 */
+	public static final String SWAGGER_JSON_TEMPLATE = "swagger-template.vm";
 }

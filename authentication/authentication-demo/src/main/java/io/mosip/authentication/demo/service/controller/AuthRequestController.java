@@ -130,7 +130,7 @@ public class AuthRequestController {
 	 * @throws IdAuthenticationBusinessException 
 	 */
 	@SuppressWarnings("unchecked")
-	@PostMapping(path = "/identity/createAuthRequest",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/createAuthRequest",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,

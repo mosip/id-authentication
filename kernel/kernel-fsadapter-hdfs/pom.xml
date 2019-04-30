@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.6</version>
+		<version>0.11.0</version>
 	</parent>
 
 	<artifactId>kernel-fsadapter-hdfs</artifactId>
@@ -65,12 +65,21 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.beta.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito2</artifactId>
+			<version>${powermock.beta.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.htrace</groupId>
 			<artifactId>htrace-core4</artifactId>
 			<version>${htrace-core4}</version>
 		</dependency>
 	</dependencies>
-	<properties>
-		<sonar.skip>true</sonar.skip>
-	</properties>
 </project>

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -22,6 +23,8 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -318,9 +321,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
-
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());
@@ -351,6 +352,19 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo otpValidationStatus;
 			try {
 				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
+				authStatusList.add(otpValidationStatus);
+				statusInfo = otpValidationStatus;
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(DEFAULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				otpValidationStatus = new AuthStatusInfo();
+				otpValidationStatus.setStatus(false);
+				AuthError authError;
+				if (e.getActionMessage() != null) {
+					authError = new ActionableAuthError(e.getErrorCode(), e.getErrorText(), e.getActionMessage());
+				} else {
+					authError = new AuthError(e.getErrorCode(), e.getErrorText());
+				}
+				otpValidationStatus.setErr(Collections.singletonList(authError));
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {
@@ -508,13 +522,14 @@ public class AuthFacadeImpl implements AuthFacade {
 					kycAuthRequestDTO.getIndividualId(), idType, AuditModules.EKYC_AUTH.getDesc());
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
-		KycResponseDTO response = null;
+		KycResponseDTO response = new KycResponseDTO();
 		ResponseDTO authResponse = authResponseDTO.getResponse();
-		if (idResDTO != null && authResponse != null && authResponse.isAuthStatus()) {
+		if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
-
+		}
+		if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 			response.setKycStatus(authResponse.isAuthStatus());
 			response.setStaticToken(authResponse.getStaticToken());
 			kycAuthResponseDTO.setResponse(response);

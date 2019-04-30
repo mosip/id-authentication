@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -154,7 +156,7 @@ public class RegistrationSyncControllerTest {
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
 		
 		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
+				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
 	}
 
 	/**
@@ -168,7 +170,7 @@ public class RegistrationSyncControllerTest {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
 		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 
 }

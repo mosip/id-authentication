@@ -32,6 +32,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.idrepo.exception.AuthenticationException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.idrepo.controller.IdRepoExceptionHandler;
@@ -214,5 +215,18 @@ public class IdRepoExceptionHandlerTest {
 				"handleExceptionInternal", new IdRepoAppException(), null, null, null, request);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
 		response.getErrors();
+	}
+	
+	@Test
+	public void testHandleAuthenticationException() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		ResponseEntity<Object> handleAuthenticationException = ReflectionTestUtils.invokeMethod(handler,
+				"handleAuthenticationException", new AuthenticationException(IdRepoErrorConstants.UNAUTHORIZED, 401),
+				request);
+		IdResponseDTO response = (IdResponseDTO) handleAuthenticationException.getBody();
+		response.getErrors().forEach(e -> {
+			assertEquals(IdRepoErrorConstants.UNAUTHORIZED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.UNAUTHORIZED.getErrorMessage(), e.getMessage());
+		});
 	}
 }

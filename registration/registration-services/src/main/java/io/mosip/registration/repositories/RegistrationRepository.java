@@ -134,5 +134,5 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * 				the status codes
 	 * @return the list of registrations
 	 */
-	List<Registration> findByServerStatusCodeNotIn(List<String> statusCodes);
+	List<Registration> findByServerStatusCodeNotInOrServerStatusCodeIsNull(List<String> statusCodes);
 }

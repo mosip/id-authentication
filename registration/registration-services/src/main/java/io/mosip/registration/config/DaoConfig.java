@@ -32,9 +32,10 @@ public class DaoConfig extends HibernateDaoConfig {
 	 * connection of datasource
 	 */
 	static {
+		String dbPath = System.getProperty("mosip.dbpath");
 		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 		driverManagerDataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
-		driverManagerDataSource.setUrl("jdbc:derby:reg;bootPassword=mosip12345");
+		driverManagerDataSource.setUrl("jdbc:derby:"+dbPath+";bootPassword=mosip12345");
 
 		dataSource = driverManagerDataSource;
 	}

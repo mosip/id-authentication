@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.6</version>
+		<version>0.11.0</version>
 	</parent>
 
 
@@ -31,18 +31,14 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-		<javax.interceptor.version>1.2</javax.interceptor.version>
-		<jackson.datatype.version>2.9.8</jackson.datatype.version>
-		<byte.buddy.version>1.9.12</byte.buddy.version>
-
-		<!-- spring -->
-		<spring.version>5.0.4.RELEASE</spring.version>
+		
+		<!-- spring -->	
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
-		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
+		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
-		<spring.data.version>2.0.7.RELEASE</spring.data.version>
 
 		<vertx.version>3.6.2</vertx.version>
+		<vertx.health.check.version>3.7.0</vertx.health.check.version>
 		<swagger.version>2.9.2</swagger.version>
 		<swagger-annotations.version>2.0.7</swagger-annotations.version>
 
@@ -91,9 +87,6 @@
 		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 		<guava.version>19.0</guava.version>
 		<lombok.version>1.16.18</lombok.version>
-
-
-
 		<jsch.version>0.1.54</jsch.version>
 		<sshd.version>1.4.0</sshd.version>
 		<itextcore.version>7.1.0</itextcore.version>
@@ -114,8 +107,7 @@
 		<s3mock.version>0.2.4</s3mock.version>
 		<ignite.version>2.3.0</ignite.version>
 		<findbugs.version>3.0.1</findbugs.version>
-        
-        <vertx.health.check.version>3.7.0</vertx.health.check.version>
+		<byte.buddy.version>1.9.12</byte.buddy.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -127,7 +119,6 @@
 		<module>kernel-auth-adapter</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
-
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
@@ -142,7 +133,6 @@
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
 		<module>kernel-idvalidator-mispid</module>
-
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
@@ -159,14 +149,14 @@
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
-		<module>kernel-responsesignature-api</module>
+		<module>kernel-crypto-signature</module>
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
-		<module>kernel-smsnotification-service</module>
+		<module>kernel-smsnotification-service</module> 
 		<module>kernel-keymanager-service</module>
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module>
@@ -179,18 +169,6 @@
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
 	</modules>
-
-
-
-	<!-- <module>kernel-idvalidator</module> -->
-	<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
-	<!-- <module>kernel-packetserver-http</module> -->
-	<!-- <module>kernel-packetserver-sftp</module> -->
-	<!-- <module>kernel-idgenerator-uin</module> -->
-	<!-- <module>kernel-templatemanager-freemarker</module> -->
-	<!-- <module>kernel-batch-framework</module> -->
-	<!-- <module>kernel-batch-server</module> -->
-	<!--<module>kernel-crypto-bouncycastle</module> -->
 
 	<dependencies>
 		<dependency>

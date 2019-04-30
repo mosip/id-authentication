@@ -10,11 +10,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
+import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.util.UinFilterUtil;
 
 /**
@@ -23,8 +25,10 @@ import io.mosip.kernel.uingenerator.util.UinFilterUtil;
  * @since 1.0.0
  *
  */
+
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = UinGeneratorTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = UinGeneratorConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinFilterUtilTest {
 
 	@Value("${mosip.kernel.uin.test.valid-uin}")
@@ -62,11 +66,10 @@ public class UinFilterUtilTest {
 
 	@Value("${mosip.kernel.uin.test.invalid-adjacent-even-digit-uin}")
 	private String invalidAdjacentEvenDigitUin;
-	
+
 	@Value("${mosip.kernel.uin.test.valid-cyclic-num-uin}")
 	private String invalidrestrictedCyclicNumFilter;
-	
-	
+
 	@Autowired
 	private UinFilterUtil uinFilterUtils;
 
@@ -152,13 +155,13 @@ public class UinFilterUtilTest {
 		boolean res = uinFilterUtils.isValidId(invalidAdjacentEvenDigitUin);
 		assertThat(res, is(true));
 	}
-		
+
 	@Test
-    public void restrictedCyclicNumFilterTest() throws Exception {
-		UinFilterUtil  myclass3 = new UinFilterUtil();
-        Method method = UinFilterUtil.class.getDeclaredMethod("restrictedCyclicNumFilter", String.class);
-        method.setAccessible(true);
-        assertEquals(true, method.invoke(myclass3, invalidrestrictedCyclicNumFilter));
-    }
+	public void restrictedCyclicNumFilterTest() throws Exception {
+		UinFilterUtil myclass3 = new UinFilterUtil();
+		Method method = UinFilterUtil.class.getDeclaredMethod("restrictedCyclicNumFilter", String.class);
+		method.setAccessible(true);
+		assertEquals(true, method.invoke(myclass3, invalidrestrictedCyclicNumFilter));
+	}
 
 }

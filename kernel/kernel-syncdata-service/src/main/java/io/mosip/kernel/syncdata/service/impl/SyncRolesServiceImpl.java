@@ -11,12 +11,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -24,9 +29,9 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 
 /**
@@ -81,7 +86,23 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
 			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
-		} catch (RestClientException ex) {
+		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from AuthManager");
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AuthManager");
+				}
+			}
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -109,8 +130,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	/**
 	 * Gets the roles from response.
 	 *
-	 * @param response
-	 *            the response
+	 * @param response the response
 	 * @return {@link RolesResponseDto}
 	 */
 	private RolesResponseDto getRolesFromResponse(ResponseEntity<String> response) {

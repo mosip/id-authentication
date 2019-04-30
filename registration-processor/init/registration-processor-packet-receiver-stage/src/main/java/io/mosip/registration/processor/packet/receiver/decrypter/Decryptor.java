@@ -137,12 +137,11 @@ public class Decryptor {
 					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			request.setRequesttime(localdatetime);
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response;
 			response = (ResponseWrapper<CryptomanagerResponseDto>) restClientService
 					.postApi(ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
-			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
-					CryptomanagerResponseDto.class);
+			CryptomanagerResponseDto cryptomanagerResponseDto = mapper
+					.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;
@@ -161,7 +160,7 @@ public class Decryptor {
 					IO_EXCEPTION);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Internal Error Occured ");
+					registrationId, "Internal Error occurred ");
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = DECRYPTION_FAILURE + registrationId + "::"

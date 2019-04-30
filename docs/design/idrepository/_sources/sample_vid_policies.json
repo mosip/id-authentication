@@ -1,0 +1,24 @@
+{
+  "vidPolicies": [
+    {
+      "vidType": "Perpetual",
+      "vidPolicy": {
+        "validForInMinutes": null,
+        "allowedTransactions": null,
+        "allowedInstances": 1,
+		"autoRestoreAllowed": TRUE,
+		"restoreOnAction": "REVOKE"
+      }
+    },
+    {
+      "vidType": "Temporary",
+      "vidPolicy": {
+        "validForInMinutes": 30,
+        "allowedTransactions": 1,
+        "allowedInstances": 5,
+        "autoRestoreAllowed": FALSE,
+		"restoreOnAction": "REGENERATE"
+      }
+    }
+  ]
+}

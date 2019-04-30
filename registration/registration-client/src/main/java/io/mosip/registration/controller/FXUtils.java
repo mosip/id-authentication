@@ -107,6 +107,11 @@ public class FXUtils {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				field.setText(oldValue);
+			}else {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
 			}
 		});
 	}
@@ -125,7 +130,7 @@ public class FXUtils {
 	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
 	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
-		return validation.validateTextField(parentPane, field, fieldId);
+		return validation.validateTextField(parentPane, field, fieldId,true);
 	}
 
 	/**
@@ -190,10 +195,15 @@ public class FXUtils {
 	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
 		
-		focusUnfocusListener(parentPane, field, localField);
-		
+		focusAction(parentPane, field);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			showLabel(parentPane, field);
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				hideErrorMessageLabel(parentPane, field);
 				if (localField != null) {
 					if (haveToTransliterate) {
 						try {
@@ -208,12 +218,11 @@ public class FXUtils {
 					}
 				}
 			} else {
-				field.setText(oldValue);
+				if(!field.getText().equals(RegistrationConstants.EMPTY))
+					field.setText(oldValue);
 			}
-			field.requestFocus();
 		});
 
-		onTypeFocusUnfocusListener(parentPane, localField);
 	}
 
 	/**
@@ -238,7 +247,11 @@ public class FXUtils {
 
 		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (oldValue) {
-				if (isInputTextValid(parentPane, field, field.getId(), validation)) {
+				if (isInputTextValid(parentPane, field, field.getId()+"_ontype", validation)) {
+					field.getStyleClass().removeIf((s)->{
+						return s.equals("demoGraphicTextFieldFocus");
+					});
+					field.getStyleClass().add("demoGraphicTextField");
 					hideLabel(parentPane, field);
 					hideErrorMessageLabel(parentPane, field);
 					if (localField != null) {
@@ -263,6 +276,8 @@ public class FXUtils {
 		});
 
 		onTypeFocusUnfocusListener(parentPane, localField);
+		onTypeFocusUnfocusForLabel(parentPane, field);
+
 	}
 
 	/**
@@ -279,6 +294,10 @@ public class FXUtils {
 	public void onTypeFocusUnfocusListener(Pane parentPane, TextField field) {
 		if(field!=null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
 				if(newValue.isEmpty()) {
 					hideLabel(parentPane, field);
 				} else {
@@ -290,6 +309,28 @@ public class FXUtils {
 		}
 	}
 
+	/**
+	 * Display the {@link Label}, {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} in which secondary or local language's Label,
+	 *            Field and Error Message Label is present
+	 * @param field
+	 *            the secondary or local {@link TextField}
+	 */
+	public void onTypeFocusUnfocusForLabel(Pane parentPane, TextField field) {
+		if(field!=null) {
+			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if(newValue.isEmpty()) {
+					hideLabel(parentPane, field);
+				} else {
+					showLabel(parentPane, field);
+				}
+			});
+
+		}
+	}
+	
 	/**
 	 * Display the secondary or local language's Label, Field's Prompt Text and
 	 * Error Message Label based on the focus in or focus out event.
@@ -310,7 +351,6 @@ public class FXUtils {
 	private void focusAction(Pane parentPane, TextField field) {
 		if (field != null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-				hideErrorMessageLabel(parentPane, field);
 				if (newValue) {
 					showLabel(parentPane, field);
 				} else {
@@ -392,9 +432,12 @@ public class FXUtils {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
-				if (age >= 0 && age <= 118) {
+				if (age > 0) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
+				}else {
+					fieldToPopulate.setText("1");
+					localFieldToPopulate.setText("1");
 				}
 			}
 		});

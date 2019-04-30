@@ -19,6 +19,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
@@ -28,6 +29,7 @@ import io.mosip.registration.dto.json.metadata.Biometric;
 import io.mosip.registration.dto.json.metadata.BiometricDetails;
 import io.mosip.registration.dto.json.metadata.BiometricException;
 import io.mosip.registration.dto.json.metadata.Document;
+import io.mosip.registration.dto.json.metadata.ExceptionPhotograph;
 import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.Identity;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
@@ -75,8 +77,15 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
-			identity.setExceptionPhotograph(buildPhotograph(0,
-					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.FACE_EXCEPTION)));
+			FaceDetailsDTO faceDetailsDTO = source.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO();
+			identity.setExceptionPhotograph(buildExceptionPhotograph(
+					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+							? faceDetailsDTO.getNumOfRetries()
+							: 0,
+					getBIRUUID(RegistrationConstants.INDIVIDUAL,
+							((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+									? RegistrationConstants.FACE
+									: RegistrationConstants.FACE_EXCEPTION))));
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
@@ -200,6 +209,18 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		return photograph;
 	}
+	
+	private Photograph buildExceptionPhotograph(int numRetry, String photographName) {
+		ExceptionPhotograph exceptionPhotograph = null;
+		if (photographName != null) {
+			exceptionPhotograph = new ExceptionPhotograph();
+			exceptionPhotograph.setNumRetry(numRetry);
+			exceptionPhotograph.setBirIndex(removeFileExt(photographName));
+			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child) ? RegistrationConstants.PARENT : RegistrationConstants.INDIVIDUAL);
+			}
+
+		return exceptionPhotograph;
+	}
 
 	private List<Document> buildDocuments(DemographicDTO demographicDTO) {
 		List<Document> documents = new ArrayList<>();
@@ -258,7 +279,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 				exceptionBiometrics.add(buildExceptionBiometric(biometricExceptionDTO.getBiometricType(),
 						biometricExceptionDTO.getMissingBiometric(), biometricExceptionDTO.getExceptionType(),
-						biometricExceptionDTO.getReason()));
+						biometricExceptionDTO.getReason(),biometricExceptionDTO.getIndividualType()));
 			}
 		}
 
@@ -266,13 +287,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 	}
 
 	private BiometricException buildExceptionBiometric(String type, String missingBiometric, String exceptionType,
-			String reason) {
+			String reason, String individualType) {
 		BiometricException exceptionBiometric = new BiometricException();
 		exceptionBiometric.setType(type);
 		exceptionBiometric.setMissingBiometric(missingBiometric);
 		exceptionBiometric.setExceptionType(exceptionType);
 		exceptionBiometric.setReason(reason);
-
+		exceptionBiometric.setIndividualType(individualType);
 		return exceptionBiometric;
 	}
 

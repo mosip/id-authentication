@@ -117,7 +117,8 @@ public class RegistrationStatusMapUtil {
 				.statusMapper();
 		if (entity.getStatusCode() != null) {
 			mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(entity.getStatusCode()));
-			if ((entity.getRetryCount() < threshold)
+			if (entity.getStatusCode().equals(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString()) 
+					&&(entity.getRetryCount() < threshold)
 					&& (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
 				mappedValue = RegistrationExternalStatusCode.RESEND;
 			}

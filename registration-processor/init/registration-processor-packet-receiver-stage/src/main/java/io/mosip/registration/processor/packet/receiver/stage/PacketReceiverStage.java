@@ -17,6 +17,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -27,7 +28,6 @@ import io.mosip.registration.processor.packet.receiver.exception.handler.PacketR
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.vertx.ext.web.FileUpload;
-import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -64,11 +64,15 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** The packet receiver response builder. */
 	@Autowired
 	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
+
 	/**
 	 * The mosip event bus.
 	 */
 	private MosipEventBus mosipEventBus;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 	File file = null;
 
 	/**
@@ -87,11 +91,16 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Autowired
 	private Environment env;
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/**
@@ -100,23 +109,32 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param router
 	 *            the router
 	 */
-	private void routes(Router router) {
+	private void routes(MosipRouter router) {
 
-		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0").blockingHandler(ctx -> {
-			processURL(ctx);
-			ctx.next();
-		}, false).blockingHandler(ctx -> {
-			processPacket(ctx);
-		}, false).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),
-					APPLICATION_JSON);
-		});
+		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0");
 
-		router.get("/packetreceiver/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(context -> {
-			this.setResponse(context, context.failure().getMessage());
-		});
+		router.handler(this::processURL, this::processPacket, this::failure);
+
+		router.get("/packetreceiver/health");
+		router.handler(this::health);
+	};
+
+	/**
+	 * This is for failure handler
+	 *
+	 * @param routingContext
+	 */
+	private void failure(RoutingContext routingContext) {
+		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
+	}
+
+	/**
+	 * This is for health check up
+	 *
+	 * @param routingContext
+	 */
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
 	}
 
 	private void processPacket(RoutingContext ctx) {
@@ -166,6 +184,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		}
+		ctx.next();
 	}
 
 	/**

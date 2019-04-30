@@ -47,6 +47,8 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -61,6 +63,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
 
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
 	/** The validator. */
 	@Mock
@@ -77,6 +80,9 @@ public class BaseAuthRequestValidatorTest {
 	/** The base auth request validator. */
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
+
+	@InjectMocks
+	PinValidatorImpl pinValidatorImpl;
 
 	/** The id info helper. */
 	@InjectMocks
@@ -104,6 +110,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "initialize");
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "pinvalidator", pinValidatorImpl);
 
 	}
 
@@ -244,13 +251,14 @@ public class BaseAuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		authRequestDTO.setRequestedAuth(authType);
-
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
@@ -258,6 +266,8 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO1.setBioSubType("LEFT");
 		dataDTO1.setBioType("IIR");
 		dataDTO1.setDeviceProviderID("provider001");
+		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		irisValue.setData(dataDTO1);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO2 = new DataDTO();
@@ -265,6 +275,8 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO2.setBioType("FID");
 		dataDTO2.setBioSubType("Face");
 		dataDTO2.setDeviceProviderID("provider001");
+		dataDTO2.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		faceValue.setData(dataDTO2);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -278,7 +290,6 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
@@ -467,9 +478,7 @@ public class BaseAuthRequestValidatorTest {
 		assertFalse(error.hasErrors());
 
 	}
-	
-	
-	
+
 	/**
 	 * Test validate face if more than one face data is present.
 	 */
@@ -477,7 +486,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFaceReq() {
 
 		authRequestDTO = getAuthRequestDTO();
-		
+
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
 		faceData.setBioValue("face img");
@@ -485,9 +494,9 @@ public class BaseAuthRequestValidatorTest {
 		faceData.setBioType("FID");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
-		
+
 		BioIdentityInfoDTO faceValue1 = new BioIdentityInfoDTO();
-		
+
 		faceData.setBioValue("face img");
 		faceData.setBioSubType("face");
 		faceData.setBioType("FID");
@@ -501,7 +510,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(faceIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-        List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
+		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(faceData);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
@@ -774,129 +783,6 @@ public class BaseAuthRequestValidatorTest {
 				bioInfoList, BioAuthType.FACE_IMG);
 		assertFalse(isBioTypeAvailable);
 
-	}
-
-	/**
-	 * Test is duplicate bio type true.
-	 */
-	@Test
-	public void testIsDuplicateBioType_True() {
-
-		authRequestDTO = getAuthRequestDTO();
-
-		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTO = new DataDTO();
-		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("Thumb");
-		dataDTO.setBioType("IIR");
-		dataDTO.setDeviceProviderID("provider001");
-		fingerValue.setData(dataDTO);
-		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOIris = new DataDTO();
-		dataDTOIris.setBioValue("iris img");
-		dataDTOIris.setBioSubType("left");
-		dataDTOIris.setBioType("IIR");
-		dataDTOIris.setDeviceProviderID("provider001");
-		irisValue.setData(dataDTOIris);
-		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOFace = new DataDTO();
-		dataDTOFace.setBioValue("face img");
-		dataDTOFace.setBioSubType("Thumb");
-		dataDTOFace.setBioType("IIR");
-		dataDTOFace.setDeviceProviderID("provider001");
-		faceValue.setData(dataDTOFace);
-
-		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
-		fingerIdentityInfoDtoList.add(fingerValue);
-		fingerIdentityInfoDtoList.add(irisValue);
-		fingerIdentityInfoDtoList.add(faceValue);
-
-		IdentityDTO identitydto = new IdentityDTO();
-
-		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setDemographics(identitydto);
-		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
-		authRequestDTO.setRequest(requestDTO);
-
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioAuthType.IRIS_IMG);
-		assertTrue(isDuplicateBioType);
-	}
-
-	/**
-	 * Test is duplicate bio type false.
-	 */
-	@Test
-	public void testIsDuplicateBioType_False() {
-		authRequestDTO = getAuthRequestDTO();
-
-		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTO = new DataDTO();
-		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("Thumb");
-		dataDTO.setBioType("IIR");
-		dataDTO.setDeviceProviderID("provider001");
-		fingerValue.setData(dataDTO);
-		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOIris = new DataDTO();
-		dataDTOIris.setBioValue("iris img");
-		dataDTOIris.setBioSubType("left");
-		dataDTOIris.setBioType("");
-		dataDTOIris.setDeviceProviderID("provider001");
-		irisValue.setData(dataDTOIris);
-
-		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
-		fingerIdentityInfoDtoList.add(fingerValue);
-		fingerIdentityInfoDtoList.add(irisValue);
-
-		IdentityDTO identitydto = new IdentityDTO();
-
-		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setDemographics(identitydto);
-		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
-		authRequestDTO.setRequest(requestDTO);
-
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioAuthType.IRIS_IMG);
-		assertTrue(isDuplicateBioType);
-	}
-
-	/**
-	 * Test is duplicate bio type iris.
-	 */
-	@Test
-	public void testIsDuplicateBioTypeIris() {
-		authRequestDTO = getAuthRequestDTO();
-
-		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTO = new DataDTO();
-		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("Thumb");
-		dataDTO.setBioType("test");
-		dataDTO.setDeviceProviderID("provider001");
-		fingerValue.setData(dataDTO);
-		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOIris = new DataDTO();
-		dataDTOIris.setBioValue("iris img");
-		dataDTOIris.setBioSubType("left");
-		dataDTOIris.setBioType("");
-		dataDTOIris.setDeviceProviderID("provider001");
-		irisValue.setData(dataDTOIris);
-
-		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
-		fingerIdentityInfoDtoList.add(fingerValue);
-		fingerIdentityInfoDtoList.add(irisValue);
-
-		IdentityDTO identitydto = new IdentityDTO();
-
-		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setDemographics(identitydto);
-		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
-		authRequestDTO.setRequest(requestDTO);
-
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioAuthType.FGR_IMG);
-		assertTrue(isDuplicateBioType);
 	}
 
 	/**

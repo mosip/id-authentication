@@ -16,4 +16,11 @@ public interface UserMachineMappingService {
 	 * @return responseDto
 	 */
 	public ResponseDTO syncUserDetails();
+	
+	/**
+	 * Fetch whether the user new to machine or not
+	 * @param userId user ID
+	 * @return response DTO
+	 */
+	public ResponseDTO isUserNewToMachine(String userId);
 }

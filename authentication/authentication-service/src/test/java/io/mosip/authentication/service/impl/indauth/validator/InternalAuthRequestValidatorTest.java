@@ -54,6 +54,8 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class InternalAuthRequestValidatorTest {
 
+	
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 	@Mock
 	private SpringValidatorAdapter validator;
 
@@ -132,7 +134,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -236,7 +237,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -308,6 +308,8 @@ public class InternalAuthRequestValidatorTest {
 		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO irisData = new DataDTO();
@@ -315,6 +317,8 @@ public class InternalAuthRequestValidatorTest {
 		irisData.setBioSubType("LEFT");
 		irisData.setBioType("IIR");
 		irisData.setDeviceProviderID("provider001");
+		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		irisValue.setData(irisData);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
@@ -322,6 +326,8 @@ public class InternalAuthRequestValidatorTest {
 		faceData.setBioType("FID");
 		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
+		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		faceValue.setData(faceData);
 
 		IdentityDTO identitydto = new IdentityDTO();
@@ -333,7 +339,6 @@ public class InternalAuthRequestValidatorTest {
 		fingerIdentityInfoDtoList.add(irisValue);
 		fingerIdentityInfoDtoList.add(faceValue);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
-		requestDTO.setTransactionID("1234567890");
 		requestDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -360,7 +365,6 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setDemo(true);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(identitydto);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
@@ -504,7 +508,6 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setConsentObtained(true);
