@@ -19,7 +19,6 @@ import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -27,7 +26,6 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 
@@ -35,6 +33,7 @@ import javafx.util.StringConverter;
  * Class for JavaFx utilities operation
  * 
  * @author Taleev.Aalam
+ * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
@@ -44,20 +43,31 @@ public class FXUtils {
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
-
 	private Transliteration<String> transliteration;
 	private static FXUtils fxUtils = null;
-	private static String promptText = RegistrationConstants.EMPTY;
 
+	private FXUtils() {
+
+	}
+
+	/**
+	 * Method to get the instance of {@link FXUtils}. If instance does not exists,
+	 * instantiates a new object of {@link FXUtils} and returns the same
+	 * 
+	 * @return the instance of the {@link FXUtils}
+	 */
 	public static FXUtils getInstance() {
-		if (fxUtils == null)
+		if (fxUtils == null) {
 			fxUtils = new FXUtils();
-
+		}
 		return fxUtils;
 	}
 
 	/**
-	 * Listener to change the style when field is selected for
+	 * Listener to change the style when field is selected for.
+	 *
+	 * @param field
+	 *            the {@link CheckBox}
 	 */
 	public void listenOnSelectedCheckBox(CheckBox field) {
 
@@ -72,11 +82,9 @@ public class FXUtils {
 		});
 	}
 
-	private FXUtils() {
-
-	}
-
 	/**
+	 * Sets the instance of {@link Transliteration}.
+	 *
 	 * @param transliteration
 	 *            the transliteration to set
 	 */
@@ -85,144 +93,351 @@ public class FXUtils {
 	}
 
 	/**
-	 * Validator method for field during onType
+	 * Validates the value of field during on-type event. If validation fails,
+	 * retain the previous value and display error message.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} in which {@link TextField} is present
+	 * @param field
+	 *            the {@link TextField} to be validated
+	 * @param validation
+	 *            the instance of {@link Validations}
 	 */
 	public void validateOnType(Pane parentPane, TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
-					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
+			if (!isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				field.setText(oldValue);
+			}else {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
 			}
-		});
-	}
-
-	public void populateLocalComboBox(Pane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
-		applicationField.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			selectComboBoxValueByCode(localField, applicationField.getValue());
-			((Label) parentPane.lookup(RegistrationConstants.HASH + applicationField.getId() + RegistrationConstants.LABEL)).setVisible(true);
-			((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
-			((Label) parentPane.lookup(RegistrationConstants.HASH + applicationField.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
-			((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
 		});
 	}
 
 	/**
-	 * Validator method for field during onType and the local field population
+	 * Validates the value of the {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} containing the {@link TextField}
+	 * @param field
+	 *            the {@link TextField} value to be validated
+	 * @param fieldId
+	 *            the id of the {@link TextField} to be validated
+	 * @param validation
+	 *            the instance of {@link Validations}
+	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
-	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField) {
+	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
+		return validation.validateTextField(parentPane, field, fieldId,true);
+	}
 
-		focusUnfocusListener(parentPane, field, localField);
-
-		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
-					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
-				field.setText(oldValue);
-			} else {
-				if (localField != null) {
-					localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
-							ApplicationContext.localLanguage(), field.getText()));
-				}
-			}
-			field.requestFocus();
+	/**
+	 * Populate local or secondary language combo box based on the application or
+	 * primary language. The value in the local or secondary language
+	 * {@link ComboBox} will be selected based on the code of the value selected in
+	 * application or secondary language {@link ComboBox}.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} in which {@link TextField} is present
+	 * @param applicationField
+	 *            the {@link ComboBox} in application or primary language
+	 * @param localField
+	 *            the {@link ComboBox} in local or secondary language
+	 */
+	public void populateLocalComboBox(Pane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
+		applicationField.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			selectComboBoxValueByCode(localField, applicationField.getValue());
+			toggleUIField(parentPane, applicationField.getId() + RegistrationConstants.LABEL, true);
+			toggleUIField(parentPane, localField.getId() + RegistrationConstants.LABEL, true);
+			toggleUIField(parentPane, applicationField.getId() + RegistrationConstants.MESSAGE, false);
+			toggleUIField(parentPane, localField.getId() + RegistrationConstants.MESSAGE, false);
 		});
+	}
+
+	/**
+	 * Toggle the visibility of the UI field based on the input visibility
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} containing the UI Field
+	 * @param uiFieldId
+	 *            the id of the UI Field for which visibility has to be toggled
+	 * @param visibility
+	 *            the visibility property value
+	 */
+	private void toggleUIField(Pane parentPane, String uiFieldId, boolean visibility) {
+		try {
+			((Label) parentPane.lookup(RegistrationConstants.HASH.concat(uiFieldId))).setVisible(visibility);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.info("ID NOT FOUND", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * Validates the value of field during on-type event. If validation is
+	 * successful, populate the local or secondary language field (transliterate, if
+	 * required) if present. Else retain the previous value and display error
+	 * message.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} in which {@link TextField} is present
+	 * @param field
+	 *            the {@link TextField} to be validated
+	 * @param validation
+	 *            the instance of {@link Validations}
+	 * @param localField
+	 *            the local or secondary language {@link TextField}
+	 * @param haveToTransliterate
+	 *            the flag to know whether the field value has to be transliterated
+	 */
+	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
+			boolean haveToTransliterate) {
 		
-		onTypeFocusUnfocusListener(parentPane, localField);
+		focusAction(parentPane, field);
+		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			showLabel(parentPane, field);
+			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				hideErrorMessageLabel(parentPane, field);
+				if (localField != null) {
+					if (haveToTransliterate) {
+						try {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
+					} else {
+						localField.setText(field.getText());
+					}
+				}
+			} else {
+				if(!field.getText().equals(RegistrationConstants.EMPTY))
+					field.setText(oldValue);
+			}
+		});
 
 	}
 
+	/**
+	 * Validates the value of field during focus-out event. If validation is
+	 * successful, populate the local or secondary language field (transliterate, if
+	 * required) if present. Else retain the previous value and display error
+	 * message.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} in which {@link TextField} is present
+	 * @param field
+	 *            the {@link TextField} to be validated
+	 * @param validation
+	 *            the instance of {@link Validations}
+	 * @param localField
+	 *            the local or secondary language {@link TextField}
+	 * @param haveToTransliterate
+	 *            the flag to know whether the field value has to be transliterated
+	 */
+	public void validateOnFocusOut(Pane parentPane, TextField field, Validations validation, TextField localField,
+			boolean haveToTransliterate) {
+
+		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (oldValue) {
+				if (isInputTextValid(parentPane, field, field.getId()+"_ontype", validation)) {
+					field.getStyleClass().removeIf((s)->{
+						return s.equals("demoGraphicTextFieldFocus");
+					});
+					field.getStyleClass().add("demoGraphicTextField");
+					hideLabel(parentPane, field);
+					hideErrorMessageLabel(parentPane, field);
+					if (localField != null) {
+						if (haveToTransliterate) {
+							try {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
+						} else {
+							localField.setText(field.getText());
+						}
+					}
+				} else {
+					toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, true);
+				}
+			} else {
+				showLabel(parentPane, field);
+			}
+		});
+
+		onTypeFocusUnfocusListener(parentPane, localField);
+		onTypeFocusUnfocusForLabel(parentPane, field);
+
+	}
+
+	/**
+	 * Display the secondary or local language's {@link Label}, {@link TextField}
+	 * Prompt Text and Error Message {@link Label} based on the {@link TextField}
+	 * change event.
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} in which secondary or local language's Label,
+	 *            Field and Error Message Label is present
+	 * @param field
+	 *            the secondary or local {@link TextField}
+	 */
 	public void onTypeFocusUnfocusListener(Pane parentPane, TextField field) {
 		if(field!=null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				
-				if(newValue.length()>0) {
-				
-					try {
-						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
-						if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
-							((Label) parentPane.lookup(RegistrationConstants.HASH + RegistrationConstants.DOB_MESSAGE)).setVisible(false);
-						} else {
-							((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
-						}
-					} catch (RuntimeException runtimeException) {
-						LOGGER.info("ID NOT FOUND ", APPLICATION_NAME,
-								RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-					}
-				}else {
-					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(false);
+				field.getStyleClass().removeIf((s)->{
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				if(newValue.isEmpty()) {
+					hideLabel(parentPane, field);
+				} else {
+					hideErrorMessageLabel(parentPane, field);
+					showLabel(parentPane, field);
 				}
-
 			});
 
 		}
 	}
 
+	/**
+	 * Display the {@link Label}, {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} in which secondary or local language's Label,
+	 *            Field and Error Message Label is present
+	 * @param field
+	 *            the secondary or local {@link TextField}
+	 */
+	public void onTypeFocusUnfocusForLabel(Pane parentPane, TextField field) {
+		if(field!=null) {
+			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if(newValue.isEmpty()) {
+					hideLabel(parentPane, field);
+				} else {
+					showLabel(parentPane, field);
+				}
+			});
+
+		}
+	}
+	
+	/**
+	 * Display the secondary or local language's Label, Field's Prompt Text and
+	 * Error Message Label based on the focus in or focus out event.
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} in which secondary or local language's Label,
+	 *            Field and Error Message Label is present
+	 * @param field
+	 *            the primary or application {@link TextField}
+	 * @param localField
+	 *            the secondary or local {@link TextField}
+	 */
 	public void focusUnfocusListener(Pane parentPane, TextField field, TextField localField) {
 		focusAction(parentPane, field);
 		focusAction(parentPane, localField);
 	}
 
 	private void focusAction(Pane parentPane, TextField field) {
-		if(field!=null) {
+		if (field != null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (newValue) {
-				try {
-					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
-					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).getPromptText();
-					((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);
-					if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
-						((Label) parentPane.lookup(RegistrationConstants.HASH + RegistrationConstants.DOB_MESSAGE)).setVisible(false);
-					} else {
-						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
-					}
-				} catch (RuntimeException runtimeException) {
-					LOGGER.info("ID NOT FOUND ", APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				if (newValue) {
+					showLabel(parentPane, field);
+				} else {
+					hideLabel(parentPane, field);
 				}
-			} else {
-				((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(promptText);
-				if (!(field.getText().length() > 0)) {
-					try {
-						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(false);
-					}  catch (RuntimeException runtimeException) {
-						LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
-								RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-					}
-				}
-			}
-
-		});
-	}}
-
-	/**
-	 * Populate the local field value based on the application field.
-	 * Transliteration will not done for these fields
-	 */
-	public void populateLocalFieldOnType(Pane parentPane, TextField field, Validations validation,
-			TextField localField) {
-		focusUnfocusListener(parentPane, field, localField);
-		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
-					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
-				field.setText(oldValue);
-			} else {
-				if (localField != null) {
-					localField.setText(field.getText());
-				}
-			}
-			field.requestFocus();
-		});
-		
-		onTypeFocusUnfocusListener(parentPane, localField);
-
+			});
+		}
 	}
 
-	public void dobListener(TextField field, TextField fieldToPopulate, String regex) {
+	/**
+	 * If the value of field is empty, the label will be hidden and prompt text will
+	 * be displayed for the corresponding field
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} containing the {@link TextField}
+	 * @param field
+	 *            the {@link TextField}
+	 */
+	public void hideLabel(Pane parentPane, TextField field) {
+		if (field.getText().isEmpty()) {
+			try {
+				Label label = ((Label) parentPane
+						.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL));
+				label.setVisible(false);
+				((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId()))
+						.setPromptText(label.getText());
+			} catch (RuntimeException runtimeException) {
+				LOGGER.info("ID NOT FOUND", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * Show the {@link Label} and remove Prompt Text corresponding to the input
+	 * {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} containing the {@link TextField}
+	 * @param field
+	 *            the {@link TextField} for which Prompt Text has to be removed and
+	 *            show its corresponding {@link Label}
+	 */
+	private void showLabel(Pane parentPane, TextField field) {
+		toggleUIField(parentPane, field.getId() + RegistrationConstants.LABEL, true);
+		((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);
+	}
+
+	/**
+	 * Hide the {@link Label} corresponding to the input {@link TextField}
+	 * 
+	 * @param parentPane
+	 *            the {@link Pane} containing the {@link TextField}
+	 * @param field
+	 *            the {@link TextField} whose {@link Label} has to be removed or
+	 *            hidden
+	 */
+	private void hideErrorMessageLabel(Pane parentPane, TextField field) {
+		if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+			toggleUIField(parentPane,  RegistrationConstants.DOB_MESSAGE, false);
+		} else {
+			toggleUIField(parentPane,  field.getId() + RegistrationConstants.MESSAGE, false);
+		}
+	}
+
+	/**
+	 * Adds the Listener for text change event
+	 * 
+	 * @param field
+	 *            the {@link TextField} for which listener has to be set
+	 * @param fieldToPopulate
+	 *            the {@link TextField} whose value has to be changed based on the
+	 *            input field
+	 * @param regex
+	 *            the regular expression pattern to validate the input of field
+	 */
+	public void dobListener(TextField field, TextField fieldToPopulate, TextField localFieldToPopulate, String regex) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
-				if (age >= 0 && age <= 118) {
+				if (age > 0) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
+					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
+				}else {
+					fieldToPopulate.setText("1");
+					localFieldToPopulate.setText("1");
 				}
 			}
 		});
@@ -231,19 +446,20 @@ public class FXUtils {
 	/**
 	 * To display the selected date in the date picker in specific
 	 * format("dd-mm-yyyy").
+	 *
+	 * @param ageDatePicker
+	 *            the age date picker
 	 */
 	public void dateFormatter(DatePicker ageDatePicker) {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the date format");
 
-			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
-				String pattern = "dd-MM-yyyy";
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+			String pattern = "dd-MM-yyyy";
+			ageDatePicker.setPromptText(pattern.toLowerCase());
 
-				{
-					ageDatePicker.setPromptText(pattern.toLowerCase());
-				}
+			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
+				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
 				@Override
 				public String toString(LocalDate date) {
@@ -267,6 +483,9 @@ public class FXUtils {
 
 	/**
 	 * Disabling the future days in the date picker calendar.
+	 *
+	 * @param ageDatePicker
+	 *            the age date picker
 	 */
 	public void disableFutureDays(DatePicker ageDatePicker) {
 		try {
@@ -330,8 +549,8 @@ public class FXUtils {
 		if (!comboBoxValues.isEmpty()) {
 			IntPredicate findIndexOfSelectedItem = null;
 			if (comboBoxValues.get(0) instanceof LocationDto) {
-				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName()
-						.equals(selectedValue);
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName().equals(
+						selectedValue) || ((LocationDto) comboBoxValues.get(index)).getCode().equals(selectedValue);
 			} else if (comboBoxValues.get(0) instanceof GenderDto) {
 				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
 						.equals(selectedValue);

@@ -1,0 +1,10 @@
+{
+  "id": "string",
+  "request": {
+    "appId": "registrationclient",
+    "password": "registration_supervisor",
+    "userName": "registration_supervisor"
+  },
+  "timestamp": "string",
+  "version": "string"
+}

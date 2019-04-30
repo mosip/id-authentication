@@ -7,9 +7,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
@@ -20,7 +20,6 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -112,11 +111,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * createDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
+	public IdAndLanguageCodeID createDeviceSpecification(DeviceSpecificationDto deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications.getRequest(),
-				DeviceSpecification.class);
+		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications, DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -139,14 +137,14 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
+	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationDto deviceSpecification) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository
-					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId(),
-							deviceSpecification.getRequest().getLangCode());
+					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId(),
+							deviceSpecification.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
-				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
+				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);
 				deviceSpecificationRepository.update(entity);
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());

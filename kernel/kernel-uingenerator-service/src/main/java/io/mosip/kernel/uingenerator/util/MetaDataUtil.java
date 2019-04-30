@@ -22,8 +22,7 @@ public class MetaDataUtil {
 	/**
 	 * Function to set metadata
 	 * 
-	 * @param entity
-	 *            entity
+	 * @param entity entity
 	 * @return <T> Entity with metadata
 	 */
 	public <T extends BaseEntity> T setCreateMetaData(T entity) {
@@ -38,8 +37,7 @@ public class MetaDataUtil {
 	/**
 	 * Function to set metadata for update operation
 	 * 
-	 * @param entity
-	 *            entity
+	 * @param entity entity
 	 * @return <T> Entity with metadata
 	 */
 	public <T extends BaseEntity> T setUpdateMetaData(T entity) {

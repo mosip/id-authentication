@@ -24,8 +24,7 @@ public class RegistrationSystemPropertiesChecker {
 	/**
 	 * Get Ethernet MAC Address
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return machine ID
 	 */
 	public static String getMachineId() {
 		String machineId = "";
@@ -36,8 +35,11 @@ public class RegistrationSystemPropertiesChecker {
 
 			}
 		} else {
-			//TO-DO need to fix it after discussing with Aman
-			machineId = "8C-16-45-5A-5D-0D";
+			try {
+				machineId = getWindowsMacAddress();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return machineId;
 	}
@@ -74,8 +76,8 @@ public class RegistrationSystemPropertiesChecker {
 				}
 			}
 			for (String device : devices) {
-				try (FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
-					if (device.equals("eno1")) {
+				try(FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
+					if (!device.equals("lo")) {
 						BufferedReader in1 = new BufferedReader(reader1);
 						linuxMachineId = in1.readLine();
 						in1.close();

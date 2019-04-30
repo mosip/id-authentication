@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BioTypeCodeAndLangCodeAndAttributeCode extends BaseDto{
+public class BioTypeCodeAndLangCodeAndAttributeCode extends BaseDto {
 	private String code;
 	private String biometricTypeCode;
-	
+
 }

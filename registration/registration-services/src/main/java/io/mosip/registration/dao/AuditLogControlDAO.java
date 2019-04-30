@@ -27,6 +27,7 @@ public interface AuditLogControlDAO {
 	 * Saves the {@link AuditLogControl} for the latest {@link Registration} packet
 	 * 
 	 * @param auditLogControl
+	 *            the {@link AuditLogControl} object to be saved
 	 */
 	void save(AuditLogControl auditLogControl);
 
@@ -34,6 +35,7 @@ public interface AuditLogControlDAO {
 	 * Deletes the audit log control
 	 * 
 	 * @param auditLogControl
+	 *            the {@link AuditLogControl} object to be deleted
 	 */
 	void delete(AuditLogControl auditLogControl);
 
@@ -47,9 +49,13 @@ public interface AuditLogControlDAO {
 	List<AuditLogControl> get(Timestamp req);
 	
 	/**
-	 * Get Audit Log Control using registartion Id
+	 * Get Audit Log Control using registration Id
+	 * 
 	 * @param regId
-	 * @return audit control
+	 *            the id of {@link Registration} entity for which
+	 *            {@link AuditLogControl} to be fetched
+	 * @return returns the {@link AuditLogControl} object based on the input id of
+	 *         {@link Registration}
 	 */
 	AuditLogControl get(String regId);
 

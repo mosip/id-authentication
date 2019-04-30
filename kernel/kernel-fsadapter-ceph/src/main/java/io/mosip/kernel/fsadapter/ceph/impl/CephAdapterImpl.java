@@ -24,7 +24,7 @@ import io.mosip.kernel.fsadapter.ceph.exception.handler.ExceptionHandler;
 import io.mosip.kernel.fsadapter.ceph.util.ConnectionUtils;
 
 /**
- * This class is CEPH implementation for MOSIP Packet Store.	
+ * This class is CEPH implementation for MOSIP Packet Store.
  *
  * @author Pranav Kumar
  * @since 0.0.1
@@ -47,8 +47,7 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * Constructor to get Connection to CEPH instance.
 	 *
-	 * @param connectionUtil
-	 *            the connection util
+	 * @param connectionUtil the connection util
 	 */
 	public CephAdapterImpl(ConnectionUtils connectionUtil) {
 		if (conn == null) {
@@ -82,10 +81,8 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method stores a packet in DFS.
 	 *
-	 * @param enrolmentId
-	 *            The enrolment ID for the packet
-	 * @param file
-	 *            packet as InputStream
+	 * @param enrolmentId The enrolment ID for the packet
+	 * @param file        packet as InputStream
 	 * @return True if packet is stored
 	 */
 	@Override
@@ -133,12 +130,9 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method stores a document in DFS
 	 *
-	 * @param enrolmentId
-	 *            The enrolment ID for the document
-	 * @param key
-	 *            The key for the document
-	 * @param document
-	 *            document as InputStream
+	 * @param enrolmentId The enrolment ID for the document
+	 * @param key         The key for the document
+	 * @param document    document as InputStream
 	 * @return True if document is stored
 	 */
 
@@ -162,13 +156,13 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method copy document from one bucket to another
 	 *
-	 * @param sourceBucketName
+	 * @param sourceBucketName      source bucket name
 	 *
-	 * @param sourceKey
+	 * @param sourceKey             source key
 	 *
-	 * @param destinationBucketName
+	 * @param destinationBucketName destination bucket name
 	 *
-	 * @param destinationKey
+	 * @param destinationKey        destination key
 	 *
 	 * @return True if document copy is successful
 	 */
@@ -242,9 +236,12 @@ public class CephAdapterImpl implements FileSystemAdapter {
 		return object != null ? object.getObjectContent() : null;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter#unpackPacket(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter#unpackPacket(java.lang.
+	 * String)
 	 */
 	@Override
 	public void unpackPacket(String enrolmentId) throws IOException {
@@ -306,7 +303,7 @@ public class CephAdapterImpl implements FileSystemAdapter {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
-			ExceptionHandler.exceptionHandler(e); 
+			ExceptionHandler.exceptionHandler(e);
 		}
 		return true;
 	}
@@ -342,7 +339,5 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	public boolean isPacketPresent(String registrationId) {
 		return this.getPacket(registrationId) != null;
 	}
-	
-
 
 }

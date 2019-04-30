@@ -8,7 +8,7 @@ public interface ApplicantTypeService {
 	/**
 	 * This method return the applicant id.
 	 * 
-	 * @param dto
+	 * @param dto Request dto
 	 * @return applicant id
 	 */
 	public ResponseDTO getApplicantType(RequestDTO dto);

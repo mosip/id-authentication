@@ -77,8 +77,7 @@ section{
 .centers-wrapper{
   margin-left: 25px;
   margin-right: 2vw;
-  width: 60vw;
-
+  width: 60%
 }
 
 .centers-list ul{
@@ -107,6 +106,10 @@ input[type="radio"] {
 .map{
   width: 400px;
   height: 700px;
+  display: flex;
+}
+
+.container {
   display: flex;
 }
 
@@ -256,4 +259,21 @@ img {
 .search-form {
   display: flex;
   flex-wrap: wrap;
+}
+
+@media(max-width: 500px) {
+  .user-back-btn, .user-book_later-btn, .user-continue-btn {
+    font-size: 10px;
+    padding: 0px 2px;
+    margin-right: 20px;
+}
+.container {
+  flex-wrap: wrap;
+}
+.centers-wrapper {
+  width: 90%;
+}
+.center_selection-center_recommendation-display {
+  white-space: normal;
+}
 }

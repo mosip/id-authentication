@@ -275,4 +275,5 @@ The below class diagram shows relationship between all the classes which are req
 ![Kyc Auth Class Diagram](_images/eKYC_Auth_Class_Diagram.PNG)
 
 **2.4. Sequence Diagram:**   
-//TODO
+
+![Kyc Auth Sequence Diagram](_images/eKYC_Auth_Seq_Diagram.PNG)

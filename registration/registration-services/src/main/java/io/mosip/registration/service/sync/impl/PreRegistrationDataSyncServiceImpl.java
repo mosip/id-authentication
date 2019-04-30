@@ -54,6 +54,12 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * Implementation for {@link PreRegistrationDataSyncService}
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ */
 @Service
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
@@ -118,15 +124,18 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				/* Get Packets Using pre registration ID's */
 				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
 
+					if (!preRegDetail.getValue().contains("Z")) {
+						preRegDetail.setValue(preRegDetail.getValue() + "Z");
+					}
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
-				if (mainResponseDTO != null && mainResponseDTO.getErr() != null
-						&& mainResponseDTO.getErr().getMessage() != null) {
-					errMsg += " : " + mainResponseDTO.getErr().getMessage();
-				}
+			/*	if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
+						&& mainResponseDTO.getErrors().getMessage() != null) {
+					errMsg += " : " + mainResponseDTO.getErrors().getMessage();
+				}*/
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, errMsg);
 
@@ -175,6 +184,19 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return responseDTO;
 	}
 
+	/**
+	 * Gets the pre registration.
+	 *
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param preRegistrationId 
+	 * 				the pre registration id
+	 * @param syncJobId 
+	 * 				the sync job id
+	 * @param lastUpdatedTimeStamp 
+	 * 				the last updated time stamp
+	 * @return the pre registration
+	 */
 	@SuppressWarnings("unchecked")
 	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId,
 			Timestamp lastUpdatedTimeStamp) {
@@ -228,7 +250,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			try {
 				/* REST call to get packet */
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false,syncJobId);
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, true, syncJobId);
 
 				if (isPacketNotEmpty(mainResponseDTO)) {
 
@@ -324,34 +346,101 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/**
+	 * Checks if is packet not available.
+	 *
+	 * @param preRegistration 
+	 * 				the pre registration
+	 * @param isOnline 
+	 * 				the is online
+	 * @return true, if is packet not available
+	 */
 	private boolean isPacketNotAvailable(PreRegistrationList preRegistration, boolean isOnline) {
 		return !isOnline && preRegistration == null;
 	}
 
+	/**
+	 * Checks if is packet from local.
+	 *
+	 * @param preRegistration 
+	 * 				the pre registration
+	 * @param decryptedPacket 
+	 * 				the decrypted packet
+	 * @return true, if is packet from local
+	 */
 	private boolean isPacketFromLocal(PreRegistrationList preRegistration, byte[] decryptedPacket) {
 		return preRegistration != null && decryptedPacket == null;
 	}
 
+	/**
+	 * Checks if is packet updated in server.
+	 *
+	 * @param preRegistration 
+	 * 				the pre registration
+	 * @return true, if is packet updated in server
+	 */
 	private boolean isPacketUpdatedInServer(PreRegistrationList preRegistration) {
 		return preRegistration != null && preRegistration.getLastUpdatedPreRegTimeStamp() != null;
 	}
 
+	/**
+	 * Checks if is fetch to be triggered.
+	 *
+	 * @param isOnline 
+	 * 				the is online
+	 * @param isUpdated 
+	 * 				the is updated
+	 * @param isJob 
+	 * 				the is job
+	 * @return true, if is fetch to be triggered
+	 */
 	private boolean isFetchToBeTriggered(boolean isOnline, boolean isUpdated, boolean isJob) {
 		return isOnline && (!isUpdated || !isJob);
 	}
 
+	/**
+	 * Gets the trigger point.
+	 *
+	 * @param isJob 
+	 * 				the is job
+	 * @return the trigger point
+	 */
 	private String getTriggerPoint(boolean isJob) {
 		return isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : getUserIdFromSession();
 	}
 
+	/**
+	 * Checks if is response not empty.
+	 *
+	 * @param mainResponseDTO 
+	 * 				the main response DTO
+	 * @return true, if is response not empty
+	 */
 	private boolean isResponseNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
 		return mainResponseDTO != null && mainResponseDTO.getResponse() != null;
 	}
 
+	/**
+	 * Checks if is packet not empty.
+	 *
+	 * @param mainResponseDTO 
+	 * 				the main response DTO
+	 * @return true, if is packet not empty
+	 */
 	private boolean isPacketNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
 		return isResponseNotEmpty(mainResponseDTO) && mainResponseDTO.getResponse().get("zip-bytes") != null;
 	}
 
+	/**
+	 * Sets the packet to response.
+	 *
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param decryptedPacket 
+	 * 				the decrypted packet
+	 * @param preRegistrationId 
+	 * 				the pre registration id
+	 */
 	@SuppressWarnings("unused")
 	private void setPacketToResponse(ResponseDTO responseDTO, byte[] decryptedPacket, String preRegistrationId) {
 
@@ -371,13 +460,18 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/**
+	 * Prepare data sync request DTO.
+	 *
+	 * @return the pre registration data sync DTO
+	 */
 	private PreRegistrationDataSyncDTO prepareDataSyncRequestDTO() {
 
 		// prepare required DTO to send through API
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
 
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
@@ -401,6 +495,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/**
+	 * Gets the to date.
+	 *
+	 * @param reqTime 
+	 * 				the req time
+	 * @return to date
+	 */
 	private String getToDate(Timestamp reqTime) {
 
 		Calendar cal = Calendar.getInstance();
@@ -412,14 +513,28 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/**
+	 * Format date.
+	 *
+	 * @param cal 
+	 * 				the cal
+	 * @return the string
+	 */
 	private String formatDate(Calendar cal) {
-		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");// dd/MM/yyyy
 		Date toDate = cal.getTime();
 
 		/** To-Date */
 		return sdfDate.format(toDate);
 	}
 
+	/**
+	 * Gets the from date.
+	 *
+	 * @param reqTime 
+	 * 				the req time
+	 * @return the from date
+	 */
 	private String getFromDate(Timestamp reqTime) {
 
 		Calendar cal = Calendar.getInstance();
@@ -428,6 +543,17 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return formatDate(cal);
 	}
 
+	/**
+	 * Prepare pre registration.
+	 *
+	 * @param syncTransaction 
+	 * 				the sync transaction
+	 * @param preRegistrationDTO 
+	 * 				the pre registration DTO
+	 * @param lastUpdatedTimeStamp 
+	 * 				the last updated time stamp
+	 * @return the pre registration list
+	 */
 	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction,
 			PreRegistrationDTO preRegistrationDTO, Timestamp lastUpdatedTimeStamp) {
 
@@ -453,6 +579,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#fetchAndDeleteRecords()
+	 */
 	public synchronized ResponseDTO fetchAndDeleteRecords() {
 
 		LOGGER.info(
@@ -485,7 +614,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		return responseDTO;
 	}
 
-	private void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#deletePreRegRecords(io.mosip.registration.dto.ResponseDTO, java.util.List)
+	 */
+	public void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
 		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records started");
@@ -522,6 +654,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	/**
+	 * Delete records.
+	 *
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param preRegList 
+	 * 				the pre reg list
+	 * @return the response DTO
+	 */
 	private ResponseDTO deleteRecords(ResponseDTO responseDTO, List<PreRegistrationList> preRegList) {
 
 		LOGGER.info(
@@ -549,6 +690,17 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "deleted records ended");
 
 		return responseDTO;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#getPreRegistrationRecordForDeletion(java.lang.String)
+	 */
+	public PreRegistrationList getPreRegistrationRecordForDeletion(String preRegistrationId) {
+		LOGGER.info(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"Fetching pre registration records for deletion");
+		return preRegistrationDAO.get(preRegistrationId);
 	}
 
 }

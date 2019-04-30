@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdAndEffectDateTimeID implements Serializable{
-	
+public class IdAndEffectDateTimeID implements Serializable {
+
 	private static final long serialVersionUID = 7001663925687776491L;
 
 	@Column(name = "id", nullable = false)
@@ -24,7 +24,6 @@ public class IdAndEffectDateTimeID implements Serializable{
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectDateTime;
 
-	
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 }

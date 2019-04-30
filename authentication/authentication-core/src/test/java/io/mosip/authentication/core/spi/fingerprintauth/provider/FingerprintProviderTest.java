@@ -9,13 +9,21 @@ import java.util.Optional;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 
+/**
+ * The Class FingerprintProviderTest.
+ *
+ * @author Manoj SP
+ */
 public class FingerprintProviderTest {
+
+	/** The finger 1. */
 	byte[] finger1 = new byte[] { 70, 77, 82, 0, 32, 50, 48, 0, 0, 0, 1, 8, 0, 0, 1, 60, 1, 98, 0, -59, 0, -59, 1, 0, 0,
 			0, 40, 39, -128, -124, 0, -21, 60, 80, -128, -94, 1, 1, -105, 80, -128, 115, 0, -43, -56, 87, -128, -90, 1,
 			24, -105, 80, 64, -70, 0, -26, -59, 100, -128, 119, 0, -75, 18, 100, 64, 101, 1, 51, -40, 100, -128, -120,
@@ -28,6 +36,7 @@ public class FingerprintProviderTest {
 			100, 64, -102, 0, -89, -16, 100, 64, -67, 1, 56, -98, 80, 64, -38, 0, -57, -42, 80, 64, -55, 1, 64, 54, 53,
 			-128, 121, 1, 91, 109, 73, 64, 74, 0, -113, -88, 100, 64, -117, 0, 109, 5, 100, 0, 0 };
 
+	/** The finger 1 scan 2. */
 	byte[] finger1scan2 = new byte[] { 70, 77, 82, 0, 32, 50, 48, 0, 0, 0, 1, 2, 0, 0, 1, 60, 1, 98, 0, -59, 0, -59, 1,
 			0, 0, 0, 40, 38, -128, -126, 0, -40, -74, 40, -128, -118, 0, -51, -58, 93, 64, -124, 1, 25, -101, 60, 64,
 			106, 1, 25, 11, 53, -128, 82, 0, -62, -60, 80, 64, -84, 1, 31, -65, 87, 64, -73, 0, -65, -44, 100, 64, 120,
@@ -40,6 +49,7 @@ public class FingerprintProviderTest {
 			28, -72, 87, 64, 104, 1, 51, 94, 27, -128, 88, 0, -95, 15, 93, 64, -45, 1, 1, 91, 53, 64, 48, 0, -70, -67,
 			100, -128, -90, 1, 76, 44, 40, 64, -82, 1, 84, 12, 40, 0, 0 };
 
+	/** The finger 2. */
 	byte[] finger2 = new byte[] { 70, 77, 82, 0, 32, 50, 48, 0, 0, 0, 1, 104, 0, 0, 1, 60, 1, 98, 0, -59, 0, -59, 1, 0,
 			0, 0, 40, 55, 64, 101, 0, -30, -95, 87, 64, 111, 0, -47, -76, 73, -128, -116, 0, -11, 62, 80, 64, -103, 0,
 			-51, -59, 93, -128, 81, 0, -63, 30, 87, 64, -88, 1, 1, -71, 80, -128, 71, 0, -68, 44, 87, -128, 56, 0, -51,
@@ -56,8 +66,10 @@ public class FingerprintProviderTest {
 			67, 64, 73, 0, -124, 25, 93, -128, -52, 1, 46, -74, 53, 64, -112, 1, 87, 17, 20, 64, -82, 1, 86, 20, 20, 64,
 			-64, 1, 86, 10, 27, 64, 62, 0, 98, 23, 93, 0, 0 };
 
+	/** The fp. */
 	MosipFingerprintProvider fp = new FingerprintProvider() {
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 			return null;
@@ -75,67 +87,74 @@ public class FingerprintProviderTest {
 
 		@Override
 		public String createMinutiae(byte[] inputImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
-		
-
-		
 	};
 
+	/** The finger print. */
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public FingerprintDeviceInfo deviceInfo() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String createMinutiae(byte[] inputImage) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
-		
-
 	};
 
+	/**
+	 * Test ISO score calculator same finger diff scan.
+	 */
 	@Test
 	public void testISOScoreCalculatorSameFingerDiffScan() {
 		double score = fp.matchScoreCalculator(finger1, finger1scan2);
 		assertTrue(score > 100);
 	}
 
+	/**
+	 * Test ISO score calculator diff finger.
+	 */
 	@Test
 	public void testISOScoreCalculatorDiffFinger() {
 		double score = fp.matchScoreCalculator(finger1, finger2);
 		assertTrue(score < 100);
 	}
 
+	/**
+	 * Test ISO score calculator exception.
+	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testISOScoreCalculatorException() {
 		fp.matchScoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
 	}
 
+	/**
+	 * Test minutiae score calculator exception.
+	 */
 	@Test(expected = JsonSyntaxException.class)
 	public void testMinutiaeScoreCalculatorException() {
 		fp.matchScoreCalculator("123", "123");
 	}
 
+	/**
+	 * Test minutiae score same finger diff scan.
+	 */
 	@Test
 	public void testMinutiaeScoreSameFingerDiffScan() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
@@ -144,6 +163,9 @@ public class FingerprintProviderTest {
 		assertTrue(score > 100);
 	}
 
+	/**
+	 * Test minutiae score diff finger.
+	 */
 	@Test
 	public void testMinutiaeScoreDiffFinger() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
@@ -152,6 +174,10 @@ public class FingerprintProviderTest {
 		assertTrue(score < 100);
 	}
 
+	/**
+	 * Testmatch minutiea.
+	 */
+	@SuppressWarnings("static-access")
 	@Test
 	public void testmatchMinutiea() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
@@ -161,6 +187,21 @@ public class FingerprintProviderTest {
 		fingerPrint.decodeValue(value);
 	}
 
+	/**
+	 * Test invalidmatch minutiaewith stringvalue.
+	 */
+	@Test
+	public void TestInvalidmatchMinutiaewithStringvalue() {
+		String value = null;
+		fingerPrint.matchImage(1, value);
+		fingerPrint.matchMinutiae(1, value);
+		fingerPrint.matchImage(1, value);
+
+	}
+
+	/**
+	 * Test multi match minutae.
+	 */
 	@Test
 	public void testMultiMatchMinutae() {
 		Map<String, String> reqInfo = new HashMap<>();
@@ -176,6 +217,10 @@ public class FingerprintProviderTest {
 		assertTrue(score > 500);
 	}
 
+	/**
+	 * Testmatc image.
+	 */
+	@SuppressWarnings("static-access")
 	@Test
 	public void testmatcImage() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
@@ -184,6 +229,9 @@ public class FingerprintProviderTest {
 		fingerPrint.decodeValue(value);
 	}
 
+	/**
+	 * Test multi match image.
+	 */
 	@Test
 	public void testMultiMatchImage() {
 		Map<String, String> reqInfo = new HashMap<>();
@@ -195,10 +243,12 @@ public class FingerprintProviderTest {
 		entityInfo.put("leftIndex", leftIndex);
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiImage(reqInfo, entityInfo);
-		System.out.println(score);
 		assertTrue(score > 500);
 	}
 
+	/**
+	 * Test inavalid multi match minutae.
+	 */
 	@Test
 	public void testInavalidMultiMatchMinutae() {
 		Map<String, String> reqInfo = new HashMap<>();
@@ -212,6 +262,51 @@ public class FingerprintProviderTest {
 		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 		fingerPrint.matchMultiImage(reqInfo, entityInfo);
 		assertTrue(score < 60);
+	}
+
+	/**
+	 * Test invalidmatch minutiae.
+	 */
+	@Test
+	public void TestInvalidmatchMinutiae() {
+		String reqInfo = null;
+		String entityInfo = null;
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+	}
+
+	/**
+	 * Test invalidmatch minutiaewith string.
+	 */
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void TestInvalidmatchMinutiaewithString() {
+		String reqInfo = null;
+		Map entityInfo = null;
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+	}
+
+	/**
+	 * Test invalidmatch multi minutae.
+	 */
+	@Test
+	public void TestInvalidmatchMultiMinutae() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String leftIndex = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		String rightIndex = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		reqInfo.put("UNKNOWN", rightIndex);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("UNKNOWN", leftIndex);
+		fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
+	}
+
+	@Test
+	public void TestmatchMultiMinutaeUnKnownFinger() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String encodedString = Base64.getEncoder().encodeToString(finger1);
+		reqInfo.put("UNKNOWN", encodedString);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("UNKNOWN", encodedString);
+		ReflectionTestUtils.invokeMethod(fingerPrint, "matchMultiMinutaeUnKnownFinger", reqInfo, entityInfo);
 	}
 
 }

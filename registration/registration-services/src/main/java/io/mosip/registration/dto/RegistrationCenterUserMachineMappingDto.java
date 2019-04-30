@@ -2,6 +2,12 @@ package io.mosip.registration.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The Class RegistrationCenterUserMachineMappingDto.
+ * 
+ * @author Brahmananda reddy
+ *
+ */
 public class RegistrationCenterUserMachineMappingDto {
 	private String cntrId;
 	private String machineId;

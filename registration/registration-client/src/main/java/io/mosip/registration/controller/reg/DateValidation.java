@@ -3,8 +3,6 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,205 +10,197 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+/**
+ * Class for validating the date fields
+ * 
+ * @author Taleev.Aalam
+ * @author Balaji
+ * @since 1.0.0
+ *
+ */
 @Component
 public class DateValidation extends BaseController {
 
+	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
 	@Autowired
 	private Validations validation;
 
-	private Map<String, String> dateMapper;
+	/**
+	 * Validate the date and populate its corresponding local or secondary
+	 * language field if date is valid
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the date fields
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 * @param validations
+	 *            the instance of {@link Validations}
+	 * @param fxUtils
+	 *            the instance of {@link FXUtils}
+	 * @param localField
+	 *            the local field to be populated if input is valid.
+	 */
+	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
+
+		try {
+			fxUtils.validateOnType(parentPane, date, validation, localField, false);
+			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				yearValidator(date, month, year);
+			});
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
+		}
+	}
 
 	/**
-	 * Instance of {@link Logger}
+	 * Validate the month and populate its corresponding local or secondary
+	 * language field if month is valid
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the date fields
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 * @param validations
+	 *            the instance of {@link Validations}
+	 * @param fxUtils
+	 *            the instance of {@link FXUtils}
+	 * @param localField
+	 *            the local field to be populated if input is valid.
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
-
-	public DateValidation() {
-		dateMapper = new HashMap<>();
-		dateMapper.put("1", "31");
-		dateMapper.put("2", "29");
-		dateMapper.put("3", "31");
-		dateMapper.put("4", "30");
-		dateMapper.put("5", "31");
-		dateMapper.put("6", "30");
-		dateMapper.put("7", "31");
-		dateMapper.put("8", "31");
-		dateMapper.put("9", "30");
-		dateMapper.put("01", "31");
-		dateMapper.put("02", "29");
-		dateMapper.put("03", "31");
-		dateMapper.put("04", "30");
-		dateMapper.put("05", "31");
-		dateMapper.put("06", "30");
-		dateMapper.put("07", "31");
-		dateMapper.put("08", "31");
-		dateMapper.put("09", "30");
-		dateMapper.put("10", "31");
-		dateMapper.put("11", "30");
-		dateMapper.put("12", "31");
-	}
-
-	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
-
+	public void validateMonth(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane,date, validation, localField);
-			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				int dateVal = 1;
-				if (date.getText().matches("\\d+")) {
-					dateVal = Integer.parseInt(date.getText());
-					if (dateVal > 31) {
-						date.setText(oldValue);
-					}
-				}
-				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-					try {
-						if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
-							date.setText(oldValue);
-						}
-					} catch (RuntimeException runTimeException) {
-						LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-								runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-					}
-				}
-				validateTheDate(date, month, year);
-			});
-		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-		}
-	}
-
-	public void validateMonth(Pane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
-		try {
-			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
+			fxUtils.validateOnType(parentPane, month, validation, localField, false);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (month.getText().matches("\\d+")) {
-					int monthVal = Integer.parseInt(month.getText());
-					if (monthVal > 12) {
-						month.setText(oldValue);
-					}
-					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-						try {
-							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
-								date.clear();
-							}
-						} catch (RuntimeException runTimeException) {
-							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-						}
-					}
-				}
-				validateTheDate(date, month, year);
+				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
 
-	private void validateTheDate(TextField date, TextField month, TextField year) {
+	
+	/**
+	 * Validates the date
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 */
+	private void yearValidator(TextField date, TextField month, TextField year) {
 		try {
-			int yearVal;
-			int monthVal;
-			int dateVal;
-			LocalDate localDate = LocalDate.now();
-			if (year != null) {
-				if (year.getText().matches("\\d{4}")) {
+				int yearVal;
+				LocalDate localDate = LocalDate.now();
+				if (year != null && year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					yearVal = Integer.parseInt(year.getText());
-					if (yearVal == localDate.getYear()) {
-						if (month != null) {
-							if (month.getText().matches("\\d+")) {
-								monthVal = Integer.parseInt(month.getText());
-								if (monthVal > localDate.getMonth().getValue()) {
-									month.setText("1");
-								}
-								if (monthVal == localDate.getMonth().getValue()) {
-									if (date != null) {
-										if (date.getText().matches("\\d+")) {
-											dateVal = Integer.parseInt(date.getText());
-											if (dateVal > localDate.getDayOfMonth()) {
-												date.setText("1");
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
+					monthValidator(date, month, yearVal, localDate);
 			}
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
 
-	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
+	/**
+	 * Validates the month
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 * @param LocalDate
+	 *            the localDate {@link LocalDate}
+	 */
+	private void monthValidator(TextField date, TextField month, int yearVal, LocalDate localDate) {
+		if (month != null && yearVal == localDate.getYear()
+				&& month.getText().matches(RegistrationConstants.NUMBER_REGEX)
+				&& Integer.parseInt(month.getText()) > localDate.getMonth().getValue()) {
+			month.setText(RegistrationConstants.ONE);
+		} else {
+			dateValdidator(date, Integer.parseInt(month.getText()), localDate);
+		}
+	}
+
+	/**
+	 * Validates the month
+	 *
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param LocalDate
+	 *            the localDate {@link LocalDate}
+	 */
+	private void dateValdidator(TextField date, int monthVal, LocalDate localDate) {
+		if (date != null && monthVal == localDate.getMonth().getValue()
+				&& date.getText().matches(RegistrationConstants.NUMBER_REGEX)
+				&& Integer.parseInt(date.getText()) > localDate.getDayOfMonth()) {
+			date.setText(RegistrationConstants.ONE);
+		}
+	}
+
+	/**
+	 * Validate the year and populate its corresponding local or secondary
+	 * language field if year is valid
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the date fields
+	 * @param date
+	 *            the date(dd) {@link TextField}
+	 * @param month
+	 *            the month {@link TextField}
+	 * @param year
+	 *            the year {@link TextField}
+	 * @param validations
+	 *            the instance of {@link Validations}
+	 * @param fxUtils
+	 *            the instance of {@link FXUtils}
+	 * @param localField
+	 *            the local field to be populated if input is valid.
+	 */
+	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane, year, validation, localField);
+			fxUtils.validateOnType(parentPane, year, validation, localField, false);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (year.getText().matches("\\d{4}")) {
+				if (year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
-					int minYear = 1900;
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
-						minYear = LocalDate.now().getYear() - 5;
-					}
+					int minYear = localDate.getYear()-Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
-
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-							&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()
-							&& localDate.getYear() - yearVal <= 5) {
-						year.setText(oldValue);
-					}
-
-					if (!(yearVal % 4 == 0)) {
-						dateMapper.put("2", "28");
-					}
-					if ((yearVal % 4 == 0)) {
-						dateMapper.put("2", "29");
-					}
-					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-
-						try {
-							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								date.clear();
-								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
-							}
-						} catch (RuntimeException runTimeException) {
-							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-						}
-
-					}
 				}
-				validateTheDate(date, month, year);
+				yearValidator(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}

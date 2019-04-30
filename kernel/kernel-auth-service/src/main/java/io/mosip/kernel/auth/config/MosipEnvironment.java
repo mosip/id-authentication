@@ -44,23 +44,41 @@ public class MosipEnvironment implements EnvironmentAware {
 	private String rolesSearchPrefix = "ldap.roles.search.prefix";
 	private String rolesSearchSuffix = "ldap.roles.search.suffix";
 	private String ldapRolesClass = "ldap.roles.class";
-	
+
 	private String otpPrimaryLanguage = "auth.primary.language";
-	
+
 	private String uinGetDetailsUrl = "idrepo.api.getuindetails";
-	
+
 	private String authSlidingWindowExp = "auth.token.sliding.window.exp";
 	
-	public String getUinGetDetailsUrl()
-	{
+	private String authPrefix = "mosip.kernel.auth.";
+	
+	private String authAppId = ".app.id";
+	
+	private String authAppUserId = ".client.id";
+	
+	private String authSecretKey = ".secret.key";
+
+	public String getUinGetDetailsUrl() {
 		return environment.getProperty(uinGetDetailsUrl);
 	}
 	
-	public Integer getAuthSlidingWindowExp()
-	{
-		return Integer.valueOf(environment.getProperty(authSlidingWindowExp));
+	public String getAppUserId(String appId) {
+		return environment.getProperty(authPrefix+appId+authAppUserId);
 	}
 	
+	public String getAppId(String appId) {
+		return environment.getProperty(authPrefix+appId+authAppId);
+	}
+	
+	public String getSecretKey(String appId) {
+		return environment.getProperty(authPrefix+appId+authSecretKey);
+	}
+
+	public Integer getAuthSlidingWindowExp() {
+		return Integer.valueOf(environment.getProperty(authSlidingWindowExp));
+	}
+
 	public String getPrimaryLanguage() {
 		return environment.getProperty(otpPrimaryLanguage);
 	}
@@ -69,11 +87,11 @@ public class MosipEnvironment implements EnvironmentAware {
 	public void setEnvironment(final Environment environment) {
 		this.environment = environment;
 	}
-	
+
 	public String getAuthTokenHeader() {
 		return environment.getProperty(authTokenHeader);
 	}
-	
+
 	public String getRefreshTokenHeader() {
 		return environment.getProperty(authRefreshTokenHeader);
 	}
@@ -133,7 +151,7 @@ public class MosipEnvironment implements EnvironmentAware {
 	public String getLdapVerifyOtpUser() {
 		return environment.getProperty(ldapVerifyOtpUser);
 	}
-	
+
 	public String getGenerateOtpApi() {
 		return environment.getProperty(generateOtpApi);
 	}
@@ -177,4 +195,5 @@ public class MosipEnvironment implements EnvironmentAware {
 	public String getRolesSearchSuffix() {
 		return environment.getProperty(rolesSearchSuffix);
 	}
+
 }

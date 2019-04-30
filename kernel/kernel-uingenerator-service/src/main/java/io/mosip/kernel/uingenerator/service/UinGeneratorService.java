@@ -5,7 +5,7 @@ package io.mosip.kernel.uingenerator.service;
 
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
-import io.vertx.core.json.JsonObject;
+import io.mosip.kernel.uingenerator.entity.UinEntity;
 
 /**
  * @author Dharmesh Khandelwal
@@ -25,11 +25,10 @@ public interface UinGeneratorService {
 	/**
 	 * Upodate the status of the Uin from ISSUED to ASSIGNED
 	 * 
-	 * @param uin
-	 *            pass uin object as param
+	 * @param uin pass uin object as param
 	 * 
 	 * @return UinStatusUpdateReponseDto
 	 */
-	UinStatusUpdateReponseDto updateUinStatus(JsonObject uin);
+	UinStatusUpdateReponseDto updateUinStatus(UinEntity uin);
 
 }

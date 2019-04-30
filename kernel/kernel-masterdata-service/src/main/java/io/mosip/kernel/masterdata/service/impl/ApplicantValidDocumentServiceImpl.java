@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicantTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -19,7 +20,6 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicantValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ApplicantValidDocumentService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 
 @Service
 public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocumentService {

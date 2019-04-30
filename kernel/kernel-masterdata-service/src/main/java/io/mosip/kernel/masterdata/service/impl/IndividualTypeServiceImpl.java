@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.IndividualTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IndividualTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
@@ -15,7 +16,6 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.masterdata.service.IndividualTypeService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**

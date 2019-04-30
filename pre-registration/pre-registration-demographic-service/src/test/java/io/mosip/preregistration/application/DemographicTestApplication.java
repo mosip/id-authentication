@@ -14,8 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @author Rajath KR
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.core.*,io.mosip.preregistration.document.*"
-		+ ",io.mosip.preregistration.application.*"+ ",io.mosip.kernel.emailnotifier.*,io.mosip.kernel.smsnotifier.*,io.mosip.kernel.cryotomanager.*,io.mosip.kernel.auditmanger.*,io.mosip.kernel.idgenerator.*"})
+@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.core.*,io.mosip.preregistration.document.*,io.mosip.preregistration.application.*,io.mosip.kernel.emailnotifier.*,io.mosip.kernel.smsnotifier.*,io.mosip.kernel.cryotomanager.*,io.mosip.kernel.auditmanger.*,io.mosip.kernel.idgenerator.*,io.mosip.kernel.jsonvalidator.*"})
 //@ComponentScan(basePackages = "io.mosip.*")
 public class DemographicTestApplication {
 	/**

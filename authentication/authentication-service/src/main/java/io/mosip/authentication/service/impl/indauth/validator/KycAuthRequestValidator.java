@@ -1,8 +1,11 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,20 +22,23 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class KycAuthRequestValidator.
+ * The Class For KycAuthRequestValidator extending the
+ * BaseAuthRequestValidator{@link BaseAuthRequestValidator}}
  *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
  * 
- *         The Class For KycAuthRequestValidator extending the
- *         BaseAuthRequestValidator
+ * 
  */
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
-
-
-	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
+	
+	/** The Constant SECONDARY_LANG_CODE. */
+	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
+	
+	/** The Constant EKYC_ALLOWED_AUTH_TYPE. */
+	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 
 	/** The auth request validator. */
 	@Autowired
@@ -53,14 +59,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-
-
 	/** The Constant eKycAuthType. */
 	private static final String REQUESTEDAUTH = "requestedAuth";
-
-	/** The env. */
-	@Autowired
-	private Environment environment;
 
 	/*
 	 * (non-Javadoc)
@@ -73,11 +73,12 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
 
-	/**
-	 * Validates the KycAuthRequest.
-	 *
-	 * @param target the target
-	 * @param errors the errors
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.impl.indauth.validator.
+	 * BaseAuthRequestValidator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
@@ -95,6 +96,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateAuthType(errors, kycAuthRequestDTO);
+				validateLangCode(kycAuthRequestDTO.getSecondaryLangCode(), errors, SECONDARY_LANG_CODE, SECONDARY_LANG_CODE);
 			}
 
 		} else {
@@ -105,7 +107,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		}
 
 	}
-
+	
 	/**
 	 * Validates the KycAuthrequest against the Authtype on the request.
 	 *
@@ -113,7 +115,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String values = environment.getProperty(EKYC_ALLOWED_AUTH_TYPE);
+		String values = env.getProperty(EKYC_ALLOWED_AUTH_TYPE);
 		List<String> allowedAuthTypesList = Arrays.stream(values.split(",")).collect(Collectors.toList());
 		Map<Boolean, List<EkycAuthType>> authTypes = Stream.of(EkycAuthType.values()).collect(
 				Collectors.partitioningBy(ekycAuthType -> allowedAuthTypesList.contains(ekycAuthType.getType())));
@@ -128,8 +130,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (!isValidAuthtype) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
-			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), REQUESTEDAUTH));
+			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(at -> at.getType()).collect(Collectors.joining(","));
+			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage(), notAllowedAuthTypesStr));
 		}
 
 	}

@@ -64,7 +64,6 @@ public final class ExceptionUtils {
 	 * 
 	 * @param responseBody the service response body.
 	 * @return the list of {@link ServiceError}
-	 * @throws IOException
 	 */
 	public static List<ServiceError> getServiceErrorList(String responseBody) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -83,12 +82,12 @@ public final class ExceptionUtils {
 				while (iter.hasNext()) {
 					JsonNode parameterNode = iter.next();
 					ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
-							getJsonValue(parameterNode, "errorMessage"));
+							getJsonValue(parameterNode, "message"));
 					validationErrorsList.add(serviceError);
 				}
 			}
-		} catch (IOException e) {
-          // There is no Service error
+		} catch (Exception e) {
+			// There is no Service error
 		}
 
 		return validationErrorsList;

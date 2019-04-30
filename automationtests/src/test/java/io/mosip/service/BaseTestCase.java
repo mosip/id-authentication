@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeSuite;
 
 import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
@@ -33,7 +34,7 @@ import io.restassured.RestAssured;
  *
  */
 
-public class BaseTestCase {
+public class BaseTestCase extends KernelMasterDataR {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();
@@ -44,6 +45,7 @@ public class BaseTestCase {
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 	public static String ApplnURI;	
+	public static String authToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public  static String getOSType(){
@@ -84,14 +86,8 @@ public class BaseTestCase {
 		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
-			if (environment.equalsIgnoreCase("integration"))
-				ApplnURI="https://integ.mosip.io";
-			if (environment.equalsIgnoreCase("qa"))
-				ApplnURI="https://qa.mosip.io";
-			else
-				ApplnURI="https://integ.mosip.io";
-			/*environment ="integration";
-			ApplnURI="https://integ.mosip.io";*/
+			ApplnURI=System.getProperty("env.endpoint");
+			logger.info("Application URI ======" +ApplnURI);
 
 			logger.info("Configs from properties file are set.");
 			
@@ -116,8 +112,12 @@ public class BaseTestCase {
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
+
+
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
+
+			//authToken=pil.getToken();
 			
 		} // End suiteSetup
 

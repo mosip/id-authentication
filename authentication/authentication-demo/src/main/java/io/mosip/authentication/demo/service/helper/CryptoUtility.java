@@ -18,7 +18,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
@@ -39,9 +38,6 @@ public class CryptoUtility {
 	/** The Constant SYM_ALGORITHM. */
 	private static final String SYM_ALGORITHM = "AES";
 	
-	/** The Constant ASYM_ALGORITHM. */
-	private static final String ASYMTRC_ALGORITHM = "RSA";
-
 	/** The Constant SYM_ALGORITHM_LENGTH. */
 	private static final int SYM_ALGORITHM_LENGTH = 256;
 

@@ -1,8 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
@@ -24,7 +24,11 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 			if (object instanceof ValidateOtpFunction) {
 				ValidateOtpFunction func = (ValidateOtpFunction) object;
 				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo);
-				return otpValid ? 100 : 0;
+				if (!otpValid) {
+					return 0;
+				} else {
+					return 100;
+				}
 			} else {
 				logError(IdAuthenticationErrorConstants.INVALID_OTP);
 				throw new IdAuthenticationBusinessException(
@@ -33,8 +37,7 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 								PinAuthType.OTP.getType()));
 			}
 		} else {
-			logError(IdAuthenticationErrorConstants.INVALID_OTP);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+			return 0;
 		}
 	});
 

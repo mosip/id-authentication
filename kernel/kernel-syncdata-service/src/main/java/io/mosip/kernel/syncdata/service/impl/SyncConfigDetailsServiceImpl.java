@@ -6,25 +6,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
@@ -39,6 +43,7 @@ import net.minidev.json.JSONObject;
  * @author Bal Vikash Sharma
  *
  */
+@RefreshScope
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
@@ -46,7 +51,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -88,7 +93,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
 		config.put("globalConfiguration", globalConfig);
 		config.put("registrationConfiguration", regConfig);
-		ConfigDto configDto= new ConfigDto();
+		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
 		LOGGER.info("getConfigDetails() completed");
 		return configDto;
@@ -185,11 +190,10 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
-			Optional<String> referenceId) {
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, String referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
-		
-		PublicKeyResponse publicKeyResponseMapped = null;
+
+		ResponseWrapper<PublicKeyResponse> publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		try {
@@ -207,24 +211,27 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				throw new SyncInvalidArgumentException(validationErrorsList);
 			}
 
-		} catch (RestClientException ex) {
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.buildMessage(ex.getMessage(), ex.getCause()));
 
 		}
 
 		try {
 			objectMapper.registerModule(new JavaTimeModule());
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
-					PublicKeyResponse.class);
-			
-		} catch (IOException e) {
+					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
+					});
+
+		} catch (IOException | NullPointerException e) {
 			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
 		}
 
-		return publicKeyResponseMapped;
+		return publicKeyResponseMapped.getResponse();
 
 	}
 

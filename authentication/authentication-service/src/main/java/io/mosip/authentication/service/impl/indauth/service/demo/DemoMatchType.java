@@ -15,18 +15,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -53,17 +50,22 @@ public enum DemoMatchType implements MatchType {
 	/** Secondary Date of Birth Type Match. */
 	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()),
 		 false, entityInfoMap -> {
-				String value = entityInfoMap.values().stream().findFirst().orElse("");
-				int age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
-						.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
+				Optional<String> valueOpt = entityInfoMap.values().stream().findFirst();
+				if (valueOpt.isPresent()) {
+					String value = valueOpt.get();
+					int age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
+							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 
-				Map<String, String> map = new LinkedHashMap<>();
-				map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
-				return map;
+					Map<String, String> map = new LinkedHashMap<>();
+					map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
+					return map;
+				} else {
+					return null;
+				}
 			}),
 
 	/** Gender Match Type. */
-	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender, false),
+	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender),
 
 	/** Phone Match Type. */
 	PHONE(IdaIdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT),
@@ -106,20 +108,11 @@ public enum DemoMatchType implements MatchType {
 
 	private static final String DATE_PATTERN = "yyyy/MM/dd";
 
-	/** The mosipLogger. */
-	private static final Logger mosipLogger = IdaLogger.getLogger(DemoMatchType.class);
-
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
 	/** The entity info. */
 	private Function<Map<String, String>, Map<String, String>> entityInfoFetcher;
-
-	/** The used bit. */
-	private AuthUsageDataBit usedBit;
-
-	/** The matched bit. */
-	private AuthUsageDataBit matchedBit;
 
 	/**  */
 	private LanguageType langType;
@@ -243,15 +236,6 @@ public enum DemoMatchType implements MatchType {
 	@Override
 	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
-	}
-
-	/**
-	 * Gets the logger.
-	 *
-	 * @return the logger
-	 */
-	private static Logger getLogger() {
-		return mosipLogger;
 	}
 
 	/*

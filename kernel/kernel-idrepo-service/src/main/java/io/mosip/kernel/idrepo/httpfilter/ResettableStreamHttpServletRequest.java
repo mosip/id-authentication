@@ -33,8 +33,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 	/**
 	 * Instantiates a new resettable stream http servlet request.
 	 *
-	 * @param request
-	 *            the request
+	 * @param request the request
 	 */
 	public ResettableStreamHttpServletRequest(HttpServletRequest request) {
 		super(request);
@@ -46,12 +45,12 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 	 * Reset input stream.
 	 */
 	public void resetInputStream() {
-		servletStream.stream = new ResettableServletInputStream(
-				new ByteArrayInputStream(rawData));
+		servletStream.stream = new ResettableServletInputStream(new ByteArrayInputStream(rawData));
 	}
-	
+
 	/**
 	 * Replace the request data with the given bytes
+	 * 
 	 * @param newData the new data to be replaced with
 	 */
 	public void replaceData(byte[] newData) {
@@ -67,8 +66,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
 		if (rawData == null) {
-			rawData =
-					StreamUtils.copyToByteArray(this.request.getInputStream());
+			rawData = StreamUtils.copyToByteArray(this.request.getInputStream());
 			servletStream.stream = new ByteArrayInputStream(rawData);
 		}
 		return servletStream;
@@ -82,8 +80,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 	@Override
 	public BufferedReader getReader() throws IOException {
 		if (rawData == null) {
-			rawData =
-					StreamUtils.copyToByteArray(this.request.getInputStream());
+			rawData = StreamUtils.copyToByteArray(this.request.getInputStream());
 			servletStream.stream = new ByteArrayInputStream(rawData);
 		}
 		return new BufferedReader(new InputStreamReader(servletStream));
@@ -106,8 +103,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 		/**
 		 * Instantiates a new resettable servlet input stream.
 		 *
-		 * @param stream
-		 *            the stream
+		 * @param stream the stream
 		 */
 		public ResettableServletInputStream(InputStream stream) {
 			this.stream = stream;

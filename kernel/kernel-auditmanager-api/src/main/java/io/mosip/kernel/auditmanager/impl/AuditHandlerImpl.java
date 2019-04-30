@@ -43,13 +43,12 @@ public class AuditHandlerImpl implements AuditHandler<AuditRequestDto> {
 	 */
 	@Override
 	public boolean addAudit(AuditRequestDto auditRequest) {
-		
+
 		AuditUtils.validateAuditRequest(auditRequest);
 
 		Audit event = modelMapper.map(auditRequest, Audit.class);
 		auditRepository.create(event);
 		return true;
 	}
-
 
 }

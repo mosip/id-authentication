@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
@@ -47,24 +46,23 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 	
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestDto)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#createRegistrationCenterAndDevice(io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto)
 	 */
 	@Override
 	@Transactional
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
-			RequestDto<RegistrationCenterDeviceDto> requestDto) {
+			RegistrationCenterDeviceDto requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
-			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto.getRequest(),
+			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto,
 					RegistrationCenterDevice.class);
 			RegistrationCenterDevice savedRegistrationCenterDevice = registrationCenterDeviceRepository
 					.create(registrationCenterDevice);
 
 			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
+					.setCreateMetaData(requestDto, RegistrationCenterDeviceHistory.class);
 			registrationCenterDeviceHistory.getRegistrationCenterDeviceHistoryPk()
 					.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
@@ -116,7 +114,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage()
-					+ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(e));
 		}
 		return registrationCenterDeviceID;
 	}

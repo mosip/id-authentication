@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
@@ -30,21 +33,22 @@ public class RegistrationCenterHistoryController {
 	/**
 	 * Get api to fetch list of registration centers
 	 * 
-	 * @param registrationCenterId
-	 *            The id of registration center
-	 * @param langCode
-	 *            The language code
-	 * @param effectiveDate
-	 *            The effective date
+	 * @param registrationCenterId The id of registration center
+	 * @param langCode             The language code
+	 * @param effectiveDate        The effective date
 	 * @return {@link RegistrationCenterResponseDto} instance
 	 */
-	@GetMapping("/v1.0/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
-	public RegistrationCenterHistoryResponseDto getRegistrationCentersHistory(
-			@PathVariable("registrationCenterId") String registrationCenterId, @PathVariable("langcode") String langCode,
-			@PathVariable("effectiveDate") String effectiveDate) {
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	@ResponseFilter
+	@GetMapping("/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
+	public ResponseWrapper<RegistrationCenterHistoryResponseDto> getRegistrationCentersHistory(
+			@PathVariable("registrationCenterId") String registrationCenterId,
+			@PathVariable("langcode") String langCode, @PathVariable("effectiveDate") String effectiveDate) {
 
-		return registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId, langCode,
-				effectiveDate);
+		ResponseWrapper<RegistrationCenterHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId,
+				langCode, effectiveDate));
+		return responseWrapper;
 	}
 
 }

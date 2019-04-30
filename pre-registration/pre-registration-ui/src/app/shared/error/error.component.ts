@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-error',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./error.component.css']
 })
 export class ErrorComponent implements OnInit {
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // if (this.authService.isAuthenticated()) this.authService.onLogout();
+  }
 }

@@ -1,10 +1,13 @@
 {
-  "timestamp": 1549455145266,
-  "status": 200,
-  "errors": [
-    {
-      "errorCode": "KER-MSD-014",
-      "errorMessage": "Document Category not found"
-    }
-  ]
+    "id": null,
+    "version": null,
+    "responsetime": "2019-04-17T11:53:03.931Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-MSD-118",
+            "errorMessage": "Document Type not found"
+        }
+    ]
 }

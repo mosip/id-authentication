@@ -6,7 +6,7 @@ package io.mosip.kernel.core.cbeffutil.exception;
 /**
  * @author Ramadurai Pandian
  *
- * A Custom exception class
+ *         A Custom exception class
  */
 public class CbeffException extends Exception {
 

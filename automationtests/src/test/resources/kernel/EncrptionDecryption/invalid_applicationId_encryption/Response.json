@@ -1,6 +1,9 @@
 {
-    "timestamp": 1550038009439,
-    "status": 500,
+    "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-17T06:56:49.467Z",
+  "metadata": null,
+  "response": null,
     "errors": [
         {
             "errorCode": "KER-KMS-002",

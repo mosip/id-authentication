@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -74,15 +73,14 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * masterdata.dto.IdTypeRequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createIdType(RequestDto<IdTypeDto> idTypeRequestDto) {
-		IdType entity = MetaDataUtils.setCreateMetaData(idTypeRequestDto.getRequest(), IdType.class);
+	public CodeAndLanguageCodeID createIdType(IdTypeDto idTypeRequestDto) {
+		IdType entity = MetaDataUtils.setCreateMetaData(idTypeRequestDto, IdType.class);
 		IdType idType;
 		try {
 			idType = idRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		MapperUtils.map(idType, codeAndLanguageCodeID);

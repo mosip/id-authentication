@@ -164,8 +164,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		try {
 			List<UserDetail> registrationUserDetail = userDetailRepository
 					.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-							ceneterID, RegistrationConstants.BLOCKED,
-							SessionContext.userContext().getUserId());
+							ceneterID, RegistrationConstants.BLOCKED, SessionContext.userContext().getUserId());
 			if (!registrationUserDetail.isEmpty()) {
 				return registrationUserDetail;
 			} else {
@@ -344,12 +343,15 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				deviceType.getDeviceType(), Timestamp.valueOf(DateUtils.getUTCCurrentDateTime())) > 0 ? true : false;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.MachineMappingDAO#getUserMappingDetails(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#getUserMappingDetails(java.lang.
+	 * String)
 	 */
 	@Override
-	public List<UserMachineMapping> getUserMappingDetails(String machineId)
-	{
+	public List<UserMachineMapping> getUserMappingDetails(String machineId) {
 		return machineMappingRepository.findByIsActiveTrueAndUserMachineMappingIdMachineID(machineId);
 	}
 
@@ -366,6 +368,13 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"Fetch all the devices mapped to the registration center");
 
 		return deviceMasterRepository.findByRegMachineSpecIdLangCode(langCode);
+	}
+
+	@Override
+	public boolean isExists(String userId) {
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "checking exists or not");
+
+		return machineMappingRepository.findByUserMachineMappingIdUserID(userId) != null;
 	}
 
 }

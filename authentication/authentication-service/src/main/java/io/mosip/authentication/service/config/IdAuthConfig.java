@@ -13,7 +13,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @Configuration
-public class IdAuthConfig implements WebMvcConfigurer {
+public class IdAuthConfig {
 
 	/** The environment. */
 	@Autowired

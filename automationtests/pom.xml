@@ -5,7 +5,7 @@
 	<groupId>customlib</groupId>
 	<artifactId>automationtests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	 <packaging>jar</packaging> 
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
@@ -136,11 +136,9 @@
 			<version>1.8.2</version>
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
-		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>testing</artifactId>
-			<version>demoApp</version>
-		</dependency>
+
+		<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>testing</artifactId> 
+			<version>demoApp</version> </dependency> -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -185,8 +183,8 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-
+		<pluginManagement>
+			<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -197,20 +195,22 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<inherited>true</inherited>
-				<configuration>
-					<suiteXmlFiles>
-					<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.19.1</version>
+					<inherited>true</inherited>
+					<configuration>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				    	<suiteXmlFiles>
+							<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
+						</suiteXmlFiles>
+					</configuration>
+				</plugin>
+				
+			</plugins>
+		</pluginManagement>
 
-			</suiteXmlFiles>
-				</configuration>
-
-			</plugin>
-		</plugins>
 	</build>
 
 
@@ -218,5 +218,6 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 </project>

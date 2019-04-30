@@ -4,10 +4,12 @@ import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -15,34 +17,34 @@ import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 import ma.glasnost.orika.MapperFacade;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class PacketMetaInfoConverterTest {
 	
 	private MapperFacade mapperFacade = CustomObjectMapper.MAPPER_FACADE;
 	
 	@Test
-	public void convertTest() throws JsonProcessingException, RegBaseCheckedException {
-		HashMap<String, String> hashMap = new HashMap<>();
-		hashMap.put("officerLeftThumb", "yyqtyt-1gyu1210-1uu13hgziu1");
-		hashMap.put("supervisorLeftThumb", "13113-1gyu1210-1uu13hgziu1");
-		hashMap.put("individualface", "eweew-1gyu1210-1uu13hgziu1");
-		hashMap.put("individualexceptionface", "fgfgf-1gyu1210-1uu13hgziu1");
-		SessionContext.getInstance().setMapObject(new HashMap<>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, hashMap);
-		HashMap<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put(RegistrationConstants.UIN_LENGTH, "10");
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+	public void convertTest() throws Exception {
+		HashMap<String, String> cbeffBIRS = new HashMap<>();
+		cbeffBIRS.put("officerLeftThumb", "yyqtyt-1gyu1210-1uu13hgziu1");
+		cbeffBIRS.put("supervisorLeftThumb", "13113-1gyu1210-1uu13hgziu1");
+		cbeffBIRS.put("individualface", "eweew-1gyu1210-1uu13hgziu1");
+		cbeffBIRS.put("individualexceptionface", "fgfgf-1gyu1210-1uu13hgziu1");
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, cbeffBIRS);
+		sessionMap.put(RegistrationConstants.IS_Child, true);
 
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		SelectionListDTO selectionListDTO=new SelectionListDTO();
@@ -50,10 +52,15 @@ public class PacketMetaInfoConverterTest {
 		selectionListDTO.setGender(true);
 		registrationDTO.setSelectionListDTO(selectionListDTO);
 		registrationDTO.getRegistrationMetaDataDTO().setParentOrGuardianUINOrRID("10011100110015720190305142048");
+
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
+		
 		mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		registrationDTO.getRegistrationMetaDataDTO().setParentOrGuardianUINOrRID("5819320961");
 
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftEye());
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightEye());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getApplicantPhotograph());
@@ -67,8 +74,6 @@ public class PacketMetaInfoConverterTest {
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getCheckSum());
 		Assert.assertEquals("age", packetMetaInfo.getIdentity().getUinUpdatedFields().get(0));
 		Assert.assertEquals("gender", packetMetaInfo.getIdentity().getUinUpdatedFields().get(1));
-
-		SessionContext.destroySession();
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -77,10 +82,11 @@ public class PacketMetaInfoConverterTest {
 	}
 
 	@Test
-	public void emptyObjectTest() {
-		SessionContext.getInstance().setMapObject(new HashMap<>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME,
-				new HashMap<>());
+	public void emptyObjectTest() throws Exception {
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, new HashMap<>());
+		sessionMap.put(RegistrationConstants.IS_Child, true);
+
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
@@ -91,8 +97,10 @@ public class PacketMetaInfoConverterTest {
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
 		biometricDTO.setApplicantBiometricDTO(new BiometricInfoDTO());
-		biometricDTO.setIntroducerBiometricDTO(new BiometricInfoDTO());
+		biometricDTO.setIntroducerBiometricDTO(biometricInfoDTO);
 		biometricDTO.setOperatorBiometricDTO(new BiometricInfoDTO());
 		biometricDTO.setSupervisorBiometricDTO(new BiometricInfoDTO());
 		registrationDTO.setBiometricDTO(biometricDTO);
@@ -101,6 +109,9 @@ public class PacketMetaInfoConverterTest {
 		registrationDTO.setRegistrationId("2018782130000128122018103836");
 		SelectionListDTO selectionListDTO=new SelectionListDTO();
 		registrationDTO.setSelectionListDTO(selectionListDTO);
+
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
 
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 

@@ -88,7 +88,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -131,14 +131,11 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		//Cancel Booked Appointment Details
 		Response CancelBookingApp = preRegLib.CancelBookingAppointment(fetchAppointmentDetailsResponse, preId);
 		
+		
 		//removing the keys for assertion
-		outerKeys.add("resTime");
-		innerKeys.add("pre_registration_id");
-		innerKeys.add("registration_center_id");
-		innerKeys.add("appointment_date");
-		innerKeys.add("time_slot_from");
-		innerKeys.add("time_slot_to");
+		outerKeys.add("responsetime");
 		innerKeys.add("transactionId");
+		
 		
 		
 		status = AssertResponses.assertResponses(CancelBookingApp, Expectedresponse, outerKeys, innerKeys);
@@ -173,7 +170,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	
 		testCaseName = object.get("testCaseName").toString();
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 	}
 
 	

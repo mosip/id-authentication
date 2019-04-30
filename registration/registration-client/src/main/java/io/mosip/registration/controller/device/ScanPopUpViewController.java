@@ -36,6 +36,9 @@ public class ScanPopUpViewController extends BaseController {
 
 	@Autowired
 	private BaseController baseController;
+	
+	@Autowired
+	private DocumentScanController documentScanController;
 
 	@FXML
 	private ImageView scanImage;
@@ -139,6 +142,10 @@ public class ScanPopUpViewController extends BaseController {
 
 		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		popupStage.close();
+		
+		if (documentScanController.getScannedPages() != null) {
+			documentScanController.getScannedPages().clear();
+		}
 
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 
@@ -152,7 +159,7 @@ public class ScanPopUpViewController extends BaseController {
 				documentScanController.attachScannedDocument(popupStage);
 			} catch (IOException ioException) {
 				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			}
 		}
 

@@ -309,7 +309,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		return response;
 	}
 
-	private Registration updateRegistration(final Registration registration, final String clientStatus) {
+	private Registration updateRegistration(final Registration registration, final String serverStatus) {
 
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet started");
@@ -328,12 +328,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		registrationTxn.setCrBy(SessionContext.userContext().getUserId());
 		registrationTxn.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
-		registrationTxn.setStatusCode(clientStatus);
+		registrationTxn.setStatusCode(serverStatus);
 
 		transactionList.add(registrationTxn);
 		registration.setRegistrationTransaction(transactionList);
-
-		registration.setClientStatusCode(clientStatus);
 
 		Registration updatedRegistration = regPacketStatusDAO.update(registration);
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -353,7 +351,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	public void deleteRegistrations(final List<Registration> registrations) {
 		for (Registration registration : registrations) {
 
-			if (registration.getStatusCode().equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
+			if (registration.getServerStatusCode()
+					.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
 				/* Delete Registration */
 				delete(registration);
 			}

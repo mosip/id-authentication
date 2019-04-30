@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -39,7 +38,10 @@ import io.mosip.kernel.core.util.FileUtils;
  * @author Priya Soni
  *
  */
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 public class FileUtilsTest {
+	
 	FileUtils fileutils;
 
 	@Test
@@ -160,6 +162,13 @@ public class FileUtilsTest {
 		} catch (java.io.IOException e) {
 			throw new IOException(null, null, e.getCause());
 		}
+
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void cleanDirectoryIOExceptionTest() throws IOException {
+		File dir1 = new File("");
+		FileUtils.cleanDirectory(dir1);
 
 	}
 
@@ -593,7 +602,6 @@ public class FileUtilsTest {
 
 		}
 	}
-
 
 	///////////////////////////////////////////////////////////
 

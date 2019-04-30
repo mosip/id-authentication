@@ -22,30 +22,18 @@ public interface JsonValidator {
 	/**
 	 * Validates a JSON object passed as string with the schema provided
 	 * 
-	 * @param jsonString
-	 *            JSON as string that has to be Validated against the schema.
-	 * @param schemaName
-	 *            name of the schema file against which JSON needs to be validated,
-	 *            the schema file should be present in your config server storage or
-	 *            local storage, which ever option is selected in properties file.
+	 * @param jsonString JSON as string that has to be Validated against the schema.
+	 * 
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
-	 * @throws HttpRequestException
-	 *             HttpRequestException
-	 * @throws JsonValidationProcessingException
-	 *             JsonValidationProcessingException
-	 * @throws JsonIOException
-	 *             JsonIOException
-	 * @throws NullJsonNodeException
-	 *             NullJsonNodeException
-	 * @throws UnidentifiedJsonException
-	 *             UnidentifiedJsonException
-	 * @throws JsonSchemaIOException
-	 *             JsonSchemaIOException
-	 * @throws ConfigServerConnectionException
-	 *             ConfigServerConnectionException
-	 * @throws FileIOException
-	 *             FileIOException
+	 * @throws HttpRequestException              HttpRequestException
+	 * @throws JsonValidationProcessingException JsonValidationProcessingException
+	 * @throws JsonIOException                   JsonIOException
+	 * @throws NullJsonNodeException             NullJsonNodeException
+	 * @throws UnidentifiedJsonException         UnidentifiedJsonException
+	 * @throws JsonSchemaIOException             JsonSchemaIOException
+	 * @throws ConfigServerConnectionException   ConfigServerConnectionException
+	 * @throws FileIOException                   FileIOException
 	 */
 
 	public ValidationReport validateJson(String jsonString)

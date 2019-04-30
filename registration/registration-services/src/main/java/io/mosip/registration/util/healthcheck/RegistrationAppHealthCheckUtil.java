@@ -33,8 +33,8 @@ import oshi.software.os.linux.LinuxOperatingSystem;
 import oshi.software.os.windows.WindowsOperatingSystem;
 
 /**
- * Registration Health Checker Utility
- * 
+ * Registration Health Checker Utility.
+ *
  * @author Sivasankar Thalavai
  * @since 1.0.0
  */
@@ -42,7 +42,10 @@ public class RegistrationAppHealthCheckUtil {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppHealthCheckUtil.class);
 
+	/** The system info. */
 	private static SystemInfo systemInfo;
+	
+	/** The operating system. */
 	private static OperatingSystem operatingSystem;
 
 	static {
@@ -50,27 +53,31 @@ public class RegistrationAppHealthCheckUtil {
 		operatingSystem = systemInfo.getOperatingSystem();
 	}
 
+	/**
+	 * Instantiates a new registration app health check util.
+	 */
 	private RegistrationAppHealthCheckUtil() {
 
 	}
 
 	/**
-	 * Checks the Internet connectivity
-	 * 
-	 * @return
-	 * @throws KeyManagementException
-	 * @throws NoSuchAlgorithmException
-	 * @throws URISyntaxException
+	 * Checks the Internet connectivity.
+	 *
+	 * @return true, if is network available
 	 */
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Network Checker had been called.");
+		return checkServiceAvailability("https://www.mosip.io/");
+	}
+
+	public static boolean checkServiceAvailability(String serviceUrl) {
 		boolean isNWAvailable = false;
 		try {
-			//RestClientUtil.turnOffSslChecking();
-			acceptAnySSLCerticficate();
+			RestClientUtil.turnOffSslChecking();
+			// acceptAnySSLCerticficate();
 			System.setProperty("java.net.useSystemProxies", "true");
-			URL url = new URL("https://www.mosip.io/");
+			URL url = new URL(serviceUrl);
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
@@ -94,9 +101,9 @@ public class RegistrationAppHealthCheckUtil {
 	}
 
 	/**
-	 * Checks the Disk Space Availability
-	 * 
-	 * @return
+	 * Checks the Disk Space Availability.
+	 *
+	 * @return true, if is disk space available
 	 */
 	public static boolean isDiskSpaceAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE", APPLICATION_NAME,
@@ -105,7 +112,7 @@ public class RegistrationAppHealthCheckUtil {
 		FileSystem fileSystem = operatingSystem.getFileSystem();
 		String currentDirectory = System.getProperty("user.dir").substring(0, 3);
 		OSFileStore[] fileStores = fileSystem.getFileStores();
-		Long diskSpaceThreshold = Long.valueOf(AppConfig.getApplicationProperty("DISK_SPACE"));
+		Long diskSpaceThreshold = 80000L;
 		for (OSFileStore fs : fileStores) {
 			if (currentDirectory.equalsIgnoreCase(fs.getMount())) {
 				if (fs.getUsableSpace() > diskSpaceThreshold) {
@@ -123,6 +130,14 @@ public class RegistrationAppHealthCheckUtil {
 		return isSpaceAvailable;
 	}
 	
+	/**
+	 * Accept any SSL certicficate.
+	 *
+	 * @throws NoSuchAlgorithmException 
+	 * 				the no such algorithm exception
+	 * @throws KeyManagementException 
+	 * 				the key management exception
+	 */
 	public static void acceptAnySSLCerticficate() throws NoSuchAlgorithmException, KeyManagementException {
 		// Install the all-trusting trust manager
 		final SSLContext sc = SSLContext.getInstance("SSL");
@@ -130,26 +145,43 @@ public class RegistrationAppHealthCheckUtil {
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 	}
 	
+	/** The Constant UNQUESTIONING_TRUST_MANAGER. */
 	public static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public X509Certificate[] getAcceptedIssuers() {
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		 */
 		@Override
 		public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		 */
 		@Override
 		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 		}
 
 	} };
 
+	/**
+	 * Checks if is windows.
+	 *
+	 * @return true, if is windows
+	 */
 	public static boolean isWindows() {
 		return operatingSystem instanceof WindowsOperatingSystem;
 
 	}
 
+	/**
+	 * Checks if is linux.
+	 *
+	 * @return true, if is linux
+	 */
 	public static boolean isLinux() {
 		return operatingSystem instanceof LinuxOperatingSystem;
 	}

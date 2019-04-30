@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -29,6 +32,10 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
+
+
+import io.mosip.dbaccess.KernelMasterDataR;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -46,7 +53,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	private static final String apiName = "fetchBiometricAuthType";
 	private static final String requestJsonName = "fetchBiometricAuthTypeRequest";
 	private static final String outputJsonName = "fetchBiometricAuthTypeOutput";
-	private static final String service_URI = "/masterdata/v1.0/biometrictypes/{langcode}";
+	private static final String service_URI = "/v1/masterdata/biometrictypes/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -82,7 +89,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -121,30 +128,76 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
+		JSONObject objectData = null;
 		for (int k = 0; k < listofFiles.length; k++) {
 
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 				response = applicationLibrary.getRequestPathPara(service_URI, objectData);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
 
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+		if (testcaseName.toLowerCase().contains("smoke")) {
 
-			finalStatus = "Pass";
+			String query = "select count(*) from master.biometric_type where lang_code = '" + objectData.get("langcode") + "'";
+			
+
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+
+			
+			// fetching json object from response
+
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+
+			// fetching json array of objects from response
+			JSONArray dataFromGet = (JSONArray) responseJson.get("biometrictypes");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
+
+			// validating number of objects obtained form db and from get request
+			if (dataFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("code");
+				attributesToValidateExistance.add("name");
+				attributesToValidateExistance.add("description");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all
+				// obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+				}
+
+				status = AssertKernel.validator(dataFromGet, attributesToValidateExistance, passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
+
+			listOfElementToRemove.add("timestamp");
+
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
 			finalStatus = "Fail";
 		}
 

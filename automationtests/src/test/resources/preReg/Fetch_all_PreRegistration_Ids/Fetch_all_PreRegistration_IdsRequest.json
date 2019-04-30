@@ -1,13 +1,9 @@
 {
-	"Fetch all Pre Registration IDs with invalid ID parameter": "",
 	"Fetch all Pre Registration IDs with invalid registration center id": "",
 	"Fetch all Pre Registration IDs with invalid date": "",
 	"Fetch all Pre Registration IDs with other date format": "",
 	"Fetch all Pre Registration Ids in between date range where data is not available": "",
 	"Fetch all Pre Registartion without from and to date parameter in Request": "",
 	"Fetch all Pre Registration without pre registration center id parameter in request": "",
-	"Fetch all Pre Registration ids without user id parameter in request": "",
-	"Fetch all Pre Registration IDs with invalid version parameter": "",
-	"Fetch all Pre registration without ID parameter in Request": "",
-	"Fetch All Pre Registartion Ids without version Parameter in Request": ""
+	"Fetch all Pre Registration ids without user id parameter in request": ""
 }

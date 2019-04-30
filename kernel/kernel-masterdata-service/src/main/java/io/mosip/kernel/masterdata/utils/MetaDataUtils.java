@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 
 /**
@@ -40,20 +41,14 @@ public class MetaDataUtils {
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destination</code> object and return it.
 	 * 
-	 * @param <S>
-	 *            is a type parameter
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            is the source
-	 * @param destination
-	 *            is the destination
-	 * @param mapNullvalues
-	 *            if marked as false then field inside source which are null will
-	 *            not be mapped into destination
+	 * @param               <S> is a type parameter
+	 * @param               <D> is a type parameter
+	 * @param source        is the source
+	 * @param destination   is the destination
+	 * @param mapNullvalues if marked as false then field inside source which are
+	 *                      null will not be mapped into destination
 	 * @return <code>destination</code> object which extends {@link BaseEntity}
-	 * @throws DataAccessLayerException
-	 *             if any error occurs while mapping values
+	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Object, Boolean)
 	 */
 	public static <S, D extends BaseEntity> D setUpdateMetaData(final S source, D destination, Boolean mapNullvalues) {
@@ -71,11 +66,9 @@ public class MetaDataUtils {
 	/**
 	 * This method is used to set meta data used for delete.
 	 * 
-	 * @param <E>
-	 *            is a type parameter
+	 * @param        <E> is a type parameter
 	 * 
-	 * @param entity
-	 *            which extends base entity
+	 * @param entity which extends base entity
 	 * @return entity having isDeleted value as true and deleted times
 	 */
 	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
@@ -94,17 +87,12 @@ public class MetaDataUtils {
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.
 	 * 
-	 * @param <T>
-	 *            is a type parameter
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            is the source
-	 * @param destinationClass
-	 *            is the destination class
+	 * @param                  <T> is a type parameter
+	 * @param                  <D> is a type parameter
+	 * @param source           is the source
+	 * @param destinationClass is the destination class
 	 * @return an entity class which extends {@link BaseEntity}
-	 * @throws DataAccessLayerException
-	 *             if any error occurs while mapping values
+	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Class)
 	 */
 	public static <T, D extends BaseEntity> D setCreateMetaData(final T source,

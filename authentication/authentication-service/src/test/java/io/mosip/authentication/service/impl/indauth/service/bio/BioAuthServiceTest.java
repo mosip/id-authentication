@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
@@ -41,6 +42,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.face.CogentFaceProvider;
+import io.mosip.authentication.service.impl.face.MorphoFaceProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
@@ -83,6 +86,12 @@ public class BioAuthServiceTest {
 	@InjectMocks
 	private MorphoIrisProvider morphoIrisProvider;
 
+	@InjectMocks
+	private CogentFaceProvider cogentFaceProvider;
+
+	@InjectMocks
+	private MorphoFaceProvider morphoFaceProvider;
+
 	@Autowired
 	Environment environment;
 
@@ -103,13 +112,18 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentIrisProvider", cogentIrisProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "morphoIrisProvider", morphoIrisProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFaceProvider", cogentFaceProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "morphoFaceProvider", morphoFaceProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "environment", environment);
 		ReflectionTestUtils.setField(cogentIrisProvider, "environment", environment);
 		ReflectionTestUtils.setField(morphoIrisProvider, "environment", environment);
+		ReflectionTestUtils.setField(cogentFaceProvider, "environment", environment);
+		ReflectionTestUtils.setField(morphoFaceProvider, "environment", environment);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -323,9 +337,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -351,11 +363,10 @@ public class BioAuthServiceTest {
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
 		// bioInfo.setDeviceInfo(deviceInfo);
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -375,10 +386,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left ThumbFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -402,11 +410,10 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		RequestDTO request = new RequestDTO();
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -423,9 +430,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left ThumbFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -450,11 +455,10 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -473,9 +477,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -500,20 +502,18 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		DataDTO dataDTO = new DataDTO();
-		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setBioValue(value);
-		dataDTO.setDeviceProviderID("mantra");
-		bioIdentityInfoDTO.setData(dataDTO);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
+		/*
+		 * dataDTO.setBioType("FMR"); dataDTO.setBioSubType("LEFT_INDEX");
+		 * dataDTO.setBioValue(value); dataDTO.setDeviceProviderID("mantra");
+		 * bioIdentityInfoDTO.setData(dataDTO);
+		 * bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
+		 */
 		bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		dataDTO = new DataDTO();
 		dataDTO.setBioType("FMR");
@@ -589,8 +589,6 @@ public class BioAuthServiceTest {
 	 * Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(),
 	 * Mockito.any())) .thenReturn(cbeffValueMap); AuthStatusInfo validateBioDetails
 	 * = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
-	 * System.err.println(validateBioDetails.isStatus());
-	 * System.err.println(validateBioDetails.getErr()); }
 	 */
 
 	@Test
@@ -650,9 +648,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Right_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -702,7 +698,7 @@ public class BioAuthServiceTest {
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo authenticate = bioAuthServiceImpl.authenticate(authRequestDTO, individualId, bioIdentity,
 				"1234567890");
-		System.err.println(authenticate);
+		assertTrue(authenticate.isStatus());
 	}
 
 	@Test
@@ -752,7 +748,7 @@ public class BioAuthServiceTest {
 				.thenReturn(cbeffValueMap);
 		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
-	
+
 	@Test
 	public void TestvalidateBioDetails_IrisUnknown() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -799,7 +795,7 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
-	
+
 	@Test
 	public void TestvalidateBioDetails_FGRUnknown() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -847,6 +843,140 @@ public class BioAuthServiceTest {
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestValidFaceAuthentication() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("274390482564");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO dataDTO = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("FACE");
+		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setBioValue(value);
+		bioIdentityInfoDTO.setData(dataDTO);
+		faceList.add(bioIdentityInfoDTO);
+		request.setDemographics(identity);
+		request.setBiometrics(faceList);
+		authRequestDTO.setRequest(request);
+
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage(null);
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
+		map.put("FACE__8", new SimpleEntry<>("face", identityList));
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FACE__8", value);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidFaceDetails() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("274390482564");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO dataDTO = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("FACE");
+		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setBioValue(value);
+		bioIdentityInfoDTO.setData(dataDTO);
+		faceList.add(bioIdentityInfoDTO);
+		request.setDemographics(identity);
+		request.setBiometrics(faceList);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		bioIdentity.put("documents.individualBiometrics", null);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
+		map.put("FACE__8", new SimpleEntry<>("face", null));
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FACE__8", value);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		assertFalse(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestFaceDetailsNotMatched() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("2812936903");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO dataDTO = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("UNKNOWN");
+		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setBioValue(value);
+		bioIdentityInfoDTO.setData(dataDTO);
+		faceList.add(bioIdentityInfoDTO);
+		request.setDemographics(identity);
+		request.setBiometrics(faceList);
+		authRequestDTO.setRequest(request);
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage(null);
+		identityInfoDTO1.setValue(value + "dGVzdA==");
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
+		map.put("FACE__8", new SimpleEntry<>("face", null));
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FACE__8", value);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		assertFalse(validateBioDetails.isStatus());
 	}
 
 }

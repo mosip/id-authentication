@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -24,70 +23,59 @@ public interface LocationService {
 	/**
 	 * this method will fetch LocationHierarchyDetails
 	 * 
-	 * @param langCode
-	 *            - language code
+	 * @param langCode - language code
 	 * @return LocationHierarchyResponseDto -location response
 	 */
 	public LocationHierarchyResponseDto getLocationDetails(String langCode);
 
 	/**
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode);
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - location request object
+	 * @param locationRequestDto - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
+	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto);
 
 	/**
 	 * 
-	 * @param hierarchyName
-	 *            - hierarchyName
+	 * @param hierarchyName - hierarchyName
 	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName);
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - location request DTO
+	 * @param locationRequestDto - location request DTO
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto);
+	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationRequestDto);
 
 	/**
 	 * 
-	 * @param locationCode
-	 *            - location code
+	 * @param locationCode - location code
 	 * @return {@link CodeResponseDto}
 	 */
 	public CodeResponseDto deleteLocationDetials(String locationCode);
 
 	/**
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return {@link LocationResponseDto}
 	 */
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
 
 	/**
 	 * 
-	 * @param langCode
-	 *            - language code
-	 * @param hierarchyLevel
-	 *            - hierarchyLevel
+	 * @param langCode       - language code
+	 * @param hierarchyLevel - hierarchyLevel
 	 * @return map contain key as parentCode and value as List of Location
 	 * 
 	 */
@@ -96,8 +84,7 @@ public interface LocationService {
 	/**
 	 * checks whether the given location name is valid or not
 	 * 
-	 * @param locationName
-	 *            -location name
+	 * @param locationName -location name
 	 * @return {@link StatusResponseDto}
 	 */
 	public StatusResponseDto validateLocationName(String locationName);

@@ -6,9 +6,12 @@
   <parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.8</version>
 	</parent>
   <artifactId>kernel-cbeffutil-api</artifactId>
+  <properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
   <dependencies>
   <dependency>
 			<groupId>junit</groupId>

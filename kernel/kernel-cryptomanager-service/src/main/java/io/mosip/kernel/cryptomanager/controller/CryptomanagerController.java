@@ -9,13 +9,17 @@ package io.mosip.kernel.cryptomanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -27,13 +31,12 @@ import io.swagger.annotations.ApiParam;
  * Rest Controller for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
+ * @author Srinivasan
  *
  * @since 1.0.0
  */
-@RefreshScope
 @CrossOrigin
 @RestController
-@RequestMapping("/v1.0")
 @Api(value = "Operation related to Encryption and Decryption", tags = { "cryptomanager" })
 public class CryptomanagerController {
 
@@ -49,11 +52,28 @@ public class CryptomanagerController {
 	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
-	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@ResponseFilter
 	@PostMapping(value = "/encrypt", produces = "application/json")
-	public CryptomanagerResponseDto encrypt(
-			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
-		return cryptomanagerService.encrypt(cryptomanagerRequestDto);
+	public ResponseWrapper<CryptomanagerResponseDto> encrypt(
+			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
+		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.encrypt(cryptomanagerRequestDto.getRequest()));
+		return response;
+	}
+	/**
+	 * Encrypts data with private key
+	 * @param cryptomanagerRequestDto
+	 * @return {@link ResponseWrapper<CryptoEncryptResponseDto> }
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Encrypt the data with private key", response = CryptoEncryptResponseDto.class)
+	@PostMapping(value = "/private/encrypt", produces = "application/json")
+	public ResponseWrapper<CryptoEncryptResponseDto> encryptWithPrivate(
+			@ApiParam("Data to encrypt in BASE64 encoding") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
+		ResponseWrapper<CryptoEncryptResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.encryptWithPrivate(cryptomanagerRequestDto.getRequest()));
+		return response;
 	}
 
 	/**
@@ -62,10 +82,14 @@ public class CryptomanagerController {
 	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
-	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@ResponseFilter
 	@PostMapping(value = "/decrypt", produces = "application/json")
-	public CryptomanagerResponseDto decrypt(
-			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) {
-		return cryptomanagerService.decrypt(cryptomanagerRequestDto);
+	public ResponseWrapper<CryptomanagerResponseDto> decrypt(
+			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
+
+		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.decrypt(cryptomanagerRequestDto.getRequest()));
+		return response;
 	}
 }

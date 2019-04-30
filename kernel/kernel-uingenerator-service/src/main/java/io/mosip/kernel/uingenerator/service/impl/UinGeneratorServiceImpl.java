@@ -17,12 +17,11 @@ import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.mosip.kernel.uingenerator.util.MetaDataUtil;
-import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
 
 /**
  * @author Dharmesh Khandelwal
  * @author Megha Tanga
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -70,9 +69,8 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 * vertx.core.json.JsonObject)
 	 */
 	@Override
-	public UinStatusUpdateReponseDto updateUinStatus(JsonObject uin) {
+	public UinStatusUpdateReponseDto updateUinStatus(UinEntity uinAck) {
 		UinStatusUpdateReponseDto uinResponseDto = new UinStatusUpdateReponseDto();
-		final UinEntity uinAck = Json.decodeValue(uin.toString(), UinEntity.class);
 		UinEntity existingUin = uinRepository.findByUin(uinAck.getUin());
 		if (existingUin != null) {
 			if (UinGeneratorConstant.ISSUED.equals(existingUin.getStatus())) {

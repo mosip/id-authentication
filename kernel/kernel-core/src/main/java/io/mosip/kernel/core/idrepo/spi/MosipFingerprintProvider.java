@@ -7,7 +7,6 @@ import java.util.List;
  *
  * @author Manoj SP
  * 
- * @param <T> the generic type
  */
 public interface MosipFingerprintProvider<A, R> {
 

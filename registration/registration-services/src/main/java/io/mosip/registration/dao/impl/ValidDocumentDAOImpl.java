@@ -9,7 +9,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.ApplicantValidDocument;
-import io.mosip.registration.repositories.ValidDocumentRepository;
+import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 
 /**
  * implementation class of RegistrationValidDocumentDAO.
@@ -20,9 +20,9 @@ import io.mosip.registration.repositories.ValidDocumentRepository;
 @Repository
 public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	
-	/**  instance of {@link ValidDocumentRepository}. */
+	/**  instance of {@link ApplicantValidDocumentRepository}. */
 	@Autowired
-	private ValidDocumentRepository validDocumentRepository;
+	private ApplicantValidDocumentRepository applicantValidDocumentRepository;
 	
 	/**  instance of {@link Logger}. */
 	private static final Logger LOGGER = AppConfig.getLogger(ValidDocumentDAOImpl.class);
@@ -33,7 +33,7 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	@Override
 	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode) {
 
-		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(applicantType,
+		return applicantValidDocumentRepository.findByValidDocumentAppTypeCodeAndDocumentCategoryCode(applicantType,
 				docCategoryCode);
 
 	}

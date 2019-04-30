@@ -17,29 +17,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.idrepo.exception.AuthenticationException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.ErrorDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 
 /**
  * The Class IdRepoExceptionHandler.
@@ -57,7 +54,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-	
+
 	/** The Constant READ. */
 	private static final String READ = "read";
 
@@ -74,20 +71,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Autowired
 	private Environment env;
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
-	
 	@Resource
 	private Map<String, String> id;
 
 	/**
 	 * Handle all exceptions.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(Exception.class)
@@ -98,6 +89,28 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
 				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNAUTHORIZED);
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(AuthenticationException.class)
+	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAuthenticationException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(
+				ex.getErrorTexts().isEmpty() ? "KER-ATH-401" : ex.getErrorCode(),
+				ex.getErrorTexts().isEmpty() ? "Authentication Failed" : ex.getErrorText());
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				ex.getStatusCode() == 0 ? HttpStatus.UNAUTHORIZED : HttpStatus.valueOf(ex.getStatusCode()));
 	}
 
 	/*
@@ -129,10 +142,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app exception.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
@@ -148,10 +159,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app unchecked exception.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(IdRepoAppUncheckedException.class)
@@ -167,9 +176,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex
-	 *            the exception occurred
-	 * @param httpMethod 
+	 * @param ex         the exception occurred
+	 * @param httpMethod
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod) {
@@ -177,7 +185,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = getRootCause(ex);
-		
+
 		if (httpMethod.compareTo(HttpMethod.GET) == 0) {
 			response.setId(id.get(READ));
 		} else if (httpMethod.compareTo(HttpMethod.POST) == 0) {
@@ -190,8 +198,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+			List<ServiceError> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
 			response.setErrors(errors);
@@ -201,20 +209,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseUncheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+			List<ServiceError> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
 
-		response.setTimestamp(
-				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-
 		response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-
-		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 
 		return response;
 	}
@@ -222,15 +224,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Gets the root cause.
 	 *
-	 * @param ex the ex
+	 * @param ex       the ex
 	 * @param response the response
 	 * @return the root cause
 	 */
 	private Throwable getRootCause(Exception ex) {
 		Throwable e = ex;
 		while (e != null) {
-			if (Objects.nonNull(e.getCause()) 
-					&& (e.getCause() instanceof IdRepoAppException)) {
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException)) {
 				e = e.getCause();
 			} else {
 				break;

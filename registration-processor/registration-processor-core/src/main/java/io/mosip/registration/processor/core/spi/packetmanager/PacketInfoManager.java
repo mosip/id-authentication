@@ -24,13 +24,6 @@ import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 public interface PacketInfoManager<T, /** D, M, */
 		A> {
 
-	/**
-	 * Save packet data.
-	 *
-	 * @param packetInfo
-	 *            the packet info
-	 */
-	public void savePacketData(T packetInfo);
 
 	/**
 	 * Save demographic data.
@@ -40,16 +33,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param metaData
 	 *            the meta data
 	 */
-	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData);
+	public void saveDemographicInfoJson(byte[] bytes,String regId, List<FieldValue> metaData);
 
-	/**
-	 * Gets the OsiData for QC user.
-	 *
-	 * @param regid
-	 *            the registration id
-	 * @return OsiData for the registration id
-	 */
-	public RegOsiDto getOsi(String regid);
 
 	
 	/**
@@ -70,23 +55,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId);
 
-	/**
-	 * Gets the applicant finger print image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant finger print image name by id
-	 */
-	public List<String> getApplicantFingerPrintImageNameById(String regId);
 
-	/**
-	 * Gets the applicant iris image name by id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant iris image name by id
-	 */
-	public List<String> getApplicantIrisImageNameById(String regId);
 
 	/**
 	 * Gets the applicant registration id by UIN.
@@ -96,14 +65,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<String> getRegIdByUIN(String uin);
 
-	/**
-	 * Gets the documents by reg id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the documents by reg id
-	 */
-	public List<ApplicantDocument> getDocumentsByRegId(String regId);
+	
 
 	/**
 	 * Save manual adjudication data.
@@ -143,13 +105,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the rid by reference id
 	 */
 	public List<String> getRidByReferenceId(String refId);
-
-	/**
-	 * Save documents.
-	 *
-	 * @param documentDtos the document dtos
-	 */
-	public void saveDocuments(List<Document> documentDtos);
 
 	/**
 	 * Gets the UIN by rid.

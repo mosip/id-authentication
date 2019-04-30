@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -23,6 +24,7 @@ import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @Component
 public class OtpManagerUtils {
 
@@ -36,10 +38,10 @@ public class OtpManagerUtils {
 	 * This method returns the difference between two LocalDateTime objects in
 	 * seconds.
 	 * 
-	 * @param fromDateTime
-	 *            The time from which the difference needs to be calculated.
-	 * @param toDateTime
-	 *            The time till which the difference needs to be calculated.
+	 * @param fromDateTime The time from which the difference needs to be
+	 *                     calculated.
+	 * @param toDateTime   The time till which the difference needs to be
+	 *                     calculated.
 	 * @return The difference in seconds.
 	 */
 	public static int timeDifferenceInSeconds(LocalDateTime fromDateTime, LocalDateTime toDateTime) {
@@ -58,10 +60,8 @@ public class OtpManagerUtils {
 	/**
 	 * This method validates the input arguments provided for validation.
 	 * 
-	 * @param key
-	 *            The key.
-	 * @param otp
-	 *            The OTP to be validated against the given key.
+	 * @param key The key.
+	 * @param otp The OTP to be validated against the given key.
 	 */
 
 	public void validateOtpRequestArguments(String key, String otp) {

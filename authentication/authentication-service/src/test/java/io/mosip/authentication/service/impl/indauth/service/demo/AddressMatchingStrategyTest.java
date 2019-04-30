@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -122,7 +121,6 @@ public class AddressMatchingStrategyTest {
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
-		System.out.println(value2);
 		assertEquals(0, value2);
 	}
 

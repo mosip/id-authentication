@@ -8,18 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
@@ -51,6 +53,8 @@ import io.mosip.registration.util.hmac.HMACGeneration;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ApplicationContext.class, SessionContext.class})
 public class PacketCreationServiceTest {
 
 	@Rule
@@ -74,16 +78,11 @@ public class PacketCreationServiceTest {
 	@Mock
 	private MachineMappingDAO machineMappingDAO;
 	private static RegistrationDTO registrationDTO;
-	private RegistrationAuditDates registrationAuditDates;
+	private static RegistrationAuditDates registrationAuditDates;
 
 	@BeforeClass
 	public static void initialize() throws RegBaseCheckedException {
-		SessionContext.getInstance().setMapObject(new HashMap<>());
 		registrationDTO = DataProvider.getPacketDTO();
-	}
-
-	@Before
-	public void intializeForTest() {
 		registrationAuditDates = new RegistrationAuditDates() {
 
 			@Override
@@ -96,24 +95,27 @@ public class PacketCreationServiceTest {
 				return null;
 			}
 		};
-		
-		Map<String,Object> appMap = new HashMap<>();
+	}
+
+	@Before
+	public void intializeForTest() throws Exception {
+		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
-		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
+		Map<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.IS_Child, true);
+
+		PowerMockito.mockStatic(SessionContext.class, ApplicationContext.class);
+		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
+				Mockito.anyString(), Mockito.anyString());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreatePacket() throws Exception {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
-		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
-				.thenReturn("zip".getBytes());
-		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(new ValidationReport());
-		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
-		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		List<RegDeviceMaster> devices = new ArrayList<>();
 		RegDeviceMaster device = new RegDeviceMaster();
 		RegMachineSpecId regMachineSpecId = new RegMachineSpecId();
@@ -125,6 +127,13 @@ public class PacketCreationServiceTest {
 		regDeviceSpec.setRegDeviceType(regDeviceType);
 		device.setRegDeviceSpec(regDeviceSpec);
 		devices.add(device);
+
+		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
+				.thenReturn("zip".getBytes());
+		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
+		when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport());
+		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
+		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(devices);
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -132,8 +141,6 @@ public class PacketCreationServiceTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
@@ -144,12 +151,10 @@ public class PacketCreationServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseCheckedException.class)
 	public void testCBEFFException() throws Exception {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenThrow(new Exception("Invalid BIR"));
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
@@ -159,12 +164,10 @@ public class PacketCreationServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected =  RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
@@ -174,19 +177,20 @@ public class PacketCreationServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testPacketCreationWithLatestRegistration() throws Exception {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.DISABLE);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
-		Map<String,Object> appMap = new HashMap<>();
-		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, "N");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -196,8 +200,7 @@ public class PacketCreationServiceTest {
 	public void testPacketCreationWithLatestRegistrationAudits() throws Exception {
 		Timestamp auditStartTime = Timestamp.valueOf(LocalDateTime.now().minusDays(1).minusHours(2));
 		Timestamp auditEndTime = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
-
-		registrationAuditDates = new RegistrationAuditDates() {
+		RegistrationAuditDates registrationAuditDates = new RegistrationAuditDates() {
 			
 			@Override
 			public Timestamp getAuditLogFromDateTime() {
@@ -209,22 +212,16 @@ public class PacketCreationServiceTest {
 				return auditEndTime;
 			}
 		};
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString());
+
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
-	}
-
-	@AfterClass
-	public static void destroy() {
-		SessionContext.destroySession();
 	}
 
 	private List<Audit> getAudits() {

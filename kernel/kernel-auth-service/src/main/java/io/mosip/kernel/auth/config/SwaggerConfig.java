@@ -76,8 +76,9 @@ public class SwaggerConfig {
 	}
 
 	private ApiKey apiKey() {
-        return new ApiKey("JSESSIONID", "api_key", "cookie");
-    }
+		return new ApiKey("JSESSIONID", "api_key", "cookie");
+	}
+
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

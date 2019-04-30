@@ -1,7 +1,10 @@
 {
-    "timestamp": "2019-02-24T11:43:47.509+0000",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Required String parameter 'pre_registration_id' is not present",
-    "path": "/pre-registration/v1.0/demographic//applicationStatus"
+   "id": null,
+   "version": null,
+   "err":    {
+      "errorCode": "PRG_CORE_REQ_001",
+      "message": "INVALID_PRE_REGISTRATION_ID"
+   },
+   "responsetime": "2019-03-26T06:13:29.359Z",
+   "response": null
 }

@@ -9,16 +9,19 @@ public class RegistrationUIConstants {
 	// Key values to read value from messages.properties file
 
 	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
-	
+	public static final String OTP_VALIDITY = bundle.getString("OTP_VALIDITY");
+	public static final String MINUTES = bundle.getString("MINUTES");
+
 	public static String getMessageLanguageSpecific(String key) {
 		return bundle.getString(key);
 	}
 
-	//ALERT
+	// ALERT
 	public static final String ERROR = bundle.getString("ERROR");
 	public static final String INFORMATION = bundle.getString("INFORMATION");
-	public static final String SUCCESS = bundle.getString("SUCCESS");	
-	
+	public static final String SUCCESS = bundle.getString("SUCCESS");
+	public static final String FAILURE = bundle.getString("FAILURE");
+
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
 	public static final String BIOMETRIC_DISABLE_SCREEN_1 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_1");
@@ -43,14 +46,18 @@ public class RegistrationUIConstants {
 	public static final String IRIS_MATCH = bundle.getString("IRIS_MATCH");
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
-	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
+	public static final String RECAPTURE = bundle.getString("RECAPTURE");
+	public static final String SECONDS = bundle.getString("SECONDS");
+
+	// Lost UIN
+	public static final String LOST_UIN_REQUEST_ERROR = bundle.getString("LOST_UIN_REQUEST_ERROR");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
 	public static final String MACHINE_MAPPING_ERROR = bundle.getString("MACHINE_MAPPING_ERROR");
 	public static final String AUTHORIZATION_ERROR = bundle.getString("AUTHORIZATION_ERROR");
-	
-	//MACHINE CENTER REMAP
+
+	// MACHINE CENTER REMAP
 	public static final String REMAP_NO_ACCESS_MESSAGE = bundle.getString("REMAP_NO_ACCESS_MESSAGE");
 	public static final String REMAP_EOD_PROCESS_MESSAGE = bundle.getString("REMAP_EOD_PROCESS_MESSAGE");
 	public static final String REMAP_CLICK_OK = bundle.getString("REMAP_CLICK_OK");
@@ -109,7 +116,6 @@ public class RegistrationUIConstants {
 	public static final String REJECTED = bundle.getString("REJECTED");
 	public static final String PENDING = bundle.getString("PENDING");
 
-
 	// CAMERA
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
 	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = bundle
@@ -128,6 +134,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
 	public static final String SCAN_DOC_SIZE = bundle.getString("SCAN_DOC_SIZE");
+	public static final String SCAN_DOC_INFO = bundle.getString("SCAN_DOC_INFO");
 	public static final String SCAN_DOCUMENT_CONNECTION_ERR = bundle.getString("SCAN_DOCUMENT_CONNECTION_ERR");
 	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");
@@ -140,11 +147,14 @@ public class RegistrationUIConstants {
 	public static final String DATE_VALIDATION_MSG = bundle.getString("DATE_VALIDATION_MSG");
 	public static final String PHOTO_CAPTURE = bundle.getString("PHOTO_CAPTURE");
 	public static final String PREVIOUS_ADDRESS = bundle.getString("PREVIOUS_ADDRESS");
-	public static final String PREVIEW_DOC= bundle.getString("PREVIEW_DOC");
-	public static final String RID_INVALID= bundle.getString("RID_INVALID");
-	public static final String UIN_INVALID= bundle.getString("UIN_INVALID");
-
-
+	public static final String PREVIEW_DOC = bundle.getString("PREVIEW_DOC");
+	public static final String RID_INVALID = bundle.getString("RID_INVALID");
+	public static final String UIN_INVALID = bundle.getString("UIN_INVALID");
+	public static final String IS_BLOCKED_WORD = bundle.getString("IS_BLOCKED_WORD");
+	public static final String THRESHOLD = bundle.getString("THRESHOLD");
+	public static final String INVALID_DATE_OF_BIRTH = bundle.getString("INVALID_DATE_OF_BIRTH");
+	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
+	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
 
 	// OPT TO REGISTER
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = bundle.getString("REG_PKT_APPRVL_CNT_EXCEED");
@@ -156,6 +166,8 @@ public class RegistrationUIConstants {
 	public static final String OPT_TO_REG_WEAK_GPS = bundle.getString("OPT_TO_REG_WEAK_GPS");
 	public static final String OPT_TO_REG_INSERT_GPS = bundle.getString("OPT_TO_REG_INSERT_GPS");
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = bundle.getString("OPT_TO_REG_GPS_PORT_MISMATCH");
+	public static final String OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK = bundle
+			.getString("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK");
 
 	// PACKET EXPORT
 	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
@@ -225,6 +237,10 @@ public class RegistrationUIConstants {
 	public static final String UPDATE_UIN_ENTER_UIN_ALERT = bundle.getString("UPDATE_UIN_ENTER_UIN_ALERT");
 	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
 	public static final String UPDATE_UIN_SELECTION_ALERT = bundle.getString("UPDATE_UIN_SELECTION_ALERT");
+	public static final String UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT = bundle
+			.getString("UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT");
+	public static final String UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT = bundle
+			.getString("UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT");
 
 	// Biometric Exception
 	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
@@ -233,6 +249,9 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
 	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
 	public static final String USER_MACHINE_VALIDATION_MSG = bundle.getString("USER_MACHINE_VALIDATION_MSG");
+	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
+	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
+	public static final String USER_ONBOARD_ERROR = bundle.getString("USER_ONBOARD_ERROR");
 
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";
@@ -263,8 +282,8 @@ public class RegistrationUIConstants {
 
 	// PRE-REG DELETE JOB
 	public static final String SYNC_CONFIG_DATA_FAILURE = bundle.getString("SYNC_CONFIG_DATA_FAILURE");
-	
-	//Packet Upload
+
+	// Packet Upload
 	public static final String PACKET_UPLOAD_EMPTY_ERROR = bundle.getString("PACKET_UPLOAD_EMPTY_ERROR");
 	public static final String PACKET_UPLOAD_DUPLICATE = bundle.getString("PACKET_UPLOAD_DUPLICATE");
 	public static final String PACKET_NOT_AVAILABLE = bundle.getString("PACKET_NOT_AVAILABLE");
@@ -274,11 +293,28 @@ public class RegistrationUIConstants {
 	public static final String PACKET_PARTIAL_UPLOAD_ERROR = bundle.getString("PACKET_PARTIAL_UPLOAD_ERROR");
 	public static final String PACKET_UPLOAD_HEADER_NAME = bundle.getString("PACKET_UPLOAD_HEADER_NAME");
 	public static final String UPLOAD_COLUMN_HEADER_FILE = bundle.getString("UPLOAD_COLUMN_HEADER_FILE");
-	public static final String UPLOAD_COLUMN_HEADER_STATUS=bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
-	public static final String PACKET_UPLOAD_SUCCESS=bundle.getString("PACKET_UPLOAD_SUCCESS");
-	
-	//Scheduler
+	public static final String UPLOAD_COLUMN_HEADER_STATUS = bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
+	public static final String PACKET_UPLOAD_SUCCESS = bundle.getString("PACKET_UPLOAD_SUCCESS");
+
+	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
-	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
-	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
+	public static final String TIMEOUT_INITIAL = bundle.getString("TIMEOUT_INITIAL");
+	public static final String TIMEOUT_MIDDLE = bundle.getString("TIMEOUT_MIDDLE");
+	public static final String TIMEOUT_END = bundle.getString("TIMEOUT_END");
+
+	// Notification
+	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");
+	public static final String SMS_ERROR_MSG = bundle.getString("SMS_ERROR_MSG");
+
+	// Application Updates
+	public static final String NO_UPDATES_FOUND = bundle.getString("NO_UPDATES_FOUND");
+	public static final String UNABLE_FIND_UPDATES = bundle.getString("UNABLE_FIND_UPDATES");
+	public static final String NO_INTERNET_CONNECTION = bundle.getString("NO_INTERNET_CONNECTION");
+	public static final String UPDATE_AVAILABLE = bundle.getString("UPDATE_AVAILABLE");
+	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
+	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
+	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
+	
+	//AUTH TOKEN
+		public static String UNABLE_TO_GET_AUTH_TOKEN= bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
 }

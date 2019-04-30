@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -29,7 +29,6 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -95,10 +94,8 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return LocationHierarchyResponseDto-
 	 */
 	/*
@@ -158,13 +155,13 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
 		PostLocationCodeResponseDto locationCodeDto = null;
 
-		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
+		location = MetaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
 		} catch (DataAccessLayerException | DataAccessException ex) {
@@ -188,8 +185,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
-		LocationDto locationDto = locationRequestDto.getRequest();
+	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationDto) {
 		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
 		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
 		locationId.setCode(locationDto.getCode());
@@ -314,10 +310,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -329,10 +323,8 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -345,10 +337,8 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierarchy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
@@ -367,10 +357,8 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierarchy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
+	 * @param locCode  - location code
+	 * @param langCode - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -388,8 +376,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public Map<Short, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode,
-			Short hierarchyLevel) {
+	public Map<Short, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Short hierarchyLevel) {
 		Map<Short, List<Location>> map = new TreeMap<>();
 		List<Location> locations = locationRepository.getAllLocationsByLangCodeAndLevel(langCode, hierarchyLevel);
 		if (!EmptyCheckUtils.isNullEmpty(locations)) {
@@ -411,7 +398,10 @@ public class LocationServiceImpl implements LocationService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.LocationService#validateLocationName(java.lang.String)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LocationService#validateLocationName(java.
+	 * lang.String)
 	 */
 	@Override
 	public StatusResponseDto validateLocationName(String locationName) {

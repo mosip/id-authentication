@@ -1,7 +1,7 @@
 package io.mosip.registration.dto;
 
 /**
- * This class contains the meta-information of the Registration
+ * This DTO class contains the meta-information of the Registration
  * 
  * @author Dinesh Asokan
  * @since 1.0.0
@@ -19,8 +19,28 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String uin;
 	private String consentOfApplicant;
 	private String parentOrGuardianUINOrRID;
+	private String parentOrGuardianUIN;
+	private String parentOrGuardianRID;
 	private String deviceId;
 	private String applicantTypeCode;
+
+	public String getParentOrGuardianUIN() {
+		return parentOrGuardianUIN;
+	}
+
+	public void setParentOrGuardianUIN(String parentOrGuardianUIN) {
+		this.parentOrGuardianUIN = parentOrGuardianUIN;
+		setParentOrGuardianUINOrRID(parentOrGuardianUIN);
+	}
+
+	public String getParentOrGuardianRID() {
+		return parentOrGuardianRID;
+	}
+
+	public void setParentOrGuardianRID(String parentOrGuardianRID) {
+		this.parentOrGuardianRID = parentOrGuardianRID;
+		setParentOrGuardianUINOrRID(parentOrGuardianRID);
+	}
 
 	/**
 	 * @return the consentOfApplicant

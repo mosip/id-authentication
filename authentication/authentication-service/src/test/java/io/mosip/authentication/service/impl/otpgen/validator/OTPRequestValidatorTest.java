@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.service.impl.otpgen.validator;
 
 import static org.junit.Assert.assertFalse;
@@ -6,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.Before;
@@ -27,7 +29,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.otpgen.ChannelDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
@@ -37,69 +38,92 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
+ * The Class OTPRequestValidatorTest.
+ *
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
- *
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPRequestValidatorTest {
 
+	/** The error. */
 	@Mock
 	Errors error;
 
+	/** The env. */
 	@Autowired
 	Environment env;
 
+	/** The uin validator. */
 	@Mock
 	UinValidatorImpl uinValidator;
 
+	/** The vid validator. */
 	@Mock
 	VidValidatorImpl vidValidator;
 
+	/** The ida rolling file appender. */
 	@InjectMocks
 	RollingFileAppender idaRollingFileAppender;
 
+	/** The otp request validator. */
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;
 
+	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthServiceImpl otpAuthServiceImpl;
 
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
 	}
 
+	/**
+	 * Test support true.
+	 */
 	@Test
 	public void testSupportTrue() {
 		assertTrue(otpRequestValidator.supports(OtpRequestDTO.class));
 	}
 
+	/**
+	 * Test support false.
+	 */
 	@Test
 	public void testSupportFalse() {
 		assertFalse(otpRequestValidator.supports(AuthRequestValidator.class));
 	}
 
+	/**
+	 * Test valid uin.
+	 */
 	@Test
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setTransactionID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				// offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIndividualId("5076204698");
 		OtpRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid uin.
+	 */
 	@Test
 	public void testInvalidUin() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -107,14 +131,17 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setIndividualId("5076204698");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		OtpRequestDTO.setRequestTime(Instant.now().toString());
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test valid vid.
+	 */
 	@Test
 	public void testValidVid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -126,13 +153,16 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIndividualId("5371843613598206");
 		OtpRequestDTO.setIndividualIdType(IdType.VID.getType());
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid vid.
+	 */
 	@Test
 	public void testInvalidVid() {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -140,15 +170,19 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setIndividualId("5371843613598211");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		OtpRequestDTO.setRequestTime(Instant.now().toString());
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test timeout.
+	 */
 	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testTimeout() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -157,15 +191,17 @@ public class OTPRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		OtpRequestDTO.setId("id");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		OtpRequestDTO.setTransactionID("1234567890");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Test time parse error.
+	 */
 	@Test
 	public void testTimeParseError() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -173,15 +209,19 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setRequestTime("123-123-45-32");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setIndividualId("5371843613598211");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		OtpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		OtpRequestDTO.setOtpChannel(channelList);
 		OtpRequestDTO.setTransactionID("1234567890");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid ver.
+	 */
 	@Ignore
+
 	@Test
 	public void testInvalidVer() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -189,14 +229,14 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setRequestTime(Instant.now().toString());
 		otpRequestDTO.setId("id");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		otpRequestDTO.setTransactionID("1234567890");
 		otpRequestDTO.setVersion("1.12");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid txn id.
+	 */
 	@Test
 	public void testInvalidTxnId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -206,13 +246,13 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setVersion("1.1");
 		otpRequestDTO.setTransactionID("");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		otpRequestDTO.setOtpChannel(channel);
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test null id.
+	 */
 	@Test
 	public void testNullId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -221,24 +261,111 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setVersion("1.1");
 		otpRequestDTO.setId("id");
 		otpRequestDTO.setIndividualId("");
-		ChannelDTO channel = new ChannelDTO();
-		channel.setPhone(true);
-		otpRequestDTO.setOtpChannel(channel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		otpRequestDTO.setOtpChannel(channelList);
 		otpRequestDTO.setTransactionID("1234567890");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
+	/**
+	 * Test invalid time.
+	 */
 	@Test
 	public void TestInvalidTime() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		otpRequestDTO.setTransactionID("TXN0000001");
 		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		System.err.println(Instant.now() + toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		System.err.println(errors);
-
 	}
+
+	/**
+	 * Test otp channel.
+	 */
+	@Test
+	public void TestOtpChannel() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setVersion("1.1");
+		otpRequestDTO.setId("id");
+		otpRequestDTO.setIndividualId("5076204698");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		channelList.add("EMAIL");
+		otpRequestDTO.setOtpChannel(channelList);
+		otpRequestDTO.setTransactionID("1234567890");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+		assertFalse(errors.hasErrors());
+	}
+
+	/**
+	 * Test invalid otp channel type.
+	 */
+	@Test
+	public void TestInvalidOtpChannelType() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setVersion("1.1");
+		otpRequestDTO.setId("id");
+		otpRequestDTO.setIndividualId("5076204698");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("invalid");
+		otpRequestDTO.setOtpChannel(channelList);
+		otpRequestDTO.setTransactionID("1234567890");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	/**
+	 * Test otp channelis null.
+	 */
+	@Test
+	public void TestOtpChannelisNull() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setVersion("1.1");
+		otpRequestDTO.setId("id");
+		otpRequestDTO.setIndividualId("5076204698");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		otpRequestDTO.setOtpChannel(null);
+		otpRequestDTO.setTransactionID("1234567890");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+	}
+
+	/**
+	 * Test otp channelis empty.
+	 */
+	@Test
+	public void TestOtpChannelisEmpty() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setVersion("1.1");
+		otpRequestDTO.setId("id");
+		otpRequestDTO.setIndividualId("5076204698");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		otpRequestDTO.setOtpChannel(new ArrayList<>());
+		otpRequestDTO.setTransactionID("1234567890");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+	}
+
+	/**
+	 * Testparse exception.
+	 */
+	@Test
+	public void TestparseException() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		ReflectionTestUtils.invokeMethod(otpRequestValidator, "validateRequestTimedOut", "test", errors);
+		
+	}
+
 }

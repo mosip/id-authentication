@@ -6,6 +6,8 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 
 /**
+ * Service class for User Onboarding
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0

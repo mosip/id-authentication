@@ -12,41 +12,49 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AuthService } from 'src/app/auth/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
+
+class MockService {
+  use() {}
+  url = 'some/url/here';
+}
 
 describe('DialougComponent', () => {
   let component: DialougComponent;
   let fixture: ComponentFixture<DialougComponent>;
-  let data = {case: "MESSAGE"};
+  let data = { case: 'MESSAGE' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialougComponent ],
-      imports: [ 
+      declarations: [DialougComponent],
+      imports: [
         TranslateModule.forRoot({
-        loader: {
+          loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderFactory,
             deps: [HttpClient]
-        }
-    }),
-    HttpClientModule,
-    RouterTestingModule,
-    FormsModule,
-    MaterialModule,
-    BrowserAnimationsModule
-  ],
-  providers: [{
-    provide: Router,
-    useValue: {
-      url: '/path'
-   } 
-  }, { provide: MatDialogRef, useValue: {} }, 
-  { provide: MAT_DIALOG_DATA, useValue: data },
-  AuthService,
-  RegistrationService
-]
-    })
-    .compileComponents();
+          }
+        }),
+        HttpClientModule,
+        RouterTestingModule,
+        FormsModule,
+        MaterialModule,
+        BrowserAnimationsModule
+      ],
+      providers: [
+        {
+          provide: Router,
+          useValue: {
+            url: '/path'
+          }
+        },
+        { provide: DataStorageService, useClass: MockService },
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: data },
+        AuthService,
+        RegistrationService
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -96,16 +104,19 @@ describe('DialougComponent', () => {
     expect(component.input.case).toBe(data.case);
   });
 
-  it('checks user redirection', inject([AuthService, RegistrationService], (service: AuthService, regService: RegistrationService) => {
-    localStorage.setItem('newApplicant', 'true');
-    component.userRedirection();
-    fixture.detectChanges();
-    expect(service.token).toBe(null);
+  it('checks user redirection', inject(
+    [AuthService, RegistrationService],
+    (service: AuthService, regService: RegistrationService) => {
+      localStorage.setItem('newApplicant', 'true');
+      component.userRedirection();
+      fixture.detectChanges();
+      expect(service.token).toBe(null);
 
-    localStorage.setItem('newApplicant', 'false');
-    regService.changeMessage({modifyUserFromPreview: 'false'});
-    component.userRedirection();
-    fixture.detectChanges();
-    expect(component.checkCondition).toBeDefined();
-  })) 
+      localStorage.setItem('newApplicant', 'false');
+      regService.changeMessage({ modifyUserFromPreview: 'false' });
+      component.userRedirection();
+      fixture.detectChanges();
+      expect(component.checkCondition).toBeDefined();
+    }
+  ));
 });

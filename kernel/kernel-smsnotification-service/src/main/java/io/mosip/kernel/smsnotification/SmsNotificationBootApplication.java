@@ -7,21 +7,24 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 /**
- * Sms notification application.
+ * -------------------------------------------------------------------------
+ * SMS-NOTIFICATION-SERVICE APPLICATION
+ * -------------------------------------------------------------------------
+ * This service serves the functionality of sending SMS.
+ * -------------------------------------------------------------------------
  * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.smsnotification.*", "io.mosip.kernel.auth.*" })
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 public class SmsNotificationBootApplication {
 
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            params
+	 * @param args params
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SmsNotificationBootApplication.class, args);

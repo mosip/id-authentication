@@ -20,6 +20,7 @@ public class ActionableAuthError extends AuthError {
 	}
 
 	/**
+	 * Actionable Auth Error
 	 * 
 	 * @param errorCode    - error code
 	 * @param errorMessage - error message

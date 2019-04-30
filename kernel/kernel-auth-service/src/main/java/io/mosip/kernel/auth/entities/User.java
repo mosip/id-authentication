@@ -8,7 +8,7 @@ package io.mosip.kernel.auth.entities;
  *
  */
 public class User {
-	
-	 private String userid;
+
+	private String userid;
 
 }

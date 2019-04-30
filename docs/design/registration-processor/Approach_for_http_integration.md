@@ -2,10 +2,11 @@
 # Add HTTP stage 
 
 **Background**
+
 Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate MOSIP with external system using http end point.
 
-**The target users are -**
-Product technical support team.
+**The target users are-**
+- Application support team
 
 **The key requirements are -**
 -	Once MOSIP as a product is released as an open source for anyone to use it, product should have sample code for stages and apache camel DSL xml along with document with the steps to add or remove them.

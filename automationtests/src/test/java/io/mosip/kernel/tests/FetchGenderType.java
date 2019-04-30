@@ -30,16 +30,12 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
-import com.google.gson.Gson;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
@@ -60,8 +56,8 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	private static final String apiName = "FetchGenderType";
 	private static final String requestJsonName = "fetchGenderTypeRequest";
 	private static final String outputJsonName = "fetchGenderTypeOutput";
-	private static final String service_URI = "/masterdata/v1.0/gendertypes";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/gendertypes/{langcode}";
+	private static final String service_URI = "/v1/masterdata/gendertypes";
+	private static final String service_id_lang_URI = "/v1/masterdata/gendertypes/{langcode}";
 
 	protected static String testCaseName = "";
 	static SoftAssert softAssert = new SoftAssert();
@@ -157,66 +153,68 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 				logger.info("Expected Response:" + responseObject.toJSONString());
 			}
 		}
-		
+
 		// sending request to get request without param
 				if (response == null) {
 					objectData = new JSONObject();
 					response = applicationLibrary.getRequestPathPara(service_URI, objectData);
 					objectData = null;
 				}
-				int statusCode = response.statusCode();
-				logger.info("Status Code is : " + statusCode);
-				
-				if (testcaseName.toLowerCase().contains("smoke")) {
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-					String queryPart = "select count(*) from master.gender";
-					String query = queryPart;
-					if (objectData != null) {
-							query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
-					}
-					long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+		if (testcaseName.toLowerCase().contains("smoke")) {
 
-					// fetching json object from response
-					JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
-					// fetching json array of objects from response
-					JSONArray devicesFromGet = (JSONArray) responseJson.get("genderType");
-					logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + devicesFromGet.size());
+			String queryPart = "select count(*) from master.gender";
+			String query = queryPart;
+			if (objectData != null) {
+				query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+			}
 
-					// validating number of objects obtained form db and from get request
-					if (devicesFromGet.size() == obtainedObjectsCount) {
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
 
-						// list to validate existance of attributes in response objects
-						List<String> attributesToValidateExistance = new ArrayList();
-						attributesToValidateExistance.add("code");
-						attributesToValidateExistance.add("genderName");
-						attributesToValidateExistance.add("isActive");
 
-						// key value of the attributes passed to fetch the data, should be same in all
-						// obtained objects
-						HashMap<String, String> passedAttributesToFetch = new HashMap();
-						if (objectData != null) {
-								passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
-						}
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			// fetching json array of objects from response
+			JSONArray genderTypeFromGet = (JSONArray) responseJson.get("genderType");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + genderTypeFromGet.size());
 
-						status = AssertKernel.validator(devicesFromGet, attributesToValidateExistance, passedAttributesToFetch);
-					} else
-						status = false;
+			// validating number of objects obtained form db and from get request
+			if (genderTypeFromGet.size() == obtainedObjectsCount) {
 
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("code");
+				attributesToValidateExistance.add("genderName");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all
+				// obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
 
-				else {
-					// add parameters to remove in response before comparison like time stamp
-					ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-					listOfElementToRemove.add("timestamp");
+				status = AssertKernel.validator(genderTypeFromGet, attributesToValidateExistance, passedAttributesToFetch);
+			} else
+				status = false;
 
-					status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-				}
+		}
 
-				if (status) {
-					finalStatus = "Pass";
-				} else {
-					finalStatus = "Fail";
-				}
+		else {
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
+			finalStatus = "Fail";
+		}
 
 		object.put("status", finalStatus);
 

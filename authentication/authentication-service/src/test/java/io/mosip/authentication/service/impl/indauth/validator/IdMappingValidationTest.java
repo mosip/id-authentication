@@ -3,6 +3,9 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +45,13 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.integration.MasterDataManager;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdMappingValidationTest {
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
@@ -56,6 +61,9 @@ public class IdMappingValidationTest {
 
 	@InjectMocks
 	private static ObjectMapper mapper;
+
+	@InjectMocks
+	private PinValidatorImpl pinValidatorImpl;
 
 	@Mock
 	private IDAMappingConfig idMappingConfig;
@@ -80,6 +88,7 @@ public class IdMappingValidationTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
+		ReflectionTestUtils.setField(authRequestValidator, "pinvalidator", pinValidatorImpl);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 
@@ -107,7 +116,6 @@ public class IdMappingValidationTest {
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -177,7 +185,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -196,7 +203,6 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
-		System.err.println(errors.hasErrors());
 		assertTrue(errors.hasErrors());
 	}
 
@@ -251,26 +257,34 @@ public class IdMappingValidationTest {
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("test");
 		dataDTO.setDeviceProviderID("test01");
+		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
 		dataDTO1.setBioValue("finger");
-		dataDTO1.setBioSubType("Thumb");
+		dataDTO1.setBioSubType("LEFT_THUMB");
 		dataDTO1.setBioType("FIR");
 		dataDTO1.setDeviceProviderID("test01");
+		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
+
 		fingerValue1.setData(dataDTO1);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
-		dataDTOFace.setBioSubType("Thumb");
 		dataDTOFace.setBioType("FID");
+		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
+		dataDTOFace.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) 
+				.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)).toString());
+
 		faceValue.setData(dataDTOFace);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -332,8 +346,6 @@ public class IdMappingValidationTest {
 		identity.setLocation1(addressLine1List);
 		identity.setLocation2(addressLine1List);
 		identity.setLocation3(addressLine1List);
-		/* Age */
-		List<IdentityInfoDTO> age = new ArrayList<>();
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");

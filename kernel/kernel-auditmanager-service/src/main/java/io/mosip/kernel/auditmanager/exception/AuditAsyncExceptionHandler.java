@@ -2,15 +2,12 @@ package io.mosip.kernel.auditmanager.exception;
 
 import java.lang.reflect.Method;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auditmanager.logger.AuditManagerLogger;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Custom exception handler for AsyncTask

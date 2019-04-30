@@ -6,16 +6,15 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
- * The Enum PinMatchingStrategy.
+ * The Enum PinMatchingStrategy - used to compare and
+ * evaluate the PIN value received from the request and entity
  * 
  * @author Sanjay Murali
  */

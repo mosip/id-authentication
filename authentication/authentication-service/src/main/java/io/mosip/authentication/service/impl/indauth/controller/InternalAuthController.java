@@ -72,7 +72,7 @@ public class InternalAuthController {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/auth/internal/${ida.api.version}/{Auth-Partner-ID}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/internal/auth/{Auth-Partner-ID}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
@@ -82,7 +82,7 @@ public class InternalAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false, partnerId);
+			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, partnerId);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());

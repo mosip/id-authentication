@@ -24,15 +24,21 @@ create table regprc.registration (
 	status_comment character varying(256),
 
 	latest_trn_id character varying(36),			-- regprc.registration_transaction.id
+
+	latest_trn_type_code 	character varying(36),
+	latest_trn_status_code 	character varying(36),
+	latest_trn_dtimes 	timestamp,
+	reg_process_retry_count smallint,
+	reg_stage_name  		character varying(36),
 	
 	trn_retry_count smallint,
 	
 	pkt_cr_dtimes timestamp,
-
+	
 	is_active boolean not null,
-	cr_by character varying (32) not null,
+	cr_by character varying (256) not null,
 	cr_dtimes timestamp not null,
-	upd_by  character varying (32),
+	upd_by  character varying (256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp

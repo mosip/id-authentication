@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthToken {
-	
+
 	private String userId;
 	private String accessToken;
 	private long expirationTime;

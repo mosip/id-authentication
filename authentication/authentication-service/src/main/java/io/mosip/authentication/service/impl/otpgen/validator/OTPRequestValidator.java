@@ -3,18 +3,24 @@ package io.mosip.authentication.service.impl.otpgen.validator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
@@ -29,6 +35,12 @@ public class OTPRequestValidator extends IdAuthValidator {
 	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "otprequest.received-time-allowed.in-minutes";
 
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
+	
+	/** The Constant MISSING_INPUT_PARAMETER. */
+	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
+	
+	/** The Constant VALIDATE. */
+	private static final String VALIDATE = "VALIDATE";
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
 
@@ -80,8 +92,72 @@ public class OTPRequestValidator extends IdAuthValidator {
 						INDIVIDUAL_ID);
 			}
 
+			if (!errors.hasErrors()) {
+				validateOtpChannel(otpRequestDto.getOtpChannel(), errors);
+			}
+
 		}
 		// validateVer(otpRequestDto.getVer(), errors);
+	}
+	
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors  the errors
+	 */
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+
+		if (StringUtils.isEmpty(reqTime)) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + paramName);
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { paramName },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else {
+			checkFutureReqTime(reqTime, errors, paramName);
+		}
+	}
+
+	/**
+	 * Check future req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors  the errors
+	 * @param paramName 
+	 */
+	private void checkFutureReqTime(String reqTime, Errors errors, String paramName) {
+
+		Date reqDateAndTime = null;
+		try {
+			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+		} catch (ParseException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { paramName },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+
+		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+		}
+	}
+
+
+	private void validateOtpChannel(List<String> otpChannel, Errors errors) {
+		if (otpChannel != null && !otpChannel.isEmpty()) {
+			String channels = otpChannel.stream()
+					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
+					.collect(Collectors.joining(","));
+			if (!channels.isEmpty()) {
+				errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"otpChannel - " + channels));
+			}
+		}
 	}
 
 	/**
@@ -108,7 +184,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
 				errors.rejectValue(REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
-						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {

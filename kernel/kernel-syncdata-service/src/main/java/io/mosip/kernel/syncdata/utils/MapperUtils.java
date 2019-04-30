@@ -78,17 +78,13 @@ public class MapperUtils {
 	 * name fields value will be set but not the embedded IDs and super class
 	 * values.
 	 * 
-	 * @param <S>
-	 *            is a type parameter
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destination
-	 *            where values is going to be mapped
+	 * @param             <S> is a type parameter
+	 * @param             <D> is a type parameter
+	 * @param source      which value is going to be mapped
+	 * @param destination where values is going to be mapped
 	 * @return the <code>destination</code> object
-	 * @throws NullPointerException
-	 *             if either <code>source</code> or <code>destination</code> is null
+	 * @throws NullPointerException if either <code>source</code> or
+	 *                              <code>destination</code> is null
 	 */
 	public static <S, D> D map(final S source, D destination) {
 		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
@@ -111,21 +107,15 @@ public class MapperUtils {
 	 * Entity type field is their then only matched name fields value will be set
 	 * but not the embedded IDs and super class values.
 	 * 
-	 * @param <S>
-	 *            is a type parameter
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destinationClass
-	 *            where values is going to be mapped
+	 * @param                  <S> is a type parameter
+	 * @param                  <D> is a type parameter
+	 * @param source           which value is going to be mapped
+	 * @param destinationClass where values is going to be mapped
 	 * @return the object of <code>destinationClass</code>
-	 * @throws DataAccessLayerException
-	 *             if exception occur during creating of
-	 *             <code>destinationClass</code> object
-	 * @throws NullPointerException
-	 *             if either <code>source</code> or <code>destinationClass</code> is
-	 *             null
+	 * @throws DataAccessLayerException if exception occur during creating of
+	 *                                  <code>destinationClass</code> object
+	 * @throws NullPointerException     if either <code>source</code> or
+	 *                                  <code>destinationClass</code> is null
 	 */
 	@SuppressWarnings("unchecked")
 	public static <S, D> D map(final S source, Class<D> destinationClass) {
@@ -147,22 +137,16 @@ public class MapperUtils {
 	 * <code>destinationClass</code> and map all the values from source to
 	 * destination if field name and type is same.
 	 * 
-	 * @param <S>
-	 *            is a type parameter
+	 * @param                  <S> is a type parameter
 	 * 
-	 * @param <D>
-	 *            is a type parameter
-	 * @param sourceList
-	 *            which value is going to be mapped
-	 * @param destinationClass
-	 *            where values is going to be mapped
+	 * @param                  <D> is a type parameter
+	 * @param sourceList       which value is going to be mapped
+	 * @param destinationClass where values is going to be mapped
 	 * @return list of destinationClass objects
-	 * @throws DataAccessLayerException
-	 *             if exception occur during creating of
-	 *             <code>destinationClass</code> object
-	 * @throws NullPointerException
-	 *             if either <code>sourceList</code> or
-	 *             <code>destinationClass</code> is null
+	 * @throws DataAccessLayerException if exception occur during creating of
+	 *                                  <code>destinationClass</code> object
+	 * @throws NullPointerException     if either <code>sourceList</code> or
+	 *                                  <code>destinationClass</code> is null
 	 */
 	public static <S, D> List<D> mapAll(final Collection<S> sourceList, Class<D> destinationClass) {
 		Objects.requireNonNull(sourceList, "sourceList should not be null");
@@ -176,21 +160,17 @@ public class MapperUtils {
 	 * and same type for the fields. It will not map any field which is static or
 	 * final.It will simply ignore those values.
 	 * 
-	 * @param <S>
-	 *            is a type parameter
+	 * @param             <S> is a type parameter
 	 * 
-	 * @param <D>
-	 *            is a type parameter
-	 * @param source
-	 *            is any object which should not be null and have data which is
-	 *            going to be copied
-	 * @param destination
-	 *            is an object in which source field values is going to be matched
+	 * @param             <D> is a type parameter
+	 * @param source      is any object which should not be null and have data which
+	 *                    is going to be copied
+	 * @param destination is an object in which source field values is going to be
+	 *                    matched
 	 * 
-	 * @throws DataAccessLayerException
-	 *             if error raised during mapping values
-	 * @throws NullPointerException
-	 *             if either <code>source</code> or <code>destination</code> is null
+	 * @throws DataAccessLayerException if error raised during mapping values
+	 * @throws NullPointerException     if either <code>source</code> or
+	 *                                  <code>destination</code> is null
 	 */
 	public static <S, D> void mapFieldValues(S source, D destination) {
 
@@ -328,7 +308,7 @@ public class MapperUtils {
 
 		for (UserDetailDto userDetail : userDetails) {
 			UserDetailMapDto userDetailMapDto = new UserDetailMapDto();
-			userDetailMapDto.setUserName(userDetail.getUserName());
+			userDetailMapDto.setUserName(userDetail.getUserId());
 			userDetailMapDto.setMail(userDetail.getMail());
 			userDetailMapDto.setMobile(userDetail.getMobile());
 			userDetailMapDto.setLangCode(userDetail.getLangCode());

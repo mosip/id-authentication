@@ -8,7 +8,6 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
  * @author Manoj SP
  * @param <REQUEST> the Request Object
  * @param <RESPONSE> the Response Object
- * @param <UIN> the Uin Object
  */
 public interface IdRepoService<REQUEST, RESPONSE> {
 
@@ -16,7 +15,7 @@ public interface IdRepoService<REQUEST, RESPONSE> {
 	 * Adds the identity.
 	 *
 	 * @param request the request
-	 * @param uin uin
+	 * @param uin     uin
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -25,7 +24,7 @@ public interface IdRepoService<REQUEST, RESPONSE> {
 	/**
 	 * Retrieve identity.
 	 *
-	 * @param uin the uin
+	 * @param uin    the uin
 	 * @param filter filter
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
@@ -36,7 +35,7 @@ public interface IdRepoService<REQUEST, RESPONSE> {
 	 * Update identity.
 	 *
 	 * @param request the request
-	 * @param uin uin
+	 * @param uin     uin
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */

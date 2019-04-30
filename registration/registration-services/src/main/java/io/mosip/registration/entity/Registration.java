@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import io.mosip.kernel.core.util.DateUtils;
 /**
- * Registration entity details
+ * The Entity Class for Registration details
  * 
  * @author Mahesh Kumar
  * @since 1.0.0

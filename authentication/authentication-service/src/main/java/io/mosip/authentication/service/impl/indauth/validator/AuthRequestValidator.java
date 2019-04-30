@@ -35,11 +35,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String TRANSACTION_ID = "transactionID";
 
-	private static final String REQUEST_REQUEST_TIME = "request/requestTime";
+	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
 	private static final String REQUEST_TIME = "requestTime";
 
-	private static final String ALLOWED_AUTH_TYPE = "allowed.auth.type";
+	private static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
 
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
@@ -66,7 +66,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
+	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_HOURS = "authrequest.received-time-allowed.in-hours";
 
 	/** The Constant INVALID_AUTH_REQUEST. */
 	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
@@ -103,70 +103,65 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
 			}
 			if (!errors.hasErrors()) {
-			validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
-			//Validation for Time Stamp in the RequestDTO.
-			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors,REQUEST_REQUEST_TIME );
+				validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
+				// Validation for Time Stamp in the RequestDTO.
+				validateReqTime(authRequestDto.getRequest().getTimestamp(), errors, REQUEST_REQUEST_TIME);
 			}
 			if (!errors.hasErrors()) {
-			validateTxnId(authRequestDto.getTransactionID(), errors,TRANSACTION_ID);
-			//Validation for TransaactionId in the RequestDTO.
-			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors,REQUEST_TRANSACTION_ID);
+				validateTxnId(authRequestDto.getTransactionID(), errors, TRANSACTION_ID);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);
 			}
 			if (!errors.hasErrors()) {
-				validateRequestTimedOut(authRequestDto.getRequestTime(), errors);
-			}
-
-			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 				String individualId = authRequestDto.getIndividualId();
 				String individualIdType = authRequestDto.getIndividualIdType();
-				
-				if(!individualId.isEmpty()) {
-					validateIdvId(individualId, individualIdType, errors);
-				}
-				 else {
-					// TODO Missing UIN/VID
-				}
+
+				validateIdvId(individualId, individualIdType, errors);
+
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		}
+	}
+	
+	@Override
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+		super.validateReqTime(reqTime, errors, paramName);
+		if (!errors.hasErrors()) {
+			validateRequestTimedOut(reqTime, errors);
 		}
 	}
 
 	/**
 	 * Validate request timed out.
 	 *
-	 * @param reqTime
-	 *            the req time
-	 * @param errors
-	 *            the errors
+	 * @param reqTime the req time
+	 * @param errors  the errors
 	 */
 	private void validateRequestTimedOut(String reqTime, Errors errors) {
 		try {
-			Instant reqTimeInstance = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern")).toInstant();
+			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty("datetime.pattern")).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
+			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_HOURS, Long.class);
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
-						"INVALID_AUTH_REQUEST_TIMESTAMP -- " + String.format(
-								IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
-								Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
-				errors.rejectValue(REQ_TIME,
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
+						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
+								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
+										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
+				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
@@ -182,17 +177,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Check auth request.
 	 *
-	 * @param authRequest
-	 *            the auth request
-	 * @param errors
-	 *            the errors
+	 * @param authRequest the auth request
+	 * @param errors      the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		AuthTypeDTO authType = authRequest.getRequestedAuth();
 		if (!Objects.isNull(authType)) {
 			boolean anyAuthType = Stream
-					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, 
-							authType::isDemo, authType::isPin)
+					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, authType::isDemo, authType::isPin)
 					.anyMatch(Supplier<Boolean>::get);
 
 			if (!anyAuthType) {
@@ -207,7 +199,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateBioMetadataDetails(authRequest, errors);
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + AUTH_TYPE);
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { AUTH_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

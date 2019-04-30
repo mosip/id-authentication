@@ -12,6 +12,7 @@ import io.mosip.registration.constants.RegistrationConstants;
  * @author M1045980
  *
  * @param <T>
+ *            the generic type
  */
 public class Builder<T> {
 	
@@ -22,8 +23,7 @@ public class Builder<T> {
 	 * Constructor Initialization
 	 * 
 	 * @param clazz
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
+	 *            the class for which object had to be instantiated
 	 */
 	public Builder(Class<T> clazz) {
 		try {
@@ -38,6 +38,7 @@ public class Builder<T> {
 	 * Set the parameter with desired value
 	 * 
 	 * @param setter
+	 *            the setter method for setting the value in the object
 	 * @return the instance of the {@link Builder}
 	 */
 	public Builder<T> with(Consumer<T> setter) {
@@ -57,7 +58,10 @@ public class Builder<T> {
 	/**
 	 * Build the instance
 	 * 
+	 * @param <T>
+	 *            the generic type
 	 * @param clazz
+	 *            the class of the object
 	 * @return the instance of the {@link Builder}
 	 */
 	public static <T> Builder<T> build(Class<T> clazz) {

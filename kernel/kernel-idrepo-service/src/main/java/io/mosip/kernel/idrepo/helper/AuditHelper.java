@@ -3,6 +3,7 @@ package io.mosip.kernel.idrepo.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
@@ -36,22 +37,15 @@ public class AuditHelper {
 	/**
 	 * Audit.
 	 *
-	 * @param module
-	 *            the module
-	 * @param event
-	 *            the event
-	 * @param id
-	 *            the id
-	 * @param idType
-	 *            the id type
-	 * @param desc
-	 *            the desc
-	 * @throws IDDataValidationException
-	 *             the ID data validation exception
+	 * @param module the module
+	 * @param event  the event
+	 * @param id     the id
+	 * @param desc   the desc
+	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, String desc)
 			throws IdRepoDataValidationException {
-		AuditRequestDto auditRequest = auditBuilder.buildRequest(module, event, id, desc);
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(module, event, id, desc);
 		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 		restHelper.requestAsync(restRequest);

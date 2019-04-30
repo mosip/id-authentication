@@ -36,8 +36,7 @@ public class OtpGeneratorRequestDto {
 	/**
 	 * Setter for key.
 	 * 
-	 * @param key
-	 *            the key.
+	 * @param key the key.
 	 */
 	public void setKey(String key) {
 		if (key != null) {
@@ -46,5 +45,4 @@ public class OtpGeneratorRequestDto {
 			this.key = key;
 		}
 	}
-
 }

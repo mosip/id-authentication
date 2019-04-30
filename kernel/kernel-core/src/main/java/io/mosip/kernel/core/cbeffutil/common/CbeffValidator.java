@@ -36,14 +36,14 @@ import io.mosip.kernel.core.util.CryptoUtil;
 /**
  * @author Ramadurai Pandian
  * 
- * An Utility Class to validate the data before generating an valid CBEFF XML and to get all
- * the data based on Type and SubType
+ *         An Utility Class to validate the data before generating an valid
+ *         CBEFF XML and to get all the data based on Type and SubType
  *
  */
 public class CbeffValidator {
-	
+
 	private static final String tempPath = "./src/main/resources";
-	
+
 	/**
 	 * Method used for custom validation of the BIR
 	 * 
@@ -89,7 +89,7 @@ public class CbeffValidator {
 	/**
 	 * Method used for validation of Format Type
 	 * 
-	 * @param formatType format type
+	 * @param formatType     format type
 	 * 
 	 * @param singleTypeList List of types
 	 * 
@@ -141,13 +141,13 @@ public class CbeffValidator {
 	 * Method used for creating XML bytes using JAXB
 	 * 
 	 * @param bir BIR type
-	 * 
+	 * @param xsd xml schema definition
 	 * @return byte[] byte array of XML data
 	 * 
 	 * @exception Exception exception
 	 * 
 	 */
-	public static byte[] createXMLBytes(BIRType bir,byte[] xsd) throws Exception {
+	public static byte[] createXMLBytes(BIRType bir, byte[] xsd) throws Exception {
 		CbeffValidator.validateXML(bir);
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -157,23 +157,20 @@ public class CbeffValidator {
 		jaxbMarshaller.marshal(bir, writer);
 		byte[] savedData = baos.toByteArray();
 		writer.close();
-		try
-		{
-		CbeffXSDValidator.validateXML(xsd, savedData);
-		}
-		catch(SAXException sax)
-		{
+		try {
+			CbeffXSDValidator.validateXML(xsd, savedData);
+		} catch (SAXException sax) {
 			String message = sax.getMessage();
 			message = message.substring(message.indexOf(":"));
-			throw new CbeffException("XSD validation failed due to attribute "+message);
+			throw new CbeffException("XSD validation failed due to attribute " + message);
 		}
 		return savedData;
 	}
-	
-	private static byte[] readXSD(String name) throws IOException {
+
+	/*private static byte[] readXSD(String name) throws IOException {
 		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xsd"));
 		return fileContent;
-	}
+	}*/
 
 	/**
 	 * Method used for BIR Type
@@ -197,9 +194,9 @@ public class CbeffValidator {
 	/**
 	 * Method used for searching Cbeff data based on type and subtype
 	 * 
-	 * @param bir BIR data
+	 * @param bir     BIR data
 	 * 
-	 * @param type format type
+	 * @param type    format type
 	 * 
 	 * @param subType format subtype
 	 * 
@@ -210,9 +207,8 @@ public class CbeffValidator {
 	 */
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)
 			throws Exception {
-		
-		if(type==null && subType==null)
-		{
+
+		if (type == null && subType == null) {
 			return getAllLatestDatafromBIR(bir);
 		}
 		SingleType singleType = null;
@@ -238,29 +234,36 @@ public class CbeffValidator {
 					Long bdbFormatType = bdbInfo.getFormatType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
-						bdbMap.put(singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
-								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(), CryptoUtil.encodeBase64String(birType.getBDB()));
+						bdbMap.put(
+								singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+								CryptoUtil.encodeBase64String(birType.getBDB()));
 					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
 						List<String> singleTypeStringList = convertToList(singleTypeList);
-						bdbMap.put(String.join(" ", singleTypeStringList)+"_"+String.join(" ", singleSubTypeList)
-								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(), CryptoUtil.encodeBase64String(birType.getBDB()));
+						bdbMap.put(
+								String.join(" ", singleTypeStringList) + "_" + String.join(" ", singleSubTypeList) + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+								CryptoUtil.encodeBase64String(birType.getBDB()));
 					} else if (singleTypeList.contains(singleType)
 							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
 							&& formatMatch) {
-						bdbMap.put(singleType.toString()+"_"+singleAnySubType.value()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+						bdbMap.put(
+								singleType.toString() + "_" + singleAnySubType.value() + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
 								CryptoUtil.encodeBase64String(birType.getBDB()));
 					}
 				}
 			}
 		}
 		Map<String, String> map = new TreeMap<>(bdbMap);
-		Map<String,String> finalMap = new HashMap<>();
-		for(Map.Entry<String, String> mapEntry :map.entrySet())
-		{
+		Map<String, String> finalMap = new HashMap<>();
+		for (Map.Entry<String, String> mapEntry : map.entrySet()) {
 			String pattern = mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_"));
-			if(mapEntry.getKey().contains(pattern))
-			{
-				finalMap.put( mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
+			if (mapEntry.getKey().contains(pattern)) {
+				finalMap.put(mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
 			}
 		}
 		return finalMap;
@@ -275,25 +278,25 @@ public class CbeffValidator {
 				if (bdbInfo != null) {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
-					if(singleSubTypeList.isEmpty())
-					{
+					if (singleSubTypeList.isEmpty()) {
 						singleSubTypeList = new ArrayList<>();
 						singleSubTypeList.add("No Subtype");
 					}
 					Long bdbFormatType = bdbInfo.getFormatType();
-					bdbMap.put(String.join(" ", singleTypeList.get(0).toString())+"_"+String.join(" ", singleSubTypeList)+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+					bdbMap.put(
+							String.join(" ", singleTypeList.get(0).toString()) + "_"
+									+ String.join(" ", singleSubTypeList) + "_" + String.valueOf(bdbFormatType) + "_"
+									+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
 							CryptoUtil.encodeBase64String(birType.getBDB()));
 				}
 			}
-			}
+		}
 		Map<String, String> map = new TreeMap<>(bdbMap);
-		Map<String,String> finalMap = new HashMap<>();
-		for(Map.Entry<String, String> mapEntry :map.entrySet())
-		{
+		Map<String, String> finalMap = new HashMap<>();
+		for (Map.Entry<String, String> mapEntry : map.entrySet()) {
 			String pattern = mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_"));
-			if(mapEntry.getKey().contains(pattern))
-			{
-				finalMap.put( mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
+			if (mapEntry.getKey().contains(pattern)) {
+				finalMap.put(mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
 			}
 		}
 		return finalMap;
@@ -302,7 +305,7 @@ public class CbeffValidator {
 	/**
 	 * Method to convert single type list to string
 	 * 
-	 * */
+	 */
 	private static List<String> convertToList(List<SingleType> singleTypeList) {
 		return singleTypeList.stream().map(Enum::name).collect(Collectors.toList());
 	}
@@ -310,7 +313,7 @@ public class CbeffValidator {
 	/**
 	 * Method to get enum sub type from string subtype
 	 * 
-	 * */
+	 */
 	private static SingleAnySubtypeType getSingleAnySubtype(String subType) {
 		return subType != null ? SingleAnySubtypeType.fromValue(subType) : null;
 	}
@@ -318,29 +321,29 @@ public class CbeffValidator {
 	/**
 	 * Method to get enum type from string type
 	 * 
-	 * */
+	 */
 	private static SingleType getSingleType(String type) {
-		if(isInEnum(type,SingleType.class))
-		{
+		if (isInEnum(type, SingleType.class)) {
 			return SingleType.valueOf(type);
-		}
-		else
-		{
-		switch (type) {
-		case "FMR":
-			return SingleType.FINGER;
-		default:
-			return SingleType.fromValue(type);
-		}
+		} else {
+			switch (type) {
+			case "FMR":
+				return SingleType.FINGER;
+			default:
+				return SingleType.fromValue(type);
+			}
 		}
 	}
 
 	public static <E extends Enum<E>> boolean isInEnum(String value, Class<E> enumClass) {
-		  for (E e : enumClass.getEnumConstants()) {
-		    if(e.name().equals(value)) { return true; }
-		  }
-		  return false;
+		for (E e : enumClass.getEnumConstants()) {
+			if (e.name().equals(value)) {
+				return true;
+			}
 		}
+		return false;
+	}
+
 	public static Map<String, String> getAllBDBData(BIRType bir, String type, String subType) throws Exception {
 		SingleType singleType = null;
 		SingleAnySubtypeType singleAnySubType = null;
@@ -365,16 +368,25 @@ public class CbeffValidator {
 					Long bdbFormatType = bdbInfo.getFormatType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
-						bdbMap.put(singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
-								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(), new String(birType.getBDB(), "UTF-8"));
+						bdbMap.put(
+								singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+								new String(birType.getBDB(), "UTF-8"));
 					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
 						List<String> singleTypeStringList = convertToList(singleTypeList);
-						bdbMap.put(String.join(" ", singleSubTypeList) + "_" + String.join(" ", singleTypeStringList)
-								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(), new String(birType.getBDB(), "UTF-8"));
+						bdbMap.put(
+								String.join(" ", singleSubTypeList) + "_" + String.join(" ", singleTypeStringList) + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+								new String(birType.getBDB(), "UTF-8"));
 					} else if (singleTypeList.contains(singleType)
 							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
 							&& formatMatch) {
-						bdbMap.put(singleAnySubType.toString() + "_" + singleType.toString()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
+						bdbMap.put(
+								singleAnySubType.toString() + "_" + singleType.toString() + "_"
+										+ String.valueOf(bdbFormatType) + "_"
+										+ bdbInfo.getCreationDate().toInstant(ZoneOffset.UTC).toEpochMilli(),
 								new String(birType.getBDB(), "UTF-8"));
 					}
 				}

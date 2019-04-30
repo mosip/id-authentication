@@ -57,9 +57,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String licKeyGenerator = "/licensekeymanager/v1.0/license/generate";
-	private static final String mapLicenseKey = "/licensekeymanager/v1.0//license/permission";
-	private static final String fetchmapLicenseKey = "/licensekeymanager/v1.0/license/permission";
+	private static final String licKeyGenerator = "/v1/licensekeymanager/license/generate";
+	private static final String mapLicenseKey = "/v1/licensekeymanager/license/permission";
+	private static final String fetchmapLicenseKey = "/v1/licensekeymanager/license/permission";
 	static String dest = "";
 	static String folderPath = "kernel/LicenseKeyController/GenerateLicenseKey";
 	static String outputFile = "GenerateLicenseKeyrOutput.json";
@@ -80,7 +80,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -124,16 +124,17 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 Response res = applicationLibrary.postRequest(actualRequest1, licKeyGenerator);
 		 if(testCaseName.equals("smoke_generateLicenceKey"))
 			{
-			 tspId=actualRequest1.get("tspId").toString();
-			 licenseKey=res.jsonPath().get("licenseKey").toString();	
+			 tspId=((JSONObject)actualRequest1.get("request")).get("tspId").toString();
+			 licenseKey=res.jsonPath().getMap("response").get("licenseKey").toString();
+			
 			}
 		/*
 		 *  Removing of unstable attributes from response
 		 */
 		 
 		
-		innerKeys.add("errorMessage");	
-	    outerKeys.add("timestamp");
+		//innerKeys.add("errorMessage");	
+	    outerKeys.add("responsetime");
 		outerKeys.add("licenseKey");
 		innerKeys.add("licenseKey");
 		
@@ -146,7 +147,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
      {
     	  if(testCaseName.equals("smoke_generateLicenceKey"))
     	  {     
-    		  int length=res.getBody().jsonPath().get("licenseKey").toString().length();
+    		  int length=licenseKey.length();
     		  if(length==16)
     		  	{
     			  finalStatus ="Pass";
@@ -216,14 +217,15 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 *  Removing of unstable attributes from response
 		 */
 		
-		 outerKeys.add("timestamp");
+		 outerKeys.add("responsetime");
 		 innerKeys.add("errorMessage");
 	    JSONObject actualRequest_map = ResponseRequestMapper.mapRequest(testSuite, object);
+	    JSONObject request = (JSONObject) actualRequest_map.get("request");
 	    if(testCaseName.equals("smoke_MapLicenseKeyPermission"))
 	    {
-	    	actualRequest_map.put("tspId", tspId);
-			actualRequest_map.put("licenseKey", licenseKey);		 
-		  	
+	    	request.put("tspId", tspId);
+	    	request.put("licenseKey", licenseKey);		 
+	    	actualRequest_map.putAll(request);
 		 Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		  res_map = applicationLibrary.postRequest(actualRequest_map, mapLicenseKey);
@@ -239,7 +241,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		status = AssertResponses.assertResponses(res_map, Expectedresponse, outerKeys, innerKeys);
       if (status) {
 	                
@@ -296,7 +298,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		LicenseKeyController lc=new LicenseKeyController();
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		 outerKeys.add("timestamp");
+		 outerKeys.add("responsetime");
 
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		if(testCaseName.equalsIgnoreCase("smoke_FetchLicenseKeyPermissions"))

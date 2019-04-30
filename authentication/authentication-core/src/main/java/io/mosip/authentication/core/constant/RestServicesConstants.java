@@ -1,7 +1,8 @@
 package io.mosip.authentication.core.constant;
 
 /**
- * The Enum RestServiceContants.
+ * The Enum RestServiceContants - contains service names based on which {@link RestServiceBuilder}
+ * will build rest requests from properties.
  *
  * @author Manoj SP
  */
@@ -23,14 +24,20 @@ public enum RestServicesConstants {
 	SMS_NOTIFICATION_SERVICE("sms-notification"),
 
 	ID_REPO_SERVICE("id-repo-service"),
+	
+	ID_REPO_SERVICE_WITHOUT_TYPE("id-repo-service-auth"),
 
 	ID_MASTERDATA_TEMPLATE_SERVICE("id-masterdata-template-service"),
+	
+	ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG("id-masterdata-template-service-multilang"),
 	
 	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
 
 	DECRYPTION_SERVICE("decrypt-service"),
 	
-	TITLE_SERVICE("id-masterdata-title-service");
+	TITLE_SERVICE("id-masterdata-title-service"),
+	
+	TOKEN_ID_GENERATOR("token-id-generator");
 
 	/** The service name. */
 	private final String serviceName;

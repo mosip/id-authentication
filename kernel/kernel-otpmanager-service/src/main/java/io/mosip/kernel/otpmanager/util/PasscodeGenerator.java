@@ -31,8 +31,7 @@ public class PasscodeGenerator {
 	 */
 	interface Signer {
 		/**
-		 * @param data
-		 *            Preimage to sign, represented as sequence of arbitrary bytes
+		 * @param data Preimage to sign, represented as sequence of arbitrary bytes
 		 * @return Signature as sequence of bytes.
 		 * @throws GeneralSecurityException
 		 */
@@ -53,11 +52,9 @@ public class PasscodeGenerator {
 	}
 
 	/**
-	 * @param state
-	 *            8-byte integer value representing internal OTP state.
+	 * @param state 8-byte integer value representing internal OTP state.
 	 * @return A decimal response code
-	 * @throws GeneralSecurityException
-	 *             If a JCE exception occur
+	 * @throws GeneralSecurityException If a JCE exception occur
 	 */
 	public String generateResponseCode(long state) throws GeneralSecurityException {
 		byte[] value = ByteBuffer.allocate(8).putLong(state).array();
@@ -65,11 +62,9 @@ public class PasscodeGenerator {
 	}
 
 	/**
-	 * @param value
-	 *            An arbitrary byte array used as a value
+	 * @param value An arbitrary byte array used as a value
 	 * @return A decimal response code
-	 * @throws GeneralSecurityException
-	 *             If a JCE exception occur
+	 * @throws GeneralSecurityException If a JCE exception occur
 	 */
 	public String generateResponseCode(byte[] value) throws GeneralSecurityException {
 		byte[] hash = signer.sign(value);
@@ -87,10 +82,8 @@ public class PasscodeGenerator {
 	 * Grabs a positive integer value from the input array starting at the given
 	 * offset.
 	 * 
-	 * @param bytes
-	 *            the array of bytes
-	 * @param start
-	 *            the index into the array to start grabbing bytes
+	 * @param bytes the array of bytes
+	 * @param start the index into the array to start grabbing bytes
 	 * @return the integer constructed from the four bytes in the array
 	 */
 	private int hashToInt(byte[] bytes, int start) {
@@ -104,5 +97,4 @@ public class PasscodeGenerator {
 		}
 		return val;
 	}
-
 }

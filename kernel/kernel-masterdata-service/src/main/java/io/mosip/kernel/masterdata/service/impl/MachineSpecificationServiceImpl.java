@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -53,12 +52,11 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * createMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+	public IdAndLanguageCodeID createMachineSpecification(MachineSpecificationDto machineSpecification) {
 
 		MachineSpecification renMachineSpecification = new MachineSpecification();
 
-		MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification.getRequest(),
-				MachineSpecification.class);
+		MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification, MachineSpecification.class);
 		try {
 			renMachineSpecification = machineSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -82,16 +80,16 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+	public IdAndLanguageCodeID updateMachineSpecification(MachineSpecificationDto machineSpecification) {
 		MachineSpecification updMachineSpecification = null;
 
 		try {
 			MachineSpecification renMachineSpecification = machineSpecificationRepository
-					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getRequest().getId(),
-							machineSpecification.getRequest().getLangCode());
+					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId(),
+							machineSpecification.getLangCode());
 			if (renMachineSpecification != null) {
 
-				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renMachineSpecification, false);
+				MetaDataUtils.setUpdateMetaData(machineSpecification, renMachineSpecification, false);
 				updMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 			} else {
 				throw new RequestException(

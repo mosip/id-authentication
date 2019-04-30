@@ -3,10 +3,10 @@ package io.mosip.registration.dto;
 import java.sql.Timestamp;
 
 /**
- * 
+ * The DTO Class PolicyDTO.
+ *
  * @author Brahmananda Reddy
  * @since 1.0.0
- *
  */
 
 public class PolicyDTO {

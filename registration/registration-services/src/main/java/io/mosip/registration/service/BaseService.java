@@ -3,7 +3,7 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.text.ParseException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,9 @@ import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+/**
+ * The BaseService class.
+ */
 @Service
 public class BaseService {
 
@@ -58,11 +61,17 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	private Map<String, Object> applicationMap;
+	private static Map<String, Object> applicationMap=new HashMap<>();
 
 	/**
-	 * create error response
-	 * 
+	 * create error response.
+	 *
+	 * @param response 
+	 * 				the response
+	 * @param message 
+	 * 				the message
+	 * @param attributes 
+	 * 				the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate error
 	 *         response and mapping to it
 	 */
@@ -89,8 +98,14 @@ public class BaseService {
 	}
 
 	/**
-	 * create success response
-	 * 
+	 * create success response.
+	 *
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param message 
+	 * 				the message
+	 * @param attributes 
+	 * 				the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate
 	 *         success response and mapping to it
 	 */
@@ -110,8 +125,14 @@ public class BaseService {
 	}
 
 	/**
-	 * create error response
-	 * 
+	 * create error response.
+	 *
+	 * @param response 
+	 * 				the response
+	 * @param message 
+	 * 				the message
+	 * @param attributes 
+	 * 				the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate error
 	 *         response and mapping to it
 	 */
@@ -140,8 +161,8 @@ public class BaseService {
 	}
 
 	/**
-	 * Get User Id using session context
-	 * 
+	 * Get User Id using session context.
+	 *
 	 * @return user id
 	 */
 	protected String getUserIdFromSession() {
@@ -158,13 +179,13 @@ public class BaseService {
 	}
 
 	/**
-	 * To check the device is valid or not
-	 * 
-	 * @param deviceType
-	 * @param deviceProvider
-	 * @param serialNo
-	 * @return
-	 * @throws ParseException
+	 * To check the device is valid or not.
+	 *
+	 * @param deviceType 
+	 * 				the device type
+	 * @param serialNo 
+	 * 				the serial no
+	 * @return true, if is valid device
 	 */
 	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
 
@@ -173,17 +194,38 @@ public class BaseService {
 		return machineMappingDAO.isValidDevice(deviceType, serialNo);
 	}
 
+	/**
+	 * Checks if is null.
+	 *
+	 * @param list 
+	 * 				the list
+	 * @return true, if is null
+	 */
 	public boolean isNull(List<?> list) {
 		/* Check Whether the list is Null or not */
 		return list == null;
 
 	}
 
+	/**
+	 * Checks if is empty.
+	 *
+	 * @param list 
+	 * 				the list
+	 * @return true, if is empty
+	 */
 	public boolean isEmpty(List<?> list) {
 		/* Check Whether the list is empty or not */
 		return list.isEmpty();
 	}
 
+	/**
+	 * Gets the station id.
+	 *
+	 * @param macAddress 
+	 * 				the mac address
+	 * @return the station id
+	 */
 	public String getStationId(String macAddress) {
 		String stationId = null;
 		try {
@@ -197,6 +239,11 @@ public class BaseService {
 		return stationId;
 	}
 
+	/**
+	 * Gets the center id.
+	 *
+	 * @return the center id
+	 */
 	public String getCenterId() {
 		/* Initialize Center Id */
 		String centerId = null;
@@ -212,6 +259,13 @@ public class BaseService {
 		return centerId;
 	}
 
+	/**
+	 * Gets the center id.
+	 *
+	 * @param stationId 
+	 * 				the station id
+	 * @return the center id
+	 */
 	public String getCenterId(String stationId) {
 		String centerId = null;
 		if (stationId != null) {
@@ -227,6 +281,11 @@ public class BaseService {
 		return centerId;
 	}
 
+	/**
+	 * Gets the mac address.
+	 *
+	 * @return the mac address
+	 */
 	public String getMacAddress() {
 		/* Get Mac Address */
 		return RegistrationSystemPropertiesChecker.getMachineId();
@@ -234,15 +293,15 @@ public class BaseService {
 	}
 
 	/**
-	 * Get Global Param configuration value
-	 * 
-	 * @param key
-	 *            as name
+	 * Get Global Param configuration value.
+	 *
+	 * @param key            
+	 * 				the name
 	 * @return value
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		if (applicationMap == null) {
+		if (applicationMap == null || applicationMap.isEmpty()) {
 
 			if (applicationContext == null) {
 
@@ -251,7 +310,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = applicationContext.map();
+			setBaseGlobalMap(ApplicationContext.map());
 		}
 
 		return (String) applicationMap.get(key);
@@ -259,9 +318,11 @@ public class BaseService {
 	
 
 	/**
-	 * Convertion of Registration to Packet Status DTO
-	 * @param registration
-	 * @return
+	 * Convertion of Registration to Packet Status DTO.
+	 *
+	 * @param registration 
+	 * 				the registration
+	 * @return the packet status DTO
 	 */
 	public PacketStatusDTO packetStatusDtoPreperation(Registration registration) {
 		PacketStatusDTO statusDTO = new PacketStatusDTO();
@@ -270,7 +331,16 @@ public class BaseService {
 		statusDTO.setPacketPath(registration.getAckFilename());
 		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
 		statusDTO.setUploadStatus(registration.getFileUploadStatus());
+		statusDTO.setPacketStatus(registration.getStatusCode());
 		return statusDTO;
 	}
+	
+	public static void setBaseGlobalMap(Map<String,Object> map) {
+		applicationMap = map;
+	}
 
+	public static Map<String,Object> getBaseGlobalMap() {
+		return applicationMap;
+	}
+	
 }

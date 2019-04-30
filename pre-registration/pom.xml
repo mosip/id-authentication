@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.8</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -58,7 +58,7 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<kernel.core.version>0.9.5</kernel.core.version>
+		<kernel.core.version>0.10.3</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -79,12 +79,12 @@
 		<icu.version>63.1</icu.version>
 		
 
-		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/batchjob/**,**/auth/**,**/util/**,**/stateUtil/**</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/batchjob/**,**/util/**,**/stateUtil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 	<modules>
 		<module>pre-registration-core</module>
-		<module>pre-registration-auth-service</module>
+		<module>pre-registration-login-service</module>
 		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-booking-service</module>
@@ -93,6 +93,7 @@
 		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
 		<module>pre-registration-notification-service</module>
+		<module>pre-registration-generateqrcode-service</module>
 	</modules>
 
 	<profiles>

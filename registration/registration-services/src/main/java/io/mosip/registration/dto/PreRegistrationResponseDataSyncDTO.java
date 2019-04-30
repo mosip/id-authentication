@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 
- * @author M1046129
+ * The DTO Class PreRegistration Response Data SyncDTO.
  *
+ * @author M1046129
  */
 public class PreRegistrationResponseDataSyncDTO implements Serializable {
 

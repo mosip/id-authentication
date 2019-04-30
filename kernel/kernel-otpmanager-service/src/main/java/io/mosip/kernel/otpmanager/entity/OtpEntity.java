@@ -34,7 +34,7 @@ public class OtpEntity {
 	 * The variable that holds the time at which the OTP validation was last
 	 * attempted. The default value is the generation time.
 	 */
-	@Column(name = "upd_dtimes", nullable = false)
+	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedDtimes;
 
 	/**
@@ -46,7 +46,7 @@ public class OtpEntity {
 	/**
 	 * The variable that holds the number of validation attempts.
 	 */
-	@Column(name = "validation_retry_count", nullable = false)
+	@Column(name = "validation_retry_count")
 	private int validationRetryCount;
 
 	/**
@@ -73,16 +73,16 @@ public class OtpEntity {
 	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
-	@Column(name = "cr_by")
+	@Column(name = "cr_by", length = 256)
 	private String createdBy;
 
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
-	@Column(name = "cr_dtimes", nullable = false)
+	@Column(name = "cr_dtimes")
 	private LocalDateTime crDtimes;
 
-	@Column(name = "del_dtimes", nullable = false)
+	@Column(name = "del_dtimes")
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")

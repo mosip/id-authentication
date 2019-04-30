@@ -1,19 +1,20 @@
 package io.mosip.kernel.otpmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
+import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 
 /**
  * This class provides controller methods for OTP generation.
@@ -23,12 +24,11 @@ import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
  * @since 1.0.0
  *
  */
-@RefreshScope
 @RestController
 @CrossOrigin
 public class OtpGeneratorController {
 	/**
-	 * The reference that autowires the OtpGeneratorService class.
+	 * Autowired reference of {@link OtpGenerator}.
 	 */
 	@Autowired
 	OtpGenerator<OtpGeneratorRequestDto, OtpGeneratorResponseDto> otpGeneratorService;
@@ -36,14 +36,16 @@ public class OtpGeneratorController {
 	/**
 	 * This method handles the OTP generation.
 	 * 
-	 * @param otpDto
-	 *            The request DTO for OTP generation.
+	 * @param otpDto The request DTO for OTP generation.
 	 * @return The generated OTP as DTO response.
 	 */
-
-	@PostMapping(value = "/v1.0/otp/generate")
-	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(@Validated({
-			GenerationDTOValidationLevels.ValidationLevel.class }) @RequestBody OtpGeneratorRequestDto otpDto) {
-		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto), HttpStatus.OK);
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH')")
+	@ResponseFilter
+	@PostMapping(value = "/otp/generate")
+	public ResponseWrapper<OtpGeneratorResponseDto> generateOtp(@Validated({
+			GenerationDTOValidationLevels.ValidationLevel.class }) @RequestBody RequestWrapper<OtpGeneratorRequestDto> otpDto) {
+		ResponseWrapper<OtpGeneratorResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(otpGeneratorService.getOtp(otpDto.getRequest()));
+		return responseWrapper;
 	}
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.8</version>
 	</parent>
 	<artifactId>kernel-idrepo-service</artifactId>
 	<dependencies>
@@ -97,6 +97,16 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 		<build>

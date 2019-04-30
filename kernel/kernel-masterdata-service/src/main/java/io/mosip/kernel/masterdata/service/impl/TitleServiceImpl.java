@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -52,8 +51,7 @@ public class TitleServiceImpl implements TitleService {
 			titles = titleRepository.findAll(Title.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (titles != null && !titles.isEmpty()) {
 			titleDto = MapperUtils.mapAll(titles, TitleDto.class);
@@ -84,7 +82,7 @@ public class TitleServiceImpl implements TitleService {
 			title = titleRepository.getThroughLanguageCode(languageCode);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (title.isEmpty()) {
 			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
@@ -106,8 +104,8 @@ public class TitleServiceImpl implements TitleService {
 	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID saveTitle(RequestDto<TitleDto> titleRequestDto) {
-		Title entity = MetaDataUtils.setCreateMetaData(titleRequestDto.getRequest(), Title.class);
+	public CodeAndLanguageCodeID saveTitle(TitleDto titleRequestDto) {
+		Title entity = MetaDataUtils.setCreateMetaData(titleRequestDto, Title.class);
 		Title title;
 		try {
 			title = titleRepository.create(entity);
@@ -128,9 +126,9 @@ public class TitleServiceImpl implements TitleService {
 	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateTitle(RequestDto<TitleDto> titles) {
+	public CodeAndLanguageCodeID updateTitle(TitleDto titles) {
 
-		TitleDto titleDto = titles.getRequest();
+		TitleDto titleDto = titles;
 
 		CodeAndLanguageCodeID titleId = new CodeAndLanguageCodeID();
 
@@ -149,7 +147,7 @@ public class TitleServiceImpl implements TitleService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return titleId;
 	}
@@ -178,7 +176,7 @@ public class TitleServiceImpl implements TitleService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(code);

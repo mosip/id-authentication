@@ -38,6 +38,7 @@ run ddl/reg-reg_center_user_machine.sql
 run ddl/reg-rid_seq.sql
 run ddl/reg-role_list.sql
 run ddl/reg-screen_authorization.sql
+run ddl/reg-screen_detail.sql
 run ddl/reg-sync_control.sql
 run ddl/reg-sync_job_def.sql
 run ddl/reg-sync_transaction.sql

@@ -11,6 +11,8 @@ public interface AppAuthenticationDetails {
 	
 	/**
 	 * To fetch only selected columns from Embeddable
+	 *
+	 * @return {@link AppAuthentication}
 	 */
 	AppAuthentication getAppAuthenticationMethodId();
 	

@@ -6,11 +6,16 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.8</version>
 	</parent>
 	<artifactId>kernel-licensekeymanager-service</artifactId>
 	<name>kernel-licensekeymanager-service</name>
 	<dependencies>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -37,10 +42,9 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-			<scope>test</scope>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -51,18 +55,6 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>${spring.boot.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

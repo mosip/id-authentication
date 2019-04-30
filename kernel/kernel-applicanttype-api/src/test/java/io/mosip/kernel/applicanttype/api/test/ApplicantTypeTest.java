@@ -51,7 +51,7 @@ public class ApplicantTypeTest {
 			map.put("individualTypeCode", arr[0]);
 			map.put("dateofbirth", DateUtils.formatToISOString(getDobDate(arr[2])));
 			map.put("genderCode", arr[1]);
-			map.put("biometricAvailable", Boolean.parseBoolean(arr[3]));
+			map.put("biometricAvailable", arr[3]);
 			String code = applicantType.getApplicantType(map);
 			assertTrue(code.equals(createCode(i)));
 		}

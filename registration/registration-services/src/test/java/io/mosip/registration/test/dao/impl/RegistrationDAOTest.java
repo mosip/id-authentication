@@ -8,30 +8,32 @@ import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationTransactionType;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
@@ -44,6 +46,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegTransactionRepository;
 import io.mosip.registration.repositories.RegistrationRepository;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class RegistrationDAOTest {
 
 	@Rule
@@ -56,15 +60,8 @@ public class RegistrationDAOTest {
 	private RegTransactionRepository regTransactionRepository;
 	private RegistrationTransaction regTransaction;
 
-	@BeforeClass
-	public static void initializeContext() {
-		SessionContext.destroySession();
-		ApplicationContext.getInstance().setApplicationMap(new HashMap<>());
-	}
-
 	@Before
-	public void initialize() throws InstantiationException, IllegalAccessException {
-
+	public void initialize() throws Exception {
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
@@ -74,21 +71,23 @@ public class RegistrationDAOTest {
 		regTransaction.setCrBy("Officer");
 		regTransaction.setCrDtime(time);
 
-		SessionContext.getInstance().getUserContext().setUserId("mosip");
-		SessionContext.getInstance().getUserContext().setName("mosip");
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		List<String> roles = Arrays.asList("SUPERADMIN", "SUPERVISOR");
 		RegistrationCenterDetailDTO center = new RegistrationCenterDetailDTO();
 		center.setRegistrationCenterId("abc123");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(center);
-		List<String> roles = new ArrayList<>();
-		roles.add("SUPERADMIN");
-		roles.add("SUPERVISOR");
-		SessionContext.getInstance().getUserContext().setRoles(roles);
+
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
+		PowerMockito.when(SessionContext.userContext().getName()).thenReturn("mosip");
+		PowerMockito.when(SessionContext.userContext().getRoles()).thenReturn(roles);
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(center);
 	}
 
 	@Test
 	public void testSaveRegistration() throws RegBaseCheckedException {
-		when(registrationRepository.create(Mockito.any(Registration.class))).thenReturn(new Registration());
 		RegistrationDTO registrationDTO = new RegistrationDTO();
+		RegistrationMetaDataDTO registrationMetaDataDTO=new RegistrationMetaDataDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		MoroccoIdentity identity = new MoroccoIdentity();
@@ -101,6 +100,9 @@ public class RegistrationDAOTest {
 		demographicInfoDTO.setIdentity(identity);
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
+		registrationDTO.getRegistrationMetaDataDTO().setRegistrationCategory("New");
+		when(registrationRepository.create(Mockito.any(Registration.class))).thenReturn(new Registration());
 
 		registrationDAOImpl.save("../PacketStore/28-Sep-2018/111111", registrationDTO);
 	}
@@ -148,8 +150,8 @@ public class RegistrationDAOTest {
 		Registration regobjectrequest = new Registration();
 		regobjectrequest.setId("123456");
 		regobjectrequest.setClientStatusCode("R");
-		regobjectrequest.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
-		regobjectrequest.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
+		regobjectrequest.setUpdBy("mosip");
+		regobjectrequest.setApproverRoleCode("SUPERADMIN");
 		regobjectrequest.setAckFilename("file1");
 		regobjectrequest.setRegistrationTransaction(new ArrayList<>());
 
@@ -266,12 +268,6 @@ public class RegistrationDAOTest {
 		assertEquals("123456789", reg.getId());
 		assertEquals("APPROVED", reg.getClientStatusCode());
 		assertEquals("mosip", reg.getCrBy());
-	}
-
-	@AfterClass
-	public static void destroyContexts() {
-		SessionContext.destroySession();
-		ApplicationContext.getInstance().setApplicationMap(null);
 	}
 
 	@Test

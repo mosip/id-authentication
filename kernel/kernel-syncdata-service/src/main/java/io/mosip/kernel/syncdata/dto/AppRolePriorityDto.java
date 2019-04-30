@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * Class AppRolePriorityDto.
  *
@@ -13,9 +12,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 
-
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 /**
  * Instantiates a new app role priority dto.
  */
@@ -24,11 +22,11 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new app role priority dto.
  *
- * @param appId the app id
+ * @param appId     the app id
  * @param processId the process id
- * @param roleCode the role code
- * @param priority the priority
- * @param langCode the lang code
+ * @param roleCode  the role code
+ * @param priority  the priority
+ * @param langCode  the lang code
  */
 @AllArgsConstructor
 public class AppRolePriorityDto extends BaseDto {

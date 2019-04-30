@@ -12,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BiometricTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -142,9 +141,8 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeDto> biometricTypeRequestDto) {
-		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto.getRequest(),
-				BiometricType.class);
+	public CodeAndLanguageCodeID createBiometricType(BiometricTypeDto biometricTypeRequestDto) {
+		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto, BiometricType.class);
 		BiometricType biometricType;
 		try {
 			biometricType = biometricTypeRepository.create(entity);

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TemplateFileFormatErrorCode;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
@@ -41,9 +40,8 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	 * createTemplateFileFormat(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createTemplateFileFormat(
-			RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
-		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(templateFileFormatRequestDto.getRequest(),
+	public CodeAndLanguageCodeID createTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto) {
+		TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(templateFileFormatRequestDto,
 				TemplateFileFormat.class);
 		TemplateFileFormat templateFileFormat;
 		try {
@@ -60,9 +58,9 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	}
 
 	@Override
-	public CodeAndLanguageCodeID updateTemplateFileFormat(RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeID updateTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto) {
 
-		TemplateFileFormatDto templateFileFormatDto = templateFileFormatRequestDto.getRequest();
+		TemplateFileFormatDto templateFileFormatDto = templateFileFormatRequestDto;
 
 		CodeAndLanguageCodeID templateFileFormatId = new CodeAndLanguageCodeID();
 
@@ -70,9 +68,8 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 
 		try {
 			TemplateFileFormat templateFileFormat = templateFileFormatRepository
-					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-							templateFileFormatRequestDto.getRequest().getCode(),
-							templateFileFormatRequestDto.getRequest().getLangCode());
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(templateFileFormatRequestDto.getCode(),
+							templateFileFormatRequestDto.getLangCode());
 
 			if (templateFileFormat != null) {
 				MetaDataUtils.setUpdateMetaData(templateFileFormatDto, templateFileFormat, false);

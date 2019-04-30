@@ -18,6 +18,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -26,7 +28,6 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -52,7 +53,6 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -340,12 +340,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
 		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
-				Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
+					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+				Float.parseFloat(registrationCenterDto.getLatitude());
+				Float.parseFloat(registrationCenterDto.getLongitude());
 			}
 		} catch (NullPointerException | NumberFormatException latLongException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
@@ -353,9 +353,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongException));
 		}
 		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto.getRequest(), RegistrationCenterHistory.class);
+				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
 		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
 		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
 		RegistrationCenter registrationCenter;
@@ -432,7 +432,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Transactional
 	@Override
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenter) {
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
 		RegistrationCenter updRegistrationCenter = null;
 		try {
 
@@ -541,10 +541,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			Map<Short, List<Location>> parLocCodeToListOfLocation = locationService
 					.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel);
-			for (String name : names) {
-				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
-				uniqueLocCode.addAll(codes);
-			}
+			Set<String> codes = getListOfLocationCode(parLocCodeToListOfLocation, hierarchyLevel, names);
+			uniqueLocCode.addAll(codes);
 			if (!EmptyCheckUtils.isNullEmpty(uniqueLocCode)) {
 				registrationCentersList = registrationCenterRepository
 						.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
@@ -573,6 +571,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
+		validateLocationName(levelToListOfLocationMap, hierarchyLevel, text);
+
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
@@ -593,6 +593,68 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return uniqueLocCode;
+	}
+
+	private Set<String> getListOfLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
+			List<String> texts) {
+
+		List<String> validLocationName = validateListOfLocationName(levelToListOfLocationMap, hierarchyLevel, texts);
+		Set<String> uniqueLocCode = new TreeSet<>();
+		if (!validLocationName.isEmpty()) {
+			for (String text : validLocationName) {
+				boolean isParent = false;
+				for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
+					if (!isParent) {
+						for (Location location : data.getValue()) {
+							if (text.trim().equalsIgnoreCase(location.getName().trim())) {
+								uniqueLocCode.add(location.getCode());
+								isParent = true;
+								break;// parent code set
+							}
+						}
+					} else if (data.getKey() > hierarchyLevel) {
+						for (Location location : data.getValue()) {
+							if (uniqueLocCode.contains(location.getParentLocCode())) {
+								uniqueLocCode.add(location.getCode());
+							}
+						}
+					}
+				}
+			}
+		} else {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		return uniqueLocCode;
+	}
+
+	private void validateLocationName(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
+			String text) {
+		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
+		boolean isRootLocation = false;
+		for (Location location : rootLocation) {
+			if (location.getName().trim().equalsIgnoreCase(text)) {
+				isRootLocation = true;
+			}
+		}
+		if (!isRootLocation) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+	}
+
+	private List<String> validateListOfLocationName(Map<Short, List<Location>> levelToListOfLocationMap,
+			Short hierarchyLevel, List<String> texts) {
+		List<String> locationNames = new ArrayList<>();
+		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
+		for (String text : texts) {
+			for (Location location : rootLocation) {
+				if (location.getName().trim().equalsIgnoreCase(text)) {
+					locationNames.add(text);
+				}
+			}
+		}
+		return locationNames;
 	}
 
 }

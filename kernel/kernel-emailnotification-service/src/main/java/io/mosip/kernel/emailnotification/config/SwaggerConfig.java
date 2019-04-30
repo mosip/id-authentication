@@ -70,7 +70,6 @@ public class SwaggerConfig {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
-
 		return docket;
 	}
 

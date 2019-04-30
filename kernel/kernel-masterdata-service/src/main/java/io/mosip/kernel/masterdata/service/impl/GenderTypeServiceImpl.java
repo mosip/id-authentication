@@ -12,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -110,8 +109,8 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID saveGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
-		Gender entity = MetaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
+	public CodeAndLanguageCodeID saveGenderType(GenderTypeDto genderRequestDto) {
+		Gender entity = MetaDataUtils.setCreateMetaData(genderRequestDto, Gender.class);
 		Gender gender;
 		try {
 			gender = genderTypeRepository.create(entity);
@@ -134,8 +133,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 */
 	@Transactional
 	@Override
-	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
-		GenderTypeDto genderTypeDto = gender.getRequest();
+	public CodeAndLanguageCodeID updateGenderType(GenderTypeDto genderTypeDto) {
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
 		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
@@ -183,7 +181,10 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#validateGender(java.lang.String)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.GenderTypeService#validateGender(java.lang
+	 * .String)
 	 */
 	@Override
 	public StatusResponseDto validateGender(String genderName) {
@@ -203,7 +204,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		}
 
 		return statusResponseDto;
-		
+
 	}
 
 }

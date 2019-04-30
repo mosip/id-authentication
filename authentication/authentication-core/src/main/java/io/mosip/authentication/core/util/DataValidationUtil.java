@@ -2,10 +2,12 @@ package io.mosip.authentication.core.util;
 
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 
 /**
- * The Class DataValidationUtil.
+ * The Class DataValidationUtil - Checks for errors in the error object
+ * and throws {@link IDDataValidationException}, if any error is present.
  *
  * @author Manoj SP
  */
@@ -16,9 +18,10 @@ public final class DataValidationUtil {
 	 */
 	private DataValidationUtil() {
 	}
-	
+
 	/**
-	 * Get list of errors from error object and throws {@link IDDataValidationException}, if any error is present.
+	 * Get list of errors from error object and throws
+	 * {@link IDDataValidationException}, if any error is present.
 	 *
 	 * @param errors the errors
 	 * @throws IDDataValidationException the ID data validation exception
@@ -28,8 +31,9 @@ public final class DataValidationUtil {
 			IDDataValidationException exception = new IDDataValidationException();
 			exception.clearArgs();
 			errors.getAllErrors()
-			.forEach(error -> exception.addInfo(error.getCode(),
-					error.getDefaultMessage(), error.getArguments()));
+					.forEach(error -> exception.addInfo(error.getCode(), error.getDefaultMessage(),
+							IdAuthenticationErrorConstants.getActionMessageForErrorCode(error.getCode()).orElse(null),
+							error.getArguments()));
 			throw exception;
 		}
 	}

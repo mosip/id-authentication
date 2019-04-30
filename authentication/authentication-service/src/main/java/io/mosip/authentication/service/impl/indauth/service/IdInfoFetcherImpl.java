@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -38,16 +39,21 @@ import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 
+/**
+ * @author Dinesh Karuppiah.T
+ *
+ */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
 
+	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	/** The Constant PRIMARY_LANG_CODE. */
-	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+	private static final String SECONDARY_LANG_CODE = "mosip.secondary-language";
 
 	/** The BiometricProviderFactory value */
 	@Autowired
@@ -57,9 +63,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired
 	private OTPManager otpManager;
 
+	/**
+	 * The Cbeff Util
+	 */
 	@Autowired
 	private CbeffUtil cbeffUtil;
 
+	/**
+	 * The Master Data Manager
+	 */
 	@Autowired
 	private MasterDataManager masterDataManager;
 
@@ -154,11 +166,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * Get Iris Provider
 	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(
-	 * io.mosip.authentication.core.dto.indauth.BioInfo)
 	 */
 	@Override
 	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue) {
@@ -176,11 +185,37 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
+	/*
+	 * Get the Face provider
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getFaceProvider(
+	 * io.mosip.authentication.core.dto.indauth.DataDTO)
+	 */
+	@Override
+	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue) {
+		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
+	}
+
+	/*
+	 * Get Validataed Otp Function
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#
+	 * getValidateOTPFunction()
+	 */
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
 		return otpManager::validateOtp;
 	}
 
+	/*
+	 * To get the valid Cbeff for Entity Info
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getCbeffValues(
+	 * java.util.Map, io.mosip.authentication.core.spi.bioauth.CbeffDocType,
+	 * io.mosip.authentication.core.spi.indauth.match.MatchType)
+	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType type, MatchType matchType) throws IdAuthenticationBusinessException {
@@ -228,6 +263,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return Stream.empty();
 	}
 
+	/**
+	 * Get the Cbeff Name mapped on ID Repo based on Ida Mapping
+	 * 
+	 * @param cbeffName
+	 * @param matchType
+	 * @return
+	 */
 	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
 		return Stream.of(IdaIdMapping.values()).filter(cfg -> matchType.getIdMapping().equals(cfg)
 				|| matchType.getIdMapping().getSubIdMappings().contains(cfg)).map(cfg -> {
@@ -290,4 +332,20 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getMatchingThreshold(java.lang.String)
+	 */
+	@Override
+	public Optional<Integer> getMatchingThreshold(String key) {
+		Integer threshold = null;
+		if (Objects.nonNull(key)) {
+			String property = environment.getProperty(key);
+			if (property != null && !property.isEmpty()) {
+				threshold = Integer.parseInt(property);
+			} 
+		}
+		return Optional.ofNullable(threshold);
+	}
+
 }

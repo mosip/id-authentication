@@ -23,32 +23,57 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  */
 public class DaoConfig extends HibernateDaoConfig {
 
+	/**
+	 * instance of datasource
+	 */
 	private static DataSource dataSource;
 	
+	/**
+	 * connection of datasource
+	 */
 	static {
+		String dbPath = System.getProperty("mosip.dbpath");
 		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 		driverManagerDataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
-		driverManagerDataSource.setUrl("jdbc:derby:reg;bootPassword=mosip12345");
+		driverManagerDataSource.setUrl("jdbc:derby:"+dbPath+";bootPassword=mosip12345");
 
 		dataSource = driverManagerDataSource;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#dataSource()
+	 */
 	@Override
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
 		return dataSource;
 	}
 
+	/**
+	 * setting datasource to jdbcTemplate
+	 * 
+	 * @return JdbcTemplate
+	 */
 	@Bean
 	public static JdbcTemplate jdbcTemplate() {
 		return new JdbcTemplate(dataSource);
 	}
 
+	/**
+	 * setting jdbcTemplate to PropertiesConfig
+	 * 
+	 * @return PropertiesConfig
+	 */
 	@Bean(name = "propertiesConfig")
 	public static PropertiesConfig propertiesConfig() {
 		return new PropertiesConfig(jdbcTemplate());
 	}
 
+	/**
+	 * setting profile for spring properties
+	 * 
+	 * @return PropertyPlaceholderConfigurer
+	 */
 	@Bean
 	@Lazy(false)
 	public static PropertyPlaceholderConfigurer properties() {

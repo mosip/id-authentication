@@ -12,7 +12,7 @@ public class HashUtill {
 	private HashUtill() {
 	}
 
-	public static byte[]  hashUtill(byte[] bytes) {
-		return HMACUtils.generateHash(bytes);
+	public static String hashUtill(byte[] bytes) {
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytes));
 	}
 }

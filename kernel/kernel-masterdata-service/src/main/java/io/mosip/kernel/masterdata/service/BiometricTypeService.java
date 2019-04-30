@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -20,59 +19,48 @@ public interface BiometricTypeService {
 	 * 
 	 * @return BiometricTypeResponseDto
 	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
+	 * @throws MasterDataServiceException If fails to fetch required Biometric Type
 	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @throws DataNotFoundException      If given required Biometric Type not found
 	 */
 	public BiometricTypeResponseDto getAllBiometricTypes();
 
 	/**
 	 * Method to fetch all Biometric Type details based on language code
 	 * 
-	 * @param langCode
-	 *            The language code
+	 * @param langCode The language code
 	 * 
 	 * @return BiometricTypeResponseDto
 	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
+	 * @throws MasterDataServiceException If fails to fetch required Biometric Type
 	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @throws DataNotFoundException      If given required Biometric Type not found
 	 */
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(String langCode);
 
 	/**
 	 * Method to fetch all Biometric Type details based on id and language code
 	 * 
-	 * @param code
-	 *            The id of Biometric Type
+	 * @param code     The id of Biometric Type
 	 * 
-	 * @param langCode
-	 *            The language code
+	 * @param langCode The language code
 	 * 
 	 * @return BiometricTypeResponseDto
 	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to fetch required Biometric Type
+	 * @throws MasterDataServiceException If fails to fetch required Biometric Type
 	 * 
-	 * @throws DataNotFoundException
-	 *             If given required Biometric Type not found
+	 * @throws DataNotFoundException      If given required Biometric Type not found
 	 */
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
 
 	/**
 	 * Method to create a Biometric Type
 	 * 
-	 * @param biometricTypeRequestDto
-	 *            The Biometric Type data
+	 * @param biometricTypeRequestDto The Biometric Type data
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 * 
-	 * @throws MasterDataServiceException
-	 *             If fails to insert the Biometric Type
+	 * @throws MasterDataServiceException If fails to insert the Biometric Type
 	 */
-	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeDto> biometricTypeRequestDto);
+	public CodeAndLanguageCodeID createBiometricType(BiometricTypeDto biometricTypeRequestDto);
 }

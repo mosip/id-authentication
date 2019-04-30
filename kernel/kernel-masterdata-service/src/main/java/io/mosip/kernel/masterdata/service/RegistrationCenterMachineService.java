@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -19,25 +18,23 @@ public interface RegistrationCenterMachineService {
 	/**
 	 * This method used to create mapping between registration center and machine.
 	 * 
-	 * @param requestDto
-	 *            contains {@link RegistrationCenterMachineDto} which must contain
-	 *            registration center id and machine id.
+	 * @param requestDto contains {@link RegistrationCenterMachineDto} which must
+	 *                   contain registration center id and machine id.
 	 * @return response object which contains registration center id and machine id.
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while mapping registration center id and
-	 *             machine id. Like if registration center id or machine id is not
-	 *             valid or not present in database.
+	 * @throws MasterDataServiceException if any error occurs while mapping
+	 *                                    registration center id and machine id.
+	 *                                    Like if registration center id or machine
+	 *                                    id is not valid or not present in
+	 *                                    database.
 	 */
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
-			RequestDto<RegistrationCenterMachineDto> requestDto);
+			RegistrationCenterMachineDto requestDto);
 
 	/**
 	 * Delete the mapping of registration center and machine
 	 * 
-	 * @param regCenterId
-	 *            Registration center id to be deleted
-	 * @param machineId
-	 *            MachineId id to be deleted
+	 * @param regCenterId Registration center id to be deleted
+	 * @param machineId   MachineId id to be deleted
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId);

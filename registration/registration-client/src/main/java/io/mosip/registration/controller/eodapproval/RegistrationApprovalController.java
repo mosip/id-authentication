@@ -37,6 +37,8 @@ import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,8 +51,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -155,6 +158,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void initialize(URL location, ResourceBundle resources) {
 		reloadTableView();
 		tableCellColorChangeListener();
+		id.setResizable(false);
+		statusComment.setResizable(false);
 	}
 
 	private void tableCellColorChangeListener() {
@@ -168,6 +173,8 @@ public class RegistrationApprovalController extends BaseController implements In
 						setTextFill(Color.GREEN);
 					} else if (item != null && item.equals(RegistrationUIConstants.REJECTED)) {
 						setTextFill(Color.RED);
+					} else {
+						setTextFill(Color.BLACK);
 					}
 				}
 			};
@@ -185,14 +192,28 @@ public class RegistrationApprovalController extends BaseController implements In
 		rejectionBtn.setVisible(false);
 		imageAnchorPane.setVisible(false);
 
-		id.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>("id"));
-		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>("statusComment"));
-		acknowledgementFormPath.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalDTO, String>("acknowledgementFormPath"));
+		id.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalDTO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
+		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
+		table.getSelectionModel().selectFirst();
+
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
+
 		table.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
+				viewAck();
+			}
+		});
+
+		table.setOnKeyReleased(event -> {
+			if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
 				viewAck();
 			}
 		});
@@ -212,7 +233,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			webView.getEngine().loadContent("");
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
@@ -251,11 +272,13 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		if (!listData.isEmpty()) {
 
+			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
+
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
 		}
 
@@ -265,10 +288,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event
-	 *            the event
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @param event the event
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -315,7 +336,8 @@ public class RegistrationApprovalController extends BaseController implements In
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
 					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
-							primarystage, approvalmapList, table, "RegistrationApprovalController");
+							primarystage, approvalmapList, table,
+							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
@@ -345,13 +367,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage
-	 *            the stage
-	 * @param fxmlPath
-	 *            the fxml path
+	 * @param primarystage the stage
+	 * @param fxmlPath     the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 

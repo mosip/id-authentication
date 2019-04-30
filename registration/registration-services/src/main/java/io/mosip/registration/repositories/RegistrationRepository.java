@@ -19,10 +19,16 @@ import io.mosip.registration.entity.Registration;
 public interface RegistrationRepository extends BaseRepository<Registration, String> {
 
 	/**
-	 * This method returns the list of {@link Registration} based on provided id's
-	 * 
-	 * @param idList
-	 *            the list of entity id's
+	 * This method returns the list of {@link Registration} based on provided id's.
+	 *
+	 * @param clientstatusCode 
+	 * 				the clientstatus code
+	 * @param exportstatusCode 
+	 * 				the exportstatus code
+	 * @param serverStatusCode 
+	 * 				the server status code
+	 * @param fileUploadStatus 
+	 * 				the file upload status
 	 * @return the list of {@link Registration}
 	 */
 	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus or reg.clientStatusCode= :exportStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
@@ -49,34 +55,41 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	List<Registration> findByClientStatusCodeInOrderByUpdDtimesDesc(List<String> statusCodes);
 	
 	/**
-	 * To fetch the records for Packet Upload
-	 * @param statusCodes
-	 * @param serverStatus
-	 * @return
+	 * To fetch the records for Packet Upload.
+	 *
+	 * @param statusCodes 
+	 * 				the status codes
+	 * @param serverStatus 
+	 * 				the server status
+	 * @return List of registration packets
 	 */
 	List<Registration> findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(List<String> statusCodes,String serverStatus);
 
 	/**
-	 * Fetching all the re registration records
-	 * 
-	 * @param status
-	 * @return
+	 * Fetching all the re registration records.
+	 *
+	 * @param clientStatus 
+	 * 				the client status
+	 * @param serverStatus 
+	 * 				the server status
+	 * @return List of registration packets
 	 */
 	List<Registration> findByClientStatusCodeAndServerStatusCode(String clientStatus, String serverStatus);
 	
 	/**
-	 * Find by CrDtimes and client status code
-	 * @param crDtimes the date upto packets to be deleted
-	 * @param clientStatus status of resgistrationPacket
+	 * Find by CrDtimes and client status code.
+	 *
+	 * @param crDtimes 
+	 * 				the date upto packets to be deleted
 	 * @return list of registrations
 	 */
 	List<Registration> findByCrDtimeBefore(Timestamp crDtimes);
 	
 	/**
-	 * This method returns the list of {@link Registration} based on status code
-	 * 
-	 * @param statusCode
-	 *            the status code
+	 * This method returns the list of {@link Registration} based on status code.
+	 *
+	 * @param statusCode            
+	 * 				the status code
 	 * @return the list of {@link Registration}
 	 */
 	List<Registration> findByclientStatusCodeOrderByCrDtimeAsc(String statusCode);
@@ -93,28 +106,33 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	Registration findByClientStatusCodeAndId(String clientStatusCode,String id);
 	
 	/**
-	 * Find by CrDtimes and client status code
-	 * @param crDtimes the date upto packets to be deleted
-	 * @param clientStatus status of resgistrationPacket
+	 * Find by CrDtimes and client status code.
+	 *
+	 * @param crDtimes 
+	 * 				the date upto packets to be deleted
+	 * @param clientStatus 
+	 * 				status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> findByCrDtimeBeforeAndClientStatusCode(Timestamp crDtimes, String clientStatus);
+	List<Registration> findByCrDtimeBeforeAndServerStatusCode(Timestamp crDtimes, String clientStatus);
 	
 	/**
 	 * fetches all the Registration records which is having the given server status
-	 * codes
-	 * 
-	 * @param statusCodes
-	 * @return
+	 * codes.
+	 *
+	 * @param statusCodes 
+	 * 				the status codes
+	 * @return the list of registrations
 	 */
 	List<Registration> findByServerStatusCodeIn(List<String> statusCodes);
 
 	/**
 	 * fetches all the Registration records which is not having the given server
-	 * status codes
-	 * 
-	 * @param statusCodes
-	 * @return
+	 * status codes.
+	 *
+	 * @param statusCodes 
+	 * 				the status codes
+	 * @return the list of registrations
 	 */
-	List<Registration> findByServerStatusCodeNotIn(List<String> statusCodes);
+	List<Registration> findByServerStatusCodeNotInOrServerStatusCodeIsNull(List<String> statusCodes);
 }

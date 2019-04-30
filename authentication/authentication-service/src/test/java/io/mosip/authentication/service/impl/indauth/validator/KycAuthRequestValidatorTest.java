@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,20 +30,19 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 /**
  * 
@@ -56,6 +54,8 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class KycAuthRequestValidatorTest {
 
+	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary-language";
+
 	@Mock
 	private SpringValidatorAdapter validator;
 
@@ -64,6 +64,9 @@ public class KycAuthRequestValidatorTest {
 
 	@InjectMocks
 	RollingFileAppender appender;
+
+	@Mock
+	private PinValidatorImpl pinValidatorImpl;
 
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;
@@ -88,9 +91,9 @@ public class KycAuthRequestValidatorTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
@@ -135,7 +138,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -146,7 +149,6 @@ public class KycAuthRequestValidatorTest {
 		request.setOtp(otp);
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
-		request.setTransactionID("1234567890");
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
@@ -155,13 +157,13 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		Mockito.when(pinValidatorImpl.validatePin(Mockito.anyString())).thenReturn(true);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
 
 	@Test
 	public void TestInvalidAuthRequest() {
-		AuthRequestDTO authRequestDTO = null;
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
@@ -197,7 +199,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -211,7 +213,6 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-		MatchType matchType = null;
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(DemoMatchType.NAME)).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "baseAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
@@ -222,9 +223,8 @@ public class KycAuthRequestValidatorTest {
 	public void TestMUAPermissionisNotAvail() {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("ekyc.mua.accesslevel.1234567890", "none");
 		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -287,7 +287,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -344,7 +344,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -360,7 +360,6 @@ public class KycAuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
-		System.out.println(errors);
 	}
 
 	@Test
@@ -399,7 +398,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -417,10 +416,9 @@ public class KycAuthRequestValidatorTest {
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
-		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testForIsValidAuthtype() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -449,7 +447,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -460,19 +458,17 @@ public class KycAuthRequestValidatorTest {
 		request.setOtp(otp);
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
-		request.setTransactionID("1234567890");
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-		
 		MockEnvironment mockenv = new MockEnvironment();
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("ekyc.allowed.auth.type", "");
-		
+		mockenv.setProperty("ekyc.auth.types.allowed", "");
+
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);

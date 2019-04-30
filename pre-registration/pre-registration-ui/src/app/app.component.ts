@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { HostListener } from '@angular/core';
+import { AutoLogoutService } from 'src/app/core/services/auto-logout.service';
 
 @Component({
   selector: 'app-root',
@@ -7,44 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'pre-registration';
-  // userActive: boolean = false;
+  message: object;
 
-  constructor() // private userIdle: UserIdleService,
-  // private location: Location
-  {}
+  constructor(private autoLogout: AutoLogoutService) {}
+
   ngOnInit() {
-    // if(localStorage.getItem('loggedIn') == "true")
-    // {
-    // this.userIdle.startWatching();
-    // this.userIdle.onTimerStart().subscribe(() => console.log('hi'));
-    // this.userIdle.onTimeout().subscribe(
-    //   res =>{
-    //     this.doLogOut();
-    //   },
-    //   err =>{},
-    //   () => console.log('Time is up!'));
-    // }
+    this.autoLogout.currentMessageAutoLogout.subscribe(res => {
+      console.log(res);
+    });
+    this.autoLogout.changeMessage({ timerFired: false });
   }
-  // doLogOut(){
-  //   alert('you have been logged out due to inactivity');
-  //   // if(localStorage.getItem('loggedIn') == "true")
-  //   // {
-  //     this.userIdle.resetTimer();
-  //     this.userIdle.startWatching();
-  //     this.userIdle.onTimerStart().subscribe(() => console.log('hi'));
-  //     this.userIdle.onTimeout().subscribe(
-  //       res =>{
-  //         this.doLogOut();
-  //       },
-  //       err =>{},
-  //       () => console.log('Time is up!'));
-  //   // }
 
-  // }
-
-  // checkUserActivity(){
-  //   @HostListener('Keydown')  {
-  //     this.userActive = false;
-  //   }
-  // }
+  @HostListener('mouseover')
+  @HostListener('document:mousemove', ['$event'])
+  @HostListener('keypress')
+  @HostListener('click')
+  @HostListener('document:keypress', ['$event'])
+  onMouseClick() {
+    this.autoLogout.setisActive(true);
+  }
 }

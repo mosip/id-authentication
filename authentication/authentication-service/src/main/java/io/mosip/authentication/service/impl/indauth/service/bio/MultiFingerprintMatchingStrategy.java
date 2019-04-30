@@ -27,38 +27,24 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
+						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
+								BioAuthType.FGR_MIN_MULTI.getDisplayName()));
 			}
 		}
 		return 0;
 	});
 
-	/** The Final for MatchingStatergyType */
-	private final MatchingStrategyType matchStrategyType;
-
-	/** The Final for MatchFunction */
-	private final MatchFunction matchFunction;
+	/** The matching strategy impl. */
+	private MatchingStrategyImpl matchingStrategyImpl;
 
 	/** The Constructor for MultiFingerprintMatchingStrategy */
 	private MultiFingerprintMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
-		this.matchStrategyType = matchStrategyType;
-		this.matchFunction = matchFunction;
+		matchingStrategyImpl = new MatchingStrategyImpl(matchStrategyType, matchFunction);
 	}
 
-	/**
-	 * get Method for MatchingStrategyType
-	 */
 	@Override
-	public MatchingStrategyType getType() {
-		return matchStrategyType;
-	}
-
-	/**
-	 * get Method for MatchFunction
-	 */
-	@Override
-	public MatchFunction getMatchFunction() {
-		return matchFunction;
+	public MatchingStrategy getMatchingStrategy() {
+		return matchingStrategyImpl;
 	}
 
 }

@@ -7,7 +7,7 @@ package io.mosip.registration.processor.core.exception.util;
  */
 public enum PlatformSuccessMessages {
 
-	// Packet Validator Success  messages
+	// Packet Validator Success messages
 	/** The rpr pkr packet validate. */
 	RPR_PKR_PACKET_VALIDATE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "000", "Packet Validation Success"),
 
@@ -19,19 +19,22 @@ public enum PlatformSuccessMessages {
 	/** The rpr pkr demode-dupe validate. */
 	RPR_PKR_DEMO_DE_DUP(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "000", "Demo-de-dupe Success"),
 
-	RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "000","Potential duplicate packet found for registration id : "),
+	RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "000",
+			"Potential duplicate packet found for registration id : "),
 
-	
-	
-	//Bio-De-dupe Success messages
+	// Bio-De-dupe Success messages
 	/** The Constant PACKET_BIODEDUPE_SUCCESS. */
-	RPR_BIO_DEDUPE_SUCCESS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"000","Packet biodedupe successfull"),
-	
+	RPR_BIO_DEDUPE_SUCCESS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "000", "Packet biodedupe successful"),
+
 	/** The Constant PACKET_BIOMETRIC_POTENTIAL_MATCH. */
-	RPR_BIO_METRIC_POTENTIAL_MATCH(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"000","Potential match found while processing bio dedupe");
-	
-	
-	
+	RPR_BIO_METRIC_POTENTIAL_MATCH(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "000",
+			"Potential match found while processing bio dedupe"),
+
+	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success"),
+
+	RPR_SENT_TO_REPROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "001", "sent to reprocess Success"),
+
+	RPR_EXTERNAL_STAGE_SUCCESS(PlatformConstants.RPR_EXTERNAL_STAGE + "000", "External stage  Success");
 
 	/** The success message. */
 	private final String successMessage;

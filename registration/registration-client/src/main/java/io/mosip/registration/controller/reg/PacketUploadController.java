@@ -268,7 +268,8 @@ public class PacketUploadController extends BaseController implements Initializa
 						displayStatus(populateTableData(tableMap));
 					} else {
 						loadInitialPage();
-						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
 					}
 					selectedPackets.clear();
 					return status;
@@ -290,7 +291,9 @@ public class PacketUploadController extends BaseController implements Initializa
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getFileName(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
-		displayStatus(populateTableData(exportedPacketMap));
+		if (!exportedPacketMap.isEmpty()) {
+			displayStatus(populateTableData(exportedPacketMap));
+		}
 	}
 
 	/**
@@ -375,6 +378,10 @@ public class PacketUploadController extends BaseController implements Initializa
 	public void initialize(URL location, ResourceBundle resources) {
 		selectedPackets.clear();
 		loadInitialPage();
+		fileNameColumn.setResizable(false);
+		checkBoxColumn.setResizable(false);
+		fileColumn.setResizable(false);
+		statusColumn.setResizable(false);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -384,20 +391,24 @@ public class PacketUploadController extends BaseController implements Initializa
 			Stage stage = new Stage();
 
 			stage.setTitle(RegistrationUIConstants.PACKET_UPLOAD_HEADER_NAME);
-			stage.setWidth(380);
+			stage.setWidth(500);
 			stage.setHeight(500);
 
 			TableView<PacketStatusDTO> statusTable = new TableView<>();
 			TableColumn<PacketStatusDTO, String> fileNameCol = new TableColumn<>(
 					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE);
+			fileNameCol.setMinWidth(250);
 			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<>(
 					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS);
+			statusCol.setMinWidth(250);
 			ObservableList<PacketStatusDTO> displayList = FXCollections.observableArrayList(filesToDisplay);
 			statusTable.setItems(displayList);
 			fileNameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 			statusCol.setCellValueFactory(new PropertyValueFactory<>("clientStatusComments"));
 			statusTable.getColumns().addAll(fileNameCol, statusCol);
-			Scene scene = new Scene(new StackPane(statusTable), 500, 400);
+			Scene scene = new Scene(new StackPane(statusTable), 800, 800);
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);

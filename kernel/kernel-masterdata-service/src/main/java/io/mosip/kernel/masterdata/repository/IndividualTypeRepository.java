@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  */
 public interface IndividualTypeRepository extends BaseRepository<IndividualType, CodeAndLanguageCodeID> {
 
-	@Query(value="FROM IndividualType t where t.isActive = true and (t.isDeleted is null or t.isDeleted = false)")
+	@Query(value = "FROM IndividualType t where t.isActive = true and (t.isDeleted is null or t.isDeleted = false)")
 	public List<IndividualType> findAll();
 
 }

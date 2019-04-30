@@ -33,7 +33,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration(value = "ida_swagger_config")
 @EnableSwagger2
 public class SwaggerConfig {
-	
+
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
@@ -43,37 +43,29 @@ public class SwaggerConfig {
 	@Value("${server.port:8080}")
 	private int serverPort;
 
-	
 	private String host;
 	private String proto = "http";
 	private int port = -1;
-	
+
 	private String hostWithPort;
-	
-	
+
 	@PostConstruct
 	public void init() {
 		host = "localhost";
 		hostWithPort = "localhost:" + serverPort;
 	}
 
-	
-	
 	/**
 	 * Set the api info.
 	 *
 	 * @return the api info
 	 */
 	ApiInfo getApiInfo() {
-		return new ApiInfoBuilder()
-				.title("Id Authentication Service")
-				.description("Id Authentication Service")
-				.build();
+		return new ApiInfoBuilder().title("Id Authentication Service").description("Id Authentication Service").build();
 	}
 
 	/**
-	 * Docket bean provides more control over the API for Documentation
-	 * Generation.
+	 * Docket bean provides more control over the API for Documentation Generation.
 	 *
 	 * @return the docket
 	 */
@@ -102,15 +94,11 @@ public class SwaggerConfig {
 			}
 		}
 		ParameterBuilder aParameterBuilder = new ParameterBuilder();
-        aParameterBuilder.name("Authorization")
-                         .modelRef(new ModelRef("string"))                         
-                         .parameterType("header")
-                         .build();
-        List<Parameter> aParameters = new ArrayList<>();
-        aParameters.add(aParameterBuilder.build()); 
+		aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").build();
+		List<Parameter> aParameters = new ArrayList<>();
+		aParameters.add(aParameterBuilder.build());
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build()
-				.globalOperationParameters(aParameters);
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build().globalOperationParameters(aParameters);
 
 		if (targetSwagger) {
 			docket.protocols(protocols()).host(hostWithPort);
@@ -119,6 +107,11 @@ public class SwaggerConfig {
 		return docket;
 	}
 
+	/**
+	 * Protocols
+	 * 
+	 * @return
+	 */
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

@@ -15,13 +15,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.config.JobConfigurationService;
 import javafx.application.Platform;
@@ -116,17 +114,21 @@ public class RestartController extends BaseController {
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Restart started");
 
-		/* Close the current application context */
+		//Registration-Client Termination
+		System.exit(0);
+		
+		//Need to check with application context
+		/* Close the current application context 
 		((AbstractApplicationContext) Initialization.getApplicationContext()).close();
 
-		/* Close the current java fx stage */
+		 Close the current java fx stage 
 		Initialization.getPrimaryStage().close();
 
-		/* Create and Set newly created application context */
+		 Create and Set newly created application context 
 		Initialization.setApplicationContext(new AnnotationConfigApplicationContext(AppConfig.class));
 
-		/* create and set new java fx stage */
-		new Initialization().start(new Stage());
+		 create and set new java fx stage 
+		new Initialization().start(new Stage());*/
 
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Restart completed");

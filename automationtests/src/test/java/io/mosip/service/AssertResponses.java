@@ -34,8 +34,8 @@ public class AssertResponses {
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-		logger.info(obj1);
-		logger.info(obj2);
+//		logger.info(obj1);
+//		logger.info(obj2);
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();
@@ -45,6 +45,7 @@ public class AssertResponses {
 		if (obj1.hashCode() == obj2.hashCode()) {
 			logger.info("both object are equal");
 			softAssert.assertTrue(obj1.equals(obj2));
+			logger.info("both object are equal");
 			softAssert.assertAll();
 			return true;
 

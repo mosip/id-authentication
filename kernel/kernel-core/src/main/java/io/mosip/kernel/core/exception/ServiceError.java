@@ -17,19 +17,21 @@ public class ServiceError {
 	/**
 	 * The error message.
 	 */
-	private String errorMessage;
+	private String message;
 
 	/**
 	 * Constructor for ErrorBean.
 	 * 
-	 * @param errorCode
-	 *            The error code.
-	 * @param errorMessage
-	 *            The error message.
+	 * @param errorCode    The error code.
+	 * @param errorMessage The error message.
 	 */
 	public ServiceError(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
-		this.errorMessage = errorMessage;
+		this.message = errorMessage;
+	}
+
+	public ServiceError() {
+
 	}
 
 }

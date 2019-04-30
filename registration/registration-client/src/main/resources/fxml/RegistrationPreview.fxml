@@ -6,6 +6,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 
 <GridPane fx:id="registrationPreview" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationPreviewController">
   <columnConstraints>
@@ -23,31 +28,6 @@
          <children>
             <GridPane GridPane.columnIndex="1">
                <children>
-                  <GridPane GridPane.rowIndex="1">
-                     <children>
-                        <GridPane>
-                           <children>
-                              <CheckBox fx:id="consentOfApplicant" mnemonicParsing="false" prefHeight="27.0" prefWidth="595.0" text="%consent" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                  </GridPane>
                   <GridPane fx:id="mainContent">
                      <children>
                         <WebView fx:id="webView" prefHeight="545.0" prefWidth="912.0" />
@@ -80,59 +60,40 @@
       </GridPane>
       <GridPane styleClass="headerFooter" GridPane.rowIndex="4">
          <children>
-            <GridPane hgap="10.0" GridPane.columnIndex="1">
+            <GridPane GridPane.columnIndex="1">
                <children>
-                  <GridPane>
+                  <GridPane fx:id="backButton" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
-                        <GridPane>
-                           <children>
-                              <GridPane fx:id="backButtonPane" GridPane.columnIndex="1">
-                                 <children>
-                                    <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPrevPage" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
-                                 </children>
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                              </GridPane>
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                        <GridPane GridPane.columnIndex="1">
-                           <children>
-                              <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
-                                 <children>
-                                    <Button mnemonicParsing="false" onAction="#goToNextPage" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
-                                 </children>
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                              </GridPane>
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
+                        <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPrevPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">                           
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/arrowLeft.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <children>
+                        <Button fx:id="nextButton" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                        	<graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/arrowRight.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                      </columnConstraints>
                      <rowConstraints>
@@ -141,10 +102,15 @@
                   </GridPane>
                </children>
                <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints percentHeight="10.0" />
+                  <RowConstraints percentHeight="90.0" />
                </rowConstraints>
             </GridPane>
          </children>

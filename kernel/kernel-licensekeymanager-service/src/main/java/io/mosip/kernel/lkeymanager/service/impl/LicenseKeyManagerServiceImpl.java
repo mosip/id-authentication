@@ -94,7 +94,7 @@ public class LicenseKeyManagerServiceImpl
 		licenseKeyTspMapEntity.setLKey(generatedLicense);
 		licenseKeyTspMapEntity.setActive(true);
 		licenseKeyTspMapEntity.setCreatedDateTimes(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
-		licenseKeyTspMapEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+		licenseKeyTspMapEntity.setCreatedBy("SYSTEM");
 
 		licenseKeyListRepository.save(licenseKeyListEntity);
 		licenseKeyTspMapRepository.save(licenseKeyTspMapEntity);
@@ -172,8 +172,13 @@ public class LicenseKeyManagerServiceImpl
 			throw new LicenseKeyServiceException(errorList);
 
 		}
-
 		LicenseKeyPermission licenseKeyPermissions = licenseKeyPermissionsRepository.findByLKey(licenseKey);
+		if (licenseKeyPermissions == null) {
+			List<ServiceError> errorList = new ArrayList<>();
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.NO_PERMISSIONS_MAPPED.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.NO_PERMISSIONS_MAPPED.getErrorMessage()));
+			throw new LicenseKeyServiceException(errorList);
+		}
 		return Arrays.asList(licenseKeyPermissions.getPermission().split(","));
 	}
 }

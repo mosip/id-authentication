@@ -2,29 +2,22 @@ package io.mosip.kernel.fsadapter.hdfs.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
+import java.nio.file.StandardCopyOption;
 import java.security.PrivilegedExceptionAction;
-import java.security.URIParameter;
-
-import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -34,6 +27,7 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
  * This class gets connection to DFS.
  *
  * @author Dharmesh Khandelwal
+ * @author Abhishek Kumar
  * @since 1.0.0
  */
 @Component
@@ -46,9 +40,9 @@ public class ConnectionUtils {
 	private String nameNodeUrl;
 
 	/**
-	 * Field for kdc domain
+	 * Field for kdc domain, default is 'NOTSET'
 	 */
-	@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain}")
+	@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain:NOTSET}")
 	private String kdcDomain;
 
 	/**
@@ -58,21 +52,31 @@ public class ConnectionUtils {
 	private String userName;
 
 	/**
-	 * Field for userPass
+	 * Field for verify Authentication is enable, default is false.
 	 */
-	@Value("${mosip.kernel.fsadapter.hdfs.user-pass}")
-	private String userPass;
-
 	@Value("${mosip.kernel.fsadapter.hdfs.authentication-enabled:false}")
 	private boolean isAuthEnable;
+
+	/**
+	 * Field for keytab,default value is 'NOTSET'
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.keytab-file:NOTSET}")
+	private String keytabPath;
 
 	/**
 	 * Field for hadoop FileSystem
 	 */
 	private FileSystem configuredFileSystem;
 
+	/**
+	 * Field for {@link ResourceLoader}
+	 */
+	@Autowired
+	private ResourceLoader resourceLoader;
+
 	private static final String HADOOP_HOME = "hadoop-lib";
 	private static final String WIN_UTIL = "winutils.exe";
+	private static final String CLASSPATH_PREFIX = "classpath:";
 
 	/**
 	 * hadoop lib path
@@ -97,11 +101,9 @@ public class ConnectionUtils {
 				Configuration configuration = prepareConfiguration();
 				if (isAuthEnable) {
 					configuration = initSecurityConfiguration(configuration);
-					loginUser(userName + "@" + kdcDomain, userPass);
 					configuredFileSystem = FileSystem.get(configuration);
 				} else {
 					configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
-					return configuredFileSystem;
 				}
 
 			} catch (IOException e) {
@@ -126,49 +128,9 @@ public class ConnectionUtils {
 		Files.copy(krbStream, krbPath);
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
 		UserGroupInformation.setConfiguration(configuration);
+		String user = userName + "@" + kdcDomain;
+		loginWithKeyTab(user, keytabPath);
 		return configuration;
-	}
-
-	/**
-	 * Instantiate a new LoginContext object with user principal and user passkey
-	 * and performs authentication
-	 * 
-	 * @param principal
-	 *            the user principal
-	 * @param passkey
-	 *            the user passkey
-	 * @throws IOException
-	 *             if login fails
-	 */
-	private void loginUser(final String principal, final String passkey) throws IOException {
-		URIParameter uriParameter = null;
-		LoginContext loginContext = null;
-		try {
-			uriParameter = new URIParameter(getClass().getClassLoader().getResource("jaas.conf").toURI());
-		} catch (URISyntaxException e) {
-			throw new FSAdapterException(HDFSAdapterErrorCode.URI_SYNTAX_EXCEPTION.getErrorCode(),
-					HDFSAdapterErrorCode.URI_SYNTAX_EXCEPTION.getErrorMessage(), e);
-		}
-		try {
-			loginContext = new LoginContext("HdfsAuth", new Subject(), (Callback[] callbacks) -> {
-				for (Callback callback : callbacks) {
-					if (callback instanceof NameCallback) {
-						((NameCallback) callback).setName(principal);
-					}
-					if (callback instanceof PasswordCallback) {
-						((PasswordCallback) callback).setPassword(passkey.toCharArray());
-					}
-				}
-			}, javax.security.auth.login.Configuration.getInstance("JavaLoginConfig", uriParameter));
-			loginContext.login();
-			UserGroupInformation.loginUserFromSubject(loginContext.getSubject());
-		} catch (LoginException e) {
-			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
-					HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorMessage(), e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new FSAdapterException(HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
-		}
 	}
 
 	/**
@@ -177,26 +139,29 @@ public class ConnectionUtils {
 	 * @return configured filesystem
 	 */
 	private FileSystem getDefaultConfiguredFileSystem(Configuration configuration) {
-		if (configuredFileSystem == null) {
-			try {
-				configuredFileSystem = UserGroupInformation.createRemoteUser(userName, AuthMethod.TOKEN)
-						.doAs(new PrivilegedExceptionAction<FileSystem>() {
-							public FileSystem run() throws IOException {
-								return FileSystem.get(configuration);
-							}
-						});
-			} catch (IOException e) {
-				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
-						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
-						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
-			}
+		try {
+			configuredFileSystem = UserGroupInformation.createRemoteUser(userName, AuthMethod.TOKEN)
+					.doAs(new PrivilegedExceptionAction<FileSystem>() {
+						public FileSystem run() throws IOException {
+							return FileSystem.get(configuration);
+						}
+					});
+		} catch (IOException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
 		return configuredFileSystem;
 	}
 
+	/**
+	 * preparing default hdfs configuration
+	 * 
+	 * @return {@link Configuration}
+	 */
 	private Configuration prepareConfiguration() {
 		Configuration configuration = null;
 		try {
@@ -204,19 +169,49 @@ public class ConnectionUtils {
 			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-			//configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
+			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
-				InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream(WIN_UTIL);
-				Path winUtilsPath = Paths.get(binPath.toString(), WIN_UTIL);
-				Files.copy(winUtilsStream, winUtilsPath);
-				System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
+				Resource resource = resourceLoader.getResource(CLASSPATH_PREFIX + WIN_UTIL);
+				if (resource.exists()) {
+					Path winUtilsPath = Paths.get(binPath.toString(), resource.getFilename());
+					Files.copy(resource.getInputStream(), winUtilsPath);
+				}
 			}
+
 		} catch (IOException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
 		return configuration;
+	}
+
+	/**
+	 * Login User with keytab
+	 * 
+	 * @param user
+	 *            username with the kdc, eg. test@kdc.example.com
+	 * @param keytabPath
+	 *            path of the keytab file
+	 * @throws IOException
+	 */
+	private void loginWithKeyTab(String user, String keytabPath) throws IOException {
+		Path keyPath = null;
+		Resource resource = resourceLoader.getResource(keytabPath);
+		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
+		if (resource.exists()) {
+			keyPath = Paths.get(dataPath.toString(), resource.getFilename());
+			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);
+		} else {
+			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage()+": "+keytabPath);
+		}
+		try {
+			UserGroupInformation.loginUserFromKeytab(user, keyPath.toString());
+		} catch (IOException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorMessage(), e);
+		}
 	}
 }

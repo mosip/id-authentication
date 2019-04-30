@@ -190,13 +190,16 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			if (!syncActiveJobMap.isEmpty()) {
 
-				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
-
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
+				
+				
+				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
-				/* Start Scheduler */
-				startScheduler();
+				// Will be launch post successful LOGIN
+				/*
+				 * Start Scheduler startScheduler();
+				 */
 
 			}
 
@@ -233,17 +236,24 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		if (isSchedulerRunning) {
 			return setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STARTED, null);
 		} else {
-			schedulerFactoryBean.start();
-			isSchedulerRunning = true;
+			try {
+				schedulerFactoryBean.start();
+				isSchedulerRunning = true;
 
-			/* Job Data Map */
-			Map<String, Object> jobDataAsMap = new WeakHashMap<>();
-			jobDataAsMap.put("applicationContext", applicationContext);
-			jobDataAsMap.putAll(syncJobMap);
+				/* Job Data Map */
+				Map<String, Object> jobDataAsMap = new WeakHashMap<>();
+				jobDataAsMap.put("applicationContext", applicationContext);
+				jobDataAsMap.putAll(syncJobMap);
 
-			jobDataMap = new JobDataMap(jobDataAsMap);
+				jobDataMap = new JobDataMap(jobDataAsMap);
 
-			loadScheduler(responseDTO);
+				loadScheduler(responseDTO);
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+				setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE, null);
+			}
 
 		}
 
@@ -703,7 +713,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
-			if (syncJob.getValue().getParentSyncJobId() == null && syncJob.getValue().getApiName() != null) {
+			if ((syncJob.getValue().getParentSyncJobId() == null
+					|| syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL"))
+					&& syncJob.getValue().getApiName() != null) {
 
 				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (jobResponse.getErrorResponseDTOs() != null) {

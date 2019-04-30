@@ -4,7 +4,6 @@
 package io.mosip.kernel.auth.factory;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 
 /**
  * @author Ramadurai Pandian
@@ -30,13 +32,14 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 	private Map<String, IDataStore> dataStoreMap = null;
 
 	UserStoreFactoryImpl() {
-		
+
 	}
 
 	@PostConstruct
 	private void init() {
 		buildDataStoreMap();
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,9 +67,7 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 				if (ds.contains(AuthConstant.LDAP)) {
 					IDataStore idatastore = new ILdapDataStore(dataBaseConfig);
 					dataStoreMap.put(ds, idatastore);
-				}
-				else
-				{
+				} else {
 					IDataStore idatastore = new DBDataStore(dataBaseConfig);
 					dataStoreMap.put(ds, idatastore);
 				}
@@ -78,10 +79,13 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 
 	@Override
 	public IDataStore getDataStoreBasedOnApp(String appId) {
-		String datasource=null;
-		if(appId!=null)
+		String datasource = null;
+		if (appId != null) {
+			datasource = mosipEnvironment.getDataStore(appId.toLowerCase() + AuthConstant.DATASOURCE);
+		}
+		if(datasource==null)
 		{
-			datasource = mosipEnvironment.getDataStore(appId.toLowerCase()+AuthConstant.DATASOURCE);
+			throw new AuthManagerException(AuthErrorCode.INVALID_DATASOURCE_ERROR.getErrorCode(),AuthErrorCode.INVALID_DATASOURCE_ERROR.getErrorMessage());
 		}
 		return dataStoreMap.get(datasource);
 	}

@@ -11,14 +11,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.otpmanager.*", "io.mosip.kernel.auth.*" })
 public class OtpmanagerBootApplication {
 
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            the argument
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(OtpmanagerBootApplication.class, args);

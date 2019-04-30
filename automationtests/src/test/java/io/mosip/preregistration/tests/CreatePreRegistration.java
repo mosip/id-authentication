@@ -88,7 +88,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest{
 	@DataProvider(name = "createPreReg")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -122,14 +122,13 @@ public class CreatePreRegistration extends BaseTestCase implements ITest{
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		String statusCode = Actualresponse.jsonPath().get("status").toString();
 		
 		
 		
-		if(statusCode.equals("true")) {
+		
 		preId=(Actualresponse.jsonPath().get("response[0].preRegistrationId")).toString();
-		}
-				outerKeys.add("resTime");
+	
+				outerKeys.add("responsetime");
 				outerKeys.add("timestamp");
 				outerKeys.add("message");
 				outerKeys.add("path");
@@ -139,16 +138,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest{
 				innerKeys.add("IDSchemaVersion");
 				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 				if (status) {
-					
-					logger.info("Status Code is : " + statusCode);
-					if(statusCode.equals("true")) {
-					logger.info("Pre Id is : " +preId);
-						finalStatus = "Pass";
-					}
-					else {
-						finalStatus="Pass";
-					}
-						softAssert.assertTrue(true);
+					finalStatus="Pass";
 				}
 				else {
 					finalStatus="Fail";
@@ -211,7 +201,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest{
            * CreatePreRegistration Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_CreateApplnURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
           
           
           

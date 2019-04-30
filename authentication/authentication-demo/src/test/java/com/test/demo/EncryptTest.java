@@ -1,21 +1,26 @@
 package com.test.demo;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,20 +28,17 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.demo.service.controller.Encrypt;
 import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
-import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 
 
 /**
  * @author Arun Bose S
  * The Class EncryptTest.
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -61,7 +63,7 @@ public class EncryptTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(encryptMock, "encryptURL", environment.getProperty("mosip.kernel.encrypt-url"));
+		ReflectionTestUtils.setField(encryptMock, "publicKeyURL", environment.getProperty("mosip.kernel.publicKey-url"));
 		ReflectionTestUtils.setField(encryptMock, "appID", environment.getProperty("application.id"));
 		ReflectionTestUtils.setField(encryptMock, "keySplitter", environment.getProperty("mosip.kernel.data-key-splitter"));
 		ReflectionTestUtils.setField(encryptMock, "objMapper", objMapper);
@@ -80,9 +82,15 @@ public class EncryptTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws JSONException the JSON exception
 	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * @throws InvalidAlgorithmParameterException 
+	 * @throws NoSuchPaddingException 
+	 * @throws InvalidKeyException 
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void encryptTest() throws KeyManagementException, RestClientException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeySpecException {
+	public void encryptTest() throws KeyManagementException, RestClientException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String testData="{\r\n" + 
 				"	\"identityRequest\": {\r\n" + 
 				"		\"identity\": {\r\n" + 

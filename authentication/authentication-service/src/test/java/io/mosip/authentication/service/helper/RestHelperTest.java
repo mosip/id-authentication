@@ -2,9 +2,13 @@ package io.mosip.authentication.service.helper;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,29 +18,41 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -53,7 +69,9 @@ import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -65,10 +83,12 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
  * @author Manoj SP
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@PrepareForTest({ WebClient.class, SslContextBuilder.class })
 public class RestHelperTest {
 
 	/** The rest helper. */
@@ -100,12 +120,22 @@ public class RestHelperTest {
 
 	/**
 	 * Before.
+	 * 
+	 * @throws SSLException
 	 */
 	@Before
-	public void before() {
+	public void before() throws SSLException {
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
+		ReflectionTestUtils.setField(restHelper, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
+		ReflectionTestUtils.setField(restHelper, "authToken", "1324");
+		PowerMockito.mockStatic(SslContextBuilder.class);
+		SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
+		PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
+				.thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.build()).thenReturn(Mockito.mock(SslContext.class));
 	}
 
 	/**
@@ -124,8 +154,6 @@ public class RestHelperTest {
 
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
-
-		System.err.println("started server");
 
 	}
 
@@ -149,7 +177,7 @@ public class RestHelperTest {
 	@Test
 	public void testRequestSync() throws IDDataValidationException, RestServiceException {
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -193,7 +221,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -238,7 +266,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -278,7 +306,7 @@ public class RestHelperTest {
 			return resp.status(200).send();
 		});
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -299,7 +327,7 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestSyncWithoutTimeout() throws IDDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -323,7 +351,7 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsync() throws IDDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -341,7 +369,7 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsyncAndReturn() throws IDDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -352,7 +380,8 @@ public class RestHelperTest {
 		AuditResponseDto response = null;
 		response = (AuditResponseDto) restHelper.requestSync(restRequest);
 
-		assertTrue(response.isStatus());;
+		assertTrue(response.isStatus());
+		;
 	}
 
 	/**
@@ -365,7 +394,7 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsyncWithoutHeaders() throws IDDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -416,7 +445,8 @@ public class RestHelperTest {
 	 *             the interrupted exception
 	 */
 	@Test(expected = RestServiceException.class)
-	public void ztestRequestSyncWebClientResponseException() throws IDDataValidationException, RestServiceException, InterruptedException {
+	public void ztestRequestSyncWebClientResponseException()
+			throws IDDataValidationException, RestServiceException, InterruptedException {
 		server.shutdown();
 		HttpResources.reset();
 		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
@@ -430,7 +460,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -462,7 +492,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -470,7 +500,7 @@ public class RestHelperTest {
 
 		restHelper.requestSync(restRequest);
 	}
-	
+
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncCheckForErrorsWithoutTimeout() throws IDDataValidationException, RestServiceException {
 		server.shutdown();
@@ -480,8 +510,7 @@ public class RestHelperTest {
 		array.add(mapper.createObjectNode().put("error", "error"));
 		node.set("errors", array);
 		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.OK)
-						.body(Mono.just(node), ObjectNode.class));
+				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(node), ObjectNode.class));
 
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
 
@@ -490,7 +519,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -498,7 +527,7 @@ public class RestHelperTest {
 		restRequest.setTimeout(null);
 		restHelper.requestSync(restRequest);
 	}
-	
+
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncCheckForErrorsWithTimeout() throws IDDataValidationException, RestServiceException {
 		server.shutdown();
@@ -508,8 +537,7 @@ public class RestHelperTest {
 		array.add(mapper.createObjectNode().put("error", "error"));
 		node.set("errors", array);
 		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.OK)
-						.body(Mono.just(node), ObjectNode.class));
+				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(node), ObjectNode.class));
 
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
 
@@ -518,7 +546,7 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -527,9 +555,24 @@ public class RestHelperTest {
 		restHelper.requestSync(restRequest);
 	}
 
-	@Test
-	public void testGetSslContext() {
+	@Test()
+	public void testGetSslContext() throws SSLException {
 		assertTrue(ReflectionTestUtils.invokeMethod(restHelper, "getSslContext") instanceof SslContext);
+	}
+
+	@Test(expected = RestServiceException.class)
+	public void testGetSslContextException() throws Throwable {
+		try {
+			PowerMockito.mockStatic(SslContextBuilder.class);
+			SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
+			PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
+			PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
+					.thenReturn(sslContextBuilder);
+			PowerMockito.when(sslContextBuilder.build()).thenThrow(new SSLException(""));
+			ReflectionTestUtils.invokeMethod(restHelper, "getSslContext");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 
 	@Test
@@ -557,7 +600,7 @@ public class RestHelperTest {
 			throw e.getCause();
 		}
 	}
-	
+
 	@Test
 	public void testHandleStatusError5xx() throws Throwable {
 		try {
@@ -571,10 +614,10 @@ public class RestHelperTest {
 			throw e.getCause();
 		}
 	}
-	
+
 	@Test(expected = RestServiceException.class)
 	public void testRequestSyncRuntimeException() throws IDDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -584,7 +627,7 @@ public class RestHelperTest {
 
 		restHelper.requestSync(restRequest);
 	}
-	
+
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
 		try {
@@ -593,5 +636,75 @@ public class RestHelperTest {
 			throw e.getCause();
 		}
 	}
-	
+
+	@Test
+	public void testGetAuthToken() throws JsonParseException, JsonMappingException, IOException {
+		ReflectionTestUtils.setField(restHelper, "authToken", null);
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		RequestHeadersSpec requestHeadersSpec = PowerMockito.mock(RequestHeadersSpec.class);
+		PowerMockito.when(requestBodyUriSpec.syncBody(Mockito.any())).thenReturn(requestHeadersSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		MultiValueMap<String, ResponseCookie> map = new LinkedMultiValueMap<>();
+		map.add("Authorization", ResponseCookie.from("Authorization", "1234").build());
+		PowerMockito.when(clientResponse.cookies()).thenReturn(map);
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "getAuthToken");
+	}
+
+	@Test
+	public void testAuthTokenExpired() throws JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "checkAuthTokenExpired");
+	}
+
+	@Test
+	public void testAuthTokenNotExpired() throws JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"\"}]}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "checkAuthTokenExpired");
+	}
+
+	@Test(expected = RestServiceException.class)
+	public void testCheckErrorResponseException() throws Throwable {
+		try {
+			String response = "{\"errors\":[{\"errorCode\":\"\"}]}";
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse",
+					mapper.readValue(response.getBytes(), Object.class), ObjectNode.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test
+	public void testCheckErrorResponseRetry() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
+		ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse",
+				mapper.readValue(response.getBytes(), Object.class), ObjectNode.class);
+	}
 }

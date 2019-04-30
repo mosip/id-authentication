@@ -3,9 +3,7 @@ package io.mosip.kernel.auditmanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +13,9 @@ import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.AuditManagerService;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
  * AuditManager controller with api to add new {@link Audit}
@@ -23,7 +24,6 @@ import io.mosip.kernel.auditmanager.service.AuditManagerService;
  * @since 1.0.0
  *
  */
-@RefreshScope
 @RestController
 @CrossOrigin
 public class AuditManagerController {
@@ -36,12 +36,16 @@ public class AuditManagerController {
 	/**
 	 * Function to add new audit
 	 * 
-	 * @param auditRequestDto
+	 * @param requestDto
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
-	@PostMapping(value = "/v1.0/audits")
-	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid AuditRequestDto auditRequestDto) {
-		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.OK);
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@ResponseFilter
+	@PostMapping(value = "/audits")
+	public ResponseWrapper<AuditResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditRequestDto> requestDto) {
+		ResponseWrapper<AuditResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(service.addAudit(requestDto.getRequest()));
+		return response;
 	}
 }

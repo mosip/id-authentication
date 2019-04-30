@@ -26,48 +26,36 @@ public class OtpProvider {
 	/**
 	 * This method compute OTP against provided key and macAlgo.
 	 * 
-	 * @param key
-	 *            the key against which OTP generates.
-	 * @param otpLength
-	 *            the length of OTP.
-	 * @param macAlgorithm
-	 *            the crypto algorithm.
+	 * @param key          the key against which OTP generates.
+	 * @param otpLength    the length of OTP.
+	 * @param macAlgorithm the crypto algorithm.
 	 * @return the string OTP.
 	 */
 	public String computeOtp(String key, int otpLength, String macAlgorithm) {
-
 		try {
 			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, macAlgorithm), otpLength);
-
 			return pcg.generateResponseCode(System.currentTimeMillis());
 		} catch (Exception e) {
 			throw new CryptoFailureException(OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorMessage(), e);
 		}
-
 	}
 
 	/**
 	 * Method to generate Signer for provided key.
 	 * 
-	 * @param secret
-	 *            the key for which signer generates.
-	 * @param macAlgo
-	 *            the crypto algorithm.
+	 * @param secret  the key for which signer generates.
+	 * @param macAlgo the crypto algorithm.
 	 * @return the signer.
 	 */
 	static Signer getSigning(String secret, String macAlgo) {
 		try {
 			final Mac mac = Mac.getInstance(macAlgo);
 			mac.init(new SecretKeySpec(secret.getBytes(), ""));
-
 			return (byte[] data) -> mac.doFinal(data);
-
 		} catch (NoSuchAlgorithmException | InvalidKeyException error) {
 			throw new OtpServiceException(OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorMessage(), error);
 		}
-
 	}
-
 }

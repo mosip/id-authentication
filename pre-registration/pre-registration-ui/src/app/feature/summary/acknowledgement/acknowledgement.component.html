@@ -17,9 +17,9 @@
             <table>
               <tr><td>{{'acknowledgement.label_name'|translate}}</td><td>: {{user.fullName}}</td></tr>
               <tr><td>{{'acknowledgement.label_pre_id'|translate}}</td><td>: {{user.preRegId}}</td></tr>
-              <tr><td>{{'acknowledgement.label_reg_cntr'|translate}}</td><td>: {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
+              <tr><td>{{'acknowledgement.label_reg_cntr'|translate}}</td><td>: {{user.registrationCenter.name}}, {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
               <tr><td>{{'acknowledgement.label_cntr_contact_number'|translate}}</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
-              <tr><td>{{'acknowledgement.label_appointment_date_time'|translate}}</td><td>: {{user.bookingData}}</td></tr>
+              <tr><td>{{'acknowledgement.label_appointment_date_time'|translate}}</td><td>: {{user.bookingTimePrimary}}, {{user.bookingDataPrimary}}</td></tr>
             </table>
           </div>
           <div class="spacer"></div>
@@ -27,9 +27,9 @@
               <table>
                   <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{user.fullNameSecondaryLang}}</td></tr>
                   <tr><td>{{secondaryLanguagelabels.label_pre_id}}</td><td>: {{user.preRegId}}</td></tr>
-                  <tr><td>{{secondaryLanguagelabels.label_reg_cntr}}</td><td>: {{secondaryLanguageRegistrationCenter.addressLine1}}, {{secondaryLanguageRegistrationCenter.addressLine2}}, {{secondaryLanguageRegistrationCenter.addressLine3}} </td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_reg_cntr}}</td><td>: {{secondaryLanguageRegistrationCenter.name}}, {{secondaryLanguageRegistrationCenter.addressLine1}}, {{secondaryLanguageRegistrationCenter.addressLine2}}, {{secondaryLanguageRegistrationCenter.addressLine3}} </td></tr>
                   <tr><td>{{secondaryLanguagelabels.label_cntr_contact_number}}</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
-                  <tr><td>{{secondaryLanguagelabels.label_appointment_date_time}}</td><td>: {{user.bookingData}}</td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_appointment_date_time}}</td><td>: {{user.bookingTimeSecondary}}, {{user.bookingDataSecondary}}</td></tr>
                 </table>
           </div>
           <div class="spacer"></div>

@@ -1,10 +1,6 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -272,7 +268,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
-			description = "Internal error occured while processing packet id" + idValue;
+			description = "Internal error occurred while processing packet id" + idValue;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -436,9 +432,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
 			List<String> subtype = new ArrayList<>();
 			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
-			String imageString = CryptoUtil.encodeBase64String(photobyte);
-			attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
-			isPhotoSet = true;
+			if(photobyte != null) {
+				String imageString = CryptoUtil.encodeBase64String(photobyte);
+				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
+				isPhotoSet = true;
+			}
 		}
 
 		return isPhotoSet;

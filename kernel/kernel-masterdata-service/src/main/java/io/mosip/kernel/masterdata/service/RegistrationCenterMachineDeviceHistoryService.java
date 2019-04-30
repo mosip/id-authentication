@@ -4,20 +4,24 @@ import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistory
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 
 /**
- * This service handles CRUD operation for RegistrationCenter-Machine-Device history
+ * This service handles CRUD operation for RegistrationCenter-Machine-Device
+ * history
+ * 
  * @author Srinivasan
  * @since 1.0.0
  *
  */
 public interface RegistrationCenterMachineDeviceHistoryService {
 
-	
-    /**
-     *  This method creates an entry in {@link RegistrationCenterMachineDeviceHistory} table whenever 
-     *  create/update done in RegistrationCenter-Machine-Device
-     * @param registrationCenterMachineDeviceHistory  -object that contain entity object
-     * @return  RegCenterMachineDeviceHistoryResponseDto
-     */
+	/**
+	 * This method creates an entry in
+	 * {@link RegistrationCenterMachineDeviceHistory} table whenever create/update
+	 * done in RegistrationCenter-Machine-Device
+	 * 
+	 * @param registrationCenterMachineDeviceHistory -object that contain entity
+	 *                                               object
+	 * @return RegCenterMachineDeviceHistoryResponseDto
+	 */
 	public RegCenterMachineDeviceHistoryResponseDto createRegCenterMachineDeviceHistoryMapping(
 			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory);
 }

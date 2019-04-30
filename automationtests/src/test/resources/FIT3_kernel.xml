@@ -11,11 +11,12 @@
   		   <test name="Kernel Tests">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
-				<class name="io.mosip.kernel.tests.GetApplicantType" />
-				<class name="io.mosip.kernel.tests.GetDocType_DocCatByAppID" />
-				<class name="io.mosip.kernel.tests.GetIndividualType" />
-				<class name="io.mosip.kernel.tests.ValidateGenderByName" />
-				<class name="io.mosip.kernel.tests.ValidateLocationByName" />
+				<class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />
+                           <class name="io.mosip.kernel.tests.UINStatusCheck" />
+                           <class name="io.mosip.kernel.tests.UINStatusUpdate" />
+                           <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />
+                           <class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />
 			</classes>
 		</test> 
 			

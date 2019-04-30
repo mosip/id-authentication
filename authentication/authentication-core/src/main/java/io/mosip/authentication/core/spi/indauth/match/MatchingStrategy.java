@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
@@ -16,13 +15,39 @@ public interface MatchingStrategy {
 	 *
 	 * @return the type
 	 */
-	MatchingStrategyType getType();
+	public default MatchingStrategyType getType() {
+		return getMatchingStrategy().getType();
+	}
 	
-	public MatchFunction getMatchFunction();
+	/**
+	 * gets the MatchFunction
+	 * 
+	 * @return MatchFunction
+	 */
+	public default MatchFunction getMatchFunction() {
+		return getMatchingStrategy().getMatchFunction();
+	}
 	
+	/**
+	 * this method matches the request Values with entity values
+	 * @param reqValues
+	 * @param entityValues
+	 * @param matchProperties
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public default int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
 		return getMatchFunction().match(reqValues, entityValues, matchProperties);
+	}
+	
+	/**
+	 * Gets the matching strategy.
+	 *
+	 * @return the matching strategy
+	 */
+	public default MatchingStrategy getMatchingStrategy() {
+		return null;
 	}
 	
 }

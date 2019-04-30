@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -137,6 +136,33 @@ public class OTPAuthServiceTest {
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "1234567890",
+				Collections.emptyMap(), "123456");
+		assertNotNull(authStatusInfo);
+	}
+
+	@Test
+	public void TestValidValidateOtpFailure() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authreqdto = new AuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setOtp(true);
+		authreqdto.setRequestedAuth(authType);
+		authreqdto.setTransactionID("1234567890");
+		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
+		RequestDTO request = new RequestDTO();
+		request.setOtp("123456");
+		authreqdto.setRequest(request);
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		AutnTxn authtxn = new AutnTxn();
+		authtxn.setId("test");
+		autntxnList.add(authtxn);
+		List<String> valueList = new ArrayList<>();
+		valueList.add("1234567890");
+		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.any(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "1234567890",
 				Collections.emptyMap(), "123456");
 		assertNotNull(authStatusInfo);
@@ -282,7 +308,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setIndividualId("426789089018");
-		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
@@ -312,7 +337,6 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);

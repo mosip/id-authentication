@@ -39,9 +39,11 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
@@ -55,6 +57,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @SpringBootTest(classes = PDFGeneratorImpl.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
+
+
 
 	private static final String OTP_SMS_TEMPLATE_TXT = "otp-sms-template";
 
@@ -89,19 +93,23 @@ public class IdTemplateManagerTest {
 	private ObjectMapper mapper;
 	@InjectMocks
 	private TemplateManagerBuilderImpl templateManagerBuilder;
+	
+	@Mock
+	private IdInfoFetcher idInfoFetcher;
 
 	/** UTF type. */
 	private static final String ENCODE_TYPE = "UTF-8";
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
-
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
+		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
@@ -110,6 +118,8 @@ public class IdTemplateManagerTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidApplyTemplate() throws IOException, IdAuthenticationBusinessException, RestServiceException {
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(null);
+		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG)).thenReturn("fra");
+		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
 		mockRestCalls();
 		Map<String, Object> valueMap = new HashMap<>();
 		idTemplateManager.applyTemplate("otp-sms-template", valueMap);
@@ -130,24 +140,33 @@ public class IdTemplateManagerTest {
 		valueMap.put("otp", "123456");
 		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
 		valueMap.put("validTime", "3");
-		idTemplateManager.applyTemplate("test", valueMap);
+		idTemplateManager.applyTemplate(OTP_SMS_TEMPLATE_TXT, valueMap);
 	}
 
 	@Test
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("notification.language.support", "primary");
+		mockenv.setProperty("mosip.notification.language-type", "primary");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
+	}
+	@Test
+	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.setProperty("mosip.notification.language-type", "BOTH");
+		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockRestCalls();
+		idTemplateManager.fetchTemplate("otp-sms-template");
 	}
 	
 	@Test
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("notification.language.support", "invalid");
+		mockenv.setProperty("mosip.notification.language-type", "invalid");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
@@ -174,7 +193,7 @@ public class IdTemplateManagerTest {
 		valueMap.put("otp", "123456");
 		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
 		valueMap.put("validTime", "3");
-		idTemplateManager.generatePDF("test", valueMap);
+		idTemplateManager.generatePDF(OTP_SMS_TEMPLATE_TXT, valueMap);
 	}
 
 	@Test
@@ -234,12 +253,14 @@ public class IdTemplateManagerTest {
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 		mockRestCalls();
 		Mockito.when(pdfGenerator.generate(Mockito.any(InputStream.class))).thenThrow(new IOException());
-		Map<String, Object> valueMap = new HashMap<>();
+		Map<String, Object> valueMap = new HashMap<String, Object>();
 		valueMap.put("uin", "1234567890");
 		valueMap.put("otp", "123456");
 		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
 		valueMap.put("validTime", "3");
-		idTemplateManager.generatePDF("test", valueMap);
+		valueMap.put("langCode", "eng");
+		//Mockito.when(idTemplateManager.applyTemplate(OTP_SMS_TEMPLATE_TXT, valueMap)).thenReturn("Test");
+		idTemplateManager.generatePDF(OTP_SMS_TEMPLATE_TXT, valueMap);
 	}
 
 	@AfterClass
@@ -256,21 +277,37 @@ public class IdTemplateManagerTest {
 	private void mockRestCalls() throws IDDataValidationException, RestServiceException {
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, null, Map.class))
 				.thenReturn(getRestRequestDTO());
+		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class))
+		.thenReturn(getRestRequestDTO_Multi());
 		Map<String, List<Map<String, Object>>> valuemap = new HashMap<>();
 		List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
+		
 		Map<String, Object> actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
-		actualMap.put("isActive", Boolean.valueOf("true"));
+		actualMap.put("langCode","ara");
+		actualMap.put("templateTypeCode",OTP_SMS_TEMPLATE_TXT);
+		actualMap.put("isActive", true);
+		finalList.add(actualMap);
 		finalList.add(actualMap);
 		valuemap.put("templates", finalList);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(valuemap);
+		Map<String, Map<String, List<Map<String, Object>>>> finalMap = new HashMap<>();
+		finalMap.put("response", valuemap);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
 	}
 
 	private RestRequestDTO getRestRequestDTO() {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		restRequestDTO.setHttpMethod(HttpMethod.POST);
 		restRequestDTO.setUri("https://integ.mosip.io/masterdata/v1.0/templates/{langcode}/{templatetypecode}");
+		restRequestDTO.setResponseType(Map.class);
+		restRequestDTO.setTimeout(23);
+		return restRequestDTO;
+	}
+	private RestRequestDTO getRestRequestDTO_Multi() {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		restRequestDTO.setHttpMethod(HttpMethod.POST);
+		restRequestDTO.setUri("https://integ.mosip.io/masterdata/v1.0/templates/templatetypecodes/{code}");
 		restRequestDTO.setResponseType(Map.class);
 		restRequestDTO.setTimeout(23);
 		return restRequestDTO;

@@ -82,6 +82,8 @@ public abstract class BaseJob extends QuartzJobBean {
 	 * 
 	 * @param triggerPoint
 	 *            the triggered person
+	 * @param jobId
+	 *            the job ID
 	 * @return Response of execution
 	 */
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);

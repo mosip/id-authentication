@@ -6,15 +6,14 @@ package io.mosip.kernel.core.otpnotification.spi;
  * @author Ritesh Sinha
  * @since 1.0.0
  *
- * @param <T>
+ * @param <T> is a type parameter
  */
 public interface OtpNotification<T, D> {
 
 	/**
 	 * Method to send OTP notification.
 	 * 
-	 * @param request
-	 *            the request dto.
+	 * @param request the request dto.
 	 * @return the response.
 	 */
 	public T sendOtpNotification(D request);

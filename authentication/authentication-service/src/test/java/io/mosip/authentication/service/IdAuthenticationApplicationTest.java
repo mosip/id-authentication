@@ -9,8 +9,7 @@ public class IdAuthenticationApplicationTest {
 	@Ignore
 	@Test(expected = UnsatisfiedDependencyException.class)
 	public void test() {
-		IdAuthenticationApplication app = new IdAuthenticationApplication();
-		app.main(new String[] {});
+		IdAuthenticationApplication.main(new String[] {});
 	}
 
 }
