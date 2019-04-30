@@ -1,7 +1,7 @@
 package io.mosip.idrepository.core.exception;
 
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
  * The Class AuthenticationException.
