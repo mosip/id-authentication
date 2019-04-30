@@ -227,7 +227,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
 	 */
-	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors) {
+	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
+			Set<String> allowedAuthType) {
 
 		AuthTypeDTO authTypeDTO = authRequestDTO.getRequestedAuth();
 
@@ -247,7 +248,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 				validateDeviceInfo(bioData, errors);
 
-				validateBioType(bioData, errors);
+				validateBioType(bioData, errors, allowedAuthType);
 
 				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
 					validateFinger(authRequestDTO, bioData, errors);
@@ -270,7 +271,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo
 	 * @param errors
 	 */
-	private void validateBioType(List<DataDTO> bioInfos, Errors errors) {
+	private void validateBioType(List<DataDTO> bioInfos, Errors errors, Set<String> allowedAuthType) {
 		AuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		for (AuthType authType : authTypes) {
@@ -283,7 +284,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { BIO_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!availableAuthTypeInfos.contains(bioType)) {
+			} else if (!allowedAuthType.contains(bioType)) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), new Object[] { bioType },
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+			}
+		}
+
+		for (DataDTO bioInfo : bioInfos) {
+			String bioType = bioInfo.getBioType();
+			if (!availableAuthTypeInfos.contains(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(), new Object[] { bioType },
 						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
@@ -1014,7 +1024,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (authTypeDTO.isBio()) {
 			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
-				validateBioMetadataDetails(requestDTO, errors);
+				validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 			} else {
 				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),

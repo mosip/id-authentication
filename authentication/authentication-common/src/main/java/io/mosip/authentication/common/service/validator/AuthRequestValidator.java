@@ -5,7 +5,9 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
@@ -40,7 +42,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
 
-	
 	private static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
@@ -103,13 +104,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				}
 			}
 		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
-	
+
 	@Override
 	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
 		super.validateReqTime(reqTime, errors, paramName);
@@ -126,26 +127,34 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateRequestTimedOut(String reqTime, Errors errors) {
 		try {
-			Instant reqTimeInstance = DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
+			Instant reqTimeInstance = DateUtils
+					.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS, Long.class);
+			Long reqDateMaxTimeLong = env
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS, Long.class);
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
 								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
-				errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					VALIDATE_REQUEST_TIMED_OUT,
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQ_TIME);
-			errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IdAuthCommonConstants.REQ_TIME },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -166,23 +175,38 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					.anyMatch(Supplier<Boolean>::get);
 
 			if (!anyAuthType) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE, INVALID_AUTH_REQUEST);
-				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, INVALID_AUTH_REQUEST);
+				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { IdAuthCommonConstants.REQUESTEDAUTH },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 
 			} else if (authType.isDemo()) {
 				checkDemoAuth(authRequest, errors);
 			} else if (authType.isBio()) {
-				validateBioMetadataDetails(authRequest, errors);
+				Set<String> allowedAuthType = getAllowedAuthTypes(getAllowedAuthTypeProperty());
+				validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 			}
 		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE,
 					IdAuthCommonConstants.MISSING_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
-			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IdAuthCommonConstants.REQUESTEDAUTH },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
+	}
+
+	/**
+	 * Extract auth info.
+	 *
+	 * @return the sets the
+	 */
+	private Set<String> getAllowedAuthTypes(String configKey) {
+		String intAllowedAuthType = env.getProperty(configKey);
+		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
 	}
 
 	/**
