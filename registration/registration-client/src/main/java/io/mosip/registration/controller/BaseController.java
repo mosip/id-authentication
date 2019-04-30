@@ -92,7 +92,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController extends BaseService {
+public class BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -669,6 +669,8 @@ public class BaseController extends BaseService {
 			if (SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA) != null) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.setApplicantBiometricDTO(createBiometricInfoDTO());
+				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+				.setIntroducerBiometricDTO(createBiometricInfoDTO());
 				biometricExceptionController.clearSession();
 				fingerPrintCaptureController.clearFingerPrintDTO();
 				irisCaptureController.clearIrisData();

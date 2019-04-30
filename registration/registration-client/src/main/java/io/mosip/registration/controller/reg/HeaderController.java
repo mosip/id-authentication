@@ -35,6 +35,7 @@ import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -118,6 +119,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private HomeController homeController;
+	
+	@Autowired
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	ProgressIndicator progressIndicator;
 

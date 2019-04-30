@@ -411,7 +411,7 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void scanWindow() {
 		if (RegistrationConstants.YES
-				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -430,7 +430,7 @@ public class DocumentScanController extends BaseController {
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
 			if (RegistrationConstants.YES
-					.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);

@@ -118,6 +118,14 @@ public class HMACGeneration {
 		generateHash(generatedFilesForPacket.get(RegistrationConstants.AUDIT_JSON_FILE),
 				RegistrationConstants.AUDIT_JSON_FILE, osiDataHashSequence);
 
+		// Generate Hash for PARENT exception photo
+		generateHash(generatedFilesForPacket.get(RegistrationConstants.PARENT.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME)),
+				RegistrationConstants.PARENT.toLowerCase().concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), osiDataHashSequence);
+
+		// Generate Hash for INDIVIDUAL exception photo
+				generateHash(generatedFilesForPacket.get(RegistrationConstants.INDIVIDUAL.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME)),
+						RegistrationConstants.INDIVIDUAL.toLowerCase().concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), osiDataHashSequence);
+
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
 	}

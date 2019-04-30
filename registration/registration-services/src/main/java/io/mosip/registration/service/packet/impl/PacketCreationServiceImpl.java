@@ -134,6 +134,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
+			
+			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
+			if(cbeffInBytes != null) {
+				filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+			}
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
@@ -146,6 +151,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							String.format(loggerMessageForCBEFF, RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+				}
+				
+				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace();
+				if(cbeffInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.PARENT.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				}
 			}
 

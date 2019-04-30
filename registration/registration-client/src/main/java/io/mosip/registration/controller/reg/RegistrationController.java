@@ -272,7 +272,7 @@ public class RegistrationController extends BaseController {
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
 						if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-							.getFace().setFace(photoInBytes);							
+							.getExceptionFace().setFace(photoInBytes);							
 						} else {
 							faceDetailsDTO.setFace(photoInBytes);
 							faceDetailsDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
@@ -285,7 +285,7 @@ public class RegistrationController extends BaseController {
 							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
 							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-										.getFace().setFace(exceptionPhotoInBytes);
+										.getExceptionFace().setFace(exceptionPhotoInBytes);
 							} else {
 								exceptionFaceDetailsDTO.setFace(exceptionPhotoInBytes);
 								exceptionFaceDetailsDTO
@@ -391,7 +391,7 @@ public class RegistrationController extends BaseController {
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
 		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
 			registrationMetaDataDTO
 					.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
 			registrationMetaDataDTO

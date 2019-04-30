@@ -303,6 +303,8 @@ public class RegistrationConstants {
 	public static final String PACKET_META_JSON_NAME = "packet_meta_info.json";
 	public static final String PACKET_DATA_HASH_FILE_NAME = "packet_data_hash.txt";
 	public static final String PACKET_OSI_HASH_FILE_NAME = "packet_osi_hash.txt";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO_NAME = "_exception_photo.jpg";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO = "_exception_photo";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";

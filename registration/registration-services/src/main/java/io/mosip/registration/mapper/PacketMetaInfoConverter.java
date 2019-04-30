@@ -76,15 +76,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
-			FaceDetailsDTO faceDetailsDTO = source.getBiometricDTO().getIntroducerBiometricDTO().getFace();
 			identity.setExceptionPhotograph(buildExceptionPhotograph(
 					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-							? faceDetailsDTO.getNumOfRetries()
-							: 0,
-					getBIRUUID(RegistrationConstants.INDIVIDUAL,
-							((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-									? RegistrationConstants.FACE
-									: RegistrationConstants.FACE_EXCEPTION))));
+							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getNumOfRetries()
+							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getNumOfRetries(),
+					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace()
+							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace()));
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
@@ -244,14 +242,19 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return photograph;
 	}
 	
-	private Photograph buildExceptionPhotograph(int numRetry, String photographName) {
+	private ExceptionPhotograph buildExceptionPhotograph(int numRetry, byte[] face) {
 		ExceptionPhotograph exceptionPhotograph = null;
-		if (photographName != null) {
+		if (face != null) {
 			exceptionPhotograph = new ExceptionPhotograph();
 			exceptionPhotograph.setNumRetry(numRetry);
-			exceptionPhotograph.setBirIndex(removeFileExt(photographName));
-			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child) ? RegistrationConstants.PARENT : RegistrationConstants.INDIVIDUAL);
-			}
+			exceptionPhotograph.setIndividualType(
+					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child) ? RegistrationConstants.PARENT
+							: RegistrationConstants.INDIVIDUAL);
+			exceptionPhotograph.setPhotoName(((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+					? RegistrationConstants.PARENT.toLowerCase()
+					: RegistrationConstants.INDIVIDUAL.toLowerCase())
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO));
+		}
 
 		return exceptionPhotograph;
 	}
