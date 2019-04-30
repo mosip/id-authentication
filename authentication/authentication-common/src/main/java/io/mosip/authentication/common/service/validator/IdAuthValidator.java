@@ -1,9 +1,12 @@
 package io.mosip.authentication.common.service.validator;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISSING_INPUT_PARAMETER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 
 import java.util.Date;
 import java.util.Set;

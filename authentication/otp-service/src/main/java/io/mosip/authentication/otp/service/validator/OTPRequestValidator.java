@@ -31,8 +31,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class OTPRequestValidator extends IdAuthValidator {
 
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "otprequest.received-time-allowed.in-minutes";
-
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
