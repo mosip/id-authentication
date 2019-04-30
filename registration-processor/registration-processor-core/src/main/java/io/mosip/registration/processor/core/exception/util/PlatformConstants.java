@@ -87,6 +87,8 @@ public final class PlatformConstants {
 	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
 
 	public static final String RPR_UTIL = RPR_REGISTRATION_PROCESSOR_PREFIX + "UTL-";
+	
+	public static final String ABIS=RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.

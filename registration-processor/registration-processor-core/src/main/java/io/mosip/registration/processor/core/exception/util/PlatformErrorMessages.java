@@ -606,10 +606,33 @@ public enum PlatformErrorMessages {
 	/** Access denied for the token present*/
 	RPR_AUT_ACCESS_DENIED(PlatformConstants.RPR_AUTHENTICATION + "02", "Access Denied For Role - %s"),
 	
+	/** Reprocessor Stage Failed*/
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
+	
+	/** External Stage Failed*/
+	EXTERNAL_STAGE_FAILED("", "External Stage Failed"),
 
-	EXTERNAL_STAGE_FAILED("", "External Stage Failed");
-
+	/** internal error for unknown reason*/
+	INTERNAL_ERROR_UNKNOWN(PlatformConstants.ABIS+"01","internal error for reason - %s"),
+	
+	/** request aborted*/
+	ABORTED(PlatformConstants.ABIS+"02","request aborted"),
+	
+	/** Unexpected error - Unable to access biometric data*/
+	UNEXPECTED_ERROR(PlatformConstants.ABIS+"03","Unexpected error - Unable to access biometric data for - %s"),
+	
+	/** Unable to serve the request*/
+	UNABLE_TO_SERVE_REQUEST(PlatformConstants.ABIS+"04","Unable to serve the request"),
+	
+	/** Invalid request*/
+	INVALID_REQUEST(PlatformConstants.ABIS+"05","Invalid request / Missing mandatory fields - %S"),
+	
+	/** Unauthorized Access*/
+	UNAUTHORIZED_ACCESS(PlatformConstants.ABIS+"06","Unauthorized Access"),
+	
+	/** Unable to fetch biometric details*/
+	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS+"07","Unable to fetch biometric details");
+	
 	/** The error message. */
 	private final String errorMessage;
 
