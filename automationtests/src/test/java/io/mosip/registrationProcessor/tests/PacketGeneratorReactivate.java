@@ -63,14 +63,14 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	  * @return object[][]
 	  * @throws Exception
 	  */
-	 @DataProvider(name = "DeactivateUin")
+	 @DataProvider(name = "ActivateUin")
 	 public Object[][] readData(ITestContext context){
 	 	 String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	 	 String testParam = context.getCurrentXmlTest().getParameter("testType");
 	 	 Object[][] readFolder = null;
 	 	 try {
 	 	 	 prop.load(new FileReader(new File(propertyFilePath)));
-	 	 	 switch ("smokeAndRegression") {
+	 	 	 switch (testParam) {
 	 	 	 case "smoke":
 	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 	 	 	 	 break;
@@ -93,7 +93,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	  * @param i
 	  * @param object
 	  */
-	 @Test(dataProvider="DeactivateUin")
+	 @Test(dataProvider="ActivateUin")
 	 public void packetGenerator(String testSuite, Integer i, JSONObject object){
 	 	 List<String> outerKeys = new ArrayList<String>();
 	 	 List<String> innerKeys = new ArrayList<String>();
@@ -110,9 +110,6 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 
 	 	 	 //generation of actual response
 	 	 	 actualResponse=applicationLibrary.postRequest(actualRequest, prop.getProperty("packetGeneratorApi"));
-	 	 /*	 String regID=actualResponse.jsonPath().get("response.registrationId").toString();
-	 	 	 regProcDbRead.compareTransactionOfDeactivatePackets(regID);
-	 	 */	 //Asserting actual and expected response
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
 	 	 	 	 finalStatus="Pass";

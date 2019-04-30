@@ -72,14 +72,13 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		String validPacketPath = property.getProperty("pathForValidRegProcPackets");
+		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		
-	  e.packetValidatorPropertyFileReader("packetValidator.properties",validPacketPath, invalidPacketFolderPath);
-		 for (int i = 0; i < 2; i++) {
-		  e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath); 
-		  }
-		 e.osiValidatorPropertyFileReader("packetProperties.properties",validPacketPath, invalidPacketFolderPath);
+	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		for (int i = 0; i < 2; i++) {
+			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
+		}
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		try {
 			reader.close();
 		} catch (IOException e1) {

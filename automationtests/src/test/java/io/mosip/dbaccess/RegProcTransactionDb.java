@@ -86,5 +86,8 @@ public class RegProcTransactionDb {
 	        }
 		return compareStatus;	
 	}
-	
+	public static void main(String[] args) {
+		RegProcTransactionDb db=new RegProcTransactionDb();
+		db.readStatus("27847657360002520190416184858");
+	}
 }

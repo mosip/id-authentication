@@ -25,6 +25,9 @@
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
 			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
+			
 		</classes>
 	</test>  
 
