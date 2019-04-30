@@ -120,11 +120,6 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			if (getRegistrationDTOFromSession() == null) {
-				validation.updateAsLostUIN(false);
-				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
-			}
-
 			if (isEditPage() && getRegistrationDTOFromSession() != null) {
 				prepareEditPageContent();
 			}
@@ -270,7 +265,7 @@ public class RegistrationController extends BaseController {
 						BiometricInfoDTO biometricDTO = getFaceDetailsDTO();
 						FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
-						if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						if (getRegistrationDTOFromSession().isUpdateUINChild()) {
 							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 							.getExceptionFace().setFace(photoInBytes);							
 						} else {

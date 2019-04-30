@@ -692,6 +692,16 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+
+			if (getRegistrationDTOFromSession() == null) {
+				validation.updateAsLostUIN(false);
+				registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
+			}
+
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
+				getRegistrationDTOFromSession().setUpdateUINChild(false);
+			}
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
 			lostUIN = false;
@@ -731,7 +741,7 @@ public class DemographicDetailController extends BaseController {
 
 		}
 	}
-
+	
 	private void genderSettings() {
 		textMale = applicationLabelBundle.getString("male");
 		textFemale = applicationLabelBundle.getString("female");
@@ -1620,10 +1630,10 @@ public class DemographicDetailController extends BaseController {
 																		RegistrationConstants.EMPTY)))
 												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
 						.with(identity -> identity.setParentOrGuardianBiometrics(
-								(getRegistrationDTOFromSession().isUpdateUINChild()) || introducerBiometric
+								(!getRegistrationDTOFromSession().isUpdateUINChild()) || (introducerBiometric
 										.getFingerprintDetailsDTO().isEmpty()
 										&& introducerBiometric.getIrisDetailsDTO().isEmpty()
-										&& introducerBiometric.getFace().getFace() == null
+										&& introducerBiometric.getFace().getFace() == null)
 												? null
 												: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 														.with(cbeffProperties -> cbeffProperties
@@ -2062,7 +2072,7 @@ public class DemographicDetailController extends BaseController {
 						updateUINMethodFlow();
 					}
 					registrationController.showUINUpdateCurrentPage();
-				} else {
+				} else {					
 					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 				}

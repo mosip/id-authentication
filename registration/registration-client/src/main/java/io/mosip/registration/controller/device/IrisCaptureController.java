@@ -198,15 +198,24 @@ public class IrisCaptureController extends BaseController {
 	 * Populate exception.
 	 */
 	private void populateException() {
-		
+
 		leftIrisException.setText(RegistrationConstants.HYPHEN);
 		rightIrisException.setText(RegistrationConstants.HYPHEN);
-		
+
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO() != null
 					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO() != null) {
 				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().stream()
 						.forEach(bio -> setExceptionIris(bio));
+			}
+		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
+					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO() != null
+					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+							.getBiometricExceptionDTO() != null) {
+
+				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getBiometricExceptionDTO()
+						.stream().forEach(bio -> setExceptionIris(bio));
 			}
 		} else {
 			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
@@ -218,7 +227,7 @@ public class IrisCaptureController extends BaseController {
 						.stream().forEach(bio -> setExceptionIris(bio));
 			}
 		}
-		
+
 		singleBiometricCaptureCheck();
 
 	}
@@ -430,8 +439,9 @@ public class IrisCaptureController extends BaseController {
 				rightIrisAttempts.setText(String.valueOf(irisDetailsDTO.getNumOfIrisRetry()));
 			}
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
-						.split(RegistrationConstants.PERCENTAGE)[0]) / 100);
+				irisProgress.setProgress(Double.valueOf(
+						getQualityScore(irisDetailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0])
+						/ 100);
 				irisQuality.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
 				if (Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
 						.split(RegistrationConstants.PERCENTAGE)[0]) >= Double
@@ -623,7 +633,7 @@ public class IrisCaptureController extends BaseController {
 					&& ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
 							&& isRightEyeCaptured)
 
-							|| getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							|| getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 									.getFingerprintDetailsDTO().isEmpty()
 									&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
 									&& (isLeftEyeCaptured || isRightEyeCaptured))) {
@@ -672,6 +682,8 @@ public class IrisCaptureController extends BaseController {
 	private List<IrisDetailsDTO> getIrises() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getIrisDetailsDTO();
+		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
 		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
 		}
@@ -725,8 +737,13 @@ public class IrisCaptureController extends BaseController {
 		}
 
 		if (getRegistrationDTOFromSession() != null) {
-			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.setIrisDetailsDTO(new ArrayList<>());
+			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+				.setIrisDetailsDTO(new ArrayList<>());
+			} else {
+				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+						.setIrisDetailsDTO(new ArrayList<>());
+			}
 		}
 
 		singleBiometricCaptureCheck();
@@ -762,7 +779,7 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(true);
 		}
 		if (getRegistrationDTOFromSession() != null
-				&& !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				&& !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 						.getFingerprintDetailsDTO().isEmpty()
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
