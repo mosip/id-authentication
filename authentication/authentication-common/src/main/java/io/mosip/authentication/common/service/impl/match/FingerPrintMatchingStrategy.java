@@ -19,6 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			String reqInfoValue = ((Map<String, String>) reqInfo).values().stream().findFirst().orElse("");

@@ -88,6 +88,11 @@ public class VidServiceImplTest {
 	public void TestVidNotExiststhrowsException() throws IdAuthenticationBusinessException {
 		getVidData();
 		Mockito.when(vidRepository.save(Mockito.any())).thenThrow(new DataAccessException("Data Save Failed") {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 		});
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -182,6 +187,11 @@ public class VidServiceImplTest {
 		vidEntity.setExpiryDate(parseToLocalDateTime);
 		Mockito.when(vidGenerator.generateId()).thenReturn(vid);
 		Mockito.when(vidRepository.save(Mockito.any())).thenThrow(new DataAccessException("Data Save Failed") {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 		});
 		vidServiceImpl.generateVID("274390482564");
 	}

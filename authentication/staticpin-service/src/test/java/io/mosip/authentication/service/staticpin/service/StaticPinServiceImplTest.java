@@ -31,7 +31,6 @@ import io.mosip.authentication.common.service.entity.StaticPinHistory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
@@ -275,7 +274,7 @@ public class StaticPinServiceImplTest {
 		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
-		StaticPinResponseDTO storeSpin = staticPinServiceImpl.storeSpin(staticPinRequestDTO);
+		staticPinServiceImpl.storeSpin(staticPinRequestDTO);
 	}
 
 	@Test

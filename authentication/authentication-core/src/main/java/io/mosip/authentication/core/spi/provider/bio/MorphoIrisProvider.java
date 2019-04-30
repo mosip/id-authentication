@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.spi.provider.bio;
 
-import java.util.Map;
-
 import org.springframework.core.env.Environment;
 
 
