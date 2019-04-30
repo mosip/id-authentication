@@ -183,8 +183,9 @@ public class RegistrationStatusServiceImpl
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
 		boolean isTransactionSuccessful = false;
+		String transactionId = generateId();
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
-		TransactionDto transactionDto = new TransactionDto(generateId(),
+		TransactionDto transactionDto = new TransactionDto(transactionId,
 				registrationStatusDto.getRegistrationId(), latestTransactionId,
 				registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
 				registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
@@ -192,7 +193,7 @@ public class RegistrationStatusServiceImpl
 		transactionDto.setReferenceIdType("updated registration record");
 		transcationStatusService.addRegistrationTransaction(transactionDto);
 
-		registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
+		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
 			InternalRegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
 			if (dto != null) {
