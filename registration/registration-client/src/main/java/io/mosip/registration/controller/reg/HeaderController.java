@@ -405,7 +405,7 @@ public class HeaderController extends BaseController {
 		if (hasUpdate()) {
 
 			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-					RegistrationConstants.EMPTY, RegistrationUIConstants.CONFIRM_UPDATE);
+					RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE);
 
 			updateAlert.showAndWait();
 
@@ -558,7 +558,7 @@ public class HeaderController extends BaseController {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
 
-					System.exit(0);
+					restartApplication();
 				}
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);

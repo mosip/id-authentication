@@ -56,6 +56,7 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -150,6 +151,9 @@ public class BaseController {
 	 * Instance of {@link MosipLogger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(BaseController.class);
+	
+	@Autowired
+	private RestartController restartController;
 
 	/**
 	 * Adding events to the stage.
@@ -1143,6 +1147,17 @@ public class BaseController {
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(pageId).put(RegistrationConstants.VISIBILITY, val);
+
+	}
+	
+	protected void restartApplication() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
+				restartController.restart();
+			}
+		});
 
 	}
 

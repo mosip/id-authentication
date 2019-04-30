@@ -189,8 +189,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private UserDetailService userDetailService;
-	@Autowired
-	private RestartController restartController;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -222,13 +220,16 @@ public class LoginController extends BaseController implements Initializable {
 	
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	boolean hasUpdate;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
+				hasUpdate = registrationUpdate.hasUpdate();
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
@@ -286,6 +287,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			if(hasUpdate) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE);
+			}
 			if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
@@ -1234,16 +1238,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	}
 
-	private void restartApplication() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
-				restartController.restart();
-			}
-		});
-
-	}
+	
 
 	/**
 	 * This method will remove the loginmethod from list
