@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.idrepo.exception;
+package io.mosip.idrepository.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
