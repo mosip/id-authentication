@@ -350,12 +350,14 @@ public class BiometricExceptionController extends BaseController implements Init
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 
 				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) && !isChild()) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 
 				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))){
+						getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG)) && !isChild()){
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
+				}else if(isChild()){
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {

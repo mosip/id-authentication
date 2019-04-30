@@ -827,12 +827,12 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (isSupervisor) {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFace(faceDetailsDTO);
 				SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFace(faceDetailsDTO);
 			}
 		}
 

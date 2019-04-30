@@ -83,17 +83,15 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText
-	 *            - string which contains the data of template that is used to
-	 *            generate acknowledgement
-	 * @param registration
-	 *            - RegistrationDTO to display required fields on the template
-	 * @param templateManagerBuilder
-	 *            - The Builder which generates template by mapping values to
-	 *            respective place-holders in template
-	 * @param templateType
-	 *            - The type of template that is required (like
-	 *            email/sms/acknowledgement)
+	 * @param templateText           - string which contains the data of template
+	 *                               that is used to generate acknowledgement
+	 * @param registration           - RegistrationDTO to display required fields on
+	 *                               the template
+	 * @param templateManagerBuilder - The Builder which generates template by
+	 *                               mapping values to respective place-holders in
+	 *                               template
+	 * @param templateType           - The type of template that is required (like
+	 *                               email/sms/acknowledgement)
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -141,8 +139,8 @@ public class TemplateGenerator extends BaseService {
 						|| registration.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO() != null) {
 					templateValues = countMissingIrises(templateValues, registration, isChild, templateType);
 				} else {
-					if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)
-							|| registration.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() == null) {
+					if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag) || registration
+							.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace() == null) {
 						templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					}
@@ -228,10 +226,10 @@ public class TemplateGenerator extends BaseService {
 	private void setUpCapturedImages(Map<String, Object> templateValues, RegistrationDTO registration, boolean isChild,
 			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String faceDisableFlag) {
 		if (isChild) {
-			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO() != null && registration
-					.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO().getFace() != null) {
-				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO()
-						.getFaceDetailsDTO().getFace();
+			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null
+					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
+				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace()
+						.getFace();
 				setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties,
 						localProperties);
 			} else {
@@ -239,8 +237,8 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-		} else if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
-			byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto();
+		} else if (registration.getBiometricDTO().getApplicantBiometricDTO().isHasExceptionPhoto()) {
+			byte[] exceptionImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getFace().getFace();
 			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties);
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
@@ -253,7 +251,8 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("individualphoto"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
 					localProperties.getString("individualphoto"));
-			byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+			byte[] applicantImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getFace().getFace();
+
 			String applicantImageEncodedBytes = StringUtils
 					.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
 			templateValues.put(RegistrationConstants.TEMPLATE_APPLICANT_IMAGE_SOURCE,
@@ -289,7 +288,7 @@ public class TemplateGenerator extends BaseService {
 						|| (registration.getSelectionListDTO() != null
 								&& registration.getSelectionListDTO().isBiometrics()))) {
 			if (isChild) {
-				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO().getFace() != null) {
+				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
 					templateValues.put(RegistrationConstants.IRIS_WITH_EXCEPTION,
 							RegistrationConstants.IRIS_WITH_EXCEPTION_STYLE);
 				} else {
@@ -312,9 +311,9 @@ public class TemplateGenerator extends BaseService {
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		} else {
 			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag) || ((isChild
-					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO().getFace() == null)
-					|| (!isChild && registration.getDemographicDTO().getApplicantDocumentDTO()
-							.getExceptionPhoto() == null))) {
+					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null)
+					|| (!isChild && registration.getBiometricDTO().getApplicantBiometricDTO().getFace()
+							.getFace() == null))) {
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
@@ -1110,14 +1109,13 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText
-	 *            - string which contains the data of template that is used to
-	 *            generate notification
-	 * @param registration
-	 *            - RegistrationDTO to display required fields on the template
-	 * @param templateManagerBuilder
-	 *            - The Builder which generates template by mapping values to
-	 *            respective place-holders in template
+	 * @param templateText           - string which contains the data of template
+	 *                               that is used to generate notification
+	 * @param registration           - RegistrationDTO to display required fields on
+	 *                               the template
+	 * @param templateManagerBuilder - The Builder which generates template by
+	 *                               mapping values to respective place-holders in
+	 *                               template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -1200,8 +1198,7 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param enrolment
-	 *            - EnrolmentDTO to get the biometric details
+	 * @param enrolment - EnrolmentDTO to get the biometric details
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */

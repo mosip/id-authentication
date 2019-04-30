@@ -45,8 +45,8 @@ public class HMACGeneration {
 			generateHash(filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
 					RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
 					sequence.getBiometricSequence().getApplicant());
-			generateHash(filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
-					RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
+			generateHash(filesGeneratedForPacket.get(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME),
+					RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME,
 					sequence.getBiometricSequence().getIntroducer());
 		}
 

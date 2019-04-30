@@ -113,6 +113,7 @@ public class UpdateUINController extends BaseController implements Initializable
 
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
+			listenerOnFieldsParentOrGuardian(fxUtils);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
@@ -179,10 +180,14 @@ public class UpdateUINController extends BaseController implements Initializable
 		fxUtils.listenOnSelectedCheckBox(address);
 		fxUtils.listenOnSelectedCheckBox(phone);
 		fxUtils.listenOnSelectedCheckBox(email);
-		fxUtils.listenOnSelectedCheckBox(biometrics);
 		fxUtils.listenOnSelectedCheckBox(cnieNumber);
-		fxUtils.listenOnSelectedCheckBox(parentOrGuardianDetails);
 		fxUtils.listenOnSelectedCheckBox(foreigner);
+	}
+
+	private void listenerOnFieldsParentOrGuardian(FXUtils fxUtils) {
+		fxUtils.listenOnSelectedCheckBoxParentOrGuardian(parentOrGuardianDetails, biometrics);
+		fxUtils.listenOnSelectedCheckBoxParentOrGuardian(parentOrGuardianDetails, biometrics);
+
 	}
 
 	/**
@@ -228,6 +233,16 @@ public class UpdateUINController extends BaseController implements Initializable
 								applicationContext.getApplicationLanguageBundle());
 
 						getScene(createRoot).setRoot(createRoot);
+						if (!biometrics.isSelected()) {
+							getRegistrationDTOFromSession().setUpdateUINChild(true);
+						}
+						if (parentOrGuardianDetails.isSelected()) {
+							SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
+									RegistrationConstants.ENABLE);
+						} else {
+							SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
+									RegistrationConstants.DISABLE);
+						}
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 					}

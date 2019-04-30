@@ -22,7 +22,6 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.json.metadata.Applicant;
 import io.mosip.registration.dto.json.metadata.Biometric;
@@ -70,14 +69,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Applicant applicant = new Applicant();
 			biometric.setApplicant(applicant);
 
-			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
+			FaceDetailsDTO applicantFaceDetailsDTO=source.getBiometricDTO().getApplicantBiometricDTO().getFace();
 
 			// Set Photograph
-			identity.setApplicantPhotograph(buildPhotograph(documentDTO.getNumRetry(),
+			identity.setApplicantPhotograph(buildPhotograph(applicantFaceDetailsDTO.getNumOfRetries(),
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
-			FaceDetailsDTO faceDetailsDTO = source.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO();
+			FaceDetailsDTO faceDetailsDTO = source.getBiometricDTO().getIntroducerBiometricDTO().getFace();
 			identity.setExceptionPhotograph(buildExceptionPhotograph(
 					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
 							? faceDetailsDTO.getNumOfRetries()
@@ -332,7 +331,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
 		metaData.add(buildFieldValue("applicantTypeCode", metaDataDTO.getApplicantTypeCode()));
-		
+
+		metaData.add(buildFieldValue("authenticationBiometricFileName",
+				registrationDTO.isUpdateUINChild()
+						? removeFileExt(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)
+						: null));
+
 		return metaData;
 	}
 

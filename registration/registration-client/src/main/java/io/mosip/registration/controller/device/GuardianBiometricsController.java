@@ -299,10 +299,23 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private void previous(ActionEvent event) {
 		
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Navigates to previous section");
-		
-		registrationController.showCurrentPage(RegistrationConstants.GUARDIAN_BIOMETRIC,
-				getPageDetails(RegistrationConstants.GUARDIAN_BIOMETRIC, RegistrationConstants.PREVIOUS));
+				"Navigates to previous section");	
+
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, false);
+
+			if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
+			} else {
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+			}
+			registrationController.showUINUpdateCurrentPage();
+
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.GUARDIAN_BIOMETRIC,
+					getPageDetails(RegistrationConstants.GUARDIAN_BIOMETRIC, RegistrationConstants.PREVIOUS));
+		}
 	}
 	
 	/**
@@ -316,8 +329,23 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigates to next section");
 		
-		registrationController.showCurrentPage(RegistrationConstants.GUARDIAN_BIOMETRIC,
-				getPageDetails(RegistrationConstants.GUARDIAN_BIOMETRIC, RegistrationConstants.NEXT));
+	
+		if (isChild()) {
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, false);
+			if (!RegistrationConstants.DISABLE
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
+			} else {
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW,
+						true);
+				registrationPreviewController.setUpPreviewContent();
+			}
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.GUARDIAN_BIOMETRIC,
+					getPageDetails(RegistrationConstants.GUARDIAN_BIOMETRIC, RegistrationConstants.NEXT));
+		}
 	}
 	
 

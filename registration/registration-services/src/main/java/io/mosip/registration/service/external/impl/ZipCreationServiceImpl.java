@@ -65,15 +65,16 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
 				}
-
-				// Add Introducer Biometrics to packet zip
-				if (filesGeneratedForPacket.containsKey(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME)) {
+				
+				// Add UIN Update Biometrics to packet zip
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)) {
 					writeFileToZip(
-							"Biometric".concat(separator).concat(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
-							filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
+							"Biometric".concat(separator)
+									.concat(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME),
+							filesGeneratedForPacket.get(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
-					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Introcucer's biometric added");
+					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Authentication biometric added");
 				}
 			}
 

@@ -300,6 +300,7 @@ public class RegistrationConstants {
 	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
 	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
+	public static final String AUTHENTICATION_BIO_CBEFF_FILE_NAME = "authentication_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String PARENT = "PARENT";
@@ -1311,6 +1312,7 @@ public class RegistrationConstants {
 	// TODO Need to discuss with Sravya about code
 	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
 	
+
 	public static final String SIGNED_KEY="signed-key";
 	public static final String TIME_STAMP="timeStamp";
 	public static final String REF_ID="referenceId";
@@ -1320,5 +1322,9 @@ public class RegistrationConstants {
 	public static final String PUBLIC_KEY_REST="public_key";
 	public static final String KER="KER";
 	public static final String DTAE_MONTH_YEAR_REGEX="dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
+
+
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
+	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
 
 }
