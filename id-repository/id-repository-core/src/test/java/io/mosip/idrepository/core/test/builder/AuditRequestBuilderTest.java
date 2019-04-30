@@ -60,8 +60,8 @@ public class AuditRequestBuilderTest {
 			expectedRequest.setActionTimeStamp(null);
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
-			expectedRequest.setApplicationId(env.getProperty("mosip.kernel.idrepo.application.id"));
-			expectedRequest.setApplicationName(env.getProperty("mosip.kernel.idrepo.application.name"));
+			expectedRequest.setApplicationId(env.getProperty("mosip.idrepo.application.id"));
+			expectedRequest.setApplicationName(env.getProperty("mosip.idrepo.application.name"));
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");

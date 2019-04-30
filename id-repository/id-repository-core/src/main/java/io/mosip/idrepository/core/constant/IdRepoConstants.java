@@ -23,31 +23,31 @@ public enum IdRepoConstants {
 	VERSION_PATTERN("^v\\d+(\\.\\d+)?$"),
 
 	/** The datetime timezone. */
-	DATETIME_TIMEZONE("mosip.kernel.idrepo.datetime.timezone"),
+	DATETIME_TIMEZONE("mosip.idrepo.datetime.timezone"),
 
 	/** The status registered. */
-	ACTIVE_STATUS("mosip.kernel.idrepo.status.registered"),
+	ACTIVE_STATUS("mosip.idrepo.status.registered"),
 
 	/** The datetime pattern. */
 	DATETIME_PATTERN("mosip.utc-datetime-pattern"),
 
 	/** The application version. */
-	APPLICATION_VERSION("mosip.kernel.idrepo.application.version"),
+	APPLICATION_VERSION("mosip.idrepo.application.version"),
 
 	/** The application id. */
-	APPLICATION_ID("mosip.kernel.idrepo.application.id"),
+	APPLICATION_ID("mosip.idrepo.application.id"),
 
 	/** The application name. */
-	APPLICATION_NAME("mosip.kernel.idrepo.application.name"),
+	APPLICATION_NAME("mosip.idrepo.application.name"),
 
 	/** The mosip primary language. */
 	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language"),
 
 	/** The json schema file name. */
-	JSON_SCHEMA_FILE_NAME("mosip.kernel.idrepo.json-schema-fileName"),
+	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.kernel.idrepo.json.path");
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path");
 	/** The value. */
 	private final String value;
 
