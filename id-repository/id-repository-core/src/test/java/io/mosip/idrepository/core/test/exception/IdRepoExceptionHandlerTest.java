@@ -3,6 +3,7 @@ package io.mosip.idrepository.core.test.exception;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
+import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.exception.IdRepoExceptionHandler;
@@ -46,8 +48,6 @@ import io.mosip.kernel.core.exception.ServiceError;
 @ActiveProfiles("test")
 @ConfigurationProperties("mosip.idrepo")
 public class IdRepoExceptionHandlerTest {
-
-	private static final String UIN = "UIN";
 
 	private Map<String, String> id;
 
@@ -123,13 +123,12 @@ public class IdRepoExceptionHandlerTest {
 	public void testHandleIdAppException() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
-				new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)), request);
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST), request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -139,45 +138,59 @@ public class IdRepoExceptionHandlerTest {
 	@Test
 	public void testHandleIdAppExceptionWithCause() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.GET);
-		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST,
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST));
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
 		});
 	}
 
 	@Test
 	public void testHandleIdAppExceptionWithUncheckedCause() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
-		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_REQUEST,
+				new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_REQUEST));
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
 		});
 	}
 
 	@Test
 	public void testHandleIdAppUncheckedException() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
-		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_REQUEST,
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST));
 		ResponseEntity<Object> handleIdAppUncheckedException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
 		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
+		});
+	}
+
+	@Test
+	public void testHandleAccessDeniedException() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.PATCH);
+		AccessDeniedException ex = new AccessDeniedException("");
+		ResponseEntity<Object> handleAccessDeniedException = ReflectionTestUtils.invokeMethod(handler,
+				"handleAccessDeniedException", ex, request);
+		IdResponseDTO response = (IdResponseDTO) handleAccessDeniedException.getBody();
+		List<ServiceError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -202,5 +215,18 @@ public class IdRepoExceptionHandlerTest {
 				"handleExceptionInternal", new IdRepoAppException(), null, null, null, request);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
 		response.getErrors();
+	}
+
+	@Test
+	public void testHandleAuthenticationException() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		ResponseEntity<Object> handleAuthenticationException = ReflectionTestUtils.invokeMethod(handler,
+				"handleAuthenticationException",
+				new AuthenticationException(IdRepoErrorConstants.AUTHORIZATION_FAILED, 401), request);
+		IdResponseDTO response = (IdResponseDTO) handleAuthenticationException.getBody();
+		response.getErrors().forEach(e -> {
+			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorMessage(), e.getMessage());
+		});
 	}
 }
