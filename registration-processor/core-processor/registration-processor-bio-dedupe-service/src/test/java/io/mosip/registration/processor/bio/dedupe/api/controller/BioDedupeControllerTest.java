@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -27,7 +28,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.registration.processor.bio.dedupe.api.config.BioDedupeConfigTest;
-import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 
@@ -51,9 +51,12 @@ public class BioDedupeControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Mock
+	@MockBean
 	private TokenValidator tokenValidator;
-	
+
+	@Mock
+	Environment env;
+
 	String regId;
 
 	byte[] file;
@@ -63,16 +66,16 @@ public class BioDedupeControllerTest {
 		regId = "1234";
 		file = regId.getBytes();
 		Mockito.when(bioDedupeService.getFile(anyString())).thenReturn(file);
+		Mockito.when(env.getProperty("TOKENVALIDATE")).thenReturn(null);
 		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 	}
 
 	@Test
 	public void getFileSuccessTest() throws Exception {
 
-		this.mockMvc
-				.perform(MockMvcRequestBuilders.get("/v0.1/registration-processor/bio-dedupe/1234")
-						.cookie(new Cookie("Authorization", "token")).param("regId", regId).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/v0.1/registration-processor/bio-dedupe/1234")
+				.cookie(new Cookie("Authorization", "token")).param("regId", regId).accept(MediaType.ALL_VALUE)
+				.contentType(MediaType.ALL_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 }
