@@ -162,7 +162,7 @@ public class CryptographicServiceIntegrationTest {
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
 
-		requestDto.setApplicationId("uoiuoi");
+		requestDto.setApplicationId("REGISTRATION");
 		requestDto.setData("dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls");
 		requestDto.setReferenceId("ref123");
 		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
