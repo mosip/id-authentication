@@ -6,6 +6,8 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -125,8 +127,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS, Long.class);
-			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.HOURS);
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
+			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.MINUTES);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						VALIDATE_REQUEST_TIMED_OUT,
@@ -138,7 +140,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
 				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+						String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(), env
+								.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES)));
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),

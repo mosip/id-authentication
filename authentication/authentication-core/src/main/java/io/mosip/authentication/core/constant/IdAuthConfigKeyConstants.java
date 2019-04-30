@@ -7,11 +7,11 @@ package io.mosip.authentication.core.constant;
  *
  */
 public final class IdAuthConfigKeyConstants {
-	
+
 	private IdAuthConfigKeyConstants() {
-		
+
 	}
-	
+
 	public static final String APPLICATION_ID = "application.id";
 	public static final String DATE_TIME_PATTERN = "datetime.pattern";
 	public static final String REST_URI = ".rest.uri";
@@ -35,7 +35,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS = "authrequest.received-time-allowed.in-hours";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
 	public static final String OTP_CONTENT_TEMPLATE = "mosip.otp.mail.content.template";
 	public static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";
@@ -50,8 +50,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_KERNEL_OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
 	public static final String OTP_REQUEST_FLOODING_DURATION = "otp.request.flooding.duration";
 	public static final String OTP_REQUEST_FLOODING_MAX_COUNT = "otp.request.flooding.max-count";
-	public static final String OTPREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "otprequest.received-time-allowed.in-minutes";
-	public static final String MOSIP_IDTYPE_ALLOWED = "mosip.idtype.allowed";
+	public static final String MOSIP_IDTYPE_ALLOWED = "request.idtypes.allowed";
 	public static final String AUDIT_DEFAULT_HOST_NAME = "audit.defaultHostName";
 	public static final String AUDIT_DEFAULT_HOST_ADDRESS = "audit.defaultHostAddress";
 	public static final String APPLICATION_NAME = "application.name";
@@ -68,10 +67,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
-	
+
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
-	public static final String SWAGGER_BASE_URL= "swagger.base-url";
-	
-	
+	public static final String SWAGGER_BASE_URL = "swagger.base-url";
+
 }

@@ -1125,6 +1125,15 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
+	public void TestTimeexceeds() {
+		AuthRequestDTO authRequestDTO = getAuthRequestDto();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut",
+				"2019-04-24T09:41:57.086+05:30", errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
 	public void testValidatePhone() {
 		AuthRequestDTO authRequestDTO = getAuthRequestDto();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");

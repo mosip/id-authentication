@@ -37,7 +37,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
 
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
 
@@ -108,8 +107,10 @@ public class OTPRequestValidator extends IdAuthValidator {
 	private void validateRequestTimedOut(String timestamp, Errors errors) {
 		try {
 
-			String maxTimeInMinutes = env.getProperty(IdAuthConfigKeyConstants.OTPREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES);
-			Instant reqTimeInstance = DateUtils.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
+			String maxTimeInMinutes = env
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES);
+			Instant reqTimeInstance = DateUtils
+					.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
@@ -128,7 +129,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"INVALID_INPUT_PARAMETER -- " + IdAuthCommonConstants.REQ_TIME);
-			errors.rejectValue(IdAuthCommonConstants.REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IdAuthCommonConstants.REQ_TIME },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
