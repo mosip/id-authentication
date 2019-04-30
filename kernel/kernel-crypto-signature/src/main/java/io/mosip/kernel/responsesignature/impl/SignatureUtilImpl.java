@@ -231,9 +231,9 @@ public class SignatureUtilImpl implements SignatureUtil {
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied for PublicKey");
 				}
-			} else {
-				throw new AccessDeniedException("Access denied for PublicKey");
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
