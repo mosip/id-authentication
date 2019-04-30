@@ -158,5 +158,9 @@ public class LoggerConstants {
 	// Util
 	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME
 			+ "PUBLIC_KEY_GENRATION_UTIL - GENERATE_PUBLIC_KEY";
+	
+	//Registration Update
+	public static final String LOG_REG_UPDATE = HEADER + "REGISTARTION_UPDATE";
+	
 
 }

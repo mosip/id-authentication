@@ -1,5 +1,8 @@
 package io.mosip.registration.update;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,8 +28,12 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.controller.reg.HeaderController;
 
 /**
  * Update the Application
@@ -60,15 +67,24 @@ public class RegistrationUpdate {
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
+	
+	/**o
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUpdate.class);
+
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for updates");
 		return !getCurrentVersion().equals(getLatestVersion());
 
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for latest version started");
 		// Get latest version using meta-inf.xml
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
@@ -84,10 +100,14 @@ public class RegistrationUpdate {
 			}
 		}
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for latest version completed");
 		return latestVersion;
 	}
 
 	public String getCurrentVersion() throws IOException {
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for current version started");
 		if (currentVersion != null) {
 			return currentVersion;
 		} else {
@@ -96,11 +116,15 @@ public class RegistrationUpdate {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for current version completed");
 		return currentVersion;
 	}
 
 	public void getWithLatestJars() throws Exception {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating latest version started");
 		Path backUp = null;
 
 		try {
@@ -168,10 +192,13 @@ public class RegistrationUpdate {
 
 			throw exception;
 		}
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating latest version started");
 	}
 
 	private Path backUpCurrentApplication() throws IOException, io.mosip.kernel.core.exception.IOException {
-
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Backup of current version started");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String date = timestamp.toString().replace(":", "-") + "Z";
 
@@ -198,24 +225,30 @@ public class RegistrationUpdate {
 				FileUtils.deleteDirectory(backUpFile);
 			}
 		}
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Backup of current version completed");
 		return backUpFolder.toPath();
 
 	}
 
 	private void replaceBackupWithCurrentApplication(Path currentApplicationbackUpPath)
 			throws io.mosip.kernel.core.exception.IOException {
-
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Replacing Backup of current version started");
 		File backUpFolder = currentApplicationbackUpPath.toFile();
 
 		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + binFolder), new File(binFolder));
 		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + libFolder), new File(libFolder));
 
 		FileUtils.copyFile(new File(backUpFolder.getAbsolutePath() + SLASH + manifestFile), new File(manifestFile));
-
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Replacing Backup of current version completed");
 	}
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking of jars started");
 		for (String jarFile : checkableJars) {
 
 			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
@@ -224,6 +257,8 @@ public class RegistrationUpdate {
 
 		}
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking of jars completed");
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
@@ -239,6 +274,8 @@ public class RegistrationUpdate {
 					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
 							&& FileUtils.deleteQuietly(jarInFolder))) {
 
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Downloading jar : "+jarFileName+" started");
 				// Download Jar
 				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
@@ -254,9 +291,13 @@ public class RegistrationUpdate {
 
 	private void deleteJars(List<String> deletableJars) throws io.mosip.kernel.core.exception.IOException {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Deletion of jars started");
 		for (String jarName : deletableJars) {
 			deleteJar(jarName);
 		}
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Deletion of jars completed");
 
 	}
 
@@ -275,6 +316,8 @@ public class RegistrationUpdate {
 	}
 
 	private Manifest getLocalManifest() throws IOException {
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Geting  of local manifest started");
 		if (localManifest != null) {
 			return localManifest;
 		}
@@ -286,16 +329,22 @@ public class RegistrationUpdate {
 			setLocalManifest(new Manifest(new FileInputStream(localManifestFile)));
 
 		}
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Geting  of local manifest completed");
 		return localManifest;
 	}
 
 	private Manifest getServerManifest() throws IOException, ParserConfigurationException, SAXException {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Geting  of server manifest started");
 		// Get latest Manifest from server
 		setServerManifest(
 				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
 		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Geting  of server manifest completed");
 		return serverManifest;
 
 	}
@@ -317,11 +366,15 @@ public class RegistrationUpdate {
 	}
 
 	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking of checksum started for jar :"+jarFile.getName());
 		String checkSum;
 		try {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
 			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
 					.get(Attributes.Name.CONTENT_TYPE);
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Checking of checksum completed for jar :"+jarFile.getName());
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
@@ -332,6 +385,8 @@ public class RegistrationUpdate {
 
 	private boolean hasSpace(int bytes) {
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking of space in machine");
 		return bytes < new File("/").getFreeSpace();
 	}
 
