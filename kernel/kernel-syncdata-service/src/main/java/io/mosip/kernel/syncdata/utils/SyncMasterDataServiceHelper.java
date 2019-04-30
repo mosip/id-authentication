@@ -1564,9 +1564,9 @@ public class SyncMasterDataServiceHelper {
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AdminService");
 				}
-			} else {
-				throw new AccessDeniedException("Access denied from AdminService");
 			}
 			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());

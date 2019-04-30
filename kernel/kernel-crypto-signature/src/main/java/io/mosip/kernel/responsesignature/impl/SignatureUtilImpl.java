@@ -142,9 +142,9 @@ public class SignatureUtilImpl implements SignatureUtil {
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from CryptoManager");
 				}
-			} else {
-				throw new AccessDeniedException("Access denied from CryptoManager");
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
