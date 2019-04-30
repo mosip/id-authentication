@@ -4,6 +4,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -36,6 +37,12 @@ public class EmailNotificationServiceImpl implements EmailNotification<Multipart
 	@Autowired
 	EmailNotificationUtils emailNotificationUtils;
 
+	@Value("${spring.mail.username}")
+	private String un;
+
+	@Value("${spring.mail.password}")
+	private String pwd;
+
 	/**
 	 * SendEmail
 	 * 
@@ -49,6 +56,8 @@ public class EmailNotificationServiceImpl implements EmailNotification<Multipart
 	@Override
 	public ResponseDto sendEmail(String[] mailTo, String[] mailCc, String mailSubject, String mailContent,
 			MultipartFile[] attachments) {
+		System.out.println("\nUN : " + un);
+		System.out.println("\nPWD : " + pwd);
 		ResponseDto dto = new ResponseDto();
 		send(mailTo, mailCc, mailSubject, mailContent, attachments);
 		dto.setStatus(MailNotifierConstants.MESSAGE_SUCCESS_STATUS.getValue());
