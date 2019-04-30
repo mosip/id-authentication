@@ -42,10 +42,10 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "mosip.auth.mail.subject.template";
 	public static final String AUTH_EMAIL_CONTENT_TEMPLATE = "mosip.auth.mail.content.template";
 	public static final String OTP_SUBJECT_TEMPLATE = "mosip.otp.mail.subject.template";
-	public static final String UIN_MASKING_REQUIRED = "uin.masking.required";
+	public static final String UIN_MASKING_REQUIRED = "notification.uin.masking.required";
 	public static final String NOTIFICATION_DATE_FORMAT = "notification.date.format";
 	public static final String NOTIFICATION_TIME_FORMAT = "notification.time.format";
-	public static final String UIN_MASKING_CHARCOUNT = "uin.masking.charcount";
+	public static final String UIN_MASKING_CHARCOUNT = "notification.uin.masking.charcount";
 	public static final String MOSIP_NOTIFICATIONTYPE = "mosip.notificationtype";
 	public static final String MOSIP_KERNEL_OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
 	public static final String OTP_REQUEST_FLOODING_DURATION = "otp.request.flooding.duration";
