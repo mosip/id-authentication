@@ -155,4 +155,8 @@ public class LoggerConstants {
 	public static final String TPM_SERVICE_ASYMMETRIC_ENCRYPTION = TPM_SERVICE + "ASYMMETRIC_ENCRYPT";
 	public static final String TPM_SERVICE_ASYMMETRIC_DECRYPTION = TPM_SERVICE + "ASYMMETRIC_DECRYPT";
 
+	// Util
+	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME
+			+ "PUBLIC_KEY_GENRATION_UTIL - GENERATE_PUBLIC_KEY";
+
 }

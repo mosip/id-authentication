@@ -4,12 +4,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,6 +34,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
 
 /**
  * The Class ResponseSignatureAdvice will be called after a rest services call.
@@ -121,8 +120,7 @@ public class ResponseSignatureAdvice {
 				LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 						"Getting public key");
 
-				PublicKey key = KeyFactory.getInstance("RSA")
-						.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
+				PublicKey key = PublicKeyGenerationUtil.generatePublicKey(publicKey.getBytes());
 
 				Map<String, Object> responseMap = (Map<String, Object>) restClientResponse
 						.get(RegistrationConstants.REST_RESPONSE_HEADERS);
