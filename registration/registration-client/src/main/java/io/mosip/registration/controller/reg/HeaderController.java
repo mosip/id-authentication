@@ -449,8 +449,7 @@ public class HeaderController extends BaseController {
 
 				System.exit(0);
 			}
-		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
-				| ParserConfigurationException | SAXException exception) {
+		} catch (Exception exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);

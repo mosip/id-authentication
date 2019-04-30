@@ -68,25 +68,20 @@ public class RegistrationUpdate {
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		if (latestVersion != null) {
-			return latestVersion;
-		} else {
 
-			// Get latest version using meta-inf.xml
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-			org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
+		// Get latest version using meta-inf.xml
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
 
-			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-			if (list != null && list.getLength() > 0) {
-				NodeList subList = list.item(0).getChildNodes();
+		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
+		if (list != null && list.getLength() > 0) {
+			NodeList subList = list.item(0).getChildNodes();
 
-				if (subList != null && subList.getLength() > 0) {
-					// Set Latest Version
-					setLatestVersion(subList.item(0).getNodeValue());
-				}
+			if (subList != null && subList.getLength() > 0) {
+				// Set Latest Version
+				setLatestVersion(subList.item(0).getNodeValue());
 			}
-
 		}
 
 		return latestVersion;
@@ -104,68 +99,70 @@ public class RegistrationUpdate {
 		return currentVersion;
 	}
 
-	public void getWithLatestJars()
-			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
+	public void getWithLatestJars() throws Exception {
 
-		// Get Server Manifest
-		getServerManifest();
-
-		// Back Current Application
-		Path backUp = backUpCurrentApplication();
-
-		// replace local manifest with Server manifest
-		serverManifest.write(new FileOutputStream(new File(manifestFile)));
-
-		List<String> downloadJars = new LinkedList<>();
-		List<String> deletableJars = new LinkedList<>();
-		List<String> checkableJars = new LinkedList<>();
-
-		Map<String, Attributes> localAttributes = localManifest.getEntries();
-		Map<String, Attributes> serverAttributes = serverManifest.getEntries();
-
-		// Compare local and server Manifest
-		for (Entry<String, Attributes> jar : localAttributes.entrySet()) {
-			checkableJars.add(jar.getKey());
-			if (!serverAttributes.containsKey(jar.getKey())) {
-
-				/* unnecessary jar after update */
-				deletableJars.add(jar.getKey());
-
-			} else {
-				Attributes localAttribute = jar.getValue();
-				Attributes serverAttribute = serverAttributes.get(jar.getKey());
-				if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
-						.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
-
-					/* Jar to be downloaded */
-					downloadJars.add(jar.getKey());
-
-				}
-				serverManifest.getEntries().remove(jar.getKey());
-
-			}
-		}
-
-		for (Entry<String, Attributes> jar : serverAttributes.entrySet()) {
-			downloadJars.add(jar.getKey());
-		}
+		Path backUp = null;
 
 		try {
+			// Get Server Manifest
+			getServerManifest();
+
+			// Back Current Application
+			backUp = backUpCurrentApplication();
+			// replace local manifest with Server manifest
+			serverManifest.write(new FileOutputStream(new File(manifestFile)));
+
+			List<String> downloadJars = new LinkedList<>();
+			List<String> deletableJars = new LinkedList<>();
+			List<String> checkableJars = new LinkedList<>();
+
+			Map<String, Attributes> localAttributes = localManifest.getEntries();
+			Map<String, Attributes> serverAttributes = serverManifest.getEntries();
+
+			// Compare local and server Manifest
+			for (Entry<String, Attributes> jar : localAttributes.entrySet()) {
+				checkableJars.add(jar.getKey());
+				if (!serverAttributes.containsKey(jar.getKey())) {
+
+					/* unnecessary jar after update */
+					deletableJars.add(jar.getKey());
+
+				} else {
+					Attributes localAttribute = jar.getValue();
+					Attributes serverAttribute = serverAttributes.get(jar.getKey());
+					if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
+							.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
+
+						/* Jar to be downloaded */
+						downloadJars.add(jar.getKey());
+
+					}
+					serverManifest.getEntries().remove(jar.getKey());
+
+				}
+			}
+
+			for (Entry<String, Attributes> jar : serverAttributes.entrySet()) {
+				downloadJars.add(jar.getKey());
+			}
+
 			deleteJars(deletableJars);
 
 			// Un-Modified jars exist or not
 			checkableJars.removeAll(deletableJars);
 			checkableJars.removeAll(downloadJars);
 
+			getServerManifest();
+
 			// Download latest jars if not in local
 			checkJars(getLatestVersion(), downloadJars);
 			checkJars(getLatestVersion(), checkableJars);
 
-			setLocalManifest(getServerManifest());
+			setLocalManifest(serverManifest);
 			setServerManifest(null);
 			setLatestVersion(null);
 
-		} catch (RuntimeException exception) {
+		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
 
 			replaceBackupWithCurrentApplication(backUp);
 
@@ -232,13 +229,20 @@ public class RegistrationUpdate {
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
 
 		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()
-				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-						&& FileUtils.deleteQuietly(jarInFolder))) {
 
-			// Download Jar
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+		// TODO Need to be removed once rxtx jars added to jfrog repo
+		List<String> notJars = java.util.Arrays.asList(
+				new String[] { "rxtxSerial.dll", "rxtxParallel.dll", "rxtxcomm-2.2", "bcprov-jdk14-138", "RXTXcomm" });
 
+		if (!notJars.contains(jarFileName)) {
+			if (!jarInFolder.exists()
+					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+							&& FileUtils.deleteQuietly(jarInFolder))) {
+
+				// Download Jar
+				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+
+			}
 		}
 
 	}
@@ -286,10 +290,6 @@ public class RegistrationUpdate {
 	}
 
 	private Manifest getServerManifest() throws IOException, ParserConfigurationException, SAXException {
-
-		if (serverManifest != null) {
-			return serverManifest;
-		}
 
 		// Get latest Manifest from server
 		setServerManifest(
