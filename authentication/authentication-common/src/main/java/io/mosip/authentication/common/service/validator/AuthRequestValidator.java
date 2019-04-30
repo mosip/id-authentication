@@ -4,18 +4,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -35,8 +31,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
-	private static final String REQUEST_TRANSACTION_ID = "request/transactionID";
-
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
 	/** The Constant AUTH_REQUEST. */
@@ -46,9 +40,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
-
-	/** The Constant INVALID_AUTH_REQUEST. */
-	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
@@ -169,44 +160,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		AuthTypeDTO authType = authRequest.getRequestedAuth();
-		if (!Objects.isNull(authType)) {
-			boolean anyAuthType = Stream
-					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, authType::isDemo, authType::isPin)
-					.anyMatch(Supplier<Boolean>::get);
-
-			if (!anyAuthType) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, INVALID_AUTH_REQUEST);
-				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { IdAuthCommonConstants.REQUESTEDAUTH },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-
-			} else if (authType.isDemo()) {
-				checkDemoAuth(authRequest, errors);
-			} else if (authType.isBio()) {
-				Set<String> allowedAuthType = getAllowedAuthTypes(getAllowedAuthTypeProperty());
-				validateBioMetadataDetails(authRequest, errors, allowedAuthType);
-			}
-		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE,
-					IdAuthCommonConstants.MISSING_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
-			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IdAuthCommonConstants.REQUESTEDAUTH },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		if (authType.isDemo()) {
+			checkDemoAuth(authRequest, errors);
+		} else if (authType.isBio()) {
+			Set<String> allowedAuthType = getAllowedAuthTypes(getAllowedAuthTypeProperty());
+			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 		}
-	}
-
-	/**
-	 * Extract auth info.
-	 *
-	 * @return the sets the
-	 */
-	private Set<String> getAllowedAuthTypes(String configKey) {
-		String intAllowedAuthType = env.getProperty(configKey);
-		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
 	}
 
 	/**

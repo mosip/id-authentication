@@ -1182,17 +1182,6 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testNullAuthType() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
-		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class,
-				Errors.class);
-		declaredMethod.setAccessible(true);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		declaredMethod.invoke(authRequestValidator, authRequestDTO, errors);
-	}
-
-	@Test
 	public void testNullAuthType2() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class,

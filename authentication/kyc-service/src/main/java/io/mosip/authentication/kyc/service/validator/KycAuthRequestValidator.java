@@ -2,16 +2,12 @@ package io.mosip.authentication.kyc.service.validator;
 
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -89,7 +85,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateAuthType(errors, kycAuthRequestDTO);
-				validateLangCode(kycAuthRequestDTO.getSecondaryLangCode(), errors, SECONDARY_LANG_CODE, SECONDARY_LANG_CODE);
+				validateLangCode(kycAuthRequestDTO.getSecondaryLangCode(), errors, SECONDARY_LANG_CODE);
 			}
 
 		} else {
@@ -123,7 +119,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (!isValidAuthtype) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
-			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(at -> at.getType()).collect(Collectors.joining(","));
+			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(EkycAuthType::getType).collect(Collectors.joining(","));
 			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
 					.format(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage(), notAllowedAuthTypesStr));
 		}
