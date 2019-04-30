@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.registration.processor.bio.dedupe.api.controller;
+package io.mosip.registration.processor.bio.dedupe.api.controller.test;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.registration.processor.bio.dedupe.api.config.BioDedupeConfigTest;
-import io.mosip.registration.processor.core.code.DedupeSourceName;
+import io.mosip.registration.processor.bio.dedupe.api.controller.BioDedupeController;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 
@@ -51,7 +51,7 @@ public class BioDedupeControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Mock
+	@MockBean
 	private TokenValidator tokenValidator;
 	
 	String regId;
