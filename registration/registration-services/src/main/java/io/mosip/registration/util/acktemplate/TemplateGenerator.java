@@ -240,7 +240,7 @@ public class TemplateGenerator extends BaseService {
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 		} else if (registration.getBiometricDTO().getApplicantBiometricDTO().isHasExceptionPhoto()) {
-			byte[] exceptionImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getFace().getFace();
+			byte[] exceptionImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
 			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties);
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
@@ -314,7 +314,7 @@ public class TemplateGenerator extends BaseService {
 		} else {
 			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag) || ((isChild
 					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null)
-					|| (!isChild && registration.getBiometricDTO().getApplicantBiometricDTO().getFace()
+					|| (!isChild && registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 							.getFace() == null))) {
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
