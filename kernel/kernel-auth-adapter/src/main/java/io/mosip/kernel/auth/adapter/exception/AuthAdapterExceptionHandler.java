@@ -46,7 +46,8 @@ public class AuthAdapterExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> onAccessDeniedException(
 			final HttpServletRequest httpServletRequest, final AccessDeniedException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
+		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
+				AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
@@ -58,6 +59,22 @@ public class AuthAdapterExceptionHandler {
 		ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(AuthNException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> authNException(final HttpServletRequest httpServletRequest,
+			final AuthNException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(e.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(AuthZException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> authZException(final HttpServletRequest httpServletRequest,
+			final AuthZException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(e.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
