@@ -35,7 +35,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_HOURS = "authrequest.received-time-allowed.in-hours";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
 	public static final String OTP_CONTENT_TEMPLATE = "mosip.otp.mail.content.template";
 	public static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";

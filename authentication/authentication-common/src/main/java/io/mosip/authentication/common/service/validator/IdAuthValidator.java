@@ -72,7 +72,8 @@ public abstract class IdAuthValidator implements Validator {
 	public void validateId(String id, Errors errors) {
 		// TODO check id based on the request and add validation for version.
 		if (StringUtils.isEmpty(id)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -163,7 +164,8 @@ public abstract class IdAuthValidator implements Validator {
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+					String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
+							env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES)));
 		}
 	}
 
@@ -242,19 +244,20 @@ public abstract class IdAuthValidator implements Validator {
 							CONSENT_OBTAINED));
 		}
 	}
-	
+
 	/**
 	 * Validate txn id.
 	 *
-	 * @param transactionID the transaction ID
+	 * @param transactionID        the transaction ID
 	 * @param requestTransactionID the request transaction ID
-	 * @param errors the errors
+	 * @param errors               the errors
 	 */
 	protected void validateTxnId(String transactionID, String requestTransactionID, Errors errors) {
 		if (!StringUtils.isEmpty(requestTransactionID) && !StringUtils.isEmpty(transactionID)
 				&& !transactionID.equals(requestTransactionID)) {
 			errors.rejectValue(TRANSACTION_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { TRANSACTION_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { TRANSACTION_ID },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

@@ -26,8 +26,8 @@ public enum IdAuthenticationErrorConstants {
 	BLOCKED_OTP_VALIDATE("IDA-OTA-009", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-010", "%s not configured for the country"),
 
-	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within 24 hrs",
-			"Please send the request within 24 hrs"),
+	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
+			"Please send the request within %s minutes"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "Please retry with correct VID"),

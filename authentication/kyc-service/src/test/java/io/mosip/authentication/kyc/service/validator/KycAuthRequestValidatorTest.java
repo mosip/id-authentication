@@ -82,7 +82,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Mock
 	VidValidatorImpl vidValidator;
-	
+
 	@Mock
 	PinValidatorImpl pinValidator;
 
@@ -96,8 +96,8 @@ public class KycAuthRequestValidatorTest {
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
 
@@ -228,7 +228,7 @@ public class KycAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -470,7 +470,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequest(request);
 
 		MockEnvironment mockenv = new MockEnvironment();
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.auth.types.allowed", "");
 
