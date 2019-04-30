@@ -62,11 +62,8 @@ public class RegistrationUpdate {
 	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
-		try {
-			return !getCurrentVersion().equals(getLatestVersion());
-		} catch (RuntimeException runtimeException) {
-			return false;
-		}
+
+		return !getCurrentVersion().equals(getLatestVersion());
 
 	}
 

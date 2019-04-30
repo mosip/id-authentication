@@ -227,7 +227,7 @@ public class LoginController extends BaseController implements Initializable {
 				globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
 			}
 
-		} catch (IOException | ParserConfigurationException | SAXException exception) {
+		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
