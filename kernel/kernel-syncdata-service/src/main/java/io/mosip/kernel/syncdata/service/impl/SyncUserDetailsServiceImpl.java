@@ -21,6 +21,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -32,9 +34,9 @@ import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.UserDetailRequestDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
-import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
@@ -102,17 +104,27 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
 		try {
 
-			response = restTemplate.postForEntity(userDetailsUri.toString()+ "/registrationclient",
+			response = restTemplate.postForEntity(userDetailsUri.toString() + "/registrationclient",
 					userDetailReqEntity, String.class);
-		} catch (HttpServerErrorException | HttpClientErrorException e) {
-			if (e.getRawStatusCode() == 401) {
-				throw new BadCredentialsException("Authentication failed from AuthManager");
+		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from AuthManager");
+				}
 			}
-			if (e.getRawStatusCode() == 403) {
-				throw new AccessDeniedException("Authentication failed from AuthManager");
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				}
+			} else {
+				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), e);
+					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), ex);
 		}
 		String responseBody = response.getBody();
 		UserDetailResponseDto userDetailResponseDto = getUserDetailFromResponse(responseBody);
@@ -129,8 +141,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	/**
 	 * Gets the http request.
 	 *
-	 * @param userIds
-	 *            the user ids
+	 * @param userIds the user ids
 	 * @return {@link HttpEntity}
 	 */
 	private HttpEntity<RequestWrapper<?>> getHttpRequest(List<String> userIds) {
@@ -149,8 +160,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	/**
 	 * Gets the user detail from response.
 	 *
-	 * @param responseBody
-	 *            the response body
+	 * @param responseBody the response body
 	 * @return {@link UserDetailResponseDto}
 	 */
 	private UserDetailResponseDto getUserDetailFromResponse(String responseBody) {
@@ -162,7 +172,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		}
 		ResponseWrapper<UserDetailResponseDto> responseObject = null;
 		try {
-			
+
 			responseObject = objectMapper.readValue(responseBody,
 					new TypeReference<ResponseWrapper<UserDetailResponseDto>>() {
 					});

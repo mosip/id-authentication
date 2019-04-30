@@ -24,6 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -1549,15 +1551,25 @@ public class SyncMasterDataServiceHelper {
 					.queryParam("lastupdatedtimestamp", DateUtils.formatToISOString(lastUpdatedTime));
 
 			response = restTemplate.getForEntity(builder.toUriString(), String.class);
-		} catch (HttpServerErrorException | HttpClientErrorException e) {
-			if (e.getRawStatusCode() == 401) {
-				throw new BadCredentialsException("Authentication failed from AdminService");
+		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from AdminService");
+				}
 			}
-			if (e.getRawStatusCode() == 403) {
-				throw new AccessDeniedException("Authentication failed from AdminService");
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				}
+			} else {
+				throw new AccessDeniedException("Access denied from AdminService");
 			}
 			throw new SyncDataServiceException(MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + e.getMessage());
+					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
 		}
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
