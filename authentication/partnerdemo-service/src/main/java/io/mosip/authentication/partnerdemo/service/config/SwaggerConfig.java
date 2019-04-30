@@ -34,8 +34,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
-	@Value("${application.env.local:false}")
-	private Boolean localEnv;
+	private Boolean localEnv=true;
 
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerUrl;
