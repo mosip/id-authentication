@@ -67,7 +67,7 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.kernel.idrepo")
+@ConfigurationProperties("mosip.idrepo")
 public class IdRequestValidatorTest {
 
 	@InjectMocks
@@ -122,7 +122,7 @@ public class IdRequestValidatorTest {
 
 	@Before
 	public void setup() {
-		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
+		status.add(env.getProperty("mosip.idrepo.status.registered"));
 		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
 		ReflectionTestUtils.setField(validator, "status", status);

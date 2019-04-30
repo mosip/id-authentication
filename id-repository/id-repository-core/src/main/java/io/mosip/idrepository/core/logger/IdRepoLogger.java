@@ -15,6 +15,16 @@ public final class IdRepoLogger {
 	private static String uin;
 	
 	private static String rid;
+	
+	private static String vid;
+
+	public static String getVid() {
+		return vid;
+	}
+
+	public static void setVid(String vid) {
+		IdRepoLogger.vid = vid;
+	}
 
 	private static RollingFileAppender mosipRollingFileAppender;
 

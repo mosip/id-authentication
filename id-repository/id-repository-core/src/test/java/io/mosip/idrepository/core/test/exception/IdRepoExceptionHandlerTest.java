@@ -44,7 +44,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.kernel.idrepo")
+@ConfigurationProperties("mosip.idrepo")
 public class IdRepoExceptionHandlerTest {
 
 	private static final String UIN = "UIN";

@@ -89,7 +89,7 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.kernel.idrepo")
+@ConfigurationProperties("mosip.idrepo")
 public class IdRepoServiceTest {
 
 	@Mock
@@ -208,7 +208,7 @@ public class IdRepoServiceTest {
 		uin.setUin("1234");
 		uin.setUinRefId("uinRefId");
 		uin.setUinData(mapper.writeValueAsBytes(request));
-		uin.setStatusCode(env.getProperty("mosip.kernel.idrepo.status.registered"));
+		uin.setStatusCode(env.getProperty("mosip.idrepo.status.registered"));
 	}
 
 	/**
