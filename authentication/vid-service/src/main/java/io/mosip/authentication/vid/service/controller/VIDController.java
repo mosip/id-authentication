@@ -38,8 +38,6 @@ public class VIDController {
 	/** The Static Pin Facade */
 	@Autowired
 	private VIDServiceImpl vidService;
-	
-	
 
 	/**
 	 * Generate VID.
@@ -50,8 +48,7 @@ public class VIDController {
 	 */
 	@GetMapping(path = "/vid/{uin}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "VID Generation Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "VID generated successfully"),
-			@ApiResponse(code = 400, message = "VID generation failed") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "VID generated successfully") })
 	public VIDResponseDTO generateVID(@PathVariable String uin) throws IdAuthenticationAppException {
 		VIDResponseDTO vidResponse = null;
 		try {
@@ -62,7 +59,8 @@ public class VIDController {
 					e.getErrorTexts() == null || e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getMessage(), e);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateVID", e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateVID",
+					e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
 		return vidResponse;

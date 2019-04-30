@@ -69,8 +69,7 @@ public class AuthController {
 	 */
 	@PostMapping(path = "/auth/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-			@ApiResponse(code = 400, message = "Request authenticated failed") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("MISP-LK") String mispLK) throws IdAuthenticationAppException, IdAuthenticationDaoException {
@@ -80,12 +79,12 @@ public class AuthController {
 			DataValidationUtil.validate(errors);
 			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
