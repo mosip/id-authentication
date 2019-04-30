@@ -17,9 +17,11 @@ import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
 import io.mosip.util.ConnectionUtils;
+import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.FileSystemAdapter;
 import io.mosip.util.HDFSAdapterImpl;
 import io.mosip.util.HMACUtils;
+import net.lingala.zip4j.exception.ZipException;
 
 /**
  * This class is used for packet validator stage validations
@@ -97,11 +99,17 @@ public class PacketValidator {
 									JSONObject proofOfRelationship = (JSONObject) identity.get("proofOfRelationship");
 									String por = proofOfRelationship.get("value").toString();
 									listOfIDDocs.add(por);
-									JSONObject proofOfDateOfBirth = (JSONObject) identity.get("proofOfDateOfBirth");
+									/*JSONObject proofOfDateOfBirth = (JSONObject) identity.get("proofOfDateOfBirth");
 									String pob = proofOfDateOfBirth.get("value").toString();
-									listOfIDDocs.add(pob);
-									JSONObject individualBiometrics = (JSONObject) identity.get("individualBiometrics");
-									String poib = individualBiometrics.get("value").toString();
+									listOfIDDocs.add(pob);*/
+									String poib = null;
+									if(identity.get("parentOrGuardianBiometrics")!=null){
+										JSONObject individualBiometrics = (JSONObject) identity.get("parentOrGuardianBiometrics");
+										poib = individualBiometrics.get("value").toString();
+									}else {
+										JSONObject individualBiometrics = (JSONObject) identity.get("individualBiometrics");
+										poib = individualBiometrics.get("value").toString();
+									}		
 									listOfIDDocs.add(poib);
 									logger.info("listOfIDDocs : "+listOfIDDocs);
 								}
@@ -245,13 +253,13 @@ public class PacketValidator {
 			byte[] filebyte = null;
 			InputStream fileStream = adapter.getFile(regId2,
 					"DEMOGRAPHIC\\" + document.toUpperCase());
-				try {
-					filebyte = IOUtils.toByteArray(fileStream);
-					fileStream.close();
-				} catch (Exception e) {
-					logger.error("Exception occurred in PacketValidator class in "
-							+ "generateDemographicHash method "+e);
-				}
+			try {
+				filebyte = IOUtils.toByteArray(fileStream);
+				fileStream.close();
+			} catch (Exception e) {
+				logger.error("Exception occurred in PacketValidator class in "
+						+ "generateDemographicHash method "+e);
+			}
 			generateHash(filebyte);
 		});
 	}
@@ -319,7 +327,40 @@ public class PacketValidator {
 
 	@Test
 	public void testMethod(){
-		File dummyDecryptFile = new File(configPath+fileName);
-		packetValidatorStage(dummyDecryptFile);
+		/*File dummyDecryptFile = new File(configPath+fileName);
+		packetValidatorStage(dummyDecryptFile);*/
+		File decrpytedFile = null;
+		File invalidFiles = new File("src/test/resources/regProc/Packets/InvalidPackets/PacketValidator");
+		File[] directoryFiles = invalidFiles.listFiles();
+		try {
+			for (File file : directoryFiles){
+				if(file.isDirectory()){
+					File[] zipFile = file.listFiles();
+					
+					for(File packet : zipFile){
+						//String packetName = packet.getName();
+						if(packet.getName().contains(".zip")){
+							String packetName = packet.getName();
+							logger.info("inside file ========= : "+packetName);
+							EncrypterDecrypter decrypt = new EncrypterDecrypter();
+							/*File encryptedPacket = new File(invalidFiles+"/"+file.getCanonicalFile().getName()
+							+"/"+packet);
+							logger.info("encryptedPacket : "+encryptedPacket.getName());*/
+							JSONObject data = decrypt.generateCryptographicData(packet);
+							logger.info("data : "+data);
+							decrpytedFile = decrypt.decryptFile(data,invalidFiles+file.getName()+packetName, packetName);
+							logger.info("decrypted file generated : "+decrpytedFile);
+							packetValidatorStage(decrpytedFile);
+						}
+						
+					}
+					
+				}
+			}
+		} catch (IOException | ZipException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
 	}
 }
