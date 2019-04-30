@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { ParentComponent } from './shared/parent/parent.component';
-import { MasterdataComponent } from './feature/masterdata/masterdata/masterdata.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'admin',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadChildren: './navigation/navigation.module#NavigationModule'
   },
   {
     path: 'admin',

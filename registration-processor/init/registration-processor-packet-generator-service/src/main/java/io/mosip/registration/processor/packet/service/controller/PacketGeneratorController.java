@@ -97,7 +97,7 @@ public class PacketGeneratorController {
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
 			throws RegBaseCheckedException, IOException {
-		tokenValidator.validate(token, "packetgenerator");
+		tokenValidator.validate("Authorization=" + token, "packetgenerator");
 		try {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;
