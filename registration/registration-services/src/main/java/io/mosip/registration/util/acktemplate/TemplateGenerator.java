@@ -83,15 +83,17 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText           - string which contains the data of template
-	 *                               that is used to generate acknowledgement
-	 * @param registration           - RegistrationDTO to display required fields on
-	 *                               the template
-	 * @param templateManagerBuilder - The Builder which generates template by
-	 *                               mapping values to respective place-holders in
-	 *                               template
-	 * @param templateType           - The type of template that is required (like
-	 *                               email/sms/acknowledgement)
+	 * @param templateText
+	 *            - string which contains the data of template that is used to
+	 *            generate acknowledgement
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
+	 * @param templateManagerBuilder
+	 *            - The Builder which generates template by mapping values to
+	 *            respective place-holders in template
+	 * @param templateType
+	 *            - The type of template that is required (like
+	 *            email/sms/acknowledgement)
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -390,8 +392,15 @@ public class TemplateGenerator extends BaseService {
 				Map<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
 				for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
 					if (entry.getValue() != 0) {
-						// display rank of quality for the captured fingerprints
-						templateValues.put(entry.getKey(), entry.getValue());
+						if (registration.getRegistrationMetaDataDTO().getRegistrationCategory() != null
+								&& registration.getRegistrationMetaDataDTO().getRegistrationCategory()
+										.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+							// display tick mark for the captured fingerprints
+							templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_RIGHT_MARK);
+						} else {
+							// display rank of quality for the captured fingerprints
+							templateValues.put(entry.getKey(), entry.getValue());
+						}
 					} else {
 						// display cross mark for missing fingerprints
 						templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_CROSS_MARK);
@@ -1109,13 +1118,14 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText           - string which contains the data of template
-	 *                               that is used to generate notification
-	 * @param registration           - RegistrationDTO to display required fields on
-	 *                               the template
-	 * @param templateManagerBuilder - The Builder which generates template by
-	 *                               mapping values to respective place-holders in
-	 *                               template
+	 * @param templateText
+	 *            - string which contains the data of template that is used to
+	 *            generate notification
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
+	 * @param templateManagerBuilder
+	 *            - The Builder which generates template by mapping values to
+	 *            respective place-holders in template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -1198,7 +1208,8 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param enrolment - EnrolmentDTO to get the biometric details
+	 * @param enrolment
+	 *            - EnrolmentDTO to get the biometric details
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
