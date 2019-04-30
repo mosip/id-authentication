@@ -191,13 +191,48 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
 			for (PropertyDescriptor pd : pds) {
 				Object beanWrapperValue = beanWrapper.getPropertyValue(pd.getName());
-				if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue)
-					uinUpdateFields.add(pd.getName());
+				addingUinUpdatedFieldstoIdentityObject(uinUpdateFields, pd, beanWrapperValue);
 			}
 			identity.setUinUpdatedFields(uinUpdateFields);
 		}
 	}
 
+	/**
+	 * Adding uin updated fieldsto identity object.
+	 *
+	 * @param uinUpdateFields 
+	 * 				the uin update fields
+	 * @param pd 
+	 * 				the pd
+	 * @param beanWrapperValue 
+	 * 				the bean wrapper value
+	 */
+	private void addingUinUpdatedFieldstoIdentityObject(List<String> uinUpdateFields, PropertyDescriptor pd, Object beanWrapperValue) {
+		if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue) {
+			if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_NAME)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_NAME_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_AGE)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_AGE_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_FOREIGNER)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_FOREIGNER_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_GENDER)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_GENDER_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_ADDRESS)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_ADDRESS_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_PHONE)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_PHONE_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_EMAIL)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_EMAIL_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_PARENT_DETAILS)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_PARENT_DETAILS_LBL);
+			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIOMETRICS)) {
+				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_BIOMETRICS_LBL);
+			}
+		}
+	}
+	
 	private Photograph buildPhotograph(int numRetry, String photographName) {
 		Photograph photograph = null;
 		if (photographName != null) {

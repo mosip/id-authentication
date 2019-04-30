@@ -258,6 +258,16 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_OPERATORAUTHENTICATIONPANE = "operatorAuthenticationPane";
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
+	public static final String UIN_UPDATE_NAME_LBL = "Name";
+	public static final String UIN_UPDATE_AGE_LBL = "Age/DOB";
+	public static final String UIN_UPDATE_ADDRESS_LBL = "Address";
+	public static final String UIN_UPDATE_PHONE_LBL = "Phone";
+	public static final String UIN_UPDATE_EMAIL_LBL = "Email";
+	public static final String UIN_UPDATE_FOREIGNER_LBL = "Foreigner/National";
+	public static final String UIN_UPDATE_GENDER_LBL = "Gender";
+	public static final String UIN_UPDATE_PARENT_DETAILS_LBL = "Parent/Guardian details";
+	public static final String UIN_UPDATE_CNIE_NUMBER_LBL = "CNIE/PIN/Residence Card Number";
+	public static final String UIN_UPDATE_BIOMETRICS_LBL = "Biometrics";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
