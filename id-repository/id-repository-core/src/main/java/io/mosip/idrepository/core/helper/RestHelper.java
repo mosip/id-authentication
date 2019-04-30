@@ -3,6 +3,7 @@ package io.mosip.idrepository.core.helper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
@@ -10,9 +11,14 @@ import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
@@ -24,9 +30,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.netty.handler.ssl.SslContext;
@@ -43,6 +51,9 @@ import reactor.core.publisher.Mono;
 @Component
 @NoArgsConstructor
 public class RestHelper {
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	/** The Constant ERRORS. */
 	private static final String ERRORS = "errors";
@@ -69,12 +80,15 @@ public class RestHelper {
 	/** The Constant CLASS_REST_HELPER. */
 	private static final String CLASS_REST_HELPER = "RestHelper";
 
+	/** The Constant DEFAULT_SESSION_ID. */
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+
 	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
 	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
 
 	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
-
+	
 	private LocalDateTime requestTime;
 
 	/** The mosipLogger. */
@@ -93,17 +107,16 @@ public class RestHelper {
 		Object response;
 		try {
 			requestTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					"Request received at : " + requestTime);
+			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Request received at : " + requestTime);
 			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
-				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
+				response = requestWithRestTemplate(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			} else {
-				response = request(request, getSslContext()).block();
+				response = requestWithRestTemplate(request, getSslContext()).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				checkErrorResponse(response, request.getResponseType());
@@ -117,7 +130,8 @@ public class RestHelper {
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
+						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n "
+								+ e.getMessage());
 				throw new RestServiceException(IdRepoErrorConstants.CONNECTION_TIMED_OUT, e);
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
@@ -131,8 +145,7 @@ public class RestHelper {
 			long duration = Duration.between(requestTime, responseTime).toMillis();
 			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Time difference between request and response in millis:" + duration
-							+ ".  Time difference between request and response in Seconds: "
-							+ ((double) duration / 1000));
+							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 		}
 
 	}
@@ -146,7 +159,7 @@ public class RestHelper {
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
 			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
-			Mono<?> sendRequest = request(request, getSslContext());
+			Mono<?> sendRequest = requestWithRestTemplate(request, getSslContext());
 			sendRequest.subscribe();
 			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 			return () -> sendRequest.block();
@@ -217,11 +230,11 @@ public class RestHelper {
 
 		return monoResponse;
 	}
-
+	
 	/**
 	 * Check error response.
 	 *
-	 * @param response     the response
+	 * @param response the response
 	 * @param responseType the response type
 	 * @throws RestServiceException the rest service exception
 	 */
@@ -229,8 +242,10 @@ public class RestHelper {
 		try {
 			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
-					&& responseNode.get(ERRORS).size() > 0) {
-				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, responseNode.toString(),
+					&& responseNode.get(ERRORS).size() > 0
+					&& !responseNode.get(ERRORS).get(0).get("errorCode").asText().startsWith("KER-ATH")) {
+				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
+						responseNode.toString(),
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
@@ -265,9 +280,39 @@ public class RestHelper {
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, ex.getMessage());
+			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					ex.getMessage());
 			return new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, ex);
 		}
 
 	}
+	
+	private Mono<?> requestWithRestTemplate(@Valid RestRequestDTO request, SslContext sslContext)
+			throws RestServiceException {
+		try {
+			ResponseEntity<?> responseEntity = restTemplate.exchange(request.getUri(), request.getHttpMethod(),
+					new HttpEntity<>(request.getRequestBody(), request.getHeaders()), request.getResponseType());
+			return Mono.just(responseEntity.getBody());
+		} catch (RestClientResponseException e) {
+			if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
+				List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
+						"request failed with status code :" + e.getRawStatusCode() + " -- For request -> " + request,
+						"\n\n" + e.getResponseBodyAsString());
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "Throwing AuthenticationException",
+						errorList.toString());
+				throw new AuthenticationException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(),
+						e.getRawStatusCode());
+				
+			} else {
+				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate",
+						e.getResponseBodyAsString());
+				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);
+			}
+		} catch (RestClientException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "requestWithRestTemplate", e.getMessage());
+			throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e);
+		}
+	}
+	
 }

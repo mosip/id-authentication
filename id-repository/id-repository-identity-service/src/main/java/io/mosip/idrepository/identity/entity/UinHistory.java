@@ -33,16 +33,19 @@ public class UinHistory {
 		
 	}
 
-	public UinHistory(String uinRefId, LocalDateTime effectiveDateTime, String uin, byte[] uinData, String uinDataHash,
-			String regId, String statusCode, String langCode, String createdBy, LocalDateTime createdDateTime,
-			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+	public UinHistory(String uinRefId, LocalDateTime effectiveDateTime, String uin, String uinHash, byte[] uinData,
+			String uinDataHash, String regId, String bioRefId, String statusCode, String langCode, String createdBy,
+			LocalDateTime createdDateTime, String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted,
+			LocalDateTime deletedDateTime) {
 		super();
 		this.uinRefId = uinRefId;
 		this.effectiveDateTime = effectiveDateTime;
 		this.uin = uin;
+		this.uinHash = uinHash;
 		this.uinData = uinData.clone();
 		this.uinDataHash = uinDataHash;
 		this.regId = regId;
+		this.bioRefId = bioRefId;
 		this.statusCode = statusCode;
 		this.langCode = langCode;
 		this.createdBy = createdBy;
@@ -64,6 +67,8 @@ public class UinHistory {
 
 	/** The uin. */
 	private String uin;
+	
+	private String uinHash;
 
 	/** The uin data. */
 	@Lob
@@ -78,6 +83,8 @@ public class UinHistory {
 
 	/** The reg id. */
 	private String regId;
+	
+	private String bioRefId;
 
 	/** The status code. */
 	private String statusCode;

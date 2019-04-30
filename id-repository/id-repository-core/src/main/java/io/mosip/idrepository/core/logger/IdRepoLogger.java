@@ -32,7 +32,7 @@ public final class IdRepoLogger {
 		mosipRollingFileAppender = new RollingFileAppender();
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setAppenderName("fileappender");
-		mosipRollingFileAppender.setFileName("logs/id-repo.log");
+		mosipRollingFileAppender.setFileName("logs/id-repo-identity.log");
 		mosipRollingFileAppender.setFileNamePattern("logs/id-repo-%d{yyyy-MM-dd}-%i.log");
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setMaxFileSize("1mb");

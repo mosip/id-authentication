@@ -8,6 +8,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -44,6 +46,9 @@ import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -118,20 +123,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public WebClient webClient() {
-		return WebClient.builder().filter((req, next) -> {
-			ClientRequest filtered = null;
-			if (SecurityContextHolder.getContext() != null
-					&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
-					&& SecurityContextHolder.getContext().getAuthentication()
-							.getPrincipal() instanceof AuthUserDetails) {
-				AuthUserDetails userDetail = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication()
-						.getPrincipal();
-				filtered = ClientRequest.from(req).header(AuthAdapterConstant.AUTH_HEADER_COOKIE,
-						AuthAdapterConstant.AUTH_COOOKIE_HEADER + userDetail.getToken()).build();
-			}
-			return next.exchange(filtered);
-		}).build();
+		return WebClient.builder()
+				.clientConnector(new ReactorClientHttpConnector(builder -> {
+					try {
+						builder.sslContext(
+								SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build());
+					} catch (SSLException e) {
+						e.printStackTrace();
+					}
+				}))
+				.filter((req, next) -> {
+					ClientRequest filtered = null;
+					if (SecurityContextHolder.getContext() != null
+							&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
+							&& SecurityContextHolder.getContext().getAuthentication()
+									.getPrincipal() instanceof AuthUserDetails) {
+						AuthUserDetails userDetail = (AuthUserDetails) SecurityContextHolder.getContext()
+								.getAuthentication().getPrincipal();
+						filtered = ClientRequest.from(req).header(AuthAdapterConstant.AUTH_HEADER_COOKIE,
+								AuthAdapterConstant.AUTH_COOOKIE_HEADER + userDetail.getToken()).build();
+					}
+					return next.exchange(filtered);
+				}).build();
 	}
+
 }
 
 class AuthEntryPoint implements AuthenticationEntryPoint {

@@ -36,15 +36,17 @@ import lombok.ToString;
 @Table(schema = "idrepo")
 public class Uin {
 
-	public Uin(String uinRefId, String uin, byte[] uinData, String uinDataHash, String regId, String statusCode,
-			String langCode, String createdBy, LocalDateTime createdDateTime, String updatedBy,
-			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime,
+	public Uin(String uinRefId, String uin, String uinHash, byte[] uinData, String uinDataHash, String regId,
+			String bioRefId, String statusCode, String langCode, String createdBy, LocalDateTime createdDateTime,
+			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime,
 			List<UinBiometric> biometrics, List<UinDocument> documents) {
 		this.uinRefId = uinRefId;
 		this.uin = uin;
+		this.uinHash = uinHash;
 		this.uinData = uinData.clone();
 		this.uinDataHash = uinDataHash;
 		this.regId = regId;
+		this.bioRefId = bioRefId;
 		this.statusCode = statusCode;
 		this.langCode = langCode;
 		this.createdBy = createdBy;
@@ -64,6 +66,8 @@ public class Uin {
 
 	/** The uin. */
 	private String uin;
+	
+	private String uinHash;
 
 	/** The uin data. */
 	@Lob
@@ -78,6 +82,8 @@ public class Uin {
 
 	/** The reg id. */
 	private String regId;
+	
+	private String bioRefId;
 
 	/** The status code. */
 	private String statusCode;

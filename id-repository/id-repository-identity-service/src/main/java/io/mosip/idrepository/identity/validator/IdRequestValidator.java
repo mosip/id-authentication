@@ -366,27 +366,25 @@ public class IdRequestValidator implements Validator {
 	 */
 	private void validateJsonAttributes(String request, Errors errors) {
 		validation.entrySet().parallelStream().forEach(entry -> {
-			JsonPath path = JsonPath.compile(entry.getKey());
+			JsonPath jsonPath = JsonPath.compile(entry.getKey());
 			Pattern pattern = Pattern.compile(entry.getValue());
-			Object data = path.read(request,
-					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-			if (Objects.nonNull(data)) {
-				if (!(data instanceof JSONArray) && !pattern.matcher((CharSequence) String.valueOf(data)).matches()) {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-							(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-							.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), entry.getKey()));
-				} else if (data instanceof JSONArray) {
-					IntStream.range(0, ((JSONArray) data).size())
-							.filter(index -> !pattern.matcher((CharSequence) ((JSONArray) data).get(index)).matches())
-							.forEach(index -> {
-								mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-										(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
-								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												StringUtils.replace(entry.getKey(), "*", String.valueOf(index))));
-							});
-				}
+			JSONArray data = jsonPath.read(request,
+					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
+			if (Objects.nonNull(data) && !data.isEmpty()) {
+				IntStream.range(0, data.size())
+						.filter(index -> !pattern.matcher(String.valueOf(data.get(index))).matches())
+						.forEach(index -> {
+							JSONArray pathList = jsonPath.read(request,
+									Configuration.defaultConfiguration()
+									.addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST, Option.AS_PATH_LIST));
+							String path = String.valueOf(pathList.get(index)).replaceAll("[$']", "");
+							path = path.substring(1, path.length() - 1).replace("][", "/");
+							errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+									String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+											"/" + path));
+							mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
+									(VALIDATE_REQUEST + entry.getValue() + " -> " + data + "  path -> " + path));
+						});
 			}
 		});
 	}

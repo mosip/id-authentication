@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>logs/kernel-idrepo-service.log</file>
+		<file>logs/idrepo-identity-service.log</file>
 		<append>true</append>
 		<immediateFlush>true</immediateFlush>
 		<encoder>

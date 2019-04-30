@@ -203,16 +203,18 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					&& !request.getRequest().getDocuments().isEmpty()) {
 				addDocuments(uin, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
 
-				uinRepo.save(new Uin(uinRefId, uin, identityInfo, securityManager.hash(identityInfo),
-						request.getRequest().getRegistrationId(),
+				uinRepo.save(new Uin(uinRefId, uin, securityManager.hash(uin.getBytes()), identityInfo,
+						securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
+						request.getRequest().getBiometricReferenceId(),
 						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
 						UPDATED_BY, now(), false, now(), bioList, docList));
 				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"Record successfully saved in db with documents");
 			} else {
-				uinRepo.save(new Uin(uinRefId, uin, identityInfo, securityManager.hash(identityInfo),
-						request.getRequest().getRegistrationId(),
+				uinRepo.save(new Uin(uinRefId, uin, securityManager.hash(uin.getBytes()), identityInfo,
+						securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
+						request.getRequest().getBiometricReferenceId(),
 						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
 						UPDATED_BY, now(), false, now(), null, null));
@@ -220,8 +222,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 						"Record successfully saved in db without documents");
 			}
 
-			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, securityManager.hash(identityInfo),
-					request.getRequest().getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, securityManager.hash(uin.getBytes()), identityInfo,
+					securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
+					request.getRequest().getBiometricReferenceId(),
+					env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 
@@ -436,8 +440,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				}
 			}
 
-			uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
-					uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(),
+			uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin,
+					securityManager.hash(uin.getBytes()), uinObject.getUinData(), uinObject.getUinDataHash(),
+					uinObject.getRegId(), request.getRequest().getBiometricReferenceId(), uinObject.getStatusCode(),
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 
