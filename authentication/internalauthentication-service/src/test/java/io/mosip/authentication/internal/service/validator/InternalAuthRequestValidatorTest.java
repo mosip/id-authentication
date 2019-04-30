@@ -58,6 +58,9 @@ public class InternalAuthRequestValidatorTest {
 	@Mock
 	private SpringValidatorAdapter validator;
 
+	@Autowired
+	private Environment environment;
+
 	@Mock
 	Errors errors;
 
@@ -311,13 +314,18 @@ public class InternalAuthRequestValidatorTest {
 		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		fingerValue.setData(dataDTO);
+
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO irisData = new DataDTO();
 		irisData.setBioValue("iris img");
 		irisData.setBioSubType("LEFT");
 		irisData.setBioType("IIR");
 		irisData.setDeviceProviderID("provider001");
+		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		irisValue.setData(irisData);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
@@ -325,6 +333,8 @@ public class InternalAuthRequestValidatorTest {
 		faceData.setBioType("FID");
 		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
+		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		faceValue.setData(faceData);
 
 		IdentityDTO identitydto = new IdentityDTO();
