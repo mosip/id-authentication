@@ -10,24 +10,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
-import org.apache.directory.api.ldap.model.entry.DefaultModification;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.entry.Modification;
-import org.apache.directory.api.ldap.model.entry.ModificationOperation;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
 import org.apache.directory.api.ldap.model.password.PasswordUtil;
-import org.apache.directory.api.util.Base64;
-import org.apache.directory.api.util.Strings;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
@@ -74,8 +67,8 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
-				Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection("localhost",
+				Integer.valueOf("10389"));
 		return connection;
 	}
 
@@ -207,6 +200,7 @@ public class ILdapDataStore implements IDataStore {
 								: null);
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
+				mosipUserDto.setRId(userLookup.get("rid").get().toString());
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;

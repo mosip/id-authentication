@@ -23,4 +23,5 @@ public class MosipUserDto {
 	private byte[] userPassword;
 	private String name;
 	private String role;
+	private String rId;
 }
