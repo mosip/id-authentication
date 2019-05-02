@@ -4,6 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,6 +26,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -35,6 +38,7 @@ import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -56,6 +60,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -69,8 +74,8 @@ import javafx.scene.layout.VBox;
 @Controller
 public class HeaderController extends BaseController {
 
-	/**o
-	 * Instance of {@link Logger}
+	/**
+	 * o Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(HeaderController.class);
 
@@ -118,6 +123,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private HomeController homeController;
+
+	@Autowired
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	ProgressIndicator progressIndicator;
 
@@ -239,10 +247,9 @@ public class HeaderController extends BaseController {
 			 * BaseController.load(getClass().getResource(RegistrationConstants.
 			 * SYNC_DATA));
 			 * 
-			 * VBox pane = (VBox) menu.getParent().getParent().getParent();
-			 * Object parent = pane.getChildren().get(0);
-			 * pane.getChildren().clear(); pane.getChildren().add((Node)
-			 * parent); pane.getChildren().add(syncData); }
+			 * VBox pane = (VBox) menu.getParent().getParent().getParent(); Object parent =
+			 * pane.getChildren().get(0); pane.getChildren().clear();
+			 * pane.getChildren().add((Node) parent); pane.getChildren().add(syncData); }
 			 */
 
 		} /*
@@ -397,8 +404,16 @@ public class HeaderController extends BaseController {
 		// Check for updates
 		if (hasUpdate()) {
 
-			// Update the application
-			update();
+			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+					RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE);
+
+			updateAlert.showAndWait();
+
+			/* Get Option from user */
+			ButtonType result = updateAlert.getResult();
+			if (result == ButtonType.OK) {
+				executeUpdateTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
+			}
 		}
 
 	}
@@ -427,29 +442,17 @@ public class HeaderController extends BaseController {
 		return hasUpdate;
 	}
 
-	private void update() {
+	private String update() {
 		try {
-			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-					RegistrationConstants.EMPTY, RegistrationUIConstants.CONFIRM_UPDATE);
 
-			updateAlert.showAndWait();
+			registrationUpdate.getWithLatestJars();
+			return RegistrationConstants.ALERT_INFORMATION;
 
-			/* Get Option from user */
-			ButtonType result = updateAlert.getResult();
-			if (result == ButtonType.OK) {
-
-				registrationUpdate.getWithLatestJars();
-
-				// Update completed Re-Launch application
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
-
-				System.exit(0);
-			}
-		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
-				| ParserConfigurationException | SAXException exception) {
+		} catch (Exception exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
+			return RegistrationConstants.ERROR;
+
 		}
 	}
 
@@ -507,4 +510,61 @@ public class HeaderController extends BaseController {
 
 	}
 
+	private void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
+
+		progressIndicator.setVisible(true);
+		pane.setDisable(true);
+
+		/**
+		 * This anonymous service class will do the pre application launch task
+		 * progress.
+		 * 
+		 */
+		Service<String> taskService = new Service<String>() {
+			@Override
+			protected Task<String> createTask() {
+				return /**
+						 * @author SaravanaKumar
+						 *
+						 */
+				new Task<String>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected String call() {
+
+						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+
+						return update();
+
+					}
+				};
+			}
+		};
+
+		progressIndicator.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+
+				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
+				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
+					// Update completed Re-Launch application
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
+
+					restartApplication();
+				}
+				pane.setDisable(false);
+				progressIndicator.setVisible(false);
+			}
+
+		});
+
+	}
 }

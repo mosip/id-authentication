@@ -37,10 +37,10 @@ import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,10 +49,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -147,6 +147,9 @@ public class RegistrationApprovalController extends BaseController implements In
 	private AuthenticationController authenticationController;
 
 	private Stage primaryStage;
+	
+	@FXML
+	private TextField filterField;
 
 	/*
 	 * (non-Javadoc)
@@ -200,6 +203,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
+		
 		table.getSelectionModel().selectFirst();
 
 		if (table.getSelectionModel().getSelectedItem() != null) {
@@ -217,7 +221,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				viewAck();
 			}
 		});
-
+		
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
 	}
 
@@ -275,13 +279,50 @@ public class RegistrationApprovalController extends BaseController implements In
 			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
 
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
-			table.setItems(oList);
+
+			  FilteredList<RegistrationApprovalDTO> filteredData = new FilteredList<>(oList, p -> true);
+		        
+		        // 2. Set the filter Predicate whenever the filter changes.
+		        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+		            filteredData.setPredicate(reg -> {
+		                // If filter text is empty, display all persons.
+		                if (newValue == null || newValue.isEmpty()) {
+		                    return true;
+		                }
+		                
+		                // Compare first name and last name of every person with filter text.
+		                String lowerCaseFilter = newValue.toLowerCase();
+		                
+		                if (reg.getId().contains(lowerCaseFilter)) {
+		                    // Filter matches first name.
+		                	table.getSelectionModel().selectFirst();
+		                	if(table.getSelectionModel().getSelectedItem()!=null) {
+		                		viewAck();	
+		                	}
+		                    return true;
+		                } 
+		                return false; // Does not match.
+		            });
+		            table.getSelectionModel().selectFirst();
+                	if(table.getSelectionModel().getSelectedItem()!=null) {
+                		viewAck();	
+                	}
+		        });
+		        
+		        // 3. Wrap the FilteredList in a SortedList. 
+		        SortedList<RegistrationApprovalDTO> sortedData = new SortedList<>(filteredData);
+		        
+		        // 4. Bind the SortedList comparator to the TableView comparator.
+		        sortedData.comparatorProperty().bind(table.comparatorProperty());
+		        
+			table.setItems(sortedData);
+			
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
 		}
-
+		
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 

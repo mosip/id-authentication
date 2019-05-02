@@ -69,6 +69,40 @@ public class FXUtils {
 	 * @param field
 	 *            the {@link CheckBox}
 	 */
+	public void listenOnSelectedCheckBoxParentOrGuardian(CheckBox parentOrGuardian,CheckBox biometrics) {
+
+		parentOrGuardian.selectedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (newValue) {
+				parentOrGuardian.getStyleClass().remove("updateUinCheckBox");
+				parentOrGuardian.getStyleClass().add("updateUinCheckBoxSelected");
+				biometrics.getStyleClass().remove("updateUinCheckBoxSelected");
+				biometrics.getStyleClass().add("updateUinCheckBox");
+				biometrics.setSelected(false);
+			}else {
+				parentOrGuardian.getStyleClass().remove("updateUinCheckBoxSelected");
+				parentOrGuardian.getStyleClass().add("updateUinCheckBox");
+			} 
+		});
+		biometrics.selectedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (newValue) {
+				biometrics.getStyleClass().remove("updateUinCheckBox");
+				biometrics.getStyleClass().add("updateUinCheckBoxSelected");
+				parentOrGuardian.getStyleClass().remove("updateUinCheckBoxSelected");
+				parentOrGuardian.getStyleClass().add("updateUinCheckBox");
+				parentOrGuardian.setSelected(false);
+			} else {
+				biometrics.getStyleClass().remove("updateUinCheckBoxSelected");
+				biometrics.getStyleClass().add("updateUinCheckBox");
+			}
+		});
+	}
+	
+	/**
+	 * Listener to change the style when field is selected for.
+	 *
+	 * @param field
+	 *            the {@link CheckBox}
+	 */
 	public void listenOnSelectedCheckBox(CheckBox field) {
 
 		field.selectedProperty().addListener((obsValue, oldValue, newValue) -> {

@@ -59,7 +59,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		ResponseDTO responseDTO = null;
 
-		FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
+		FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFace();
 
 		long count = biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO().stream()
 				.flatMap(o -> o.getSegmentedFingerprints().stream()).count();

@@ -755,7 +755,6 @@ public class DocumentScanController extends BaseController {
 				if(node instanceof ComboBox<?>) {
 					ComboBox<?> document  = (ComboBox<?>) node;
 					document.setValue(null);
-					document.setPromptText(getDocumentName(key));
 				}
 			}	
 
@@ -994,19 +993,6 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
-	}
-	
-	private String getDocumentName(String documentCode) {
-		if(documentCode.equals(RegistrationConstants.POR_DOCUMENT)) {
-			return "Proof of Relationship";
-		} else if(documentCode.equals(RegistrationConstants.POI_DOCUMENT)) {
-			return "Proof of Identity";
-		} else if(documentCode.equals(RegistrationConstants.POA_DOCUMENT)) {
-			return "Proof of Address";
-		} else if(documentCode.equals(RegistrationConstants.DOB_DOCUMENT)) {
-			return "Proof of Birth";
-		}
-		return documentCode;
 	}
 	
 	private void validateDocumentsPane() {

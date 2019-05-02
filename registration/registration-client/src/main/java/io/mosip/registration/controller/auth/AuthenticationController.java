@@ -241,6 +241,13 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!username.getText().isEmpty()) {
 				if (fetchUserRole(username.getText())) {
 					status = validatePwd(username.getText(), password.getText());
+					if (RegistrationConstants.SUCCESS.equals(status)) {
+						userAuthenticationTypeListValidation.remove(0);
+						userNameField = username.getText();
+						loadNextScreen();
+					} else if (RegistrationConstants.FAILURE.equals(status)) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
+					}
 					if (!isEODAuthentication) {
 						getOSIData().setSupervisorID(userNameField);
 						getOSIData().setSuperviorAuthenticatedByPassword(true);
@@ -254,6 +261,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		} else {
 			if (!username.getText().isEmpty()) {
 				status = validatePwd(username.getText(), password.getText());
+				if (RegistrationConstants.SUCCESS.equals(status)) {
+					userAuthenticationTypeListValidation.remove(0);
+					userNameField = username.getText();
+					loadNextScreen();
+				} else if (RegistrationConstants.FAILURE.equals(status)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
+				}
 				if (!isEODAuthentication) {
 					getOSIData().setOperatorAuthenticatedByPassword(true);
 				}
@@ -262,13 +276,6 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		}
 
-		if (RegistrationConstants.SUCCESS.equals(status)) {
-			userAuthenticationTypeListValidation.remove(0);
-			userNameField = username.getText();
-			loadNextScreen();
-		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
-		}
 	}
 
 	/**
@@ -827,12 +834,12 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (isSupervisor) {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFace(faceDetailsDTO);
 				SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFace(faceDetailsDTO);
 			}
 		}
 

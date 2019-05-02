@@ -14,7 +14,7 @@ public class Identity {
 	private Biometric biometric;
 	private List<BiometricException> exceptionBiometrics;
 	private Photograph applicantPhotograph;
-	private Photograph exceptionPhotograph;
+	private ExceptionPhotograph exceptionPhotograph;
 	private List<Document> documents;
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
@@ -73,7 +73,7 @@ public class Identity {
 	/**
 	 * @return the exceptionPhotograph
 	 */
-	public Photograph getExceptionPhotograph() {
+	public ExceptionPhotograph getExceptionPhotograph() {
 		return exceptionPhotograph;
 	}
 
@@ -81,7 +81,7 @@ public class Identity {
 	 * @param exceptionPhotograph
 	 *            the exceptionPhotograph to set
 	 */
-	public void setExceptionPhotograph(Photograph exceptionPhotograph) {
+	public void setExceptionPhotograph(ExceptionPhotograph exceptionPhotograph) {
 		this.exceptionPhotograph = exceptionPhotograph;
 	}
 

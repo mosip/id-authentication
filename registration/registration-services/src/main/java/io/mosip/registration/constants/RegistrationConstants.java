@@ -258,6 +258,16 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_OPERATORAUTHENTICATIONPANE = "operatorAuthenticationPane";
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
+	public static final String UIN_UPDATE_NAME_LBL = "Name";
+	public static final String UIN_UPDATE_AGE_LBL = "Age/DOB";
+	public static final String UIN_UPDATE_ADDRESS_LBL = "Address";
+	public static final String UIN_UPDATE_PHONE_LBL = "Phone";
+	public static final String UIN_UPDATE_EMAIL_LBL = "Email";
+	public static final String UIN_UPDATE_FOREIGNER_LBL = "Foreigner/National";
+	public static final String UIN_UPDATE_GENDER_LBL = "Gender";
+	public static final String UIN_UPDATE_PARENT_DETAILS_LBL = "Parent/Guardian details";
+	public static final String UIN_UPDATE_CNIE_NUMBER_LBL = "CNIE/PIN/Residence Card Number";
+	public static final String UIN_UPDATE_BIOMETRICS_LBL = "Biometrics";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -293,6 +303,8 @@ public class RegistrationConstants {
 	public static final String PACKET_META_JSON_NAME = "packet_meta_info.json";
 	public static final String PACKET_DATA_HASH_FILE_NAME = "packet_data_hash.txt";
 	public static final String PACKET_OSI_HASH_FILE_NAME = "packet_osi_hash.txt";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO_NAME = "_exception_photo.jpg";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO = "_exception_photo";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
@@ -300,6 +312,7 @@ public class RegistrationConstants {
 	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
 	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
+	public static final String AUTHENTICATION_BIO_CBEFF_FILE_NAME = "authentication_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String PARENT = "PARENT";
@@ -1311,6 +1324,7 @@ public class RegistrationConstants {
 	// TODO Need to discuss with Sravya about code
 	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
 	
+
 	public static final String SIGNED_KEY="signed-key";
 	public static final String TIME_STAMP="timeStamp";
 	public static final String REF_ID="referenceId";
@@ -1320,5 +1334,9 @@ public class RegistrationConstants {
 	public static final String PUBLIC_KEY_REST="public_key";
 	public static final String KER="KER";
 	public static final String DTAE_MONTH_YEAR_REGEX="dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
+
+
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
+	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
 
 }

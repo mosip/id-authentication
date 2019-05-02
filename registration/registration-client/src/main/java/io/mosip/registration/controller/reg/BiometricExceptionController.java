@@ -203,13 +203,13 @@ public class BiometricExceptionController extends BaseController implements Init
 				registrationNavlabel.setText(
 						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 			}
-			
+
 			if (getRegistrationDTOFromSession() != null
-					&& getRegistrationDTOFromSession().getSelectionListDTO()!=null) {
-				registrationNavlabel.setText(
-						ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
+						.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
-			
+
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 							.get(RegistrationConstants.FINGER_PANE)) {
@@ -349,13 +349,15 @@ public class BiometricExceptionController extends BaseController implements Init
 				if (fingerList.size() == 10 && irisList.size() == 2) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 
-				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) && !isChild()) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 
-				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))){
+				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG)) && !isChild()) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
+				} else if (isChild()) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
@@ -397,7 +399,10 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
 				biometricExceptionDTO.setReason(RegistrationConstants.MISSING_BIOMETRICS);
 				biometricExceptionDTO.setMarkedAsException(true);
-				biometricExceptionDTO.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child) ? RegistrationConstants.PARENT : RegistrationConstants.INDIVIDUAL);
+				biometricExceptionDTO
+						.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+								? RegistrationConstants.PARENT
+								: RegistrationConstants.INDIVIDUAL);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
@@ -405,6 +410,9 @@ public class BiometricExceptionController extends BaseController implements Init
 					|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
+			} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+						.getIntroducerBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			} else {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);

@@ -85,8 +85,8 @@ public class FingerprintFacadeTest {
 		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
-		FaceDetailsDTO obj = new FaceDetailsDTO();
-		biometricInfoDTO.setFaceDetailsDTO(obj);
+		biometricInfoDTO.setFace(new FaceDetailsDTO());
+		biometricInfoDTO.setExceptionFace(new FaceDetailsDTO());
 		return biometricInfoDTO;
 	}
 	

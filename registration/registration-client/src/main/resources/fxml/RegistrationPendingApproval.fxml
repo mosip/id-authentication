@@ -43,16 +43,22 @@
                       <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" percentHeight="7.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints percentHeight="93.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <TableView fx:id="table">
+                        <TableView fx:id="table" GridPane.rowIndex="1">
                            <columns>
                               <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*60/100}" text="%registrationid" />
                               <TableColumn fx:id="acknowledgementFormPath" editable="false" text="%registrtionid" visible="false" />
                               <TableColumn fx:id="statusComment" editable="false" prefWidth="${tableContainer.width*40/100}" styleClass="pendingApprovalStatus" text="%status" />
                            </columns>
                         </TableView>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <TextField fx:id="filterField" prefWidth="230.0" promptText="%searchRegistration" />
+                           </children>
+                        </HBox>
                      </children>
                      <GridPane.margin>
                         <Insets left="20.0" />

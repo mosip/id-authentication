@@ -72,6 +72,7 @@ import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -188,8 +189,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private UserDetailService userDetailService;
-	@Autowired
-	private RestartController restartController;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -218,16 +217,22 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private PublicKeySyncImpl publicKeySyncImpl;
+	
+	@Autowired
+	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	boolean hasUpdate;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
+				hasUpdate = registrationUpdate.hasUpdate();
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
 			}
 
-		} catch (IOException | ParserConfigurationException | SAXException exception) {
+		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
@@ -282,6 +287,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			if(hasUpdate) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE);
+			}
 			if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
@@ -1230,16 +1238,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	}
 
-	private void restartApplication() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
-				restartController.restart();
-			}
-		});
-
-	}
+	
 
 	/**
 	 * This method will remove the loginmethod from list

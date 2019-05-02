@@ -7,19 +7,25 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.aspectj.lang.JoinPoint;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
@@ -27,12 +33,15 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ResponseSignatureAdvice;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class ResponseSignatureAdviceTest {
 
 	@Rule
@@ -64,6 +73,15 @@ public class ResponseSignatureAdviceTest {
 
 	@Mock
 	private PolicySyncDAO policySyncDAO;
+	
+	@Before
+	public void init() throws Exception {
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.ASYMMETRIC_ALG_NAME, "RSA");
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+	}
 
 	@Test
 	public void responseSignatureTest()
