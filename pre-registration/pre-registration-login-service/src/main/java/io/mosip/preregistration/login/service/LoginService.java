@@ -264,14 +264,6 @@ public class LoginService {
 		}
 		finally {
 			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
-			if (isRetrieveSuccess) {
-				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"Logout successfully",
-						AuditLogVariables.MULTIPLE_ID.toString(),auditUserId,auditUserId);
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to logout    ", AuditLogVariables.NO_ID.toString(),auditUserId,auditUserId);
-			}
 		}
 		return response;
 	}
