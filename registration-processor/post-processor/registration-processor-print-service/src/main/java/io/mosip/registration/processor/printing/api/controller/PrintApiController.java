@@ -88,7 +88,7 @@ public class PrintApiController {
 										  @ApiIgnore Errors errors)
 			throws RegPrintAppException {
 
-		tokenValidator.validate("Authorization=" + token, "print");
+		tokenValidator.validate("Authorization=" + token, "uin-card");
         validateRequest(printRequest.getRequest(), errors);
         PrintServiceValidationUtil.validate(errors);
         byte[] pdfbytes = printservice.getDocuments(printRequest.getRequest().getIdtype()

@@ -59,21 +59,7 @@ public class PrintExceptionHandler {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintExceptionHandler.class);
-	
-	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<PrintResponse> accessDenied(AccessDeniedException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getMessage());
-		return buildPrintApiExceptionResponse((Exception) e);
-	}
 
-	@ExceptionHandler(InvalidTokenException.class)
-	public ResponseEntity<PrintResponse> invalidToken(InvalidTokenException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getMessage());
-		return buildPrintApiExceptionResponse((Exception) e);
-	}
-	
 	/**
 	 * Reg print app exception.
 	 *
