@@ -3,12 +3,6 @@
 -- table 		: app_role_priority			-- List of application, process, role and their priority
 -- table alias  : roleprt
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-  
 -- table section -------------------------------------------------
 create table reg.app_role_priority (
 	
@@ -42,7 +36,4 @@ create unique index uk_roleprt_id on reg.app_role_priority (app_id, process_id, 
 -- create index idx_roleprt_<colX> on reg.app_role_priority (colX )
 -- ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.app_role_priority is 'Table to store all MOSIP Application, application process, role and their priority'
--- ;
 

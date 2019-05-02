@@ -3,12 +3,6 @@
 -- table 		: valid_document  - reg valid_document list, mapping table for document type and category. 
 -- table alias  : valdoc	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.valid_document
@@ -36,8 +30,3 @@ alter table reg.valid_document add constraint pk_valdoc_code primary key (doctyp
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_valdoc_<col> on reg.valid_document (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.valid_document is 'reg valid_document table'
--- ;
-

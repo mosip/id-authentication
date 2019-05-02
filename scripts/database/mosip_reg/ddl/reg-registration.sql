@@ -3,12 +3,6 @@
 -- table 		: registration	- registration client table. 
 -- table alias  : reg
 
--- schemas section -------------------------------------------------
-
--- create schema if Registration schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 
 create table reg.registration (
@@ -66,8 +60,3 @@ create table reg.registration (
 -- indexes section -------------------------------------------------
 -- create index idx_regtrn_<colX> on reg.registration (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.registration is 'Registration / Enrolment table is to store id issuance registration/enrolment id and packet id details'
-;
-

@@ -2,12 +2,6 @@
 -- schema 		: reg	    		- Registration client, referenced from master data 
 -- table 		: process_list		- MOSIP Application process master list
 -- table alias  : prclst	
- 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------
 create table reg.process_list (
@@ -33,7 +27,6 @@ create table reg.process_list (
 -- keys section -------------------------------------------------
  alter table reg.process_list add constraint pk_prclst_id primary key (id, lang_code)
  ;
-
 
 -- comments section ------------------------------------------------- 
 -- comment on table reg.process_list is 'MOSIP Application process master list'

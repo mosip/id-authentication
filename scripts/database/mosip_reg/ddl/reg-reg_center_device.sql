@@ -3,12 +3,6 @@
 -- table 		: reg_center_device		- MOSIP Registration center and Device mapping
 -- table alias  : cntrdev
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.reg_center_device (
 

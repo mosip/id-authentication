@@ -2,12 +2,6 @@
 -- schema 		: reg  	- registration schema
 -- table 		: location  - reg location list
 -- table alias  : loc	
- 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------------------------------------
 
@@ -66,7 +60,4 @@ alter table reg.location add constraint pk_loc_code primary key (code, lang_code
 -- create index idx_loc_name on reg.location (name)
 -- ;
 
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.location is 'reg location table'
--- ;
 

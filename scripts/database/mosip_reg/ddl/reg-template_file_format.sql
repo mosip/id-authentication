@@ -1,15 +1,16 @@
 -- create table section --------------------------------------------------------
--- schema 		: reg	- reg schema
--- table 		: transaction_type	- reg Transaction Type
--- table alias  : trntyp	
-
+-- schema 		: reg	    			- Registration schema
+-- table 		: template_file_format	- Registration template file format
+-- table alias  : tffmt
+ 
+ 
 -- table section ---------------------------------------------------------------
-create table reg.transaction_type (
+create table reg.template_file_format (
 
-	code character varying(36) not null,   
+	code character varying(36) not null,
+	
 	descr character varying(256) not null,
-
-	lang_code character varying(3) not null, 	-- master.language.code
+	lang_code character varying(3) not null,		-- master.language.code
 	
 	is_active 	boolean not null,
 	cr_by 		character varying (256) not null,
@@ -18,14 +19,16 @@ create table reg.transaction_type (
 	upd_dtimes 	timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp
+	
 )
 ;
 
 -- keys section ------------------------------------------------------------------
-alter table reg.transaction_type add constraint pk_trntyp_code primary key (code, lang_code)
+alter table reg.template_file_format add constraint pk_tffmt_code primary key (code, lang_code)
  ;
 -- 
 
 -- indexes section --------------------------------------------------------------
--- create index idx_trntyp_<colX> on reg.transaction_type (colX )
+-- create index idx_tffmt_<colX> on reg.template_file_format (colX )
 -- ;
+

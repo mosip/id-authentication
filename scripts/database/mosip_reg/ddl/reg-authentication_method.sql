@@ -3,11 +3,6 @@
 -- table 		: authentication_method		- List of login methods used across the MOSIP applications
 -- table alias  : authm	
 
--- schemas section -------------------------------------------------
- 
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------
 create table reg.authentication_method (
@@ -38,7 +33,4 @@ create table reg.authentication_method (
 -- create index idx_logmeth_<colX> on reg.authentication_method (colX )
 -- ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.authentication_method is 'Table to store list of Authentication methods used across the MOSIP applications'
--- ;
 

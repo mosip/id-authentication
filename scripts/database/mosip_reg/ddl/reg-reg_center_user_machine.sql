@@ -3,12 +3,6 @@
 -- table 		: reg_center_user_machine	- MOSIP Registration center, User and Machine mapping
 -- table alias  : cntrmusr	
 
--- schemas section -------------------------------------------------
- 
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.reg_center_user_machine (
 
@@ -34,9 +28,5 @@ create table reg.reg_center_user_machine (
 
 -- indexes section -------------------------------------------------
 -- create index idx_cntrmusr_<colX> on reg.reg_center_user_machine (colX )
--- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.reg_center_user_machine is 'Table to store all MOSIP registration centers, Users and their mapped machines'
 -- ;
 

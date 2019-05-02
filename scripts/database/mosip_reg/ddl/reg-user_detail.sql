@@ -3,23 +3,17 @@
 -- table 		: user_detail	- Registration application users
 -- table alias  : usrdtl	
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.user_detail (
 	
 	id 			character varying (256) not null,
 	
-	uin		 	character varying (28),			-- UIN of indivisuals and referenced from idrepo database 
+	reg_id 		character varying (39),					-- Registration ID of indivisuals and referenced from idrepo database 
 	
 	name 		character varying (64) not null,
-	
 	email 		character varying (256),
 	mobile 		character varying (16),
+	salt		character varying (64),
 	
 	status_code character varying(64) not null,			-- master.status_list.code
 	
@@ -49,8 +43,3 @@ create table reg.user_detail (
  -- indexes section -------------------------------------------------
 -- create index idx_usrdtl_uin_ref_id on reg.user_detail (uin_ref_id)
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.user_detail is 'Application user details, List of user will have access to MOSIP applications based on assigned roles'
-;
-

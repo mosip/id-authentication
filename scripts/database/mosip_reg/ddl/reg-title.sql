@@ -2,12 +2,7 @@
 -- schema 		: reg  - registration schema
 -- table 		: title  - reg title list
 -- table alias  : ttl	
- 
--- schemas section ---------------------------------------------------------------
 
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
  
 -- table section -------------------------------------------------------------------------------
 
@@ -40,7 +35,4 @@ alter table reg.title add constraint pk_ttl_code primary key (code, lang_code)
 -- create index idx_ttl_<col> on reg.title (col)
 -- ;
 
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.title is 'reg title table'
--- ;
 

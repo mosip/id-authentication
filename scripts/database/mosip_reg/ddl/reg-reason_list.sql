@@ -2,12 +2,6 @@
 -- schema 		: reg  		- registration schema
 -- table 		: reason_list  - reg reason_list list
 -- table alias  : rsnlst	
-  
--- schemas section -----------------------------------------------------------------
- 
--- create schema if reg  schema not exists
-create schema if not exists reg
-; 
 
 -- table section --------------------------------------------------------------------
 
@@ -40,6 +34,3 @@ alter table reg.reason_list add constraint pk_rsnlst_code primary key (code, rsn
 -- create index idx_rsnlst_<col> on reg.reason_list (col)
 -- ;
 
--- comments section -----------------------------------------------------------------------
--- comment on table reg.reason_list is 'reg reason_list table'
--- ;

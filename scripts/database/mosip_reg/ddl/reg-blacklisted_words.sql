@@ -2,12 +2,6 @@
 -- schema 		: reg  - registration schema
 -- table 		: blacklisted_words  - reg blacklisted_words list
 -- table alias  : blwrd	
-  
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------------------------------------
 
@@ -37,7 +31,4 @@ alter table reg.blacklisted_words add constraint pk_blwrd_code primary key (word
 -- create index idx_blwrd_<col> on reg.blacklisted_words (col)
 -- ;
 
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.blacklisted_words is 'reg blacklisted_words table'
--- ;
 

@@ -3,17 +3,11 @@
 -- table 		: key_store  		- Key store table
 -- table alias  : keystr
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if registration schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------
 create table reg.key_store (
 
 	id 					character varying(36) not null ,   
-    public_key			blob not null,
+    public_key			clob not null,
 	valid_from_dtimes 	timestamp not null,
 	valid_till_dtimes 	timestamp not null,
 	ref_id				character varying(64) , 	-- Ref id is received from key requester, This can be machine id, TPS id...etc.
@@ -40,9 +34,3 @@ alter table reg.key_store add constraint pk_keystr_id primary key (id)
 -- create index idx_keymals_<colX> on reg.key_store (<colX>)
 -- ;
 
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.key_store is 'Key Manange store table which will store all the public keys for MOSIP registration applications'
--- ;
-
--- comment on column reg.key_store.id is 'Alias ID is a unique identifier (UUID) used for storing keys and mapping'
--- ;

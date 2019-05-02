@@ -2,12 +2,6 @@
 -- schema 		: reg	    		- Registration schema
 -- table 		: reg_center_user	- MOSIP Application users and registration center mapping
 -- table alias  : cntrusr
-
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
  
 -- table section -------------------------------------------------
 create table reg.reg_center_user (

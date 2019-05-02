@@ -3,12 +3,6 @@
 -- table 		: user_pwd	- Registration user Roles
 -- table alias  : usrpwd	
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------
 create table reg.user_pwd (
 
@@ -38,7 +32,3 @@ create table reg.user_pwd (
 -- indexes section -------------------------------------------------
 -- create index idx_usrpwd_<colX> on reg.user_pwd (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.user_pwd is 'Registration user password details.'
-;

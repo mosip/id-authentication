@@ -3,12 +3,6 @@
 -- table 		: reg_center_type	- Registration centers types
 -- table alias  : cntrtyp
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for reg reference Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.reg_center_type (
 

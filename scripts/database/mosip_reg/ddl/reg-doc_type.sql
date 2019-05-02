@@ -3,12 +3,6 @@
 -- table 		: doc_type  - reg doc_type list
 -- table alias  : doctyp	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.doc_type (
@@ -39,8 +33,4 @@ create schema if not exists reg
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_doctyp_<col> on reg.doc_type (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.doc_type is 'reg doc_type table'
-;
 

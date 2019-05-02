@@ -3,12 +3,6 @@
 -- table 		: pre_registration_list - List of pre registration packets needs to be synched from pre registration module to registration module
 -- table alias  : preregl
 
--- schemas section -------------------------------------------------------
-
--- create schema if Registration Module schema not exists
-create schema if not exists reg
-;
- 
 -- table section ---------------------------------------------------------
 create table reg.pre_registration_list (
 
@@ -50,6 +44,3 @@ create table reg.pre_registration_list (
 -- create index idx_preregl_<colX> on reg.pre_registration_list (colX )
 -- ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.pre_registration_list is 'List of pre registration packets needs to be synched from pre registration module to registration module'
--- ;

@@ -2,12 +2,6 @@
 -- schema 		: reg  - registration schema
 -- table 		: reason_category  - reg reason_category list
 -- table alias  : rsncat	
-   
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------------------------------------
 
@@ -36,9 +30,5 @@ alter table reg.reason_category add constraint pk_rsncat_code primary key (code,
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_rsncat_<col> on reg.reason_category (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.reason_category is 'reg reason_category table'
 -- ;
 

@@ -3,12 +3,6 @@
 -- table 		: registration_center  - Master registration_center list
 -- table alias  : regcntr	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 create table reg.registration_center (

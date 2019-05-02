@@ -3,12 +3,6 @@
 -- table 		: reg_center_machine - MOSIP Registration center and Machine mapping
 -- table alias  : cntrmac	
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------
 create table reg.reg_center_machine (
 
@@ -29,7 +23,7 @@ create table reg.reg_center_machine (
 ;
 
 -- keys section -------------------------------------------------
- alter table reg.reg_center_machine add constraint pk_cntrmac_usr_id primary key (regcntr_id, machine_id)
+ alter table reg.reg_center_machine add constraint pk_cntrmac_usr_id primary key (machine_id, regcntr_id)
  ;
 
 -- indexes section -------------------------------------------------

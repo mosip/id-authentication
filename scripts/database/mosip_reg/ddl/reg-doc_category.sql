@@ -3,12 +3,6 @@
 -- table 		: doc_category  - reg doc_category list
 -- table alias  : doccat	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.doc_category (
@@ -37,9 +31,5 @@ alter table reg.doc_category add constraint pk_doccat_code primary key (code, la
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_doccat_<col> on reg.doc_category (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.doc_category is 'reg doc_category table'
 -- ;
 

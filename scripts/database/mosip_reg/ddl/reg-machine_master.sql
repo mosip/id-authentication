@@ -3,13 +3,6 @@
 -- table 		: machine_master	- Master List of Machines used for registration
 -- table alias  : machm
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
-
 -- table section -------------------------------------------------
 create table reg.machine_master (
 

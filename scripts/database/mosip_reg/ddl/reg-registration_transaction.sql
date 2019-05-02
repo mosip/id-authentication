@@ -3,12 +3,6 @@
 -- table 		: registration_transaction	- Registration / Enrolment Packet and Transactions.
 -- table alias  : regtrn
 
--- schemas section -------------------------------------------------
-
--- create schema if Registration schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------
 create table reg.registration_transaction (
 
@@ -47,10 +41,3 @@ create table reg.registration_transaction (
 -- indexes section -------------------------------------------------
 -- create index idx_regtrn_<colX> on reg.registration_transaction (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.registration_transaction is 'Registration / Enrolment Transaction table is to store ALL  registration/enrolment packet processing/process transaction details for ID issuance'
--- ;
-
---comment on column reg.registration_transaction.<columnname> is 'comment on a column'
---;

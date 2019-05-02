@@ -3,12 +3,6 @@
 -- table 		: role_list	 - List of roles used across MOSIP Modules
 -- table alias  : rolelst		
 
--- schemas section -------------------------------------------------
- 
--- create schema if reg schema for reg reference Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.role_list (
 	
@@ -37,6 +31,3 @@ create table reg.role_list (
 -- create index idx_rolelst_<colX> on reg.role_list (colX )
 -- ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.role_list is 'Table to store list of roles like registration officer, supervisor, operator...etc which is used across the MOSIP Modules'
--- ;

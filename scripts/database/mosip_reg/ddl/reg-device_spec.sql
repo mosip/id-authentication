@@ -2,12 +2,6 @@
 -- schema 		: reg  - reg  schema
 -- table 		: device_spec  - reg device_spec list
 -- table alias  : dspec	
- 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------------------------------------
 

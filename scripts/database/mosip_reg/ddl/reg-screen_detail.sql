@@ -3,11 +3,6 @@
 -- table 		: screen_detail	- MOSIP Application Screens details
 -- table alias  : scrdtl	
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for registration Module is not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------
 create table reg.screen_detail (

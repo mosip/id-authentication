@@ -3,12 +3,7 @@
 -- table 		: biometric_attribute  - reg biometric_attribute list
 -- table alias  : bmattr	
  
--- schemas section ---------------------------------------------------------------
 
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.biometric_attribute (
@@ -40,9 +35,5 @@ alter table reg.biometric_attribute add constraint pk_bmattr_code primary key (c
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_bmattr_<col> on reg.biometric_attribute (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.biometric_attribute is 'reg biometric_attribute table'
 -- ;
 

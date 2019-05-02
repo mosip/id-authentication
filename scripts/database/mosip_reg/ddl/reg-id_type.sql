@@ -3,12 +3,6 @@
 -- table 		: id_type  - reg id_type list
 -- table alias  : idtyp	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.id_type (
@@ -38,9 +32,5 @@ alter table reg.id_type add constraint pk_idtyp_code primary key (code, lang_cod
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_idtyp_<col> on reg.id_type (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.id_type is 'reg id_type table'
 -- ;
 

@@ -3,12 +3,6 @@
 -- table 		: machine_type  - reg machine_type list
 -- table alias  : mtyp	
  
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.machine_type (
@@ -37,8 +31,4 @@ alter table reg.machine_type add constraint pk_mtyp_code primary key (code, lang
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_mtyp_<col> on reg.machine_type (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.machine_type is 'reg machine_type table'
-;
 

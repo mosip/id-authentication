@@ -2,13 +2,7 @@
 -- schema 		: reg  - registration schema
 -- table 		: biometric_type  - reg biometric_type list
 -- table alias  : bmtyp	
- 
--- schemas section ---------------------------------------------------------------
 
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.biometric_type (
@@ -37,9 +31,5 @@ alter table reg.biometric_type add constraint pk_bmtyp_code primary key (code, l
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_bmtyp_<col> on reg.biometric_type (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.biometric_type is 'reg biometric_type table'
 -- ;
 

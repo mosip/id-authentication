@@ -2,12 +2,6 @@
 -- schema 		: reg	- registration schema
 -- table 		: template_type	- reg template type
 -- table alias  : tmpltyp	
-
--- schemas section -------------------------------------------------------------
-
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
   
 -- table section ---------------------------------------------------------------
 create table reg.template_type (
@@ -37,9 +31,4 @@ alter table reg.template_type add constraint pk_tmpltyp_code primary key (code, 
 -- create index idx_tmpltyp_<colX> on reg.template_type (colX )
 -- ;
 
--- comments section -------------------------------------------------------------
--- comment on table reg.template_type is 'reg table used to store all different types of template types'
--- ;
--- comment on column reg.template_type.code is 'Template type code '
--- ;
 

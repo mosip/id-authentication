@@ -3,13 +3,7 @@
 -- schema 		: reg		- registration schema
 -- table 		: template      - Templates to store all templates files used across the mosip modules
 -- table alias  : tmplt	
- 
--- schemas section -----------------------------------------------------------------------------------------------------------------
 
--- create schema if reg schema for reg reference tables is not exists
-create schema if not exists reg
-;
- 
 -- table section --------------------------------------------------------------------------------------------------------------------
 create table reg.template (
 

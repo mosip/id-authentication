@@ -1,3 +1,4 @@
+run ddl/reg-app_audit_log.sql
 run ddl/reg-app_authentication_method.sql
 run ddl/reg-app_detail.sql
 run ddl/reg-app_role_priority.sql
@@ -43,6 +44,7 @@ run ddl/reg-sync_control.sql
 run ddl/reg-sync_job_def.sql
 run ddl/reg-sync_transaction.sql
 run ddl/reg-template.sql
+run ddl/reg-template_file_format.sql
 run ddl/reg-template_type.sql
 run ddl/reg-title.sql
 run ddl/reg-transaction_type.sql

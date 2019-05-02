@@ -2,12 +2,6 @@
 -- schema 		: reg	   			 	- Registration Module
 -- table 		: sync_control			- Sync Job control table - ONLY for successfull sync jobs / No entry means, job not run successfull.
 -- table alias  : synctrl
-
--- schema section -----------------------------------------------------------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
  
 -- table section -------------------------------------------------------------------------------
 create table reg.sync_control (
@@ -43,8 +37,4 @@ alter table reg.sync_control add constraint pk_synctrl_id primary key (id)
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_sjob_<colX> on reg.sync_control (<colX>)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.sync_control is 'Registration sync_control table which hold all sucessfull sync job details'
-;
 
