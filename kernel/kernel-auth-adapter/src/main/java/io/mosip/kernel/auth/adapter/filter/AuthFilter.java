@@ -78,6 +78,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
 					token = cookie.getValue();
+					System.out.println("Cookie name with Auth header:" + cookie.getName()+":");
 					System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}
