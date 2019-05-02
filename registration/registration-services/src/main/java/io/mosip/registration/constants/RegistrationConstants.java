@@ -1339,4 +1339,8 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
 	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
 
+	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
+	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
+	public static String CANCEL_MSG = "CANCEL_LABEL";
+	
 }

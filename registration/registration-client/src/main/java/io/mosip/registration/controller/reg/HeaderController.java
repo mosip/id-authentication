@@ -405,7 +405,8 @@ public class HeaderController extends BaseController {
 		if (hasUpdate()) {
 
 			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-					RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE);
+					RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE,
+					RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
 
 			updateAlert.showAndWait();
 

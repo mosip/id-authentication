@@ -1043,7 +1043,7 @@ public class BaseController {
 	 * @param context   alert's context
 	 * @return alert
 	 */
-	protected Alert createAlert(AlertType alertType, String title, String header, String context) {
+	protected Alert createAlert(AlertType alertType, String title, String header, String context,String confirmButtonText,String cancelButtonText) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
@@ -1051,6 +1051,14 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		alert.getDialogPane().getStylesheets().add(
+				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+		okButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(confirmButtonText));
+		
+		Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+		cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
+		
 
 		return alert;
 	}

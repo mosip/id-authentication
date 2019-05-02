@@ -17,4 +17,6 @@ public interface SyncStatusValidatorService {
 	 */
 	public ResponseDTO validateSyncStatus();
 	
+	public boolean isToBeForceUpdate();
+	
 }
