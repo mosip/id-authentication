@@ -2,7 +2,7 @@
 
 [Background & Design](../../docs/design/kernel/kernel-keymanager.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#1-key-manager)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#key-manager)
 
 Default Port and Context Path
 
