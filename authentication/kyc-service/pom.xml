@@ -9,7 +9,7 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.11.0</version>
 	</parent>
-	<artifactId>kyc-authentication-service</artifactId>
+	<artifactId>kyc-service</artifactId>
 	<name>kyc-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
