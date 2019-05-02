@@ -11,8 +11,8 @@ import java.nio.charset.StandardCharsets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * The Class JsonUtilTest.
@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Ranjitha
  * 
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration
 public class JsonUtilTest {
 

@@ -98,7 +98,7 @@ public class CryptographicUtilTest {
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerPublicKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
 		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw","ykrkpgjjtChlVdvDNJJEnQ"));
 	}
 
 	@Test(expected = ParseResponseException.class)
@@ -111,7 +111,7 @@ public class CryptographicUtilTest {
 				.thenThrow(new IOException("IOEXCEPTION"));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
 	}
 
 }

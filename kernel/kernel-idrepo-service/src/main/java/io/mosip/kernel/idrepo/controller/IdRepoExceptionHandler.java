@@ -110,7 +110,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.getErrorTexts().isEmpty() ? "Authentication Failed" : ex.getErrorText());
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
-				HttpStatus.valueOf(ex.getStatusCode()));
+				ex.getStatusCode() == 0 ? HttpStatus.UNAUTHORIZED : HttpStatus.valueOf(ex.getStatusCode()));
 	}
 
 	/*

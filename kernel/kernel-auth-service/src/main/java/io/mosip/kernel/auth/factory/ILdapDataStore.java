@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.constant.LDAPErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -143,8 +144,12 @@ public class ILdapDataStore implements IDataStore {
 	private MosipUserDto getClientSecretDetails(ClientSecret clientSecret) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(clientSecret.getClientId());
-		connection.bind(userdn, clientSecret.getSecretKey());
-
+		try {
+			connection.bind(userdn, clientSecret.getSecretKey());
+			}catch(Exception ex)
+			{
+				throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+			}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
 		}
@@ -163,8 +168,12 @@ public class ILdapDataStore implements IDataStore {
 	public MosipUserDto getLoginDetails(LoginUser loginUser) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(loginUser.getUserName());
+		try {
 		connection.bind(userdn, loginUser.getPassword());
-
+		}catch(Exception ex)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
 		}
@@ -202,7 +211,7 @@ public class ILdapDataStore implements IDataStore {
 			}
 			return mosipUserDto;
 		} catch (Exception err) {
-			throw new RuntimeException("unable to fetch user details", err);
+			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -221,7 +230,7 @@ public class ILdapDataStore implements IDataStore {
 			rolesData.close();
 			return roles;
 		} catch (Exception err) {
-			throw new RuntimeException(err + "Unable to fetch user roles from LDAP");
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -264,7 +273,7 @@ public class ILdapDataStore implements IDataStore {
 
 			return rolesListDto;
 		} catch (Exception e) {
-			throw new RuntimeException(e + " Unable to fetch user roles from LDAP");
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -287,7 +296,7 @@ public class ILdapDataStore implements IDataStore {
 			userResponseDto.setMosipUserDtoList(mosipUserDtos);
 			return userResponseDto;
 		} catch (Exception err) {
-			throw new RuntimeException(err + " Unable to fetch user roles from LDAP");
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
