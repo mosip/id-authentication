@@ -39,7 +39,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -66,7 +65,6 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.print.PrintStageApplication;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.print.stage.PrintStage;
@@ -188,11 +186,14 @@ public class PrintStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
+		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 		
 		QueueListener listener = new QueueListener() {
 			@Override
 			public void setListener(Message message) {
-				stage.cosnumerListener(message);
+				stage.consumerListener(message);
 			}
 		};
 		
@@ -232,7 +233,7 @@ public class PrintStageTest {
         ByteSequence byteSeq = new ByteSequence();
         byteSeq.setData(response.getBytes());
         amq.setContent(byteSeq);
-		stage.cosnumerListener(amq);
+		stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 	
@@ -242,7 +243,7 @@ public class PrintStageTest {
         ByteSequence byteSeq = new ByteSequence();
         byteSeq.setData(response.getBytes());
         amq.setContent(byteSeq);
-		stage.cosnumerListener(amq);
+		stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 	
@@ -254,7 +255,7 @@ public class PrintStageTest {
         byteSeq.setData("registration processor".getBytes());
         amq.setContent(byteSeq);
 		PowerMockito.whenNew(String.class).withArguments(((ActiveMQBytesMessage) amq).getContent().data).thenThrow(exp);
-		stage.cosnumerListener(amq);
+		stage.consumerListener(amq);
 	}
 	
 	@Test(expected=QueueConnectionNotFound.class)
