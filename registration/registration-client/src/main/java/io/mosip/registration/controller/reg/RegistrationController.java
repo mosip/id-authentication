@@ -267,7 +267,7 @@ public class RegistrationController extends BaseController {
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
 						if (getRegistrationDTOFromSession().isUpdateUINChild()) {
 							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-							.getExceptionFace().setFace(photoInBytes);							
+							.getFace().setFace(photoInBytes);							
 						} else {
 							faceDetailsDTO.setFace(photoInBytes);
 							faceDetailsDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
