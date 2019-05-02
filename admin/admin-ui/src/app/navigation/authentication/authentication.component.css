@@ -1,0 +1,51 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  height: 38rem;
+}
+.auth-card {
+  width: 28em;
+  height: 25rem;
+}
+.auth-form {
+  min-width: 150px;
+  max-width: 400px;
+  padding: 25px;
+}
+.input-full-width {
+  width: 100%;
+  padding-top: 2em;
+}
+.forgot-password-link {
+  opacity: 0.6;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 0.5rem;
+}
+.valid-timer {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 2em;
+  padding-top: 2.5em;
+}
+.timer{
+opacity: 0.5;
+font-size: 13px;
+text-transform: uppercase;
+
+}
+.button-container {
+  padding-top: 5em;
+  padding-right: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.login-button {
+  background-color: rgb(27, 27, 27);
+  color: rgb(255, 253, 253);
+  border-radius: 0;
+  padding-left: 25px;
+  padding-right: 25px;
+}
