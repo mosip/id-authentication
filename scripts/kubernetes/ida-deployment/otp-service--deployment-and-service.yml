@@ -50,6 +50,6 @@ metadata:
   name: otp-service
 spec:
   ports:
-    - port: 8090
+    - port: 8092
   selector:
     app: otp-service
