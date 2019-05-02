@@ -1586,9 +1586,11 @@ public class DemographicDetailController extends BaseController {
 														.get()))
 												.get()))
 						.with(identity -> identity
-								.setParentOrGuardianRID(!parentRegId.isDisabled() ? new BigInteger(parentRegId.getText()) : null))
+								.setParentOrGuardianRID(!parentRegId.isDisabled() && !parentRegId.getText().isEmpty() ? 
+										new BigInteger(parentRegId.getText()) : null))
 						.with(identity -> identity
-								.setParentOrGuardianUIN(!parentUinId.isDisabled() ? new BigInteger(parentUinId.getText()) : null))
+								.setParentOrGuardianUIN(!parentUinId.isDisabled() && !parentUinId.getText().isEmpty() ? 
+										new BigInteger(parentUinId.getText()) : null))
 						.with(identity -> identity.setParentOrGuardianName(
 								parentName.isDisabled() || parentName.getText().isEmpty() ? null
 										: (List<ValuesDTO>) Builder.build(LinkedList.class)
