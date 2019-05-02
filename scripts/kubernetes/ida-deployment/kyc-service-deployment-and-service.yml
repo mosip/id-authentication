@@ -47,9 +47,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authentication-service
+  name: kyc-service
 spec:
   ports:
-    - port: 8090
+    - port: 8091
   selector:
-    app: authentication-service
+    app: kyc-service
