@@ -56,7 +56,7 @@ public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 		}
 		if (getAuthUserDetails() != null) {
 			System.out.println("token from security context : "+getAuthUserDetails().getToken());
-			response.getHeaders().add(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE,
+			response.getHeaders().set(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE,
 					AuthAdapterConstant.AUTH_COOOKIE_HEADER + getAuthUserDetails().getToken());
 		}
 		return body;
