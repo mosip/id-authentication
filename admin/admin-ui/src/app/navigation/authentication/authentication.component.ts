@@ -8,35 +8,37 @@ import { Router } from '@angular/router';
 })
 export class AuthenticationComponent implements OnInit {
 
-  minutes: any;
-  seconds: any;
-  timer: any;
-  minuteString: any;
-  secondString: any;
+  minutes: number;
+  seconds: number;
+  counter: number;
+  interval: any;
   constructor(private router: Router) {
-    this.startCountdown(10);
+    
    }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.startCountdown(120);
+  }
+  ngOnDestroy(): void {
+    clearInterval(this.interval);   
   }
    startCountdown(timeLeft): void {
-    let counter = 0;
-    const interval = setInterval(() => {
-      console.log(counter);
-      document.getElementById('timer').innerHTML = this.convertSeconds(timeLeft - counter);
-      counter++;
-      if (counter < 0 ) {
-        clearInterval(interval);
+    this.counter = 0;
+    this.interval = setInterval(() => {
+      console.log(this.counter);
+      document.getElementById('timer').innerHTML = this.convertSeconds(timeLeft - this.counter);
+      this.counter++;
+      if (this.counter > timeLeft ) {
+        clearInterval(this.interval);
       }
     }, 1000);
   }
-    convertSeconds(timeLeft) {
+    convertSeconds(timeLeft): string {
     this.minutes = Math.floor(timeLeft / 60);
     this.seconds = Math.floor(timeLeft % 60);
-    // tslint:disable-next-line:max-line-length
     return Number(this.minutes).toLocaleString('en-US', {minimumIntegerDigits: 2}) + ':' + Number(this.seconds).toLocaleString('en-US', {minimumIntegerDigits: 2});
    }
-   onSubmit(){
+   onSubmit() {
    this.router.navigateByUrl('admin/dashboard');
    }
 }
