@@ -1,1 +1,1 @@
-this test case runs for a this smoke
+Sync request with more than one wrong lang code.

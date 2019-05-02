@@ -1,1 +1,1 @@
-this test case runs for a this smoke
+Sync request with a wrong name of the packet where hour is wrong.

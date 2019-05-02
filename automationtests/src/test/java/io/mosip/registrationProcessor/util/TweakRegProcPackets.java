@@ -65,8 +65,13 @@ public class TweakRegProcPackets {
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
 				JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
-					//decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath, f.getName());
-					decryptedFile= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
+					try {
+						decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath, f.getName());
+					} catch (IOException | ZipException | ParseException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					//decryptedFile= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
 				
 				filesToBeDestroyed = configPath;
 				File[] packetFiles = decryptedFile.listFiles();
@@ -137,8 +142,8 @@ public class TweakRegProcPackets {
 				String regId = generateRegId(centerId, machineId);
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
-					//decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					decryptedPacket= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
+					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
+					//decryptedPacket= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
 							try {
