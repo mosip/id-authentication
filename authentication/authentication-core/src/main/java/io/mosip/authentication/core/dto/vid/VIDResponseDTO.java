@@ -2,7 +2,7 @@ package io.mosip.authentication.core.dto.vid;
 
 import java.util.List;
 
-import io.mosip.authentication.core.dto.indauth.AuthError;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import lombok.Data;
 
 /**
