@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,6 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.otp.service.impl.OTPServiceImpl;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
@@ -52,6 +52,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  *
  * @author Dinesh Karuppiah.T
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })

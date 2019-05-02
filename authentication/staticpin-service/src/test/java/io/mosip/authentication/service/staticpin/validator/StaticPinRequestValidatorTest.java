@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,10 +40,9 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  * @author Prem Kumar
  *
  */
+@Ignore
 @RunWith(SpringRunner.class)
-
 @WebMvcTest
-
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class StaticPinRequestValidatorTest {
 
