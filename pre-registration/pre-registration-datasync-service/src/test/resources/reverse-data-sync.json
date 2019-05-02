@@ -1,0 +1,15 @@
+{
+  "id": "mosip.pre-registration.datasync",
+  "version": "1.0",
+  "requesttime": "2019-01-17T06:15:25.721Z",
+  "request": {
+    "createdBy": "5766477466",
+    "createdDateTime": "2019-01-17T06:15:25.721Z",
+    "langCode": "AR",
+    "preRegistrationIds": [
+      "97285429827016"
+    ],
+    "updateBy": "5766477466",
+    "updateDateTime": "2019-01-17T06:15:25.721Z"
+  }
+}

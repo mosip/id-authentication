@@ -1,0 +1,61 @@
+<div id="print-section">
+<div *ngFor="let user of usersInfo">
+  <mat-card class="ack-container">
+      <mat-card-header class="ack__header-container">
+          <div class="ack__header">
+            <p>{{'acknowledgement.title'|translate}}</p>
+            <hr />
+          </div>
+          <hr />
+      </mat-card-header>
+      <mat-card-content>
+        <div id="message-container" class="ack__message-container">
+            <p><img style="vertical-align: middle;" src="assets/img/done.png" />&nbsp;&nbsp;{{'acknowledgement.message'|translate}}</p>
+        </div>
+        <div id="body-container" *ngIf="user.registrationCenter" class="ack__body-container">
+          <div id="table-container">
+            <table>
+              <tr><td>{{'acknowledgement.label_name'|translate}}</td><td>: {{user.fullName}}</td></tr>
+              <tr><td>{{'acknowledgement.label_pre_id'|translate}}</td><td>: {{user.preRegId}}</td></tr>
+              <tr><td>{{'acknowledgement.label_reg_cntr'|translate}}</td><td>: {{user.registrationCenter.name}}, {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
+              <tr><td>{{'acknowledgement.label_cntr_contact_number'|translate}}</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
+              <tr><td>{{'acknowledgement.label_appointment_date_time'|translate}}</td><td>: {{user.bookingTimePrimary}}, {{user.bookingDataPrimary}}</td></tr>
+            </table>
+          </div>
+          <div class="spacer"></div>
+          <div id="table-container" *ngIf="secondaryLanguagelabels && secondaryLanguageRegistrationCenter">
+              <table>
+                  <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{user.fullNameSecondaryLang}}</td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_pre_id}}</td><td>: {{user.preRegId}}</td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_reg_cntr}}</td><td>: {{secondaryLanguageRegistrationCenter.name}}, {{secondaryLanguageRegistrationCenter.addressLine1}}, {{secondaryLanguageRegistrationCenter.addressLine2}}, {{secondaryLanguageRegistrationCenter.addressLine3}} </td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_cntr_contact_number}}</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
+                  <tr><td>{{secondaryLanguagelabels.label_appointment_date_time}}</td><td>: {{user.bookingTimeSecondary}}, {{user.bookingDataSecondary}}</td></tr>
+                </table>
+          </div>
+          <div class="spacer"></div>
+          <div *ngIf="user.qrCodeBlob" id="qr-code-container" class="ack__qr-code">
+            <img id="qr-code" src="data:image/png;base64,{{user.qrCodeBlob}}" />
+          </div>
+        </div>
+        <hr />
+      </mat-card-content>
+      <mat-card-footer id="guidelines-container" class="ack__guidelines-container">
+        <h4>{{'acknowledgement.container_guideline'|translate}} </h4>
+        <ul *ngIf="guidelines.length !== 0" class="ack__guidelines">
+          <li *ngFor="let guideline of guidelines">
+            {{guideline}}
+          </li>
+        </ul>
+      </mat-card-footer>
+  </mat-card>
+</div>
+</div>
+<div>
+    <mat-card class="ack__button-container">
+      <!-- <button mat-button (click)="navigateBack()" class="user-back-btn">{{'preview.action_back'| translate}}</button> -->
+      <span class="spacer"></span>
+      <button matTooltip="{{'helpText.send_email/sms' | translate}}" mat-button (click)="sendAcknowledgement()" class="ack-book_later-btn">{{'acknowledgement.action_send'|translate}}</button>
+      <button mat-button (click)="download()" class="ack-book_later-btn">{{'acknowledgement.action_download'|translate}}</button>
+      <button mat-button [printStyle]="{'#message-container': {'display': 'none'}, '#body-container': {'display': 'flex', 'flex-wrap': 'wrap', 'width': '100%'}, '#table-container table tr td': {'padding': '10px'}}" printSectionId="print-section" ngxPrint class="ack-continue-btn">{{'acknowledgement.action_print'|translate}}</button>
+    </mat-card>
+  </div>

@@ -1,0 +1,240 @@
+:root {
+  --text-size: 0.7rem;
+}
+
+.wrapper {
+  background-color: #f4f4f4;
+  z-index: -1;
+  overflow-x: hidden;
+  padding: 10px;
+  padding-bottom: 0;
+  color: #000000;
+}
+
+.user {
+  background-color: #ffffff;
+  z-index: 1;
+  margin: auto;
+  padding: 1.2rem 3rem 0 3rem;
+  padding-top: 1.2rem;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  width: 100%;
+  display: inline-block;
+}
+
+.user header {
+  margin: 0;
+  font-weight: bold;
+  color: #fd518c;
+}
+
+.user hr {
+  border-top: 1.5px solid red;
+  position: relative;
+  left: -48px;
+  margin-top: 0.5rem;
+  width: calc(100% + 95px);
+}
+
+.user__container {
+  font-size: 0.7rem;
+  /* box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3); */
+  padding: 1rem 0 0.5rem 1.5rem;
+  width: 48%;
+  margin-left: 2%;
+  float: left;
+}
+
+.user__container:focus-within {
+  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
+}
+
+.user__container h6 {
+  font-weight: bold;
+  color: #2f3033;
+}
+
+.user__form {
+  width: 90%;
+  margin: auto;
+}
+
+.user__form h4 {
+  margin: 0;
+}
+
+.user__form mat-form-field {
+  width: 95%;
+  padding: 3px;
+  color: #000000;
+  font-size: 0.7rem;
+}
+
+.user__age-or-date {
+  display: flex;
+  width: 95%;
+  align-items: center;
+}
+
+.user__age-or-date > div {
+  width: 33.3%;
+}
+
+.user__date {
+  display: flex;
+}
+
+.user__form .user__date mat-form-field {
+  width: 32%;
+  text-align: center;
+}
+
+.user__pref {
+  text-align: center;
+}
+
+.user__age {
+  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.user__age mat-form-field {
+  width: 32%;
+  text-align: center;
+}
+
+.user__age .user__age--years {
+  /* align-items: center; */
+  align-self: center;
+}
+
+.user__age--disabled {
+  font-size: 0.7rem;
+  color: #595f6e;
+}
+
+.user__dob__error {
+  left: 3px;
+  position: relative;
+  top: -15px;
+  font-size: 75%;
+}
+
+.user__genderAndForeigner {
+  font-weight: inherit;
+  font-size: 0.7rem;
+  display: flex;
+  margin-bottom: 6px;
+  margin-top: 0px;
+}
+
+.user__genderAndForeigner mat-button-toggle-group {
+  box-shadow: none;
+  width: 60%;
+}
+
+.user__genderAndForeigner mat-button-toggle {
+  font-family: Helvetica, Regular;
+  font-size: 0.7rem;
+  margin: 10px 10px 10px 10px;
+  color: #fd518c;
+  width: 80%;
+  max-width: 124px;
+  padding: 0.2rem 0;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.068);
+}
+
+.user__genderAndForeigner .mat-button-toggle-checked {
+  background-color: #fd518c;
+  color: white;
+}
+
+.user__gender__error {
+  left: 3px;
+  position: relative;
+  top: -5px;
+  font-size: 75%;
+}
+
+.user__genderAndForeigner--text {
+  width: 37%;
+  font-size: 0.7rem;
+  align-self: center;
+}
+
+.user__dropdown {
+  width: 47%;
+  margin-right: 3%;
+  display: inline-block;
+}
+
+.user__buttons {
+  width: 100%;
+  position: sticky;
+  bottom: 2px;
+  left: -2px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  background-color: white;
+  border-top: 5px solid #f4f4f4;
+}
+
+.user__btn {
+  background-color: #ff4081;
+  border: none;
+  color: white;
+  padding: 0.8rem 4rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.user__btn:disabled,
+.user__btn:active {
+  border: 1px solid gray;
+  background-color: white;
+  color: #ff4081;
+  cursor: default;
+}
+
+@media (max-width: 798px) {
+  .user__container {
+    width: 100%;
+    float: none;
+  }
+
+  .genderAndForeigner {
+    display: flex;
+  }
+
+  .genderAndForeigner--foreigner {
+    align-self: center;
+  }
+}
+
+@media (max-width: 1000px) {
+  .user__genderAndForeigner mat-button-toggle {
+    margin: 6px 4px 1px 1px;
+    padding: 0.2rem 0;
+  }
+
+  user__age-or-date .user__age {
+    width: 78px;
+    text-align: end;
+  }
+
+  .user__gender__error {
+    top: 0px;
+  }
+
+  .genderAndForeigner--foreigner {
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+  }
+}

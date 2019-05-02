@@ -1,0 +1,102 @@
+{
+  "identity" : {
+    "gender" : [ {
+      "language" : "ENG",
+      "value" : "male"
+    }, {
+      "language" : "arb",
+      "value" : "male"
+    } ],
+    "city" : [ {
+      "language" : "ENG",
+      "value" : "Bangalore"
+    }, {
+      "language" : "arb",
+      "value" : "(trans) BLR"
+    } ],
+    "mobileNumber" : [ {
+      "language" : "ENG",
+      "value" : ""
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "fullName" : [ {
+      "language" : "ENG",
+      "value" : "Sanober Noor"
+    }, {
+      "language" : "arb",
+      "value" : "dummyValue"
+    } ],
+    "localAdministrativeAuthority" : [ {
+      "language" : "ENG",
+      "value" : "Bangalore"
+    }, {
+      "language" : "arb",
+      "value" : "(trans) BLR"
+    } ],
+    "dateOfBirth" : [ {
+      "language" : "ENG",
+      "value" : "12/12/1992"
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "emailId" : [ {
+      "language" : "ENG",
+      "value" : ""
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "province" : [ {
+      "language" : "ENG",
+      "value" : "Bangalore"
+    }, {
+      "language" : "arb",
+      "value" : "(trans) BLR"
+    } ],
+    "postalcode" : [ {
+      "language" : "ENG",
+      "value" : "11004"
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "addressLine1" : [ {
+      "language" : "ENG",
+      "value" : "c-63 South Extension Part-2 New Delhi"
+    }, {
+      "language" : "arb",
+      "value" : "dummyValue"
+    } ],
+    "addressLine2" : [ {
+      "language" : "ENG",
+      "value" : ""
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "addressLine3" : [ {
+      "language" : "ENG",
+      "value" : ""
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ],
+    "region" : [ {
+      "language" : "ENG",
+      "value" : "Bangalore"
+    }, {
+      "language" : "arb",
+      "value" : "(trans) BLR"
+    } ],
+    "CNEOrPINNumber" : [ {
+      "language" : "ENG",
+      "value" : ""
+    }, {
+      "language" : "arb",
+      "value" : ""
+    } ]
+  }
+}

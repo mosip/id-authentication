@@ -1,0 +1,12 @@
+.main-footer {
+  display: flex;
+  justify-content: center;
+  font-family: Roboto;
+  font-size: 12px;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  position: fixed;
+  bottom: -13px;
+  width: 100%;
+  z-index: -2;
+}

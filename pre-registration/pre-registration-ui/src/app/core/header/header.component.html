@@ -1,0 +1,42 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav role="navigation" position="start" mode="push">
+    <mat-nav-list class="sidenav-list">
+      <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()"> {{ 'header.link_about' | translate }}</a>
+      <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">{{ 'header.link_faq' | translate }}</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">{{ 'header.link_contact' | translate }}</a>
+      <a mat-list-item *ngIf="authService.isAuthenticated()" (click)="onHome(); sidenav.toggle()">{{
+        'header.link_applications' | translate
+      }}</a>
+      <a mat-list-item *ngIf="authService.isAuthenticated()" (click)="doLogout(); sidenav.toggle()">{{
+        'header.link_logout' | translate
+      }}</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <div class="sidenav-button">
+        <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+      </div>
+      <a (click)="onLogoClick()"><img src="assets\logo-final.png" class="header--logo" style="max-height: 50px"/></a>
+      <!-- <div style="margin-left:5px;"><a routerLink="/" class="logo">logo</a></div> -->
+      <mat-nav-list class="list-item">
+        <a mat-list-item routerLink="/about-us">{{ 'header.link_about' | translate }}</a>
+        <a mat-list-item routerLink="/faq">{{ 'header.link_faq' | translate }}</a>
+        <a mat-list-item routerLink="/contact">{{ 'header.link_contact' | translate }}</a>
+      </mat-nav-list>
+      <span class="spacer"></span>
+      <mat-nav-list *ngIf="authService.isAuthenticated()" class="list-item">
+        <a mat-list-item class="header__actions" (click)="onHome()">
+          <mat-icon class="icon">folder_open</mat-icon>&nbsp;{{ 'header.link_applications' | translate }}</a
+        >
+        <a mat-list-item class="header__actions" (click)="doLogout()">
+          <mat-icon class="icon">power_settings_new</mat-icon>&nbsp;{{ 'header.link_logout' | translate }}
+        </a>
+      </mat-nav-list>
+    </mat-toolbar>
+    <main>
+      <router-outlet></router-outlet>
+      <app-footer></app-footer>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

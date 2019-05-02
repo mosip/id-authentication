@@ -1,0 +1,118 @@
+<div class="file-upload">
+  <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
+  <div class="file-upload__message">
+    {{ 'documents.text_filetype' | translate }} &nbsp;{{ allowedFilesHtml }} &nbsp;{{
+      'documents.text_filesize' | translate
+    }}
+    &nbsp; {{ allowedFileSize }}
+  </div>
+  <div class="file-upload__body">
+    <div class="file-upload__body__1">
+      <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
+        <mat-form-field class="file-upload__input">
+          <mat-select
+            #docCatSelect
+            placeholder="{{ document.code }}"
+            (selectionChange)="selectChange($event, i)"
+            (openedChange)="openedChange($event, i)"
+            [disabled]="document.code === 'POA' && sameAsselected ? true : false"
+          >
+            <mat-option *ngFor="let ValidDocument of document.documentTypes" value="{{ ValidDocument.name }}">
+              {{ ValidDocument.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span class="file-upload__button">
+          <input
+            #fileUpload
+            type="file"
+            id="file"
+            (click)="fileUpload.value = null"
+            value=""
+            (change)="handleFileInput($event)"
+            style="display: none;"
+          />
+          <input
+            class="browseInput"
+            value="{{ 'documents.action_browse' | translate }}"
+            type="button"
+            onclick="document.getElementById('file').click();"
+            [disabled]="i != documentIndex || (document.code === 'POA' && sameAsselected) ? true : false"
+          />
+        </span>
+        <span *ngIf="document.code === 'POA'">
+          <span *ngIf="allApplicants.length > 0">OR</span>
+          <span *ngIf="allApplicants.length > 0">
+            <mat-form-field class="file-upload__or">
+              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [(value)]="sameAs">
+                <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">
+                  {{ applicant.fullname[0].value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-icon class="icon" matTooltip="{{ 'helpText.same_as' | translate }}" [inline]="true"
+              >help_outline</mat-icon
+            >
+          </span>
+        </span>
+        <div class="file-upload__body__document-name">
+          <div *ngFor="let file of users[0].files[0]; let j = index">
+            <div *ngIf="file.docCatCode == document.code">
+              <span>{{ file.docName }}</span>
+              <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
+                <img src="assets\view.png" class="view-img" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="file-upload__body__2" *ngIf="this.users[0].files[0].length != 0">
+      <p>{{ fileName }}</p>
+      <iframe
+        *ngIf="fileExtension == 'pdf'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="application/pdf;Base64,"
+      ></iframe>
+      <img
+        *ngIf="fileExtension == 'jpg'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="image/jpeg;Base64,"
+      />
+      <img
+        *ngIf="fileExtension == 'png'"
+        class="file-uplaoad__body__2__preview"
+        [attr.src]="fileUrl"
+        type="image/png;Base64,"
+      />
+      <div class="file-buttons">
+        <button class="previousFile" [disabled]="fileIndex == 0 ? true : false" (click)="previousFile(fileIndex)">
+          <img src="assets/left.png" />
+        </button>
+        <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
+        <button
+          class="nextFile"
+          [disabled]="fileIndex < users[0].files[0].length - 1 ? false : true"
+          (click)="nextFile(fileIndex)"
+        >
+          <img src="assets/right.png" />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="user__buttons">
+  <button class="user__btn" type="button" (click)="onBack()" [disabled]="isModify == 'true' || disableNavigation">
+    {{ 'documents.action_back' | translate }}
+  </button>
+  <button *ngIf="isModify == 'false'" class="user__btn" type="button" (click)="onNext()" [disabled]="disableNavigation">
+    {{ 'documents.action_continue' | translate }}
+  </button>
+  <button [disabled]="disableNavigation" *ngIf="isModify == 'true'" class="user__btn" type="button" (click)="onNext()">
+    {{ 'demographic.action_preview' | translate }}
+  </button>
+</div>
