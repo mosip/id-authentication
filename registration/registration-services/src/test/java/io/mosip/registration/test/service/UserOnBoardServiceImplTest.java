@@ -160,7 +160,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
@@ -263,7 +263,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
@@ -366,7 +366,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RegBaseUncheckedException.class);
@@ -469,7 +469,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RuntimeException.class);

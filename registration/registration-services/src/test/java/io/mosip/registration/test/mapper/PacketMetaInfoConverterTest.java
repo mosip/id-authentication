@@ -26,15 +26,14 @@ import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.test.util.datastub.DataProvider;
-
 import ma.glasnost.orika.MapperFacade;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SessionContext.class })
 public class PacketMetaInfoConverterTest {
-	
+
 	private MapperFacade mapperFacade = CustomObjectMapper.MAPPER_FACADE;
-	
+
 	@Test
 	public void convertTest() throws Exception {
 		HashMap<String, String> cbeffBIRS = new HashMap<>();
@@ -47,7 +46,7 @@ public class PacketMetaInfoConverterTest {
 		sessionMap.put(RegistrationConstants.IS_Child, true);
 
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
-		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		SelectionListDTO selectionListDTO = new SelectionListDTO();
 		selectionListDTO.setAge(true);
 		selectionListDTO.setGender(true);
 		registrationDTO.setSelectionListDTO(selectionListDTO);
@@ -55,7 +54,7 @@ public class PacketMetaInfoConverterTest {
 
 		PowerMockito.mockStatic(SessionContext.class);
 		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
-		
+
 		mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		registrationDTO.getRegistrationMetaDataDTO().setParentOrGuardianUINOrRID("5819320961");
 
@@ -98,8 +97,11 @@ public class PacketMetaInfoConverterTest {
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
-		biometricDTO.setApplicantBiometricDTO(new BiometricInfoDTO());
+		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();		
+		faceDetailsDTO.setNumOfRetries(1);
+		biometricInfoDTO.setFace(faceDetailsDTO);
+		biometricInfoDTO.setExceptionFace(new FaceDetailsDTO());
+		biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
 		biometricDTO.setIntroducerBiometricDTO(biometricInfoDTO);
 		biometricDTO.setOperatorBiometricDTO(new BiometricInfoDTO());
 		biometricDTO.setSupervisorBiometricDTO(new BiometricInfoDTO());
@@ -107,7 +109,7 @@ public class PacketMetaInfoConverterTest {
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
 		registrationDTO.setRegistrationId("2018782130000128122018103836");
-		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		SelectionListDTO selectionListDTO = new SelectionListDTO();
 		registrationDTO.setSelectionListDTO(selectionListDTO);
 
 		PowerMockito.mockStatic(SessionContext.class);
