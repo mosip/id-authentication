@@ -72,7 +72,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		nextButton.setDisable(true);
+		nextButton.setDisable(false);
 
 		String key = RegistrationConstants.REG_CONSENT + applicationContext.getApplicationLanguage();
 		consentText = getValueFromApplicationContext(key);
@@ -144,7 +144,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	public void goToNextPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getConsentOfApplicant() != null) {
+		//if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getConsentOfApplicant() != null) {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE, true);
@@ -154,10 +154,10 @@ public class RegistrationPreviewController extends BaseController implements Ini
 						getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.NEXT));
 			}
 			registrationController.goToAuthenticationPage();
-		} else {
-			nextButton.setDisable(true);
+		/*} else {
+			nextButton.setDisable(false);
 		}
-	}
+*/	}
 
 	public void setUpPreviewContent() {
 		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
