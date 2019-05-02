@@ -39,10 +39,10 @@ The key non-functional requirements are
 **Solution**
 
 **Class Diagram**
+
 ![Pre-Registration Demographic_Service](_images/_class_diagram/demographic-service.png)
 
 **Create a new pre-registration :**
-
 - Create a REST API as '/applications' with POST method which accept the ID Definition JSON object (#id-definition-structure) from the request body.
 
 - Validate the request object against the ID Definition schema, If the provided request ID JSON object is valid then continue with the rest of the process otherwise throw an respective error message.
@@ -65,7 +65,6 @@ The key non-functional requirements are
 
 
 **Update existing pre-registration :**
-
 - Create a REST API as '/applications' with PUT method which accept the ID Definition JSON object (#id-definition-structure) from the request body and pre-registration id from request parameter.
 
 - Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
@@ -81,12 +80,12 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration update mechanism using AuditManager component.
 
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Update](_images/_sequence_diagram/demographic-update.png)
 
 
 
 **Update existing pre-registration status:**
-
 - Create a REST API as '/applications/status' with PUT method which accept the pre-registration id from request parameter and status in query parameter.
 
 - Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
@@ -98,11 +97,11 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration update status mechanism using AuditManager component.
 
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Update Status](_images/_sequence_diagram/demographic-update-status.png)
 
 
 **Reterive existing pre-registration :**
-
 - Create a REST API as '/applications' with GET method which accept the pre-registration id from request parameter.
 
 - Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
@@ -116,12 +115,12 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
 
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Reterive](_images/_sequence_diagram/demographic-reterive-by-preRegId.png)
 
 
 
 **Reterive existing pre-registration status:**
-
 - Create a REST API as '/applications/status' with GET method which accept the pre-registration id from request parameter.
 
 - Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
@@ -132,14 +131,11 @@ The key non-functional requirements are
 
 
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Reterive Status](_images/_sequence_diagram/demographic-reterive-status.png)
 
 
-
-
-
 **Reterive All existing pre-registration for the User:**
-
 - Create a REST API as '/applications' with GET method.
 
 - Reterive the user-id from the authorization token.
@@ -154,14 +150,12 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive all mechanism using AuditManager component.
 
-
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Reterive All](_images/_sequence_diagram/demographic-reterive-by-userId.png)
 
 
-
 **Discard Pre-Registration:**
-
 - Create a REST API as '/applications' with DELETE method which accept the pre-registration id from request parameter.
 
 - Reterive the user-id from the authorization token.
@@ -173,6 +167,7 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration delete mechanism using AuditManager component.
 
 **Sequence Diagram**
+
 ![Pre-Registration Demographic Delete](_images/_sequence_diagram/demographic-delete.png)
 
 
