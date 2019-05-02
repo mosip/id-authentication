@@ -226,9 +226,9 @@ public class TemplateGenerator extends BaseService {
 	private void setUpCapturedImages(Map<String, Object> templateValues, RegistrationDTO registration, boolean isChild,
 			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String faceDisableFlag) {
 		if (isChild || registration.isUpdateUINChild()) {
-			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null
-					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
-				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace()
+			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace() != null
+					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() != null) {
+				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 						.getFace();
 				setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties,
 						localProperties);
@@ -294,7 +294,7 @@ public class TemplateGenerator extends BaseService {
 						|| (registration.getSelectionListDTO() != null
 								&& registration.getSelectionListDTO().isBiometrics()))) {
 			if (isChild || registration.isUpdateUINChild()) {
-				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
+				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() != null) {
 					templateValues.put(RegistrationConstants.IRIS_WITH_EXCEPTION,
 							RegistrationConstants.IRIS_WITH_EXCEPTION_STYLE);
 				} else {
@@ -316,9 +316,9 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		} else {
-			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag) || ((isChild
-					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null)
-					|| (!isChild && registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
+			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag) || (((isChild || registration.isUpdateUINChild())
+					&& registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() == null)
+					|| ((!isChild && !registration.isUpdateUINChild()) && registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 							.getFace() == null))) {
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
