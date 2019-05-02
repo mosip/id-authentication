@@ -90,7 +90,7 @@ public class PrintApiController {
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
 			throws RegPrintAppException {
 
-		tokenValidator.validate(token, "packetgenerator");
+		tokenValidator.validate("Authorization=" + token, "packetgenerator");
         InputStreamResource resource = null;
         validateRequest(printRequest.getRequest(), errors);
         PrintServiceValidationUtil.validate(errors);

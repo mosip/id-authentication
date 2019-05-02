@@ -22,6 +22,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
+import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
+import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 
 /**
  * The Class PacketGeneratorExceptionHandler.
@@ -44,7 +46,20 @@ public class PacketGeneratorExceptionHandler {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public String accessDenied(AccessDeniedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return packetGenExceptionResponse((Exception) e);
+	}
 
+	@ExceptionHandler(InvalidTokenException.class)
+	public String invalidToken(InvalidTokenException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return packetGenExceptionResponse((Exception) e);
+	}
 	/**
 	 * Badrequest.
 	 *

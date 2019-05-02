@@ -2,7 +2,6 @@ package io.mosip.registration.processor.cbeffutil.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -63,7 +63,7 @@ public class CbeffToBiometricUtilTest {
 		type.setBDBInfo(bdbinfotype);
 		List<BIRType> birtypeList = new ArrayList<>();
 		birtypeList.add(type);
-		Mockito.when(cbeffUtil.getBIRDataFromXML(any())).thenReturn(birtypeList);
+		Mockito.when(cbeffUtil.getBIRDataFromXML(Matchers.any())).thenReturn(birtypeList);
 	}
 	
 	/**
@@ -135,9 +135,9 @@ public class CbeffToBiometricUtilTest {
 		type2.setBDBInfo(bdbinfotype2);
 		List<BIRType> birtypeList2 = new ArrayList<>();
 		birtypeList2.add(type2);
-		Mockito.when(cbeffUtil.getBIRDataFromXML(any())).thenReturn(birtypeList).thenReturn(birtypeList2);
+		Mockito.when(cbeffUtil.getBIRDataFromXML(Matchers.any())).thenReturn(birtypeList).thenReturn(birtypeList2);
 
-		Mockito.when(cbeffUtil.createXML(any())).thenReturn("mergedcbeff".getBytes());
+		Mockito.when(cbeffUtil.createXML(Matchers.any())).thenReturn("mergedcbeff".getBytes());
 
 		InputStream stream = util.mergeCbeff(cbeff1, cbeff2);
 		byte[] result = IOUtils.toString(stream, "UTF-8").getBytes();
@@ -155,7 +155,7 @@ public class CbeffToBiometricUtilTest {
 		List<String> types = new ArrayList<>();
 		types.add("FACE");
 
-		Mockito.when(cbeffUtil.createXML(any())).thenReturn("extractedCbeff".getBytes());
+		Mockito.when(cbeffUtil.createXML(Matchers.any())).thenReturn("extractedCbeff".getBytes());
 
 		InputStream stream = util.extractCbeffWithTypes(cbeff,types);
 		byte[] result = IOUtils.toString(stream, "UTF-8").getBytes();
@@ -174,7 +174,7 @@ public class CbeffToBiometricUtilTest {
 		InputStream inputStream2 = new FileInputStream(cbeffFile2);
 		String cbeff2 = IOUtils.toString(inputStream2, "UTF-8");
 
-		Mockito.when(cbeffUtil.createXML(any())).thenReturn("mergedcbeff".getBytes());
+		Mockito.when(cbeffUtil.createXML(Matchers.any())).thenReturn("mergedcbeff".getBytes());
 
 		util.mergeCbeff(cbeff1, cbeff2);
 	}

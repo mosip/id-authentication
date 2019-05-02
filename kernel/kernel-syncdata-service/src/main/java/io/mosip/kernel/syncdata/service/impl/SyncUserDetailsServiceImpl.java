@@ -119,9 +119,9 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AuthManager");
 				}
-			} else {
-				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), ex);

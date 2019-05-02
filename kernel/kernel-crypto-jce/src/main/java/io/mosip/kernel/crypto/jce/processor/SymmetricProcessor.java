@@ -78,10 +78,14 @@ public class SymmetricProcessor {
 			if (randomIV == null) {
 				randomIV = generateIV(cipher.getBlockSize());
 				cipher.init(mode, key, new IvParameterSpec(randomIV), random);
+				output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+				byte[] processData = process(data, cipher);
+				System.arraycopy(processData, 0, output, 0, processData.length);
+				System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
 			} else {
 				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
+				output = process(data, cipher);
 			}
-			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
@@ -91,9 +95,6 @@ public class SymmetricProcessor {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
 		}
-		byte[] processData = process(data, cipher);
-		System.arraycopy(processData, 0, output, 0, processData.length);
-		System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
 		return output;
 	}
 
@@ -131,14 +132,17 @@ public class SymmetricProcessor {
 	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
+		final byte[] output;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
 			if (randomIV == null) {
 				cipher.init(mode, key,
 						new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
-						random);
+						generateSecureRandom());
+			output=process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
 			} else {
 				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
+				output=process(data, cipher);
 			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
@@ -153,7 +157,7 @@ public class SymmetricProcessor {
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage(), e);
 		}
-		return process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
+		return output;
 	}
 
 	/**
