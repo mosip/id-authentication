@@ -38,6 +38,9 @@ The key non-functional requirements are
 
 **Solution**
 
+**Class Diagram**
+![Pre-Registration Demographic_Service](_images/_class_diagram/demographic-service.png)
+
 **Create a new pre-registration :**
 
 - Create a REST API as '/applications' with POST method which accept the ID Definition JSON object (#id-definition-structure) from the request body.
@@ -54,8 +57,7 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration save mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Create](_images/_class_diagram/demographic-service.png)
+
 **Sequence Diagram**
 ![Pre-Registration Demographic Create](_images/_sequence_diagram/demographic-create.png)
 
@@ -78,8 +80,6 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration update mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Update](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
 ![Pre-Registration Demographic Update](_images/_sequence_diagram/demographic-update.png)
 
@@ -97,11 +97,8 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration update status mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Update Status](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
 ![Pre-Registration Demographic Update Status](_images/_sequence_diagram/demographic-update-status.png)
-
 
 
 **Reterive existing pre-registration :**
@@ -118,12 +115,8 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Reterive](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
 ![Pre-Registration Demographic Reterive](_images/_sequence_diagram/demographic-reterive-by-preRegId.png)
-
-
 
 
 
@@ -137,8 +130,7 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Reterive Status](_images/_class_diagram/demographic-service.png)
+
 **Sequence Diagram**
 ![Pre-Registration Demographic Reterive Status](_images/_sequence_diagram/demographic-reterive-status.png)
 
@@ -162,8 +154,7 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive all mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Reterive All](_images/_class_diagram/demographic-service.png)
+
 **Sequence Diagram**
 ![Pre-Registration Demographic Reterive All](_images/_sequence_diagram/demographic-reterive-by-userId.png)
 
@@ -181,8 +172,6 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration delete mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Demographic Delete](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
 ![Pre-Registration Demographic Delete](_images/_sequence_diagram/demographic-delete.png)
 
