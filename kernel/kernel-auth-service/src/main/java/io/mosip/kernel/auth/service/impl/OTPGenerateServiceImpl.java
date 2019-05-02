@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,7 +84,8 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 			}
 			return otpGenerateResponseDto;
-		} catch (Exception exp) {
+		} catch (HttpClientErrorException | HttpServerErrorException exp) {
+			System.out.println(exp.getResponseBodyAsString());
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
 		}
 	}
