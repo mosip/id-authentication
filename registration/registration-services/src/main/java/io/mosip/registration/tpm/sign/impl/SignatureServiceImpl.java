@@ -54,7 +54,8 @@ public class SignatureServiceImpl implements SignatureService {
 					RegistrationConstants.APPLICATION_ID, "Signing data using TPM");
 
 			TPMT_PUBLIC signingKeyPublicPart = new TPMT_PUBLIC(TPM_ALG_ID.SHA1,
-					new TPMA_OBJECT(TPMA_OBJECT.sign, TPMA_OBJECT.sensitiveDataOrigin, TPMA_OBJECT.userWithAuth),
+					new TPMA_OBJECT(TPMA_OBJECT.fixedTPM, TPMA_OBJECT.fixedParent, TPMA_OBJECT.sign,
+							TPMA_OBJECT.sensitiveDataOrigin, TPMA_OBJECT.userWithAuth),
 					new byte[0], new TPMS_RSA_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.NULL, 0, TPM_ALG_ID.NULL),
 							new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256), 2048, 65537),
 					new TPM2B_PUBLIC_KEY_RSA());
