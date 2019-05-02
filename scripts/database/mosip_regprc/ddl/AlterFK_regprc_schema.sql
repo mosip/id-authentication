@@ -21,7 +21,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- object: fk_regref_reg | type: CONSTRAINT --
 -- ALTER TABLE regprc.reg_bio_ref DROP CONSTRAINT IF EXISTS fk_regref_reg CASCADE;
-ALTER TABLE regprc.reg_bio_ref ADD CONSTRAINT fk_regref_reg FOREIGN KEY (reg_id)
+ALTER TABLE regprc.reg_bio_ref ADD CONSTRAINT fk_regbrf_reg FOREIGN KEY (reg_id)
 REFERENCES regprc.registration (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --

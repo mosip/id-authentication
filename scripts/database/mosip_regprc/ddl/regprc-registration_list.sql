@@ -28,6 +28,7 @@ CREATE TABLE regprc.registration_list(
 	packet_size bigint NOT NULL,
 	client_status_code character varying(36),
 	client_status_comment character varying(256),
+	additional_info bytea,
 	status_code character varying(36),
 	status_comment character varying(256),
 	lang_code character varying(3) NOT NULL,
@@ -42,6 +43,8 @@ CREATE TABLE regprc.registration_list(
 );
 -- ddl-end --
 COMMENT ON TABLE regprc.registration_list IS 'List of Registration to Process';
+-- ddl-end --
+COMMENT ON COLUMN regprc.registration_list.additional_info IS 'Additional Information: Futuristic field to capture any additional information shared by registration client application. The information can be stored in json format as flat structure.';
 -- ddl-end --
 ALTER TABLE regprc.registration_list OWNER TO sysadmin;
 -- ddl-end --
