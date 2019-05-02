@@ -65,9 +65,6 @@ public class IdRequestValidator implements Validator {
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	/** The Constant verPattern. */
-	private static final Pattern verPattern = Pattern.compile(IdRepoConstants.VERSION_PATTERN.getValue());
-
 	/** The Constant DOC_TYPE. */
 	private static final String DOC_CAT = "category";
 
@@ -204,7 +201,8 @@ public class IdRequestValidator implements Validator {
 		if (Objects.isNull(ver)) {
 			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if ((!verPattern.matcher(ver).matches())) {
+		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
+				.matches())) {
 			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 		}

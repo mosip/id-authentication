@@ -20,7 +20,7 @@ public enum IdRepoConstants {
 	ROOT_PATH("identity"),
 
 	/** The version pattern. */
-	VERSION_PATTERN("^v\\d+(\\.\\d+)?$"),
+	VERSION_PATTERN("mosip.idrepo.application.version.pattern"),
 
 	/** The datetime timezone. */
 	DATETIME_TIMEZONE("mosip.idrepo.datetime.timezone"),

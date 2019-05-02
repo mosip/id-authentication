@@ -286,7 +286,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 * @return the demographic files
 	 */
 	private void getDemographicFiles(Uin uinObject, List<Documents> documents) {
-		uinObject.getDocuments().parallelStream().forEach(demo -> {
+		uinObject.getDocuments().stream().forEach(demo -> {
 			try {
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId();
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
@@ -329,7 +329,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 * @return the biometric files
 	 */
 	private void getBiometricFiles(Uin uinObject, List<Documents> documents) {
-		uinObject.getBiometrics().parallelStream().forEach(bio -> {
+		uinObject.getBiometrics().stream().forEach(bio -> {
 			if (allowedBioAttributes.contains(bio.getBiometricFileType())) {
 				try {
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
