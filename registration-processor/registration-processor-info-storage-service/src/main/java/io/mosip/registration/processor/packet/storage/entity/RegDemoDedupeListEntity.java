@@ -50,7 +50,7 @@ public class RegDemoDedupeListEntity extends BasePacketEntity<RegDemoDedupeListP
 
 	// bi-directional many-to-one association to RegistrationTransaction
 	@ManyToOne
-	@JoinColumn(name = "regtrn_id")
+	@JoinColumn(name = "regtrn_id", insertable = false, updatable = false)
 	private TransactionEntity registrationTransaction;
 
 	public RegDemoDedupeListEntity() {

@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -30,7 +29,7 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	private Timestamp delDtimes;
+	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
@@ -46,7 +45,7 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 
 	// bi-directional many-to-one association to AbisResponse
 	@ManyToOne
-	@JoinColumn(name = "abis_resp_id")
+	@JoinColumn(name = "abis_resp_id",insertable=false,updatable=false)
 	private AbisResponseEntity abisResponse;
 
 	public AbisResponseDetEntity() {
@@ -76,11 +75,11 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 		this.crDtimes = crDtimes;
 	}
 
-	public Timestamp getDelDtimes() {
+	public LocalDateTime getDelDtimes() {
 		return this.delDtimes;
 	}
 
-	public void setDelDtimes(Timestamp delDtimes) {
+	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
 	}
 
