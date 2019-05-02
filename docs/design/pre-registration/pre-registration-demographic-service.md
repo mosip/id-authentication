@@ -55,9 +55,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration save mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Create](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Create](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Create](_sequence_diagram/demographic-create.png)
+![Pre-Registration Demographic Create](_images/_sequence_diagram/demographic-create.png)
 
 
 
@@ -79,9 +79,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration update mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Update](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Update](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Update](_sequence_diagram/demographic-update.png)
+![Pre-Registration Demographic Update](_images/_sequence_diagram/demographic-update.png)
 
 
 
@@ -98,9 +98,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration update status mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Update Status](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Update Status](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Update Status](_sequence_diagram/demographic-update-status.png)
+![Pre-Registration Demographic Update Status](_images/_sequence_diagram/demographic-update-status.png)
 
 
 
@@ -119,9 +119,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Reterive](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Reterive](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Reterive](_sequence_diagram/demographic-reterive-by-preRegId.png)
+![Pre-Registration Demographic Reterive](_images/_sequence_diagram/demographic-reterive-by-preRegId.png)
 
 
 
@@ -138,9 +138,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Reterive Status](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Reterive Status](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Reterive Status](_sequence_diagram/demographic-reterive-status.png)
+![Pre-Registration Demographic Reterive Status](_images/_sequence_diagram/demographic-reterive-status.png)
 
 
 
@@ -163,9 +163,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive all mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Reterive All](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Reterive All](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Reterive All](_sequence_diagram/demographic-reterive-by-userId.png)
+![Pre-Registration Demographic Reterive All](_images/_sequence_diagram/demographic-reterive-by-userId.png)
 
 
 
@@ -182,9 +182,9 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration delete mechanism using AuditManager component.
 
 **Class Diagram**
-![Pre-Registration Demographic Delete](_class_diagram/demographic-service.png)
+![Pre-Registration Demographic Delete](_images/_class_diagram/demographic-service.png)
 **Sequence Diagram**
-![Pre-Registration Demographic Delete](_sequence_diagram/demographic-delete.png)
+![Pre-Registration Demographic Delete](_images/_sequence_diagram/demographic-delete.png)
 
 
 
