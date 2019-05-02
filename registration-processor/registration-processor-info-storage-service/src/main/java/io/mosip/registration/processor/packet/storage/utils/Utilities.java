@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -30,6 +29,7 @@ import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import lombok.Data;
 
@@ -74,13 +74,6 @@ public class Utilities {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
-
-	/*
-	 * public int getApplicantAge(String registrationId) throws IOException,
-	 * ApisResourceAccessException, ParseException { return 17;
-	 * 
-	 * }
-	 */
 
 	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException, ParseException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
