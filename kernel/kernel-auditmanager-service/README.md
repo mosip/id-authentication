@@ -3,7 +3,7 @@
 
 [Background & Design](../../docs/design/kernel/kernel-auditmanager.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#8-audit-manager)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#audit-manager)
 
 Default Port and Context Path
 

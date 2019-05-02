@@ -55,6 +55,7 @@ import io.mosip.registration.service.impl.CenterMachineReMapService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -92,7 +93,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController extends BaseService {
+public class BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -100,6 +101,9 @@ public class BaseController extends BaseService {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
+	
+	@Autowired
+	protected ServiceDelegateUtil serviceDelegateUtil;
 
 	@Autowired
 	protected FXComponents fXComponents;

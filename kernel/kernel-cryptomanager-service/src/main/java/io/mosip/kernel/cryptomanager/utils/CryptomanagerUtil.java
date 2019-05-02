@@ -12,7 +12,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +27,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -123,6 +127,10 @@ public class CryptomanagerUtil {
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	private static final String KEYMANAGER="Keymanager";
+	
+	private static final String PUBLIC_KEY="Public Key";
 
 	/**
 	 * Calls Key-Manager-Service to get public key of an application
@@ -144,6 +152,8 @@ public class CryptomanagerUtil {
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			authExceptionHandler(ex, validationErrorsList, PUBLIC_KEY);
+			
 			if (!validationErrorsList.isEmpty()) {
 				throw new KeymanagerServiceException(validationErrorsList);
 			} else {
@@ -210,6 +220,8 @@ public class CryptomanagerUtil {
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
+			
 			if (!validationErrorsList.isEmpty()) {
 				throw new KeymanagerServiceException(validationErrorsList);
 			} else {
@@ -240,7 +252,7 @@ public class CryptomanagerUtil {
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
 
-	/**
+   /**
 	 * Gets the encrypted data.
 	 *
 	 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
@@ -264,6 +276,8 @@ public class CryptomanagerUtil {
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
+			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
+			
 			if (!validationErrorsList.isEmpty()) {
 				throw new KeymanagerServiceException(validationErrorsList);
 			} else {
@@ -296,6 +310,43 @@ public class CryptomanagerUtil {
 		encryptedData = keyManagerResponseDto.getEncryptedData();
 
 		return encryptedData;
+	}
+	
+	/**
+	 * Change Parameter form to trim if not null
+	 * 
+	 * @param parameter parameter
+	 * @return null if null;else trimmed string
+	 */
+	public static String nullOrTrim(String parameter) {
+		return parameter == null ? null : parameter.trim();
+	}
+	
+	/**
+	 * Function to check is salt is valid
+	 * 
+	 * @param salt salt
+	 * @return true if salt is valid, else false
+	 */
+	public boolean isValidReferenceId(String salt) {
+		return salt != null && !salt.trim().isEmpty();
+	}
+	
+	private void authExceptionHandler(HttpStatusCodeException ex, List<ServiceError> validationErrorsList, String source) {
+		if (ex.getRawStatusCode() == 401) {
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthNException(validationErrorsList);
+			} else {
+				throw new BadCredentialsException("Authentication failed for "+source);
+			}
+		}
+		if (ex.getRawStatusCode() == 403) {
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthZException(validationErrorsList);
+			} else {
+				throw new AccessDeniedException("Access denied for "+source);
+			}
+		}
 	}
 
 }
