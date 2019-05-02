@@ -2,7 +2,7 @@
 
 [Background & Design](../../docs/design/kernel/kernel-uingenerator.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#4-uin)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#uin)
 
 
 Default Port and Context Path

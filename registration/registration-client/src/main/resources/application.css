@@ -28,36 +28,39 @@
 	-fx-border-color : #C9C9C9;
 }
 
-.scroll-bar:horizontal > .increment-button > .increment-arrow {
+.parentScrollPane .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: white;
     -fx-shape: "";
 }
 
-.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+.parentScrollPane .scroll-bar:horizontal > .decrement-button > .decrement-arrow {
     -fx-background-color: white;
     -fx-shape: "";
+}
+
+.parentScrollPane .scroll-bar:horizontal {
+		-fx-background-color : white;
 }
 
 .scroll-bar:vertical > .thumb {
     -fx-background-color: white;
  }
  
+
+.parentScrollPane .scroll-pane > .corner {
+    -fx-background-color: white;
+}
+ 
 .scroll-pane {
     -fx-background-color: white;
 	-fx-border-width : 0.0 0.0 0.0 0.0;
     
 }
- .scroll-bar:horizontal {
-		-fx-background-color : white;
-}
+
 
 .scroll-bar:horizontal > .thumb {
     -fx-background-color: white;
  }
- 
- .scroll-pane > .corner {
-    -fx-background-color: white;
-}
  
 
 .toolTip{

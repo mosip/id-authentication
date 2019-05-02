@@ -20,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -82,14 +84,24 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient", HttpMethod.GET, httpRequest,
+			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
 			if (ex.getRawStatusCode() == 401) {
-				throw new BadCredentialsException("Authentication failed from AuthManager");
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from AuthManager");
+				}
 			}
 			if (ex.getRawStatusCode() == 403) {
-				throw new AccessDeniedException("Authentication failed from AuthManager");
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AuthManager");
+				}
 			}
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
@@ -118,8 +130,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	/**
 	 * Gets the roles from response.
 	 *
-	 * @param response
-	 *            the response
+	 * @param response the response
 	 * @return {@link RolesResponseDto}
 	 */
 	private RolesResponseDto getRolesFromResponse(ResponseEntity<String> response) {
