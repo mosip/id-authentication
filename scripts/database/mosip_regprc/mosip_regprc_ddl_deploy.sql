@@ -9,5 +9,11 @@
 \ir ddl/regprc-reg_uin.sql
 \ir ddl/regprc-transaction_type.sql
 \ir ddl/regprc-rid_seq.sql
+\ir ddl/regprc-reg_bio_ref.sql
+\ir ddl/regprc-reg_demo_dedupe_list.sql
+\ir ddl/regprc-abis_application.sql
+\ir ddl/regprc-abis_request.sql
+\ir ddl/regprc-abis_response.sql
+\ir ddl/regprc-abis_response_det.sql
 
 \ir ddl/AlterFK_regprc_schema.sql

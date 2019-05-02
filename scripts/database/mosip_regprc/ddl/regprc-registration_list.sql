@@ -8,41 +8,42 @@
 -- create schema if Registration Processor schema not exists
 create schema if not exists regprc
 ;
- 
--- table section ---------------------------------------------------------
-create table regprc.registration_list (
+-- NOTE: the code below contains the SQL for the selected object
+-- as well for its dependencies and children (if applicable).
+-- 
+-- This feature is only a convinience in order to permit you to test
+-- the whole object's SQL definition at once.
+-- 
+-- When exporting or generating the SQL for the whole database model
+-- all objects will be placed at their original positions.
 
-	id character varying(36) not null,
 
-	reg_id character varying(39) not null,			-- no fk.  data populate.
-	reg_type character varying(64),					-- no fk.  data populate.
-	parent_reg_id character varying(39),			-- no fk.  data populate.
-
-	status_code character varying(36),				-- no fk.  data populate.
+-- object: regprc.registration_list | type: TABLE --
+-- DROP TABLE IF EXISTS regprc.registration_list CASCADE;
+CREATE TABLE regprc.registration_list(
+	id character varying(36) NOT NULL,
+	reg_id character varying(39) NOT NULL,
+	reg_type character varying(64),
+	packet_checksum character varying(128) NOT NULL,
+	packet_size bigint NOT NULL,
+	client_status_code character varying(36),
+	client_status_comment character varying(256),
+	status_code character varying(36),
 	status_comment character varying(256),
-
-	lang_code character varying(3) not null,		-- no fk.  data populate.
-	
-	is_active boolean not null,
-	cr_by character varying (256) not null,
-	cr_dtimes timestamp not null,
-	upd_by  character varying (256),
+	lang_code character varying(3) NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
-	del_dtimes timestamp
-	
-)
-;
+	del_dtimes timestamp,
+	CONSTRAINT pk_reglist_id PRIMARY KEY (id)
 
--- keys section -------------------------------------------------
- alter table regprc.registration_list add constraint pk_reglist_id primary key (id)
- ;
+);
+-- ddl-end --
+COMMENT ON TABLE regprc.registration_list IS 'List of Registration to Process';
+-- ddl-end --
+ALTER TABLE regprc.registration_list OWNER TO sysadmin;
+-- ddl-end --
 
--- indexes section -------------------------------------------------
--- create index idx_reglist_<colX> on regprc.registration_list (colX )
--- ;
-
--- comments section ------------------------------------------------- 
-comment on table regprc.registration_list is 'List of Registration to Process'
-;
 
