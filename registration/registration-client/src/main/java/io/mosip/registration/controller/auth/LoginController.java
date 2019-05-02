@@ -41,6 +41,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -67,6 +68,7 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.impl.PublicKeySyncImpl;
+import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -82,10 +84,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -222,6 +227,12 @@ public class LoginController extends BaseController implements Initializable {
 	private ServiceDelegateUtil serviceDelegateUtil;
 	
 	boolean hasUpdate;
+	
+	@Autowired
+	SyncStatusValidatorService statusValidatorService;
+	
+	@Autowired
+	HeaderController headerController;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -288,7 +299,23 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.show();
 
 			if(hasUpdate) {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE);
+				Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+						RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE,
+						RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+				
+				if(statusValidatorService.isToBeForceUpdate()) {
+					
+					Button cancelButton = (Button) updateAlert.getDialogPane().lookupButton(ButtonType.CANCEL);
+					cancelButton.setDisable(true);
+				}
+				updateAlert.showAndWait();
+
+				/* Get Option from user */
+				ButtonType result = updateAlert.getResult();
+				if (result == ButtonType.OK) {
+					
+					headerController.executeUpdateTask(loginRoot, progressIndicator);
+				}
 			}
 			if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);

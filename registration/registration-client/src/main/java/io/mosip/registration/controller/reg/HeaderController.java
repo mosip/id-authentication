@@ -511,7 +511,7 @@ public class HeaderController extends BaseController {
 
 	}
 
-	private void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
+	public void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
 		pane.setDisable(true);
