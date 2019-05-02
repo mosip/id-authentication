@@ -24,7 +24,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	}
 
 	@Override
-	public MessageDTO process(MessageDTO object) {
+	public MessageDTO process(MessageDTO object) throws InterruptedException {
 		return abisMiddleWareProcessor.process(object, this.getClass().getSimpleName());
 	}
 
