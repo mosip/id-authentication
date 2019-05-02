@@ -127,7 +127,7 @@ public class TemplateGeneratorTest {
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
 
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNull(response.getSuccessResponseDTO());
+		assertNotNull(response.getSuccessResponseDTO());
 	}
 
 	@Test

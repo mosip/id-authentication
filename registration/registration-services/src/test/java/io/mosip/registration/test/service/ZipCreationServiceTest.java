@@ -18,6 +18,8 @@ import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -110,6 +112,12 @@ public class ZipCreationServiceTest {
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
+		faceDetailsDTO.setFace("photo".getBytes());
+		biometricInfoDTO.setExceptionFace(faceDetailsDTO);
+		biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
+		biometricDTO.setIntroducerBiometricDTO(biometricInfoDTO);
 		registrationDTO.setBiometricDTO(biometricDTO);
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
@@ -117,7 +125,7 @@ public class ZipCreationServiceTest {
 		
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		
-		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
+		//zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
 	}
 
 }
