@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +31,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.postgresql.ssl.jdbc4.LibPQFactory;
+
+import com.google.common.io.Files;
 
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
@@ -260,8 +264,30 @@ public class CommonLibrary extends BaseTestCase{
 
 	}
 	
+	public  String getDescription(String testSuite,JSONObject object) {
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + testSuite + "/";
+		String description="";
+		File file=new File(configPath);
+		File[] listOfFiles=file.listFiles();
+		for(File f:listOfFiles) {
+			if(f.isDirectory()) {
+				if(f.getName().equals(object.get("testCaseName").toString())){
+			File[] insideFiles=f.listFiles();
+			for(File txtFile:insideFiles) {
+				if(txtFile.getName().contains(".txt")) {
+					try {
+						description=FileUtils.readFileToString(txtFile, StandardCharsets.UTF_8);
+					} catch (IOException e) {
+						logger.error("Not able to read escription",e);
+					}
+				}
+			}
+		}
+		}
+		}
+		return description;
+	}
 	
-
 	public Response postRequest(String url, Object body, String contentHeader, String acceptHeader) {
 
 

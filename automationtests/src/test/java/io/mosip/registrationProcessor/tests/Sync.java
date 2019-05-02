@@ -1,22 +1,16 @@
 package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -25,10 +19,8 @@ import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -40,11 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
-import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
+import io.mosip.util.CommonLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
@@ -74,8 +66,10 @@ public class Sync extends BaseTestCase implements ITest {
 	static String folderPath = "regProc/Sync";
 	static String outputFile = "SyncOutput.json";
 	static String requestKeyFile = "SyncRequest.json";
-
-
+	static String description="";
+	static String apiName="SyncApi : ";
+	
+	CommonLibrary common=new CommonLibrary();
 	/**
 	 *This method is used for reading the test data based on the test case name passed
 	 *
@@ -89,7 +83,7 @@ public class Sync extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch ("smokeAndRegression") {
+			switch (testParam) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -115,10 +109,11 @@ public class Sync extends BaseTestCase implements ITest {
 	 */
 	@Test(dataProvider = "syncPacket")
 	public void sync(String testSuite, Integer i, JSONObject object){
+		
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
-
+		description=common.getDescription(testSuite,object);
 		try{
 			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			// Expected response generation
@@ -232,7 +227,7 @@ public class Sync extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName =apiName+ object.get("testCaseName").toString() +": "+ description;
 	}
 
 	/**
@@ -255,7 +250,7 @@ public class Sync extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
-
+		test=extent.createTest(testCaseName);
 	}
 
 	/**

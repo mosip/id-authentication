@@ -219,7 +219,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "apiName : "+"description.txt :"+object.get("testCaseName").toString();
 	}
 
 	/**

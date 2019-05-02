@@ -12,10 +12,10 @@
 <test name="RegistrationProcessor.PacketStatus">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
-     <class name="io.mosip.registrationProcessor.tests.PacketStatus"/>          
+     <class name="io.mosip.registrationProcessor.tests.Sync"/>          
     </classes>
   </test> <!-- Test --> 
-  <test name="RegistrationProcessor.Sync">    						
+<!--   <test name="RegistrationProcessor.Sync">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
      <class name="io.mosip.registrationProcessor.tests.Sync"/>          
@@ -38,5 +38,5 @@
      <parameter name="testCaseName" value="ValidPacketSmoke"> </parameter>
      <parameter name="fileName" value="StageBits.properties"> </parameter>        
     </classes>
-  </test> <!-- Test -->
+  </test>  --><!-- Test -->
 </suite> <!-- Suite -->
