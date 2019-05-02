@@ -1,0 +1,49 @@
+.mat-card {
+    height: 700px;
+    padding: 0;
+}
+
+.sidebar {
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1px;
+    text-transform: uppercase;
+}
+
+.icon {
+    margin-top: 3px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    padding: 12px 20px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.pointer {
+    cursor: pointer;
+    display: none;
+}
+
+.selected {
+    background-color: #ddd;
+}
+
+@media(max-width: 500px) {
+    .sidebar {
+        font-size: 12px;
+    }
+    .sidebar li {
+        padding: 6px 10px 6px 0;
+    }
+    .pointer {
+        display: block;
+    }
+}
