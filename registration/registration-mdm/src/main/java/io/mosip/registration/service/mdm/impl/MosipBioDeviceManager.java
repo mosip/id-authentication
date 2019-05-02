@@ -1,6 +1,11 @@
 package io.mosip.registration.service.mdm.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,13 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosio.registration.mdm.constants.MosipBioDeviceConstants;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegrator;
+import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.service.mdm.util.MosioBioDeviceHelperUtil;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
@@ -44,6 +58,9 @@ public class MosipBioDeviceManager {
 	private MosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
 	private static Map<String, BioDevice> deviceRegistry = new HashMap<>();
+	
+	private static final Logger LOGGER = AppConfig.getLogger(MosipBioDeviceManager.class);
+
 
 	/**
 	 * Looks for all the configured ports available and initializes all the
@@ -56,22 +73,37 @@ public class MosipBioDeviceManager {
 	public void init() throws RegBaseCheckedException {
 
 		String url;
+		ObjectMapper mapper = new ObjectMapper();
+		String value = null;
+		DeviceInfoResponseData deviceInfoResponse = null;
+
 		for (int port = portFrom; port <= portTo; port++) {
 
 			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
 			/* check if the service is available for the current port */
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
 
-				List<DeviceInfoResponseData> deviceInfoResponseDtos = (List<DeviceInfoResponseData>) mosipBioDeviceIntegrator
+				List<LinkedHashMap<String, String>> deviceInfoResponseDtos = (List<LinkedHashMap<String, String>>) mosipBioDeviceIntegrator
 						.getDeviceInfo(url, MosipBioDeviceConstants.DEVICE_INFO_SERVICENAME, Object[].class);
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
-					for (DeviceInfoResponseData deviceInfoResponse : deviceInfoResponseDtos) {
+					for (LinkedHashMap<String, String> deviceInfoResponseHash : deviceInfoResponseDtos) {
+
+						try {
+							value = mapper.writeValueAsString(deviceInfoResponseHash);
+							deviceInfoResponse = mapper.readValue(value, DeviceInfoResponseData.class);
+						} catch (IOException e) {
+							LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+									"Exception while mapping the response");
+						}
 
 						if (StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
 
-							/* Creating new bio device object for each device from service */
+							/*
+							 * Creating new bio device object for each device
+							 * from service
+							 */
 							BioDevice bioDevice = new BioDevice();
 							bioDevice.setDeviceSubType(deviceInfoResponse.getSubType());
 							bioDevice.setDeviceType(deviceInfoResponse.getType());
@@ -126,9 +158,7 @@ public class MosipBioDeviceManager {
 
 				}
 			}
-
 		}
-
 	}
 
 	/**
@@ -147,7 +177,8 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Triggers the capture based on the device type and returns the biometric value
+	 * Triggers the capture based on the device type and returns the biometric
+	 * value
 	 * 
 	 * @param deviceType
 	 *            - The type of the device
@@ -157,8 +188,8 @@ public class MosipBioDeviceManager {
 	public Map<String, byte[]> scan(String deviceType) throws RegBaseCheckedException {
 
 		/*
-		 * fetch and store the bio device list from MDM if the device registry does not
-		 * contain the requested devices
+		 * fetch and store the bio device list from MDM if the device registry
+		 * does not contain the requested devices
 		 */
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();

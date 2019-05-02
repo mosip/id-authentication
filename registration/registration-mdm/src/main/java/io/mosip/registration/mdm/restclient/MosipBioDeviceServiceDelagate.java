@@ -4,6 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +77,7 @@ public class MosipBioDeviceServiceDelagate {
 
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
-		prepareRequest(requestHTTPDTO, serviceName, request, responseType);
+		prepareRequest(requestHTTPDTO, serviceName, request, responseType, url);
 
 		try {
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
@@ -108,12 +110,17 @@ public class MosipBioDeviceServiceDelagate {
 	 *            - response format
 	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
-			Class<?> responseType) {
+			Class<?> responseType, String url) {
 		requestHTTPDTO.setHttpMethod(
 				HttpMethod.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.HTTPMETHOD)));
 		requestHTTPDTO.setHttpHeaders(new HttpHeaders());
 		requestHTTPDTO.setRequestBody(request);
-		requestHTTPDTO.setClazz(responseType != null ? responseType.getClass() : Object.class);
+		requestHTTPDTO.setClazz(Object.class);
+		requestHTTPDTO.setIsSignRequired(false);
+		try {
+			requestHTTPDTO.setUri(new URI(url));
+		} catch (URISyntaxException e) {
+		}
 		// set timeout
 		setTimeout(requestHTTPDTO);
 		// Headers
