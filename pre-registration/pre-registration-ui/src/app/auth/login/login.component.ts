@@ -263,32 +263,32 @@ export class LoginComponent implements OnInit {
 
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
-      // this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
-      // response => {
-      // console.log(response);
-      //  if (!response['errors']) {
-      //   clearInterval(this.timer);
-      //   localStorage.setItem('loggedIn', 'true');
-      //   this.authService.setToken();
-
-      //   this.regService.setLoginId(this.inputContactDetails);
-      //   this.router.navigate(['dashboard']);
-      // } else {
-      //   console.log(response['error']);
-      //   this.showOtpMessage();
-      // }
-      // },
-      // error =>
-      {
-        this.showOtpMessage();
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
+      response => {
+      console.log(response);
+       if (!response['errors']) {
         clearInterval(this.timer);
         localStorage.setItem('loggedIn', 'true');
         this.authService.setToken();
 
         this.regService.setLoginId(this.inputContactDetails);
         this.router.navigate(['dashboard']);
+      } else {
+        console.log(response['error']);
+        this.showOtpMessage();
       }
-      // );
+      },
+      error =>
+      {
+        this.showOtpMessage();
+        // clearInterval(this.timer);
+        // localStorage.setItem('loggedIn', 'true');
+        // this.authService.setToken();
+
+        // this.regService.setLoginId(this.inputContactDetails);
+        // this.router.navigate(['dashboard']);
+      }
+      );
     }
   }
 
