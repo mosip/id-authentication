@@ -44,7 +44,6 @@ import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
 import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
-import io.mosip.kernel.auth.adapter.exception.ParseResponseException;
 import io.mosip.kernel.auth.adapter.model.AuthToken;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.auth.adapter.model.MosipUserDto;
@@ -90,32 +89,6 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 	}
 
-	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		return new RestTemplate(requestFactory);
-
-	}
-
-	private ResponseEntity<String> getResponseEntity(String token) {
-		HttpHeaders headers = new HttpHeaders();
-		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
-		System.out.println("Validate Url " + validateUrl);
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
-		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		try {
-			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			LOGGER.error("", "", "", e.getMessage());
-		}
-		return null;
-	}
-
 	@Override
 	protected UserDetails retrieveUser(String userName,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -125,7 +98,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
 
-		response = getResponseEntity(token);
+		response = getValidatedUserResponse(token);
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 
@@ -143,74 +116,39 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		}
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
-		String responseToken = response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
-				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
-		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, responseToken);
+		// String responseToken =
+		// response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER,
+		// "");
+		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
 		authUserDetails.setAuthorities(grantedAuthorities);
 		return authUserDetails;
 
 	}
 
-	private String validateToken(RoutingContext routingContext, String[] roles) {
-		boolean isAuthorized = false;
-		HttpServerRequest httpRequest = routingContext.request();
-		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
-		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
-				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
-					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.NOTAUTHENTICATED);
-			return "";
-		}
-		token = token.split(";")[0];
-		ResponseEntity<String> response = getResponseEntity(token);
-		if (response == null) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
-					AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.INTERNEL_SERVER_ERROR);
-			return "";
-		}
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			sendErrors(routingContext, validationErrorsList, AuthAdapterConstant.NOTAUTHENTICATED);
-			return "";
-		}
-		ResponseWrapper<?> responseObject = null;
-		MosipUserDto mosipUserDto = null;
+	private ResponseEntity<String> getValidatedUserResponse(String token) {
+		HttpHeaders headers = new HttpHeaders();
+		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
+		System.out.println("Validate Url " + validateUrl);
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
-			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
-					MosipUserDto.class);
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), exception);
+			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
+		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			LOGGER.error("", "", "", e.getMessage());
 		}
-		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
-		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,authUserDetails.getPassword(), null);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String[] authorities = mosipUserDto.getRole().split(",");
-		for (String role : roles) {
-			for (String authority : authorities) {
-				if (role.equals(authority)) {
-					isAuthorized = true;
-					break;
-				}
-			}
-		}
-		if (!isAuthorized) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
-					AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.UNAUTHORIZED);
-			return "";
-		}
-		return response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
-				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
+		return null;
+	}
+
+	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+				.build();
+		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory.setHttpClient(httpClient);
+		return new RestTemplate(requestFactory);
+
 	}
 
 	private void sendErrors(RoutingContext routingContext, List<ServiceError> errors, int statusCode) {
@@ -295,5 +233,67 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
 			routingContext.next();
 		});
+	}
+
+	private String validateToken(RoutingContext routingContext, String[] roles) {
+		boolean isAuthorized = false;
+		HttpServerRequest httpRequest = routingContext.request();
+		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
+				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.NOTAUTHENTICATED);
+			return "";
+		}
+		token = token.split(";")[0];
+		ResponseEntity<String> response = getValidatedUserResponse(token);
+		if (response == null) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
+					AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.INTERNEL_SERVER_ERROR);
+			return "";
+		}
+		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+		if (!validationErrorsList.isEmpty()) {
+			sendErrors(routingContext, validationErrorsList, AuthAdapterConstant.NOTAUTHENTICATED);
+			return "";
+		}
+		ResponseWrapper<?> responseObject = null;
+		MosipUserDto mosipUserDto = null;
+		try {
+			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+					MosipUserDto.class);
+		} catch (IOException | NullPointerException e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+		}
+		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,
+				authUserDetails.getPassword(), null);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String[] authorities = mosipUserDto.getRole().split(",");
+		for (String role : roles) {
+			for (String authority : authorities) {
+				if (role.equals(authority)) {
+					isAuthorized = true;
+					break;
+				}
+			}
+		}
+		if (!isAuthorized) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
+					AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.UNAUTHORIZED);
+			return "";
+		}
+		return response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
+				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
 	}
 }

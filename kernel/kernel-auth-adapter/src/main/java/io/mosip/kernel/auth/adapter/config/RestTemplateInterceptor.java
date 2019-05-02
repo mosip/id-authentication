@@ -1,4 +1,4 @@
-package io.mosip.kernel.auth.adapter.filter;
+package io.mosip.kernel.auth.adapter.config;
 
 import java.io.IOException;
 
@@ -30,7 +30,24 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
  **********************************************************************************************************************/
 
 @Component
-public class ClientInterceptor implements ClientHttpRequestInterceptor {
+public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
+
+	@Override
+	public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
+			ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
+		addHeadersToRequest(httpRequest, bytes);
+		ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
+		// getHeadersFromResponse(response);
+		return response;
+	}
+
+	private void addHeadersToRequest(HttpRequest httpRequest, byte[] bytes) {
+		HttpHeaders headers = httpRequest.getHeaders();
+		AuthUserDetails authUserDetails = getAuthUserDetails();
+		if (authUserDetails != null)
+			headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE,
+					AuthAdapterConstant.AUTH_COOOKIE_HEADER + authUserDetails.getToken());
+	}
 
 	private AuthUserDetails getAuthUserDetails() {
 		AuthUserDetails authUserDetails = null;
@@ -41,29 +58,11 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 		return authUserDetails;
 	}
 
-	private void addHeadersToRequest(HttpRequest httpRequest, byte[] bytes) {
-
-		HttpHeaders headers = httpRequest.getHeaders();
-		AuthUserDetails authUserDetails = getAuthUserDetails();
-		if (authUserDetails != null)
-			headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE,
-					AuthAdapterConstant.AUTH_COOOKIE_HEADER + authUserDetails.getToken());
+	private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
+		HttpHeaders headers = clientHttpResponse.getHeaders();
+		String responseToken = headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
+				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
+		getAuthUserDetails().setToken(responseToken);
 	}
 
-	/*
-	 * private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
-	 * HttpHeaders headers = clientHttpResponse.getHeaders(); String responseToken =
-	 * headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replaceAll(
-	 * AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
-	 * getAuthUserDetails().setToken(responseToken); }
-	 */
-
-	@Override
-	public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
-			ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
-		addHeadersToRequest(httpRequest, bytes);
-		ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
-		// getHeadersFromResponse(response);
-		return response;
-	}
 }
