@@ -19,10 +19,6 @@ import lombok.Data;
 @Configuration
 @PropertySource(value = "${ida.mapping.property.source}", factory = IDAMappingFactory.class)
 @ConfigurationProperties
-
-/**
- * Instantiates a new IDA mapping config.
- */
 @Data
 public class IDAMappingConfig implements MappingConfig {
 
