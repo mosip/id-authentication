@@ -32,8 +32,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -57,7 +57,6 @@ import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.netty.handler.ssl.SslContext;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -111,7 +110,7 @@ public class RestHelperTest {
 		ReflectionTestUtils.setField(auditBuilder, "env", environment);
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
-		ReflectionTestUtils.setField(restHelper, "restTemplate", new RestTemplate());
+		ReflectionTestUtils.setField(restHelper, "webClient", WebClient.create());
 	}
 
 	/**
@@ -183,8 +182,7 @@ public class RestHelperTest {
 
 		Mono<AuditResponseDto> response = null;
 
-		response = ReflectionTestUtils.invokeMethod(restHelper, "request", restRequest,
-				ReflectionTestUtils.invokeMethod(restHelper, "getSslContext"));
+		response = ReflectionTestUtils.invokeMethod(restHelper, "request", restRequest);
 
 		assertTrue(response.block().isStatus());
 
@@ -203,8 +201,7 @@ public class RestHelperTest {
 
 		Mono<AuditResponseDto> response = null;
 		restRequest.setHeaders(null);
-		response = ReflectionTestUtils.invokeMethod(restHelper, "request", restRequest,
-				ReflectionTestUtils.invokeMethod(restHelper, "getSslContext"));
+		response = ReflectionTestUtils.invokeMethod(restHelper, "request", restRequest);
 
 		assertTrue(response.block().isStatus());
 
@@ -519,11 +516,6 @@ public class RestHelperTest {
 				AuditResponseDto.class);
 
 		restHelper.requestSync(restRequest);
-	}
-
-	@Test
-	public void testGetSslContext() {
-		assertTrue(ReflectionTestUtils.invokeMethod(restHelper, "getSslContext") instanceof SslContext);
 	}
 
 	@Test
