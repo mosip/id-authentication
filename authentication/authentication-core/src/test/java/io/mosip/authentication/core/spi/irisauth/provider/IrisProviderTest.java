@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.core.spi.provider.bio.IrisProvider;
+
 
 public class IrisProviderTest {
 	
