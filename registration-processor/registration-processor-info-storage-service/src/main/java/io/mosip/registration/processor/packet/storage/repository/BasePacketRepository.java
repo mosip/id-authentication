@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 
@@ -161,5 +162,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
 	public List<String> getRidByReferenceId(@Param("refId") String refId);
+	
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType")
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,@Param("requestType") String requestType);
 
 }

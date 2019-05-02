@@ -8,8 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.packet.dto.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -29,7 +31,8 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
-
+	@Autowired
+	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
@@ -218,5 +221,10 @@ public class PacketInfoDao {
 	 */
 	public List<String> getUINByRid(String rid) {
 		return demographicDedupeRepository.getUINByRid(rid);
+	}
+	
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String requestType) {
+		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType);
+		
 	}
 }

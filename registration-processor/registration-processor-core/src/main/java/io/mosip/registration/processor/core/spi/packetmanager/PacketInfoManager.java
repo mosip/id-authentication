@@ -4,6 +4,7 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 import java.util.List;
 
 import io.mosip.registration.processor.core.code.DedupeSourceName;
+import io.mosip.registration.processor.core.packet.dto.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -113,6 +114,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the UIN by rid
 	 */
 	public List<String> getUINByRid(String Rid);
+	
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String abisRefId,String requestType);
 
 
 }

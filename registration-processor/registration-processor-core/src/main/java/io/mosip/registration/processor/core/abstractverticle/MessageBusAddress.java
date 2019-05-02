@@ -134,5 +134,10 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress EXTERNAL_STAGE_BUS_IN = new MessageBusAddress("external-bus-in");
 
 	public static final MessageBusAddress EXTERNAL_STAGE_BUS_OUT = new MessageBusAddress("external-bus-out");
+	
+	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_IN = new MessageBusAddress("abis-middle-ware-bus-in");
+	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_OUT = new MessageBusAddress("abis-middle-ware-bus-out");
+
+
 
 }

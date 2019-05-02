@@ -2,6 +2,7 @@ package io.mosip.registration.processor.packet.storage.mapper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +14,11 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
@@ -175,5 +178,37 @@ public class PacketInfoMapper {
 	public static String getHMACHashCode(String value) {
 		return  CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
 		
+	}
+	
+	public static List<AbisRequestDto> convertAbisRequestEntityListToDto(List<AbisRequestEntity> abisRequestEntityList) {
+		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
+		for(AbisRequestEntity entity : abisRequestEntityList) {
+			abisRequestDtoList.add(convertAbisRequestEntityToDto(entity));
+		}
+		return abisRequestDtoList;
+	}
+	
+	public static AbisRequestDto convertAbisRequestEntityToDto(AbisRequestEntity entity) {
+		AbisRequestDto abisReqDto = new AbisRequestDto();
+		abisReqDto.setId(entity.getId().getId());
+		abisReqDto.setAbisAppCode(entity.getAbisAppCode());
+		abisReqDto.setBioRefId(entity.getBioRefId());
+		abisReqDto.setIsDeleted(entity.getIsDeleted());
+		abisReqDto.setCrBy(entity.getCrBy());
+
+		abisReqDto.setIsDeleted(entity.getIsDeleted());
+		abisReqDto.setLangCode(entity.getLangCode());
+		abisReqDto.setRefRegtrnId(entity.getRefRegtrnId());
+
+		abisReqDto.setReqBatchId(entity.getReqBatchId());
+		abisReqDto.setReqText(entity.getReqText());
+		abisReqDto.setRequestDtimes(entity.getRequestDtimes());
+		abisReqDto.setRequestType(entity.getRequestType());
+
+		abisReqDto.setStatusCode(entity.getStatusCode());
+		abisReqDto.setStatusComment(entity.getStatusComment());
+
+		return abisReqDto;
+
 	}
 }
