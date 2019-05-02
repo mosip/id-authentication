@@ -103,7 +103,7 @@ public class UinGeneratorRouter {
 		configureHealthCheckEndpoint(vertx, router, servletPath);
 
 		router.route(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/*").handler(
-				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH));
+				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH).setAlwaysAsyncFS(true).setAllowRootFileSystemAccess(true));
 		return router;
 	}
 

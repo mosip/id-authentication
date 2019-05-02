@@ -80,8 +80,14 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	@Override
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		SecretKey secretKey = keyGenerator.getSymmetricKey();
-		final byte[] encryptedData = encryptor.symmetricEncrypt(secretKey,
-				CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
+		final byte[] encryptedData;
+		if(cryptomanagerUtil.isValidReferenceId(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
+			encryptedData = encryptor.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptoRequestDto.getData()),CryptoUtil.decodeBase64(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt())));
+		}else {
+			encryptedData = encryptor.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
+		}
 		PublicKey publicKey = cryptomanagerUtil.getPublicKey(cryptoRequestDto);
 		final byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
@@ -107,9 +113,14 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 				encryptedHybridData.length);
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey = cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
-		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
+		final byte[] decryptedData;
+		if(cryptomanagerUtil.isValidReferenceId(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
+			decryptedData = decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData,CryptoUtil.decodeBase64(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt())));
+		}else {
+			decryptedData =  decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData);
+		}CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
 		cryptoResponseDto
-				.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
+				.setData(CryptoUtil.encodeBase64(decryptedData));
 		return cryptoResponseDto;
 	}
 
