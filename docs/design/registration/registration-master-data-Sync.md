@@ -72,13 +72,13 @@ The key **requirements** are
 
 MOSIP - Data Classification
 
-  Type of Master Data                                      Data Type
+  Type of Master                                            Data Type
   
   -------------------------------------------------------- -------------
   
   Country                                                  Master Data
   
-  Region                                                   Master Data
+  Region                                                    Master Data
   
   Province                                                 Master Data
   
