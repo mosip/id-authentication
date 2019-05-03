@@ -9,8 +9,8 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.11.0</version>
 	</parent>
-	<artifactId>staticpin-service</artifactId>
-	<name>staticpin-service</name>
+	<artifactId>authentication-otp-service</artifactId>
+	<name>authentication-otp-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,16 +31,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel.hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-vid</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pinvalidator</artifactId>
-			<version>${kernel.version}</version>
 		</dependency>
 		<!-- Postgres -->
 		<dependency>

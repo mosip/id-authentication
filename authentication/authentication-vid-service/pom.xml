@@ -9,28 +9,22 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>0.11.0</version>
 	</parent>
-	<artifactId>kyc-service</artifactId>
-	<name>kyc-service</name>
+	<artifactId>authentication-vid-service</artifactId>
+	<name>authentication-vid-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- Kernel Hibernate Impl -->
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel.hibernate.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
 			<version>${ida.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.authentication</groupId>
-			<artifactId>authentication-core</artifactId>
-			<version>${ida.version}</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-vid</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

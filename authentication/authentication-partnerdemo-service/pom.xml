@@ -9,7 +9,8 @@
 		<version>0.11.0</version>
 	</parent>
 
-	<artifactId>partnerdemo-service</artifactId>
+	<artifactId>authentication-partnerdemo-service</artifactId>
+	<name>authentication-partnerdemo-service</name>
 	<packaging>jar</packaging>
 
 	<repositories>
