@@ -1343,5 +1343,6 @@ public class RegistrationConstants {
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
 	public static String CANCEL_MSG = "CANCEL_LABEL";
-	
+	public static final String PUBLIC_KEY_REF_ID="packet-encryption-key"; 
+
 }

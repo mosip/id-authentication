@@ -67,7 +67,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
-			keyStore = policySyncDAO.findByMaxExpireTime();
+			 keyStore = policySyncDAO.getPublicKey(RegistrationConstants.PUBLIC_KEY_REF_ID);
 
 			if (keyStore != null) {
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
@@ -109,8 +109,8 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<String, String>();
-		requestParams.put("timeStamp", Instant.now().toString());
-		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
+		requestParams.put(RegistrationConstants.TIME_STAMP, Instant.now().toString());
+		requestParams.put(RegistrationConstants.REF_ID, getCenterId(getStationId(getMacAddress())));
 		try {
 			@SuppressWarnings("unchecked")
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
@@ -118,7 +118,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 			if (null != publicKeyResponse.getResponse() && !publicKeyResponse.getResponse().isEmpty()
 					&& publicKeyResponse.getResponse().size() > 0) {
-
+  
 				keyStore.setId(UUID.randomUUID().toString());
 				keyStore.setPublicKey(publicKeyResponse.getResponse().get("publicKey").toString().getBytes());
 				LocalDateTime issuedAt = DateUtils
@@ -129,6 +129,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
 				keyStore.setCreatedBy(getUserIdFromSession());
 				keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				keyStore.setRefId(RegistrationConstants.PUBLIC_KEY_REF_ID);
 				policySyncDAO.updatePolicy(keyStore);
 				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
@@ -167,7 +168,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 		try {
 
-			KeyStore keyStore = policySyncDAO.findByMaxExpireTime();
+			KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.PUBLIC_KEY_REF_ID);
 
 			if (keyStore != null) {
 				String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
