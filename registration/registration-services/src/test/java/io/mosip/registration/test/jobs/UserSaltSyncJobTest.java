@@ -28,9 +28,11 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.PublicKeySyncJob;
+import io.mosip.registration.jobs.impl.UserSaltSyncJob;
 import io.mosip.registration.service.PublicKeySync;
+import io.mosip.registration.service.UserSaltDetailsService;
 
-public class PublicKeySyncJobTest {
+public class UserSaltSyncJobTest {
 	@Mock
 	private ApplicationContext applicationContext;
 
@@ -53,13 +55,13 @@ public class PublicKeySyncJobTest {
 	JobDataMap jobDataMap;
 
 	@InjectMocks
-	PublicKeySyncJob publicKeySyncJob;
+	UserSaltSyncJob UserSaltSyncJob;
 
 	@Mock
 	BaseJob baseJob;
 
 	@Mock
-	PublicKeySync publicKeySyncService;
+	UserSaltDetailsService userSaltDetailSyncService;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -108,19 +110,19 @@ public class PublicKeySyncJobTest {
 		Mockito.when(jobDataMap.get(Mockito.any())).thenReturn(applicationContext);
 		Mockito.when(applicationContext.getBean(SyncManager.class)).thenReturn(syncManager);
 		Mockito.when(applicationContext.getBean(JobManager.class)).thenReturn(jobManager);
-		Mockito.when(applicationContext.getBean(PublicKeySync.class)).thenReturn(publicKeySyncService);
+		Mockito.when(applicationContext.getBean(UserSaltDetailsService.class)).thenReturn(userSaltDetailSyncService);
 
 		Mockito.when(jobManager.getChildJobs(Mockito.any())).thenReturn(jobMap);
 		Mockito.when(jobManager.getJobId(Mockito.any(JobExecutionContext.class))).thenReturn("1");
 
-		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(publicKeySyncJob);
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(UserSaltSyncJob);
 
-		Mockito.when(applicationContext.getBean(PublicKeySync.class)).thenReturn(publicKeySyncService);
+		Mockito.when(applicationContext.getBean(UserSaltDetailsService.class)).thenReturn(userSaltDetailSyncService);
 
-		Mockito.when(publicKeySyncService.getPublicKey(Mockito.anyString())).thenReturn(responseDTO);
+		Mockito.when(userSaltDetailSyncService.getUserSaltDetails(Mockito.anyString())).thenReturn(responseDTO);
 
-		publicKeySyncJob.executeInternal(context);
-		publicKeySyncJob.executeJob("User", "1");
+		UserSaltSyncJob.executeInternal(context);
+		UserSaltSyncJob.executeJob("User", "1");
 
 	}
 
@@ -133,7 +135,7 @@ public class PublicKeySyncJobTest {
 //				preRegistrationDataSyncJob.executeJob("User");
 //				
 		Mockito.when(context.getJobDetail()).thenThrow(NoSuchBeanDefinitionException.class);
-		publicKeySyncJob.executeInternal(context);
+		UserSaltSyncJob.executeInternal(context);
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -143,7 +145,7 @@ public class PublicKeySyncJobTest {
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 		Mockito.when(context.getJobDetail()).thenThrow(NullPointerException.class);
 
-		publicKeySyncJob.executeInternal(context);
+		UserSaltSyncJob.executeInternal(context);
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -166,7 +168,7 @@ public class PublicKeySyncJobTest {
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
 
-		publicKeySyncJob.executeChildJob("1", jobMap);
+		UserSaltSyncJob.executeChildJob("1", jobMap);
 
 	}
 }
