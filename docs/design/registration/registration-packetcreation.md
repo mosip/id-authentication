@@ -254,8 +254,9 @@ a.  Applicant
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
 
     b.  ID.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
-	
-					{
+    
+``` Sample ID Json.
+{
   "identity": {
     "IDSchemaVersion": 1.0,
     "UIN": 981576026435,
@@ -398,7 +399,7 @@ a.  Applicant
     }
   }
 }
-
+```
 3.  **RegistrationID.txt**
 
 4.  **HMAC File 1.txt**
@@ -406,8 +407,9 @@ a.  Applicant
 5.  **HMAC File 2.txt**
 
 6.  **Packet\_MetaInfo.json**
-	
-				{
+
+``` Sample Json File.
+{
   "identity" : {
     "biometric" : {
       "applicant" : {
@@ -734,7 +736,8 @@ a.  Applicant
     } ]
   }
 }
-	
+
+```
 
 7.  **Registration Officer Bio Image\[JPEG\]**
 
@@ -755,7 +758,7 @@ Validations:
 -   The packet structure should be validated.
 
 -   The packet name should be unique and the name of the packet
-    is\[RegistrationID+TimeStamp\[DDMMYYYYHHMMSSS\]\]
+    is[RegistrationID]
 
 **Class Diagram**
 	![Packet Creation Class Diagram](_images/_class_diagram/registration-packetcreation-classDiagram.png)
