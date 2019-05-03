@@ -505,7 +505,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			/* if there is no missing biometric, check for low quality of biometrics */
 			if (hasMissingBiometrics || hasLowBiometrics) {
 				hasBiometricException = true;
-				SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, hasBiometricException);
+				SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, hasBiometricException);
 			}
 		}
 

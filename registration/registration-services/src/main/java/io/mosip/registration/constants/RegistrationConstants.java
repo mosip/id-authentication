@@ -219,6 +219,7 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
 	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
+	public static final String IS_LOW_QUALITY_BIOMETRICS = "Low Quality Biometrics";
 
 	// Reasons for Exception
 	public static final String MISSING_BIOMETRICS = "Missing biometrics";
