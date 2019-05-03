@@ -25,7 +25,7 @@ import io.mosip.registration.service.PublicKeySync;
 @Component(value = "publicKeySyncJob")
 public class PublicKeySyncJob extends BaseJob {
 	/**
-	 * The masterSyncService
+	 * The publicKeySyncService
 	 */
 	@Autowired
 	private PublicKeySync publicKeySyncService;

@@ -45,7 +45,7 @@ public class PublicKeyGenerationUtil {
 				RegistrationConstants.APPLICATION_ID, "Generating RSA public key from encoded key");
 
 		return KeyFactory
-				.getInstance(String.valueOf(ApplicationContext.map().get(RegistrationConstants.ASYMMETRIC_ALG_NAME)))
+				.getInstance(RegistrationConstants.ASYMMETRIC_ALG_NAME)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(new String(encodedKey))));
 	}
 

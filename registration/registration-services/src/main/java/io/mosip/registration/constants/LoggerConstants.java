@@ -70,6 +70,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
 	public static final String LOG_REG_IRIS_FACADE = USER_REGISTRATION + "IRIS_FACADE";
 	public static final String LOG_REG_MASTER_SYNC = MASTER_SYNC + "MASTER_SYNC_CONTROLLER";
+	public static final String LOG_REG_USER_SALT_SYNC = "USER_SALT_SYNC";
 	public static final String LOG_REG_UIN_UPDATE = UIN_UPDATE + "UIN_UPDATE_CONTROLLER";
 	public static final String LOG_TEMPLATE_GENERATOR = PKT_CREATION + "TEMPLATE_GENERATOR";
 	public static final String LOG_REG_DOC_SCAN_CONTROLLER = USER_REGISTRATION + "DOCUMENT_SCAN_CONTROLLER";
@@ -128,6 +129,7 @@ public class LoggerConstants {
 	public static final String RESPONSE_SIGNATURE_VALIDATION = "RESPONSE_SIGNATURE_VALIDATION";
 	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
 	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
+    public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";   
 
 	// Util
 	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME

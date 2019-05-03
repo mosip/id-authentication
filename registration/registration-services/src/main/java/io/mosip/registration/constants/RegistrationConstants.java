@@ -797,7 +797,7 @@ public class RegistrationConstants {
 	public static final String DOC_SCANNER_ENABLED = "mosip.registration.document_scanner_enabled";
 	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity_class_name";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
-	public static final String ASYMMETRIC_ALG_NAME = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
+	public static final String ASYMMETRIC_ALG_NAME = "RSA";
 	public static final String CBEFF_UNQ_TAG = "mosip.registration.cbeff_only_unique_tags";
 	public static final String REG_PKT_SIZE = "mosip.registration.max_reg_packet_size";
 	public static final String LOGS_PATH = "mosip.registration.logs_path";
@@ -1344,5 +1344,5 @@ public class RegistrationConstants {
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
 	public static String CANCEL_MSG = "CANCEL_LABEL";
 	public static final String PUBLIC_KEY_REF_ID="packet-encryption-key"; 
-
+public static final String USER_DETAIL_SALT_SERVICE_NAME = "user_salt_details";
 }

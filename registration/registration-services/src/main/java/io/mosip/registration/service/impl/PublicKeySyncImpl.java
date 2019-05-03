@@ -30,6 +30,7 @@ import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.PublicKeySync;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
  * The Interface for Public Key service implementation.
@@ -126,45 +127,55 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 
 			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"Calling public key rest call.....");
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				LinkedHashMap<String, Object> publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+						.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, triggerPoint);
 
-			LinkedHashMap<String, Object> publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, triggerPoint);
+				if (null != publicKeyResponse && publicKeyResponse.size() > 0
+						&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-			if (null != publicKeyResponse && publicKeyResponse.size() > 0
-					&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+					LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeyResponse
+							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 
-				LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeyResponse
-						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+					KeyStore keyStore = new KeyStore();
 
-				KeyStore keyStore = new KeyStore();
+					keyStore.setId(UUID.randomUUID().toString());
+					keyStore.setPublicKey(responseMap.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
+					LocalDateTime issuedAt = DateUtils.parseToLocalDateTime(
+							responseMap.get(RegistrationConstants.PUBLIC_KEY_ISSUES_DATE).toString());
+					LocalDateTime expiryAt = DateUtils.parseToLocalDateTime(
+							responseMap.get(RegistrationConstants.PUBLIC_KEY_EXPIRE_DATE).toString());
+					keyStore.setValidFromDtimes(Timestamp.valueOf(issuedAt));
+					keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
+					keyStore.setCreatedBy(getUserIdFromSession());
+					keyStore.setRefId(RegistrationConstants.SIGNED_KEY);
+					keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+					policySyncDAO.updatePolicy(keyStore);
+					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+							null);
+					LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+							"Public key sync succesfull...");
+				} else {
 
-				keyStore.setId(UUID.randomUUID().toString());
-				keyStore.setPublicKey(responseMap.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
-				LocalDateTime issuedAt = DateUtils
-						.parseToLocalDateTime(responseMap.get(RegistrationConstants.PUBLIC_KEY_ISSUES_DATE).toString());
-				LocalDateTime expiryAt = DateUtils
-						.parseToLocalDateTime(responseMap.get(RegistrationConstants.PUBLIC_KEY_EXPIRE_DATE).toString());
-				keyStore.setValidFromDtimes(Timestamp.valueOf(issuedAt));
-				keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
-				keyStore.setCreatedBy(getUserIdFromSession());
-				keyStore.setRefId(RegistrationConstants.SIGNED_KEY);
-				keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				policySyncDAO.updatePolicy(keyStore);
-				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-				LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						"Public key sync succesfull...");
+					responseDTO = setErrorResponse(responseDTO,
+							(null != publicKeyResponse && publicKeyResponse.size() > 0)
+									? ((List<LinkedHashMap<String, String>>) publicKeyResponse
+											.get(RegistrationConstants.ERRORS)).get(0)
+													.get(RegistrationConstants.ERROR_MSG)
+									: "Public key Sync Restful service error",
+							null);
+					LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+							((null != publicKeyResponse && publicKeyResponse.size() > 0)
+									? ((List<LinkedHashMap<String, String>>) publicKeyResponse
+											.get(RegistrationConstants.ERRORS)).get(0)
+													.get(RegistrationConstants.ERROR_MSG)
+									: "Public key Sync Restful service error"));
+
+				}
 			} else {
-
-				responseDTO = setErrorResponse(responseDTO, (null != publicKeyResponse && publicKeyResponse.size() > 0)
-						? ((List<LinkedHashMap<String, String>>) publicKeyResponse.get(RegistrationConstants.ERRORS))
-								.get(0).get(RegistrationConstants.ERROR_MSG)
-						: "Public key Sync Restful service error", null);
-				LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						((null != publicKeyResponse && publicKeyResponse.size() > 0)
-								? ((List<LinkedHashMap<String, String>>) publicKeyResponse
-										.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
-								: "Public key Sync Restful service error"));
-
+				LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						"Unable to sync user salt data as there is no internet connection");
+				getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException reException) {
