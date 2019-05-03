@@ -278,6 +278,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
 
+			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 
 			  FilteredList<RegistrationApprovalDTO> filteredData = new FilteredList<>(oList, p -> true);
@@ -285,12 +286,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		        // 2. Set the filter Predicate whenever the filter changes.
 		        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
 		            filteredData.setPredicate(reg -> {
-		                // If filter text is empty, display all persons.
+		                // If filter text is empty, display all ID's.
 		                if (newValue == null || newValue.isEmpty()) {
 		                    return true;
 		                }
 		                
-		                // Compare first name and last name of every person with filter text.
+		                // Compare every ID with filter text.
 		                String lowerCaseFilter = newValue.toLowerCase();
 		                
 		                if (reg.getId().contains(lowerCaseFilter)) {
