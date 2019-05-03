@@ -3,11 +3,9 @@ package io.mosip.registration.tpm.asymmetric;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.LoggerConstants;
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.tpm.config.TPMLogger;
 import io.mosip.registration.tpm.constants.Constants;
 
 import tss.Tpm;
@@ -30,9 +28,9 @@ import tss.tpm.TPM_RH;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public abstract class AsymmetricKeyCreation {
+public class AsymmetricKeyCreationService {
 
-	private static final Logger LOGGER = AppConfig.getLogger(AsymmetricKeyCreation.class);
+	private static final Logger LOGGER = TPMLogger.getLogger(AsymmetricKeyCreationService.class);
 
 	/**
 	 * Creates the asymmetric key
@@ -41,10 +39,10 @@ public abstract class AsymmetricKeyCreation {
 	 *            the instance of {@link Tpm}
 	 * @return the {@link TPM_HANDLE} of the asymmetric key
 	 */
-	protected TPM_HANDLE createPersistentKey(Tpm tpm) {
+	public TPM_HANDLE createPersistentKey(Tpm tpm) {
 		try {
-			LOGGER.info(LoggerConstants.TPM_ASYM_KEY_CREATION, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Completed reading the data from file");
+			LOGGER.info(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+					"Completed reading the data from file");
 
 			LocalDateTime localDateTime = LocalDateTime.now();
 			// This policy is a "standard" policy that is used with vendor-provided
@@ -74,14 +72,13 @@ public abstract class AsymmetricKeyCreation {
 
 			long secondsTaken = localDateTime.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
-			LOGGER.info(LoggerConstants.TPM_ASYM_KEY_CREATION, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.info(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
 					String.format("Completed Asymmetric Key Creation using tpm. Time taken is %s",
 							String.valueOf(secondsTaken)));
 
 			return rsaSrk.handle;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException("TPM-AKC-001", runtimeException.getMessage(), runtimeException);
+			throw new BaseUncheckedException("TPM-AKC-001", runtimeException.getMessage(), runtimeException);
 		}
 	}
 

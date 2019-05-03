@@ -1,4 +1,4 @@
-package io.mosip.registration.tpm;
+package io.mosip.registration.tpm.initialize;
 
 import java.io.IOException;
 
@@ -31,27 +31,19 @@ public class TPMInitialization {
 	 * @return the instance of {@link Tpm}
 	 */
 	public static Tpm getTPMInstance() {
-		try {
+		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+				"Getting the instance of Platform TPM");
+
+		if (tpm == null) {
 			LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-					"Getting the instance of Platform TPM");
+					"Instantiating the instance of Platform TPM");
 
-			if (tpm == null) {
-				LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-						"Instantiating the instance of Platform TPM");
-
-				tpm = TpmFactory.platformTpm();
-			}
-
-			LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-					"Completed getting the instance of Platform TPM");
-			return tpm;
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-					String.format("Exception while getting the instance of Platform TPM --> %s",
-							ExceptionUtils.getStackTrace(runtimeException)));
-
-			throw runtimeException;
+			tpm = TpmFactory.platformTpm();
 		}
+
+		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+				"Completed getting the instance of Platform TPM");
+		return tpm;
 	}
 
 	/**
