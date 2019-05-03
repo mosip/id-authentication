@@ -21,14 +21,20 @@ The key **requirements** are
 
 -   Packet should have the detail of:
 
-    -   Applicant -- Demo and Bio-metric
+    -   Applicant -- Demo and Bio-metric 
     -   Introducer -- Demo and Bio-metric
-    -   HOF -- Demo and Bio-metric
     -   Officer / Supervisor -- Bio-Metric
     -   Registration Id.
     -   Packet Metadata.
-    -   Registration Acknowledgement form.
-
+    -   Hash sequnece 1 
+    -   Hash sequence 2
+    
+- Bio-metric will be stored as CBEFF xml format inside the packet. 
+	- If the applicant bio-metric captured it will be 
+	  saved into the file as name as "application_CBEFF.xml"
+	- If the introducer bio-metric captured it will be 
+	  save into the file as name as "authenticaiton_CBEFF.xml"
+	
 -   Registration packet should be stored in encrypted format in the local
     hard disk.
 
@@ -153,7 +159,7 @@ provided below:
 
 -   Session Key Encryption:
 
-    -   Session key generation is **[Center ID + Dogle Id]**
+    -   Session key generation is **random for each packet**
         should not exceed 32 characters.
 
     -   Pass the created Zip object **[in-memory]** through the AES-256
@@ -236,18 +242,16 @@ Folder level Data:
 a.  Applicant
 
     -   applicant_cbeff.xml
-	-   introducer_cbeff.xml
+    -   authentication_cbeff.xml
 2.  **Demographic**
 
     a.  Applicant
 
         -   ID.JSON
-		-   ProofOfIdentity.docx
-        -   ProofOfResidenty.docx
-        -   ProofOfAddress.docx
-        -   ApplicantPhoto.jpg/png
+	-   ProofOfIdentity.pdf/jpg
+        -   ProofOfResidenty.pdf/jpg
+        -   ProofOfAddress.pdf/jpg
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
-        -   Registration Acknowledgement.jpg
 
     b.  ID.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
 	
@@ -397,9 +401,11 @@ a.  Applicant
 
 3.  **RegistrationID.txt**
 
-4.  **HMAC File.txt**
+4.  **HMAC File 1.txt**
 
-5.  **Packet\_MetaInfo.json**
+5.  **HMAC File 2.txt**
+
+6.  **Packet\_MetaInfo.json**
 	
 				{
   "identity" : {
@@ -730,9 +736,11 @@ a.  Applicant
 }
 	
 
-6.  **Registration Officer Bio Image\[JPEG\]**
+7.  **Registration Officer Bio Image\[JPEG\]**
 
-7.  **Registration Supervisor Bio Image\[JPEG\]**
+8.  **Registration Supervisor Bio Image\[JPEG\]**
+
+9.  **Exceptionphoto[JPEG]**
 
 **Packet DTO Structure**
     ![Packet DTO Structure](_images/PacketCreation.jpg)
