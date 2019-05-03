@@ -10,6 +10,9 @@ Action' and 'Re-register' packets. Once the user select the packet and
 act on it then capture the authentication and save the information.
 Unauthenticated information should not be captured.
 
+**Legendery **
+-  user --> supervisior
+
 The **target users** are
 
 -   Supervisor
@@ -25,33 +28,16 @@ Pending Approval:
 
 -   User selects a Registration ID to view registration details.
 
--   User selects 'Approve'. Alternatively, user selects 'Reject' or 'On
-    Hold' along with the reason for rejection or holding.
+-   User selects 'Approve'. Alternatively, user selects 'Reject'
+    along with the reason for rejection.
 
--   User repeats steps 3-4 for as many packets as desired.
-
--   User clicks on 'Authenticate'.
-
--   User provides any one biometric - fingerprint, iris or face.
-
--   User views confirmation of successful approval.
-
-Pending Action:
-
--   User views the list of Registration IDs which have been placed on
-    hold.
-
--   User selects a Registration ID to view registration details and the
-    reason for placing on hold.
-
--   User selects 'Approve'. Alternatively, user selects 'Reject' along
-    with the reason for rejection.
-
--   User repeats steps 3-4 for as many packets as desired.
+-   User repeats steps 3-4 for as many packets as desired or select multiple
+    at single shot and provides the approval.
 
 -   User clicks on 'Authenticate'.
 
--   User provides any one biometric - fingerprint, iris or face.
+-   User provides authntication input any one of authenitcation types 
+    [userid/password, userid/otp ,fingerprint, iris or face].
 
 -   User views confirmation of successful approval.
 
@@ -66,12 +52,12 @@ Re-Register:
 -   Supervisor informs the individual by phone, email, physical mail or
     physical visit to re-register. This is an offline process.
 
--   Supervisor clicks on 'Informed'.
+-   Supervisor clicks on '**Informed**'.
 
 -   If unable to contact the **individual**, Supervisor clicks on
-    '**Can't inform**\'.
+    '**Can't inform**'.
 
-    -   On click of 'Informed' or 'Can't Inform\' system shows the
+    -   On click of 'Informed' or 'Can't Inform' system shows the
         selected option. Retain the selected button in highlighted
         mode - to be confirmed with UX team. User can change the
         selection any number of times before authentication.
@@ -81,11 +67,11 @@ Re-Register:
 
 -   Click on 'Authenticate'.
 
-    -   In the resulting pop-up, select the type of biometric the user
-        is providing for authentication - fingerprint, iris or face.
-        Further select the specific finger or iris being provided.
-
-    -   Scan the selected biometric.
+    -   In the resulting, pop-up will be displayed based on the confgiured 
+        authentication types for the screen level - password, otp, fingerprint, iris or 
+        face.
+        
+    -   If the configured one as bio-metric then scan the selected biometric.
 
     -   Authenticate with locally stored biometric and display the
         result.
@@ -94,7 +80,7 @@ Re-Register:
             removed from the '-Re-register' list.
 
         -   On unsuccessful authentication, the user can retry his
-            authentication with the same or a different biometric.
+            authentication.
 
 The key **non-functional requirements** are
 
