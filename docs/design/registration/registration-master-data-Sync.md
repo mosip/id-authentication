@@ -189,4 +189,4 @@ The key **non-functional requirements** are
 
 **Class and Sequence Diagram :**
 
-![Master Data Sync Class and Sequence Diagram](_images/MasterSync .jpg)
+![Master Data Sync Class and Sequence Diagram](_images/MasterSync.jpg)
