@@ -12,6 +12,8 @@ create table reg.machine_master (
 	mac_address character varying (64) not null,
 	serial_num 	character varying (64) not null,
 	ip_address 	character varying (17) ,           -- ip address, usually dynamic, so optional.
+	puplic_key 	clob , 
+	key_index 	character varying (128) , 
 	
 	validity_end_dtimes timestamp, 
 

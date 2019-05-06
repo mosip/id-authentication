@@ -18,6 +18,8 @@ create table master.machine_master_h (
 	mac_address character varying (64) not null,
 	serial_num 	character varying (64) not null,
 	ip_address 	character varying (17) ,           -- ip address, usually dynamic, so optional.
+	puplic_key 	bytea , 
+	key_index 	character varying (128) ,
 	
 	validity_end_dtimes timestamp,
 
