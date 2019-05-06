@@ -9,6 +9,17 @@ export class MasterdataComponent implements OnInit {
 
   constructor() { }
 
+  data = [
+    {
+      name: 'Agnitra',
+      age: 20
+    },
+    {
+      name: 'ajay',
+      age: 20
+    }
+  ];
+
   ngOnInit() {
   }
 

@@ -1,5 +1,5 @@
 <div style="display: flex;">
-  <div *ngIf="display">
+  <div id="sidebar">
       <mat-card class="sidebar">
           <ul>
             <li *ngFor="let item of menuItems; let i = index;" [ngClass]="selectedItem === i ? 'selected' : ''" (click)="changeSelection(i)">

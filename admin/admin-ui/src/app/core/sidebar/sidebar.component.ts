@@ -9,7 +9,7 @@ import * as appConstants from '../../app.constants';
 })
 export class SidebarComponent implements OnInit {
 
-  display = true;
+  display = false;
   selectedItem = 0;
   menuItems = [];
 
@@ -21,10 +21,12 @@ export class SidebarComponent implements OnInit {
 
   showMenu() {
     this.display = true;
+    document.getElementById('sidebar').style.display = 'block';
   }
 
   hideMenu() {
     this.display = false;
+    document.getElementById('sidebar').style.display = 'none';
   }
 
   changeSelection(index: number) {
