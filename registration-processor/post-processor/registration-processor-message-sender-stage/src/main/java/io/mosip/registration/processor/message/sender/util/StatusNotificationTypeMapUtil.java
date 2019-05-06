@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
+import io.mosip.registration.processor.message.sender.utility.NotificationStageStatus;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 
@@ -18,11 +21,11 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 public class StatusNotificationTypeMapUtil {
 
 	/** The status map. */
-	private static EnumMap<RegistrationStatusCode, NotificationTemplateType> statusMap = new EnumMap<>(
-			RegistrationStatusCode.class);
+	private static EnumMap<NotificationStageStatus, NotificationTemplateType> statusMap = new EnumMap<>(
+			NotificationStageStatus.class);
 
 	/** The unmodifiable map. */
-	private static Map<RegistrationStatusCode, NotificationTemplateType> unmodifiableMap = Collections
+	private static Map<NotificationStageStatus, NotificationTemplateType> unmodifiableMap = Collections
 			.unmodifiableMap(statusMap);
 
 	/**
@@ -37,15 +40,15 @@ public class StatusNotificationTypeMapUtil {
 	 *
 	 * @return the map
 	 */
-	private static Map<RegistrationStatusCode, NotificationTemplateType> statusMapper() {
+	private static Map<NotificationStageStatus, NotificationTemplateType> statusMapper() {
 
-		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
-		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
-		statusMap.put(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
-		statusMap.put(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS, NotificationTemplateType.UIN_CREATED);
-		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, NotificationTemplateType.DUPLICATE_UIN);
-		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_FAILED, NotificationTemplateType.DUPLICATE_UIN);
-		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS, NotificationTemplateType.UIN_UPDATE);
+		statusMap.put(NotificationStageStatus.OSI_VALIDATE_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
+		statusMap.put(NotificationStageStatus.VALIDATE_PACKET_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
+		statusMap.put(NotificationStageStatus.MANUAL_VARIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
+		statusMap.put(NotificationStageStatus.UIN_GENERATOR_SUCCESS, NotificationTemplateType.UIN_CREATED);
+		statusMap.put(NotificationStageStatus.BIOGRAPHIC_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
+		statusMap.put(NotificationStageStatus.DEMOGRAPHIC_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
+		statusMap.put(NotificationStageStatus.UIN_GENERATOR_PROCESSED, NotificationTemplateType.UIN_UPDATE);
 
 		return unmodifiableMap;
 	}
@@ -58,7 +61,7 @@ public class StatusNotificationTypeMapUtil {
 	 */
 	public NotificationTemplateType getTemplateType(String code) {
 		NotificationTemplateType type = null;
-		Map<RegistrationStatusCode, NotificationTemplateType> map = StatusNotificationTypeMapUtil.statusMapper();
+		Map<NotificationStageStatus, NotificationTemplateType> map = StatusNotificationTypeMapUtil.statusMapper();
 		type = map.get(RegistrationStatusCode.valueOf(code));
 		return type;
 	}

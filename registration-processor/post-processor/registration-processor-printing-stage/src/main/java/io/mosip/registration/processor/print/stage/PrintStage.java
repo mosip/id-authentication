@@ -231,13 +231,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 			}
 
@@ -406,7 +404,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
 				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, uin, status);
 				if (!responseMessageDto.getIsValid()) {
-					this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
+					this.setResponse(ctx, RegistrationStatusCode.INPROGRESS);
 				} else {
 					this.setResponse(ctx, "Caught internal error in messageDto");
 				}
@@ -437,13 +435,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationId, "ConsumerStage::process()::exit");
 			if (status.equals(SUCCESS)) {
 				description = "Print and Post Completed for the regId : " + registrationId;
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			} else if (status.equals(RESEND)) {
 				description = "Re-Send uin card with regId " + registrationId + " for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);

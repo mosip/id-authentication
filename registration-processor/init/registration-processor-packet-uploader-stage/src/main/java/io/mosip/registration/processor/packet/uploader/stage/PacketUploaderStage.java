@@ -137,12 +137,12 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				description = "Failure in uploading the packet to Packet Store" + registrationId;
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+				dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 				dto.setUpdatedBy(USER);
 			}
 		} catch (TablenotAccessibleException e) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING.toString());
+			dto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
@@ -156,7 +156,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					+ "::" + e.getMessage();
 
 		} catch (PacketNotFoundException ex) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getMessage());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_NOT_FOUND_EXCEPTION));
@@ -167,7 +167,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ExceptionUtils.getStackTrace(ex));
 			description = "Packet not found in DFS for registrationId " + registrationId + "::" + ex.getMessage();
 		} catch (FSAdapterException e) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_REPROCESSING.toString());
+			dto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
@@ -178,7 +178,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 			description = "DFS not accessible for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
@@ -191,7 +191,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					+ e.getMessage();
 
 		} catch (Exception e) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(ExceptionUtils.getMessage(e));
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
@@ -266,11 +266,11 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		if (hdfsAdapter.isPacketPresent(registrationId)) {
 
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-			fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
+//			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
+//			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+//			fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
 
-			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+			entry.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 			entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
 			entry.setUpdatedBy(USER);
 			object.setInternalError(false);

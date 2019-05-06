@@ -155,13 +155,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx,
 						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), listObj),
+								RegistrationStatusCode.INPROGRESS.toString(), listObj),
 						APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {
 				this.setResponse(ctx,
 						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString(), listObj),
+								RegistrationStatusCode.FAILED.toString(), listObj),
 						APPLICATION_JSON);
 			}
 		} catch (IOException e) {

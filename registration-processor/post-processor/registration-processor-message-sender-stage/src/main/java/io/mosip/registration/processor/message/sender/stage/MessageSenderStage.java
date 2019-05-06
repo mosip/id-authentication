@@ -186,11 +186,13 @@ public class MessageSenderStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
+		String status;
 		String id = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
-
+		status=registrationStatusDto.getLatestTransactionTypeCode() +"_"+ registrationStatusDto.getLatestTransactionStatusCode();
+		
 		try {
 			InputStream packetMetaInfoStream = adapter.getFile(id, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
@@ -199,7 +201,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
-			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
+			NotificationTemplateType type = map.getTemplateType(status);
 			if (type != null) {
 				setTemplateAndSubject(type, regType);
 			}
@@ -229,7 +231,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, description);
 
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
+	
 			registrationStatusDto.setStatusComment(description);
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),

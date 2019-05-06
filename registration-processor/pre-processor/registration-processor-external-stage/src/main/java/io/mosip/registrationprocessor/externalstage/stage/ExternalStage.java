@@ -125,7 +125,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_SUCCESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 				object.setIsValid(true);
 				isTransactionSuccessful = true;
 				description = PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getMessage() + " -- " + registrationId;
@@ -134,14 +134,14 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED));
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_FAILURE);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_FAILURE.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				object.setIsValid(false);
 				description = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + description;
 				code = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getCode();
 			}
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			object.setInternalError(true);
@@ -160,7 +160,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_FAILURE.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			}
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
@@ -178,6 +178,8 @@ public class ExternalStage extends MosipVerticleAPIManager {
 		}
 
 		regProcLogger.debug("", "", "sent to next stage --> ", object.toString());
+		object.setIsValid(true);
+		object.setInternalError(false);
 		return object;
 	}
 

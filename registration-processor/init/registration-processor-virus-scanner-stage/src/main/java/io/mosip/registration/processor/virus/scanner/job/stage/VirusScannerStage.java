@@ -174,7 +174,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 		} catch (VirusScanFailedException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(VIRUS_SCAN_FAILED);
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
@@ -186,7 +186,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_REPROCESSING.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_PSJ_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -198,7 +198,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			object.setIsValid(false);
 			object.setInternalError(Boolean.TRUE);
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
@@ -213,7 +213,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILURE);
 			registrationStatusDto.setUpdatedBy(USER);
 
@@ -223,7 +223,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
 					+ e.getErrorText();
 		} catch (Exception ex) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
@@ -263,7 +263,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private void processVirusScanFailure(InternalRegistrationStatusDto registrationStatusDto) {
 		String registrationId = registrationStatusDto.getRegistrationId();
 
-		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+		registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 		registrationStatusDto.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_FAILURE);
 		registrationStatusDto.setUpdatedBy(USER);
 		isTransactionSuccessful = false;
@@ -282,7 +282,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private void sendToPacketUploaderStage(InternalRegistrationStatusDto entry) {
 		String registrationId = entry.getRegistrationId();
 
-		entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL.toString());
+		entry.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
 		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESSFUL);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;

@@ -44,7 +44,7 @@ public class RegistrationStatusDaoTest {
 	@Test
 	public void getEnrolmentStatusByStatusCodeTest() {
 		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
-				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.FAILED.toString());
 		assertEquals(list, rEntityList);
 	}
 
