@@ -667,11 +667,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (null != getBiometricDTOFromSession()) {
 				loadImage(getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO());
 			}
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
-			if (null != getRegistrationDTOFromSession()) {
+		} else if (null != getRegistrationDTOFromSession() && getRegistrationDTOFromSession().isUpdateUINChild()) {		
 				loadImage(getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-						.getFingerprintDetailsDTO());
-			}
+						.getFingerprintDetailsDTO());			
 		} else {
 			if (null != getRegistrationDTOFromSession()) {
 				loadImage(getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
