@@ -125,7 +125,7 @@ public class IdRequestValidatorTest {
 		status.add(env.getProperty("mosip.idrepo.status.registered"));
 		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
-		ReflectionTestUtils.setField(validator, "status", status);
+		ReflectionTestUtils.setField(validator, "uinStatus", status);
 		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "allowedTypes", allowedTypes);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
