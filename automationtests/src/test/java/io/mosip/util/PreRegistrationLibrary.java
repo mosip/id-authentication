@@ -992,7 +992,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method For Fetching the Registration center details
 	 * 
 	 */
+	
 	public Response FetchCentre() {
+
+		String regCenterId = randomRegistrationCenterId();		
+		
+		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
+		
+		return response;
+	}
+	/*public Response FetchCentre() {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		String regCenterId = randomRegistrationCenterId();
@@ -1016,7 +1026,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			e.printStackTrace();
 		}
 		return response;
-	}
+	}*/
 
 	public Response fetchCentreWithCerterId(String regCenterId) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";

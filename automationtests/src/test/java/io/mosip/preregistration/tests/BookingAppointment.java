@@ -96,7 +96,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -136,6 +136,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+		System.out.println("Book App Res:"+bookAppointmentResponse.asString());
 
 		switch (val) {
 
@@ -146,6 +147,14 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+			
+			
+		case "ReBookingAppointment_smoke":
+			fetchCenter = preRegLib.FetchCentre();
+			Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
+			System.out.println("Rebook app::"+rebookAppointmentRes.asString());
+			break;
+			
 		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
 			String preRegBookingAppointmentURI = preReg_URI + preId;
 

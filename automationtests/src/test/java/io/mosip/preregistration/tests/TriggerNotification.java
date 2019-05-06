@@ -93,7 +93,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("SmokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -137,30 +137,27 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			// status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse,
 			// outerKeys, innerKeys);
 
-		} else {
-
-			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/TriggerNotificationInvalidId_Alphabets";
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			File file = new File(configPath + "/AadhaarCard_POA.pdf");
-			String value = null;
-			JSONObject object1 = null;
-			for (Object key : actualRequest.keySet()) {
-				if (key.equals("request")) {
-					object1 = (JSONObject) actualRequest.get(key);
-					value = (String) object1.get(langCodeKey);
-					// object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
-					// request.replace(key, object);
-					object1.remove(langCodeKey);
-				}
-			}
-
-			Object response = applicationLibrary.putFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
-					value);
-
-			System.out.println("Response::" + response.toString());
-
 		}
+		/*
+		 * else { try {
+		 * 
+		 * 
+		 * testSuite = "DocumentUpload/DocumentUpload_smoke";
+		 * 
+		 * String configPath = "src/test/resources/" + folder + "/" + testSuite; String
+		 * fileName = "ProofOfAddress.PDF"; File file = new File(configPath +
+		 * "/"+fileName);
+		 * 
+		 * Actualresponse =applicationLibrary.putFileAndJson(preReg_URI, actualRequest,
+		 * file);
+		 * 
+		 * 
+		 * 
+		 * } catch (Exception e) { logger.info(e); }
+		 * 
+		 * status = AssertResponses.assertResponses(Actualresponse, Expectedresponse,
+		 * outerKeys, innerKeys); }
+		 */
 
 		if (status) {
 			finalStatus = "Pass";
