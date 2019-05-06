@@ -2,6 +2,7 @@ package io.mosip.registration.processor.abis.dto;
 
 /**
  * The Class AbisIdentifyRequestDto.
+ * @author M1048860 Kiran Raj
  */
 public class AbisIdentifyRequestDto {
 

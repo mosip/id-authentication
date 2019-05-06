@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 /**
  * The Class CandidateListDto.
+ * @author M1048860 Kiran Raj
  */
 public class CandidateListDto {
 	

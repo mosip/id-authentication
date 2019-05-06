@@ -24,6 +24,8 @@ import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
+import io.mosip.registration.processor.abis.dto.AbisPingRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisPingResponseDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.service.AbisService;
@@ -38,6 +40,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
  * The Class AbisServiceImpl.
+ * @author M1048860 Kiran Raj
  */
 @Service
 public class AbisServiceImpl implements AbisService {
@@ -179,6 +182,8 @@ public class AbisServiceImpl implements AbisService {
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					return dBuilder.parse(is);
 				}
+			}else {
+				//bio request url send no data
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -290,5 +295,11 @@ public class AbisServiceImpl implements AbisService {
 	@Override
 	public void delete() {
 		// Delete should be implemented in future
+	}
+	
+	@Override
+	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
+		// Ping should be implemented in future
+		return null;
 	}
 }
