@@ -131,6 +131,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_GetPreRegistrationConfigData;
 	private static String preReg_BookingAppointmenturi;
 	private static String uiConfigParams;
+	private static String preReg_syncAvailability;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -864,6 +865,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String auth_token = cookieValue;
 		return auth_token;
 	}
+	public Response syncAvailability()
+	{
+		return response = applnLib.get_RequestSync(preReg_syncAvailability);
+	}
 
 	/*
 	 * Generic method to get the PreRegistration Data
@@ -1162,9 +1167,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
+				/*JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");
+				json.get("preRegistrationId");*/
 				// object.put("preRegistrationId", preID);
 				JSONObject innerData = new JSONObject();
 
@@ -1183,7 +1188,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
-				request.replace(key, objArr);
+				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
 
 			}
@@ -1927,6 +1932,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_RetriveBookedPreIdsByRegId = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
 		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
+		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
 	}
 
 }

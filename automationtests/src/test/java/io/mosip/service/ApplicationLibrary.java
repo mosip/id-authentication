@@ -128,6 +128,11 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.put_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
 
 	}
+	public Response get_RequestSync(String Resource_URI) {
+		return commonLibrary.get_RequestSync(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
+
 	
 	
 	

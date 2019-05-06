@@ -1,11 +1,13 @@
 {
-  "id": "mosip.pre-registration.booking.book",
-  "ver": "1.0",
-  "reqTime": "2019-01-29T11:43:33.166Z",
-  "request": {
-    "registartion_center_id": "10009",
-    "pre_registration_ids": [
-      "35874620784021","4534535345","1211323"
-    ]
-  }
+
+ "RetrivePreIdByRegCenterIdByPassingInvalidFromDate_InvalidDay":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_Alphabets":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_AlphaNumeric":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_AlphaNumericAndSpecialCharacters":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_EmptyValue":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_GreaterThanMaxLength":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_NonExisting":"",
+ "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId_Spaces":""
+
+     
 }

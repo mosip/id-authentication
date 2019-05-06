@@ -1,0 +1,80 @@
+{
+  "identity" : {
+    "CNIENumber" : "789545456789",
+    "gender" : [ {
+      "language" : "fra",
+      "value" : "male"
+    }, {
+      "language" : "ara",
+      "value" : "الذكر"
+    } ],
+    "city" : [ {
+      "language" : "fra",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ara",
+      "value" : "بنغالور"
+    } ],
+    "postalCode" : "ASG213",
+    "localAdministrativeAuthority" : [ {
+      "language" : "fra",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ara",
+      "value" : "بنغالور"
+    } ],
+    "fullName" : [ {
+      "language" : "fra",
+      "value" : "Ashish Rastogi"
+    }, {
+      "language" : "ara",
+      "value" : "Ashish Rastogi"
+    } ],
+    "dateOfBirth" : "1995/03/24",
+    "IDSchemaVersion" : 1.0,
+    "province" : [ {
+      "language" : "fra",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ara",
+      "value" : "بنغالور"
+    } ],
+    "phone" : "9480548558",
+    "addressLine1" : [ {
+      "language" : "fra",
+      "value" : "c-63 South Extension Part-2 New Delhi"
+    }, {
+      "language" : "ara",
+      "value" : "c-63 South Extension Part-2 New Delhi"
+    } ],
+    "addressLine2" : [ {
+      "language" : "fra",
+      "value" : "Jammu"
+    }, {
+      "language" : "ara",
+      "value" : "جامو"
+    } ],
+    "residenceStatus" : [ {
+      "language" : "fra",
+      "value" : "national"
+    }, {
+      "language" : "ara",
+      "value" : "national"
+    } ],
+    "addressLine3" : [ {
+      "language" : "fra",
+      "value" : "Kashmir"
+    }, {
+      "language" : "ara",
+      "value" : "كشمير"
+    } ],
+    "region" : [ {
+      "language" : "fra",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ara",
+      "value" : "BLR"
+    } ],
+    "email" : "Ashish.Rastogi@gmail.com"
+  }
+}

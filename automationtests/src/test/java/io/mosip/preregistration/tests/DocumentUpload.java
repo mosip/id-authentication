@@ -40,7 +40,8 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Document Upload related Positive and Negative test cases
+ * Test Class to perform Document Upload related Positive and Negative test
+ * cases
  * 
  * @author Lavanya R
  * @since 1.0.0
@@ -48,11 +49,11 @@ import io.restassured.response.Response;
 
 public class DocumentUpload extends BaseTestCase implements ITest {
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
 	static String folder = "preReg";
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
+	static String preId = "";
+	static SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
 	boolean status = false;
@@ -63,23 +64,24 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI ;
+	private static String preReg_URI;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
-	static String configPaths="";
+	static String configPaths = "";
 	static String folderPath = "preReg/DocumentUpload";
 	static String outputFile = "DocumentUploadOutput.json";
 	static String requestKeyFile = "DocumentUploadRequest.json";
-	String testParam=null;
+	String testParam = null;
 	boolean status_val = false;
-	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+
 	public DocumentUpload() {
 
 	}
-	
+
 	/**
 	 * Data Providers to read the input json files from the folders
+	 * 
 	 * @param context
 	 * @return input request file
 	 * @throws JsonParseException
@@ -88,113 +90,122 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	 * @throws ParseException
 	 */
 	@DataProvider(name = "documentUpload")
-	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		  testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+	public Object[][] readData(ITestContext context)
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
+		testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
-			
-		case "regression":	
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"regression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
 		default:
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-		
+
 	}
-	
+
 	/*
-	 * Given Document Upload valid request when I Send POST request to /pre-registration/v1.0/document/documents
-	 * Then I should get success response with elements defined as per specifications
-	 * Given Invalid request when I send POST request to /pre-registration/v1.0/document/documents
-	 * Then I should get Error response along with Error Code and Error messages as per Specification
+	 * Given Document Upload valid request when I Send POST request to
+	 * /pre-registration/v1.0/document/documents Then I should get success response
+	 * with elements defined as per specifications Given Invalid request when I send
+	 * POST request to /pre-registration/v1.0/document/documents Then I should get
+	 * Error response along with Error Code and Error messages as per Specification
 	 * 
 	 */
-	
+
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "documentUpload")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
-		
-		String testCase = object.get("testCaseName").toString();
+
+		// String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
-		if(testCase.contains("smoke"))
-		{
-			//Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
-			
-			
-			String preRegIdCreateAPI=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			//Document Upload for created application
-			//Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-			
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preRegIdCreateAPI); 
-		
-			System.out.println("Doc Upload:"+docUploadResponse.asString());
-			
-			//PreId of Uploaded document
-			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			
+
+		// Creating the Pre-Registration Application
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+
+		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+
+		if (testCaseName.contains("smoke")) {
+			// Document Upload for created application
+			// Response docUploadResponse =
+			// preRegLib.documentUpload(createApplicationResponse);
+
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preRegIdCreateAPI);
+
+			System.out.println("Doc Upload:" + docUploadResponse.asString());
+
+			// PreId of Uploaded document
+			preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("documentId");
-		    preRegLib.compareValues(preId, preRegIdCreateAPI);
-			
+			preRegLib.compareValues(preId, preRegIdCreateAPI);
+
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
-			
+
+		} else {
+			try {
+
+				if (testCaseName.contains("DocumentUploadInvalidRequesttime")) {
+					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
+					JSONObject parm = preRegLib.getRequest(testSuite);
+					parm.put("preRegistrationId", preRegIdCreateAPI);
+
+					testSuite = "DocumentUpload/DocumentUpload_smoke";
+					String configPath = "src/test/resources/" + folder + "/" + testSuite;
+					File file = new File(configPath + "/AadhaarCard_POI.pdf");
+					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+
+					System.out.println("Actual response::" + Actualresponse.asString());
+				} else {
+					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
+					JSONObject parm = preRegLib.getRequest(testSuite);
+					parm.put("preRegistrationId", preRegIdCreateAPI);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
+					testSuite = "DocumentUpload/DocumentUpload_smoke";
+					String configPath = "src/test/resources/" + folder + "/" + testSuite;
+					File file = new File(configPath + "/AadhaarCard_POI.pdf");
+					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					System.out.println("Actual responseeee::" + Actualresponse.asString());
+				}
+
+			} catch (Exception e) {
+				logger.info(e);
 			}
-		else
-	{
-		try 
-		{
-		
-			
-			testSuite = "DocumentUpload/DocumentUpload_smoke";
-			
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			String fileName = "AadhaarCard_POA.pdf";
-			File file = new File(configPath + "/"+fileName);
-			
-			Actualresponse =applicationLibrary.putFileAndJson(preReg_URI, actualRequest, file);
-			
-			
-			
-		} catch (Exception e) {
-			logger.info(e);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			innerKeys.add("documentId");
+
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
-				outerKeys.add("responsetime");
-				innerKeys.add("preRegistrationId");
-				innerKeys.add("documentId");
-	   
-				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);		
-			}
-		
+
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+
+		boolean setFinalStatus = false;
+
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
+
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-		
-		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
-		
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
-		
-		
+
 	}
+
 	/**
 	 * Writing output into configpath
+	 * 
 	 * @throws IOException
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
@@ -205,54 +216,57 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		
+
 		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
-		
+
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		
-		
+
 		String source = "src/test/resources/" + folderPath + "/";
 		CommonLibrary.backUpFiles(source, folderPath);
-		
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-		//preIds.add(preId);
+
+		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		// preIds.add(preId);
 	}
+
 	/**
 	 * Writing test case name into testng
+	 * 
 	 * @param result
 	 */
 	@AfterMethod(alwaysRun = true)
-    public void setResultTestName(ITestResult result) {
-          try {
-                Field method = TestResult.class.getDeclaredField("m_method");
-                method.setAccessible(true);
-                method.set(result, result.getMethod().clone());
-                BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-                Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-                f.setAccessible(true);
-                f.set(baseTestMethod, DocumentUpload.testCaseName);
-          } catch (Exception e) {
-                Reporter.log("Exception : " + e.getMessage());
-          }
-    }
-    @BeforeMethod(alwaysRun = true)
-    public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-          JSONObject object = (JSONObject) testdata[2];
-          testCaseName = object.get("testCaseName").toString();
-          
+	public void setResultTestName(ITestResult result) {
+		try {
+			Field method = TestResult.class.getDeclaredField("m_method");
+			method.setAccessible(true);
+			method.set(result, result.getMethod().clone());
+			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(baseTestMethod, DocumentUpload.testCaseName);
+		} catch (Exception e) {
+			Reporter.log("Exception : " + e.getMessage());
+		}
+	}
 
-          /**
-           * Document Upload Resource URI            
-           */
-          
-          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
-          authToken=preRegLib.getToken(); 
-    }
+	@BeforeMethod(alwaysRun = true)
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+		testCaseName = object.get("testCaseName").toString();
+
+		System.out.println("Test Case name:" + testCaseName);
+		/**
+		 * Document Upload Resource URI
+		 */
+
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
+		authToken = preRegLib.getToken();
+	}
+
 	@Override
-    public String getTestName() {
-          return DocumentUpload.testCaseName;
-    }
+	public String getTestName() {
+		return DocumentUpload.testCaseName;
+	}
 }
