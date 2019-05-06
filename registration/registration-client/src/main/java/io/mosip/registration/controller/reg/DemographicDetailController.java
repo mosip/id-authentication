@@ -56,7 +56,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -694,6 +693,16 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+
+			if (getRegistrationDTOFromSession() == null) {
+				validation.updateAsLostUIN(false);
+				registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
+			}
+
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
+				getRegistrationDTOFromSession().setUpdateUINChild(false);
+			}
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
 			lostUIN = false;
@@ -1447,10 +1456,7 @@ public class DemographicDetailController extends BaseController {
 				.getApplicantBiometricDTO();
 		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO();
-		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
-				.getApplicantDocumentDTO();
 
-	
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
 						.with(identity -> identity
@@ -1617,7 +1623,7 @@ public class DemographicDetailController extends BaseController {
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
 						.with(identity -> identity.setIndividualBiometrics(applicantBiometric.getFingerprintDetailsDTO()
 								.isEmpty() && applicantBiometric.getIrisDetailsDTO().isEmpty()
-								&& applicantDocumentDTO.getPhoto() == null
+								&& applicantBiometric.getFace().getFace() == null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
@@ -1627,19 +1633,20 @@ public class DemographicDetailController extends BaseController {
 																.replace(RegistrationConstants.XML_FILE_FORMAT,
 																		RegistrationConstants.EMPTY)))
 												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
-						.with(identity -> identity.setParentOrGuardianBiometrics(introducerBiometric
-								.getFingerprintDetailsDTO().isEmpty()
-								&& introducerBiometric.getIrisDetailsDTO().isEmpty()
-								&& introducerBiometric.getFaceDetailsDTO().getFace() == null
-										? null
-										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
-												.with(cbeffProperties -> cbeffProperties
-														.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
-												.with(cbeffProperty -> cbeffProperty
-														.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME
-																.replace(RegistrationConstants.XML_FILE_FORMAT,
-																		RegistrationConstants.EMPTY)))
-												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
+						.with(identity -> identity.setParentOrGuardianBiometrics(
+								(!getRegistrationDTOFromSession().isUpdateUINChild()) || (introducerBiometric
+										.getFingerprintDetailsDTO().isEmpty()
+										&& introducerBiometric.getIrisDetailsDTO().isEmpty()
+										&& introducerBiometric.getFace().getFace() == null)
+												? null
+												: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
+														.with(cbeffProperties -> cbeffProperties
+																.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
+														.with(cbeffProperty -> cbeffProperty.setValue(
+																RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME
+																		.replace(RegistrationConstants.XML_FILE_FORMAT,
+																				RegistrationConstants.EMPTY)))
+														.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
 						.get()))
 				.get();
 	}
