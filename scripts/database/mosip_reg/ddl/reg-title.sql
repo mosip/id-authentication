@@ -31,8 +31,5 @@
 alter table reg.title add constraint pk_ttl_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_ttl_<col> on reg.title (col)
--- ;
 
 

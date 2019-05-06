@@ -29,7 +29,4 @@
 alter table reg.doc_category add constraint pk_doccat_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_doccat_<col> on reg.doc_category (col)
--- ;
 

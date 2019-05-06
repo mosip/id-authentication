@@ -31,9 +31,3 @@ create table reg.app_role_priority (
  -- indexes section -------------------------------------------------
 create unique index uk_roleprt_id on reg.app_role_priority (app_id, process_id, priority) 
 ;
-
--- indexes section -------------------------------------------------
--- create index idx_roleprt_<colX> on reg.app_role_priority (colX )
--- ;
-
-

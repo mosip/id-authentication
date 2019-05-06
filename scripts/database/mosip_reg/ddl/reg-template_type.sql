@@ -25,10 +25,6 @@ create table reg.template_type (
 -- keys section ------------------------------------------------------------------
 alter table reg.template_type add constraint pk_tmpltyp_code primary key (code, lang_code)
  ;
--- 
 
--- indexes section --------------------------------------------------------------
--- create index idx_tmpltyp_<colX> on reg.template_type (colX )
--- ;
 
 

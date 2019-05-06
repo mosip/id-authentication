@@ -26,9 +26,3 @@
 -- keys section -------------------------------------------------------------------------------
 alter table reg.blacklisted_words add constraint pk_blwrd_code primary key (word, lang_code)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_blwrd_<col> on reg.blacklisted_words (col)
--- ;
-
-

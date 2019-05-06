@@ -29,7 +29,3 @@
 alter table reg.biometric_type add constraint pk_bmtyp_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_bmtyp_<col> on reg.biometric_type (col)
--- ;
-

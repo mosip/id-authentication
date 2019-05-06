@@ -29,7 +29,3 @@ create table reg.gender (
 alter table reg.gender add constraint pk_gndr_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_gndr_<col> on reg.gender (col)
--- ;
-

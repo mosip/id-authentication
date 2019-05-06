@@ -29,8 +29,4 @@ create table reg.authentication_method (
  ;
 
 
--- indexes section -------------------------------------------------
--- create index idx_logmeth_<colX> on reg.authentication_method (colX )
--- ;
-
 

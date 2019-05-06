@@ -30,7 +30,3 @@
 alter table reg.reason_list add constraint pk_rsnlst_code primary key (code, rsncat_code, lang_code)
  ;
 
--- indexes section ------------------------------------------------------------------------
--- create index idx_rsnlst_<col> on reg.reason_list (col)
--- ;
-

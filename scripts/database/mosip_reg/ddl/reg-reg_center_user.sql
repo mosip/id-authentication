@@ -24,8 +24,3 @@ create table reg.reg_center_user (
 -- keys section -------------------------------------------------
  alter table reg.reg_center_user add constraint pk_cntrusr_usr_id primary key (regcntr_id, usr_id)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_cntrusr_<colX> on reg.reg_center_user (colX )
--- ;
-

@@ -26,9 +26,5 @@ create table reg.template_file_format (
 -- keys section ------------------------------------------------------------------
 alter table reg.template_file_format add constraint pk_tffmt_code primary key (code, lang_code)
  ;
--- 
 
--- indexes section --------------------------------------------------------------
--- create index idx_tffmt_<colX> on reg.template_file_format (colX )
--- ;
 

@@ -40,7 +40,4 @@ create table reg.pre_registration_list (
  alter table reg.pre_registration_list add constraint pk_preregl_id primary key (id)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_preregl_<colX> on reg.pre_registration_list (colX )
--- ;
 

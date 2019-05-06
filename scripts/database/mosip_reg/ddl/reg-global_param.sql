@@ -30,9 +30,6 @@ create table reg.global_param (
 alter table reg.global_param add constraint pk_glbparm_code primary key (code, lang_code)
  ;
 
--- indexes section --------------------------------------------------------------------------------------------------------------------
--- create index idx_glbparm_<colx> on reg.global_param (<colx>)
--- ;
 
 
 

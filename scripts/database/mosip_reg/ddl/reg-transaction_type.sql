@@ -24,8 +24,3 @@ create table reg.transaction_type (
 -- keys section ------------------------------------------------------------------
 alter table reg.transaction_type add constraint pk_trntyp_code primary key (code, lang_code)
  ;
--- 
-
--- indexes section --------------------------------------------------------------
--- create index idx_trntyp_<colX> on reg.transaction_type (colX )
--- ;

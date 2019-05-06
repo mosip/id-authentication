@@ -43,9 +43,6 @@ create table reg.sync_transaction (
 
 -- keys section -------------------------------------------------------------------------------
 alter table reg.sync_transaction add constraint pk_synctrn_id primary key (id)
- ;
+;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_synctrn_<colX> on reg.sync_transaction (<colX>)
--- ;
 

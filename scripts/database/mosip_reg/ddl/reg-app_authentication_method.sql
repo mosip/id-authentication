@@ -34,7 +34,4 @@ create table reg.app_authentication_method (
 create unique index uk_appauthm_id on reg.app_authentication_method (app_id, process_id, role_code, method_seq) 
 ;
 
--- indexes section -------------------------------------------------
--- create index idx_appauthm_<colX> on reg.app_authentication_method (colX )
--- ;
 

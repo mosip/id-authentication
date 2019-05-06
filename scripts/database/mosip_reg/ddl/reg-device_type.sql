@@ -29,7 +29,4 @@
 alter table reg.device_type add constraint pk_dtyp_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_dtyp_<col> on reg.device_type (col)
--- ;
 

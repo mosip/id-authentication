@@ -20,8 +20,4 @@
 
 -- keys section -------------------------------------------------------------------------------
 alter table reg.rid_seq add constraint pk_ridseq_id primary key (curr_seq_no)
- ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_ridseq_<col> on reg.rid_seq (col)
--- ;
+;

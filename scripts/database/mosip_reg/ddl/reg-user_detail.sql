@@ -40,6 +40,3 @@ create table reg.user_detail (
  alter table reg.user_detail add constraint pk_usrdtl_id primary key (id)
  ;
 
- -- indexes section -------------------------------------------------
--- create index idx_usrdtl_uin_ref_id on reg.user_detail (uin_ref_id)
--- ;

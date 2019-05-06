@@ -36,8 +36,3 @@ create table reg.registration_transaction (
 -- keys section -------------------------------------------------
  alter table reg.registration_transaction add constraint pk_regtrn_id primary key (id)
  ;
--- 
-
--- indexes section -------------------------------------------------
--- create index idx_regtrn_<colX> on reg.registration_transaction (colX )
--- ;

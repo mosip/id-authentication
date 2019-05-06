@@ -28,7 +28,3 @@ create table reg.user_pwd (
 -- keys section -------------------------------------------------
  alter table reg.user_pwd add constraint pk_usrpwd_usr_id primary key (usr_id)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_usrpwd_<colX> on reg.user_pwd (colX )
--- ;

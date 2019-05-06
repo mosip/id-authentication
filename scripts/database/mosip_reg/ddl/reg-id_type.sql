@@ -30,7 +30,3 @@
 alter table reg.id_type add constraint pk_idtyp_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_idtyp_<col> on reg.id_type (col)
--- ;
-

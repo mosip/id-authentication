@@ -27,9 +27,9 @@ create table reg.registration (
 	client_status_comment 	character varying(256),
 	server_status_comment 	character varying(256),
 
-	reg_usr_id character varying (36) not null,			-- reg.user_detail.id
+	reg_usr_id character varying (256) not null,			-- reg.user_detail.id
 	regcntr_id character varying (10) not null,			-- reg.registration_center.id
-	approver_usr_id character varying (36) not null,	-- reg.user_detail.id
+	approver_usr_id character varying (256) not null,	-- reg.user_detail.id
 	
 	approver_role_code character varying (36),			-- master.role_list.code
 
@@ -55,8 +55,3 @@ create table reg.registration (
 -- keys section -------------------------------------------------
  alter table reg.registration add constraint pk_reg_id primary key (id)
  ;
--- 
-
--- indexes section -------------------------------------------------
--- create index idx_regtrn_<colX> on reg.registration (colX )
--- ;

@@ -7,7 +7,7 @@
 create table reg.key_store (
 
 	id 					character varying(36) not null ,   
-    public_key			clob not null,
+    public_key			blob not null,
 	valid_from_dtimes 	timestamp not null,
 	valid_till_dtimes 	timestamp not null,
 	ref_id				character varying(64) , 	-- Ref id is received from key requester, This can be machine id, TPS id...etc.
@@ -28,9 +28,5 @@ create table reg.key_store (
 -- keys section -------------------------------------------------------------------------------
 alter table reg.key_store add constraint pk_keystr_id primary key (id)
  ;
- 
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_keymals_<colX> on reg.key_store (<colX>)
--- ;
 

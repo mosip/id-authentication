@@ -29,8 +29,4 @@ create table reg.app_audit_log (
 -- keys section -------------------------------------------------
  alter table reg.app_audit_log add constraint pk_audlog_log_id primary key (log_id)
  ;
--- 
 
--- indexes section -------------------------------------------------
--- create index idx_audlog_<colX> on reg.app_audit_log (colX )
--- ;

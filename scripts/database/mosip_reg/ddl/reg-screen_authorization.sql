@@ -30,7 +30,3 @@ create table reg.screen_authorization (
 alter table reg.screen_authorization add constraint pk_scrauth_screen_id primary key (screen_id, role_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_scrauth_<colX> on reg.screen_authorization (<colX>)
--- ;
-

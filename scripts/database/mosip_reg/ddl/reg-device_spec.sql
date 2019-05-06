@@ -35,6 +35,3 @@
 alter table reg.device_spec add constraint pk_dspec_code primary key (id, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_dspec_<col> on reg.device_spec (col)
--- ;

@@ -26,7 +26,3 @@ create table reg.language (
 -- keys section -------------------------------------------------------------------------------
 alter table reg.language add constraint pk_lang_code primary key (code)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_lang_name on reg.language (name)
--- ;

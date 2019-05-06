@@ -27,10 +27,6 @@
 		
 
 -- keys section -------------------------------------------------------------------------------
--- alter table reg.doc_type add constraint pk_doctyp_code primary key (code, lang_code)
---  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_doctyp_<col> on reg.doc_type (col)
--- ;
+alter table reg.doc_type add constraint pk_doctyp_code primary key (code, lang_code)
+;
 

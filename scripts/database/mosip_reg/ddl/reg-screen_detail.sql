@@ -28,7 +28,3 @@ create table reg.screen_detail (
 -- keys section -------------------------------------------------
  alter table reg.screen_detail add constraint pk_scrdtl_id primary key (id, lang_code)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_scrdtl_name on reg.screen_detail (name)
--- ;

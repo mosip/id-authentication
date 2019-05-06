@@ -56,8 +56,5 @@
 alter table reg.location add constraint pk_loc_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_loc_name on reg.location (name)
--- ;
 
 

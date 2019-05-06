@@ -53,7 +53,3 @@ create table reg.registration_center (
 alter table reg.registration_center add constraint pk_regcntr_code primary key (id, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_regcntr_name on reg.registration_center (name)
--- ;
-

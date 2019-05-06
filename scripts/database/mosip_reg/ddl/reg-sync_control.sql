@@ -33,8 +33,3 @@ create table reg.sync_control (
 -- keys section -------------------------------------------------------------------------------
 alter table reg.sync_control add constraint pk_synctrl_id primary key (id)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_sjob_<colX> on reg.sync_control (<colX>)
--- ;
-

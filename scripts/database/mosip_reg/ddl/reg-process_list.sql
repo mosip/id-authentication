@@ -28,7 +28,3 @@ create table reg.process_list (
  alter table reg.process_list add constraint pk_prclst_id primary key (id, lang_code)
  ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.process_list is 'MOSIP Application process master list'
--- ;
-

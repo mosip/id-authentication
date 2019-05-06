@@ -26,8 +26,3 @@ create table reg.role_list (
 -- keys section -------------------------------------------------
  alter table reg.role_list add constraint pk_rolelst_code primary key (code, lang_code)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_rolelst_<colX> on reg.role_list (colX )
--- ;
-

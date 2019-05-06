@@ -12,7 +12,7 @@ create table reg.machine_master (
 	mac_address character varying (64) not null,
 	serial_num 	character varying (64) not null,
 	ip_address 	character varying (17) ,           -- ip address, usually dynamic, so optional.
-	public_key 	clob , 
+	public_key 	blob , 
 	key_index 	character varying (128) , 
 	
 	validity_end_dtimes timestamp, 
@@ -34,8 +34,4 @@ create table reg.machine_master (
 -- keys section -------------------------------------------------
  alter table reg.machine_master add constraint pk_machm_id primary key (id, lang_code)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_machm_<colX> on reg.machine_master (colX )
--- ;
 

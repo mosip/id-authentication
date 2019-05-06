@@ -25,7 +25,4 @@ create table reg.reg_center_device (
  alter table reg.reg_center_device add constraint pk_cntrdev_id primary key (regcntr_id, device_id)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_cntrdev_<colX> on reg.reg_center_device (colX )
--- ;
 

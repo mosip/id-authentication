@@ -28,7 +28,4 @@
 alter table reg.machine_type add constraint pk_mtyp_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_mtyp_<col> on reg.machine_type (col)
--- ;
 

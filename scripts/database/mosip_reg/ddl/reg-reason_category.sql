@@ -28,7 +28,4 @@
 alter table reg.reason_category add constraint pk_rsncat_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_rsncat_<col> on reg.reason_category (col)
--- ;
 

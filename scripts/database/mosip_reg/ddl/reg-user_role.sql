@@ -27,6 +27,3 @@ create table reg.user_role (
  alter table reg.user_role add constraint pk_usrrol_usr_id primary key (usr_id, role_code)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_usrrol_<colX> on reg.user_role (colX )
--- ;

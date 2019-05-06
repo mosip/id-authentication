@@ -32,8 +32,3 @@
 -- keys section -------------------------------------------------------------------------------
 alter table reg.biometric_attribute add constraint pk_bmattr_code primary key (code, lang_code)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_bmattr_<col> on reg.biometric_attribute (col)
--- ;
-
