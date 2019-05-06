@@ -1,6 +1,6 @@
 ﻿regcntr_id,usr_id,lang_code,is_active,cr_by,cr_dtimes,eff_dtimes
 10001,110001,eng,TRUE,superadmin,now(),now()
-10002,110002,eng,TRUE,superadmin,now(),now()
+10003,110002,eng,TRUE,superadmin,now(),now()
 10003,110003,eng,TRUE,superadmin,now(),now()
 10004,110004,eng,TRUE,superadmin,now(),now()
 10005,110005,eng,TRUE,superadmin,now(),now()
@@ -22,7 +22,7 @@
 10002,110021,eng,TRUE,superadmin,now(),now()
 10003,110022,eng,TRUE,superadmin,now(),now()
 10004,110023,eng,TRUE,superadmin,now(),now()
-10005,110024,eng,TRUE,superadmin,now(),now()
+10003,110024,eng,TRUE,superadmin,now(),now()
 10006,110025,eng,TRUE,superadmin,now(),now()
 10007,110026,eng,TRUE,superadmin,now(),now()
 10008,110027,eng,TRUE,superadmin,now(),now()
