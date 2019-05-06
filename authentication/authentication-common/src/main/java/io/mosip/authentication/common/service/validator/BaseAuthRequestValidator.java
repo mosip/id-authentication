@@ -267,12 +267,20 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo
 	 * @param errors
 	 */
-	private void validateBioType(List<DataDTO> bioInfos, Errors errors, Set<String> allowedAuthType) {
+	private void validateBioType(List<DataDTO> bioInfos, Errors errors, Set<String> allowedAuthTypesFromConfig) {
 		AuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		for (AuthType authType : authTypes) {
 			availableAuthTypeInfos.add(authType.getType());
 		}
+		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
+			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
+			if(!contains) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "Invalid bio type config");
+			}
+			return contains;
+		}).collect(Collectors.toSet());
 		for (DataDTO bioInfo : bioInfos) {
 			String bioType = bioInfo.getBioType();
 			if (StringUtils.isEmpty(bioType)) {
@@ -280,7 +288,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { BIO_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!allowedAuthType.contains(bioType)) {
+			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), new Object[] { bioType },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
