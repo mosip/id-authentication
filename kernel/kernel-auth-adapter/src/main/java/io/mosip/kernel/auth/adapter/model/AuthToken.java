@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 public class AuthToken extends UsernamePasswordAuthenticationToken {
 
+	private static final long serialVersionUID = 4068560701182593212L;
+	
 	private String token;
 
 	public AuthToken(String token) {

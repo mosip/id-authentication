@@ -1,35 +1,6 @@
-Technical Design for the Registration Module
+**Design for Opt to Register**
 
-Opt to Register
-
-Table of Contents:
-
-I.  Functional Background
-
-    a.  Target users
-
-    b.  Key requirements
-
-    c.  Non-functional requirements
-
-II. Technical Approach
-
-    d.  Service
-
-    e.  UI
-
-    f.  Classes
-
-    g.  DB
-
-    h.  Class Diagram
-
-    i.  Sequence Diagram
-
-III. Request and Response
-
-**[Functional Background]{.underline}**
-=======================================
+**Background**
 
 On login successful, we are bound to check for the list of sync jobs run
 successfully or not, before flashing the "New Registration" screen.
@@ -116,8 +87,7 @@ The key **non-functional requirements** are
 
     -   All connection should be closed once DB process completed.
 
-**[Technical Approach]{.underline}**
-====================================
+**Technical Approach**
 
 The key solution considerations are --
 
@@ -137,11 +107,11 @@ The key solution considerations are --
 -   Handle exceptions in using custom Exception handler and send correct
     response to client.
 
-> **UI **
+**UI **
 
 Create the proper alert success/error to intimate the user.
 
-> **Apply the below common criteria**
+**Apply the below common criteria**
 
 -   Audit
 
@@ -178,7 +148,7 @@ from any other controller as required.
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-optToRegister-classDiagram.png>
+![Opt to Register](_images/_class_diagram/registration-optToRegister-classDiagram.png)
 
 Sequence Diagram:
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-optToRegister-sequenceDiagram.png>
+![Opt to Register](_images/_sequence_diagram/registration-optToRegister-sequenceDiagram.png)
