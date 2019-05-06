@@ -22,7 +22,7 @@ export class AuthenticationComponent implements OnInit {
   ngOnDestroy(): void {
     clearInterval(this.interval);   
   }
-   startCountdown(timeLeft): void {
+   startCountdown(timeLeft: number): void {
     this.counter = 0;
     this.interval = setInterval(() => {
       console.log(this.counter);
@@ -33,7 +33,7 @@ export class AuthenticationComponent implements OnInit {
       }
     }, 1000);
   }
-    convertSeconds(timeLeft): string {
+    convertSeconds(timeLeft: number): string {
     this.minutes = Math.floor(timeLeft / 60);
     this.seconds = Math.floor(timeLeft % 60);
     return Number(this.minutes).toLocaleString('en-US', {minimumIntegerDigits: 2}) + ':' + Number(this.seconds).toLocaleString('en-US', {minimumIntegerDigits: 2});

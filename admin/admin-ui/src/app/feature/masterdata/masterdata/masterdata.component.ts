@@ -11,12 +11,25 @@ export class MasterdataComponent implements OnInit {
 
   data = [
     {
-      name: 'Agnitra',
-      age: 20
+      code: 'CIN',
+      name: 'CNIE Card',
+      description: 'Rental Agreement of address',
+      languagecode: 'eng',
+      status: 'TRUE'
     },
     {
-      name: 'ajay',
-      age: 20
+      code: 'CIN',
+      name: 'Passport',
+      description: 'Rental agreement of address',
+      languagecode: 'eng',
+      status: 'TRUE'
+    },
+    {
+      code: 'CIN',
+      name: 'Certificate of Relationship',
+      description: 'Proof relationship of a person',
+      languagecode: 'eng',
+      status: 'TRUE'
     }
   ];
 

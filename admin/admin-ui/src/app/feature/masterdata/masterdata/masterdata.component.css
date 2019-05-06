@@ -1,0 +1,7 @@
+.master-table{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-left: 3em;
+    margin-top: 5em;
+}
