@@ -171,7 +171,7 @@ public class Utilities {
 		return null;
 	}
 
-	private String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
+	public String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
 
 		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase(transactionType)) {
 			LocalDateTime createdDateTime = registrationStatusDto.getCreateDateTime();
