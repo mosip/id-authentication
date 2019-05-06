@@ -24,7 +24,7 @@ The key **requirements** are
 -  Registrtaion Client has two types of users 
     1. Admin
     2. Others [Officer/Supervisior]
-- The login screen should be a confgigurbale one and get the details as part of the master sync. 
+- The login screen should be a configurbale one and get the details as part of the master sync. 
 
 -   Provide login screen to validate for the Admin and Registration officer/supervisor credentials.
 
@@ -41,8 +41,8 @@ The key **requirements** are
 1.  User has to be authenticated WRT to the login details exists in the
     local DB
 
-2.  The password should be converted into hashed format \[SHA-256\] and
-    compare it with the data available in the db.
+2.  The password should be converted into secure-hashed format \[SSHA-256\] using the 
+    respective user's salt and compare it with the data available in the db.
 
 -   Finger Print\[Thumb\] Authentication
 
@@ -164,12 +164,15 @@ The key **non-functional requirements** are
     -   In case system doesn't have internet connection get the password
         against the user ID from DB. Then check the entered credentials
         are valid.
+        
+This process is reuqired for the initial setup and User -Onboarding. 
 
     -   If the system has internet connection getTokenID from server by
         passing user id and password as parameter to the REST service
         call.
 
-        -   TBD : Identify the REST Service name.
+        -  RestClientAuthAdvice 
+            - addAuthZToken : Add the token to each third party calls.
 
     -   Return the appropriate alert message to user based on the
         response as success or failure message.
@@ -184,6 +187,13 @@ The key **non-functional requirements** are
 
 -   If request for generate or regenerate OTP, respective service has to
     be called to generate the same.
+    
+    If the system has internet connection getTokenID from server by
+        passing user id and password as parameter to the REST service
+        call.
+
+        -  RestClientAuthAdvice 
+            - addAuthZToken : Add the token to each third party calls.
 
 -   Then the requested and response OTP has been validated.
 

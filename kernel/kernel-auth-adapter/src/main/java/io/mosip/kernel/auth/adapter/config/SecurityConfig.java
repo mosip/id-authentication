@@ -1,25 +1,15 @@
 package io.mosip.kernel.auth.adapter.config;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 
-import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -28,22 +18,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.filter.AuthFilter;
-import io.mosip.kernel.auth.adapter.filter.ClientInterceptor;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
-import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -91,20 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 
-	@Bean
-	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-		restTemplate.setInterceptors(Collections.singletonList(new ClientInterceptor()));
-		return restTemplate;
-	}
-
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests().antMatchers("*").authenticated().and().exceptionHandling()
@@ -116,22 +85,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.headers().cacheControl();
 	}
 
-	@Bean
-	public WebClient webClient() {
-		return WebClient.builder().filter((req, next) -> {
-			ClientRequest filtered = null;
-			if (SecurityContextHolder.getContext() != null
-					&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
-					&& SecurityContextHolder.getContext().getAuthentication()
-							.getPrincipal() instanceof AuthUserDetails) {
-				AuthUserDetails userDetail = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication()
-						.getPrincipal();
-				filtered = ClientRequest.from(req).header(AuthAdapterConstant.AUTH_HEADER_COOKIE,
-						AuthAdapterConstant.AUTH_COOOKIE_HEADER + userDetail.getToken()).build();
-			}
-			return next.exchange(filtered);
-		}).build();
-	}
 }
 
 class AuthEntryPoint implements AuthenticationEntryPoint {

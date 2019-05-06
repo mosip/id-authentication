@@ -15,12 +15,12 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.code.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,10 +35,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -62,7 +58,6 @@ import io.mosip.registration.processor.message.sender.utility.NotificationTempla
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
-import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
@@ -88,7 +83,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 
 	/** The transcation status service. */
 	@Autowired
-	private TransactionService<TransactionDto> transcationStatusService;
+	private TransactionService<TransactionDto> transactionStatusService;
 
 	/** The adapter. */
 	@Autowired
@@ -191,6 +186,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 
+		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.NOTIFICATION.toString());
+		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
+
 		try {
 			InputStream packetMetaInfoStream = adapter.getFile(id, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
@@ -231,14 +229,16 @@ public class MessageSenderStage extends MosipVerticleManager {
 
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
 			registrationStatusDto.setStatusComment(description);
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null, TransactionTypeCode.UPDATE.toString(),
-					"updated registration status record", registrationStatusDto.getStatusCode(),
+					registrationStatusDto.getRegistrationId(), null, registrationStatusDto.getLatestTransactionTypeCode(),
+					"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
 					registrationStatusDto.getStatusComment());
+
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("updated registration record");
-			transcationStatusService.addRegistrationTransaction(transactionDto);
+			transactionStatusService.addRegistrationTransaction(transactionDto);
 
 			object.setIsValid(Boolean.TRUE);
 
