@@ -173,7 +173,7 @@ public class AbisServiceImpl implements AbisService {
 
 					InputSource is = new InputSource();
 					is.setCharacterStream(new StringReader(byteFileStr));
-					
+
 					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -232,7 +232,7 @@ public class AbisServiceImpl implements AbisService {
 				if(faceNodeList != null) {
 					duplicate = checkDuplicate(duplicate, faceNodeList);
 				}
-					response.setReturnValue(1);
+				response.setReturnValue(1);
 
 				if (duplicate) {
 					CandidateListDto cd = new CandidateListDto();
