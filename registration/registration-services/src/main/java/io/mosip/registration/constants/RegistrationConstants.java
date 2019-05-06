@@ -266,6 +266,9 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_EMAIL_LBL = "Email";
 	public static final String UIN_UPDATE_FOREIGNER_LBL = "Foreigner/National";
 	public static final String UIN_UPDATE_GENDER_LBL = "Gender";
+	public static final String MALE_CODE = "MLE";
+	public static final String FEMALE_CODE = "FLE";
+
 	public static final String UIN_UPDATE_PARENT_DETAILS_LBL = "Parent/Guardian details";
 	public static final String UIN_UPDATE_CNIE_NUMBER_LBL = "CNIE/PIN/Residence Card Number";
 	public static final String UIN_UPDATE_BIOMETRICS_LBL = "Biometrics";

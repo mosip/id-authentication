@@ -744,12 +744,14 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	private void genderSettings() {
-		textMale = applicationLabelBundle.getString("male");
-		textFemale = applicationLabelBundle.getString("female");
-		textMaleLocalLanguage = localLabelBundle.getString("male");
-		textFemaleLocalLanguage = localLabelBundle.getString("female");
-		textMaleCode = applicationLabelBundle.getString("maleCode");
-		textFemaleCode = applicationLabelBundle.getString("femaleCode");
+		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
+		textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
+		male.setText(textMale);
+		female.setText(textFemale);
+		maleLocalLanguage.setText(textMaleLocalLanguage);
+		femaleLocalLanguage.setText(textFemaleLocalLanguage);
 		male(null);
 	}
 
