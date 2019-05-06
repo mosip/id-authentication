@@ -67,9 +67,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
-
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
+	public static final String PARTNER_APPLICATION_ID = "cryptomanager.application.id";
 
 }

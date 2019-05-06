@@ -7,5 +7,6 @@ public class CryptomanagerRequestDto {
 	String applicationId;
 	String data;
 	String referenceId;
+	String salt;
 	String timeStamp;
 }

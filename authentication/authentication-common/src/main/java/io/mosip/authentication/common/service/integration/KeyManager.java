@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.dto.EncryptDataRequestDto;
 import io.mosip.authentication.common.service.integration.dto.SymmetricKeyRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -43,6 +44,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
@@ -81,6 +83,10 @@ public class KeyManager {
 	/** The app id. */
 	@Value("${" +IdAuthConfigKeyConstants.APPLICATION_ID+ "}")
 	private String appId;
+	
+	/** The partner id. */
+	@Value("${" +IdAuthConfigKeyConstants.PARTNER_APPLICATION_ID+ "}")
+	private String partnerId;
 
 	/** The rest helper. */
 	@Autowired
@@ -243,6 +249,29 @@ public class KeyManager {
 	 */
 	public SecretKey getSymmetricKey() {
 		return keyGenerator.getSymmetricKey();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String encryptData(Map<String, Object> responseBody) {
+		Optional<String> identity = Optional.ofNullable(responseBody.get("IDENTITY"))
+				.map(String::valueOf);
+		Map<String, Object> response;
+		RestRequestDTO restRequestDTO = null;
+		if (identity.isPresent()) {
+			EncryptDataRequestDto encryptDataRequestDto = new EncryptDataRequestDto();
+			encryptDataRequestDto.setApplicationId(appId);
+			encryptDataRequestDto.setReferenceId(partnerId);
+			encryptDataRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+			encryptDataRequestDto.setHashedData(CryptoUtil.encodeBase64(identity.get().getBytes()));
+			try {
+				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
+						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
+				response = restHelper.requestSync(restRequestDTO);
+				return (String)((Map<String,Object>) response.get("response")).get("data");
+			} catch (IDDataValidationException | RestServiceException e) {
+			}
+		}
+		return null;
 	}
 
 }
