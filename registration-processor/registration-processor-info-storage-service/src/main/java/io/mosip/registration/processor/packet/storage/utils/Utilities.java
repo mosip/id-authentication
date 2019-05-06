@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -30,7 +31,9 @@ import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import lombok.Data;
 
 /**
@@ -44,6 +47,9 @@ public class Utilities {
 
 	private static final String UIN = "UIN";
 	public static final String FILE_SEPARATOR = "\\";
+	private static final String RE_PROCESSING = "re-processing";
+	private static final String HANDLER = "handler";
+	private static final String NEW_PACKET = "New-packet";
 
 	@Autowired
 	private FileSystemAdapter adapter;
@@ -70,12 +76,16 @@ public class Utilities {
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
 
+	@Value("${registration.processor.reprocess.elapse.time}")
+	private long elapseTime;
+
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException, ParseException, IdRepoAppException {
+	public int getApplicantAge(String registrationId)
+			throws IOException, ApisResourceAccessException, ParseException, IdRepoAppException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -160,4 +170,20 @@ public class Utilities {
 
 		return null;
 	}
+
+	private String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
+
+		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase(transactionType)) {
+			LocalDateTime createdDateTime = registrationStatusDto.getCreateDateTime();
+			LocalDateTime currentDateTime = LocalDateTime.now();
+			Duration duration = Duration.between(createdDateTime, currentDateTime);
+			long secondsDiffernce = duration.getSeconds();
+			if (secondsDiffernce > elapseTime)
+				return RE_PROCESSING;
+			else
+				return HANDLER;
+		}
+		return NEW_PACKET;
+	}
+
 }
