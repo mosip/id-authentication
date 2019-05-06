@@ -7,11 +7,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
@@ -463,6 +466,22 @@ public class KycFilterTest {
 		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
 		encodeMethod.setAccessible(true);
 		encodeMethod.invoke(kycAuthFilter, readValue);
+	}
+	
+	@Test
+	public void checkAllowedAuthTypeBasedOnPolicyTest() {
+		AuthPolicy authPolicy = new AuthPolicy();
+		authPolicy.setAuthType("demo");
+		authPolicy.setMandatory(true);
+		try {
+			ReflectionTestUtils.invokeMethod(kycAuthFilter, "checkAllowedAuthTypeBasedOnPolicy", new HashMap<>(), Collections.singletonList(authPolicy));
+		} catch (UndeclaredThrowableException e) {
+			String detailMessage = e.getUndeclaredThrowable().getMessage();
+			String[] error = detailMessage.split("-->");
+			assertEquals("IDA-MPA-013", error[0].trim());
+			assertEquals("Partner is unauthorised for eKYC", error[1].trim());
+			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
+		}
 	}
 
 }
