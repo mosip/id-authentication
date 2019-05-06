@@ -5,7 +5,6 @@
 package io.mosip.preregistration.booking.repository.impl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -291,7 +290,7 @@ public class BookingDAO {
 	 * @param toLocaldate
 	 * @return
 	 */
-	public List<String> findByBookingDateBetweenAndRegCenterId(LocalDateTime fromLocaldate, LocalDateTime toLocaldate,
+	public List<String> findByBookingDateBetweenAndRegCenterId(LocalDate fromLocaldate, LocalDate toLocaldate,
 			String regCenterId) {
 		List<String> listOfPreIds = new ArrayList<>();
 		try {
@@ -308,7 +307,7 @@ public class BookingDAO {
 				}
 			} else {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_007.getCode(),
-						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.getMessage());
+						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.getMessage(), null);
 			}
 		} catch (DataAccessLayerException e) {
 			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),

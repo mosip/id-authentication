@@ -76,7 +76,7 @@ describe('DialougComponent', () => {
     component.applicantNumber = '9748125';
     component.validateMobile();
     fixture.detectChanges();
-    expect(component.invalidApplicantNumber).toBeTruthy();
+    expect(component.invalidApplicantNumber).toBeFalsy();
   });
 
   it('should validate email address', () => {
@@ -88,7 +88,7 @@ describe('DialougComponent', () => {
     component.applicantEmail = 'agneetra10@.com';
     component.validateEmail();
     fixture.detectChanges();
-    expect(component.invalidApplicantEmail).toBeTruthy();
+    expect(component.invalidApplicantEmail).toBeFalsy();
   });
 
   it('checks the ischecked parameter', () => {
@@ -110,7 +110,7 @@ describe('DialougComponent', () => {
       localStorage.setItem('newApplicant', 'true');
       component.userRedirection();
       fixture.detectChanges();
-      expect(service.token).toBe(null);
+      expect(service.token).toBe(undefined);
 
       localStorage.setItem('newApplicant', 'false');
       regService.changeMessage({ modifyUserFromPreview: 'false' });

@@ -8,7 +8,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import lombok.Getter;
 
 @Getter
-public class RestCallException extends BaseUncheckedException {
+public class NotificationSeriveException extends BaseUncheckedException {
 
 	/**
 	 * 
@@ -18,13 +18,13 @@ public class RestCallException extends BaseUncheckedException {
 
 	
 private List<ServiceError> validationErrorList;
-private MainResponseDTO<?> mainResponseDTO;
+       private MainResponseDTO<?> mainResponseDTO;
 
 	public List<ServiceError> getValidationErrorList() {
 		return validationErrorList;
 	}
 
-	public RestCallException(List<ServiceError> validationErrorList,MainResponseDTO<?> response) {
+	public NotificationSeriveException(List<ServiceError> validationErrorList,MainResponseDTO<?> response) {
 		this.validationErrorList = validationErrorList;
 		this.mainResponseDTO=response;
 	}
@@ -32,21 +32,21 @@ private MainResponseDTO<?> mainResponseDTO;
 	public MainResponseDTO<?> getMainResposneDTO() {
 		return mainResponseDTO;
 	}	
-	public RestCallException() {
+	public NotificationSeriveException() {
 		super();
 	}
 
-	public RestCallException(String arg0, String arg1, Throwable arg2,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String arg0, String arg1, Throwable arg2,MainResponseDTO<?> response) {
 		super(arg0, arg1, arg2);
 		this.mainResponseDTO=response;
 	}
 
-	public RestCallException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
 		super(errorCode, errorMessage);
 		this.mainResponseDTO=response;
 	}
 
-	public RestCallException(String errorMessage,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String errorMessage,MainResponseDTO<?> response) {
 		super(errorMessage);
 		this.mainResponseDTO=response;
 	}
