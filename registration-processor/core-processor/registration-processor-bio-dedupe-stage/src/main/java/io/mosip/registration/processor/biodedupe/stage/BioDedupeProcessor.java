@@ -119,18 +119,18 @@ public class BioDedupeProcessor {
 
 			String registrationType = registrationStatusDto.getRegistrationType();
 			if (registrationType.equalsIgnoreCase("NEW")) {
-				if ((getElapseStatus(registrationStatusDto).equalsIgnoreCase(NEW_PACKET))
-						|| getElapseStatus(registrationStatusDto).equalsIgnoreCase(RE_PROCESSING)) {
+				String packetStatus = getElapseStatus(registrationStatusDto);
+				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					newPacketProcessing(registrationStatusDto);
-				} else if (getElapseStatus(registrationStatusDto).equalsIgnoreCase(HANDLER)) {
+				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
 
 				}
 
 			} else if (registrationType.equalsIgnoreCase("UPDATE")) {
-				if ((getElapseStatus(registrationStatusDto).equalsIgnoreCase(NEW_PACKET))
-						|| getElapseStatus(registrationStatusDto).equalsIgnoreCase(RE_PROCESSING)) {
+				String packetStatus = getElapseStatus(registrationStatusDto);
+				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					updatePacketProcessing(registrationStatusDto);
-				} else if (getElapseStatus(registrationStatusDto).equalsIgnoreCase(HANDLER)) {
+				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
 
 				}
 			}
