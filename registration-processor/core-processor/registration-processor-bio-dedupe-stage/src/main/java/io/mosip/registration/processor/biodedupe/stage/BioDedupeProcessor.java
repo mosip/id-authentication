@@ -33,13 +33,9 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -82,7 +78,7 @@ public class BioDedupeProcessor {
 	Utilities utilities;
 
 	@Value("${mosip.kernel.applicant.type.age.limit}")
-	private String AGE_THRESHOLD;
+	private String age_threshold;
 
 	private static final String RE_PROCESSING = "re-processing";
 
@@ -93,11 +89,6 @@ public class BioDedupeProcessor {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
 
-	/** The Constant USER. */
-	private static final String USER = "MOSIP_SYSTEM";
-
-	private static final String BIO = "BIO";
-
 	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -106,15 +97,7 @@ public class BioDedupeProcessor {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The bio dedupe service. */
-	@Autowired
-	private BioDedupeService bioDedupeService;
-
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
-
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -259,7 +242,7 @@ public class BioDedupeProcessor {
 		else {
 
 			int age = utilities.getApplicantAge(registrationId);
-			int ageThreshold = Integer.parseInt(AGE_THRESHOLD);
+			int ageThreshold = Integer.parseInt(age_threshold);
 
 			if (age < ageThreshold) {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
