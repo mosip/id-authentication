@@ -78,7 +78,7 @@ public class BioDedupeProcessor {
 	Utilities utilities;
 
 	@Value("${mosip.kernel.applicant.type.age.limit}")
-	private String age_threshold;
+	private String ageLimit;
 
 	private static final String RE_PROCESSING = "re-processing";
 
@@ -250,7 +250,7 @@ public class BioDedupeProcessor {
 		else {
 
 			int age = utilities.getApplicantAge(registrationId);
-			int ageThreshold = Integer.parseInt(age_threshold);
+			int ageThreshold = Integer.parseInt(ageLimit);
 
 			if (age < ageThreshold) {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
