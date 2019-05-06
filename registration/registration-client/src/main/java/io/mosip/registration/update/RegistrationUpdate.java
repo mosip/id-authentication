@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -34,7 +35,9 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.reg.HeaderController;
+import io.mosip.registration.service.config.GlobalParamService;
 
 /**
  * Update the Application
@@ -68,17 +71,18 @@ public class RegistrationUpdate {
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
-	
-	/**o
+
+	/**
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUpdate.class);
 
+	@Autowired
+	private GlobalParamService globalParamService;
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking for updates");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking for updates");
 		return !getCurrentVersion().equals(getLatestVersion());
 
 	}
@@ -187,6 +191,10 @@ public class RegistrationUpdate {
 			setServerManifest(null);
 			setLatestVersion(null);
 
+			//Update global param of software update flag as false
+			globalParamService.update(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE,
+					RegistrationConstants.DISABLE);
+
 		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -249,8 +257,7 @@ public class RegistrationUpdate {
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking of jars started");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking of jars started");
 		for (String jarFile : checkableJars) {
 
 			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
@@ -259,8 +266,7 @@ public class RegistrationUpdate {
 
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking of jars completed");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking of jars completed");
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
@@ -277,7 +283,7 @@ public class RegistrationUpdate {
 							&& FileUtils.deleteQuietly(jarInFolder))) {
 
 				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-						"Downloading jar : "+jarFileName+" started");
+						"Downloading jar : " + jarFileName + " started");
 				// Download Jar
 				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
@@ -293,13 +299,11 @@ public class RegistrationUpdate {
 
 	private void deleteJars(List<String> deletableJars) throws io.mosip.kernel.core.exception.IOException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Deletion of jars started");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Deletion of jars started");
 		for (String jarName : deletableJars) {
 			deleteJar(jarName);
 		}
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Deletion of jars completed");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Deletion of jars completed");
 
 	}
 
@@ -369,14 +373,14 @@ public class RegistrationUpdate {
 
 	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking of checksum started for jar :"+jarFile.getName());
+				"Checking of checksum started for jar :" + jarFile.getName());
 		String checkSum;
 		try {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
 			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
 					.get(Attributes.Name.CONTENT_TYPE);
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-					"Checking of checksum completed for jar :"+jarFile.getName());
+					"Checking of checksum completed for jar :" + jarFile.getName());
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
@@ -389,8 +393,7 @@ public class RegistrationUpdate {
 
 	private boolean hasSpace(int bytes) {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking of space in machine");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking of space in machine");
 		return bytes < new File("/").getFreeSpace();
 	}
 
