@@ -165,7 +165,7 @@ public class DBDataStore implements IDataStore {
 
 	private String createRole(String userId, OtpUser otpUser) {
 		jdbcTemplate.update(NEW_ROLE_OTP, new MapSqlParameterSource().addValue("role", AuthConstant.INDIVIDUAL)
-				.addValue("description", "Individual User").addValue("langCode", otpUser.getLangCode()));
+				.addValue("description", "Individual User").addValue("langCode", "eng"));
 		return AuthConstant.INDIVIDUAL;
 
 	}
@@ -173,7 +173,7 @@ public class DBDataStore implements IDataStore {
 	private String createUser(OtpUser otpUser) {
 		jdbcTemplate.update(NEW_USER_OTP,
 				new MapSqlParameterSource().addValue("userName", otpUser.getUserId())
-						.addValue("name", otpUser.getUserId()).addValue("langcode", otpUser.getLangCode())
+						.addValue("name", otpUser.getUserId()).addValue("langcode", "eng")
 						.addValue("email",
 								AuthConstant.EMAIL.equals(otpUser.getOtpChannel().get(0)) ? otpUser.getUserId() : "")
 						.addValue("phone",

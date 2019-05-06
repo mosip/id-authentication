@@ -8,19 +8,20 @@ import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.OTPErrorCode;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.OtpValidatorResponseDto;
+import io.mosip.kernel.auth.entities.otp.idrepo.IdResponseDTO;
+import io.mosip.kernel.auth.entities.otp.idrepo.ResponseDTO;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.UinService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,7 @@ public class UinServiceImpl implements UinService {
 	@Override
 	public MosipUserDto getDetailsFromUin(OtpUser otpUser) throws Exception {
 		MosipUserDto mosipDto = new MosipUserDto();
-		IdResponseDTO idResponse = null;
+		ResponseDTO idResponse = null;
 		mosipDto.setUserId(otpUser.getUserId());
 		Map<String, String> uriParams = new HashMap<String, String>();
 		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), otpUser.getUserId());
@@ -73,16 +74,18 @@ public class UinServiceImpl implements UinService {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
-			
+			ResponseWrapper<?> responseObject;
 			try {
-				idResponse = mapper.readValue(responseBody, IdResponseDTO.class);
-			}catch(Exception e)
-			{
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				idResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						ResponseDTO.class);
+				
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 			}
 		}
-			JSONObject res = (JSONObject) idResponse.getResponse().getIdentity();
-			if((String) res.get("phone")!=null)
+			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
+			if(res.get("phone")!=null)
 			{
 				mosipDto.setMobile((String) res.get("phone"));
 			}
@@ -90,9 +93,9 @@ public class UinServiceImpl implements UinService {
 			{
 				throw new AuthManagerException(OTPErrorCode.PHONENOTREGISTERED.getErrorCode(),OTPErrorCode.PHONENOTREGISTERED.getErrorMessage());
 			}
-			if((String) res.get("email")!=null)
+			if(res.get("email")!=null)
 			{
-				mosipDto.setMobile((String) res.get("email"));
+				mosipDto.setMail(res.get("email"));
 			}
 			else
 			{
