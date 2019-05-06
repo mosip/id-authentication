@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.SAXException;
 
-import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
