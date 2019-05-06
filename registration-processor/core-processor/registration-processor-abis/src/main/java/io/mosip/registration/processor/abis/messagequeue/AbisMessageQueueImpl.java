@@ -165,7 +165,7 @@ public class AbisMessageQueueImpl {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"","---response---"+response);
 
-			isrequestAddedtoQueue = mosipQueueManager.send(queue,  response.getBytes("utf-8"),
+			isrequestAddedtoQueue = mosipQueueManager.send(queue,  response.getBytes("UTF-8"),
 						abismiddlewareaddress);
 		} catch (IOException | ApisResourceAccessException | ParserConfigurationException | SAXException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
