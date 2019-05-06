@@ -367,7 +367,7 @@ export class FileUploadComponent implements OnInit {
         if (response['error'] == null) {
           console.log('response from https call', response['response']);
 
-          this.bookingService.addApplicants(response);
+          this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
           // alert('Servers unavailable,please try again after some time');
           this.displayMessage('Error', 'Servers unavailable,please try again after some time');
@@ -640,11 +640,11 @@ export class FileUploadComponent implements OnInit {
    */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response[0].docCatCode;
-    this.userFiles.doc_file_format = fileResponse.response[0].docFileFormat;
-    this.userFiles.documentId = fileResponse.response[0].documentId;
-    this.userFiles.docName = fileResponse.response[0].docName;
-    this.userFiles.docTypCode = fileResponse.response[0].docTypCode;
+    this.userFiles.docCatCode = fileResponse.response.docCatCode;
+    this.userFiles.doc_file_format = fileResponse.response.docFileFormat;
+    this.userFiles.documentId = fileResponse.response.documentId;
+    this.userFiles.docName = fileResponse.response.docName;
+    this.userFiles.docTypCode = fileResponse.response.docTypCode;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     for (let file of this.users[0].files[0]) {

@@ -37,7 +37,7 @@ export class BookingService {
   }
 
   addApplicants(applicants) {
-    this.allApplicants = applicants.response;
+    this.allApplicants = applicants;
   }
 
   addNameList(nameList: NameList) {
