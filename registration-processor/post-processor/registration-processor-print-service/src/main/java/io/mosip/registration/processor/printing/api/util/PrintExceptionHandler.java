@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
+import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,21 +59,7 @@ public class PrintExceptionHandler {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintExceptionHandler.class);
-	
-	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<PrintResponse> accessDenied(AccessDeniedException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getMessage());
-		return buildPrintApiExceptionResponse((Exception) e);
-	}
 
-	@ExceptionHandler(InvalidTokenException.class)
-	public ResponseEntity<PrintResponse> invalidToken(InvalidTokenException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getMessage());
-		return buildPrintApiExceptionResponse((Exception) e);
-	}
-	
 	/**
 	 * Reg print app exception.
 	 *
@@ -115,6 +104,13 @@ public class PrintExceptionHandler {
 		return buildPrintApiExceptionResponse(reg1);
 	}
 
+	@ExceptionHandler(InvalidFormatException.class)
+	public ResponseEntity<PrintResponse> badRequest(InvalidFormatException ex){
+		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
+				String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), "idType"));
+		return buildPrintApiExceptionResponse(reg1);
+	}
+
 	@ExceptionHandler(JsonParseException.class)
 	public ResponseEntity<PrintResponse> badRequest(JsonParseException ex) {
 		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION, ex);
@@ -128,6 +124,16 @@ public class PrintExceptionHandler {
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<PrintResponse> dataExceptionHandler(final DataIntegrityViolationException e) {
+		return buildPrintApiExceptionResponse((Exception)e);
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<PrintResponse> accessDenied(AccessDeniedException e) {
+		return buildPrintApiExceptionResponse((Exception)e);
+	}
+
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<PrintResponse> invalidToken(InvalidTokenException e) {
 		return buildPrintApiExceptionResponse((Exception)e);
 	}
 

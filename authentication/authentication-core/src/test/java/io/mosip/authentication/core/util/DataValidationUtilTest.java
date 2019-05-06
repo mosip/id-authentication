@@ -7,8 +7,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * The Class DataValidationUtilTest.

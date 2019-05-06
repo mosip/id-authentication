@@ -2,12 +2,10 @@ package io.mosip.authentication.core.spi.indauth.facade;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 
 /**
  * The Interface AuthFacade.
@@ -29,17 +27,5 @@ public interface AuthFacade {
 	 */
 	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request,String partnerId)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
-
-	/**
-	 * Process the KycAuthRequestDTO to integrate with KycService.
-	 *
-	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
-	 * @param authResponseDTO   the auth response DTO
-	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,String partnerId)
-			throws IdAuthenticationBusinessException;
 
 }

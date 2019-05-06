@@ -94,6 +94,21 @@
 			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>${kernel.templatemanager.velocity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${velocity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>${velocity.tools.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>${powermock.module.junit4.version}</version>
