@@ -35,6 +35,7 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -50,7 +51,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class,
 		IdInfoHelper.class, CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class })
+		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class })
 public class KycAuthenticationApplication {
 
 	/**
