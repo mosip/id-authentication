@@ -1447,8 +1447,6 @@ public class DemographicDetailController extends BaseController {
 				.getApplicantBiometricDTO();
 		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO();
-		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
-				.getApplicantDocumentDTO();
 
 	
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
@@ -1617,7 +1615,7 @@ public class DemographicDetailController extends BaseController {
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
 						.with(identity -> identity.setIndividualBiometrics(applicantBiometric.getFingerprintDetailsDTO()
 								.isEmpty() && applicantBiometric.getIrisDetailsDTO().isEmpty()
-								&& applicantDocumentDTO.getPhoto() == null
+								&& applicantBiometric.getFace().getFace() == null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
@@ -1630,7 +1628,7 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setParentOrGuardianBiometrics(introducerBiometric
 								.getFingerprintDetailsDTO().isEmpty()
 								&& introducerBiometric.getIrisDetailsDTO().isEmpty()
-								&& introducerBiometric.getFaceDetailsDTO().getFace() == null
+								&& introducerBiometric.getFace().getFace() == null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties

@@ -24,6 +24,7 @@ import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -53,6 +54,9 @@ public class RejectionController extends BaseController implements Initializable
 
 	@Autowired
 	private MasterSyncService masterSyncService;
+	
+	@Autowired
+	private RegistrationApprovalController registrationApprovalController;
 	/**
 	 * Combobox for for rejection reason
 	 */
@@ -72,6 +76,8 @@ public class RejectionController extends BaseController implements Initializable
 
 	/** The rejection table. */
 	private TableView<RegistrationApprovalDTO> regRejectionTable;
+	
+	private ObservableList<RegistrationApprovalDTO> observableList;
 
 	private String controllerName;
 	
@@ -106,11 +112,12 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param mapList
 	 * @param table
 	 */
-	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList,
+	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalDTO> oList,
 			TableView<RegistrationApprovalDTO> table, String controller) {
 		rejRegData = regData;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
+		observableList = oList;
 		regRejectionTable = table;
 		controllerName = controller;
 	}
@@ -145,11 +152,12 @@ public class RejectionController extends BaseController implements Initializable
 
 			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
-					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
-					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
+					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
+					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
 
-			regRejectionTable.getItems().set(rowNum, approvalDTO);
+			observableList.set(rowNum, approvalDTO);
+			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
 			regRejectionTable.getFocusModel().focus(rowNum);
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

@@ -461,12 +461,15 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
 		try {
-			if (SessionContext.userMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS) == null) {
-				SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, false);
+			Boolean toogleBioException = false;
+			if(!SessionContext.userMap().isEmpty()) {
+				if (SessionContext.userMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS) == null) {
+					SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, false);
+				}
+				toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
+						|| (Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
 			}
-			Boolean toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-					|| (Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
 
 			if (!userAuthenticationTypeList.isEmpty()) {
 				authCount++;

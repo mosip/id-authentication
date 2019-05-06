@@ -147,9 +147,11 @@ public class RegistrationApprovalController extends BaseController implements In
 	private AuthenticationController authenticationController;
 
 	private Stage primaryStage;
-	
+
 	@FXML
 	private TextField filterField;
+
+	private ObservableList<RegistrationApprovalDTO> observableList;
 
 	/*
 	 * (non-Javadoc)
@@ -203,7 +205,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
-		
+
 		table.getSelectionModel().selectFirst();
 
 		if (table.getSelectionModel().getSelectedItem() != null) {
@@ -221,7 +223,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				viewAck();
 			}
 		});
-		
+
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
 	}
 
@@ -277,61 +279,61 @@ public class RegistrationApprovalController extends BaseController implements In
 		if (!listData.isEmpty()) {
 
 			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
-
-			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
-
-			  FilteredList<RegistrationApprovalDTO> filteredData = new FilteredList<>(oList, p -> true);
-		        
-		        // 2. Set the filter Predicate whenever the filter changes.
-		        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-		            filteredData.setPredicate(reg -> {
-		                // If filter text is empty, display all ID's.
-		                if (newValue == null || newValue.isEmpty()) {
-		                    return true;
-		                }
-		                
-		                // Compare every ID with filter text.
-		                String lowerCaseFilter = newValue.toLowerCase();
-		                
-		                if (reg.getId().contains(lowerCaseFilter)) {
-		                    // Filter matches first name.
-		                	table.getSelectionModel().selectFirst();
-		                	if(table.getSelectionModel().getSelectedItem()!=null) {
-		                		viewAck();	
-		                	}
-		                    return true;
-		                } 
-		                return false; // Does not match.
-		            });
-		            table.getSelectionModel().selectFirst();
-                	if(table.getSelectionModel().getSelectedItem()!=null) {
-                		viewAck();	
-                	}
-		        });
-		        
-		        // 3. Wrap the FilteredList in a SortedList. 
-		        SortedList<RegistrationApprovalDTO> sortedData = new SortedList<>(filteredData);
-		        
-		        // 4. Bind the SortedList comparator to the TableView comparator.
-		        sortedData.comparatorProperty().bind(table.comparatorProperty());
-		        
-			table.setItems(sortedData);
 			
+			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+			observableList = FXCollections.observableArrayList(listData);			
+			wrapListAndAddFiltering(observableList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
 		}
-		
+
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
+	}
+
+	protected void wrapListAndAddFiltering(ObservableList<RegistrationApprovalDTO> oList) {
+		FilteredList<RegistrationApprovalDTO> filteredData = new FilteredList<>(oList, p -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes.
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(reg -> {
+				// If filter text is empty, display all ID's.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				// Compare every ID with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+				if (reg.getId().contains(lowerCaseFilter)) {
+					// Filter matches first name.
+					table.getSelectionModel().selectFirst();
+					if (table.getSelectionModel().getSelectedItem() != null) {
+						viewAck();
+					}
+					return true;
+				}
+				return false; // Does not match.
+			});
+			table.getSelectionModel().selectFirst();
+			if (table.getSelectionModel().getSelectedItem() != null) {
+				viewAck();
+			}
+		});
+		// 3. Wrap the FilteredList in a SortedList.
+		SortedList<RegistrationApprovalDTO> sortedList = new SortedList<>(filteredData);
+
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedList.comparatorProperty().bind(table.comparatorProperty());
+		table.setItems(sortedList);
 	}
 
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -355,7 +357,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			Map<String, String> map = new WeakHashMap<>();
 			map.put(RegistrationConstants.REGISTRATIONID,
-					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
+					observableList.get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -367,7 +369,8 @@ public class RegistrationApprovalController extends BaseController implements In
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);
-			table.getItems().set(rowNum, approvalDTO);
+			observableList.set(rowNum, approvalDTO);
+			wrapListAndAddFiltering(observableList);
 			table.requestFocus();
 			table.getFocusModel().focus(rowNum);
 
@@ -377,8 +380,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
-							primarystage, approvalmapList, table,
+					rejectionController.initData(observableList.get(table.getSelectionModel().getFocusedIndex()),
+							primarystage, approvalmapList, observableList, table,
 							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
@@ -409,10 +412,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
