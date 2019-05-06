@@ -79,7 +79,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
-		lib.compareValues(validateOTPRes.jsonPath().get("response[0].message").toString(), "OTP is Expired");
+		lib.compareValues(validateOTPRes.jsonPath().get("response[0].message").toString(), "OTP_EXPIRED");
 	}
 	@Test
 	public void validateWithoutGeneratingOtp(){
@@ -108,7 +108,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 			lib.validateOTP(validateOTPRequest);
 		}
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
-		String message = validateOTP.jsonPath().get("response.message").toString();
+		String message = validateOTP.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "USER_BLOCKED");
 	}
 	@Test
@@ -121,8 +121,8 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		response = lib.generateOTP(sendOtpRequest);
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, "236578");
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
-		String message = validateOTP.jsonPath().get("response.message").toString();
-		lib.compareValues(message, "OTP is invalid");
+		String message = validateOTP.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(message, "VALIDATION_UNSUCCESSFUL");
 	}
 	@Test
 	public void validateWithInvalidUserID() {
@@ -141,7 +141,6 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String message = validateOTP.jsonPath().get("error[0].message").toString();
 		lib.compareValues(message, "USERID_OTP_VALIDATION_FAILED");
 	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

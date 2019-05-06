@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
-import io.mosip.preregistration.dao.PreregistratonDAO;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -60,6 +60,7 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
+	PreregistrationDAO dao=new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -70,20 +71,28 @@ public class Sample extends BaseTestCase implements ITest {
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void retrivePreRegistrationDataForCancelAppointment() {
+	public void createMultipleAppDeleteFewFetchAllAppsByUserId() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		PreregistratonDAO dao=new PreregistratonDAO();
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		dao.setDate(preID);
-		lib.expiredStatus();
-		lib.getPreRegistrationStatus(preID);
+		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
+		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
+		Response preRegResponse3 = lib.CreatePreReg(createPregRequest);
+		// Delete a preReg
+		String preRegIdToDelete = preRegResponse3.jsonPath().get("response.preRegistrationId").toString();
+		/*response = lib.discardApplication(preRegIdToDelete);
+		lib.compareValues(response.jsonPath().getString("response.preRegistrationId").toString(), preRegIdToDelete);*/
+
+		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		
+			int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
+			Assert.assertEquals(no, 2);
+			fetchResponse.jsonPath().get("response.preRegistrationId").toString()
+					.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
+			fetchResponse.jsonPath().get("response[1].preRegistrationId").toString()
+					.contains((preRegResponse2.jsonPath().get("response.preRegistrationId")).toString());
+
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

@@ -10,7 +10,7 @@ import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 
 
-public class PreregistratonDAO 
+public class PreregistrationDAO 
 {
 	public List<? extends Object> preregFetchPreregDetails(String preRegId)
 	{
@@ -37,7 +37,7 @@ public class PreregistratonDAO
 		c.add(Calendar.DATE, -1); 
 		String date = sdf.format(c.getTime());
 		String hql="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
-		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "auditdev.cfg.xml", "preregqa.cfg.xml");
+		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "preregdev.cfg.xml", "preregqa.cfg.xml");
 	}
 	
 	

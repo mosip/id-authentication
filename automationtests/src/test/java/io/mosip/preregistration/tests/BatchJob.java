@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -59,6 +60,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
+	PreregistrationDAO dao=new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -76,8 +78,8 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
-		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
-		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
 		lib.expiredStatus();
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
