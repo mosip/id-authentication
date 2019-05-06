@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -44,7 +45,8 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Retrieve All PreRegId By RegCenterId related Positive and Negative test cases
+ * Test Class to perform Retrieve All PreRegId By RegCenterId related Positive
+ * and Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
@@ -52,13 +54,11 @@ import io.restassured.response.Response;
 
 public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITest {
 
-	
-	
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
+	static String preId = "";
+	static SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(RetriveAllPreRegIdByRegCenterId.class);
 	boolean status = false;
@@ -71,20 +71,19 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	static String folderPath = "preReg/RetrivePreIdByRegCenterId";
 	static String outputFile = "RetrivePreIdByRegCenterIdOutput.json";
 	static String requestKeyFile = "RetrivePreIdByRegCenterIdRequest.json";
-	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI ;
-	
-	//implement,IInvokedMethodListener
-		public RetriveAllPreRegIdByRegCenterId() {
+	private static String preReg_URI;
 
-		}
-	
+	// implement,IInvokedMethodListener
+	public RetriveAllPreRegIdByRegCenterId() {
+
+	}
+
 	@DataProvider(name = "RetrivePreIdByRegCenterId")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		
-		
+
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -97,60 +96,110 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	}
 
 	@Test(dataProvider = "RetrivePreIdByRegCenterId")
-	public void retrivePreRegistrationByRegistrationCenterId(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+	public void retrivePreRegistrationByRegistrationCenterId(String testSuite, Integer i, JSONObject object)
+			throws Exception {
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
-		
+
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		String testCase = object.get("testCaseName").toString();
-		
-		
-		
-		
-		if (testCase.contains("smoke")) {
+		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDate fromDate = currentTime.toLocalDate();
 
-			// Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
-			preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String val = null;
+		String name = null;
+		if (testCaseName.contains("smoke")) {
+			val = testCaseName;
+		} else {
+			String[] parts = testCaseName.split("_");
+			val = parts[0];
+			name = parts[1];
+		}
 
-			/* Fetch availability[or]center details */
-			Response fetchCenter = preRegLib.FetchCentre();
+		// Creating the Pre-Registration Application
+		Response createApplicationResponse = preRegLib.CreatePreReg();
+		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 
-			/* Book An Appointment for the available data */
-			Response bookAppointmentResponse = preRegLib.BookAppointment( fetchCenter, preId.toString());
-			
-			
-			  Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId);
-			   String fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
-			   System.out.println("Fetch App Res::"+fetchAppStr);
+		/* Fetch availability[or]center details */
+		Response fetchCenter = preRegLib.FetchCentre();
+
+		/* Book An Appointment for the available data */
+		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+
+		Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId);
+		String fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
+		System.out.println("Fetch App Res::" + fetchAppStr);
+
+		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
+		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
+
+		switch ("RetrivePreIdByRegCenterIdByPassingInvalidFromDate") {
+
+		case "RetrivePreIdByRegCenterId_smoke":
+
 			// Retrieve all pre-registration ids by registration center id
-			  Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
-			
-			
+			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
 
 			outerKeys.add("responsetime");
 			innerKeys.add("registration_center_id");
 			innerKeys.add("pre_registration_ids");
+			status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
 
-			//status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
+			break;
 
-		} else {
-			// Actualresponse=applicationLibrary.getRequest(preReg_URI,GetHeader.getHeader(actualRequest));
+		case "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId":
+			String registartionCenterId = actualRequest.get("registartion_center_id").toString();
 
-			Actualresponse = applicationLibrary.postRequest(actualRequest, preReg_URI);
+			HashMap<String, String> parm = new HashMap<>();
+			parm.put("from_date", fromDate.toString());
+			parm.put("to_date", toDate);
 
+			String preReg_RetriveBookedPreRegIdsByRegId = preReg_URI + registartionCenterId;
+
+			Actualresponse = applicationLibrary
+					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
+
+			System.out.println("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
 			outerKeys.add("resTime");
 			innerKeys.add("registartion_center_id");
 			innerKeys.add("pre_registration_ids");
 
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
+			break;
+
+		case "RetrivePreIdByRegCenterIdByPassingInvalidFromDate":
+			String frmDate = actualRequest.get("from_date").toString();
+
+			HashMap<String, String> invPreIdParm = new HashMap<>();
+			invPreIdParm.put("from_date", frmDate);
+			invPreIdParm.put("to_date", toDate);
+
+			String preReg_RetriveBookedPreRegIdByRegId = preReg_URI + regCenterId;
+
+			Actualresponse = applicationLibrary
+					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
+
+			System.out.println("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
+			outerKeys.add("resTime");
+			innerKeys.add("registartion_center_id");
+			innerKeys.add("pre_registration_ids");
+
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+
+		default:
+
+			break;
 		}
-		
-		
+
+		if (name != null) {
+			testCaseName = val + "_" + name;
+		}
+
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -166,16 +215,15 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		
+
 	}
 
 	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
+
 		testCaseName = object.get("testCaseName").toString();
-		
-		
+
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 		authToken = preRegLib.getToken();
 	}
@@ -198,20 +246,18 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath =  "src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source =  "src/test/resources/" + folderPath + "/";
-		
+		String source = "src/test/resources/" + folderPath + "/";
+
 	}
 
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }

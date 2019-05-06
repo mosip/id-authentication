@@ -323,7 +323,7 @@ public class prereg_dbread {
 	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
 			factory = new Configuration().configure(devdbConfig)
 		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else
@@ -396,6 +396,34 @@ public class prereg_dbread {
 		
 
 	}
+	@SuppressWarnings("deprecation")
+	public static void  dbConnectionUpdate(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure(devdbConfig)
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		UpdateData(session, queryStr);
+	}
+	private static void UpdateData(Session session, String queryStr)
+	{
+		int size;		
+		String queryString=queryStr;
+		Query query = session.createSQLQuery(queryString);
+		int res = query.executeUpdate();
+		session.getTransaction().commit();	
+			factory.close();
+	}
+	
 	
 	
 	public static List<Object> validateDBdata(Session session, String queryStr)

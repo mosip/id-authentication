@@ -895,6 +895,18 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
 		return getResponse;
 	}
+	public Response get_RequestSync(String url, String contentHeader, String acceptHeader) {
+		logger.info("REST-ASSURED: Sending a Get request to " + url);
+		PreRegistrationLibrary lib = new PreRegistrationLibrary();
+		String preRegAdminAuthToken = lib.preRegAdminToken();
+		Cookie.Builder builder = new Cookie.Builder("Authorization", preRegAdminAuthToken);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation()
+				.contentType(MediaType.APPLICATION_JSON).log().all().when().get(url).then().log().all().extract()
+				.response();
+		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
+		return getResponse;
+	}
 
 	public Response get_Request_Path_queryParamString(String url, HashMap<String, String> path_value,
 			HashMap<String, String> query_value) {

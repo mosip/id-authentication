@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import io.mosip.preregistration.dao.PreregistratonDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -70,19 +71,18 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 	@Test(groups = { "IntegrationScenarios" })
 	public void retrivePreRegistrationDataForCancelAppointment() {
-		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		PreregistratonDAO dao=new PreregistratonDAO();
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);*/
+		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
-		/*lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetails, preID);
-		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.message"), "Booking data not found");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors.errorCode"), "PRG_BOOK_RCI_013");
-*/
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
+		lib.expiredStatus();
+		lib.getPreRegistrationStatus(preID);
+		
 	}
 	@Override
 	public String getTestName() {

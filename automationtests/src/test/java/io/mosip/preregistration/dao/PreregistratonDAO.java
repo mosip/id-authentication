@@ -1,9 +1,13 @@
 package io.mosip.preregistration.dao;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.preregistration.entity.RegistrationBookingEntity;
 
 
 public class PreregistratonDAO 
@@ -24,6 +28,16 @@ public class PreregistratonDAO
 		System.out.println("My info::"+hql);
 		int result = prereg_dbread.validateDBUpdate(hql);
 		return result;
+	}
+	public void setDate(String preRegId)
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date()); // Now use today date.
+		c.add(Calendar.DATE, -1); 
+		String date = sdf.format(c.getTime());
+		String hql="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
+		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "auditdev.cfg.xml", "preregqa.cfg.xml");
 	}
 	
 	

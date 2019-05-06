@@ -91,7 +91,11 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
+<<<<<<< HEAD
 		switch ("smoke") {
+=======
+		switch ("smokeAndRegression") {
+>>>>>>> 54f068b02e79a307f7b0561c88e7386801edf1f0
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
