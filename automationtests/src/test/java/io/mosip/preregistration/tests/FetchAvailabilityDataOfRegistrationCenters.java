@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -115,7 +115,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 	 * @throws Exception
 	 */
 	@Test(dataProvider = "fetchRegCenterDetails")
-	public void FftchAvailabilityDataOfRegistrationCenters(String testSuite, Integer i, JSONObject object) throws Exception {
+	public void FetchAvailabilityDataOfRegistrationCenters(String testSuite, Integer i, JSONObject object) throws Exception {
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
