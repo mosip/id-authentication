@@ -84,7 +84,6 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
 	@Test
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
