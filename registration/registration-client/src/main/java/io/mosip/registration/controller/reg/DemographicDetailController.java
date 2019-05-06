@@ -693,7 +693,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-
+			RegistrationConstants.CNI_MANDATORY= String.valueOf(false);
 			if (getRegistrationDTOFromSession() == null) {
 				validation.updateAsLostUIN(false);
 				registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
@@ -959,6 +959,7 @@ public class DemographicDetailController extends BaseController {
 				ageFieldLabel.setVisible(false);
 				ageFieldLocalLanguageLabel.setVisible(false);
 				ageFieldLocalLanguageMessage.setVisible(false);
+				ageField.setPromptText(ageFieldLabel.getText());
 				dobMessage.setVisible(false);
 				ddLabel.setVisible(false);
 				mmLabel.setVisible(false);
@@ -1660,6 +1661,7 @@ public class DemographicDetailController extends BaseController {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 			keyboardNode.setDisable(false);
+			RegistrationConstants.CNI_MANDATORY= String.valueOf(true);
 
 			copyPrevious.setDisable(true);
 			autoFillBtn.setVisible(false);

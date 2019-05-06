@@ -1253,6 +1253,8 @@ public class RegistrationConstants {
 			.concat("addressLine3.[*].value");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
+	public static String CNI_MANDATORY = String.valueOf(false);
+
 	public static final String REGEX = "regex";
 	public static final String IS_MANDATORY = "isMandatory";
 	public static final String IS_FIXED = "isFixed";
