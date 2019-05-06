@@ -21,11 +21,13 @@ export class SidebarComponent implements OnInit {
 
   showMenu() {
     this.display = true;
+    console.log(this.display);
     document.getElementById('sidebar').style.display = 'block';
   }
 
   hideMenu() {
     this.display = false;
+    console.log(this.display);
     document.getElementById('sidebar').style.display = 'none';
   }
 
