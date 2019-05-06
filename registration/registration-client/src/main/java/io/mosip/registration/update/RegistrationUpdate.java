@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -187,7 +188,8 @@ public class RegistrationUpdate {
 			setLatestVersion(null);
 
 		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
-
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			replaceBackupWithCurrentApplication(backUp);
 
 			throw exception;
@@ -378,6 +380,8 @@ public class RegistrationUpdate {
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			return false;
 		}
 
