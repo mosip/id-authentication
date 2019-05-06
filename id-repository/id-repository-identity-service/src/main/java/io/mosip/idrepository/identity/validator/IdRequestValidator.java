@@ -113,7 +113,7 @@ public class IdRequestValidator implements Validator {
 
 	/** The status. */
 	@Resource
-	private List<String> status;
+	private List<String> uinStatus;
 
 	/** The rid validator impl. */
 	@Autowired
@@ -216,7 +216,7 @@ public class IdRequestValidator implements Validator {
 	 * @param method the method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
-		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.status.contains(status))) {
+		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.uinStatus.contains(status))) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hibernate.Interceptor;
@@ -23,7 +22,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -51,8 +49,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The db. */
 	private Map<String, Map<String, String>> db;
 
-	/** The status. */
-	private List<String> status;
+	/** The uin Status. */
+	private List<String> uinStatus;
 
 	/** The allowed bio types. */
 	private List<String> allowedBioAttributes;
@@ -87,8 +85,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 *
 	 * @param status the status
 	 */
-	public void setStatus(List<String> status) {
-		this.status = status;
+	public void setUinStatus(List<String> uinStatus) {
+		this.uinStatus = uinStatus;
 	}
 
 	/**
@@ -115,14 +113,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	public void setAllowedTypes(List<String> allowedTypes) {
 		this.allowedTypes = allowedTypes;
-	}
-
-	/**
-	 * Setup.
-	 */
-	@PostConstruct
-	public void setup() {
-		status.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()));
 	}
 
 	//FIXME Need to check for UIN-Reg ID scenario
@@ -176,8 +166,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the map
 	 */
 	@Bean
-	public List<String> status() {
-		return Collections.unmodifiableList(status);
+	public List<String> uinStatus() {
+		return Collections.unmodifiableList(uinStatus);
 	}
 
 	/**

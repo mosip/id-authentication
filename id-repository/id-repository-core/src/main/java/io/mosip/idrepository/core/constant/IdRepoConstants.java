@@ -26,7 +26,7 @@ public enum IdRepoConstants {
 	DATETIME_TIMEZONE("mosip.idrepo.datetime.timezone"),
 
 	/** The status registered. */
-	ACTIVE_STATUS("mosip.idrepo.status.registered"),
+	ACTIVE_STATUS("mosip.idrepo.uin-status.registered"),
 
 	/** The datetime pattern. */
 	DATETIME_PATTERN("mosip.utc-datetime-pattern"),
