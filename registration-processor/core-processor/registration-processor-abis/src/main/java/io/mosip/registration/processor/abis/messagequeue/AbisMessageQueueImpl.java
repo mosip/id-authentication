@@ -3,24 +3,33 @@ package io.mosip.registration.processor.abis.messagequeue;
 import java.io.IOException;
 
 import javax.jms.Message;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
+import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
-import io.mosip.registration.processor.abis.service.AbisService;
+import io.vertx.core.json.JsonObject;
 
 /**
  * The AbisMessageQueueImpl class
@@ -71,6 +80,16 @@ public class AbisMessageQueueImpl {
 	
 	private MosipQueue queue;
 	
+	private static final String ABIS_INSERT = "mosip.abis.insert";
+	
+	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
+	
+	private static final String ID = "id";
+	
+	AbisInsertRequestDto abisInsertRequestDto;
+	
+	AbisIdentifyRequestDto identifyRequestDto;
+	
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisMessageQueueImpl.class);
 	
@@ -116,21 +135,41 @@ public class AbisMessageQueueImpl {
 
 	public boolean consumeLogic(Message message, String abismiddlewareaddress) {
 		boolean isrequestAddedtoQueue = false;
-		AbisRequestDto abisRequestDto;			
+		String response=null;			
 		
-		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
-
+		String request = new String(((ActiveMQBytesMessage) message).getContent().data);
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"","---received---"+request);
 		try {
-			abisRequestDto = JsonUtil.objectMapperReadValue(response, AbisRequestDto.class);
+			JsonObject object=JsonUtil.objectMapperReadValue(request, JsonObject.class);
+			ObjectMapper obj = new ObjectMapper(); 
 			
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"","---received---"+response);
+			if(object.getString(ID).matches(ABIS_INSERT)) {
+				abisInsertRequestDto = JsonUtil.objectMapperReadValue(request, AbisInsertRequestDto.class);
+				AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
+				response=obj.writeValueAsString(abisInsertResponseDto);
+			}
+			
+			else if(object.getString(ID).matches(ABIS_IDENTIFY)) {
+				identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
+				AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
+				response=obj.writeValueAsString(identifyResponseDto);
+			}
+			
+			else {
+				object.put("response", "invalid request");
+				response=obj.writeValueAsString(object);
+			}
+			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"","---response---"+response);
 
-			isrequestAddedtoQueue = mosipQueueManager.send(queue,  response.getBytes(),
+			isrequestAddedtoQueue = mosipQueueManager.send(queue,  response.getBytes("utf-8"),
 						abismiddlewareaddress);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException | ApisResourceAccessException | ParserConfigurationException | SAXException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					e.getMessage(),e.getStackTrace().toString());
 		}
 		
 			
