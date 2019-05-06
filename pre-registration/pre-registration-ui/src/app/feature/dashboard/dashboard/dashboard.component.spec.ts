@@ -72,29 +72,31 @@ class MockService {
       err: null,
       status: true,
       resTime: '2019-03-12T13:17:28.276Z',
-      response: [
-        {
-          preRegistrationId: '29564951460821',
-          fullname: [
-            {
-              language: 'fra',
-              value: 'test1'
+      response: {
+        basicDetails: [
+          {
+            preRegistrationId: '29564951460821',
+            fullname: [
+              {
+                language: 'fra',
+                value: 'test1'
+              },
+              {
+                language: 'ara',
+                value: 'تِست١'
+              }
+            ],
+            statusCode: 'Booked',
+            bookingRegistrationDTO: {
+              registrationCenterId: '123',
+              appointment_date: '12/12/1993',
+              time_slot_from: '09:30',
+              time_slot_to: '09:45'
             },
-            {
-              language: 'ara',
-              value: 'تِست١'
-            }
-          ],
-          statusCode: 'Booked',
-          bookingRegistrationDTO: {
-            registrationCenterId: '123',
-            appointment_date: '12/12/1993',
-            time_slot_from: '09:30',
-            time_slot_to: '09:45'
-          },
-          postalCode: '212332'
-        }
-      ]
+            postalCode: '212332'
+          }
+        ]
+      }
     };
 
     return of([applicant]);
@@ -276,68 +278,111 @@ describe('Dashboard Component', () => {
   it('should create applicant', () => {
     localStorage.setItem('langCode', 'ara');
     let applicants = {
-      err: null,
-      status: true,
-      resTime: '2019-03-12T13:17:28.276Z',
-      response: [
-        {
-          preRegistrationId: '29564951460821',
-          fullname: [
-            {
-              language: 'fra',
-              value: 'test1'
+      id: 'mosip.pre-registration.demographic.fetch.basic',
+      version: '1.0',
+      responsetime: '2019-02-11T13:46:00.534Z',
+      response: {
+        basicDetails: [
+          {
+            preRegistrationId: '62076019780925',
+            fullname: [
+              {
+                language: 'fra',
+                value: 'ashish'
+              },
+              {
+                language: 'ara',
+                value: 'َسهِسه'
+              }
+            ],
+            statusCode: 'Pending_Appointment',
+            appointmentDetails: null,
+            postalCode: '767882'
+          },
+          {
+            preRegistrationId: '64269837502851',
+            fullname: [
+              {
+                language: 'fra',
+                value: 'ashish'
+              },
+              {
+                language: 'ara',
+                value: 'َسهِسه'
+              }
+            ],
+            statusCode: 'Booked',
+            appointmentDetails: {
+              registration_center_id: 'RCG-RC-01',
+              appointment_date: '2018-01-17',
+              time_slot_from: '09:00:00',
+              time_slot_to: '09:30:00'
             },
-            {
-              language: 'ara',
-              value: 'تِست١'
-            }
-          ],
-          statusCode: 'Pending_Appointment',
-          bookingRegistrationDTO: null,
-          postalCode: '212332'
-        }
-      ]
+            postalCode: '767882'
+          }
+        ]
+      },
+      errors: null
     };
 
     // component.createApplicant([applicant], 0);
-    expect(component.createApplicant(applicants, 0).applicationID).toBe('29564951460821');
+    expect(component.createApplicant(applicants, 0).applicationID).toBe('62076019780925');
   });
 
   it('should create applicant with booked status', () => {
     let applicant = {
-      preRegistrationId: '29564951460821',
-      fullname: [
-        {
-          language: 'fra',
-          value: 'test1'
-        },
-        {
-          language: 'ara',
-          value: 'تِست١'
-        }
-      ],
-      statusCode: 'Booked',
-      bookingRegistrationDTO: {
-        registrationCenterId: '123',
-        appointment_date: '12/12/1993',
-        time_slot_from: '09:30',
-        time_slot_to: '09:45'
+      id: 'mosip.pre-registration.demographic.fetch.basic',
+      version: '1.0',
+      responsetime: '2019-02-11T13:46:00.534Z',
+      response: {
+        basicDetails: [
+          {
+            preRegistrationId: '62076019780925',
+            fullname: [
+              {
+                language: 'fra',
+                value: 'ashish'
+              },
+              {
+                language: 'ara',
+                value: 'َسهِسه'
+              }
+            ],
+            statusCode: 'Pending_Appointment',
+            appointmentDetails: null,
+            postalCode: '767882'
+          },
+          {
+            preRegistrationId: '64269837502851',
+            fullname: [
+              {
+                language: 'fra',
+                value: 'ashish'
+              },
+              {
+                language: 'ara',
+                value: 'َسهِسه'
+              }
+            ],
+            statusCode: 'Booked',
+            appointmentDetails: {
+              registration_center_id: 'RCG-RC-01',
+              appointment_date: '2018-01-17',
+              time_slot_from: '09:00:00',
+              time_slot_to: '09:30:00'
+            },
+            postalCode: '767882'
+          }
+        ]
       },
-      postalCode: '212332'
-    };
-    localStorage.setItem('langCode', 'ara');
-    let applicants = {
-      err: null,
-      status: true,
-      resTime: '2019-03-12T13:17:28.276Z',
-      response: [applicant, applicant]
+      errors: null
     };
 
     component.loginId = '1243';
 
     // component.createApplicant([applicant], 0);
     expect(router.navigate).toHaveBeenCalledWith(['/']);
-    expect(component.createApplicant(applicants, 0).applicationID).toBe('29564951460821');
+    expect(component.createApplicant(applicant, 0).applicationID).toBe('62076019780925');
   });
 
   it('ON Select User', () => {
