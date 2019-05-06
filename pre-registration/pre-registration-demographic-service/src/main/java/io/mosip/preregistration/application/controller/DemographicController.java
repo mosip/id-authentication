@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
+import io.mosip.preregistration.application.dto.DemographicMetadataDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -174,7 +174,7 @@ public class DemographicController {
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<MainResponseDTO<PreRegistrationViewDTO>> getAllApplications(HttpServletRequest res) {
+	public ResponseEntity<MainResponseDTO<DemographicMetadataDTO>> getAllApplications(HttpServletRequest res) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all applications with userId " + userId + " Header "

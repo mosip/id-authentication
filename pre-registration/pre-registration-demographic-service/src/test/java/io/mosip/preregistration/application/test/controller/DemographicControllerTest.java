@@ -36,6 +36,7 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
+import io.mosip.preregistration.application.dto.DemographicMetadataDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
@@ -191,13 +192,15 @@ public class DemographicControllerTest {
 	@Test
 	public void getAllApplicationTest() throws Exception {
 		String userId = "9988905333";
-		MainResponseDTO<PreRegistrationViewDTO> response = new MainResponseDTO<>();
-		//List<PreRegistrationViewDTO> viewList = new ArrayList<>();
+		MainResponseDTO<DemographicMetadataDTO> response = new MainResponseDTO<>();
+		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
+		DemographicMetadataDTO demographicMetadataDTO=new DemographicMetadataDTO();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("1234");
 		viewDto.setStatusCode("Pending_Appointment");
-		//viewList.add(viewDto);
-		response.setResponse(viewDto);
+		viewList.add(viewDto);
+		demographicMetadataDTO.setBasicDetails(viewList);
+		response.setResponse(demographicMetadataDTO);
 		Mockito.when(preRegistrationService.authUserDetails()).thenReturn(authUserDetails);
 		Mockito.when(authUserDetails.getUserId()).thenReturn(userId);
 		Mockito.when(preRegistrationService.getAllApplicationDetails(Mockito.anyString())).thenReturn(response);
