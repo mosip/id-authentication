@@ -93,7 +93,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -127,9 +127,9 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-
-		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
-
+		 System.out.println("Create:"+createApplicationResponse.asString());
+		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+       
 		if (testCaseName.contains("smoke")) {
 			// Document Upload for created application
 			// Response docUploadResponse =
@@ -140,13 +140,12 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			System.out.println("Doc Upload:" + docUploadResponse.asString());
 
 			// PreId of Uploaded document
-			preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
-			innerKeys.add("documentId");
+			//innerKeys.add("docId");
 			preRegLib.compareValues(preId, preRegIdCreateAPI);
-
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
 
 		} else {

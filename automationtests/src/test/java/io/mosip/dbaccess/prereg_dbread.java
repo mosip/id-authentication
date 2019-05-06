@@ -31,7 +31,7 @@ public class prereg_dbread {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
 				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
@@ -69,7 +69,7 @@ public class prereg_dbread {
 		{
 			boolean flag=false;
 		
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
 				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
