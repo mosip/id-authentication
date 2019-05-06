@@ -410,17 +410,30 @@ export class FileUploadComponent implements OnInit {
   viewFileByIndex(i: number) {
     this.viewFile(this.users[0].files[0][i]);
   }
+
+  getFileData(fileMeta) {
+    let file;
+    this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
+      res => {
+        file = res['response'].multipartFile;
+        return file;
+      },
+      error => {},
+      () => {}
+    );
+  }
+
   /**
    *@description method to preview a specific file.
    *
    * @param {FileModel} file
    * @memberof FileUploadComponent
    */
-  viewFile(file: FileModel) {
+  viewFile(fileMeta: FileModel) {
     // console.log('file', file);
-
-    this.fileName = file.docName;
-    this.fileByteArray = file.multipartFile;
+    let file = this.getFileData(fileMeta);
+    this.fileName = fileMeta.docName;
+    this.fileByteArray = file;
     let i = 0;
     for (let x of this.users[0].files[0]) {
       if (this.fileName === x.doc_name) {
@@ -432,11 +445,11 @@ export class FileUploadComponent implements OnInit {
       this.fileIndex = i;
       this.firstFile = false;
     }
-    this.fileExtension = file.docName.substring(file.docName.indexOf('.') + 1);
+    this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
     if (this.fileByteArray) {
       // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
 
-      switch (file.docName.substring(file.docName.indexOf('.') + 1)) {
+      switch (fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1)) {
         case 'pdf':
           this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
             'data:application/pdf;base64,' + this.fileByteArray
