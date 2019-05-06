@@ -9,7 +9,7 @@ import { CoreModule } from './core/core.module';
 import { NavigationModule } from './navigation/navigation.module';
 import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
-
+import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,8 @@ import { MaterialModule } from './material.module';
     SharedModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    UsermgmtModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,45 @@
+<div>
+  <span style="color: black;font-size: 16pt;font-weight: bold">New User Registration</span>
+  <hr width="400%" style="align-self:center" class="horizontal-line">
+</div>
+<div class="form-container">
+
+  <form class="login-form">
+    <div>
+    <div>
+      <mat-form-field class="input-full-width">
+        <input matInput placeholder="First Name" />
+      </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input matInput placeholder="Last Name" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="input-full-width">
+        <input matInput placeholder="Contact Number" type="number" />
+      </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input matInput placeholder="Email Id" />
+      </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="input-full">
+            <input matInput readonly [matDatepicker]="picker" (focus)="picker.open()" placeholder="DOB">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input matInput placeholder="User Name" />
+      </mat-form-field>
+    </div>
+    <div class="button-container">
+        <button mat-raised-button class="cancel-button" (click)="cancel()">
+            Cancel
+          </button>
+        <button mat-raised-button class="proceed-button" (click)="onSubmit()">
+          Proceed
+        </button>
+      </div>
+  </div>
+  </form>
+</div>
