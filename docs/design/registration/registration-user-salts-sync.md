@@ -22,7 +22,7 @@ The **target users** are
 
 The key **requirements** are
 
-- Server sends only the User data of users mapped to the specific Registration Center that the USB device belongs to.
+- Server sends only the User data of users mapped to the specific Registration Center that the USB device/Machine belongs to.
 
 - Data of existing users in the client is updated and data of new users is added.
 
