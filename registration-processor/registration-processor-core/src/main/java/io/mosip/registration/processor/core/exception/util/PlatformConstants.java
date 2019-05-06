@@ -67,6 +67,8 @@ public final class PlatformConstants {
 	/** The Constant RPR_BIO_DEDUPE_SERVICE_MODULE. */
 	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
 
+	public static final String RPR_BIO_DEDUPE_STAGE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDS-";
+
 	/** The Constant RPR_PRINTING_MODULE. */
 	public static final String RPR_PRINTING_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PRT-";
 
@@ -87,8 +89,8 @@ public final class PlatformConstants {
 	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
 
 	public static final String RPR_UTIL = RPR_REGISTRATION_PROCESSOR_PREFIX + "UTL-";
-	
-	public static final String ABIS=RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
+
+	public static final String ABIS = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.
