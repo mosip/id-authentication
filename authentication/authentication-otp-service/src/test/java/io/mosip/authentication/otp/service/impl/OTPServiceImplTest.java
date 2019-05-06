@@ -52,7 +52,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  *
  * @author Dinesh Karuppiah.T
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })
