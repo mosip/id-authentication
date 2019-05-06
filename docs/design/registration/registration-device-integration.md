@@ -29,25 +29,25 @@ Photo
 -   During new registration process, as part of demographic detail capture the applicant’s photo.
 -   Allow exception photo capture only if an exception has been marked.
 -   Captured image should be displayed for preview.
--   Calculate the quality of image and match it against the pre-defined threshold value.
--   Allow user to capture the images multiple time and display the highest quality of image.
+-   Calculate the quality of image and match it against the pre-defined threshold value.[Based on the Photo SDK]
+-   Allow the user to capture the images multiple time and choose the best clear imgae.
 
 Finger Print
 -   Allow the user to login to the application using any one of their finger print.
--   Authenticate the registration process by capturing the Registration officer finger print.
--   EOD Process – before approve/ reject the registration packet, capture the officer authentication.
+-   Authenticate the registration process by capturing the RO/RS finger print.
+-   EOD Process – before approve/ reject the registration packet, capture the supervisior authentication.
 -   Capture the applicant fingerprint image.
--   De-duplicate validation against the list of users or supervisor enrolled in the machine.
+-   De-duplicate validation against the list of operator or supervisor enrolled in the machine.
 
 IRIS
--	Allow the user to login to the application using IRIS.
--   Authenticate the registration process by capturing RO IRIS.
+-   Allow the user to login to the application using IRIS.
+-   Authenticate the registration process by capturing RO/RS IRIS.
 -   Capture the applicant IRIS image.
--   De-duplicate validation against the list of users or supervisor IRIS with the applicant IRIS.
+-   De-duplicate validation against the list of operator or supervisor IRIS with the applicant IRIS.
 
 Scanner
 -  Allow the user to scan the applicant [POB, POI, POA, POR] documents and attach it to the application during 
-   Registration or other process.
+   Registration or UIN Update and Lost UIN process.
 -  Only one file per document will be supported. Merge multiple pages while scanning and make it is a single docuemnt.
  
 The key **non-functional requirements** are
