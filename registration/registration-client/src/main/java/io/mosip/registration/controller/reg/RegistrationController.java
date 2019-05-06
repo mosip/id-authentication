@@ -136,7 +136,7 @@ public class RegistrationController extends BaseController {
 	 * This method is prepare the screen for uin update
 	 */
 	private void uinUpdate() {
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			demographicDetailController.uinUpdate();
 		}
 	}
