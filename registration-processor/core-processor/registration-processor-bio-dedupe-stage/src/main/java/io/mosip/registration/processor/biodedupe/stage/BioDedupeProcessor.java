@@ -1,4 +1,3 @@
-
 package io.mosip.registration.processor.biodedupe.stage;
 
 import java.io.IOException;
@@ -34,9 +33,13 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
@@ -105,6 +108,14 @@ public class BioDedupeProcessor {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+
+	/** The bio dedupe service. */
+	@Autowired
+	private BioDedupeService bioDedupeService;
+	
+	@Autowired
+	io.mosip.registration.processor.biodedupe.dao.BioDedupDao bioDedupDao;
+
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
 	@Autowired
@@ -139,8 +150,9 @@ public class BioDedupeProcessor {
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					updatePacketProcessing(registrationStatusDto);
 				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
-
+					updatePacketHandlerProcessing(registrationStatusDto);
 				}
+
 			}
 
 			registrationStatusDto
@@ -334,6 +346,41 @@ public class BioDedupeProcessor {
 
 		// no UIN
 
+	}
+
+	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto) {
+		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
+		List<RegBioRefEntity> regBioRefEntities = new ArrayList<>();
+		//TODO logic for abis handler update scenario
+		/*
+		 * 1.get abis requestIDs(List<AbisRequestDto>) from ABIS_REQUEST TABLE based on latestTransactionId (ref_regtrn_id)
+		 * 2.get Abis ResponseIDs(List<AbisResponseDto>) from ABIS_RESPONSE Table Base on abisRequestDto (abis_request_id)
+		 * 3.get ABIS_RESPONSE_DET (List<AbisResponseDetailDto>) from ABIS_RESPONSE_DET based on AbisResponseDto ( abis_response_id)
+		 * 4.IF list<AbisResponseDetailDto> is not Emplty 
+		 * 	THEN get RIDs from reg_abisref From  abis_response_det table base on (mactched_abis_ref_id)
+		 *   get UIN based on RID
+		 *   check if all UIN are same for all RID if all are same sent it to UIN stage
+		 *    if all UIN are not same send it to Manual-varificatin stage
+		 * 
+		 * */
+		
+		List<AbisResponseDetEntity>  abisResponseDetEntities = bioDedupDao.getAbisResponseDetailRecords(latestTransactionId);
+		if(abisResponseDetEntities.isEmpty()) {
+			//send to UIN stage
+		}else {
+			// get RID based on machedRefId of response detail list 
+			// match existing packet UIN with all respective RID UIN 
+			
+			for(AbisResponseDetEntity  abisResponseDetEntity: abisResponseDetEntities) {
+				regBioRefEntities.addAll(bioDedupDao.getBioRefIds(abisResponseDetEntity.getId().getMatchedBioRefId()));
+			}
+			for(RegBioRefEntity regBioRefEntity : regBioRefEntities) {
+				regBioRefEntity.getId().getRegId();
+				// Get UIN from IDrepo API using regId
+				// If all UIN's are identical send to UIN stage else
+				// send to manual varification stage
+			}
+		}
 	}
 
 }

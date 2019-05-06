@@ -10,8 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 
 /**
  * The Interface BasePacketRepository.
@@ -165,5 +169,17 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,@Param("requestType") String requestType);
+	
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId")
+	public List<AbisRequestEntity> getAbisRequestIDs(@Param("refRegtrnId") String transactionId);
+	
+	@Query("SELECT abisresp FROM AbisResponseEntity abisresp WHERE abisresp.abisRequest =:abisRequest")
+	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") AbisRequestEntity abisRequest);
+	
+	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
+	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String  responseId);
+
+	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
+	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String  bioRefId);
 
 }

@@ -18,9 +18,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private AbisResponseDetPKEntity id;
-
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "SYSTEM";
 
