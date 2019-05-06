@@ -132,6 +132,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_BookingAppointmenturi;
 	private static String uiConfigParams;
 	private static String preReg_syncAvailability;
+	private static String qrCode_URI;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -1611,7 +1612,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.remove(langCodeKey);
 			}
 		}
-
+		request.put("requesttime", getCurrentDate());
 		response = applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
 
 		return response;
@@ -1874,6 +1875,42 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
+	
+	
+	/*
+	 * Generic method to QR Code
+	 * 
+	 */
+
+	public Response QRCode() {
+		testSuite = "QRCode/QRCode_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		
+
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.authPostRequest(request, qrCode_URI);
+
+		return response;
+	}
+	
+	
+	
+	
+	
 
 	/*
 	 * Generic method for sync master data
@@ -1943,6 +1980,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
 		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
 		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
+		qrCode_URI=commonLibrary.fetch_IDRepo().get("qrCode_URI");
 	}
 
 }
