@@ -4,7 +4,7 @@ import { UserregistrationComponent } from './userregistration/userregistration.c
 
 const routes: Routes = [
 
-  { path: '', redirectTo: 'masterdata', pathMatch: 'full' },
+  { path: '', redirectTo: 'userregistration', pathMatch: 'full' },
   { path: 'userregistration', component: UserregistrationComponent }
 ];
 

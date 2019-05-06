@@ -17,17 +17,10 @@ const routes: Routes = [
     component: ParentComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', loadChildren: './feature/masterdata/masterdata.module#MasterdataModule' }
-    ]
-  },
-  {
-    path: 'user',
-    component: ParentComponent,
-    children: [
-      { path: 'management', loadChildren: './feature/usermgmt/usermgmt.module#UsermgmtModule' }
+      { path: 'dashboard', loadChildren: './feature/masterdata/masterdata.module#MasterdataModule' },
+      { path: 'usermgmt', loadChildren: './feature/usermgmt/usermgmt.module#UsermgmtModule' }
     ]
   }
-  
 ];
 
 @NgModule({
