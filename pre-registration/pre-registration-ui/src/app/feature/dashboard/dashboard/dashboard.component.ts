@@ -139,7 +139,12 @@ export class DashBoardComponent implements OnInit {
         if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
           localStorage.setItem('newApplicant', 'false');
           this.bookingService.addApplicants(applicants);
-          for (let index = 0; index < applicants[appConstants.RESPONSE].length; index++) {
+          for (
+            let index = 0;
+            index <
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails].length;
+            index++
+          ) {
             const applicant = this.createApplicant(applicants, index);
             this.users.push(applicant);
           }
@@ -223,7 +228,10 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    const applicantResponse = applicants[appConstants.RESPONSE][index];
+    console.log('applicants test', applicants);
+
+    const applicantResponse =
+      applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     let primaryIndex = 0;
     let secondaryIndex = 1;
     let lang = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];

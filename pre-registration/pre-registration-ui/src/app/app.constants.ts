@@ -130,7 +130,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
     preId: 'preRegistrationId',
     fullname: 'fullname',
     statusCode: 'statusCode',
-    postalCode: 'postalCode'
+    postalCode: 'postalCode',
+    basicDetails: 'basicDetails'
   }
 };
 
