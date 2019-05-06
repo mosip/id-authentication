@@ -86,6 +86,14 @@ public class BioDedupeProcessor {
 
 	private static final String NEW_PACKET = "New-packet";
 
+	private static final String REG_TYPE_NEW = "New";
+
+	private static final String REG_TYPE_UPDATE = "Update";
+
+	private static final String INPROGRESS = "IN-PROGRESS";
+
+	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
 
@@ -118,7 +126,7 @@ public class BioDedupeProcessor {
 		try {
 
 			String registrationType = registrationStatusDto.getRegistrationType();
-			if (registrationType.equalsIgnoreCase("NEW")) {
+			if (registrationType.equalsIgnoreCase(REG_TYPE_NEW)) {
 				String packetStatus = getElapseStatus(registrationStatusDto);
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					newPacketProcessing(registrationStatusDto);
@@ -126,7 +134,7 @@ public class BioDedupeProcessor {
 
 				}
 
-			} else if (registrationType.equalsIgnoreCase("UPDATE")) {
+			} else if (registrationType.equalsIgnoreCase(REG_TYPE_UPDATE)) {
 				String packetStatus = getElapseStatus(registrationStatusDto);
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					updatePacketProcessing(registrationStatusDto);
@@ -217,7 +225,7 @@ public class BioDedupeProcessor {
 
 	private String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto) {
 
-		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase("BIOGRAPHIC_VERIFICATION")) {
+		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase(BIOGRAPHIC_VERIFICATION)) {
 			LocalDateTime createdDateTime = registrationStatusDto.getCreateDateTime();
 			LocalDateTime currentDateTime = LocalDateTime.now();
 			Duration duration = Duration.between(createdDateTime, currentDateTime);
@@ -274,8 +282,8 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), latestTransactionId, "Bio-dedupe", "", "IN-Progress",
-					registrationStatusDto.getStatusComment());
+					registrationStatusDto.getRegistrationId(), latestTransactionId, BIOGRAPHIC_VERIFICATION, "",
+					INPROGRESS, registrationStatusDto.getStatusComment());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
@@ -299,8 +307,8 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), latestTransactionId, "Bio-dedupe", "", "IN-Progress",
-					registrationStatusDto.getStatusComment());
+					registrationStatusDto.getRegistrationId(), latestTransactionId, BIOGRAPHIC_VERIFICATION, "",
+					INPROGRESS, registrationStatusDto.getStatusComment());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
