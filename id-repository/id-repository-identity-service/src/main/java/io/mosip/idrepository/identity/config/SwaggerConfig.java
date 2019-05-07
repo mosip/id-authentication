@@ -46,7 +46,7 @@ public class SwaggerConfig {
 	 * @return the api info
 	 */
 	ApiInfo getApiInfo() {
-		return new ApiInfoBuilder().title("Kernel Id Repo Service").description("Kernel Id Repo Service").build();
+		return new ApiInfoBuilder().title("Id Repository Identity Service").description("Id Repository Identity Service").build();
 	}
 
 	@Bean
