@@ -16,7 +16,7 @@ public enum RegistrationStatusCode {
 	
 	REJECTED,
 	
-	INPROGRESS,
+	PROCESSING,
 	
 	PROCESSED
 	

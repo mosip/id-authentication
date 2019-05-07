@@ -155,7 +155,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx,
 						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.INPROGRESS.toString(), listObj),
+								RegistrationStatusCode.PROCESSING.toString(), listObj),
 						APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {

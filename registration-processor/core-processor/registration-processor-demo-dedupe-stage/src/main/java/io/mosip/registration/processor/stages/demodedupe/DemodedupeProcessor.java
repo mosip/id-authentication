@@ -138,7 +138,7 @@ public class DemodedupeProcessor {
 			if (!duplicateDtos.isEmpty()) {
 
 				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+						.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -167,7 +167,7 @@ public class DemodedupeProcessor {
 				} else {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 
 					code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
 					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()
@@ -180,7 +180,7 @@ public class DemodedupeProcessor {
 			} else {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 
 				code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
 				description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage() + " -- " +registrationId;
@@ -203,7 +203,7 @@ public class DemodedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
@@ -225,7 +225,7 @@ public class DemodedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));

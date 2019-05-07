@@ -286,7 +286,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
@@ -299,12 +299,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			object.setIsValid(Boolean.FALSE);
 			object.setRid(registrationId);
 		} catch (ApisResourceAccessException ex) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, RegistrationStatusCode.INPROGRESS.toString() + ex.getMessage()
+					registrationId, RegistrationStatusCode.PROCESSING.toString() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
@@ -605,7 +605,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				if (idResponseDto != null && idResponseDto.getResponse() != null) {
 					if (idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 						registrationStatusDto
-								.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+								.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
 						description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
 						object.setIsValid(Boolean.TRUE);

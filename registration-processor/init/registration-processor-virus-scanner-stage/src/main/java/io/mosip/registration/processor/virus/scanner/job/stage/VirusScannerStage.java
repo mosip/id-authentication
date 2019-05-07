@@ -282,7 +282,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private void sendToPacketUploaderStage(InternalRegistrationStatusDto entry) {
 		String registrationId = entry.getRegistrationId();
 
-		entry.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+		entry.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESSFUL);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;

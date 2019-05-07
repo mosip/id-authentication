@@ -222,7 +222,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 					.getRegistrationStatus(regId);
 
 			String uin = packetInfoManager.getUINByRid(regId).get(0);
-
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
@@ -404,7 +403,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
 				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, uin, status);
 				if (!responseMessageDto.getIsValid()) {
-					this.setResponse(ctx, RegistrationStatusCode.INPROGRESS);
+					this.setResponse(ctx, RegistrationStatusCode.PROCESSED);
 				} else {
 					this.setResponse(ctx, "Caught internal error in messageDto");
 				}

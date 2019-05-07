@@ -174,7 +174,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(regEntity.getRegistrationType());
 					dto.setReferenceRegistrationId(null);
-					dto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+					dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 					dto.setLangCode("eng");
 					dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
 					dto.setReProcessRetryCount(0);

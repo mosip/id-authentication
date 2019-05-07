@@ -288,7 +288,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.INPROGRESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
