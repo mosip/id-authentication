@@ -367,7 +367,7 @@ export class FileUploadComponent implements OnInit {
         if (response['error'] == null) {
           console.log('response from https call', response['response']);
 
-          this.bookingService.addApplicants(response);
+          this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
           // alert('Servers unavailable,please try again after some time');
           this.displayMessage('Error', 'Servers unavailable,please try again after some time');
@@ -410,17 +410,30 @@ export class FileUploadComponent implements OnInit {
   viewFileByIndex(i: number) {
     this.viewFile(this.users[0].files[0][i]);
   }
+
+  getFileData(fileMeta) {
+    let file;
+    this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
+      res => {
+        file = res['response'].multipartFile;
+        return file;
+      },
+      error => {},
+      () => {}
+    );
+  }
+
   /**
    *@description method to preview a specific file.
    *
    * @param {FileModel} file
    * @memberof FileUploadComponent
    */
-  viewFile(file: FileModel) {
+  viewFile(fileMeta: FileModel) {
     // console.log('file', file);
-
-    this.fileName = file.docName;
-    this.fileByteArray = file.multipartFile;
+    let file = this.getFileData(fileMeta);
+    this.fileName = fileMeta.docName;
+    this.fileByteArray = file;
     let i = 0;
     for (let x of this.users[0].files[0]) {
       if (this.fileName === x.doc_name) {
@@ -432,11 +445,11 @@ export class FileUploadComponent implements OnInit {
       this.fileIndex = i;
       this.firstFile = false;
     }
-    this.fileExtension = file.docName.substring(file.docName.indexOf('.') + 1);
+    this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
     if (this.fileByteArray) {
       // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
 
-      switch (file.docName.substring(file.docName.indexOf('.') + 1)) {
+      switch (fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1)) {
         case 'pdf':
           this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
             'data:application/pdf;base64,' + this.fileByteArray
@@ -627,11 +640,11 @@ export class FileUploadComponent implements OnInit {
    */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response[0].docCatCode;
-    this.userFiles.doc_file_format = fileResponse.response[0].docFileFormat;
-    this.userFiles.documentId = fileResponse.response[0].documentId;
-    this.userFiles.docName = fileResponse.response[0].docName;
-    this.userFiles.docTypCode = fileResponse.response[0].docTypCode;
+    this.userFiles.docCatCode = fileResponse.response.docCatCode;
+    this.userFiles.doc_file_format = fileResponse.response.docFileFormat;
+    this.userFiles.documentId = fileResponse.response.documentId;
+    this.userFiles.docName = fileResponse.response.docName;
+    this.userFiles.docTypCode = fileResponse.response.docTypCode;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     for (let file of this.users[0].files[0]) {

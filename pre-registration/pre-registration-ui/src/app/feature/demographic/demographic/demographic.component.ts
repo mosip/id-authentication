@@ -945,7 +945,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onAddition(response: any, request: ResponseModel) {
-    this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
+    this.preRegId = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
     this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
     this.bookingService.addNameList({
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
