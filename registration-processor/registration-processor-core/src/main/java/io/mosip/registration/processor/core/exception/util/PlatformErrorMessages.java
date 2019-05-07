@@ -608,7 +608,13 @@ public enum PlatformErrorMessages {
 	
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
 
-	EXTERNAL_STAGE_FAILED("", "External Stage Failed");
+	EXTERNAL_STAGE_FAILED("", "External Stage Failed"),
+	
+	RPR_PVM_INVALID_UIN("", "Invalid Uin");
+	
+	
+	
+	
 
 	/** The error message. */
 	private final String errorMessage;

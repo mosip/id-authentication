@@ -44,6 +44,7 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactor
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.dto.PrintQueueDTO;
@@ -93,6 +94,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The global exception handler. */
 	@Autowired
 	public PrintGlobalExceptionHandler globalExceptionHandler;
+	
+	@Autowired
+	public Utilities utilities;
 
 	/** The port. */
 	@Value("${server.port}")
@@ -221,7 +225,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
 
-			String uin = packetInfoManager.getUINByRid(regId).get(0);
+			String uin = utilities.getUIn(regId).toString();
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
