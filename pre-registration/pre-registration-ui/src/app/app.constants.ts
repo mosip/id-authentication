@@ -45,7 +45,8 @@ export const APPEND_URL = {
   applicantType: 'v1/applicanttype/',
   validDocument: 'applicanttype/',
   getApplicantType: 'getApplicantType',
-  document: 'documents/',
+  post_document: 'documents/',
+  document: 'documents/preregistration/',
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
@@ -67,6 +68,7 @@ export const PARAMS_KEYS = {
   locationHierarchyName: 'hierarchyName',
   getDocument: PRE_REGISTRATION_ID,
   getDocumentCategories: 'languages',
+  preRegistrationId: 'preRegistrationId',
   deleteFile: 'documentId',
   getAvailabilityData: 'registration_center_id',
   catCode: 'catCode',
@@ -130,7 +132,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
     preId: 'preRegistrationId',
     fullname: 'fullname',
     statusCode: 'statusCode',
-    postalCode: 'postalCode'
+    postalCode: 'postalCode',
+    basicDetails: 'basicDetails'
   }
 };
 

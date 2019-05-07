@@ -341,7 +341,7 @@
       "postal_code_required": "Veuillez entrer un code postal valide",
       "mobile_required": "Veuillez entrer un numéro de téléphone valide",
       "email_required": "S'il vous plaît entrer email id valide",
-      "pin_required": "Veuillez entrer un code PIN valide"
+      "pin_required": "S'il vous plaît entrer CNIE valide"
     },
     "error": {
       "error": "L'application ne peut pas être créée. S'il vous plaît essayer après un certain temps",
@@ -565,5 +565,9 @@
     "nearBy": "Centres d'inscription basés sur votre géolocalisation",
     "magnifying_glass": "Recherche basée sur la sélection du menu déroulant.",
     "preview_continue": "Téléchargez tous les fichiers pour continuer"
+  },
+  "error": {
+    "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
+    "button_ok": "OK"
   }
 }
