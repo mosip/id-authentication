@@ -6,7 +6,7 @@
 		regression smokeAndRegression -->
 	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners> 
+	</listeners>  
 
 <!-- 
   Passing Group as parmeter unsing "testType"
@@ -20,19 +20,16 @@
 			<test name="RegistrationProcessor Tests">
 		<parameter name="testType" value="smokeAndregression" />
 		<classes>
-			<class name="io.mosip.registrationProcessor.tests.PacketStatus" />
-			<class name="io.mosip.registrationProcessor.tests.Sync" />
+		<class name="io.mosip.registrationProcessor.tests.Sync" />
+			<!-- <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
+			
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
 			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
 			<class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
-			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" /> -->
 			
 		</classes>
 	</test>  
-
-	
-	
 	
 </suite>
-	

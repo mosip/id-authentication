@@ -8,7 +8,6 @@
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
@@ -49,6 +48,12 @@
 			<version>1.13</version>
 		</dependency>
 
+
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports</artifactId>
+    <version>3.0.0</version>
+</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -231,6 +236,11 @@
 			<artifactId>bcprov-jdk16</artifactId>
 			<version>1.45</version>
 		</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+    <version>3.0.2.RELEASE</version>
+</dependency>
 
 
 

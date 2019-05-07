@@ -32,10 +32,10 @@ import net.lingala.zip4j.exception.ZipException;
  */
 public class TweakRegProcPackets {
 	private static Logger logger = Logger.getLogger(TweakRegProcPackets.class);
-	StringBuilder osiValidatorStageString=new StringBuilder();
-	
-	StringBuilder packetValidatorStageString=new StringBuilder();
-	StringBuilder demoDedupeStageString=new StringBuilder();
+	StringBuilder osiValidatorStageString = new StringBuilder();
+
+	StringBuilder packetValidatorStageString = new StringBuilder();
+	StringBuilder demoDedupeStageString = new StringBuilder();
 	static String filesToBeDestroyed = null;
 	String centerId = "";
 	String machineId = "";
@@ -55,24 +55,26 @@ public class TweakRegProcPackets {
 	@SuppressWarnings("unchecked")
 	public void generateInvalidPacketForOsiValidator(String testCaseName, String parameterToBeChanged,
 			String parameterValue, String validPacketPath, String invalidPacketPath) {
-		
+
 		File decryptedFile = null;
 		JSONObject metaInfo = null;
 		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
-		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath +"OsiValidation/"+ testCaseName;
+		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath + "OsiValidation/"
+				+ testCaseName;
 		File file = new File(configPath);
 		File[] listOfFiles = file.listFiles();
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
 				JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
-					try {
-						decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath, f.getName());
-					} catch (IOException | ZipException | ParseException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-					//decryptedFile= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
-				
+				try {
+					decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath, f.getName());
+				} catch (IOException | ZipException | ParseException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				// decryptedFile=
+				// encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
+
 				filesToBeDestroyed = configPath;
 				File[] packetFiles = decryptedFile.listFiles();
 				for (File info : packetFiles) {
@@ -108,9 +110,9 @@ public class TweakRegProcPackets {
 		}
 		logger.info("packetName :: ======================" + packetName);
 		try {
-			
+
 			encryptDecrypt.encryptFile(decryptedFile, configPath, invalidPacketsPath, packetName);
-		
+
 		} catch (ZipException | IOException e) {
 			logger.error("Packet encryption Failed", e);
 		}
@@ -127,14 +129,14 @@ public class TweakRegProcPackets {
 	 */
 	public void generateInvalidPacketForPacketValidator(String fileName, String validPacketPath,
 			String invalidPacketPath) {
-	
+
 		File decryptedPacket = null;
 		JSONObject metaInfo = null;
 		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
 		filesToBeDestroyed = configPath;
 		File file = new File(configPath);
 		File[] listOfFiles = file.listFiles();
-		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath+"PacketValidator/";
+		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath + "PacketValidator/";
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
 				centerId = f.getName().substring(0, 5);
@@ -143,7 +145,8 @@ public class TweakRegProcPackets {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					//decryptedPacket= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
+					// decryptedPacket=
+					// encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
 							try {
@@ -225,7 +228,7 @@ public class TweakRegProcPackets {
 	 * @param property
 	 * @param validPacketPath
 	 * @param invalidPacketpath generates invalid packets which should fail in demo
-	 *                          dedupe stage creates two packets with same
+	 *                          dedupe stage. Creates two packets with same
 	 *                          demographic details
 	 */
 
@@ -236,7 +239,8 @@ public class TweakRegProcPackets {
 		File decryptedPacket = null;
 		JSONObject identity = null;
 		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
-		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketpath +"DemoDedupe/"+ testCaseName;
+		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketpath + "DemoDedupe/"
+				+ testCaseName;
 		filesToBeDestroyed = configPath;
 		File file = new File(configPath);
 		File[] listOfFiles = file.listFiles();
@@ -249,8 +253,9 @@ public class TweakRegProcPackets {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					//decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					decryptedPacket= encryptDecrypt.extractFromDecryptedPacket(configPath,f.getName());
+					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
+					// f.getName());
+					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -280,7 +285,7 @@ public class TweakRegProcPackets {
 							}
 						} else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
 							try {
-								
+
 								FileReader metaFileReader = new FileReader(info.getPath());
 								metaInfoBio = (JSONObject) new JSONParser().parse(metaFileReader);
 								metaFileReader.close();
@@ -380,7 +385,7 @@ public class TweakRegProcPackets {
 		Properties prop = new Properties();
 		String propertyFilePath = System.getProperty("user.dir") + "/src/config/" + propertyFiles;
 		try {
-			FileReader reader=new FileReader(new File(propertyFilePath) );
+			FileReader reader = new FileReader(new File(propertyFilePath));
 			prop.load(reader);
 			reader.close();
 		} catch (IOException e1) {
@@ -393,12 +398,12 @@ public class TweakRegProcPackets {
 			e.generateInvalidPacketForOsiValidator("invalid" + property, property, prop.getProperty(property),
 					validPacketpath, invalidPacketPath);
 		}
-		
+
 		try {
 			osiValidatorStageString.append("1110000");
-			OutputStream stageBitFile =null;
-			stageBitFile=new FileOutputStream(invalidPacketPath+"/OsiValidation/StageBits.properties");
-			Properties property=new Properties();
+			OutputStream stageBitFile = null;
+			stageBitFile = new FileOutputStream(invalidPacketPath + "/OsiValidation/StageBits.properties");
+			Properties property = new Properties();
 			property.setProperty("StageBits", osiValidatorStageString.toString());
 			property.store(stageBitFile, null);
 			stageBitFile.close();
@@ -423,7 +428,7 @@ public class TweakRegProcPackets {
 		try {
 			FileReader readFile = new FileReader(new File(propertyFilePath));
 			prop.load(readFile);
-			
+
 			for (String property : prop.stringPropertyNames()) {
 				logger.info("invalid" + property);
 				logger.info(prop.getProperty(property));
@@ -437,15 +442,15 @@ public class TweakRegProcPackets {
 		}
 		try {
 			demoDedupeStageString.append("1111000");
-			OutputStream stageBitFile =null;
-			stageBitFile=new FileOutputStream(invalidPacketPath+"/DemoDedupe/StageBits.properties");
-			Properties property=new Properties();
+			OutputStream stageBitFile = null;
+			stageBitFile = new FileOutputStream(invalidPacketPath + "/DemoDedupe/StageBits.properties");
+			Properties property = new Properties();
 			property.setProperty("StageBits", demoDedupeStageString.toString());
 			property.store(stageBitFile, null);
 			stageBitFile.close();
 			demoDedupeStageString.delete(0, demoDedupeStageString.length());
 			encryptDecrypt.destroyFiles(filesToBeDestroyed);
-			
+
 		} catch (IOException e1) {
 			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
 		}
@@ -480,9 +485,9 @@ public class TweakRegProcPackets {
 		}
 		try {
 			packetValidatorStageString.append("1100000");
-			OutputStream stageBitFile =null;
-			stageBitFile=new FileOutputStream(invalidPacketPath+"/PacketValidator/StageBits.properties");
-			Properties property=new Properties();
+			OutputStream stageBitFile = null;
+			stageBitFile = new FileOutputStream(invalidPacketPath + "/PacketValidator/StageBits.properties");
+			Properties property = new Properties();
 			property.setProperty("StageBits", packetValidatorStageString.toString());
 			property.store(stageBitFile, null);
 			stageBitFile.close();
@@ -537,11 +542,14 @@ public class TweakRegProcPackets {
 		property.load(reader);
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
-		/*for (int i = 0; i < 2; i++) {
-			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
-		}*/
-		//e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*
+		 * for (int i = 0; i < 2; i++) {
+		 * e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath,
+		 * invalidPacketFolderPath); }
+		 */
+		// e.osiValidatorPropertyFileReader("packetProperties.properties",
+		// validPacketPath, invalidPacketFolderPath);
 		reader.close();
 
 	}

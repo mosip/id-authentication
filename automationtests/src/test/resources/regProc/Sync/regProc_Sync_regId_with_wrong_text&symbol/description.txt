@@ -1,0 +1,1 @@
+Sync request with an invalid registration id having wrong text and symbols in it.

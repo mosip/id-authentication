@@ -290,10 +290,10 @@ public class PrintingStage extends BaseTestCase{
 		String value = null;
 		boolean isPhotoSet = false;
 		String documents = null;
-		/*for (String res : response){
+		for (String res : response){
 			documents = res.get("documents").toString();
 			logger.info("documents  : "+documents);
-		}*/
+		}
 		if (response!= null) {
 			try {
 				for (Map.Entry<String, Map<String,String>> entry : response.entrySet()) {
@@ -301,7 +301,7 @@ public class PrintingStage extends BaseTestCase{
 					if(entry.getKey().contains("documents")){
 						List<Map<String,String>> values = (List<Map<String, String>>) entry.getValue();
 						for(Map<String,String> val : values){
-							/*String obj = val.get("category");*/
+							String obj = val.get("category");
 							if(val.get("category").matches("individualBiometrics")){
 								value = val.get("value");
 								logger.info("value : "+value);
@@ -328,10 +328,11 @@ public class PrintingStage extends BaseTestCase{
 				e.printStackTrace();
 			}
 		}
+			
 		return isPhotoSet;
 	}
-
-	/*public static void main(String args[]){
+/*
+	public static void main(String args[]){
 		PrintingStage ps = new PrintingStage();
 		ps.validatePrintingStage("10002100320000220190417100557");
 	}*/

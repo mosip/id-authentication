@@ -1,6 +1,6 @@
 /**
  * 
- */
+ *//*
 package io.mosip.util;
 
 import java.io.ByteArrayInputStream;
@@ -28,19 +28,19 @@ import org.xml.sax.SAXException;
 
 import io.mosip.registrationProcessor.util.PrintingStage;
 
-/**
+*//**
  * @author Ramadurai Pandian
  * 
  * An Utility Class to validate the data before generating an valid CBEFF XML and to get all
  * the data based on Type and SubType
  *
- */
+ *//*
 public class CbeffValidator {
 	
 	private static final String tempPath = "./src/main/resources";
 	private static Logger logger = Logger.getLogger(CbeffValidator.class);
 	
-	/**
+	*//**
 	 * Method used for custom validation of the BIR
 	 * 
 	 * @param bir BIR data
@@ -49,7 +49,7 @@ public class CbeffValidator {
 	 * 
 	 * @exception CbeffException when any condition fails
 	 * 
-	 */
+	 *//*
 	public static boolean validateXML(BIRType bir){
 		
 		List<BIRType> birList = bir.getBIR();
@@ -79,7 +79,7 @@ public class CbeffValidator {
 
 	}
 
-	/**
+	*//**
 	 * Method used for validation of Format Type
 	 * 
 	 * @param formatType format type
@@ -88,7 +88,7 @@ public class CbeffValidator {
 	 * 
 	 * @return boolean value if format type is matching with type
 	 * 
-	 */
+	 *//*
 	private static boolean validateFormatType(long formatType, List<SingleType> singleTypeList) {
 		SingleType singleType = singleTypeList.get(0);
 		switch (singleType.value()) {
@@ -106,14 +106,14 @@ public class CbeffValidator {
 		return false;
 	}
 
-	/**
+	*//**
 	 * Method used for getting Format Type Id from type string
 	 * 
 	 * @param type format type
 	 * 
 	 * @return long format type id
 	 * 
-	 */
+	 *//*
 	private static long getFormatType(String type) {
 		switch (type.toLowerCase()) {
 		case "finger":
@@ -130,7 +130,7 @@ public class CbeffValidator {
 		return 0;
 	}
 
-	/**
+	*//**
 	 * Method used for creating XML bytes using JAXB
 	 * 
 	 * @param bir BIR type
@@ -139,7 +139,7 @@ public class CbeffValidator {
 	 * 
 	 * @exception Exception exception
 	 * 
-	 */
+	 *//*
 	public static byte[] createXMLBytes(BIRType bir,byte[] xsd) throws Exception {
 		CbeffValidator.validateXML(bir);
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
@@ -168,7 +168,7 @@ public class CbeffValidator {
 		return fileContent;
 	}
 
-	/**
+	*//**
 	 * Method used for BIR Type
 	 * 
 	 * @param fileBytes byte array of XML data
@@ -177,7 +177,7 @@ public class CbeffValidator {
 	 * 
 	 * @exception Exception exception
 	 * 
-	 */
+	 *//*
 	public static BIRType getBIRFromXML(byte[] fileBytes) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -187,7 +187,7 @@ public class CbeffValidator {
 		return bir;
 	}
 
-	/**
+	*//**
 	 * Method used for searching Cbeff data based on type and subtype
 	 * 
 	 * @param bir BIR data
@@ -200,7 +200,7 @@ public class CbeffValidator {
 	 * 
 	 * @exception Exception exception
 	 * 
-	 */
+	 *//*
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)
 			throws Exception {
 		
@@ -292,26 +292,26 @@ public class CbeffValidator {
 		return finalMap;
 	}
 
-	/**
+	*//**
 	 * Method to convert single type list to string
 	 * 
-	 * */
+	 * *//*
 	private static List<String> convertToList(List<SingleType> singleTypeList) {
 		return singleTypeList.stream().map(Enum::name).collect(Collectors.toList());
 	}
 
-	/**
+	*//**
 	 * Method to get enum sub type from string subtype
 	 * 
-	 * */
+	 * *//*
 	private static SingleAnySubtypeType getSingleAnySubtype(String subType) {
 		return subType != null ? SingleAnySubtypeType.fromValue(subType) : null;
 	}
 
-	/**
+	*//**
 	 * Method to get enum type from string type
 	 * 
-	 * */
+	 * *//*
 	private static SingleType getSingleType(String type) {
 		if(isInEnum(type,SingleType.class))
 		{
@@ -376,3 +376,4 @@ public class CbeffValidator {
 		return bdbMap;
 	}
 }
+*/

@@ -1,0 +1,1 @@
+Sync request with an invalid registration id having wrong value of seconds in it.
