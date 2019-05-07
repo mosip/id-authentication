@@ -24,9 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.DocumentDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
-import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentService;
@@ -74,7 +75,7 @@ public class DocumentController {
 	@ApiOperation(value = "Document Upload")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
 			@ApiResponse(code = 400, message = "Document uploaded failed") })
-	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> fileUpload(
+	public ResponseEntity<MainResponseDTO<DocumentResponseDTO>> fileUpload(
 			@PathVariable(value = "preRegistrationId") String preRegistrationId,
 			@RequestPart(value = "Document request", required = true) String reqDto,
 			@RequestPart(value = "file", required = true) MultipartFile file) {
@@ -103,7 +104,7 @@ public class DocumentController {
 	@ApiOperation(value = "Copy uploaded document")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
 			@ApiResponse(code = 400, message = "Document copying failed") })
-	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> copyDocument(
+	public ResponseEntity<MainResponseDTO<DocumentResponseDTO>> copyDocument(
 			@Valid @PathVariable(required = true, value = "preRegistrationId") String preRegistrationId,
 			@Valid @RequestParam(required = true) String catCode,
 			@Valid @RequestParam(required = true) String sourcePreId) {
@@ -123,17 +124,42 @@ public class DocumentController {
 	 * @return response in a format specified in API document
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
-	@GetMapping(path = "/documents/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/documents/preregistration/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
 			@ApiResponse(code = 400, message = "Documents failed to reterive") })
-	public ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> getAllDocumentforPreid(
+	public ResponseEntity<MainResponseDTO<DocumentsMetaData>> getAllDocumentforPreid(
 			@Valid @PathVariable(required = true) String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In getAllDocumentforPreid method of document controller to get all the document for pre_registration_id "
 						+ preRegistrationId);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.getAllDocumentForPreId(preRegistrationId));
+	}
+	
+	/**
+	 * Get API to fetch document for a document Id
+	 * 
+	 * @param documentId
+	 *            pass documentId as path variable
+	 *            
+	 * @param preRegistrationId
+	 * 			  pass preRegistrationId as request param
+	 * @return response in a format specified in API document
+	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@GetMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get All Document for Document Id")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
+			@ApiResponse(code = 400, message = "Documents failed to reterive") })
+	public ResponseEntity<MainResponseDTO<DocumentDTO>> getDocumentforDocId(
+			@Valid @PathVariable(required = true) String documentId,
+			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
+		log.info("sessionId", "idType", "id",
+				"In getAllDocumentforDocId method of document controller to get all the document for documentId "
+						+ documentId);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(documentUploadService.getDocumentForDocId(documentId,preRegistrationId));
 	}
 
 	/**
@@ -151,12 +177,13 @@ public class DocumentController {
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
-	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
+	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
 			@Valid @PathVariable(required = true) String documentId,
 			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete the document for documentId " + documentId);
-		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.deleteDocument(documentId,preRegistrationId));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(documentUploadService.deleteDocument(documentId, preRegistrationId));
 
 	}
 
@@ -174,7 +201,7 @@ public class DocumentController {
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })
-	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteAllByPreId(
+	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteAllByPreId(
 			@Valid @PathVariable(required = true) String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete all the document for preId "

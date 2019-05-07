@@ -4,7 +4,8 @@ import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.preregistration.login.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+
 
 public class LoginServiceException extends BaseUncheckedException {
 

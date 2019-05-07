@@ -6,7 +6,7 @@ import { MatDialog, MatCheckboxChange } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { AutoLogoutService } from 'src/app/core/services/auto-logout.service';
 
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
@@ -59,7 +59,7 @@ export class DashBoardComponent implements OnInit {
    * @param {MatDialog} dialog
    * @param {DataStorageService} dataStorageService
    * @param {RegistrationService} regService
-   * @param {SharedService} sharedService
+   * @param {BookingService} bookingService
    * @param {AutoLogoutService} autoLogout
    * @param {TranslateService} translate
    * @param {ConfigService} configService
@@ -70,7 +70,7 @@ export class DashBoardComponent implements OnInit {
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
-    private sharedService: SharedService,
+    private bookingService: BookingService,
     private autoLogout: AutoLogoutService,
     private translate: TranslateService,
     private configService: ConfigService
@@ -114,7 +114,7 @@ export class DashBoardComponent implements OnInit {
    */
   initUsers() {
     this.regService.flushUsers();
-    this.sharedService.flushNameList();
+    this.bookingService.flushNameList();
     this.getUsers();
   }
 
@@ -138,8 +138,13 @@ export class DashBoardComponent implements OnInit {
 
         if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
           localStorage.setItem('newApplicant', 'false');
-          this.sharedService.addApplicants(applicants);
-          for (let index = 0; index < applicants[appConstants.RESPONSE].length; index++) {
+          this.bookingService.addApplicants(applicants);
+          for (
+            let index = 0;
+            index <
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails].length;
+            index++
+          ) {
             const applicant = this.createApplicant(applicants, index);
             this.users.push(applicant);
           }
@@ -168,13 +173,26 @@ export class DashBoardComponent implements OnInit {
    * @returns the appointment date and time
    * @memberof DashBoardComponent
    */
+  private createAppointmentDateTime(applicant: any) {
+    console.log(applicant);
+
+    const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
+    const date = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
+    const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
+    const toTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
+    let appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
+    return appointmentDateTime;
+  }
+
+  /**
+   * @description This method return the appointment date.
+   *
+   * @private
+   * @param {*} applicant
+   * @returns the appointment date
+   * @memberof DashBoardComponent
+   */
   private createAppointmentDate(applicant: any) {
-    // const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
-    // const date = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
-    // const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
-    // const toTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
-    // let appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
-    // return appointmentDateTime;
     const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
     const date = Utils.getBookingDateTime(
       bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate],
@@ -186,11 +204,11 @@ export class DashBoardComponent implements OnInit {
   }
 
   /**
-   * @description This method return the appointment date and time.
+   * @description This method return the appointment time.
    *
    * @private
    * @param {*} applicant
-   * @returns the appointment date and time
+   * @returns the appointment time
    * @memberof DashBoardComponent
    */
   private createAppointmentTime(applicant: any) {
@@ -210,7 +228,10 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    const applicantResponse = applicants[appConstants.RESPONSE][index];
+    console.log('applicants test', applicants);
+
+    const applicantResponse =
+      applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     let primaryIndex = 0;
     let secondaryIndex = 1;
     let lang = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
@@ -221,6 +242,9 @@ export class DashBoardComponent implements OnInit {
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
       name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex]['value'],
+      appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
+        ? this.createAppointmentDateTime(applicantResponse)
+        : '-',
       appointmentDate: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
         ? this.createAppointmentDate(applicantResponse)
         : '-',
@@ -285,7 +309,7 @@ export class DashBoardComponent implements OnInit {
   confirmationDialog(selectedOption: number) {
     let body = {};
     if (Number(selectedOption) === 1) {
-       body = {
+      body = {
         case: 'CONFIRMATION',
         title: this.secondaryLanguagelabels.title_confirm,
         message: this.secondaryLanguagelabels.deletePreregistration.msg_confirm,
@@ -293,7 +317,7 @@ export class DashBoardComponent implements OnInit {
         noButtonText: this.secondaryLanguagelabels.button_cancel
       };
     } else {
-       body = {
+      body = {
         case: 'CONFIRMATION',
         title: this.secondaryLanguagelabels.title_confirm,
         message: this.secondaryLanguagelabels.cancelAppointment.msg_confirm,
@@ -310,9 +334,13 @@ export class DashBoardComponent implements OnInit {
       response => {
         console.log(response);
         if (!response['errors']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.deletePreregistration.msg_deleted);
+          this.displayMessage(
+            this.secondaryLanguagelabels.title_success,
+            this.secondaryLanguagelabels.deletePreregistration.msg_deleted
+          );
           const index = this.users.indexOf(element);
           this.users.splice(index, 1);
+          if (this.users.length == 0) localStorage.setItem('newApplicant', 'true');
         } else {
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
@@ -338,7 +366,10 @@ export class DashBoardComponent implements OnInit {
         response => {
           console.log(response);
           if (!response['errors']) {
-            this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.cancelAppointment.msg_deleted);
+            this.displayMessage(
+              this.secondaryLanguagelabels.title_success,
+              this.secondaryLanguagelabels.cancelAppointment.msg_deleted
+            );
             const index = this.users.indexOf(element);
             this.users[index].status = 'Pending Appointment';
             this.users[index].appointmentDate = '-';
@@ -362,7 +393,7 @@ export class DashBoardComponent implements OnInit {
 
   onDelete(element) {
     let data = this.radioButtonsStatus(element.status);
-    let dialogRef = this.openDialog(data, `400px`);
+    let dialogRef = this.openDialog(data, `460px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
       if (selectedOption && Number(selectedOption) === 1) {
         dialogRef = this.confirmationDialog(selectedOption);
@@ -415,7 +446,7 @@ export class DashBoardComponent implements OnInit {
       .getUserDocuments(preId)
       .subscribe(response => this.setUserFiles(response), error => console.log('response from modify data', error));
     this.addtoNameList(user);
-    console.log(this.sharedService.getNameList());
+    console.log(this.bookingService.getNameList());
 
     console.log('preid', preId);
 
@@ -509,7 +540,7 @@ export class DashBoardComponent implements OnInit {
     const status = user.status;
     const postalCode = user.postalCode;
     const nameInSecondaryLanguage = user.nameInSecondaryLanguage;
-    this.sharedService.addNameList({
+    this.bookingService.addNameList({
       fullName: fullName,
       preRegId: preId,
       regDto: regDto,
@@ -537,10 +568,11 @@ export class DashBoardComponent implements OnInit {
     else return '27px';
   }
 
-  isBookingAllowed(appointmentDateTime: string) {
-    const dateform = new Date(appointmentDateTime);
+  isBookingAllowed(user: Applicant) {
+    if (user.status == 'Expired') return false;
+    const dateform = new Date(user.appointmentDateTime);
     if (dateform.toDateString() !== 'Invalid Date') {
-      let date1: string = appointmentDateTime;
+      let date1: string = user.appointmentDateTime;
       let date2: string = new Date(Date.now()).toString();
       let diffInMs: number = Date.parse(date1) - Date.parse(date2);
       let diffInHours: number = diffInMs / 1000 / 60 / 60;

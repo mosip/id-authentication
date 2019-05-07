@@ -8,10 +8,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.printing.api.dto.PrintRequest;
+import io.mosip.registration.processor.printing.api.dto.RequestDTO;
 import javax.servlet.http.Cookie;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -35,6 +41,7 @@ import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
 import io.mosip.registration.processor.printing.api.util.PrintServiceRequestValidator;
+import org.springframework.validation.Errors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -60,8 +67,20 @@ public class PrintApiControllerTest {
 
 	@Mock
 	private TokenValidator tokenValidator;
-	
+
+	/** The rid validator. */
+	@Mock
+	private RidValidator<String> ridValidator;
+
+	@Mock
+	private UinValidator<String> uinValidatorImpl;
+
+	@Mock
+	private Errors errors;
+
 	private Map<String, byte[]> map = new HashMap<>();
+
+	private String json;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -70,29 +89,38 @@ public class PrintApiControllerTest {
 				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
 		doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-		
+
+		PrintRequest request = new PrintRequest();
+		request.setId("mosip.registration.print");
+		RequestDTO dto = new RequestDTO();
+		dto.setIdtype(IdType.RID);
+		dto.setIdValue("10003100030000720190416061449");
+		request.setRequest(dto);
+		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		request.setVersion("1.0");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		json = gson.toJson(request);
+
 		byte[] pdfbyte = "pdf bytes".getBytes();
 		map.put("uinPdf", pdfbyte);
 	}
 
 	@Test
-	@Ignore
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
 
-		this.mockMvc.perform(post("/registration-processor/print/v0.1").accept(MediaType.APPLICATION_JSON_VALUE)
-				.cookie(new Cookie("Authorization", "token")).contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content("{\r\n" + "  \"id\": \"mosip.registration.print\",\r\n" + "  \"request\": {\r\n"
-						+ "    \"idValue\": \"10011100110026920190313153010\",\r\n" + "    \"idtype\": \"RID\"\r\n"
-						+ "  },\r\n" + "  \"requesttime\": \"2019-03-15T09:08:38.548Z\",\r\n"
-						+ "  \"version\": \"1.0\"\r\n" + "}"))
+		this.mockMvc.perform(post("/registration-processor/print/v1.0")
+				.cookie(new Cookie("Authorization", json))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@Ignore
 	public void testPdfFailure() throws Exception {
-		this.mockMvc.perform(post("/registration-processor/print/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
+		this.mockMvc.perform(post("/registration-processor/print/v1.0")
+				.cookie(new Cookie("Authorization", json))
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isBadRequest());
 	}
 }

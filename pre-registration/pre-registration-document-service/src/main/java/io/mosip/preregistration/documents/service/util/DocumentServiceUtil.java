@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,8 +44,8 @@ import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -242,7 +241,7 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage());
+					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage(), null);
 		}
 	}
 
@@ -324,16 +323,16 @@ public class DocumentServiceUtil {
 		log.info("sessionId", "idType", "id", "In isValidRequest method of document service util");
 		if (isNull(preRegistrationId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_PRE_ID.getMessage());
+					ErrorMessages.INVALID_PRE_ID.getMessage(), null);
 		} else if (isNull(dto.getDocCatCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage());
+					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
 		} else if (isNull(dto.getDocTypCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage());
+					ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
 		} else if (isNull(dto.getLangCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_LANG_CODE.getMessage());
+					ErrorMessages.INVALID_LANG_CODE.getMessage(), null);
 
 		}
 		return true;
@@ -361,24 +360,23 @@ public class DocumentServiceUtil {
 	public boolean callGetPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
-			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of document service util url " + uriBuilder);
-			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
+			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 					}, params);
 			if (respEntity.getBody().getErrors() != null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().getErrorCode(),
-						respEntity.getBody().getErrors().getMessage());
+				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
+						respEntity.getBody().getErrors().get(0).getMessage());
 			}
 
 		} catch (RestClientException ex) {

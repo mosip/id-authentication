@@ -40,8 +40,10 @@ public class NotificationDTO {
 	private String emailID;
 	
 	/**
+
 	 * additionalRecipient for notififcation
 	 */
 	private boolean additionalRecipient;   
+
 
 }

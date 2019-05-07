@@ -34,14 +34,18 @@ import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpSmsSendRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateResponseDto;
+import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.entities.otp.OtpValidatorResponseDto;
 import io.mosip.kernel.auth.entities.otp.SmsResponseDto;
+import io.mosip.kernel.auth.entities.otp.email.OTPEmailTemplate;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.auth.service.OTPService;
+import io.mosip.kernel.auth.service.TemplateUtil;
 import io.mosip.kernel.auth.service.TokenGenerationService;
+import io.mosip.kernel.auth.validator.AuthOtpValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -79,6 +83,12 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private TokenGenerationService tokenService;
+	
+	@Autowired
+	private TemplateUtil templateUtil;
+	
+	@Autowired
+	private AuthOtpValidator authOtpValidator;
 
 	@Override
 	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
@@ -398,5 +408,94 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 		return template;
+}
+
+	@Override
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser) {
+		AuthNResponseDto authNResponseDto = null;
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		SmsResponseDto otpSmsSendResponseDto = null;
+		String mobileMessage = null;
+		OTPEmailTemplate emailTemplate=null;
+		String token=null;
+		authOtpValidator.validateOTPUser(otpUser);
+		try {
+			token = tokenService.getInternalTokenGenerationService();
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+		}
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTPMultipleChannels(mosipUser,otpUser,token);
+		for(String channel:otpUser.getOtpChannel())
+		{
+			switch(channel)
+			{
+			case AuthConstant.EMAIL:
+				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(),otpUser,token);
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(),token);
+				break;
+			case AuthConstant.PHONE:
+				mobileMessage =templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,token);
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),token);
+				break;
+			}		
+		}
+		
+		if(otpEmailSendResponseDto!=null && otpSmsSendResponseDto!=null)
+		{
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
+			authNResponseDto.setMessage(AuthConstant.ALL_CHANNELS_MESSAGE);
+		}
+		else if (otpEmailSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+		}
+		else if (otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
+		}
+		return authNResponseDto;
+	}
+	
+	private OtpEmailSendResponseDto sendOtpByEmail(OTPEmailTemplate emailTemplate, String email, String token) {
+		ResponseEntity<String> response = null;	
+		String url = mosipEnvironment.getOtpSenderEmailApi();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
+		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+		map.add("mailTo", email);
+		map.add("mailSubject", emailTemplate.getEmailSubject());
+		map.add("mailContent",emailTemplate.getEmailContent());
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		try {
+				response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+			} catch(HttpServerErrorException | HttpClientErrorException e)
+			{
+				String error = e.getResponseBodyAsString();
+			} catch (RestClientException e) {
+				e.printStackTrace();
+			}
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);  
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpEmailSendResponseDto.class);
+			}catch(Exception e)
+			{
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+			}
+		}
+		return otpEmailSendResponseDto;
 }
 }

@@ -338,7 +338,7 @@
       "postal_code_required": "Please enter valid postalCode",
       "mobile_required": "Please enter valid mobile number",
       "email_required": "Please enter valid email id",
-      "pin_required": "Please enter valid pin"
+      "pin_required": "Please enter valid CNIE"
     },
     "error": {
       "error": "Application can not be created. Please try after some time",
@@ -427,6 +427,9 @@
     "cancelAppointment": {
       "msg1": "Appointment for the selected application will be cancelled",
       "msg2": "Appointment for the selected application has been successfully cancelled"
+    },
+    "config": {
+      "error": "Service not available. Please try again later"
     }
   },
   "dashboard": {
@@ -559,5 +562,9 @@
     "nearBy": "Registration centers based on your geo-location",
     "magnifying_glass": "Search based on selection of dropdown.",
     "preview_continue": "Upload all files to proceed"
+  },
+  "error": {
+    "error": "Application can not be created. Please try after some time",
+    "button_ok": "OK"
   }
 }

@@ -6,9 +6,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { I18nModule } from '../i18n.module';
 import { MaterialModule } from '../material.module';
 import { DialougComponent } from './dialoug/dialoug.component';
-import { ErrorComponent } from './error/error.component';
 import { StepperComponent } from './stepper/stepper.component';
 import { ParentComponent } from './parent/parent.component';
+import { ErrorComponent } from './error/error.component';
 
 /**
  * @description This is the shared module, which comprises of all the components which are used in multiple modules and components.
@@ -19,7 +19,7 @@ import { ParentComponent } from './parent/parent.component';
  */
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule, I18nModule, RouterModule],
-  declarations: [DialougComponent, ErrorComponent, StepperComponent, ParentComponent],
+  declarations: [DialougComponent, StepperComponent, ParentComponent, ErrorComponent],
   exports: [DialougComponent, StepperComponent, MaterialModule, I18nModule, ParentComponent, StepperComponent],
   entryComponents: [DialougComponent]
 })

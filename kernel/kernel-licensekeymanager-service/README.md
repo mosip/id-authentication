@@ -3,7 +3,7 @@
 [Background & Design -TBA-](../../docs/design/kernel/kernel-licensekeymanager.md)
 
  
-[API Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#9-license-key-manager)
+[API Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#license-key-manager)
 
 
 Default Port and Context Path

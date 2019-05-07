@@ -1,6 +1,9 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DataSyncRecordNotFoundException
@@ -8,47 +11,25 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author M1046129
  *
  */
+@Getter
+@Setter
 public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor
-	 */
-	public DataSyncRecordNotFoundException() {
-		super();
-	}
+	private MainResponseDTO<?> mainResponseDto;
 
 	/**
-	 * @param errorMessage pass the error message
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param response
+	 *            pass the cause
 	 */
-	public DataSyncRecordNotFoundException(String errorMessage) {
-		super("", errorMessage);
-	}
-
-	/**
-	 * @param errorCode pass the error code
-	 * @param errorMessage pass the error message
-	 */
-	public DataSyncRecordNotFoundException(String errorCode, String errorMessage) {
-		super(errorCode, errorMessage, null);
-	}
-
-	/**
-	 * @param errorMessage pass the error message
-	 * @param rootCause pass the cause
-	 */
-	public DataSyncRecordNotFoundException(String errorMessage, Throwable rootCause) {
-		super("", errorMessage, rootCause);
-	}
-
-	/**
-	 * @param errorCode pass the error code
-	 * @param errorMessage pass the error message
-	 * @param rootCause pass the cause
-	 */
-	public DataSyncRecordNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
-		super(errorCode, errorMessage, rootCause);
+	public DataSyncRecordNotFoundException(String errorCode, String errorMessage, MainResponseDTO<?> response) {
+		super(errorCode, errorMessage);
+		this.mainResponseDto = response;
 	}
 
 }

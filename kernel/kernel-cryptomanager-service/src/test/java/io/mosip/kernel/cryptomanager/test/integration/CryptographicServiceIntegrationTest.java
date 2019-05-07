@@ -126,22 +126,15 @@ public class CryptographicServiceIntegrationTest {
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 
-		/* Request body START */
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
 
-		/* Set value in CryptomanagerRequestDto */
 		requestDto.setApplicationId("REGISTRATION");
 		requestDto.setData("dXJ2aWw");
 		requestDto.setReferenceId("ref123");
 		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
-		/*
-		 * String requestBody =
-		 * "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}"
-		 * ;
-		 */
+		
 		String requestBody = objectMapper.writeValueAsString(requestWrapper);
-		/* Request body END */
 
 		MvcResult result = mockMvc
 				.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -149,11 +142,6 @@ public class CryptographicServiceIntegrationTest {
 
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 				ResponseWrapper.class);
-		/*
-		 * CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
-		 * .readValue(result.getResponse().getContentAsString(),
-		 * CryptomanagerResponseDto.class);
-		 */
 		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper.readValue(
 				objectMapper.writeValueAsString(responseWrapper.getResponse()), CryptomanagerResponseDto.class);
 
@@ -171,33 +159,19 @@ public class CryptographicServiceIntegrationTest {
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 
-		/* Request body START */
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
 
-		/* Set value in CryptomanagerRequestDto */
-		requestDto.setApplicationId("uoiuoi");
+		requestDto.setApplicationId("REGISTRATION");
 		requestDto.setData("dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls");
 		requestDto.setReferenceId("ref123");
 		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
 		String requestBody = objectMapper.writeValueAsString(requestWrapper);
-		/* Request body END */
-
-		/*
-		 * String requestBody =
-		 * "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}"
-		 * ;
-		 */
 		MvcResult result = mockMvc
 				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 				ResponseWrapper.class);
-		/*
-		 * CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
-		 * .readValue(result.getResponse().getContentAsString(),
-		 * CryptomanagerResponseDto.class);
-		 */
 		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper.readValue(
 				objectMapper.writeValueAsString(responseWrapper.getResponse()), CryptomanagerResponseDto.class);
 

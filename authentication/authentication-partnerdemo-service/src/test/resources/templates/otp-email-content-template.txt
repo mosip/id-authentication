@@ -1,0 +1,2 @@
+Dear $name,
+OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)

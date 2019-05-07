@@ -2,8 +2,8 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * 

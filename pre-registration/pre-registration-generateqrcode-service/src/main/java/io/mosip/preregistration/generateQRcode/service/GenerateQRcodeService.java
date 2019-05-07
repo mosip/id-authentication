@@ -78,6 +78,8 @@ public class GenerateQRcodeService {
 		MainRequestDTO<String> qrcodedto = new MainRequestDTO<>();
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
+		response.setId(qrcodedto.getId());
+		response.setVersion(qrcodedto.getVersion());
 		try {
 			JSONObject qrCodeReqData = new JSONObject(data);
 			String qrCodeData =   qrCodeReqData.get("request").toString();
@@ -94,10 +96,9 @@ public class GenerateQRcodeService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In generateQRCode service of generateQRCode "+ex.getMessage());
-			new QRcodeExceptionCatcher().handle(ex);
+			new QRcodeExceptionCatcher().handle(ex,response);
 		}
-		response.setId(qrcodedto.getId());
-		response.setVersion(qrcodedto.getVersion());
+		
 		response.setResponse(responsedto);
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		

@@ -1,11 +1,6 @@
 ## kernel-cbeffutil-api
-This api can be used to create/update cbeff xml.This api can be used to validate Cbeff and Search Cbeff based on Type and Subtype data.
 
-**Api Documentation**
-
-```
-mvn javadoc:javadoc
-```
+ [Background & Design](../../docs/design/kernel/kernel-cbeffutil.md)
 
 **Maven dependency**
 

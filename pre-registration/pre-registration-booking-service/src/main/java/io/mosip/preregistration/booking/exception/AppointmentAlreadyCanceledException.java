@@ -1,18 +1,22 @@
 package io.mosip.preregistration.booking.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * @author M1046129
  *
  */
+
+@Getter
 public class AppointmentAlreadyCanceledException extends BaseUncheckedException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5135952690225019228L;
+	private MainResponseDTO<?> mainResponseDTO;
 
 	public AppointmentAlreadyCanceledException(String msg) {
 		super("", msg);
@@ -24,6 +28,11 @@ public class AppointmentAlreadyCanceledException extends BaseUncheckedException 
 
 	public AppointmentAlreadyCanceledException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
+	}
+	
+	public AppointmentAlreadyCanceledException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+		super(errorCode, errorMessage, null);
+		this.mainResponseDTO=response;
 	}
 
 	public AppointmentAlreadyCanceledException(String errorCode, String errorMessage, Throwable rootCause) {

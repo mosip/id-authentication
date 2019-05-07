@@ -12,14 +12,24 @@
 	<artifactId>authentication-service</artifactId>
 	<packaging>jar</packaging>
 
-	<name>id-authentication-service</name>
+	<name>authentication-service</name>
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.11.0</version>
+			<version>${ida.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-common</artifactId>
+			<version>${ida.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pinvalidator</artifactId>
+			<version>${kernel.version}</version>
 		</dependency>
 
 		<dependency>
@@ -46,11 +56,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.pdfgenerate.version}</version>
-		</dependency>
+
 
 		<!-- Kernel Hibernate Impl -->
 		<dependency>
@@ -72,16 +78,6 @@
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -93,12 +89,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pinvalidator</artifactId>
-			<version>${kernel.version}</version>
 		</dependency>
 
 		<!-- Postgres -->
@@ -157,24 +147,8 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
 
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bitbucket.b_c</groupId>
-			<artifactId>jose4j</artifactId>
-			<version>0.6.4</version>
-		</dependency>
+
 	</dependencies>
 
 	<repositories>
