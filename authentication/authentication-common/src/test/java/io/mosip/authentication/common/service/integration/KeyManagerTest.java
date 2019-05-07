@@ -69,7 +69,6 @@ public class KeyManagerTest {
 	@Autowired
 	private Environment environment;
 
-	
 	/**
 	 * Request data test.
 	 *

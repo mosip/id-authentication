@@ -21,7 +21,7 @@ public class StaticpinFilterConfig {
 	public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 		FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultIDAFilter());
-		registrationBean.addUrlPatterns("/staticpin");
+		registrationBean.addUrlPatterns("/");
 		return registrationBean;
 	}
 
