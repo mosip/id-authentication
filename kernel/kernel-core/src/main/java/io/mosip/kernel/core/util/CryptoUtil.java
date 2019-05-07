@@ -93,8 +93,10 @@ public class CryptoUtil {
 		return Base64.decodeBase64(data);
 	}
 
-	/**Compute Fingerprint of a key
-	 * @param data key data
+	/**
+	 * Compute Fingerprint of a key
+	 * 
+	 * @param data     key data
 	 * @param metaData metadata related to key
 	 * @return fingerprint
 	 */
@@ -102,13 +104,15 @@ public class CryptoUtil {
 		return computeFingerPrint(data.getBytes(), metaData);
 	}
 
-	/** Compute Fingerprint of a key
-	 * @param data key data
+	/**
+	 * Compute Fingerprint of a key
+	 * 
+	 * @param data     key data
 	 * @param metaData metadata related to key
 	 * @return fingerprint
 	 */
 	public String computeFingerPrint(byte[] data, String metaData) {
-        byte[] combinedPlainTextBytes = null;
+		byte[] combinedPlainTextBytes = null;
 		if (EmptyCheckUtils.isNullEmpty(metaData)) {
 			combinedPlainTextBytes = ArrayUtils.addAll(data);
 		} else {
