@@ -1,7 +1,7 @@
 ## kernel-auth-service
 
 
-[Background & Design](https://github.com/mosip/mosip/wiki/Auth-Implementation)
+[Background & Design](../../docs/design/kernel/kernel-authn.md)
 
 [Api Documentation](https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs)
 

@@ -65,7 +65,7 @@ Following is the flow chart for the step &quot;certValidityCheck()&quot;,
 
 **Encryption**
 
-1. Request received for data encryption along with applicationId, ReferenceId(optional) and the timestamp(current timestamp of encryption). ReferenceId could be multiple instance of entity within Application such as MachineId and TspID for REGISTRATION and IDA respectively. Data to be encrypted is sent as Base64 encoded.
+1. Request received for data encryption along with applicationId, ReferenceId(optional) and the timestamp(current timestamp of encryption). ReferenceId could be multiple instance of entity within Application such as MachineId and TspID for REGISTRATION and IDA respectively. Data to be encrypted is sent as Base64 encoded. Additional salt can bes sent in Base64 encoded to be used for  initialization vector (IV) for symmetric encryption. 
 2. Generate session symmetric key for the request and encrypt the data using it.
 3. Use/Request for Application and ReferenceId specific public key (based on timestamp) and encrypt symmetric key using it.
 4. Combined the encrypted data and symmetric key separated by key-splitter and respond back as Base64 encoded string.
@@ -74,7 +74,7 @@ Following is the flow chart for the step &quot;certValidityCheck()&quot;,
 
 1. Request received for encrypted data decryption along with applicationId, ReferenceId(optional) and the timestamp(encryption timestamp).
 2. Decode the content from Base64 encoded string and split the data and symmetric key.
-3. Pass the symmetric key along with ApplicationId,ReferenceId and Timestamp(encryption timestamp) to KeyManager service to decrypt.
+3. Pass the symmetric key along with ApplicationId,ReferenceId and Timestamp(encryption timestamp) to KeyManager service to decrypt. If additional salt was  sent in Base64 encoded to be used for  initialization vector (IV) for symmetric encryption, same salt need be sent for decryption. 
 4. Use the decrypted symmetric key to decrypt data and respond back. 
 
 
