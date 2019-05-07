@@ -693,7 +693,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-
+			RegistrationConstants.CNI_MANDATORY= String.valueOf(false);
 			if (getRegistrationDTOFromSession() == null) {
 				validation.updateAsLostUIN(false);
 				registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
@@ -744,12 +744,14 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	private void genderSettings() {
-		textMale = applicationLabelBundle.getString("male");
-		textFemale = applicationLabelBundle.getString("female");
-		textMaleLocalLanguage = localLabelBundle.getString("male");
-		textFemaleLocalLanguage = localLabelBundle.getString("female");
-		textMaleCode = applicationLabelBundle.getString("maleCode");
-		textFemaleCode = applicationLabelBundle.getString("femaleCode");
+		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
+		textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
+		male.setText(textMale);
+		female.setText(textFemale);
+		maleLocalLanguage.setText(textMaleLocalLanguage);
+		femaleLocalLanguage.setText(textFemaleLocalLanguage);
 		male(null);
 	}
 
@@ -959,6 +961,7 @@ public class DemographicDetailController extends BaseController {
 				ageFieldLabel.setVisible(false);
 				ageFieldLocalLanguageLabel.setVisible(false);
 				ageFieldLocalLanguageMessage.setVisible(false);
+				ageField.setPromptText(ageFieldLabel.getText());
 				dobMessage.setVisible(false);
 				ddLabel.setVisible(false);
 				mmLabel.setVisible(false);
@@ -1660,6 +1663,7 @@ public class DemographicDetailController extends BaseController {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 			keyboardNode.setDisable(false);
+			RegistrationConstants.CNI_MANDATORY= String.valueOf(true);
 
 			copyPrevious.setDisable(true);
 			autoFillBtn.setVisible(false);

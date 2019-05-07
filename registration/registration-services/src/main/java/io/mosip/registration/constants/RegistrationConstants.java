@@ -266,6 +266,9 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_EMAIL_LBL = "Email";
 	public static final String UIN_UPDATE_FOREIGNER_LBL = "Foreigner/National";
 	public static final String UIN_UPDATE_GENDER_LBL = "Gender";
+	public static final String MALE_CODE = "MLE";
+	public static final String FEMALE_CODE = "FLE";
+
 	public static final String UIN_UPDATE_PARENT_DETAILS_LBL = "Parent/Guardian details";
 	public static final String UIN_UPDATE_CNIE_NUMBER_LBL = "CNIE/PIN/Residence Card Number";
 	public static final String UIN_UPDATE_BIOMETRICS_LBL = "Biometrics";
@@ -942,7 +945,8 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
-	public static final Set<String> BIO_TYPE = new HashSet<>(Arrays.asList(RegistrationConstants.HAND,RegistrationConstants.THUMB));
+	public static final Set<String> BIO_TYPE = new HashSet<>(
+			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -1075,6 +1079,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
+	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
 	public static final String MASTER_SYNC_LOGGER_INFO = "Entering into Master Sync Dao Impl...";
@@ -1140,7 +1145,7 @@ public class RegistrationConstants {
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";
 	public static final String REG_PKT_APPRVL_TIME_EXCEED = "REG_PKT_APPRVL_TIME_EXCEED";
-	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
+	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_EXPORT_EXCEED";
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "OPT_TO_REG_REACH_MAX_LIMIT";
 	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "OPT_TO_REG_OUTSIDE_LOCATION";
@@ -1253,6 +1258,8 @@ public class RegistrationConstants {
 			.concat("addressLine3.[*].value");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
+	public static String CNI_MANDATORY = String.valueOf(false);
+
 	public static final String REGEX = "regex";
 	public static final String IS_MANDATORY = "isMandatory";
 	public static final String IS_FIXED = "isFixed";
@@ -1324,18 +1331,16 @@ public class RegistrationConstants {
 
 	// TODO Need to discuss with Sravya about code
 	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
-	
 
-	public static final String SIGNED_KEY="signed-key";
-	public static final String TIME_STAMP="timeStamp";
-	public static final String REF_ID="referenceId";
-	public static final String PUBLIC_KEY_ISSUES_DATE="issuedAt";
-	public static final String PUBLIC_KEY_EXPIRE_DATE="expiryAt";
-	public static final String PUBLIC_KEY="publicKey";
-	public static final String PUBLIC_KEY_REST="public_key";
-	public static final String KER="KER";
-	public static final String DTAE_MONTH_YEAR_REGEX="dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
-
+	public static final String SIGNED_KEY = "signed-key";
+	public static final String TIME_STAMP = "timeStamp";
+	public static final String REF_ID = "referenceId";
+	public static final String PUBLIC_KEY_ISSUES_DATE = "issuedAt";
+	public static final String PUBLIC_KEY_EXPIRE_DATE = "expiryAt";
+	public static final String PUBLIC_KEY = "publicKey";
+	public static final String PUBLIC_KEY_REST = "public_key";
+	public static final String KER = "KER";
+	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
 
 	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
 	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
@@ -1343,6 +1348,6 @@ public class RegistrationConstants {
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
 	public static String CANCEL_MSG = "CANCEL_LABEL";
-	public static final String PUBLIC_KEY_REF_ID="packet-encryption-key"; 
-public static final String USER_DETAIL_SALT_SERVICE_NAME = "user_salt_details";
+	public static final String PUBLIC_KEY_REF_ID = "packet-encryption-key";
+	public static final String USER_DETAIL_SALT_SERVICE_NAME = "user_salt_details";
 }

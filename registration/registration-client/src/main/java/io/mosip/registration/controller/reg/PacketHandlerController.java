@@ -247,9 +247,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+							errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 						}
-						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 					} else {
 						getScene(createRoot).setRoot(createRoot);
 					}
@@ -317,9 +317,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
-							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
 							getScene(createRoot).setRoot(createRoot);
 							demographicDetailController.lostUIN();
@@ -499,9 +499,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
-							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
 							getScene(root);

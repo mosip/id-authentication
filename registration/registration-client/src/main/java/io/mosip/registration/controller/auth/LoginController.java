@@ -65,6 +65,7 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.UserSaltDetailsService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.impl.PublicKeySyncImpl;
@@ -195,6 +196,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private UserDetailService userDetailService;
 
+	@Autowired
+	private UserSaltDetailsService userSaltDetailsService;
+
 	@FXML
 	private ProgressIndicator progressIndicator;
 
@@ -222,15 +226,15 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private PublicKeySyncImpl publicKeySyncImpl;
-	
+
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
-	
+
 	boolean hasUpdate;
-	
+
 	@Autowired
 	SyncStatusValidatorService statusValidatorService;
-	
+
 	@Autowired
 	HeaderController headerController;
 
@@ -268,8 +272,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * To get the Sequence of which Login screen to be displayed
 	 * 
-	 * @param primaryStage
-	 *            primary Stage
+	 * @param primaryStage primary Stage
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
 
@@ -298,13 +301,13 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			if(hasUpdate) {
+			if (hasUpdate) {
 				Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
 						RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE,
 						RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
-				
-				if(statusValidatorService.isToBeForceUpdate()) {
-					
+
+				if (statusValidatorService.isToBeForceUpdate()) {
+
 					Button cancelButton = (Button) updateAlert.getDialogPane().lookupButton(ButtonType.CANCEL);
 					cancelButton.setDisable(true);
 				}
@@ -313,14 +316,14 @@ public class LoginController extends BaseController implements Initializable {
 				/* Get Option from user */
 				ButtonType result = updateAlert.getResult();
 				if (result == ButtonType.OK) {
-					
+
 					headerController.executeUpdateTask(loginRoot, progressIndicator);
 				}
 			}
-			if (!isInitialSetUp) {
-				executePreLaunchTask(loginRoot, progressIndicator);
-				jobConfigurationService.startScheduler();
-			}
+//			if (!isInitialSetUp) {
+//				executePreLaunchTask(loginRoot, progressIndicator);
+//				jobConfigurationService.startScheduler();
+//			}
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -338,8 +341,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate user id.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void validateUserId(ActionEvent event) {
 
@@ -487,8 +489,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * Validating User credentials on Submit
 	 * 
-	 * @param event
-	 *            event for validating credentials
+	 * @param event event for validating credentials
 	 */
 	public void validateCredentials(ActionEvent event) {
 
@@ -580,8 +581,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Generate OTP based on EO username
 	 * 
-	 * @param event
-	 *            event for generating OTP
+	 * @param event event for generating OTP
 	 */
 	@FXML
 	public void generateOtp(ActionEvent event) {
@@ -615,8 +615,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and otp
 	 * 
-	 * @param event
-	 *            event for validating OTP
+	 * @param event event for validating OTP
 	 */
 	@FXML
 	public void validateOTP(ActionEvent event) {
@@ -656,8 +655,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and fingerprint
 	 * 
-	 * @param event
-	 *            event for capturing fingerprint
+	 * @param event event for capturing fingerprint
 	 */
 	public void captureFingerPrint(ActionEvent event) {
 
@@ -691,8 +689,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and Iris
 	 * 
-	 * @param event
-	 *            event for capturing Iris
+	 * @param event event for capturing Iris
 	 */
 	public void captureIris(ActionEvent event) {
 
@@ -726,8 +723,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and face
 	 * 
-	 * @param event
-	 *            event to capture face
+	 * @param event event to capture face
 	 */
 	public void captureFace(ActionEvent event) {
 
@@ -772,8 +768,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Load login screen depending on Loginmode
 	 * 
-	 * @param loginMode
-	 *            login screen to be loaded
+	 * @param loginMode login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
 
@@ -805,8 +800,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User role and Machine mapping during login
 	 * 
-	 * @param userId
-	 *            entered userId
+	 * @param userId entered userId
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setInitialLoginInfo(String userId) {
@@ -835,8 +829,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Fetching and Validating machine and center id
 	 * 
-	 * @param userDetail
-	 *            the userDetail
+	 * @param userDetail the userDetail
 	 * @return boolean
 	 * @throws RegBaseCheckedException
 	 */
@@ -861,12 +854,9 @@ public class LoginController extends BaseController implements Initializable {
 	 * Setting values for Session context and User context and Initial info for
 	 * Login
 	 * 
-	 * @param userId
-	 *            entered userId
-	 * @param userDetail
-	 *            userdetails
-	 * @param roleList
-	 *            list of user roles
+	 * @param userId     entered userId
+	 * @param userDetail userdetails
+	 * @param roleList   list of user roles
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setSessionContext(String authInfo, UserDetail userDetail, List<String> roleList) {
@@ -908,10 +898,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
-	 * @param userDetail
-	 *            the userDetail
-	 * @param loginMode
-	 *            the loginMode
+	 * @param userDetail the userDetail
+	 * @param loginMode  the loginMode
 	 */
 	private void loadNextScreen(UserDetail userDetail, String loginMode) {
 
@@ -1067,10 +1055,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating invalid number of login attempts
 	 * 
-	 * @param userDetail
-	 *            user details
-	 * @param userId
-	 *            entered userId
+	 * @param userDetail user details
+	 * @param userId     entered userId
 	 * @return boolean
 	 */
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
@@ -1153,14 +1139,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating login time and count
 	 * 
-	 * @param loginCount
-	 *            number of invalid attempts
-	 * @param invalidLoginCount
-	 *            count from global param
-	 * @param loginTime
-	 *            login time from table
-	 * @param invalidLoginTime
-	 *            login time from global param
+	 * @param loginCount        number of invalid attempts
+	 * @param invalidLoginCount count from global param
+	 * @param loginTime         login time from table
+	 * @param invalidLoginTime  login time from global param
 	 * @return boolean
 	 */
 	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
@@ -1218,8 +1200,12 @@ public class LoginController extends BaseController implements Initializable {
 						ResponseDTO userResponseDTO = userDetailService
 								.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
+						ResponseDTO userSaltResponse = userSaltDetailsService
+								.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
 						if (((masterResponseDTO.getErrorResponseDTOs() != null
-								|| userResponseDTO.getErrorResponseDTOs() != null)
+								|| userResponseDTO.getErrorResponseDTOs() != null
+								|| userSaltResponse.getErrorResponseDTOs() != null)
 								|| responseDTO.getErrorResponseDTOs() != null)) {
 							val.add(RegistrationConstants.FAILURE);
 						} else {
@@ -1267,15 +1253,11 @@ public class LoginController extends BaseController implements Initializable {
 
 	}
 
-	
-
 	/**
 	 * This method will remove the loginmethod from list
 	 * 
-	 * @param disableFlag
-	 *            configuration flag
-	 * @param loginMethod
-	 *            login method
+	 * @param disableFlag configuration flag
+	 * @param loginMethod login method
 	 */
 	private void removeLoginParam(String disableFlag, String loginMethod) {
 

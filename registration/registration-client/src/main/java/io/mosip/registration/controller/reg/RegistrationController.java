@@ -225,7 +225,8 @@ public class RegistrationController extends BaseController {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().getFace().setFace(compressedPhoto);
 			} else {
-				FaceDetailsDTO faceDetailsDTO = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getFace();
+				FaceDetailsDTO faceDetailsDTO = getRegistrationDTOFromSession().getBiometricDTO()
+						.getApplicantBiometricDTO().getFace();
 				faceDetailsDTO.setCompressedFacePhoto(compressedPhoto);
 			}
 			byteArrayOutputStream.close();
@@ -241,7 +242,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method is save the biometric details
 	 */
-	public void saveBiometricDetails(BufferedImage applicantBufferedImage, BufferedImage exceptionBufferedImage) {
+	public boolean saveBiometricDetails(BufferedImage applicantBufferedImage, BufferedImage exceptionBufferedImage) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		boolean isValid = true;
@@ -266,8 +267,8 @@ public class RegistrationController extends BaseController {
 						FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
 						if (getRegistrationDTOFromSession().isUpdateUINChild()) {
-							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-							.getFace().setFace(photoInBytes);							
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
+									.setFace(photoInBytes);
 						} else {
 							faceDetailsDTO.setFace(photoInBytes);
 							faceDetailsDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
@@ -278,7 +279,8 @@ public class RegistrationController extends BaseController {
 							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 									outputStream);
 							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child) || getRegistrationDTOFromSession().isUpdateUINChild()) {
+							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+									|| getRegistrationDTOFromSession().isUpdateUINChild()) {
 								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 										.getExceptionFace().setFace(exceptionPhotoInBytes);
 								biometricDTO.setHasExceptionPhoto(true);
@@ -316,6 +318,7 @@ public class RegistrationController extends BaseController {
 						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 								.getOperatorBiometricDTO().getFace().setFace(null);
 					}
+					isValid = false;
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
 			} catch (IOException ioException) {
@@ -324,6 +327,7 @@ public class RegistrationController extends BaseController {
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		}
+		return isValid;
 	}
 
 	/**

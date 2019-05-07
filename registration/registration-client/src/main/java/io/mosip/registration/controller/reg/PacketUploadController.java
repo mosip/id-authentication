@@ -38,6 +38,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -51,6 +53,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
@@ -80,6 +83,9 @@ public class PacketUploadController extends BaseController implements Initializa
 	private Button saveToDevice;
 
 	@FXML
+	private TextField filterField;
+
+	@FXML
 	private TableColumn<PacketStatusDTO, String> fileColumn;
 
 	@FXML
@@ -100,6 +106,10 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
+	private ObservableList<PacketStatusDTO> observableList;
+	
+	private SortedList<PacketStatusDTO> sortedList;
+
 	/**
 	 * This method is used to Sync as well as upload the packets.
 	 * 
@@ -108,7 +118,7 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
-		table.getItems().clear();
+		observableList.clear();
 		table.refresh();
 		service.reset();
 		try {
@@ -339,9 +349,44 @@ public class PacketUploadController extends BaseController implements Initializa
 				}
 			}
 		});
-		table.setItems(list);
-		table.setEditable(true);
+		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+		observableList = FXCollections.observableArrayList(list);
 
+		wrapListAndAddFiltering();
+
+		table.setItems(sortedList);
+		table.setEditable(true);
+	}
+
+	private void wrapListAndAddFiltering() {
+		FilteredList<PacketStatusDTO> filteredList = new FilteredList<>(observableList, p -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes.
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredList.setPredicate(reg -> {
+				// If filter text is empty, display all ID's.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				// Compare every ID with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if (reg.getFileName().contains(lowerCaseFilter)) {
+					// Filter matches first name.
+					table.getSelectionModel().selectFirst();
+					return true;
+				}
+				return false; // Does not match.
+			});
+			table.getSelectionModel().selectFirst();
+		});
+
+		// 3. Wrap the FilteredList in a SortedList.
+		sortedList = new SortedList<>(filteredList);
+
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedList.comparatorProperty().bind(table.comparatorProperty());
 	}
 
 	/**
@@ -380,8 +425,8 @@ public class PacketUploadController extends BaseController implements Initializa
 		loadInitialPage();
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
-		fileColumn.setResizable(false);
-		statusColumn.setResizable(false);
+		// fileColumn.setResizable(false);
+		// statusColumn.setResizable(false);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
 			 keyStore = policySyncDAO.getPublicKey(RegistrationConstants.PUBLIC_KEY_REF_ID);
-
+ 
 			if (keyStore != null) {
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
 				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
@@ -109,7 +108,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<String, String>();
-		requestParams.put(RegistrationConstants.TIME_STAMP, Instant.now().toString());
+		requestParams.put(RegistrationConstants.TIME_STAMP,DateUtils.getUTCCurrentDateTimeString());
 		requestParams.put(RegistrationConstants.REF_ID, getCenterId(getStationId(getMacAddress())));
 		try {
 			@SuppressWarnings("unchecked")
@@ -188,7 +187,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 				}
 			} else {
-				fetchPolicy();
+				fetchPolicy(); 
 			}
 		} catch (RuntimeException runtimeException) {
 
