@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.ibatis.common.jdbc.ScriptRunner;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -36,70 +37,74 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	private ApplicationContext applicationContext;
 
 	private Connection derbyRegConnection;
-	
+
 	@Autowired
 	private GlobalParamService globalParamService;
 
+	
 	@Override
-	public ResponseDTO executeSqlFile() {
+	public ResponseDTO executeSqlFile(String version) {
 		ResponseDTO responseDTO = new ResponseDTO();
-		
-		//Get JDBC Connection
+
+		// Get JDBC Connection
 		derbyRegConnection = getConnection();
-		
+
 		if (derbyRegConnection != null) {
-			File sqlFile = getLatestVersionSqlFile();
+			File sqlFile = getSqlFile(this.getClass().getResource("/sql/" + version + "/").getPath());
 
 			if (sqlFile.exists()) {
 				// execute sql file
 				try {
+
 					runSqlFile(sqlFile);
-				} catch (RuntimeException | IOException | SQLException runtimeException) {
-					File rollBackFile = getRollBackSqlFile();
+
+				} catch (IOException | SQLException runtimeException) {
+					runtimeException.printStackTrace();
+					File rollBackFile = getSqlFile(
+							this.getClass().getResource("/sql/" + version + "_rollback/").getPath());
 
 					try {
 						runSqlFile(rollBackFile);
 					} catch (RuntimeException | IOException | SQLException exception) {
 
 					}
-					// TODO Prepare Error Response
+					// Prepare Error Response
 					setErrorResponse(responseDTO, "unable to execute sql file", null);
 				}
 			} else {
-				// TODO Update global param with current version
-				//globalParamService.update(null, null);
+				// Update global param with current version
+				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, version);
 			}
 		} else {
 			// Prepare Error Response as unable to esablish connection
 			setErrorResponse(responseDTO, "unable to esablish connection", null);
 		}
-		return null;
-	}
-
-	private File getRollBackSqlFile() {
-		// TODO Auto-generated method stub
-		return null;
+		return responseDTO;
 	}
 
 	private Connection getConnection() {
 
+		// Get Connection
 		return DataSourceUtils.getConnection((DataSource) applicationContext.getBean("dataSource"));
 
 	}
 
-	private File getLatestVersionSqlFile() {
-		// TODO Auto-generated method stub
-		return new File("C:\\Users\\M1044402\\Desktop\\dummySql.sql");
+	private File getSqlFile(String path) {
+
+		// Get File
+		return new File(path);
 	}
 
 	private void runSqlFile(File sqlFile) throws IOException, SQLException {
 
-		// Initialize object for ScripRunner
-		ScriptRunner sr = new ScriptRunner(derbyRegConnection, false, false);
+		// Initialize ScriptRunner
+		ScriptRunner scriptRunner = new ScriptRunner(derbyRegConnection, false, false);
 
-		try (Reader reader = new BufferedReader(new FileReader(sqlFile))) {
-			// Exctute script
-			sr.runScript(reader);
+		for (File file : sqlFile.listFiles()) {
+			try (Reader reader = new BufferedReader(new FileReader(file))) {
+				// Execute script
+				scriptRunner.runScript(reader);
+			}
 		}
 
 	}
