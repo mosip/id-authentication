@@ -40,7 +40,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
-import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
@@ -76,7 +75,6 @@ import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -86,12 +84,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -320,10 +318,10 @@ public class LoginController extends BaseController implements Initializable {
 					headerController.executeUpdateTask(loginRoot, progressIndicator);
 				}
 			}
-//			if (!isInitialSetUp) {
-//				executePreLaunchTask(loginRoot, progressIndicator);
-//				jobConfigurationService.startScheduler();
-//			}
+			if (!isInitialSetUp) {
+				executePreLaunchTask(loginRoot, progressIndicator);
+				jobConfigurationService.startScheduler();
+			}
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
