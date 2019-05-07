@@ -12,7 +12,7 @@
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
 
-	<name>id-authentication-core</name>
+	<name>authentication-core</name>
 	<description>Maven project of MOSIP ID-Authentication Core</description>
 
 	<dependencies>

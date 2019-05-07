@@ -5,7 +5,8 @@
 package io.mosip.preregistration.documents.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * This class defines the DocumentFailedToCopyException that occurs when the
@@ -16,10 +17,13 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
  * 
  */
 
+@Getter
 public class DocumentFailedToCopyException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7303748392658525834L;
+	
+	private MainResponseDTO<?> response;
 
 	/**
 	 * Default constructor
@@ -28,23 +32,6 @@ public class DocumentFailedToCopyException extends BaseUncheckedException {
 		super();
 	}
 
-	/**
-	 * @param message
-	 *            pass Error Message
-	 */
-	public DocumentFailedToCopyException(String message) {
-		super(ErrorCodes.PRG_PAM_DOC_011.toString(), message);
-	}
-
-	/**
-	 * @param message
-	 *            pass Error Message
-	 * @param cause
-	 *            pass Error cause
-	 */
-	public DocumentFailedToCopyException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM_DOC_011.toString(), message, cause);
-	}
 
 	/**
 	 * @param errorCode
@@ -66,6 +53,20 @@ public class DocumentFailedToCopyException extends BaseUncheckedException {
 	 */
 	public DocumentFailedToCopyException(String errorCode, String message) {
 		super(errorCode, message);
+	}
+	
+	/**
+	 * 
+	 * @param errorCode
+	 *    	     pass Error code
+	 * @param message
+	 *           pass Error Message
+	 * @param response
+	 * 			 pass response
+	 */
+	public DocumentFailedToCopyException(String errorCode, String message,MainResponseDTO<?> response) {
+		super(errorCode, message);
+		this.response=response;
 	}
 
 }

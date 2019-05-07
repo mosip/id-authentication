@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as html2pdf from 'html2pdf.js';
 import { MatDialog } from '@angular/material';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
@@ -48,91 +48,142 @@ export class AcknowledgementComponent implements OnInit {
   bookingDataPrimary = '';
   bookingDataSecondary = '';
 
-  constructor(private sharedService: SharedService, 
-              private dialog: MatDialog, 
-              private translate: TranslateService,
-              private dataStorageService: DataStorageService) {
+  constructor(
+    private bookingService: BookingService,
+    private dialog: MatDialog,
+    private translate: TranslateService,
+    private dataStorageService: DataStorageService
+  ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
-  
-  ngOnInit() {
-    this.usersInfo = this.sharedService.getNameList();
+
+  async ngOnInit() {
+    this.usersInfo = this.bookingService.getNameList();
     console.log('usersInfo', this.usersInfo);
-    if (!this.usersInfo[0].registrationCenter) {
-      this.getRegistrationCenterInPrimaryLanguage(this.usersInfo[0].regDto.registration_center_id, localStorage.getItem('langCode'));
-      this.getRegistrationCenterInSecondaryLanguage(this.usersInfo[0].regDto.registration_center_id, this.secondaryLang);
-    } else {
-      this.getRegistrationCenterInSecondaryLanguage(this.usersInfo[0].registrationCenter.id, this.secondaryLang);
-    }
-    this.formatDateTime();
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 1 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
-    this.usersInfo.forEach(user => {
-      console.log(user);
-      this.generateQRCode(user);
-    });
-    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
-      this.secondaryLanguagelabels = response['acknowledgement'];
-    });
-    
-    this.getTemplate();
-    
-    if (this.sharedService.getSendNotification()) {
-      this.sharedService.resetSendNotification();
+
+    await this.apiCalls();
+
+    if (this.bookingService.getSendNotification()) {
+      this.bookingService.resetSendNotification();
       this.automaticNotification();
     }
   }
 
-  formatDateTime() {
-    for(let i = 0; i < this.usersInfo.length; i++) {
-      if (!this.usersInfo[i].bookingData) {
-        this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(this.usersInfo[i].regDto.appointment_date, 
-          this.usersInfo[i].regDto.time_slot_from, 
-          localStorage.getItem('langCode'));
-        this.usersInfo[i].bookingTimePrimary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
-        this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(this.usersInfo[i].regDto.appointment_date, 
-          this.usersInfo[i].regDto.time_slot_from, 
-          localStorage.getItem('secondaryLangCode'));
-          this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
-        } else {
-          const date = this.usersInfo[i].bookingData.split(',');
-          this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(date[0], date[1], localStorage.getItem('langCode'));
-          this.usersInfo[i].bookingTimePrimary = Utils.formatTime(date[1]);
-          this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(date[0], date[1], localStorage.getItem('secondaryLangCode'));
-          this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(date[1]);
+  async apiCalls() {
+    return new Promise(async (resolve, reject) => {
+      if (!this.usersInfo[0].registrationCenter) {
+        await this.getRegistrationCenterInPrimaryLanguage(
+          this.usersInfo[0].regDto.registration_center_id,
+          localStorage.getItem('langCode')
+        );
+        await this.getRegistrationCenterInSecondaryLanguage(
+          this.usersInfo[0].regDto.registration_center_id,
+          this.secondaryLang
+        );
+      } else {
+        await this.getRegistrationCenterInSecondaryLanguage(
+          this.usersInfo[0].registrationCenter.id,
+          this.secondaryLang
+        );
+      }
+      this.formatDateTime();
+
+      await this.qrCodeForUser();
+
+      this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
+        this.secondaryLanguagelabels = response['acknowledgement'];
+      });
+      await this.getTemplate();
+      resolve(true);
+    });
+  }
+
+  async qrCodeForUser() {
+    return new Promise((resolve, reject) => {
+      this.usersInfo.forEach(async user => {
+        console.log(user);
+        await this.generateQRCode(user);
+        if (this.usersInfo.indexOf(user) === this.usersInfo.length - 1) {
+          resolve(true);
         }
+      });
+    });
+  }
+
+  formatDateTime() {
+    for (let i = 0; i < this.usersInfo.length; i++) {
+      if (!this.usersInfo[i].bookingData) {
+        this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(
+          this.usersInfo[i].regDto.appointment_date,
+          this.usersInfo[i].regDto.time_slot_from,
+          localStorage.getItem('langCode')
+        );
+        this.usersInfo[i].bookingTimePrimary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
+        this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(
+          this.usersInfo[i].regDto.appointment_date,
+          this.usersInfo[i].regDto.time_slot_from,
+          localStorage.getItem('secondaryLangCode')
+        );
+        this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(this.usersInfo[i].regDto.time_slot_from);
+      } else {
+        const date = this.usersInfo[i].bookingData.split(',');
+        this.usersInfo[i].bookingDataPrimary = Utils.getBookingDateTime(
+          date[0],
+          date[1],
+          localStorage.getItem('langCode')
+        );
+        this.usersInfo[i].bookingTimePrimary = Utils.formatTime(date[1]);
+        this.usersInfo[i].bookingDataSecondary = Utils.getBookingDateTime(
+          date[0],
+          date[1],
+          localStorage.getItem('secondaryLangCode')
+        );
+        this.usersInfo[i].bookingTimeSecondary = Utils.formatTime(date[1]);
+      }
     }
   }
 
   automaticNotification() {
-    setTimeout(() => {
-      console.log('Timeout hit after 3 seconds. Sending notification');
-      this.sendNotification([], false);
-    }, 3000);
+    //  setTimeout(() => {
+    console.log('Auto notificatiopn hit');
+    this.sendNotification([], false);
+    //  }, 500);
   }
 
-  getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
-    this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
-      this.secondaryLanguageRegistrationCenter = response['response']['registrationCenters'][0];
-      console.log(this.secondaryLanguageRegistrationCenter);
-    })
+  async getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
+        this.secondaryLanguageRegistrationCenter = response['response']['registrationCenters'][0];
+        console.log(this.secondaryLanguageRegistrationCenter);
+        resolve(true);
+      });
+    });
   }
 
-  getRegistrationCenterInPrimaryLanguage(centerId: string, langCode: string) {
-    this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
-      this.usersInfo[0].registrationCenter = response['response']['registrationCenters'][0];
-      console.log(this.usersInfo);
-    })
+  async getRegistrationCenterInPrimaryLanguage(centerId: string, langCode: string) {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
+        this.usersInfo[0].registrationCenter = response['response']['registrationCenters'][0];
+        console.log(this.usersInfo);
+        resolve(true);
+      });
+    });
   }
 
   getTemplate() {
-    this.dataStorageService.getGuidelineTemplate().subscribe(response => {
-      this.guidelines = response['response']['templates'][0].fileText.split('\n');
-    })
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGuidelineTemplate().subscribe(response => {
+        console.log(response);
+        this.guidelines = response['response']['templates'][0].fileText.split('\n');
+        resolve(true);
+      });
+    });
   }
 
   download() {
@@ -140,32 +191,35 @@ export class AcknowledgementComponent implements OnInit {
     html2pdf(element, this.opt);
   }
 
- async generateBlob() {
+  async generateBlob() {
     const element = document.getElementById('print-section');
-    return await html2pdf().set(this.opt).from(element).outputPdf('dataurlstring');
+    return await html2pdf()
+      .set(this.opt)
+      .from(element)
+      .outputPdf('dataurlstring');
   }
 
- async createBlob() {
+  async createBlob() {
     const dataUrl = await this.generateBlob();
-      // convert base64 to raw binary data held in a string
-      const byteString = atob(dataUrl.split(',')[1]);
+    // convert base64 to raw binary data held in a string
+    const byteString = atob(dataUrl.split(',')[1]);
 
-      // separate out the mime component
-      const mimeString = dataUrl
-        .split(',')[0]
-        .split(':')[1]
-        .split(';')[0];
+    // separate out the mime component
+    const mimeString = dataUrl
+      .split(',')[0]
+      .split(':')[1]
+      .split(';')[0];
 
-      // write the bytes of the string to an ArrayBuffer
-      const arrayBuffer = new ArrayBuffer(byteString.length);
+    // write the bytes of the string to an ArrayBuffer
+    const arrayBuffer = new ArrayBuffer(byteString.length);
 
-      var _ia = new Uint8Array(arrayBuffer);
-      for (let i = 0; i < byteString.length; i++) {
-        _ia[i] = byteString.charCodeAt(i);
-      }
+    var _ia = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      _ia[i] = byteString.charCodeAt(i);
+    }
 
-      const dataView = new DataView(arrayBuffer);
-      return await new Blob([dataView], { type: mimeString });
+    const dataView = new DataView(arrayBuffer);
+    return await new Blob([dataView], { type: mimeString });
   }
 
   sendAcknowledgement() {
@@ -186,15 +240,18 @@ export class AcknowledgementComponent implements OnInit {
       });
   }
 
-  generateQRCode(name) {
-    this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
-      console.log(response);
-      const index = this.usersInfo.indexOf(name);
-      this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
+  async generateQRCode(name) {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
+        console.log(response);
+        const index = this.usersInfo.indexOf(name);
+        this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
+        resolve(true);
+      });
     });
   }
 
- async sendNotification(applicantNumber, additionalRecipient: boolean) {
+  async sendNotification(applicantNumber, additionalRecipient: boolean) {
     console.log(this.usersInfo);
     this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
@@ -207,7 +264,7 @@ export class AcknowledgementComponent implements OnInit {
         applicantNumber[1] === undefined ? null : applicantNumber[1],
         applicantNumber[0] === undefined ? null : applicantNumber[0],
         additionalRecipient
-        );
+      );
       console.log(notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);
       console.log('notification request', model);

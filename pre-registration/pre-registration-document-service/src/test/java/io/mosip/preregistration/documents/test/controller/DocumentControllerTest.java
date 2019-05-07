@@ -7,13 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -33,15 +29,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.controller.DocumentController;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -106,9 +100,9 @@ public class DocumentControllerTest {
 	String docJson = "";
 
 	Map<String, String> map = new HashMap<>();
-	MainListResponseDTO responseCopy = new MainListResponseDTO<>();
-	MainListResponseDTO responseDelete = new MainListResponseDTO<>();
-	MainListResponseDTO<DocumentResponseDTO> responseMain = new MainListResponseDTO<>();
+	MainResponseDTO responseCopy = new MainResponseDTO<>();
+	MainResponseDTO responseDelete = new MainResponseDTO<>();
+	MainResponseDTO<DocumentResponseDTO> responseMain = new MainResponseDTO<>();
 	DocumentRequestDTO documentDto = null;
 	List<DocumentResponseDTO> docResponseDtos = new ArrayList<>();
 
@@ -145,8 +139,7 @@ public class DocumentControllerTest {
 		responseDto.setDocumentId("12345");
 		responseDto.setPreRegistrationId("123546987412563");
 
-		docResponseDtos.add(responseDto);
-		responseMain.setResponse(docResponseDtos);
+		responseMain.setResponse(responseDto);
 	}
 
 	@WithUserDetails("individual")
@@ -194,8 +187,24 @@ public class DocumentControllerTest {
 		String preRegistrationId = "48690172097498";
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
 		mockMvc.perform(
-				get("/documents/{preRegistrationId}", preRegistrationId).contentType(MediaType.APPLICATION_JSON_VALUE))
+				get("/documents/preregistration/{preRegistrationId}", preRegistrationId).contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isOk());
+	}
+	
+	
+	/**
+	 * @throws Exception
+	 */
+	@WithUserDetails("INDIVIDUAL")
+	@Test
+	public void getAllDocumentforDocidTest() throws Exception {
+		String preRegistrationId = "1234567847847";
+		String documentId = "2ebbd74e-55e3-11e9-a7b4-b1f3d4442a79";
+		Mockito.when(service.deleteDocument(documentId, preRegistrationId)).thenReturn(responseCopy);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/documents/{documentId}", documentId)
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegistrationId", preRegistrationId);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 //	@WithUserDetails("INDIVIDUAL")

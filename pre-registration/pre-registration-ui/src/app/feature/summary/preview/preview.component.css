@@ -22,7 +22,7 @@
 }
 
 .right {
-  text-align: right;
+  direction: rtl;
 }
 
 .card-padding {

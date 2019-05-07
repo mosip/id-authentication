@@ -120,16 +120,20 @@ spec:
           servicePort: 8090
       - path: /idauthentication/v1/kyc
         backend:
-          serviceName: kyc-service
+          serviceName: authentication-kyc-service
           servicePort: 8091
       - path: /idauthentication/v1/otp
         backend:
-          serviceName: otp-service
+          serviceName: authentication-otp-service
           servicePort: 8092
-      - path: /idauthentication/v1/auth/internal
+      - path: /idauthentication/v1/internal/auth
         backend:
-          serviceName: internalauthentication-service
+          serviceName: authentication-internal-service
           servicePort: 8093
+      - path: /idrepository/v1/identity 
+        backend:
+          serviceName: id-repository-identity-service
+          servicePort: 8090
       - path: /pre-registration-ui
         backend:
           serviceName: pre-registration-ui

@@ -21,12 +21,12 @@
 		<module>authentication-common</module>
 		<module>authentication-core</module>
 		<module>authentication-service</module>
-		<module>partnerdemo-service</module>
-		<module>internalauthentication-service</module>
-		<module>kyc-service</module>
-		<module>otp-service</module>
-		<module>vid-service</module>
-		<module>staticpin-service</module>
+		<module>authentication-partnerdemo-service</module>
+		<module>authentication-internal-service</module>
+		<module>authentication-kyc-service</module>
+		<module>authentication-otp-service</module>
+		<module>authentication-vid-service</module>
+		<module>authentication-staticpin-service</module>
 	</modules>
 
 	<properties>
@@ -45,7 +45,7 @@
 		<powermock.version>2.0.0</powermock.version>
 
 		<!-- Kernel components -->
-		<kernel.version>0.10.6</kernel.version>
+		<kernel.version>0.11.0</kernel.version>
 		<kernel.core.version>${kernel.version}</kernel.core.version>
 		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
 		<kernel.template.version>${kernel.version}</kernel.template.version>

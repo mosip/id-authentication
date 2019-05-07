@@ -27,6 +27,9 @@ public class AuthUserDetails implements UserDetails {
 	private String token;
 	private String mail;
 	private String mobile;
+	private String rId;
+	
+
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public AuthUserDetails(MosipUserDto mosipUserDto, String token) {
@@ -34,6 +37,7 @@ public class AuthUserDetails implements UserDetails {
 		this.token = token;
 		this.mail = mosipUserDto.getMail();
 		this.mobile = mosipUserDto.getMobile();
+		this.rId=mosipUserDto.getRId();
 	}
 
 	@Override
@@ -106,5 +110,12 @@ public class AuthUserDetails implements UserDetails {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+	public String getrId() {
+		return rId;
+	}
+
+	public void setrId(String rId) {
+		this.rId = rId;
 	}
 }

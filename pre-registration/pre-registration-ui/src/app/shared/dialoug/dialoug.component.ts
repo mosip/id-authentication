@@ -5,6 +5,8 @@ import { Location } from '@angular/common';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import * as appConstants from '../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 export interface DialogData {
   case: number;
@@ -38,7 +40,9 @@ export class DialougComponent implements OnInit {
     private authService: AuthService,
     private location: Location,
     private regService: RegistrationService,
-    private config: ConfigService
+    private config: ConfigService,
+    private router: Router,
+    private dialogBox : MatDialog
   ) {}
 
   // tslint:disable-next-line:use-life-cycle-interface
@@ -86,26 +90,22 @@ export class DialougComponent implements OnInit {
       this.disableSend = true;
       this.invalidApplicantEmail = false;
       this.invalidApplicantNumber = false;
-    }
-    else if (email.value && !mobile.value && !this.invalidApplicantEmail)
-      this.disableSend = false;
-    else if (mobile.value && !email.value && !this.invalidApplicantNumber)
-      this.disableSend = false;
-    else if (!this.invalidApplicantEmail && !this.invalidApplicantNumber)
-      this.disableSend = false;
+    } else if (email.value && !mobile.value && !this.invalidApplicantEmail) this.disableSend = false;
+    else if (mobile.value && !email.value && !this.invalidApplicantNumber) this.disableSend = false;
+    else if (!this.invalidApplicantEmail && !this.invalidApplicantNumber) this.disableSend = false;
   }
 
   onSelectCheckbox() {
     this.isChecked = !this.isChecked;
   }
 
-  userRedirection() {
+   async userRedirection() {
     if (localStorage.getItem('newApplicant') === 'true') {
-      alert(this.input.alertMessageFirst);
+     await this.firstPopUp();
       // this if for first time user, if he does not provide consent he will be logged out.
-      this.authService.removeToken();
-      this.location.back();
+
     } else if (localStorage.getItem('newApplicant') === 'false') {
+      console.log('user redirection else', localStorage.getItem('newApplicant'));
       this.regService.currentMessage.subscribe(
         message => (this.message = message)
         //second case is when an existing applicant enters the application.
@@ -113,12 +113,55 @@ export class DialougComponent implements OnInit {
       this.checkCondition = this.message['modifyUserFromPreview'];
 
       if (this.checkCondition === 'false') {
-        alert(this.input.alertMessageThird);
-        this.location.back();
+      await this.thirdPopUp();
+
       } else {
-        alert(this.input.alertMessageSecond);
-        this.location.back();
+      await  this.secondPopUp();
+
       }
     }
+  }
+
+  firstPopUp(){
+    const data = {
+      case: 'MESSAGE',
+      message: this.input.alertMessageFirst
+    };
+    this.dialogBox.open(DialougComponent, {
+      width: '460px',
+      data: data
+    }).afterClosed().subscribe(() => this.loggingUserOut());
+  }
+
+
+  secondPopUp(){
+    const data = {
+      case: 'MESSAGE',
+      message: this.input.alertMessageSecond
+    };
+    this.dialogBox.open(DialougComponent, {
+      width: '460px',
+      data: data
+    }).afterClosed().subscribe(() => this.redirectingUser());
+  }
+
+
+  thirdPopUp(){
+    const data = {
+      case: 'MESSAGE',
+      message: this.input.alertMessageThird
+    };
+    this.dialogBox.open(DialougComponent, {
+      width: '460px',
+      data: data
+    }).afterClosed().subscribe(() => this.redirectingUser());
+  }
+
+  loggingUserOut(){
+    this.authService.onLogout();
+    //this.location.back();
+  }
+  redirectingUser(){
+    this.location.back();
   }
 }

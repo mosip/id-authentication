@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class GenerateQRcodeServiceTest {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
 		qrcodedto.setRequest(notificationDTO);
-		qrcodedto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
+		qrcodedto.setRequesttime(df.parse(df.format(new Date())));
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
