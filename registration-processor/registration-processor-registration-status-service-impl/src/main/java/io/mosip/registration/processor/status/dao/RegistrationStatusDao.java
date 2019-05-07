@@ -216,7 +216,7 @@ public class RegistrationStatusDao {
 		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
 		
 		String queryStr = SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
-				+ ".id = :rid " + AND + alias + ".statusCode = :status_Code" ;
+				+ ".id = :rid " + AND + " " +alias + ".statusCode = :status_Code" ;
 		params.put("rid", rid);
 		params.put("status_Code", "PROCESSED");
 		List<RegistrationStatusEntity> unprocessedPackets = registrationStatusRepositary.createQuerySelect(queryStr,

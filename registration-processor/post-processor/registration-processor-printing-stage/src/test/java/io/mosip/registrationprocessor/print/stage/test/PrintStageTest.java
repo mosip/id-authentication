@@ -270,7 +270,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getIsValid());
@@ -285,7 +284,6 @@ public class PrintStageTest {
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 
 		MessageDTO result = stage.process(dto);
@@ -314,7 +312,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -329,7 +326,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -344,7 +340,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -359,7 +354,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -374,7 +368,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());

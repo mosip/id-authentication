@@ -260,7 +260,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 							: NULL_IDREPO_RESPONSE;
 					registrationStatusDto.setStatusComment(statusComment);
 					object.setInternalError(Boolean.TRUE);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_UNASSIGNED);
@@ -298,7 +298,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			object.setIsValid(Boolean.FALSE);
 			object.setRid(registrationId);
 		} catch (ApisResourceAccessException ex) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
