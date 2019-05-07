@@ -260,6 +260,10 @@ public class AuthServiceImpl implements AuthService {
 				{
 					mosipToken=null;
 				}
+				else
+				{
+					throw new AuthManagerException(auth.getErrorCode(),auth.getMessage());
+				}
 			}
 			if(authToken!=null && mosipToken!=null)
 			{
