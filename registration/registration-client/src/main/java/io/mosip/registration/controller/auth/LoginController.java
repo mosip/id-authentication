@@ -74,7 +74,6 @@ import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -225,16 +224,13 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private PublicKeySyncImpl publicKeySyncImpl;
 
-	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
-
-	boolean hasUpdate;
+	private boolean hasUpdate;
 
 	@Autowired
-	SyncStatusValidatorService statusValidatorService;
+	private SyncStatusValidatorService statusValidatorService;
 
 	@Autowired
-	HeaderController headerController;
+	private HeaderController headerController;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
