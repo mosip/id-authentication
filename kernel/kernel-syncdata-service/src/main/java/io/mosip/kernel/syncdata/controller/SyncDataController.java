@@ -2,22 +2,28 @@ package io.mosip.kernel.syncdata.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
@@ -38,6 +44,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Abhishek Kumar
  * @author Bal Vikash Sharma
  * @author Megha Tanga
+ * @author Urvil Joshi
  * @since 1.0.0
  */
 @RestController
@@ -252,6 +259,15 @@ public class SyncDataController {
 
 		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
 		response.setResponse(publicKeyResponse);
+		return response;
+	}
+	
+	
+	@ResponseFilter
+	@PostMapping(value = "/publickey", produces = "application/json")
+	public ResponseWrapper<UploadPublicKeyResponseDto> uploadpublickey(@RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
+		ResponseWrapper<UploadPublicKeyResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(masterDataService.uploadpublickey(uploadPublicKeyRequestDto.getRequest()));
 		return response;
 	}
 
