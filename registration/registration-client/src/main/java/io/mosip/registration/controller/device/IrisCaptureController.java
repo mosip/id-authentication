@@ -712,12 +712,28 @@ public class IrisCaptureController extends BaseController {
 		leftIrisImage
 				.setImage(new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 		leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
-		leftIrisAttempts.setText(RegistrationConstants.EMPTY);
+		leftIrisAttempts.setText(RegistrationConstants.HYPHEN);
 
 		rightIrisImage.setImage(
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
-		rightIrisAttempts.setText(RegistrationConstants.EMPTY);
+		rightIrisAttempts.setText(RegistrationConstants.HYPHEN);
+		clearProgressBar();
+
+		if (getRegistrationDTOFromSession() != null) {
+			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+				.setIrisDetailsDTO(new ArrayList<>());
+			} else {
+				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+						.setIrisDetailsDTO(new ArrayList<>());
+			}
+		}
+
+		singleBiometricCaptureCheck();
+	}
+
+	private void clearProgressBar() {
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
 			irisProgress.setProgress(0);
@@ -735,18 +751,6 @@ public class IrisCaptureController extends BaseController {
 						.add(RegistrationConstants.QUALITY_LABEL_GREY);
 			}
 		}
-
-		if (getRegistrationDTOFromSession() != null) {
-			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
-				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-				.setIrisDetailsDTO(new ArrayList<>());
-			} else {
-				getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-						.setIrisDetailsDTO(new ArrayList<>());
-			}
-		}
-
-		singleBiometricCaptureCheck();
 	}
 
 	public void clearIrisBasedOnExceptions() {
@@ -754,7 +758,8 @@ public class IrisCaptureController extends BaseController {
 			leftIrisImage.setImage(
 					new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 			leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
-
+			leftIrisAttempts.setText(RegistrationConstants.HYPHEN);
+			clearProgressBar();
 			getIrises().removeIf(iris -> iris.getIrisType()
 					.equalsIgnoreCase((RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)));
 		}
@@ -763,6 +768,8 @@ public class IrisCaptureController extends BaseController {
 			rightIrisImage.setImage(
 					new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 			rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
+			rightIrisAttempts.setText(RegistrationConstants.HYPHEN);
+			clearProgressBar();
 			getIrises().removeIf(iris -> iris.getIrisType()
 					.equalsIgnoreCase((RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)));
 		}
