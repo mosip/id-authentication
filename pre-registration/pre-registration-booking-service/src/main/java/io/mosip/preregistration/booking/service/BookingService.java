@@ -231,11 +231,11 @@ public class BookingService {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.SYSTEM.toString(),
 						"  Availability retrieved successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
+						authUserDetails().getUserId(), authUserDetails().getUsername(), regID);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Availability failed to get", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
+						authUserDetails().getUsername(), regID);
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());

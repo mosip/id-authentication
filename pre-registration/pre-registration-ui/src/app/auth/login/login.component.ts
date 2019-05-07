@@ -58,6 +58,8 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.translate.use('fra');
+    localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
   }
@@ -105,11 +107,6 @@ export class LoginComponent implements OnInit {
   }
 
   loadLanguagesWithConfig() {
-    console.log(
-      'mosip.id.validation.identity.fullName.[*].value',
-      this.configService.getConfigByKey('mosip.id.validation.identity.fullName.[*].value')
-    );
-
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
@@ -264,30 +261,29 @@ export class LoginComponent implements OnInit {
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
       this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
-      response => {
-      console.log(response);
-       if (!response['errors']) {
-        clearInterval(this.timer);
-        localStorage.setItem('loggedIn', 'true');
-        this.authService.setToken();
+        response => {
+          console.log(response);
+          if (!response['errors']) {
+            clearInterval(this.timer);
+            localStorage.setItem('loggedIn', 'true');
+            this.authService.setToken();
 
-        this.regService.setLoginId(this.inputContactDetails);
-        this.router.navigate(['dashboard']);
-      } else {
-        console.log(response['error']);
-        this.showOtpMessage();
-      }
-      },
-      error =>
-      {
-        this.showOtpMessage();
-        // clearInterval(this.timer);
-        // localStorage.setItem('loggedIn', 'true');
-        // this.authService.setToken();
+            this.regService.setLoginId(this.inputContactDetails);
+            this.router.navigate(['dashboard']);
+          } else {
+            console.log(response['error']);
+            this.showOtpMessage();
+          }
+        },
+        error => {
+          this.showOtpMessage();
+          // clearInterval(this.timer);
+          // localStorage.setItem('loggedIn', 'true');
+          // this.authService.setToken();
 
-        // this.regService.setLoginId(this.inputContactDetails);
-        // this.router.navigate(['dashboard']);
-      }
+          // this.regService.setLoginId(this.inputContactDetails);
+          // this.router.navigate(['dashboard']);
+        }
       );
     }
   }
@@ -309,7 +305,7 @@ export class LoginComponent implements OnInit {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       const message = {
         case: 'MESSAGE',
-        message: response['message']['config']['error']
+        message: response['error']['error']
       };
       const dialogRef = this.dialog.open(DialougComponent, {
         width: '350px',

@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgModel, AbstractControl } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -21,6 +21,7 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
+import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 
 /**
  * @description This component takes care of the demographic page.
@@ -78,6 +79,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   step: number = 0;
   id: number;
   oldAge: number;
+  oldKeyBoardIndex: number;
   numberOfApplicants: number;
   userForm: FormGroup;
   transUserForm: FormGroup;
@@ -87,7 +89,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   user: UserModel;
   demodata: string[];
   secondaryLanguagelabels: any;
-  primaryLanguagelabels: any;
+  demographiclabels: any;
+  errorlabels: any;
   uppermostLocationHierarchy: any;
   primaryGender = [];
   secondaryGender = [];
@@ -102,6 +105,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
   @ViewChild('mm') mm: ElementRef;
   @ViewChild('yyyy') yyyy: ElementRef;
   @ViewChild('age') age: ElementRef;
+
+  private _keyboardRef: MatKeyboardRef<MatKeyboardComponent>;
+  @ViewChildren('keyboardRef', { read: ElementRef })
+  private _attachToElementMesOne: any;
 
   regions_in_primary_lang: CodeValueModal[] = [];
   regions_in_secondary_lang: CodeValueModal[] = [];
@@ -168,7 +175,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private configService: ConfigService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private matKeyboardService: MatKeyboardService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -220,7 +228,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   private getPrimaryLabels() {
     return new Promise(resolve => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
-        this.primaryLanguagelabels = response['demographic'];
+        this.demographiclabels = response['demographic'];
+        this.errorlabels = response['error'];
         resolve(true);
       });
     });
@@ -255,17 +264,17 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private consentDeclaration() {
-    if (this.primaryLanguagelabels) {
+    if (this.demographiclabels) {
       const data = {
         case: 'CONSENTPOPUP',
-        title: this.primaryLanguagelabels.consent.title,
-        subtitle: this.primaryLanguagelabels.consent.subtitle,
-        message: this.primaryLanguagelabels.consent.message,
-        checkCondition: this.primaryLanguagelabels.consent.checkCondition,
-        acceptButton: this.primaryLanguagelabels.consent.acceptButton,
-        alertMessageFirst: this.primaryLanguagelabels.consent.alertMessageFirst,
-        alertMessageSecond: this.primaryLanguagelabels.consent.alertMessageSecond,
-        alertMessageThird: this.primaryLanguagelabels.consent.alertMessageThird
+        title: this.demographiclabels.consent.title,
+        subtitle: this.demographiclabels.consent.subtitle,
+        message: this.demographiclabels.consent.message,
+        checkCondition: this.demographiclabels.consent.checkCondition,
+        acceptButton: this.demographiclabels.consent.acceptButton,
+        alertMessageFirst: this.demographiclabels.consent.alertMessageFirst,
+        alertMessageSecond: this.demographiclabels.consent.alertMessageSecond,
+        alertMessageThird: this.demographiclabels.consent.alertMessageThird
       };
       this.dialog.open(DialougComponent, {
         width: '550px',
@@ -714,34 +723,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description This is to change the focus in date of birth field.
-   *
-   * @memberof DemographicComponent
-   */
-  nextElementFocus() {
-    console.log('AAYA');
-
-    const dayMaxLength = 2;
-    const monthMaxLength = 2;
-    const date = this.dd.nativeElement.value;
-    const month = this.mm.nativeElement.value;
-    console.log(this.mm);
-    console.log(date.length);
-    console.log(dayMaxLength);
-
-    if (!this.dataModification) {
-      if (date.length == dayMaxLength) {
-        console.log('aaya date');
-        this.mm.nativeElement.focus();
-      }
-      if (month.length == monthMaxLength) {
-        console.log('aaya month');
-        this.yyyy.nativeElement.focus();
-      }
-    }
-  }
-
-  /**
    * @description This is called whenever there is a change in Date of birth field and accordingly age
    * will get calculate.
    *
@@ -759,7 +740,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(newDate);
       this.userForm.controls[this.formControlNames.age].patchValue(this.calculateAge(dateform));
     } else if (date && month && year) {
-      console.log('INSIDE DATE CHANGE ERROR');
       this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
         incorrect: true
@@ -1106,19 +1086,54 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onError() {
-    console.log(this.primaryLanguagelabels);
-    console.log(this.dialog.openDialogs);
-
     this.dataUploadComplete = true;
     const body = {
       case: 'ERROR',
       title: 'ERROR',
-      message: this.primaryLanguagelabels.error.error,
-      yesButtonText: this.primaryLanguagelabels.error.button_ok
+      message: this.errorlabels.error,
+      yesButtonText: this.errorlabels.button_ok
     };
     this.dialog.open(DialougComponent, {
       width: '250px',
       data: body
     });
+  }
+
+  /**
+   * @description This method is called to open a virtual keyvboard in the specified languaged.
+   *
+   * @param {string} formControlName
+   * @param {number} index
+   * @memberof DemographicComponent
+   */
+  onKeyboardDisplay(formControlName: string, index: number) {
+    let control: AbstractControl;
+    let lang: string;
+    if (this.userForm.controls[formControlName]) {
+      control = this.userForm.controls[formControlName];
+      lang = appConstants.virtual_keyboard_languages[this.primaryLang];
+    } else {
+      control = this.transUserForm.controls[formControlName];
+      lang = appConstants.virtual_keyboard_languages[this.secondaryLang];
+    }
+    if (this.oldKeyBoardIndex == index && this.matKeyboardService.isOpened) {
+      this.matKeyboardService.dismiss();
+    } else {
+      let el: ElementRef;
+      this.oldKeyBoardIndex = index;
+      el = this._attachToElementMesOne._results[index];
+      el.nativeElement.focus();
+      this._keyboardRef = this.matKeyboardService.open(lang);
+      this._keyboardRef.instance.setInputInstance(el);
+      this._keyboardRef.instance.attachControl(control);
+    }
+  }
+
+  @HostListener('blur', ['$event'])
+  @HostListener('focusout', ['$event'])
+  private _hideKeyboard() {
+    if (this.matKeyboardService.isOpened) {
+      this.matKeyboardService.dismiss();
+    }
   }
 }

@@ -75,7 +75,7 @@ public class DocumentConfig {
 	 * @return docket object
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {

@@ -56,7 +56,7 @@
 }
 
 .user__form {
-  width: 90%;
+  width: 85%;
   margin: auto;
 }
 
@@ -64,8 +64,13 @@
   margin: 0;
 }
 
+mat-icon {
+  position: relative;
+  top: 11px;
+}
+
 .user__form mat-form-field {
-  width: 95%;
+  width: 84%;
   padding: 3px;
   color: #000000;
   font-size: 0.7rem;
@@ -73,7 +78,7 @@
 
 .user__age-or-date {
   display: flex;
-  width: 95%;
+  width: 87.5%;
   align-items: center;
 }
 
@@ -132,7 +137,7 @@
 
 .user__genderAndForeigner mat-button-toggle-group {
   box-shadow: none;
-  width: 60%;
+  width: 54%;
 }
 
 .user__genderAndForeigner mat-button-toggle {
@@ -165,8 +170,8 @@
 }
 
 .user__dropdown {
-  width: 47%;
-  margin-right: 3%;
+  width: 49.5%;
+  /* margin-right: 3%; */
   display: inline-block;
 }
 
@@ -216,12 +221,20 @@
   .genderAndForeigner--foreigner {
     align-self: center;
   }
+
+  .user__genderAndForeigner--text {
+    width: 37%;
+  }
 }
 
 @media (max-width: 1000px) {
   .user__genderAndForeigner mat-button-toggle {
     margin: 6px 4px 1px 1px;
     padding: 0.2rem 0;
+  }
+
+  .user__age-or-date {
+    width: 92%;
   }
 
   user__age-or-date .user__age {
