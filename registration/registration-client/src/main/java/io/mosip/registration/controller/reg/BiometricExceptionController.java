@@ -386,8 +386,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		List<String> bioList = new ArrayList<>();
 		bioList.addAll(fingerList);
 		bioList.addAll(irisList);
-		if (!bioList.isEmpty()) {
-			List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
+		List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
+		if (!bioList.isEmpty()) {			
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
 				if (bioType.contains(RegistrationConstants.EYE)) {
@@ -420,6 +420,8 @@ public class BiometricExceptionController extends BaseController implements Init
 						.getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			}
 
+		}else {
+			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
 		}
 
 		LOGGER.info("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,

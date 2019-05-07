@@ -553,11 +553,9 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration");
 
-			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				if (validateIris()) {
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {				
 					userOnboardParentController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
-							getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
-				}
+							getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));				
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
