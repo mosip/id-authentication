@@ -14,13 +14,25 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.TransactionDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.packet.storage.entity.*;
+import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefPkEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.exception.DateParseException;
+import io.mosip.registration.processor.status.entity.TransactionEntity;
 
 /**
  * The Class PacketInfoMapper.
@@ -230,7 +242,7 @@ public class PacketInfoMapper {
 		return bioRefDto;
 	}
 
-	public static RegBioRefEntity convertBioRefDtoToEntity(RegBioRefDto regBioRefDto){
+	public static RegBioRefEntity convertBioRefDtoToEntity(RegBioRefDto regBioRefDto) {
 		RegBioRefEntity entity = new RegBioRefEntity();
 		entity.setBioRefId(regBioRefDto.getBioRefId());
 		entity.setCrBy(regBioRefDto.getCrBy());
@@ -240,13 +252,14 @@ public class PacketInfoMapper {
 		RegBioRefPKEntity refPKEntity = new RegBioRefPKEntity();
 		refPKEntity.setRegId(regBioRefDto.getRegId());
 		entity.setId(refPKEntity);
-		
+
 		return entity;
 	}
 
-	public static List<AbisApplicationDto> convertAbisApplicationEntityListToDto(List<AbisApplicationEntity> abisApplicationEntityList) {
+	public static List<AbisApplicationDto> convertAbisApplicationEntityListToDto(
+			List<AbisApplicationEntity> abisApplicationEntityList) {
 		List<AbisApplicationDto> abisApplicationDtos = new ArrayList<>();
-		for(AbisApplicationEntity entity : abisApplicationEntityList){
+		for (AbisApplicationEntity entity : abisApplicationEntityList) {
 			abisApplicationDtos.add(convertAbisApplicationEntityToDto(entity));
 		}
 		return abisApplicationDtos;
@@ -266,7 +279,7 @@ public class PacketInfoMapper {
 		applicationDto.setStatusUpdateDtimes(entity.getStatusUpdateDtimes());
 		applicationDto.setUpdBy(entity.getUpdBy());
 		applicationDto.setUpdDtimes(entity.getUpdDtimes());
-		
+
 		return applicationDto;
 	}
 
@@ -291,7 +304,48 @@ public class PacketInfoMapper {
 		entity.setStatusComment(abisRequestDto.getStatusComment());
 		entity.setUpdBy(abisRequestDto.getUpdBy());
 		entity.setUpdDtimes(abisRequestDto.getUpdDtimes());
-		
+
 		return entity;
 	}
+
+	public static List<RegDemoDedupeListDto> convertDemoDedupeEntityListToDto(
+			List<RegDemoDedupeListEntity> regDemoDedupeListEntityList) {
+		List<RegDemoDedupeListDto> regDemoDedupeListDtoList = new ArrayList<>();
+		for (RegDemoDedupeListEntity entity : regDemoDedupeListEntityList) {
+			regDemoDedupeListDtoList.add(convertDemoDedupeEntityToDto(entity));
+		}
+		return regDemoDedupeListDtoList;
+	}
+
+	private static RegDemoDedupeListDto convertDemoDedupeEntityToDto(RegDemoDedupeListEntity entity) {
+		RegDemoDedupeListDto regDemoDedupeListDto = new RegDemoDedupeListDto();
+		regDemoDedupeListDto.setCrBy(entity.getCrBy());
+		regDemoDedupeListDto.setCrDtimes(entity.getCrDtimes());
+		regDemoDedupeListDto.setDelDtimes(entity.getDelDtimes());
+		regDemoDedupeListDto.setIsDeleted(entity.getIsDeleted());
+		regDemoDedupeListDto.setMatchedRegId(entity.getId().getMatchedRegId());
+		regDemoDedupeListDto.setRegId(entity.getRegId());
+
+		TransactionDto transactionDto = new TransactionDto();
+		TransactionEntity transactionEntity = entity.getRegistrationTransaction();
+		transactionDto.setLangCode(transactionEntity.getLangCode());
+		transactionDto.setParentid(transactionEntity.getParentid());
+		transactionDto.setReferenceId(transactionEntity.getReferenceId());
+		transactionDto.setReferenceIdType(transactionEntity.getReferenceIdType());
+		transactionDto.setRegistrationId(transactionEntity.getRegistrationId());
+		transactionDto.setRemarks(transactionEntity.getRemarks());
+		transactionDto.setStatusCode(transactionEntity.getStatusCode());
+		transactionDto.setStatusComment(transactionEntity.getStatusComment());
+		transactionDto.setTransactionId(transactionEntity.getId());
+		transactionDto.setTrntypecode(transactionEntity.getTrntypecode());
+
+		regDemoDedupeListDto.setRegistrationTransaction(transactionDto);
+
+		regDemoDedupeListDto.setRegtrnId(entity.getId().getRegtrnId());
+		regDemoDedupeListDto.setUpdBy(entity.getUpdBy());
+		regDemoDedupeListDto.setUpdDtimes(entity.getUpdDtimes());
+
+		return regDemoDedupeListDto;
+	}
+
 }

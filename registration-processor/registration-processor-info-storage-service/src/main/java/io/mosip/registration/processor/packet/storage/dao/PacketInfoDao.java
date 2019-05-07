@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.packet.storage.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -222,7 +223,6 @@ public class PacketInfoDao {
 	
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String requestType) {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType);
-		
 	}
 
 	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId){
@@ -233,4 +233,7 @@ public class PacketInfoDao {
 		return abisRequestRepositary.getBioRefIdByRegId(regId);
 	}
 
+	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
+		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
+	}
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,16 +65,16 @@ public class AbisHandlerStage extends MosipVerticleManager {
         String transactionTypeCode = registrationStatusDto.getLatestTransactionTypeCode();
         String transactionStatusCode = registrationStatusDto.getLatestTransactionStatusCode();
         String transactionId = registrationStatusDto.getLatestRegistrationTransactionId();
-        String bioRefId = UUID.randomUUID().toString();
+
+        String bioRefId = getUUID();
 
         //check for identify in abis_request table for above transactionId
-        Boolean isIdentifyPresent = packetInfoManager.getIdentifyByTransactionId(transactionId);
+        Boolean isIdentifyRequestPresent = packetInfoManager.getIdentifyByTransactionId(transactionId);
         List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
 
-        if(!isIdentifyPresent){
+        if(!isIdentifyRequestPresent){
             List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
             if(bioRefDtos.isEmpty()) {
-
                 insertInBioRef(regId, bioRefId);
                 createInsertRequest(abisApplicationDtoList, transactionId,
                         bioRefId, regId);
@@ -100,11 +101,20 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
     private void createIdentifyRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
                                        String bioRefId, String regId, String transactionTypeCode) {
+        List<RegDemoDedupeListDto> regDemoDedupeListDtoList = packetInfoManager.
+                getDemoListByTransactionId(transactionId);
+        List<ReferenceIdDto> referenceIdDtos = new ArrayList<>();
+        for(RegDemoDedupeListDto dedupeListDto : regDemoDedupeListDtoList){
+        	ReferenceIdDto dto = new ReferenceIdDto();
+            dto.setReferenceId(dedupeListDto.getRegistrationTransaction().getReferenceId());
+        }
+        
+
         AbisIdentifyRequestDto abisIdentifyRequestDto = new AbisIdentifyRequestDto();
         abisIdentifyRequestDto.setId("mosip.abis.identify");
         abisIdentifyRequestDto.setVer("1.0");
-        abisIdentifyRequestDto.setRequestId(UUID.randomUUID().toString());
-        abisIdentifyRequestDto.setReferenceId("");
+        abisIdentifyRequestDto.setRequestId(getUUID());
+        abisIdentifyRequestDto.setReferenceId(bioRefId);
         abisIdentifyRequestDto.setTimestamp(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L));
         abisIdentifyRequestDto.setMaxResults(maxResults);
         abisIdentifyRequestDto.setTargetFPIR(targetFPIR);
@@ -118,11 +128,11 @@ public class AbisHandlerStage extends MosipVerticleManager {
         }
         byte [] abisIdentifyRequestBytes = bos.toByteArray();
 
-        String batchId = UUID.randomUUID().toString();
+        String batchId = getUUID();
         for(AbisApplicationDto applicationDto : abisApplicationDtoList) {
             AbisRequestDto abisRequestDto = new AbisRequestDto();
 
-            abisRequestDto.setId(UUID.randomUUID().toString());
+            abisRequestDto.setId(getUUID());
             abisRequestDto.setAbisAppCode(applicationDto.getCode());
             abisRequestDto.setBioRefId(bioRefId);
             abisRequestDto.setRequestType("IDENTIFY");
@@ -162,9 +172,9 @@ public class AbisHandlerStage extends MosipVerticleManager {
     		String bioRefId, String regId){
         AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
         abisInsertRequestDto.setId("mosip.abis.insert");
-        abisInsertRequestDto.setReferenceId(UUID.randomUUID().toString());
+        abisInsertRequestDto.setReferenceId(getUUID());
         abisInsertRequestDto.setReferenceURL(url + regId);
-        abisInsertRequestDto.setRequestId(UUID.randomUUID().toString());
+        abisInsertRequestDto.setRequestId(getUUID());
         abisInsertRequestDto.setTimestamp(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L));
         abisInsertRequestDto.setVer("1.0");
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -176,11 +186,11 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
         }
         byte [] abisInsertRequestBytes = bos.toByteArray();
-        String batchId = UUID.randomUUID().toString();
+        String batchId = getUUID();
         for(AbisApplicationDto applicationDto : abisApplicationDtoList) {
             AbisRequestDto abisRequestDto = new AbisRequestDto();
 
-            abisRequestDto.setId(UUID.randomUUID().toString());
+            abisRequestDto.setId(getUUID());
             abisRequestDto.setAbisAppCode(applicationDto.getCode());
             abisRequestDto.setBioRefId(bioRefId);
             abisRequestDto.setRequestType("INSERT");
@@ -198,5 +208,9 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
             packetInfoManager.saveAbisRequest(abisRequestDto);
         }
+    }
+
+    private String getUUID() {
+        return UUID.randomUUID().toString();
     }
 }

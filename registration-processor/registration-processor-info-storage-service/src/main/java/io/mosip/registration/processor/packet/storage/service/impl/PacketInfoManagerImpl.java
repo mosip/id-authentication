@@ -3,10 +3,12 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.packet.storage.entity.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -610,6 +612,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		}
+	}
+
+	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId){
+		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList= packetInfoDao.getDemoListByTransactionId(transactionId);
+		return PacketInfoMapper.convertDemoDedupeEntityListToDto(regDemoDedupeListEntityList);
 	}
 
 

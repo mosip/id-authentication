@@ -15,6 +15,8 @@ public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Seri
 	/** The target FPIR. */
 	private Integer targetFPIR;
 
+	private AbisIdentifyRequestGalleryDto gallery;
+
 	/**
 	 * Gets the max results.
 	 *
