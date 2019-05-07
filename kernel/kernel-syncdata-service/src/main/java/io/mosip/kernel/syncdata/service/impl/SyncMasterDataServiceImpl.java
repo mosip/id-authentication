@@ -2,15 +2,19 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -56,18 +60,26 @@ import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.entity.MachineHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
+import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
+import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.ExceptionUtils;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.MetaDataUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
 /**
@@ -75,6 +87,7 @@ import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
  * 
  * @author Abhishek Kumar
  * @author Srinivasan
+ * @author Urvil Joshi
  * @since 1.0.0
  */
 @Service
@@ -88,6 +101,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Autowired
 	RegistrationCenterRepository registrationCenterRepository;
+
+	@Autowired
+	private MachineRepository machineRepo;
+
+	@Autowired
+	private MachineHistoryRepository machineHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -369,5 +388,35 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		MapperUtils.map(registrationCenterMachine, regCenterMachine);
 
 		return regCenterMachine;
+	}
+
+	@Override
+	@Transactional
+	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
+		final byte[] publicKey = CryptoUtil.decodeBase64(uploadPublicKeyRequestDto.getPublicKey());
+		final String keyIndex = CryptoUtil.computeFingerPrint(publicKey, null);
+		try {
+			Optional<Machine> machineOptional = machineRepo
+					.findByMachineNameActiveNondeleted(uploadPublicKeyRequestDto.getMachineName());
+			if (machineOptional.isPresent()) {
+				Machine machine = MetaDataUtils.setUpdateMetaData(machineOptional.get());
+				machine.setPublicKey(publicKey);
+				machine.setKeyIndex(keyIndex);
+				MachineHistory machineHistory = MapperUtils.map(machine, MachineHistory.class);
+				machineHistory.setEffectDateTime(machine.getUpdatedDateTime());
+				MapperUtils.mapBaseFieldValue(machine, machineHistory);
+				machineRepo.update(machine);
+				machineHistoryRepo.create(machineHistory);
+			} else {
+				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException ex) {
+
+			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
+		}
+		UploadPublicKeyResponseDto uploadPublicKeyResponseDto = new UploadPublicKeyResponseDto(keyIndex);
+		return uploadPublicKeyResponseDto;
 	}
 }
