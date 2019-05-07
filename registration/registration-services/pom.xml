@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -175,7 +176,7 @@
 			<artifactId>oshi-core</artifactId>
 			<version>3.6.2</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-jdk14</artifactId>
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-jdk14</artifactId> 
 			<version>1.7.13</version> </dependency> -->
 
 		<dependency>
@@ -185,7 +186,7 @@
 			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
 			<scope>system</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
@@ -291,18 +292,24 @@
 			<artifactId>kernel-transliteration-icu4j</artifactId>
 		</dependency>
 		<dependency>
-				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-applicanttype-api</artifactId>
-			</dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-applicanttype-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
 		<dependency>
-		    <groupId>com.github.microsoft</groupId>
-		    <artifactId>TSS.Java</artifactId>
+			<groupId>com.github.microsoft</groupId>
+			<artifactId>TSS.Java</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.4.726</version>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
