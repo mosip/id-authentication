@@ -11,5 +11,12 @@ import io.mosip.registration.dto.ResponseDTO;
  */
 public interface JdbcSqlService {
 
-	public ResponseDTO executeSqlFile();
+	/**
+	 * Execute sql file
+	 * 
+	 * @param version
+	 *            services version
+	 * @return Response of sql update
+	 */
+	public ResponseDTO executeSqlFile(String version);
 }
