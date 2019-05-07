@@ -475,8 +475,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				.get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
 		if ((tempExceptionList == null || tempExceptionList.isEmpty())
+				&& (Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-
 			leftHandPalmImageview.setImage(
 					new Image(getClass().getResource(RegistrationConstants.LEFTPALM_IMG_PATH).toExternalForm()));
 			leftSlapQualityScore.setText(RegistrationConstants.EMPTY);
@@ -580,13 +580,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			FingerprintDetailsDTO value = iterator.next();
 			if (value.getFingerType().contains(handSlap)) {
 				iterator.remove();
-				handSlapImageView.setImage(new Image(getClass().getResource(handSlapImagePath).toExternalForm()));
-				handSlapQualityScoreLabel.setText(RegistrationConstants.EMPTY);
-				attemptLabel.setText(RegistrationConstants.HYPHEN);
-				clearingProgressBar();
 				break;
 			}
 		}
+		
+		handSlapImageView.setImage(new Image(getClass().getResource(handSlapImagePath).toExternalForm()));
+		handSlapQualityScoreLabel.setText(RegistrationConstants.EMPTY);
+		attemptLabel.setText(RegistrationConstants.HYPHEN);
+		clearingProgressBar();
 	}
 
 	/**
