@@ -166,7 +166,7 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-		requiredRequestMap.put("id", uploadId);
+	//	requiredRequestMap.put("id", uploadId);
 		requiredRequestMap.put("version", ver);
 	}
 
@@ -191,10 +191,12 @@ public class DocumentService {
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = new MainRequestDTO<>();
 		boolean isUploadSuccess = false;
+
 		try {
 			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
 			responseDto.setId(docReqDto.getId());
 			responseDto.setVersion(docReqDto.getVersion());
+			requiredRequestMap.put("id", uploadId);
 			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto), requiredRequestMap)) {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
