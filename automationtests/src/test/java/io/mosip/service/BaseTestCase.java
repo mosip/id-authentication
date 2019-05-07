@@ -173,7 +173,7 @@ public class BaseTestCase {
 		@AfterMethod
 		public void getResult(ITestResult result) {
 			if(result.getStatus()==ITestResult.FAILURE) {
-				test.fail(MarkupHelper.createLabel(result.getName()+"Test Case Failed", ExtentColor.RED));
+				test.fail(MarkupHelper.createLabel(result.getName().substring(result.getName().lastIndexOf(":")+1)+"  Test Case Failed", ExtentColor.RED));
 				test.fail(result.getThrowable());
 			}
 			else if(result.getStatus()==ITestResult.SUCCESS) {
@@ -182,7 +182,7 @@ public class BaseTestCase {
 				
 			}
 			else {
-				test.skip(MarkupHelper.createLabel(result.getName()+"Test Case Skipped", ExtentColor.YELLOW));
+				test.skip(MarkupHelper.createLabel(result.getName().substring(result.getName().lastIndexOf(":")+1)+"  Test Case Skipped", ExtentColor.YELLOW));
 				test.skip(result.getThrowable());
 			}
 		}
