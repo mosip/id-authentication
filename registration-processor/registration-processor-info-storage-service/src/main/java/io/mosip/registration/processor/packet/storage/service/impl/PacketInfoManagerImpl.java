@@ -619,5 +619,4 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertDemoDedupeEntityListToDto(regDemoDedupeListEntityList);
 	}
 
-
 }

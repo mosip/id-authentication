@@ -15,7 +15,7 @@ public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Seri
 	/** The target FPIR. */
 	private Integer targetFPIR;
 
-	private AbisIdentifyRequestGalleryDto gallery;
+    private AbisIdentifyRequestGalleryDto gallery;
 
 	/**
 	 * Gets the max results.
@@ -54,5 +54,13 @@ public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Seri
 	public void setTargetFPIR(Integer targetFPIR) {
 		this.targetFPIR = targetFPIR;
 	}
+
+    public AbisIdentifyRequestGalleryDto getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(AbisIdentifyRequestGalleryDto gallery) {
+        this.gallery = gallery;
+    }
 
 }
