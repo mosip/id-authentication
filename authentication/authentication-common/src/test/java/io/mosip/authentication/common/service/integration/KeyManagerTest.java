@@ -70,14 +70,6 @@ public class KeyManagerTest {
 	private Environment environment;
 
 	/**
-	 * Before.
-	 */
-	@Before
-	public void before() {
-		ReflectionTestUtils.setField(keyManager, "environment", environment);
-	}
-
-	/**
 	 * Request data test.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
