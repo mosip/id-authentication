@@ -48,10 +48,8 @@ public class RegDemoDedupeListEntity extends BasePacketEntity<RegDemoDedupeListP
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	// bi-directional many-to-one association to RegistrationTransaction
-	@ManyToOne
-	@JoinColumn(name = "regtrn_id", insertable = false, updatable = false)
-	private TransactionEntity registrationTransaction;
+	@Column(name = "regtrn_id")
+	private String registrationTransaction;
 
 	public RegDemoDedupeListEntity() {
 	}
@@ -119,13 +117,5 @@ public class RegDemoDedupeListEntity extends BasePacketEntity<RegDemoDedupeListP
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;
 	}
-
-	public TransactionEntity getRegistrationTransaction() {
-		return this.registrationTransaction;
-	}
-
-	public void setRegistrationTransaction(TransactionEntity registrationTransaction) {
-		this.registrationTransaction = registrationTransaction;
-	}
-
+	
 }

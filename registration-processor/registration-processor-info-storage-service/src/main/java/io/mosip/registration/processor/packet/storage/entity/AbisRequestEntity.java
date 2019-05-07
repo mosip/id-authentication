@@ -72,10 +72,6 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	// bi-directional many-to-one association to AbisResponse
-	@OneToMany(mappedBy = "abisRequest")
-	private List<AbisResponseEntity> abisResponses;
-
 	public AbisRequestEntity() {
 
 	}
@@ -208,26 +204,5 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 		this.updDtimes = updDtimes;
 	}
 
-	public List<AbisResponseEntity> getAbisResponses() {
-		return this.abisResponses;
-	}
-
-	public void setAbisResponses(List<AbisResponseEntity> abisResponses) {
-		this.abisResponses = abisResponses;
-	}
-
-	public AbisResponseEntity addAbisRespons(AbisResponseEntity abisRespons) {
-		getAbisResponses().add(abisRespons);
-		abisRespons.setAbisRequest(this);
-
-		return abisRespons;
-	}
-
-	public AbisResponseEntity removeAbisRespons(AbisResponseEntity abisRespons) {
-		getAbisResponses().remove(abisRespons);
-		abisRespons.setAbisRequest(null);
-
-		return abisRespons;
-	}
 
 }

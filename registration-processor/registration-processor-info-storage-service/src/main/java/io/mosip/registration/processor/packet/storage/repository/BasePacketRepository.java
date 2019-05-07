@@ -174,7 +174,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 			@Param("requestType") String requestType);
 
 	@Query("SELECT abisresp FROM AbisResponseEntity abisresp WHERE abisresp.abisRequest =:abisRequest")
-	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") AbisRequestEntity abisRequest);
+	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") String abisRequest);
 
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
