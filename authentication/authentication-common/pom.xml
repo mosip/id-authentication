@@ -37,6 +37,11 @@
 			<artifactId>kernel-pinvalidator</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.idrepository</groupId>
+			<artifactId>id-repository-core</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 
 		<!-- Kernel Id Validator VID -->
 		<dependency>

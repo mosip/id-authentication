@@ -247,8 +247,8 @@ public class KeyManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String encryptData(Map<String, Object> responseBody) {
-		Optional<String> identity = Optional.ofNullable(responseBody.get("IDENTITY"))
+	public String encryptData(Map<String, Object> responseBody) throws IdAuthenticationAppException {
+		Optional<String> identity = Optional.ofNullable(responseBody.get("identity"))
 				.map(String::valueOf);
 		Map<String, Object> response;
 		RestRequestDTO restRequestDTO = null;
@@ -257,13 +257,14 @@ public class KeyManager {
 			encryptDataRequestDto.setApplicationId(appId);
 			encryptDataRequestDto.setReferenceId(partnerId);
 			encryptDataRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
-			encryptDataRequestDto.setHashedData(CryptoUtil.encodeBase64(identity.get().getBytes()));
+			encryptDataRequestDto.setData(CryptoUtil.encodeBase64(identity.get().getBytes()));
 			try {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
 				return (String)((Map<String,Object>) response.get("response")).get("data");
 			} catch (IDDataValidationException | RestServiceException e) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
 			}
 		}
 		return null;
