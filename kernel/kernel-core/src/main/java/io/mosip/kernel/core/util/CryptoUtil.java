@@ -100,7 +100,7 @@ public class CryptoUtil {
 	 * @param metaData metadata related to key
 	 * @return fingerprint
 	 */
-	public String computeFingerPrint(String data, String metaData) {
+	public static String computeFingerPrint(String data, String metaData) {
 		return computeFingerPrint(data.getBytes(), metaData);
 	}
 
@@ -111,7 +111,7 @@ public class CryptoUtil {
 	 * @param metaData metadata related to key
 	 * @return fingerprint
 	 */
-	public String computeFingerPrint(byte[] data, String metaData) {
+	public static String computeFingerPrint(byte[] data, String metaData) {
 		byte[] combinedPlainTextBytes = null;
 		if (EmptyCheckUtils.isNullEmpty(metaData)) {
 			combinedPlainTextBytes = ArrayUtils.addAll(data);
