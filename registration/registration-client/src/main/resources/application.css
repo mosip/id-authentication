@@ -516,6 +516,13 @@ Working on new Css by taleev
 
 }
 
+.searchBoxTextStyle{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 312.0px;
+	-fx-border-width: 0.0 0.0 2.0 0.0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
 .higlightedLoginLable{
 	-fx-font-size: 30.0px;
 }

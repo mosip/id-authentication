@@ -56,7 +56,7 @@
                         </TableView>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <TextField fx:id="filterField" prefWidth="230.0" promptText="%searchRegistration" />
+                              <TextField fx:id="filterField" prefWidth="230.0" styleClass="searchBoxTextStyle" promptText="%searchRegistration" />
                            </children>
                         </HBox>
                      </children>
