@@ -79,7 +79,7 @@
                         </GridPane>
                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="filterField" prefHeight="30.0" prefWidth="354.0" promptText="Search For Packet ID" />
+                              <TextField fx:id="filterField" prefHeight="30.0" prefWidth="354.0" promptText="%searchPacketID" />
                            </children>
                         </HBox>
                      </children>
