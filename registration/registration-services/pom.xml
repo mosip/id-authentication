@@ -304,12 +304,7 @@
 			<artifactId>registration-tpm</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>2.3.4.726</version>
-		</dependency>
-
+	
 	</dependencies>
 
 	<repositories>
