@@ -133,6 +133,13 @@ public abstract class BaseIDAFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		
+		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+		if(reqUrl.contains("swagger") || reqUrl.contains("api-docs")) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
 		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, IdAuthCommonConstants.REQUEST + " at : " + requestTime);
 
@@ -140,6 +147,13 @@ public abstract class BaseIDAFilter implements Filter {
 				(HttpServletRequest) request);
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 		try {
+			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			if(requestBody == null) {
+				chain.doFilter(requestWrapper, responseWrapper);
+				return;
+			}
+
+			requestWrapper.resetInputStream();
 			consumeRequest(requestWrapper);
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
@@ -325,11 +339,10 @@ public abstract class BaseIDAFilter implements Filter {
 
 	private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
-		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
-		if ((!StringUtils.isEmpty(url)) && (!StringUtils.isEmpty(contextPath))) {
-			String[] splitedUrlByContext = url.split(contextPath);
-			id = attribute + splitedUrlByContext[1].split("/")[1];
+		if (!StringUtils.isEmpty(contextPath)) {
+			String[] splitedContext = contextPath.split("/");
+			id = attribute + splitedContext[splitedContext.length - 1];
 		}
 		return id;
 

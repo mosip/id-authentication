@@ -23,7 +23,7 @@ public class OtpFilterConfig {
 	public FilterRegistrationBean<OTPFilter> getOtpFilter() {
 		FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new OTPFilter());
-		registrationBean.addUrlPatterns("/otp/*");
+		registrationBean.addUrlPatterns("/*");
 		return registrationBean;
 	}
 

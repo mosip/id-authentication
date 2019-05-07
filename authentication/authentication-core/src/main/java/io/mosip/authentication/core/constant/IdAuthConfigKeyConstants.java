@@ -13,6 +13,7 @@ public final class IdAuthConfigKeyConstants {
 	}
 
 	public static final String APPLICATION_ID = "application.id";
+	public static final String API_VERSION = "ida.api.version";
 	public static final String DATE_TIME_PATTERN = "datetime.pattern";
 	public static final String REST_URI = ".rest.uri";
 	public static final String REST_HTTP_METHOD = ".rest.httpMethod";
@@ -29,7 +30,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_VID_VALIDITY_HOURS = "mosip.vid.validity.hours";
 	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
-	public static final String EKYC_TTL_HOURS = "ekyc.ttl.hours";
+	public static final String EKYC_TTL_HOURS = "ekyc.ttl.days";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String DOB_REQ_DATE_PATTERN = "dob.req.date.pattern";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
@@ -62,13 +63,11 @@ public final class IdAuthConfigKeyConstants {
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 	public static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
 	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
-	public static final String MOSIP_IDA_PUBLICKEY = "mosip.ida.publickey";
+	public static final String CRYPTO_PARTNER_ID = "cryptomanager.partner.id";
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
-	public static final String PARTNER_APPLICATION_ID = "cryptomanager.application.id";
-
 }

@@ -22,7 +22,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,7 +84,7 @@ public class KeyManager {
 	private String appId;
 	
 	/** The partner id. */
-	@Value("${" +IdAuthConfigKeyConstants.PARTNER_APPLICATION_ID+ "}")
+	@Value("${" +IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID+ "}")
 	private String partnerId;
 
 	/** The rest helper. */
@@ -99,10 +98,6 @@ public class KeyManager {
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
-
-	/** The environment. */
-	@Autowired
-	private Environment environment;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -158,7 +153,7 @@ public class KeyManager {
 		byte[] decryptedSymmetricKey = null;
 		try {
 			symmetricKeyRequestDto.setApplicationId(appId);
-			symmetricKeyRequestDto.setReferenceId(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_PUBLICKEY));
+			symmetricKeyRequestDto.setReferenceId(partnerId);
 			symmetricKeyRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
 			symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey);

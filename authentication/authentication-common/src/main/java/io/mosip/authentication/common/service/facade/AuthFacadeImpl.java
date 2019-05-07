@@ -349,7 +349,6 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.info(IdAuthCommonConstants.SESSION_ID,  env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE, "OTP Authentication status : " + statusInfo);
 				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.OTP_AUTH.getDesc());
-
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH, staticTokenId, isStatus);
 				idAuthService.saveAutnTxn(authTxn);
 			}

@@ -23,6 +23,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
@@ -43,6 +44,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IDAExceptionHandler - Spring MVC Exceptions as defined in
@@ -172,9 +174,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		String servletPath = request.getServletPath();
-		String[] servletPathArray = servletPath.split("/");
-		String requestReceived = servletPathArray[1];
+		String contextPath = request.getContextPath();
+		String[] splitedContext = contextPath.split("/");
+		String requestReceived = splitedContext[splitedContext.length - 1];
 		List<AuthError> errors = null;
 		Object response;
 		if (ex instanceof IdAuthenticationBaseException) {
