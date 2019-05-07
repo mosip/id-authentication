@@ -3,12 +3,15 @@ package io.mosip.kernel.syncdata.service;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 
 /**
  * Masterdata sync handler service
  * 
  * @author Abhishek Kumar
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -27,4 +30,14 @@ public interface SyncMasterDataService {
 	 */
 	MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNumber,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) throws InterruptedException, ExecutionException;
+
+	/** Upload a public key to identify a machine
+	 * @param uploadPublicKeyRequestDto {@link UploadPublicKeyRequestDto} inatance
+	 * @return {@link UploadPublicKeyResponseDto} instance
+	 */
+	UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto);
+
+
+	
+
 }
