@@ -58,7 +58,6 @@ import org.springframework.context.annotation.FilterType;
 		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class,
 		AuthRequestValidator.class, AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class,
 		DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class })
-@ComponentScan(basePackages = "io.mosip.*", excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "io.mosip.kernel.datamapper.orika.*"))
 public class IdAuthenticationApplication {
 
 	/**
