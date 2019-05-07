@@ -47,10 +47,4 @@ public class DocumentMultipartResponseDTO implements Serializable {
 	 */
 	private String docTypCode;
 
-
-	/**
-	 * File content
-	 */
-	private byte[] MultipartFile;
-
 }

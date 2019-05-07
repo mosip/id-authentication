@@ -1,10 +1,14 @@
 package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
+@Getter
 public class RestCallException extends BaseUncheckedException{
 
 	private static final long serialVersionUID = 1L;
+	   private MainResponseDTO<?> mainresponseDTO;
 
 	/**
 	 * Default constructor
@@ -27,6 +31,15 @@ public class RestCallException extends BaseUncheckedException{
 	public RestCallException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
+	
+	/**
+	 * @param errorCode pass the error code
+	 * @param errorMessage pass the error message
+	 */
+	public RestCallException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+		super(errorCode, errorMessage, null);
+		this.mainresponseDTO=response;
+	}
 
 	/**
 	 * @param errorMessage pass the error message
@@ -36,6 +49,7 @@ public class RestCallException extends BaseUncheckedException{
 		super("", errorMessage, rootCause);
 	}
 
+	
 	/**
 	 * @param errorCode pass the error code
 	 * @param errorMessage pass the error message

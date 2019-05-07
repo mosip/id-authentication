@@ -10,15 +10,45 @@ import { MaterialModule } from 'src/app/material.module';
 import { MatDialog, MatButtonToggleChange } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegistrationService } from 'src/app/core/services/registration.service';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { Router } from '@angular/router';
 import { MatKeyboardModule } from 'ngx7-material-keyboard';
 
 class MockService {
+  user = {
+    preRegId: '123',
+    request: {
+      demographicDetails: {
+        identity: {
+          IDSchemaVersion: 1,
+          fullName: [{ value: 'value', langugae: 'ara' }],
+          dateOfBirth: 'value',
+          gender: [{ value: 'value', langugae: 'ara' }],
+          addressLine1: [{ value: 'value', langugae: 'ara' }],
+          residenceStatus: [{ value: 'value', langugae: 'ara' }],
+          addressLine2: [{ value: 'value', langugae: 'ara' }],
+          addressLine3: [{ value: 'value', langugae: 'ara' }],
+          region: [{ value: 'value', langugae: 'ara' }],
+          province: [{ value: 'value', langugae: 'ara' }],
+          city: [{ value: 'value', langugae: 'ara' }],
+          localAdministrativeAuthority: [{ value: 'value', langugae: 'ara' }],
+          postalCode: 'value',
+          phone: 'value',
+          email: 'value',
+          CNIENumber: 'value'
+        }
+      }
+    }
+  };
+
   use() {}
   url = 'some/url/here';
   getUsers() {
     return of({});
+  }
+
+  getUser() {
+    return this.user;
   }
 
   get() {
@@ -35,6 +65,7 @@ let router = {
 describe('Demographic Component', () => {
   let component: DemographicComponent;
   let fixture: ComponentFixture<DemographicComponent>;
+
   let locationData = {
     response: {
       acceptButton: 'Acceptez',
@@ -57,6 +88,9 @@ describe('Demographic Component', () => {
     getPrimaryLabels: jasmine.createSpy('getPrimaryLabels').and.returnValue(of(locationData)),
     getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of(locationData)),
     getLocationMetadataHirearchy: jasmine.createSpy('getLocationMetadataHirearchy').and.returnValue(of(locationData)),
+    getLocationImmediateHierearchy: jasmine
+      .createSpy('getLocationImmediateHierearchy')
+      .and.returnValue(of(locationData)),
     getGenderDetails: jasmine.createSpy('getGenderDetails').and.returnValue(of(locationData))
   };
 
@@ -64,7 +98,35 @@ describe('Demographic Component', () => {
     getMessage() {
       return of({});
     },
+    getUser() {
+      return {
+        preRegId: '123',
+        request: {
+          demographicDetails: {
+            identity: {
+              IDSchemaVersion: 1,
+              fullName: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              dateOfBirth: 'value',
+              gender: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              addressLine1: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              residenceStatus: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              addressLine2: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              addressLine3: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              region: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              province: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              city: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              localAdministrativeAuthority: [{ value: 'value', langugae: 'ara' }, { value: 'value', langugae: 'ara' }],
+              postalCode: 'value',
+              phone: 'value',
+              email: 'value',
+              CNIENumber: 'value'
+            }
+          }
+        }
+      };
+    },
     getUsers: jasmine.createSpy('getUsers').and.returnValue(of(locationMessage)),
+    // getUser: jasmine.createSpy('getUser').and.returnValue(of(this.user)),
     getLoginId: jasmine.createSpy('getLoginId').and.returnValue(of(locationMessage))
   };
 
@@ -90,7 +152,7 @@ describe('Demographic Component', () => {
         { provide: DataStorageService, useValue: mockUser },
         { provide: RegistrationService, useValue: regServiceStub },
         { provide: Router, useValue: router },
-        { provide: SharedService, useClass: MockService },
+        { provide: BookingService, useClass: MockService },
         { provide: TranslateService, useClass: MockService },
         { provide: MatDialog, useClass: MockService },
         { provide: FormsModule, useClass: MockService },
@@ -115,16 +177,17 @@ describe('Demographic Component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('will change a boolean value on the result of preference change method..', () => {
-    component.isReadOnly = true;
-    fixture.detectChanges();
-    // component.message = 'dsa';
-    // spyOn(regservice, 'currentMessage').and.returnValue(of('response'"21"));
-    expect(component.isReadOnly).toEqual(true);
-  });
+  // it('will change a boolean value on the result of preference change method..', () => {
+  //   component.isReadOnly = true;
+  //   fixture.detectChanges();
+  //   // component.message = 'dsa';
+  //   // spyOn(regservice, 'currentMessage').and.returnValue(of('response'"21"));
+  //   expect(component.isReadOnly).toEqual(true);
+  // });
 
   it('it will calculate the age based on a date provided', () => {
     let inputDate = new Date('December 17, 1995 03:24:00');
+    component.dataModification = true;
     const x = component.calculateAge(inputDate);
     fixture.detectChanges();
     expect(x).toEqual(23);
@@ -137,7 +200,7 @@ describe('Demographic Component', () => {
       languageCode: 'english'
     };
 
-    component.codeValue;
+    component.dataModification = true;
     component.addCodeValue(x);
     expect(component.codeValue.length).toEqual(1);
   });

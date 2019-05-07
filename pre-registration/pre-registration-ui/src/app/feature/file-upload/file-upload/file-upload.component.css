@@ -168,11 +168,14 @@ mat-select:focus {
   height: 95%;
   width: 100%;
 }
+
 .user__buttons {
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
+  position: fixed;
+  bottom: 0;
 }
 
 .user__btn {

@@ -71,8 +71,7 @@ import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
-import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
@@ -149,8 +148,10 @@ public class BookingServiceUtil {
 			String uriBuilder = regbuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> responseEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, entity, new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {});
+			ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> responseEntity = restTemplate.exchange(
+					uriBuilder, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
+					});
 			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
 			if (regCenter == null || regCenter.isEmpty()) {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
@@ -197,8 +198,10 @@ public class BookingServiceUtil {
 			String uriBuilder = builder2.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity2 = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, httpHolidayEntity, new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {} );
+			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity2 = restTemplate.exchange(
+					uriBuilder, HttpMethod.GET, httpHolidayEntity,
+					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
+					});
 			holidaylist = new ArrayList<>();
 			if (!responseEntity2.getBody().getResponse().getHolidays().isEmpty()) {
 				for (HolidayDto holiday : responseEntity2.getBody().getResponse().getHolidays()) {
@@ -241,21 +244,22 @@ public class BookingServiceUtil {
 			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status/{preRegistrationId}");
-			
-			URI uri=builder.buildAndExpand(params).toUri();
-			UriComponentsBuilder uriBuilder=UriComponentsBuilder.fromUri(uri).queryParam("statusCode", status);
-			
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl(preRegResourceUrl + "/applications/status/{preRegistrationId}");
+
+			URI uri = builder.buildAndExpand(params).toUri();
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(uri).queryParam("statusCode", status);
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilderString = uriBuilder.build().encode().toUriString(); 
-			//uriBuilder += "{preRegistrationId}";
+			String uriBuilderString = uriBuilder.build().encode().toUriString();
+			// uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilderString);
-			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString, HttpMethod.PUT,
-					httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
+			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString,
+					HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
 					}, params);
-			if (bookingResponse.getBody().getErrors() != null) { 
+			if (bookingResponse.getBody().getErrors() != null) {
 				throw new DemographicStatusUpdationException(
 						bookingResponse.getBody().getErrors().get(0).getErrorCode(),
 						bookingResponse.getBody().getErrors().get(0).getMessage());
@@ -292,24 +296,24 @@ public class BookingServiceUtil {
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : " + uriBuilder);
-			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
+			ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+					new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 					}, params);
 
 			if (respEntity.getBody().getErrors() == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
-						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
+						.convertValue(respEntity.getBody().getResponse(), PreRegistartionStatusDTO.class);
 
 				statusCode = preRegResponsestatusDto.getStatusCode().trim();
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErrors().getErrorCode(),
-						respEntity.getBody().getErrors().getMessage());
+				throw new DemographicGetStatusException(respEntity.getBody().getErrors().get(0).getErrorCode(),
+						respEntity.getBody().getErrors().get(0).getMessage());
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -339,21 +343,21 @@ public class BookingServiceUtil {
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callGetStatusForCancelRestService method of Booking Service URL- " + uriBuilder);
 
-			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
+			ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+					new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 					}, params);
 
 			if (respEntity.getBody().getErrors() == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
-						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
+						.convertValue(respEntity.getBody().getResponse(), PreRegistartionStatusDTO.class);
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
 
@@ -363,8 +367,10 @@ public class BookingServiceUtil {
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErrors().getErrorCode(),
-						respEntity.getBody().getErrors().getMessage());
+				for (ExceptionJSONInfoDTO dto : respEntity.getBody().getErrors()) {
+					throw new DemographicGetStatusException(dto.getErrorCode(), dto.getMessage());
+				}
+
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -381,7 +387,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id",
 				"In timeSpanCheckForCancle method of Booking Service for current Date Time- " + current);
 		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
-		if (Math.abs(hours) >= timeSpanCheckForCancel)
+		if (hours >= timeSpanCheckForCancel)
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
@@ -393,7 +399,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id",
 				"In timeSpanCheckForRebook method of Booking Service for current Date Time- " + current);
 		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
-		if (Math.abs(hours) >= timeSpanCheckForRebook)
+		if (hours >= timeSpanCheckForRebook)
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
@@ -616,24 +622,7 @@ public class BookingServiceUtil {
 		return true;
 	}
 
-	/**
-	 * This method is used to add the initial request values into a map for request
-	 * map.
-	 * 
-	 * @param MainRequestDTO
-	 *            pass requestDTO
-	 * @return a map for request request map
-	 */
-	public Map<String, String> prepareRequestMap(MainListRequestDTO<?> requestDto) {
-		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Booking Service Util");
-		Map<String, String> requestMap = new HashMap<>();
-		requestMap.put("id", requestDto.getId());
-		requestMap.put("ver", requestDto.getVersion());
-		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getRequesttime()));
-		requestMap.put("request", requestDto.getRequest().toString());
-		return requestMap;
-	}
-
+	
 	/**
 	 * This method is used to add the initial request values into a map for request
 	 * map.

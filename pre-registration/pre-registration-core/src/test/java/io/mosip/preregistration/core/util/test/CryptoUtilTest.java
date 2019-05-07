@@ -1,8 +1,7 @@
 package io.mosip.preregistration.core.util.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
@@ -21,7 +20,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;

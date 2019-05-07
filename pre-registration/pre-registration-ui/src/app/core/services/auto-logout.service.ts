@@ -143,6 +143,7 @@ export class AutoLogoutService {
    */
   onLogOut() {
     this.dialogref.close();
+    this.dialog.closeAll();
     this.userIdle.stopWatching();
     this.popUpPostLogOut();
     this.authService.onLogout();

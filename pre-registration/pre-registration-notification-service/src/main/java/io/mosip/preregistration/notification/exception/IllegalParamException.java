@@ -1,3 +1,4 @@
+
 /* 
  * Copyright
  * 
@@ -49,3 +50,4 @@ public class IllegalParamException extends BaseUncheckedException{
 	}
 
 }
+

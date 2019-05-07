@@ -7,7 +7,7 @@ import java.util.Base64;
 
 import org.junit.Test;
 
-import io.mosip.authentication.core.util.OTPUtil;
+import io.mosip.authentication.core.dto.OTPUtil;
 
 /**
  * The Class OTPUtilTest.

@@ -1,7 +1,3 @@
-/* 
- * Copyright
- * 
- */
 package io.mosip.preregistration.generateQRcode.exception.util;
 
 import java.util.ArrayList;
@@ -15,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.generateQRcode.exception.IOException;
 import io.mosip.preregistration.generateQRcode.exception.IllegalParamException;
@@ -49,6 +46,22 @@ public class QRcodeExceptionHandler {
 
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
+	 /**
+		 * @param e
+		 * @param request
+		 * @return response of FailedToTransliterateException
+		 */
+		 @ExceptionHandler(InvalidRequestParameterException.class)
+		 public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final
+				 InvalidRequestParameterException e,WebRequest request){
+			 ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+				MainResponseDTO<?> errorRes =e.getMainResponseDto();
+				List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+				errorList.add(errorDetails);
+				errorRes.setErrors(errorList);
+				errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		 return new ResponseEntity<>(errorRes,HttpStatus.OK);
+		 }
 
 	
 

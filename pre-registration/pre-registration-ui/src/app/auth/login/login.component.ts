@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit {
         this.loadLanguagesWithConfig();
       },
       error => {
-        this.router.navigate(['error']);
+        this.showConfigErrorMessage();
       }
     );
   }
@@ -264,30 +264,30 @@ export class LoginComponent implements OnInit {
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
       this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
-        response => {
-          console.log(response);
-          if (!response['errors']) {
-            clearInterval(this.timer);
-            localStorage.setItem('loggedIn', 'true');
-            this.authService.setToken();
+      response => {
+      console.log(response);
+       if (!response['errors']) {
+        clearInterval(this.timer);
+        localStorage.setItem('loggedIn', 'true');
+        this.authService.setToken();
 
-            this.regService.setLoginId(this.inputContactDetails);
-            this.router.navigate(['dashboard']);
-          } else {
-            console.log(response['error']);
-            this.showOtpMessage();
-          }
-        },
+        this.regService.setLoginId(this.inputContactDetails);
+        this.router.navigate(['dashboard']);
+      } else {
+        console.log(response['error']);
+        this.showOtpMessage();
+      }
+      },
+      error =>
+      {
+        this.showOtpMessage();
+        // clearInterval(this.timer);
+        // localStorage.setItem('loggedIn', 'true');
+        // this.authService.setToken();
 
-        error => {
-          this.showOtpMessage();
-          // clearInterval(this.timer);
-          // localStorage.setItem('loggedIn', 'true');
-          // this.authService.setToken();
-
-          // this.regService.setLoginId(this.inputContactDetails);
-          // this.router.navigate(['dashboard']);
-        }
+        // this.regService.setLoginId(this.inputContactDetails);
+        // this.router.navigate(['dashboard']);
+      }
       );
     }
   }
@@ -297,6 +297,19 @@ export class LoginComponent implements OnInit {
       const message = {
         case: 'MESSAGE',
         message: response['message']['login']['msg3']
+      };
+      const dialogRef = this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: message
+      });
+    });
+  }
+
+  showConfigErrorMessage() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const message = {
+        case: 'MESSAGE',
+        message: response['message']['config']['error']
       };
       const dialogRef = this.dialog.open(DialougComponent, {
         width: '350px',

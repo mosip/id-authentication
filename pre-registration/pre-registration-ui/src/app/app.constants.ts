@@ -67,6 +67,7 @@ export const PARAMS_KEYS = {
   locationHierarchyName: 'hierarchyName',
   getDocument: PRE_REGISTRATION_ID,
   getDocumentCategories: 'languages',
+  preRegistrationId: 'preRegistrationId',
   deleteFile: 'documentId',
   getAvailabilityData: 'registration_center_id',
   catCode: 'catCode',
@@ -130,7 +131,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
     preId: 'preRegistrationId',
     fullname: 'fullname',
     statusCode: 'statusCode',
-    postalCode: 'postalCode'
+    postalCode: 'postalCode',
+    basicDetails: 'basicDetails'
   }
 };
 

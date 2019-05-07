@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppConfigService } from './app-config.service';
-import { SharedService } from './feature/booking/booking.service';
+import { BookingService } from './feature/booking/booking.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
@@ -34,7 +34,7 @@ const appInitialization = (appConfig: AppConfigService) => {
     NgxPrintModule
   ],
   providers: [
-    SharedService,
+    BookingService,
     AppConfigService,
     {
       provide: APP_INITIALIZER,

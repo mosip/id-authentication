@@ -6,78 +6,88 @@ import { HttpLoaderFactory } from 'src/app/i18n.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from 'src/app/material.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SharedService } from '../booking.service';
+import { BookingService } from '../booking.service';
 import { of } from 'rxjs';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 
 let center = {
-  "id": "10002",
-  "name": "Rural Municipal Mnasra",
-  "centerTypeCode": "REG",
-  "addressLine1": "Route De Moulay Bousselham",
-  "addressLine2": "Douar Sbih Menacera",
-  "addressLine3": "Morroco",
-  "latitude": "34.360207",
-  "longitude": "-6.550075",
-  "locationCode": "14053",
-  "holidayLocationCode": "KTA",
-  "contactPhone": "753476995",
-  "workingHours": "8:00:00",
-  "langCode": "eng",
-  "numberOfKiosks": 1,
-  "perKioskProcessTime": "00:15:00",
-  "centerStartTime": "09:00:00",
-  "centerEndTime": "17:00:00",
-  "timeZone": "(GTM+01:00) CENTRAL EUROPEAN TIME",
-  "contactPerson": "John Smith",
-  "lunchStartTime": "13:00:00",
-  "lunchEndTime": "14:00:00",
-  "isActive": true
-} 
+  id: '10002',
+  name: 'Rural Municipal Mnasra',
+  centerTypeCode: 'REG',
+  addressLine1: 'Route De Moulay Bousselham',
+  addressLine2: 'Douar Sbih Menacera',
+  addressLine3: 'Morroco',
+  latitude: '34.360207',
+  longitude: '-6.550075',
+  locationCode: '14053',
+  holidayLocationCode: 'KTA',
+  contactPhone: '753476995',
+  workingHours: '8:00:00',
+  langCode: 'eng',
+  numberOfKiosks: 1,
+  perKioskProcessTime: '00:15:00',
+  centerStartTime: '09:00:00',
+  centerEndTime: '17:00:00',
+  timeZone: '(GTM+01:00) CENTRAL EUROPEAN TIME',
+  contactPerson: 'John Smith',
+  lunchStartTime: '13:00:00',
+  lunchEndTime: '14:00:00',
+  isActive: true
+};
 
 const response = {
   response: {
-    centerDetails: [{
-      "TotalAvailable": 1,
-      "date": "2019-03-16",
-      "displayDate": "16 Mar, 2019",
-      "displayDay": "Saturday",
-      "holiday": false,
-      "inActive": false,
-      "showAfternoon": true,
-      "timeSlots": [{
-        "availability": 1,
-        "displayTime": "4:30 - 4:45",
-        "fromTime": "16:30:00",
-        "tag": "afternoon",
-        "toTime": "16:45:00",
-        "names": [{fullName: 'Agnitra', preRegId: '1234', registrationCenter: center}]
-      }]
-    }]
+    centerDetails: [
+      {
+        TotalAvailable: 1,
+        date: '2019-03-16',
+        displayDate: '16 Mar, 2019',
+        displayDay: 'Saturday',
+        holiday: false,
+        inActive: false,
+        showAfternoon: true,
+        timeSlots: [
+          {
+            availability: 1,
+            displayTime: '4:30 - 4:45',
+            fromTime: '16:30:00',
+            tag: 'afternoon',
+            toTime: '16:45:00',
+            names: [{ fullName: 'Agnitra', preRegId: '1234', registrationCenter: center }]
+          }
+        ]
+      }
+    ]
   }
-}
-
-const name = [{fullName: 'Agnitra', preRegId: '1234', registrationCenter: center}];
-
-let service: SharedService, mockUsers = {
-  getNameList: jasmine.createSpy('getNameList').and.returnValue(name),
-  resetNameList: jasmine.createSpy('resetNameList').and.returnValue([])
 };
 
-let service1: RegistrationService, mockCenters = {
-  getRegCenterId: jasmine.createSpy('getRegCenterId').and.returnValue('1234')
-};
+const name = [{ fullName: 'Agnitra', preRegId: '1234', registrationCenter: center }];
 
-let service2: DataStorageService, mockService = {
-  getAvailabilityData: jasmine.createSpy('getAvailabilityData').and.returnValue(of(center)),
-  getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of({timeSelection: {booking: {label1: 'hello'}}}))
-}
+let service: BookingService,
+  mockUsers = {
+    getNameList: jasmine.createSpy('getNameList').and.returnValue(name),
+    resetNameList: jasmine.createSpy('resetNameList').and.returnValue([])
+  };
 
-let service3: ConfigService, mockConfig = {
-  getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue(7)
-}
+let service1: RegistrationService,
+  mockCenters = {
+    getRegCenterId: jasmine.createSpy('getRegCenterId').and.returnValue('1234')
+  };
+
+let service2: DataStorageService,
+  mockService = {
+    getAvailabilityData: jasmine.createSpy('getAvailabilityData').and.returnValue(of(center)),
+    getSecondaryLanguageLabels: jasmine
+      .createSpy('getSecondaryLanguageLabels')
+      .and.returnValue(of({ timeSelection: { booking: { label1: 'hello' } } }))
+  };
+
+let service3: ConfigService,
+  mockConfig = {
+    getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue(7)
+  };
 
 describe('TimeSelectionComponent', () => {
   let component: TimeSelectionComponent;
@@ -85,35 +95,38 @@ describe('TimeSelectionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimeSelectionComponent ],
+      declarations: [TimeSelectionComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
           }
-      }),
-      HttpClientModule,
-      MaterialModule,
-      RouterTestingModule
+        }),
+        HttpClientModule,
+        MaterialModule,
+        RouterTestingModule
       ],
       providers: [
         {
-          provide: DataStorageService, useValue: mockService
+          provide: DataStorageService,
+          useValue: mockService
         },
         {
-          provide: RegistrationService, useValue: mockCenters
+          provide: RegistrationService,
+          useValue: mockCenters
         },
         {
-          provide: SharedService, useValue: mockUsers
+          provide: BookingService,
+          useValue: mockUsers
         },
         {
-          provide: ConfigService, useValue: mockConfig
+          provide: ConfigService,
+          useValue: mockConfig
         }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -189,5 +202,5 @@ describe('TimeSelectionComponent', () => {
     component.names = name;
     fixture.detectChanges();
     expect(component.names.length).toBe(0);
-  })
+  });
 });

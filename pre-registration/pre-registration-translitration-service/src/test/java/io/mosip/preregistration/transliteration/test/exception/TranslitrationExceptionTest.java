@@ -101,7 +101,8 @@ public class TranslitrationExceptionTest {
 	 */
 	@Test
 	public void illegalParamTest() {
-		MissingRequestParameterException ex = new MissingRequestParameterException("MISSING_PARAM");
+
+		MissingRequestParameterException ex = new MissingRequestParameterException("MISSING_PARAM",null);
 		TransliterationRequestDTO mandatoryFielddto = new TransliterationRequestDTO();
 		mandatoryFielddto.setFromFieldLang("");
 		mandatoryFielddto.setFromFieldValue("Kishan");

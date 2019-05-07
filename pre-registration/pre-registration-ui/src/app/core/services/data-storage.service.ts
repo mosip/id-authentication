@@ -252,6 +252,12 @@ export class DataStorageService {
     });
   }
 
+  getFileData(fileDocumentId, preId) {
+    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + fileDocumentId, {
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.preRegistrationId, preId)
+    });
+  }
+
   generateQRCode(data: string) {
     const obj = new RequestModel(appConstants.IDS.qrCode, data);
     return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, obj);
