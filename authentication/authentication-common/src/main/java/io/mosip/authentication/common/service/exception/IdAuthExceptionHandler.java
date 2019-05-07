@@ -23,13 +23,13 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
@@ -41,10 +41,8 @@ import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IDAExceptionHandler - Spring MVC Exceptions as defined in

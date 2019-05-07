@@ -74,7 +74,7 @@ public class KeyManagerTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(keyManager, "environment", environment);
+		//ReflectionTestUtils.setField(keyManager, "environment", environment);
 	}
 
 	/**
