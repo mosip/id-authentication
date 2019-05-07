@@ -72,7 +72,7 @@ public class TokenValidatorTest {
 				+ "  \"response\": {\r\n" + "    \"userId\": \"registrationprocessor\",\r\n"
 				+ "    \"mobile\": \"123456789\",\r\n" + "    \"mail\": \"dummy.man@mindtree.com\",\r\n"
 				+ "    \"langCode\": null,\r\n" + "    \"userPassword\": null,\r\n"
-				+ "    \"name\": \"registrationprocessor\",\r\n" + "    \"role\": \"REGISTRATION_OFFICER\"\r\n"
+				+ "    \"name\": \"registrationprocessor\",\r\n" + "    \"role\": \"REGISTRATION_PROCESSOR\"\r\n"
 				+ "  },\r\n" + "  \"errors\": null\r\n" + "}";
 		InputStream stream = IOUtils.toInputStream(response, "UTF-8");
 		Mockito.when(huc.getInputStream()).thenReturn(stream);
@@ -86,7 +86,7 @@ public class TokenValidatorTest {
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.INFO,
-						"SESSIONID - REGISTRATIONID - Token Validation Successful For Role:  - REGISTRATION_OFFICER"));
+						"SESSIONID - REGISTRATIONID - Token Validation Successful For Role:  - REGISTRATION_PROCESSOR"));
 	}
 
 	@Test(expected = AccessDeniedException.class)
@@ -140,12 +140,12 @@ public class TokenValidatorTest {
 
 	@Test
 	public void testValidateAccess() {
-		assertTrue(tokenValidator.validateAccess("/receiver", "REGISTRATION_OFFICER"));
-		assertTrue(tokenValidator.validateAccess("/registration-status", "REGISTRATION_OFFICER"));
-		assertTrue(tokenValidator.validateAccess("/registration-sync", "REGISTRATION_OFFICER"));
-		assertTrue(tokenValidator.validateAccess("/connector", "REGISTRATION_OFFICER"));
-		assertTrue(tokenValidator.validateAccess("/printing", "REGISTRATION_OFFICER"));
-		assertTrue(tokenValidator.validateAccess("/manual-verification", "REGISTRATION_OFFICER"));
-		assertFalse(tokenValidator.validateAccess("/receiver", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/receiver", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/registration-status", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/registration-sync", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/connector", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/printing", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/manual-verification", "MANUAL_VERIFIER"));
+		assertFalse(tokenValidator.validateAccess("/receiver", "REGISTRATION_OFFICER"));
 	}
 }
