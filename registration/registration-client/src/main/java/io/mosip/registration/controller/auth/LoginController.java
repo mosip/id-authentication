@@ -370,9 +370,7 @@ public class LoginController extends BaseController implements Initializable {
 
 						isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
 								.getErrorResponseDTOs() != null;
-						if (isUserNewToMachine) {
-							initialSetUpOrNewUserLaunch();
-						} else {
+						
 
 							ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
@@ -412,55 +410,60 @@ public class LoginController extends BaseController implements Initializable {
 									boolean status = getCenterMachineStatus(userDetail);
 									sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
 									sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-									loginList = status
-											? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
-											: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
+									if (isUserNewToMachine) {
+										initialSetUpOrNewUserLaunch();
+									} 
+									else {
+										loginList = status
+												? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
+												: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-									String fingerprintDisableFlag = getValueFromApplicationContext(
-											RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-									String irisDisableFlag = getValueFromApplicationContext(
-											RegistrationConstants.IRIS_DISABLE_FLAG);
-									String faceDisableFlag = getValueFromApplicationContext(
-											RegistrationConstants.FACE_DISABLE_FLAG);
+										String fingerprintDisableFlag = getValueFromApplicationContext(
+												RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+										String irisDisableFlag = getValueFromApplicationContext(
+												RegistrationConstants.IRIS_DISABLE_FLAG);
+										String faceDisableFlag = getValueFromApplicationContext(
+												RegistrationConstants.FACE_DISABLE_FLAG);
 
-									LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-											"Ignoring FingerPrint login if the configuration is off");
+										LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+												"Ignoring FingerPrint login if the configuration is off");
 
-									removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
-									removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
-									removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
+										removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+										removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+										removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
 
-									String loginMode = !loginList.isEmpty()
-											? loginList.get(RegistrationConstants.PARAM_ZERO)
-											: null;
+										String loginMode = !loginList.isEmpty()
+												? loginList.get(RegistrationConstants.PARAM_ZERO)
+												: null;
 
-									LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-											"Retrieved corresponding Login mode");
+										LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+												"Retrieved corresponding Login mode");
 
-									if (loginMode == null) {
-										userIdPane.setVisible(false);
-										errorPane.setVisible(true);
-									} else {
-
-										if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-												&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
-												|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-														&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
-												|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
-														&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
-
-											generateAlert(RegistrationConstants.ERROR,
-													RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(
-															RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
-
-										} else {
+										if (loginMode == null) {
 											userIdPane.setVisible(false);
-											loadLoginScreen(loginMode);
+											errorPane.setVisible(true);
+										} else {
+
+											if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+													&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
+													|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+															&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+													|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+															&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+
+												generateAlert(RegistrationConstants.ERROR,
+														RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(
+																RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+
+											} else {
+												userIdPane.setVisible(false);
+												loadLoginScreen(loginMode);
+											}
 										}
 									}
 								}
 							}
-						}
+						
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 					}
@@ -475,7 +478,6 @@ public class LoginController extends BaseController implements Initializable {
 			}
 		}
 	}
-
 	private void initialSetUpOrNewUserLaunch() {
 		userIdPane.setVisible(false);
 		loadLoginScreen(LoginMode.PASSWORD.toString());
