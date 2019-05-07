@@ -62,13 +62,11 @@ public final class IdAuthConfigKeyConstants {
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 	public static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
 	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
-	public static final String MOSIP_IDA_PUBLICKEY = "cryptomanager.application.id";
+	public static final String CRYPTO_PARTNER_ID = "cryptomanager.partner.id";
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
-	public static final String PARTNER_APPLICATION_ID = "cryptomanager.application.id";
-
 }

@@ -292,7 +292,7 @@ public class RestHelper {
 				&& responseBody.get("errors").size() > 0
 				&& Objects.nonNull(responseBody.get("errors").get(0).get("errorCode"))
 				&& !responseBody.get("errors").get(0).get("errorCode").isNull()
-				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-402")) {
 			authToken = null;
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
 					"Auth token expired. setting authToken as null to regenerate.");
