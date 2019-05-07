@@ -252,6 +252,10 @@ public class FXUtils {
 					}
 				}
 			} else {
+				if(!haveToTransliterate && field.getText().equals(RegistrationConstants.EMPTY)) {
+					localField.setText(field.getText());
+					hideLabel(parentPane, localField);
+				}
 				if(!field.getText().equals(RegistrationConstants.EMPTY))
 					field.setText(oldValue);
 			}
