@@ -20,5 +20,7 @@ public class AuthNSendOTPDTO extends AuthNDTO {
 	private List<String> otpChannel;
 	private String appId;
 	private String useridtype;
+	private String context;
+	private List<Object> templateVariables;
 
 }
