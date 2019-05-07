@@ -3,7 +3,10 @@
 
 [Background & Design](../../docs/design/kernel/kernel-authn.md)
 
+[Setup Guide](https://github.com/mosip/mosip/wiki/Auth-Implementation)
+
 [Api Documentation](https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs)
+
 
 Default Port and Context Path
 
