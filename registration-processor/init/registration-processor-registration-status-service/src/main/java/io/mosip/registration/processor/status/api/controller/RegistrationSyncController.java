@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -80,10 +82,15 @@ public class RegistrationSyncController {
 	/** Token validator class */
 	@Autowired
 	TokenValidator tokenValidator;
-	
+
+	@Autowired
+	SignatureUtil signatureUtil;
+
+
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	/**
 	 * Sync registration ids.
@@ -99,13 +106,15 @@ public class RegistrationSyncController {
 	public ResponseEntity<Object> syncRegistrationController(
 			@Validated @RequestBody(required = true) RegistrationSyncRequestDTO registrationSyncRequestDTO,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-			throws RegStatusAppException {
+					throws RegStatusAppException {
 		tokenValidator.validate(token, "registrationstatus");
 		try {
 			RegStatusValidationUtil.validate(errors);
 			List<SyncResponseDto> syncResponseDtoList = syncRegistrationService
 					.sync(registrationSyncRequestDTO.getRequest());
-			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseDtoList));
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseDtoList)).getData());
+			return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseDtoList));
 		} catch (RegStatusValidationException | JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}

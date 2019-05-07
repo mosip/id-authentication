@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
@@ -61,6 +63,12 @@ public class PacketGeneratorController {
 	@Autowired
 	TokenValidator tokenValidator;
 
+	@Autowired
+	SignatureUtil signatureUtil;
+
+	private static final String RESPONSE_SIGNATURE = "Response-Signature";
+
+
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
 
@@ -79,6 +87,7 @@ public class PacketGeneratorController {
 		binder.addValidators(validator);
 	}
 
+
 	/**
 	 * Gets the status.
 	 *
@@ -96,13 +105,15 @@ public class PacketGeneratorController {
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-			throws RegBaseCheckedException, IOException {
+					throws RegBaseCheckedException, IOException {
 		tokenValidator.validate(token, "packetgenerator");
 		try {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildPacketGeneratorResponse(packerGeneratorResDto)).getData());
+			return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 		} catch (PacketGeneratorValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
