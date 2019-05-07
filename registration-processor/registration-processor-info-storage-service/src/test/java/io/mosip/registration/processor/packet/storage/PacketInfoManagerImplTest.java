@@ -606,7 +606,6 @@ public class PacketInfoManagerImplTest {
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
-		uinDto.setUin("1234567");
 		uinDto.setDob(date.toString());
 
 		DemographicInfoDto uinDto1 = new DemographicInfoDto();
@@ -614,7 +613,6 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setUin("1234567");
 		uinDto1.setDob(date.toString());
 
 		depdupeList.add(uinDto);
@@ -654,20 +652,7 @@ public class PacketInfoManagerImplTest {
 
 	
 
-	/**
-	 * Test get reg idby UIN.
-	 */
-	@Test
-	public void testGetRegIdbyUIN() {
-		String uin = "123456789";
-		List<String> regIdlist = new ArrayList<>();
-		regIdlist.add("27847657360002520181208094056");
-		Mockito.when(packetInfoDao.getRegIdByUIN(uin)).thenReturn(regIdlist);
-
-		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
-		assertEquals("27847657360002520181208094056", ridList.get(0));
-	}
-
+	
 	/**
 	 * Test get reference id by rid.
 	 */

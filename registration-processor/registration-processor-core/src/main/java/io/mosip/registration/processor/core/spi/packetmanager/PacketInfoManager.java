@@ -57,13 +57,7 @@ public interface PacketInfoManager<T, /** D, M, */
 
 
 
-	/**
-	 * Gets the applicant registration id by UIN.
-	 *
-	 * @param uin the uin
-	 * @return the registration id by UIN
-	 */
-	public List<String> getRegIdByUIN(String uin);
+	
 
 	
 
@@ -106,13 +100,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<String> getRidByReferenceId(String refId);
 
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param Rid the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String Rid);
 
 
 }

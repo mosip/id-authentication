@@ -204,7 +204,7 @@ public class VirusScannerStageTest {
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);
 
 		virusScannerStage.process(dto);
-		assertEquals(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString(), entry.getStatusCode());
+		assertEquals(RegistrationStatusCode.FAILED.toString(), entry.getStatusCode());
 	}
 
 	@Test

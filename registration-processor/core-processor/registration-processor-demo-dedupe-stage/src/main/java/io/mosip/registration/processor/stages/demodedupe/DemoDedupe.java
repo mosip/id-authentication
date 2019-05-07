@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Demograph
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class DemoDedupe.
@@ -61,6 +63,9 @@ public class DemoDedupe {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private RegistrationStatusService registrationStatusService;
 
 	/** The auth request DTO. */
 	private AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -101,13 +106,22 @@ public class DemoDedupe {
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
-					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
-		}
+		demographicInfoDtos = getAllDemographicInfoDtosWithUin(applicantDemoDto);
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				refId, "DemoDedupe::performDedupe()::exit");
 		return demographicInfoDtos;
+	}
+	
+	private List<DemographicInfoDto> getAllDemographicInfoDtosWithUin(List<DemographicInfoDto> duplicateDemographicDtos) {
+		List<DemographicInfoDto> demographicInfoDtosWithUin = new ArrayList<>();
+		for(DemographicInfoDto demographicDto : duplicateDemographicDtos) {
+			if(registrationStatusService.checkUinAvailabilityForRid(demographicDto.getRegId())) {
+				demographicInfoDtosWithUin.add(demographicDto);
+			}
+			
+		}
+		return demographicInfoDtosWithUin;
 	}
 
 	/**
@@ -115,7 +129,7 @@ public class DemoDedupe {
 	 *
 	 * @param regId
 	 *            the reg id
-	 * @param duplicateUins
+	 * @param uniqueMatchedRefIds
 	 *            the duplicate uins
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException
@@ -127,7 +141,7 @@ public class DemoDedupe {
 	 * @throws IllegalArgumentException 
 	 * @throws IllegalAccessException 
 	 */
-	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
+	public boolean authenticateDuplicates(String regId, Set<String> uniqueMatchedRefIds)
 			throws ApisResourceAccessException, IOException,ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
 		//TODO Validating Mocked Biometric logic 
@@ -135,9 +149,9 @@ public class DemoDedupe {
 				regId, "DemoDedupe::authenticateDuplicates()::entry");
 
 		boolean isDuplicate = false;
-		for (String duplicateUin : duplicateUins) {
+		for (String duplicateRid : uniqueMatchedRefIds) {
 			setAuthDto();
-			isDuplicate = biometricValidation.validateBiometric(duplicateUin,regId);
+			isDuplicate = biometricValidation.validateBiometric(duplicateRid,regId);
 			if(isDuplicate==true) {
 				return isDuplicate;
 			}

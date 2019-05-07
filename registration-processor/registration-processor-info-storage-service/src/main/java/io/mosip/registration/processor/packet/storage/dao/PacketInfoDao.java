@@ -1,9 +1,7 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,27 +30,6 @@ public class PacketInfoDao {
 
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
-
-
-	/** The Constant SELECT. */
-	private static final String SELECT = " SELECT ";
-
-	/** The Constant FROM. */
-	private static final String FROM = " FROM  ";
-
-	/** The Constant EMPTY_STRING. */
-	private static final String EMPTY_STRING = " ";
-
-	/** The Constant WHERE. */
-	private static final String WHERE = " WHERE ";
-
-	/** The Constant AND. */
-	private static final String AND = " AND ";
-
-	/** The Constant IS_NOT_NULL. */
-	private static final String IS_NOT_NULL = " IS NOT NULL ";
-
-	private static final boolean IS_ACTIVE_TRUE = true;
 
 	/**
 	 * Gets the packetsfor QC user.
@@ -106,7 +83,6 @@ public class PacketInfoDao {
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();
 		demo.setRegId(object.getId().getRegId());
-		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
@@ -146,77 +122,4 @@ public class PacketInfoDao {
 
 	}
 
-	/**
-	 * Gets the all demographic entities.
-	 *
-	 * @param name the name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
-	 * @return the all demographic entities
-	 */
-	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
-			String dob, String langCode) {
-		Map<String, Object> params = new HashMap<>();
-		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
-		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
-		StringBuilder query = new StringBuilder();
-		query.append(
-				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin " + IS_NOT_NULL + AND);
-		if (name != null) {
-			query.append(alias + ".name=:name ").append(AND);
-			params.put("name", name);
-
-		}
-		if (gender != null) {
-			query.append(alias + ".gender=:gender ").append(AND);
-			params.put("gender", gender);
-		}
-		if (dob != null) {
-			query.append(alias + ".dob=:dob ").append(AND);
-			params.put("dob", dob);
-		}
-		query.append(alias + ".id.langCode=:langCode").append(AND);
-		params.put("langCode", langCode);
-
-		query.append(alias + ".isActive=:isActive");
-		params.put("isActive", IS_ACTIVE_TRUE);
-
-		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
-	}
-
-	/**
-	 * Gets the all demographic info dtos.
-	 *
-	 * @param name the name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
-	 * @return the all demographic info dtos
-	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, String dob,
-			String langCode) {
-
-		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(name,
-				gender, dob, langCode);
-		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
-			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
-		}
-		return demographicInfoDtos;
-	}
-
-	public List<String> getRegIdByUIN(String uin) {
-		return demographicDedupeRepository.getRegIdByUIN(uin);
-	}
-
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String rid) {
-		return demographicDedupeRepository.getUINByRid(rid);
-	}
 }

@@ -395,31 +395,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getRegIdByUIN(java.lang.String)
-	 */
-	@Override
-	public List<String> getRegIdByUIN(String uin) {
-		return packetInfoDao.getRegIdByUIN(uin);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getUINByRid(java.lang.String)
-	 */
-	@Override
-	public List<String> getUINByRid(String rid) {
-		return packetInfoDao.getUINByRid(rid);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -551,4 +526,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				regId, "PacketInfoManagerImpl::saveAbisRef()::exit");
 	}
 
+
+	
 }

@@ -32,6 +32,9 @@ public class RegistrationStatusDao {
 
 	/** The Constant SELECT_DISTINCT. */
 	public static final String SELECT_DISTINCT = "SELECT DISTINCT ";
+	
+	/** The Constant SELECT_DISTINCT. */
+	public static final String SELECT = "SELECT ";
 
 	/** The Constant FROM. */
 	public static final String FROM = " FROM  ";
@@ -203,6 +206,25 @@ public class RegistrationStatusDao {
 				params);
 
 		return unprocessedPackets.size();
+
+	}
+	
+	public Boolean checkUinAvailabilityForRid(String rid) {
+		Boolean uinAvailable = false;
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		
+		String queryStr = SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".id = :rid " + AND + alias + ".statusCode = :status_Code" ;
+		params.put("rid", rid);
+		params.put("status_Code", "PROCESSED");
+		List<RegistrationStatusEntity> unprocessedPackets = registrationStatusRepositary.createQuerySelect(queryStr,
+				params);
+		if(!unprocessedPackets.isEmpty()) {
+			uinAvailable=true;
+		}
+		return uinAvailable;
 
 	}
 

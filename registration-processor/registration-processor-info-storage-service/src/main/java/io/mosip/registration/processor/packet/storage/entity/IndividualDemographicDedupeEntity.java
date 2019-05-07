@@ -24,9 +24,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "uin")
-	private String uin;
-
 	@Column(name = "name")
 	private String name;
 
@@ -142,15 +139,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 
 	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
-	}
-
-
-	public String getUin() {
-		return uin;
-	}
-
-	public void setUin(String uinRefId) {
-		this.uin = uinRefId;
 	}
 
 }

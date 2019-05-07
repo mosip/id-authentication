@@ -131,7 +131,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 					uploadStatus = packetReceiverResponseDTO.getResponse().getStatus();
 					packerGeneratorResDto.setRegistrationId(registartionId);
 					if (uploadStatus
-							.equalsIgnoreCase(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString())) {
+							.equalsIgnoreCase(RegistrationStatusCode.PROCESSING.toString())) {
 						packerGeneratorResDto.setStatus(UPLOADSTATUSCOMMENT);
 					} else {
 						packerGeneratorResDto.setStatus(uploadStatus);

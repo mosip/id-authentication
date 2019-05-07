@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class BioDedupeServiceImpl.
@@ -70,6 +71,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	@Autowired
+	private RegistrationStatusService registrationStatusService;
 
 	/** The url. */
 	@Value("${registration.processor.biometric.reference.url}")
@@ -244,8 +248,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		for (String duplicateReg : abisResponseDuplicates) {
 			List<DemographicInfoDto> demoList = packetInfoManager.findDemoById(duplicateReg);
 			if (!demoList.isEmpty()) {
-				String uin = demoList.get(0).getUin();
-				if (!uin.isEmpty()) {
+				if(registrationStatusService.checkUinAvailabilityForRid(demoList.get(0).getRegId())) {
 					duplicates.add(duplicateReg);
 				}
 			}

@@ -333,16 +333,17 @@ public class OSIValidator {
 			}
 			String introducerRidString = bigIntegerToString(introducerRID);
 			String introducerUinString = bigIntegerToString(introducerUIN);
+			Boolean isIntroducerUinPresent=false;
 			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
 
-				introducerUinString = getIntroducerUIN(introducerRidString);
-				if (introducerUinString == null) {
+				isIntroducerUinPresent = getIntroducerUIN(introducerRidString);
+				if (!isIntroducerUinPresent) {
 					registrationStatusDto
 							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
 					return false;
 				}
 			}
-			if (introducerUinString != null) {
+			if (isIntroducerUinPresent) {
 				return validateIntroducer(registrationId, introducerUinString);
 			} else {
 				return false;
@@ -713,8 +714,7 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
-			if(!introducerUINList.isEmpty()) {
+			if(registrationStatusService.checkUinAvailabilityForRid(introducerRid)) {
 						return true;
 					}
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
@@ -732,12 +732,14 @@ public class OSIValidator {
 	 *            the intoducer rid
 	 * @return the introducer UIN
 	 */
-	private String getIntroducerUIN(String intoducerRid) {
+	private Boolean getIntroducerUIN(String intoducerRid) {
 		List<DemographicInfoDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
-		if (!demographicDedupeDtoList.isEmpty()) {
-			return demographicDedupeDtoList.get(0).getUin();
+		if(registrationStatusService.checkUinAvailabilityForRid(demographicDedupeDtoList.get(0).getRegId())) {
+			return true;
 		}
-		return null;
+		return false;
+
+
 	}
 
 	/**

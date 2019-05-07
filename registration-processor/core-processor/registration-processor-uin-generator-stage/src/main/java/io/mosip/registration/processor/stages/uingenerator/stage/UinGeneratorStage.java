@@ -241,9 +241,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				demographicIdentity.put("UIN", uinInLong);
 				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getResponse().getUin());
 				if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
-					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getResponse().getUin());
 					registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
-					
+
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_ASSIGNED);
 					isTransactionSuccessful = true;
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());

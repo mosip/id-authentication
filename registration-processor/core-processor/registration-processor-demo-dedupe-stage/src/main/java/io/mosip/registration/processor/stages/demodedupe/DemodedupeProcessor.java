@@ -125,15 +125,12 @@ public class DemodedupeProcessor {
 
 			// Potential Duplicate Ids after performing demo dedupe
 			List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
-			Set<String> uniqueUins = new HashSet<>();
 			Set<String> uniqueMatchedRefIds = new HashSet<>();
 			List<String> uniqueMatchedRefIdList = new ArrayList<>();
 			for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
-				uniqueUins.add(demographicInfoDto.getUin());
 				uniqueMatchedRefIds.add(demographicInfoDto.getRegId());
 			}
 			uniqueMatchedRefIdList.addAll(uniqueMatchedRefIds);
-			List<String> duplicateUINList = new ArrayList<>(uniqueUins);
 
 			if (!duplicateDtos.isEmpty()) {
 
@@ -143,7 +140,7 @@ public class DemodedupeProcessor {
 
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics
-				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
+				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, uniqueMatchedRefIds);
 
 				if (isDuplicateAfterAuth) {
 					object.setIsValid(Boolean.FALSE);
