@@ -21,8 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.otp.OtpGenerateRequest;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
+import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.OTPGenerateService;
@@ -69,6 +71,41 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
 			HttpEntity<RequestWrapper<OtpGenerateRequestDto>> request = new HttpEntity<>(reqWrapper,headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, request,
+					String.class);
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpGenerateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						OtpGenerateResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			}
+			return otpGenerateResponseDto;
+		} catch (HttpClientErrorException | HttpServerErrorException exp) {
+			System.out.println(exp.getResponseBodyAsString());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
+		}
+	}
+
+	@Override
+	public OtpGenerateResponseDto generateOTPMultipleChannels(MosipUserDto mosipUserDto, OtpUser otpUser,String token) {
+		try {
+			List<ServiceError> validationErrorsList = null;
+			OtpGenerateResponseDto otpGenerateResponseDto;
+			OtpGenerateRequest otpGenerateRequestDto = new OtpGenerateRequest(mosipUserDto,otpUser);
+			final String url = mosipEnvironment.getGenerateOtpApi();
+			
+			RequestWrapper<OtpGenerateRequest> reqWrapper = new RequestWrapper<>();
+			reqWrapper.setRequesttime(LocalDateTime.now());
+			reqWrapper.setRequest(otpGenerateRequestDto);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
+			HttpEntity<RequestWrapper<OtpGenerateRequest>> request = new HttpEntity<>(reqWrapper,headers);
 			ResponseEntity<String> response = restTemplate.postForEntity(url, request,
 					String.class);
 			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  

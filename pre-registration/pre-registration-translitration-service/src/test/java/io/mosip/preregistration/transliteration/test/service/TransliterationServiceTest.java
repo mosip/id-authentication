@@ -144,7 +144,7 @@ public class TransliterationServiceTest {
 	@Test(expected=MandatoryFieldRequiredException.class)
 	public void mandatoryFieldFailTest() {
 		MandatoryFieldRequiredException exception=new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode()
-				, ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage());
+				, ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(),null);
 		
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		
@@ -165,7 +165,7 @@ public class TransliterationServiceTest {
 	@Test(expected=UnSupportedLanguageException.class)
 	public void unSupportedLangTest() {
 		UnSupportedLanguageException exception=new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
-				ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
+				ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage(),null);
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		TransliterationRequestDTO transliterationRequest=new TransliterationRequestDTO();
 		transliterationRequest=new TransliterationRequestDTO();

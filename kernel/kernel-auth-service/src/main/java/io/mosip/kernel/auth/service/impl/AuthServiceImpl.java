@@ -22,6 +22,7 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -34,7 +35,6 @@ import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.mosip.kernel.auth.service.OTPService;
 import io.mosip.kernel.auth.service.UinService;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Auth Service for Authentication and Authorization
@@ -71,33 +71,34 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for validating Auth token
 	 * 
-	 * @param token token
+	 * @param token
+	 *            token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		//long currentTime = Instant.now().toEpochMilli();
+		// long currentTime = Instant.now().toEpochMilli();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
-		/*AuthToken authToken = customTokenServices.getTokenDetails(token);
-		if (authToken == null) {
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,
-					"Auth token has been changed,Please try with new login");
-		}
-		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		if (currentTime > tenMinsExp && currentTime < authToken.getExpirationTime()) {
-			TimeToken newToken = tokenGenerator.generateNewToken(token);
-			mosipUserDtoToken.setToken(newToken.getToken());
-			mosipUserDtoToken.setExpTime(newToken.getExpTime());
-			AuthToken newAuthToken = getAuthToken(mosipUserDtoToken);
-			customTokenServices.StoreToken(newAuthToken);
-			return mosipUserDtoToken;
-		}*/
-		if (mosipUserDtoToken != null /*&& (currentTime < authToken.getExpirationTime())*/) {
+		/*
+		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
+		 * (authToken == null) { throw new
+		 * AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,
+		 * "Auth token has been changed,Please try with new login"); } long tenMinsExp =
+		 * getExpiryTime(authToken.getExpirationTime()); if (currentTime > tenMinsExp &&
+		 * currentTime < authToken.getExpirationTime()) { TimeToken newToken =
+		 * tokenGenerator.generateNewToken(token);
+		 * mosipUserDtoToken.setToken(newToken.getToken());
+		 * mosipUserDtoToken.setExpTime(newToken.getExpTime()); AuthToken newAuthToken =
+		 * getAuthToken(mosipUserDtoToken);
+		 * customTokenServices.StoreToken(newAuthToken); return mosipUserDtoToken; }
+		 */
+		if (mosipUserDtoToken != null /* && (currentTime < authToken.getExpirationTime()) */) {
 			return mosipUserDtoToken;
 		} else {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
@@ -118,11 +119,13 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based on username and password
 	 * 
-	 * @param loginUser is of type {@link LoginUser}
+	 * @param loginUser
+	 *            is of type {@link LoginUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -147,11 +150,13 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for sending OTP
 	 * 
-	 * @param otpUser is of type {@link OtpUser}
+	 * @param otpUser
+	 *            is of type {@link OtpUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -161,10 +166,12 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = null;
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
 			mosipUser = uinService.getDetailsFromUin(otpUser);
-			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
+			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser);
+			authNResponseDto.setStatus(authNResponseDto.getStatus());
+			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		} else if (AuthConstant.APPTYPE_USERID.equals(otpUser.getUseridtype())) {
 			mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId()).authenticateWithOtp(otpUser);
-			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
+			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser);
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		} else {
@@ -173,14 +180,17 @@ public class AuthServiceImpl implements AuthService {
 		return authNResponseDto;
 	}
 
+
 	/**
 	 * Method used for Authenticating User based with username and OTP
 	 * 
-	 * @param userOtp is of type {@link UserOtp}
+	 * @param userOtp
+	 *            is of type {@link UserOtp}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -190,13 +200,11 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDtoToken mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
-		if(mosipUser!=null)
-		{
-		mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
-		}
-		else
-		{
-			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+		if (mosipUser != null) {
+			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
+		} else {
+			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
 		}
 		if (mosipToken != null && mosipToken.getMosipUserDto() != null) {
 			authNResponseDto.setMessage(mosipToken.getMessage());
@@ -215,11 +223,13 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based with secretkey and password
 	 * 
-	 * @param clientSecret is of type {@link ClientSecret}
+	 * @param clientSecret
+	 *            is of type {@link ClientSecret}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -235,9 +245,19 @@ public class AuthServiceImpl implements AuthService {
 		}
 		if(mosipUser!=null)
 		{
+			MosipUserDtoToken mosipToken = null;
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
-			long currentTime = Instant.now().toEpochMilli();
-			if(authToken!=null && currentTime<authToken.getExpirationTime())
+			try
+			{
+			mosipToken = validateToken(authToken.getAccessToken());
+			}catch(AuthManagerException auth)
+			{
+				if(auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode()))
+				{
+					mosipToken=null;
+				}
+			}
+			if(authToken!=null && mosipToken!=null)
 			{
 				authNResponseDto = new AuthNResponseDto();
 				authNResponseDto.setToken(authToken.getAccessToken());
@@ -266,7 +286,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 		return authNResponseDto;
 	}
-	
+
 	private AuthToken getAuthToken(AuthNResponseDto authResponseDto) {
 		return new AuthToken(authResponseDto.getUserId(), authResponseDto.getToken(), authResponseDto.getExpiryTime(),
 				authResponseDto.getRefreshToken());
@@ -275,11 +295,13 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for generating refresh token
 	 * 
-	 * @param existingToken existing token
+	 * @param existingToken
+	 *            existing token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -309,11 +331,13 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for invalidate token
 	 * 
-	 * @param token token
+	 * @param token
+	 *            token
 	 * 
 	 * @return authNResponse is of type {@link AuthNResponse}
 	 * 
-	 * @throws Exception exception
+	 * @throws Exception
+	 *             exception
 	 * 
 	 */
 
@@ -342,9 +366,14 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserSaltList getAllUserDetailsWithSalt(String appId) throws Exception {
-		MosipUserSaltList mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId)
-				.getAllUserDetailsWithSalt();
+		MosipUserSaltList mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getAllUserDetailsWithSalt();
 		return mosipUserListDto;
+	}
+
+	@Override
+	public RIdDto getRidBasedOnUid(String userId,String appId) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).getRidFromUserId(userId);
+		
 	}
 
 }

@@ -59,7 +59,7 @@ public class DocumentNotValidExceptionTest {
 	@Test
 	public void notValidException() throws FileNotFoundException, IOException {
 
-		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
+		DocumentNotValidException documentNotValidException = new DocumentNotValidException("PRG_PAM_DOC_004",DOCUMENT_INVALID_FORMAT);
 		String preRegistrationId ="48690172097498";
 		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 

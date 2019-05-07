@@ -4,7 +4,9 @@
  */
 package io.mosip.preregistration.documents.exception.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,10 +16,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 
-import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -60,36 +61,6 @@ public class DocumentExceptionHandler {
 	private String uploadId;
 
 	/**
-	 * Reference for ${mosip.preregistration.document.copy.id} from property file
-	 */
-	@Value("${mosip.preregistration.document.copy.id}")
-	private String copyId;
-	
-	/**
-	 * Reference for ${mosip.preregistration.document.fetch.metadata.id} from property file
-	 */
-	@Value("${mosip.preregistration.document.fetch.metadata.id}")
-	private String fetchMetaDataId;
-	
-	/**
-	 * Reference for ${mosip.preregistration.document.fetch.content.id} from property file
-	 */
-	@Value("${mosip.preregistration.document.fetch.content.id}")
-	private String fetchContentId;
-	
-	/**
-	 * Reference for ${mosip.preregistration.document.delete.id} from property file
-	 */
-	@Value("${mosip.preregistration.document.delete.id}")
-	private String deleteId;
-	
-	/**
-	 * Reference for ${mosip.preregistration.document.delete.specific.id} from property file
-	 */
-	@Value("${mosip.preregistration.document.delete.specific.id}")
-	private String deleteSpecificId;
-
-	/**
 	 * Reference for ${ver} from property file
 	 */
 	@Value("${version}")
@@ -103,13 +74,13 @@ public class DocumentExceptionHandler {
 	 * @return response for TablenotAccessibleException
 	 */
 	@ExceptionHandler(TableNotAccessibleException.class)
-	public ResponseEntity<MainListResponseDTO> databaseerror(final TableNotAccessibleException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO> databaseerror(final TableNotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -121,14 +92,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DemographicGetDetailsException
 	 */
 	@ExceptionHandler(DemographicGetDetailsException.class)
-	public ResponseEntity<MainListResponseDTO> databaseerror(final DemographicGetDetailsException e,
+	public ResponseEntity<MainResponseDTO> databaseerror(final DemographicGetDetailsException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -140,16 +111,15 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentNotValidException
 	 */
 	@ExceptionHandler(DocumentNotValidException.class)
-	public ResponseEntity<MainListResponseDTO> notValidExceptionhadler(final DocumentNotValidException e,
+	public ResponseEntity<MainResponseDTO> notValidExceptionhadler(final DocumentNotValidException e,
 			WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-
 	}
 
 	/**
@@ -160,15 +130,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DTOMappigException
 	 */
 	@ExceptionHandler(DTOMappigException.class)
-	public ResponseEntity<MainListResponseDTO> dtoMappingExc(final DTOMappigException e, WebRequest webRequest) {
+	public ResponseEntity<MainResponseDTO> dtoMappingExc(final DTOMappigException e, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-
 	}
 
 	/**
@@ -179,14 +148,14 @@ public class DocumentExceptionHandler {
 	 * @return response for FileNotFoundException
 	 */
 	@ExceptionHandler(FileNotFoundException.class)
-	public ResponseEntity<MainListResponseDTO> fileNotFoundException(final FileNotFoundException e,
+	public ResponseEntity<MainResponseDTO> fileNotFoundException(final FileNotFoundException e,
 			WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
 	}
@@ -199,14 +168,14 @@ public class DocumentExceptionHandler {
 	 * @return response for MandatoryFieldNotFoundException
 	 */
 	@ExceptionHandler(MandatoryFieldNotFoundException.class)
-	public ResponseEntity<MainListResponseDTO> mandatoryFieldNotFoundException(final MandatoryFieldNotFoundException e,
+	public ResponseEntity<MainResponseDTO> mandatoryFieldNotFoundException(final MandatoryFieldNotFoundException e,
 			WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
 	}
@@ -219,13 +188,13 @@ public class DocumentExceptionHandler {
 	 * @return response for ParsingException
 	 */
 	@ExceptionHandler(ParsingException.class)
-	public ResponseEntity<MainListResponseDTO> parsingException(final ParsingException e, WebRequest webRequest) {
+	public ResponseEntity<MainResponseDTO> parsingException(final ParsingException e, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
 	}
@@ -238,13 +207,14 @@ public class DocumentExceptionHandler {
 	 * @return response for MultipartException
 	 */
 	@ExceptionHandler(MultipartException.class)
-	public ResponseEntity<MainListResponseDTO> sizeExceedException(final MultipartException e, WebRequest webRequest) {
+	public ResponseEntity<MainResponseDTO> sizeExceedException(final MultipartException e, WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_004.toString(),
 				DocumentStatusMessages.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
+		errorRes.setId(uploadId);
 		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -257,13 +227,13 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentNotFoundException
 	 */
 	@ExceptionHandler(DocumentNotFoundException.class)
-	public ResponseEntity<MainListResponseDTO> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -275,14 +245,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentSizeExceedException
 	 */
 	@ExceptionHandler(DocumentSizeExceedException.class)
-	public ResponseEntity<MainListResponseDTO> documentSizeExceedException(final DocumentSizeExceedException e,
+	public ResponseEntity<MainResponseDTO> documentSizeExceedException(final DocumentSizeExceedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -294,14 +264,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentFailedToUploadException
 	 */
 	@ExceptionHandler(DocumentFailedToUploadException.class)
-	public ResponseEntity<MainListResponseDTO> documentFailedToUploadException(final DocumentFailedToUploadException e,
+	public ResponseEntity<MainResponseDTO> documentFailedToUploadException(final DocumentFailedToUploadException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -313,14 +283,14 @@ public class DocumentExceptionHandler {
 	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
-	public ResponseEntity<MainListResponseDTO> invalidRequestParameterException(
+	public ResponseEntity<MainResponseDTO> invalidRequestParameterException(
 			final InvalidRequestParameterException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getMainResponseDto();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -332,14 +302,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentVirusScanException
 	 */
 	@ExceptionHandler(DocumentVirusScanException.class)
-	public ResponseEntity<MainListResponseDTO> documentVirusScanException(final DocumentVirusScanException e,
+	public ResponseEntity<MainResponseDTO> documentVirusScanException(final DocumentVirusScanException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -351,14 +321,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DocumentFailedToCopyException
 	 */
 	@ExceptionHandler(DocumentFailedToCopyException.class)
-	public ResponseEntity<MainListResponseDTO> documentFailedToCopyException(final DocumentFailedToCopyException e,
+	public ResponseEntity<MainResponseDTO> documentFailedToCopyException(final DocumentFailedToCopyException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -370,14 +340,14 @@ public class DocumentExceptionHandler {
 	 * @return response for InvalidDocumnetIdExcepion
 	 */
 	@ExceptionHandler(InvalidDocumentIdExcepion.class)
-	public ResponseEntity<MainListResponseDTO> invalidDocumnetIdExcepion(final InvalidDocumentIdExcepion e,
+	public ResponseEntity<MainResponseDTO> invalidDocumnetIdExcepion(final InvalidDocumentIdExcepion e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -389,13 +359,13 @@ public class DocumentExceptionHandler {
 	 * @return response for CephServerException
 	 */
 	@ExceptionHandler(FSServerException.class)
-	public ResponseEntity<MainListResponseDTO> cephServerException(final FSServerException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO> cephServerException(final FSServerException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -407,14 +377,14 @@ public class DocumentExceptionHandler {
 	 * @return response for PrimaryKeyValidationException
 	 */
 	@ExceptionHandler(PrimaryKeyValidationException.class)
-	public ResponseEntity<MainListResponseDTO> primaryKeyValidationException(final PrimaryKeyValidationException e,
+	public ResponseEntity<MainResponseDTO> primaryKeyValidationException(final PrimaryKeyValidationException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getResponse();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -425,16 +395,16 @@ public class DocumentExceptionHandler {
 	 *            pass the request
 	 * @return response for FSAdapterException
 	 */
-	@ExceptionHandler(FSAdapterException.class)
-	public ResponseEntity<MainListResponseDTO> fSAdapterException(final FSAdapterException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
-		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-	}
+//	@ExceptionHandler(FSAdapterException.class)
+//	public ResponseEntity<MainResponseDTO> fSAdapterException(final FSAdapterException e, WebRequest request) {
+//		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+//		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+//		errorList.add(errorDetails);
+//		MainResponseDTO<?> errorRes = e.getResponse();
+//		errorRes.setErrors(errorList);
+//		errorRes.setResponsetime(getCurrentResponseTime());
+//		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+//	}
 
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
@@ -448,14 +418,14 @@ public class DocumentExceptionHandler {
 	 * @return response for EncryptionFailedException
 	 */
 	@ExceptionHandler(EncryptionFailedException.class)
-	public ResponseEntity<MainListResponseDTO> encryptionFailedException(final EncryptionFailedException e,
+	public ResponseEntity<MainResponseDTO> encryptionFailedException(final EncryptionFailedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getMainresponseDTO();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -467,14 +437,14 @@ public class DocumentExceptionHandler {
 	 * @return response for DecryptionFailedException
 	 */
 	@ExceptionHandler(DecryptionFailedException.class)
-	public ResponseEntity<MainListResponseDTO> decryptionFailedException(final DecryptionFailedException e,
+	public ResponseEntity<MainResponseDTO> decryptionFailedException(final DecryptionFailedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErrors(errorDetails);
+		List<ExceptionJSONInfoDTO> errorList= new ArrayList<>();
+		errorList.add(errorDetails);
+		MainResponseDTO<?> errorRes = e.getMainresponseDTO();
+		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(getCurrentResponseTime());
-//		errorRes.setId(id);
-		errorRes.setVersion(ver);
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 }

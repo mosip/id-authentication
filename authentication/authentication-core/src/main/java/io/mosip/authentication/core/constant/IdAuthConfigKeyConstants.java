@@ -42,7 +42,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "mosip.auth.mail.subject.template";
 	public static final String AUTH_EMAIL_CONTENT_TEMPLATE = "mosip.auth.mail.content.template";
 	public static final String OTP_SUBJECT_TEMPLATE = "mosip.otp.mail.subject.template";
-	public static final String UIN_MASKING_REQUIRED = "notification.uin.masking.required";
 	public static final String NOTIFICATION_DATE_FORMAT = "notification.date.format";
 	public static final String NOTIFICATION_TIME_FORMAT = "notification.time.format";
 	public static final String UIN_MASKING_CHARCOUNT = "notification.uin.masking.charcount";
@@ -67,9 +66,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
-
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
+	public static final String PARTNER_APPLICATION_ID = "cryptomanager.application.id";
 
 }

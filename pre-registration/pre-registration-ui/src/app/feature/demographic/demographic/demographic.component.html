@@ -176,7 +176,7 @@
                 [formControlName]="formControlNames.region"
                 #region
               >
-                <mat-option *ngFor="let region of regions1" [value]="region.valueCode">{{
+                <mat-option *ngFor="let region of regions_in_primary_lang" [value]="region.valueCode">{{
                   region.valueName
                 }}</mat-option>
               </mat-select>
@@ -192,7 +192,7 @@
                 [formControlName]="formControlNames.province"
                 #province
               >
-                <mat-option *ngFor="let province of provinces1" [value]="province.valueCode">{{
+                <mat-option *ngFor="let province of provinces_in_primary_lang" [value]="province.valueCode">{{
                   province.valueName
                 }}</mat-option>
               </mat-select>
@@ -216,7 +216,9 @@
                 [formControlName]="formControlNames.city"
                 #city
               >
-                <mat-option *ngFor="let city of cities1" [value]="city.valueCode">{{ city.valueName }}</mat-option>
+                <mat-option *ngFor="let city of cities_in_primary_lang" [value]="city.valueCode">{{
+                  city.valueName
+                }}</mat-option>
               </mat-select>
               <mat-error *ngIf="!city.invalid">{{ 'demographic.validation.city_required' | translate }}</mat-error>
             </mat-form-field>
@@ -230,7 +232,7 @@
                 #authority
               >
                 <mat-option
-                  *ngFor="let localAdministrativeAuthoritie of localAdministrativeAuthorities1"
+                  *ngFor="let localAdministrativeAuthoritie of localAdministrativeAuthorities_in_primary_lang"
                   [value]="localAdministrativeAuthoritie.valueCode"
                   >{{ localAdministrativeAuthoritie.valueName }}</mat-option
                 >
@@ -451,12 +453,13 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
+                required
                 name="t_region"
                 [value]="userForm.get(formControlNames.region).value"
                 [disabled]="true"
                 [placeholder]="secondaryLanguagelabels.label_region"
               >
-                <mat-option *ngFor="let region of regions2" [value]="region.valueCode">{{
+                <mat-option *ngFor="let region of regions_in_secondary_lang" [value]="region.valueCode">{{
                   region.valueName
                 }}</mat-option>
               </mat-select>
@@ -471,7 +474,7 @@
                 [value]="userForm.get(formControlNames.province).value"
                 name="t_province"
               >
-                <mat-option *ngFor="let province of provinces2" [value]="province.valueCode">{{
+                <mat-option *ngFor="let province of provinces_in_secondary_lang" [value]="province.valueCode">{{
                   province.valueName
                 }}</mat-option>
               </mat-select>
@@ -485,7 +488,9 @@
                 [value]="userForm.get(formControlNames.city).value"
                 name="t_city"
               >
-                <mat-option *ngFor="let city of cities2" [value]="city.valueCode">{{ city.valueName }}</mat-option>
+                <mat-option *ngFor="let city of cities_in_secondary_lang" [value]="city.valueCode">{{
+                  city.valueName
+                }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -497,9 +502,11 @@
                 [value]="userForm.get(formControlNames.localAdministrativeAuthority).value"
                 name="t_localAdministrativeAuthority"
               >
-                <mat-option *ngFor="let LAA of localAdministrativeAuthorities2" [value]="LAA.valueCode">{{
-                  LAA.valueName
-                }}</mat-option>
+                <mat-option
+                  *ngFor="let LAA of localAdministrativeAuthorities_in_secondary_lang"
+                  [value]="LAA.valueCode"
+                  >{{ LAA.valueName }}</mat-option
+                >
               </mat-select>
             </mat-form-field>
           </div>

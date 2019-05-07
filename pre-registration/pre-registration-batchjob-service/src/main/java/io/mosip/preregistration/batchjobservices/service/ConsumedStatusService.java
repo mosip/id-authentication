@@ -56,7 +56,7 @@ public class ConsumedStatusService {
 	@Value("${ver}")
 	String versionUrl;
 
-	@Value("${id}")
+	@Value("${mosip.preregistration.batchjob.service.consumed.id}")
 	String idUrl;
 
 	/**

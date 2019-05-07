@@ -110,6 +110,7 @@ public class TokenValidator {
 		mosipUserDto.setRole((String) claims.get("role"));
 		mosipUserDto.setMail((String) claims.get("mail"));
 		mosipUserDto.setMobile((String) claims.get("mobile"));
+		mosipUserDto.setRId((String) claims.get("rId"));
 		return mosipUserDto;
 	}
 

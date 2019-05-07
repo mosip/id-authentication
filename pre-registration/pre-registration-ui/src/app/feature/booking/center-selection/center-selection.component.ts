@@ -5,7 +5,7 @@ import { RegistrationCentre } from './registration-center-details.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
-import { SharedService } from '../booking.service';
+import { BookingService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
@@ -46,7 +46,7 @@ export class CenterSelectionComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private service: SharedService,
+    private service: BookingService,
     private dataService: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
@@ -72,6 +72,7 @@ export class CenterSelectionComponent implements OnInit {
 
   getRecommendedCenters() {
     const pincodes = [];
+    this.REGISTRATION_CENTRES = [];
     this.users.forEach(user => {
       pincodes.push(user['postalCode']);
     });
@@ -173,7 +174,7 @@ export class CenterSelectionComponent implements OnInit {
         );
       });
     } else {
-      alert('Location not suppored in this browser');
+      // alert('Location not suppored in this browser');
     }
   }
 

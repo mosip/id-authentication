@@ -21,4 +21,6 @@ public class UserDetailMapDto extends BaseDto {
 
 	private List<String> roles;
 
+	private String rId;
+
 }

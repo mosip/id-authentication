@@ -15,9 +15,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
+import io.mosip.preregistration.notification.exception.NotificationSeriveException;
 
 /**
  * Exception Handler for acknowledgement application.
@@ -50,23 +52,41 @@ public class NotificationExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
-	// /**
-	// * @param e
-	// * @param request
-	// * @return response of FailedToTransliterateException
-	// */
-	// @ExceptionHandler(JsonValidationException.class)
-	// public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final
-	// JsonValidationException e,WebRequest request){
-	// ExceptionJSONInfoDTO errorDetails=new
-	// ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-	// MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-	// errorRes.setErr(errorDetails);
-	// errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
-	// errorRes.setStatus(falseStatus);
-	// return new ResponseEntity<>(errorRes,HttpStatus.OK);
-	// }
+	 /**
+	 * @param e
+	 * @param request
+	 * @return response of InvalidRequestParameterException
+	 */
+	 @ExceptionHandler(InvalidRequestParameterException.class)
+	 public ResponseEntity<MainResponseDTO<?>> notificationFailed(final
+			 InvalidRequestParameterException e,WebRequest request){
+		 ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+			MainResponseDTO<?> errorRes =e.getMainResponseDto();
+			List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+			errorList.add(errorDetails);
+			errorRes.setErrors(errorList);
+			errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+	 return new ResponseEntity<>(errorRes,HttpStatus.OK);
+	 }
 
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for NotificationSeriveException
+	 */
+	
+	
+	@ExceptionHandler(NotificationSeriveException.class)
+	public ResponseEntity<MainResponseDTO<?>> authServiceException(final NotificationSeriveException e,WebRequest request){
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getMessage())));
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(errorList);
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 	/**
 	 * @param e
 	 *            pass the exception
@@ -84,5 +104,4 @@ public class NotificationExceptionHandler {
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
-
 }

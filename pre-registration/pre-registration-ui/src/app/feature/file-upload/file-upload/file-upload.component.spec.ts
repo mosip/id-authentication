@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { FileUploadComponent } from './file-upload.component';
 import * as appConstants from './../../../app.constants';
 import { HttpLoaderFactory } from 'src/app/i18n.module';
@@ -72,7 +72,7 @@ describe('FileUploadComponent', () => {
         { provide: RegistrationService, useValue: registrationServiceStub },
         { provide: DataStorageService, useValue: dataStorageServiceStub },
         { provide: TranslateService, useValue: translateServiceStub },
-        { provide: SharedService, useValue: sharedServiceStub }
+        { provide: BookingService, useValue: sharedServiceStub }
       ]
     });
     fixture = TestBed.createComponent(FileUploadComponent);
@@ -105,7 +105,7 @@ describe('FileUploadComponent', () => {
   // describe('ngOnInit', () => {
   //   it('makes expected calls', () => {
   //     const registrationServiceStub: RegistrationService = fixture.debugElement.injector.get(RegistrationService);
-  //     const sharedServiceStub: SharedService = fixture.debugElement.injector.get(SharedService);
+  //     const sharedServiceStub: BookingService = fixture.debugElement.injector.get(BookingService);
   //     spyOn(component, 'getAllApplicants');
   //     spyOn(component, 'getApplicantsName');
   //     spyOn(component, 'viewFirstFile');
@@ -128,7 +128,7 @@ describe('FileUploadComponent', () => {
   // describe('getAllApplicants', () => {
   //   it('makes expected calls', () => {
   //     const dataStorageServiceStub: DataStorageService = fixture.debugElement.injector.get(DataStorageService);
-  //     const sharedServiceStub: SharedService = fixture.debugElement.injector.get(SharedService);
+  //     const sharedServiceStub: BookingService = fixture.debugElement.injector.get(BookingService);
   //     spyOn(dataStorageServiceStub, 'getUsers');
   //     spyOn(sharedServiceStub, 'addApplicants');
   //     component.getAllApplicants();

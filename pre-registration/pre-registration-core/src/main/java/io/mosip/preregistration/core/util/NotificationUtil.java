@@ -1,9 +1,7 @@
 package io.mosip.preregistration.core.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,15 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.code.RequestCodes;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.SMSRequestDTO;
-import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -63,16 +58,15 @@ public class NotificationUtil {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	
 	@Value("${mosip.utc-datetime-pattern}")
 	private String dateTimeFormat;
 	
-	public MainListResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
+	public MainResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException  {
 		
 		log.info("sessionId", "idType", "id", "In notify method of NotificationUtil service");
 		
-		MainListResponseDTO<NotificationResponseDTO> response=new MainListResponseDTO<>();
+		MainResponseDTO<NotificationResponseDTO> response=new MainResponseDTO<>();
 		if(notificationType==RequestCodes.SMS)  {
 			response=smsNotification(acknowledgementDTO, langCode);
 		}
@@ -95,7 +89,7 @@ public class NotificationUtil {
 	 * @return
 	 * @throws IOException 
 	 */
-	public MainListResponseDTO<NotificationResponseDTO> emailNotification(NotificationDTO acknowledgementDTO,
+	public MainResponseDTO<NotificationResponseDTO> emailNotification(NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service");
 		 LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
@@ -105,7 +99,7 @@ public class NotificationUtil {
 
 
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
-		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
+		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		String merseTemplate = null;
 			String fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
 			merseTemplate =templateUtil.templateMerge(fileText, acknowledgementDTO);
@@ -120,12 +114,10 @@ public class NotificationUtil {
 			log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service emailResourseUrl: "+emailResourseUrl);
 			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 			
-			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
 			notifierResponse.setMessage(resp.getBody().getResponse().getMessage());
 			notifierResponse.setStatus(resp.getBody().getResponse().getStatus());
-			list.add(notifierResponse);
-			response.setResponse(list);
+			response.setResponse(notifierResponse);
 			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;
@@ -151,10 +143,10 @@ public class NotificationUtil {
 	 * @return
 	 * @throws IOException 
 	 */
-	public MainListResponseDTO<NotificationResponseDTO> smsNotification(NotificationDTO acknowledgementDTO,
+	public MainResponseDTO<NotificationResponseDTO> smsNotification(NotificationDTO acknowledgementDTO,
 			String langCode) throws IOException {
 		log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service");
-		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
+		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 
 			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
@@ -171,12 +163,10 @@ public class NotificationUtil {
 			log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service smsResourseUrl: "+smsResourseUrl);
 			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 
-			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
 			notifierResponse.setMessage(resp.getBody().getResponse().getMessage());
 			notifierResponse.setStatus(resp.getBody().getResponse().getStatus());
-			list.add(notifierResponse);
-			response.setResponse(list);
+			response.setResponse(notifierResponse);
 			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;

@@ -56,8 +56,8 @@ public class TransliterationExceptionHandler {
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
+		errorRes.setId(e.getMainResponseDTO().getId());
+		errorRes.setVersion(e.getMainResponseDTO().getVersion());
 		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		
 		return new ResponseEntity<>(errorRes,HttpStatus.OK);
@@ -75,8 +75,8 @@ public class TransliterationExceptionHandler {
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
+		errorRes.setId(e.getMainResponseDto().getId());
+		errorRes.setVersion(e.getMainResponseDto().getVersion());
 		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
@@ -95,8 +95,8 @@ public class TransliterationExceptionHandler {
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
+		errorRes.setId(e.getMainResponseDto().getId());
+		errorRes.setVersion(e.getMainResponseDto().getVersion());
 		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -114,8 +114,8 @@ public class TransliterationExceptionHandler {
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
+		errorRes.setId(e.getMainResponseDTO().getId());
+		errorRes.setVersion(e.getMainResponseDTO().getVersion());
 		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -134,8 +134,8 @@ public class TransliterationExceptionHandler {
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
+		errorRes.setId(e.getMainResponseDto().getId());
+		errorRes.setVersion(e.getMainResponseDto().getVersion());
 		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
