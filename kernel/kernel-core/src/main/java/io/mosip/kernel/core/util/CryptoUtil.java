@@ -4,6 +4,7 @@ import static java.util.Arrays.copyOfRange;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Crypto Util for common methods in various module
@@ -92,14 +93,18 @@ public class CryptoUtil {
 		return Base64.decodeBase64(data);
 	}
 
-	
-	public String computeFingerPrint(String publicKey,String salt) {
-		String combinedMetadata=null;
-		if(EmptyCheckUtils.isNullEmpty(salt)) {
-			combinedMetadata=publicKey;
-		}else {
-			combinedMetadata=publicKey+salt;
+	public String computeFingerPrint(String publicKey, String salt) {
+		return computeFingerPrint(publicKey.getBytes(), salt);
+	}
+
+	public String computeFingerPrint(byte[] publicKey, String salt) {
+
+		byte[] combinedPlainTextBytes = null;
+		if (EmptyCheckUtils.isNullEmpty(salt)) {
+			combinedPlainTextBytes = ArrayUtils.addAll(publicKey);
+		} else {
+			combinedPlainTextBytes = ArrayUtils.addAll(publicKey, salt.getBytes());
 		}
-		return Hex.encodeHexString(HMACUtils.generateHash(combinedMetadata.getBytes())).replaceAll("..(?!$)", "$0:");
+		return Hex.encodeHexString(HMACUtils.generateHash(combinedPlainTextBytes)).replaceAll("..(?!$)", "$0:");
 	}
 }
