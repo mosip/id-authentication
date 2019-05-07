@@ -182,7 +182,7 @@ public class DataSyncServiceUtil {
 		return true;
 	}
 
-	public PreRegIdsByRegCenterIdResponseDTO callBookedPreIdsByDateAndRegCenterIdRestService(String fromDate,
+	public PreRegIdsByRegCenterIdResponseDTO getBookedPreIdsByDateAndRegCenterIdRestService(String fromDate,
 			String toDate, String regCenterId) {
 		log.info("sessionId", "idType", "id", "In callGetPreIdsRestService method of datasync service util");
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = null;
@@ -227,7 +227,7 @@ public class DataSyncServiceUtil {
 		return preRegIdsByRegCenterIdResponseDTO;
 	}
 
-	public DocumentsMetaData callGetDocDetailsRestService(String preId) {
+	public DocumentsMetaData getDocDetails(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetDocDetailsRestService method of datasync service util");
 		DocumentsMetaData responsestatusDto = new DocumentsMetaData();
 		try {
@@ -261,7 +261,7 @@ public class DataSyncServiceUtil {
 		return responsestatusDto;
 	}
 
-	public DocumentDTO callGetDocBytesRestService(String docId, String preId) {
+	public DocumentDTO getDocBytesDetails(String docId, String preId) {
 		log.info("sessionId", "idType", "id", "In callGetBytesDocRestService method of datasync service util");
 		DocumentDTO responsestatusDto = new DocumentDTO();
 		try {
@@ -297,7 +297,7 @@ public class DataSyncServiceUtil {
 		return responsestatusDto;
 	}
 
-	public DemographicResponseDTO callGetPreRegInfoRestService(String preId) {
+	public DemographicResponseDTO getPreRegistrationData(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of datasync service util");
 		DemographicResponseDTO responsestatusDto = new DemographicResponseDTO();
 		try {
@@ -344,7 +344,7 @@ public class DataSyncServiceUtil {
 	 * @return BookingRegistrationDTO
 	 * 
 	 */
-	public BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
+	public BookingRegistrationDTO getAppointmentDetails(String preId) {
 		log.info("sessionId", "idType", "id",
 				"In callGetAppointmentDetailsRestService method of datasync service util");
 		BookingRegistrationDTO bookingRegistrationDTO = null;
@@ -477,7 +477,7 @@ public class DataSyncServiceUtil {
 						|| documentMultipartResponseDTO.getDocCatCode().equals(RequestCodes.POB.getCode())) {
 					jsonObject.put(podUrl, prepareDocumentMetaData(documentMultipartResponseDTO));
 				}
-				DocumentDTO documentDTO = callGetDocBytesRestService(documentMultipartResponseDTO.getDocumentId(),
+				DocumentDTO documentDTO = getDocBytesDetails(documentMultipartResponseDTO.getDocumentId(),
 						preId);
 				if (documentDTO != null && documentDTO.getDocument() != null) {
 					inputFile.put(documentMultipartResponseDTO.getDocCatCode().concat("_")
@@ -594,7 +594,7 @@ public class DataSyncServiceUtil {
 		return false;
 	}
 
-	public Map<String, String> callGetUpdatedTimeRestService(PreRegIdsByRegCenterIdDTO preRegIdsDTO) {
+	public Map<String, String> getPreregistrationUpdatedTime(PreRegIdsByRegCenterIdDTO preRegIdsDTO) {
 		log.info("sessionId", "idType", "id",
 				"In callGetPreRegInfoRestService method of datasync service util " + preRegIdsDTO);
 		Map<String, String> response = new HashMap<>();
@@ -630,7 +630,7 @@ public class DataSyncServiceUtil {
 	public PreRegistrationIdsDTO getLastUpdateTimeStamp(PreRegIdsByRegCenterIdDTO preRegIdsDTO) {
 		log.info("sessionId", "idType", "id", "In getLastUpdateTimeStamp method of datasync service util");
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
-		Map<String, String> preRegMap = callGetUpdatedTimeRestService(preRegIdsDTO);
+		Map<String, String> preRegMap = getPreregistrationUpdatedTime(preRegIdsDTO);
 		preRegistrationIdsDTO.setCountOfPreRegIds(String.valueOf(preRegMap.size()));
 		preRegistrationIdsDTO.setPreRegistrationIds(preRegMap);
 		preRegistrationIdsDTO.setTransactionId(UUIDGeneratorUtil.generateId());
@@ -645,7 +645,7 @@ public class DataSyncServiceUtil {
 		List<String> preIdLists = request.getPreRegistrationIds();
 		PreRegIdsByRegCenterIdDTO preRegIdsDTO = new PreRegIdsByRegCenterIdDTO();
 		preRegIdsDTO.setPreRegistrationIds(preIdLists);
-		Map<String, String> preIdsMap = callGetUpdatedTimeRestService(preRegIdsDTO);
+		Map<String, String> preIdsMap = getPreregistrationUpdatedTime(preRegIdsDTO);
 
 		List<String> uniquePreIds = new ArrayList<>(preIdsMap.keySet());
 		if (!uniquePreIds.isEmpty()) {

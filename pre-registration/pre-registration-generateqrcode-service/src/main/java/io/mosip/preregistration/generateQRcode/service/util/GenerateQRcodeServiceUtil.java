@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.service.util;
+package io.mosip.preregistration.generateqrcode.service.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.generateQRcode.service.GenerateQRcodeService;
+import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
 
 
 /**

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.service;
+package io.mosip.preregistration.generateqrcode.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,10 +26,11 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
-import io.mosip.preregistration.generateQRcode.GenerateQRcodeApplicationTests;
-import io.mosip.preregistration.generateQRcode.dto.QRCodeResponseDTO;
-import io.mosip.preregistration.generateQRcode.exception.IllegalParamException;
-import io.mosip.preregistration.generateQRcode.service.util.GenerateQRcodeServiceUtil;
+import io.mosip.preregistration.generateqrcode.GenerateQRcodeApplicationTests;
+import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
+import io.mosip.preregistration.generateqrcode.exception.IllegalParamException;
+import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
+import io.mosip.preregistration.generateqrcode.service.util.GenerateQRcodeServiceUtil;
 
 
 @RunWith(SpringRunner.class)

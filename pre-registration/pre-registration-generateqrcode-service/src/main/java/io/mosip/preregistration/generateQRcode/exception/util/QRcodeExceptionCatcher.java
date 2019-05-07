@@ -1,13 +1,13 @@
-package io.mosip.preregistration.generateQRcode.exception.util;
+package io.mosip.preregistration.generateqrcode.exception.util;
 
 import java.io.IOException;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.generateQRcode.error.ErrorCodes;
-import io.mosip.preregistration.generateQRcode.error.ErrorMessages;
-import io.mosip.preregistration.generateQRcode.exception.IllegalParamException;
+import io.mosip.preregistration.generateqrcode.error.ErrorCodes;
+import io.mosip.preregistration.generateqrcode.error.ErrorMessages;
+import io.mosip.preregistration.generateqrcode.exception.IllegalParamException;
 
 /**
  * @author Sanober Noor
@@ -26,7 +26,7 @@ public class QRcodeExceptionCatcher {
 					ErrorMessages.QRCODE_FAILED_TO_GENERATE.getCode(),ex.getCause(),mainResponseDto);
 		}
 		else if (ex instanceof IOException) {
-			throw new io.mosip.preregistration.generateQRcode.exception.IOException(ErrorCodes.PRG_QRC_001.getCode(),
+			throw new io.mosip.preregistration.generateqrcode.exception.IOException(ErrorCodes.PRG_QRC_001.getCode(),
 						ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),ex.getCause(),mainResponseDto);
 }
 		else if (ex instanceof NullPointerException) {

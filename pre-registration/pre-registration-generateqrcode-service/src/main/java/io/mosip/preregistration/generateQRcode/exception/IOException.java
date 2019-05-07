@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.exception;
+package io.mosip.preregistration.generateqrcode.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;

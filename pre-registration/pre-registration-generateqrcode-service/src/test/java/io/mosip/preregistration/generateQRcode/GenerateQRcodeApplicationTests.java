@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode;
+package io.mosip.preregistration.generateqrcode;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

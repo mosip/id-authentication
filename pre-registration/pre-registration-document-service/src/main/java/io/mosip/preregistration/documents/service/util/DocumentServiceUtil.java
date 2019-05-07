@@ -357,7 +357,7 @@ public class DocumentServiceUtil {
 		}
 	}
 
-	public boolean callGetPreRegInfoRestService(String preId) {
+	public boolean getPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
 			Map<String, Object> params = new HashMap<>();

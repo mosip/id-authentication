@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.dto;
+package io.mosip.preregistration.generateqrcode.dto;
 
 import lombok.Data;
 

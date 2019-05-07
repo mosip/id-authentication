@@ -148,7 +148,7 @@ public class NotificationService {
 					}
 					notificationResponse.setMessage(RequestCodes.MESSAGE.getCode());
 				} else {
-					resp = callGetDemographicDetailsWithPreIdRestService(notificationDto, langCode, file);
+					resp = getDemographicDetailsWithPreId(notificationDto, langCode, file);
 					notificationResponse.setMessage(resp);
 				}
 			}
@@ -164,7 +164,15 @@ public class NotificationService {
 		return response;
 	}
 
-	private String callGetDemographicDetailsWithPreIdRestService(NotificationDTO notificationDto, String langCode,
+	/**
+	 * This method is calling demographic getApplication service to get the user emailId and mobile number
+	 * @param notificationDto
+	 * @param langCode
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private String getDemographicDetailsWithPreId(NotificationDTO notificationDto, String langCode,
 			MultipartFile file) throws IOException {
 		String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
 		ObjectMapper mapper = new ObjectMapper();

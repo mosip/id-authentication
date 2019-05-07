@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.service;
+package io.mosip.preregistration.generateqrcode.service;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -18,9 +18,9 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.generateQRcode.dto.QRCodeResponseDTO;
-import io.mosip.preregistration.generateQRcode.exception.util.QRcodeExceptionCatcher;
-import io.mosip.preregistration.generateQRcode.service.util.GenerateQRcodeServiceUtil;
+import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
+import io.mosip.preregistration.generateqrcode.exception.util.QRcodeExceptionCatcher;
+import io.mosip.preregistration.generateqrcode.service.util.GenerateQRcodeServiceUtil;
 
 /**
  * @author Sanober Noor
@@ -78,8 +78,7 @@ public class GenerateQRcodeService {
 		MainRequestDTO<String> qrcodedto = new MainRequestDTO<>();
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
-		response.setId(qrcodedto.getId());
-		response.setVersion(qrcodedto.getVersion());
+		
 		try {
 			JSONObject qrCodeReqData = new JSONObject(data);
 			String qrCodeData =   qrCodeReqData.get("request").toString();
@@ -91,6 +90,8 @@ public class GenerateQRcodeService {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(qrcodedto),requiredRequestMap)) {
 			qrCode = qrCodeGenerator.generateQrCode(qrCodeData,QrVersion.valueOf(qrversion));
 			}
+			response.setId(qrcodedto.getId());
+			response.setVersion(qrcodedto.getVersion());
 			responsedto.setQrcode(qrCode);
 
 		} catch (Exception ex) {

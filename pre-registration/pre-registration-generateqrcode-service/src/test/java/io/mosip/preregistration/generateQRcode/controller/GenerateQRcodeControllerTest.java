@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.controller;
+package io.mosip.preregistration.generateqrcode.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,10 +22,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
-import io.mosip.preregistration.generateQRcode.GenerateQRcodeApplicationTests;
-import io.mosip.preregistration.generateQRcode.dto.QRCodeResponseDTO;
-import io.mosip.preregistration.generateQRcode.service.GenerateQRcodeService;
-import io.mosip.preregistration.generateQRcode.service.util.GenerateQRcodeServiceUtil;
+import io.mosip.preregistration.generateqrcode.GenerateQRcodeApplicationTests;
+import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
+import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
+import io.mosip.preregistration.generateqrcode.service.util.GenerateQRcodeServiceUtil;
 
 
 @SpringBootTest(classes = { GenerateQRcodeApplicationTests.class })

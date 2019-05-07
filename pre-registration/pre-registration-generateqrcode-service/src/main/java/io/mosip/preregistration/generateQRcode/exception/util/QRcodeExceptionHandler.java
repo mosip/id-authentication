@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.exception.util;
+package io.mosip.preregistration.generateqrcode.exception.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.generateQRcode.exception.IOException;
-import io.mosip.preregistration.generateQRcode.exception.IllegalParamException;
+import io.mosip.preregistration.generateqrcode.exception.IOException;
+import io.mosip.preregistration.generateqrcode.exception.IllegalParamException;
 
 /**
  * Exception Handler for acknowledgement application.
