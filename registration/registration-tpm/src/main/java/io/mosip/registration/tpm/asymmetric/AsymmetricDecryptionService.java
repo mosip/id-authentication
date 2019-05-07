@@ -8,7 +8,7 @@ import tss.Tpm;
 import tss.tpm.TPMS_NULL_ASYM_SCHEME;
 
 /**
- * Interface for decrypting the encrypted data using asymmetric cryto-alogirthm
+ * Class for decrypting the encrypted data using asymmetric cryto-alogirthm
  * in TPM
  * 
  * @author Balaji Sridharan

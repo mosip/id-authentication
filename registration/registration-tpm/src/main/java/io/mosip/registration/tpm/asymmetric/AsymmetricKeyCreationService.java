@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.tpm.config.TPMLogger;
 import io.mosip.registration.tpm.constants.Constants;
@@ -78,6 +79,10 @@ public class AsymmetricKeyCreationService {
 
 			return rsaSrk.handle;
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+					String.format("Exception while getting Asymmetric Key Creation using tpm --> %s",
+							ExceptionUtils.getStackTrace(runtimeException)));
+
 			throw new BaseUncheckedException("TPM-AKC-001", runtimeException.getMessage(), runtimeException);
 		}
 	}

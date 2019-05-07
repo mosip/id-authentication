@@ -20,8 +20,8 @@ public class TPMLogger {
 	static {
 		MOSIP_ROLLING_APPENDER.setAppend(true);
 		MOSIP_ROLLING_APPENDER.setAppenderName("org.apache.log4j.RollingFileAppender");
-		MOSIP_ROLLING_APPENDER.setFileName("logs/registration_utility.log");
-		MOSIP_ROLLING_APPENDER.setFileNamePattern("logs/registration_utility-%d{yyyy-MM-dd-HH}-%i.log");
+		MOSIP_ROLLING_APPENDER.setFileName("log/registration_utility.log");
+		MOSIP_ROLLING_APPENDER.setFileNamePattern("log/registration_utility-%d{yyyy-MM-dd-HH}-%i.log");
 		MOSIP_ROLLING_APPENDER.setMaxFileSize("5MB");
 		MOSIP_ROLLING_APPENDER.setTotalCap("50MB");
 		MOSIP_ROLLING_APPENDER.setMaxHistory(10);

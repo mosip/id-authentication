@@ -1,6 +1,7 @@
 package io.mosip.registration.tpm.sign;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.tpm.config.TPMLogger;
 import io.mosip.registration.tpm.constants.Constants;
@@ -52,6 +53,10 @@ public class SignatureService {
 
 			return ((TPMS_SIGNATURE_RSASSA) signedData).sig;
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error(Constants.TPM_SIGN_DATA, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+					String.format("Exception while getting Signing data using TPM --> %s",
+							ExceptionUtils.getStackTrace(runtimeException)));
+
 			throw new BaseUncheckedException("TPM-SSI-001", runtimeException.getMessage(), runtimeException);
 		}
 

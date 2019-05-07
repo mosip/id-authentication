@@ -36,12 +36,13 @@ public class TPMService {
 	 * 
 	 * @param dataToSign
 	 *            the byte array of the data to be signed
+	 * @return the data signed by the TPM
 	 */
-	public void signData(byte[] dataToSign) {
+	public byte[] signData(byte[] dataToSign) {
 		LOGGER.info(Constants.TPM_SERVICE_SIGN, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
 				"Signing the data by using TPM");
 
-		dataSignService.signData(TPMInitialization.getTPMInstance(), dataToSign);
+		return dataSignService.signData(TPMInitialization.getTPMInstance(), dataToSign);
 	}
 
 	/**
@@ -67,12 +68,13 @@ public class TPMService {
 	 * 
 	 * @param dataToEncrypt
 	 *            the data to be encrypted
+	 * @return the encrypted data in bytes
 	 */
-	public void asymmetricEncrypt(byte[] dataToEncrypt) {
+	public byte[] asymmetricEncrypt(byte[] dataToEncrypt) {
 		LOGGER.info(Constants.TPM_SERVICE_ASYMMETRIC_ENCRYPTION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
 				"Encrypting the data by asymmetric algorithm using TPM");
 
-		asymmetricEncryptionService.encryptUsingTPM(TPMInitialization.getTPMInstance(), dataToEncrypt);
+		return asymmetricEncryptionService.encryptUsingTPM(TPMInitialization.getTPMInstance(), dataToEncrypt);
 	}
 
 	/**
@@ -92,15 +94,13 @@ public class TPMService {
 	/**
 	 * Gets the public part of the signing key
 	 * 
-	 * @param tpm
-	 *            the instance of {@link Tpm}
 	 * @return the public part of the signing key
 	 */
-	public byte[] getSigningPublicPart(Tpm tpm) {
+	public byte[] getSigningPublicPart() {
 		LOGGER.info(Constants.TPM_SERVICE_GET_SIGN_PUBLIC, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
 				"Decrypting the data by asymmetric algorithm using TPM");
 
-		return signKeyCreationService.getKey(tpm).outPublic.toTpm();
+		return signKeyCreationService.getKey(TPMInitialization.getTPMInstance()).outPublic.toTpm();
 	}
 
 }
