@@ -69,14 +69,7 @@ public class KeyManagerTest {
 	@Autowired
 	private Environment environment;
 
-	/**
-	 * Before.
-	 */
-	@Before
-	public void before() {
-		ReflectionTestUtils.setField(keyManager, "environment", environment);
-	}
-
+	
 	/**
 	 * Request data test.
 	 *
