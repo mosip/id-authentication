@@ -1,9 +1,6 @@
 package io.mosip.util;
-<<<<<<< HEAD
 
 import java.util.HashMap;
-=======
->>>>>>> b346e56d322ef3760f33db6597d3017f85965f41
 
 import org.springframework.stereotype.Component;
 

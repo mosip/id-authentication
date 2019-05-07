@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.testng.ITest;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -290,10 +288,10 @@ public class PrintingStage extends BaseTestCase{
 		String value = null;
 		boolean isPhotoSet = false;
 		String documents = null;
-		for (String res : response){
+		/*for (String res : response){
 			documents = res.get("documents").toString();
 			logger.info("documents  : "+documents);
-		}
+		}*/
 		if (response!= null) {
 			try {
 				for (Map.Entry<String, Map<String,String>> entry : response.entrySet()) {
