@@ -472,7 +472,7 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private onModification(response: any, preId: string) {
-    const request = response[appConstants.RESPONSE][0];
+    const request = response[appConstants.RESPONSE];
     this.disableModifyDataButton = true;
     this.regService.addUser(new UserModel(preId, request, this.userFiles));
     this.fetchedDetails = true;
