@@ -131,7 +131,7 @@ public class IdRepoController {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
-	@PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
@@ -160,7 +160,7 @@ public class IdRepoController {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION')")
-	@GetMapping(path = "/identity/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByUin(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
@@ -184,7 +184,7 @@ public class IdRepoController {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
-	@GetMapping(path = "/identity/rid/{rid}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/rid/{rid}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByRid(@PathVariable String rid,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
@@ -212,7 +212,7 @@ public class IdRepoController {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
-	@PatchMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PatchMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
