@@ -270,7 +270,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * To get the Sequence of which Login screen to be displayed
 	 * 
-	 * @param primaryStage primary Stage
+	 * @param primaryStage
+	 *            primary Stage
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
 
@@ -339,7 +340,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate user id.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void validateUserId(ActionEvent event) {
 
@@ -351,133 +353,129 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (userId.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else if (isInitialSetUp) {
+			// For Initial SetUp
+			initialSetUpOrNewUserLaunch();
+
 		} else {
+			try {
 
-			if (isInitialSetUp) {
-				initialSetUpOrNewUserLaunch();
+				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-			} else {
-				try {
+				Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 
-					UserDetail userDetail = loginService.getUserDetail(userId.getText());
+				String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
 
-					Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
+				if (userDetail != null
+						&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
 
-					String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
+					isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
+							.getErrorResponseDTOs() != null;
 
-					if (userDetail != null
-							&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
+					ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
-						isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
-								.getErrorResponseDTOs() != null;
-						
+					if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+					} else {
 
-							ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
+						// Set Dongle Serial Number in ApplicationContext Map
+						for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
+							ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
+									userMachineMapping.getMachineMaster().getSerialNum());
+						}
 
-							if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-								generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+						Set<String> roleList = new LinkedHashSet<>();
+
+						userDetail.getUserRole().forEach(roleCode -> {
+							if (roleCode.getIsActive()) {
+								roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
+							}
+						});
+
+						LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+								"Validating roles");
+						// Checking roles
+						if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
+								|| roleList.contains(RegistrationConstants.SUPERVISOR)
+								|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+						} else {
+
+							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
+
+							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
+									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+
+							boolean status = getCenterMachineStatus(userDetail);
+							sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
+							sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+							if (isUserNewToMachine) {
+								initialSetUpOrNewUserLaunch();
 							} else {
+								loginList = status
+										? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
+										: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
 
-								// Set Dongle Serial Number in ApplicationContext Map
-								for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
-									ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
-											userMachineMapping.getMachineMaster().getSerialNum());
-								}
-
-								Set<String> roleList = new LinkedHashSet<>();
-
-								userDetail.getUserRole().forEach(roleCode -> {
-									if (roleCode.getIsActive()) {
-										roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
-									}
-								});
+								String fingerprintDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+								String irisDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.IRIS_DISABLE_FLAG);
+								String faceDisableFlag = getValueFromApplicationContext(
+										RegistrationConstants.FACE_DISABLE_FLAG);
 
 								LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-										"Validating roles");
-								// Checking roles
-								if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
-										|| roleList.contains(RegistrationConstants.SUPERVISOR)
-										|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
-									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.ROLES_EMPTY_ERROR);
+										"Ignoring FingerPrint login if the configuration is off");
+
+								removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+								removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+								removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
+
+								String loginMode = !loginList.isEmpty()
+										? loginList.get(RegistrationConstants.PARAM_ZERO)
+										: null;
+
+								LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+										"Retrieved corresponding Login mode");
+
+								if (loginMode == null) {
+									userIdPane.setVisible(false);
+									errorPane.setVisible(true);
 								} else {
 
-									Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
+									if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+											&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
+											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+													&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+											|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+													&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
 
-									ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
-											centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+										generateAlert(RegistrationConstants.ERROR,
+												RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
+														.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
 
-									boolean status = getCenterMachineStatus(userDetail);
-									sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
-									sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-									if (isUserNewToMachine) {
-										initialSetUpOrNewUserLaunch();
-									} 
-									else {
-										loginList = status
-												? loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList)
-												: loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleList);
-
-										String fingerprintDisableFlag = getValueFromApplicationContext(
-												RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-										String irisDisableFlag = getValueFromApplicationContext(
-												RegistrationConstants.IRIS_DISABLE_FLAG);
-										String faceDisableFlag = getValueFromApplicationContext(
-												RegistrationConstants.FACE_DISABLE_FLAG);
-
-										LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-												"Ignoring FingerPrint login if the configuration is off");
-
-										removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
-										removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
-										removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
-
-										String loginMode = !loginList.isEmpty()
-												? loginList.get(RegistrationConstants.PARAM_ZERO)
-												: null;
-
-										LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-												"Retrieved corresponding Login mode");
-
-										if (loginMode == null) {
-											userIdPane.setVisible(false);
-											errorPane.setVisible(true);
-										} else {
-
-											if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-													&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
-													|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-															&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
-													|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
-															&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
-
-												generateAlert(RegistrationConstants.ERROR,
-														RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(
-																RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
-
-											} else {
-												userIdPane.setVisible(false);
-												loadLoginScreen(loginMode);
-											}
-										}
+									} else {
+										userIdPane.setVisible(false);
+										loadLoginScreen(loginMode);
 									}
 								}
 							}
-						
-					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
+						}
 					}
-				} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
-					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-							regBaseUncheckedException.getMessage()
-									+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
-
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 				}
+			} catch (RegBaseUncheckedException regBaseUncheckedException) {
+
+				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						regBaseUncheckedException.getMessage()
+								+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
 		}
 	}
+
 	private void initialSetUpOrNewUserLaunch() {
 		userIdPane.setVisible(false);
 		loadLoginScreen(LoginMode.PASSWORD.toString());
@@ -487,7 +485,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * Validating User credentials on Submit
 	 * 
-	 * @param event event for validating credentials
+	 * @param event
+	 *            event for validating credentials
 	 */
 	public void validateCredentials(ActionEvent event) {
 
@@ -579,7 +578,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Generate OTP based on EO username
 	 * 
-	 * @param event event for generating OTP
+	 * @param event
+	 *            event for generating OTP
 	 */
 	@FXML
 	public void generateOtp(ActionEvent event) {
@@ -613,7 +613,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and otp
 	 * 
-	 * @param event event for validating OTP
+	 * @param event
+	 *            event for validating OTP
 	 */
 	@FXML
 	public void validateOTP(ActionEvent event) {
@@ -653,7 +654,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and fingerprint
 	 * 
-	 * @param event event for capturing fingerprint
+	 * @param event
+	 *            event for capturing fingerprint
 	 */
 	public void captureFingerPrint(ActionEvent event) {
 
@@ -687,7 +689,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and Iris
 	 * 
-	 * @param event event for capturing Iris
+	 * @param event
+	 *            event for capturing Iris
 	 */
 	public void captureIris(ActionEvent event) {
 
@@ -721,7 +724,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate User through username and face
 	 * 
-	 * @param event event to capture face
+	 * @param event
+	 *            event to capture face
 	 */
 	public void captureFace(ActionEvent event) {
 
@@ -766,7 +770,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Load login screen depending on Loginmode
 	 * 
-	 * @param loginMode login screen to be loaded
+	 * @param loginMode
+	 *            login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
 
@@ -798,7 +803,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User role and Machine mapping during login
 	 * 
-	 * @param userId entered userId
+	 * @param userId
+	 *            entered userId
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setInitialLoginInfo(String userId) {
@@ -827,7 +833,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Fetching and Validating machine and center id
 	 * 
-	 * @param userDetail the userDetail
+	 * @param userDetail
+	 *            the userDetail
 	 * @return boolean
 	 * @throws RegBaseCheckedException
 	 */
@@ -852,9 +859,12 @@ public class LoginController extends BaseController implements Initializable {
 	 * Setting values for Session context and User context and Initial info for
 	 * Login
 	 * 
-	 * @param userId     entered userId
-	 * @param userDetail userdetails
-	 * @param roleList   list of user roles
+	 * @param userId
+	 *            entered userId
+	 * @param userDetail
+	 *            userdetails
+	 * @param roleList
+	 *            list of user roles
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setSessionContext(String authInfo, UserDetail userDetail, List<String> roleList) {
@@ -896,8 +906,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
-	 * @param userDetail the userDetail
-	 * @param loginMode  the loginMode
+	 * @param userDetail
+	 *            the userDetail
+	 * @param loginMode
+	 *            the loginMode
 	 */
 	private void loadNextScreen(UserDetail userDetail, String loginMode) {
 
@@ -1053,8 +1065,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating invalid number of login attempts
 	 * 
-	 * @param userDetail user details
-	 * @param userId     entered userId
+	 * @param userDetail
+	 *            user details
+	 * @param userId
+	 *            entered userId
 	 * @return boolean
 	 */
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
@@ -1137,10 +1151,14 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating login time and count
 	 * 
-	 * @param loginCount        number of invalid attempts
-	 * @param invalidLoginCount count from global param
-	 * @param loginTime         login time from table
-	 * @param invalidLoginTime  login time from global param
+	 * @param loginCount
+	 *            number of invalid attempts
+	 * @param invalidLoginCount
+	 *            count from global param
+	 * @param loginTime
+	 *            login time from table
+	 * @param invalidLoginTime
+	 *            login time from global param
 	 * @return boolean
 	 */
 	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
@@ -1254,8 +1272,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * This method will remove the loginmethod from list
 	 * 
-	 * @param disableFlag configuration flag
-	 * @param loginMethod login method
+	 * @param disableFlag
+	 *            configuration flag
+	 * @param loginMethod
+	 *            login method
 	 */
 	private void removeLoginParam(String disableFlag, String loginMethod) {
 
