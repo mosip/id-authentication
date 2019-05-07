@@ -28,6 +28,10 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
@@ -53,12 +57,13 @@ public class Sync extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(Sync.class);
 	boolean status = false;
-	String finalStatus = "";
+	String finalStatus = "Fail";
 	static Properties prop =  new Properties();
 	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
 	Response actualResponse = null;
 	JSONObject expectedResponse = null;
+	JSONObject actualRequest=null;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	String regIds="";
 	SoftAssert softAssert=new SoftAssert();
@@ -115,7 +120,7 @@ public class Sync extends BaseTestCase implements ITest {
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		description=common.getDescription(testSuite,object);
 		try{
-			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
@@ -213,8 +218,10 @@ public class Sync extends BaseTestCase implements ITest {
 	              setFinalStatus=true;
 	        Verify.verify(setFinalStatus);
 	        softAssert.assertAll();
+	       
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
+			 Verify.verify(false);
 		}
 	}  
 
@@ -227,7 +234,7 @@ public class Sync extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName =apiName+ object.get("testCaseName").toString() +": "+ description;
+		testCaseName =apiName+ object.get("testCaseName").toString();
 	}
 
 	/**
@@ -237,7 +244,7 @@ public class Sync extends BaseTestCase implements ITest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-
+		testCaseName =testCaseName +": "+ description;
 		Field method;
 		try {
 			method = TestResult.class.getDeclaredField("m_method");
@@ -250,7 +257,26 @@ public class Sync extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
-		test=extent.createTest(testCaseName);
+			test=extent.createTest(testCaseName);
+			if(result.getStatus()==ITestResult.SUCCESS) {
+				/*Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
+				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
+				test.log(Status.PASS, m);
+				test.log(Status.PASS, m1);*/
+			}
+			
+			if(result.getStatus()==ITestResult.FAILURE) {
+				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
+				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
+				test.log(Status.FAIL, m);
+				test.log(Status.FAIL, m1);
+			}
+			if(result.getStatus()==ITestResult.SKIP) {
+				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
+				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
+				test.log(Status.SKIP, m);
+				test.log(Status.SKIP, m1);
+			}
 	}
 
 	/**

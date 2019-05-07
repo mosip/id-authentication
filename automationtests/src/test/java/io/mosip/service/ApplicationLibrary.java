@@ -34,7 +34,6 @@ public class ApplicationLibrary extends BaseTestCase {
 
 
 
-
 	public Response getRequestDataSync(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.getRequestQueryParamDataSync(ApplnURI + Resource_URI, valueMap);
 	}

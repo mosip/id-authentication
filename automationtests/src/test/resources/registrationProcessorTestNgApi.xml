@@ -6,7 +6,7 @@
 		regression smokeAndRegression -->
 	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners> 
+	</listeners>  
 
 <!-- 
   Passing Group as parmeter unsing "testType"
@@ -31,8 +31,5 @@
 			
 		</classes>
 	</test>  
-
-	
-	
 	
 </suite>

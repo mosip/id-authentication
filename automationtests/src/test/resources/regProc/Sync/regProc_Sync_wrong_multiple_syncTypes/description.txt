@@ -1,0 +1,1 @@
+Sync request with wrong multiple sync types in the request body.

@@ -1,0 +1,1 @@
+Sync request with an invalid registration id having less than 29 characters

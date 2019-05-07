@@ -1,0 +1,1 @@
+Sync request with  multiple wrong registration ids in the request body.

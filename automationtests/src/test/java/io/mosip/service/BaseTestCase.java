@@ -26,6 +26,7 @@ import org.testng.annotations.BeforeSuite;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -176,8 +177,9 @@ public class BaseTestCase {
 				test.fail(result.getThrowable());
 			}
 			else if(result.getStatus()==ITestResult.SUCCESS) {
-				test.pass(MarkupHelper.createLabel(result.getName()+"Test Case Passed", ExtentColor.GREEN));
+				test.pass(MarkupHelper.createLabel(result.getName().substring(result.getName().lastIndexOf(":")+1)+"  Test Case Passed", ExtentColor.GREEN));
 				//test.pass(result.getThrowable());
+				
 			}
 			else {
 				test.skip(MarkupHelper.createLabel(result.getName()+"Test Case Skipped", ExtentColor.YELLOW));

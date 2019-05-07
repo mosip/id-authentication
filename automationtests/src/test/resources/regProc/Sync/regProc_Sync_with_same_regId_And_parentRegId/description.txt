@@ -1,0 +1,1 @@
+Sync request with same registartion ids and parent registration ids in the request body.

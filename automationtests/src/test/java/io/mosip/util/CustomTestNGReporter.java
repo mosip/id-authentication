@@ -440,7 +440,7 @@ public class CustomTestNGReporter implements IReporter {
 					testMethodName = testMethod.toString();
 					String testCaseName=testMethodName.substring(testMethodName.indexOf(":")+1, testMethodName.lastIndexOf(":"));
 					//apiName=testMethodName.substring(0, testMethodName.indexOf(":"));
-					//description=testMethodName.substring(testMethodName.lastIndexOf(":")+1);
+					//String description=testMethodName.substring(testMethodName.lastIndexOf(":")+1);
 					// Get startDateStr
 					startDateStr = this.getTimeInStringFormat(new Date(object.getStartTimeMillis()));
 
@@ -466,10 +466,10 @@ public class CustomTestNGReporter implements IReporter {
 					retStrBuf.append(testCaseName);
 					retStrBuf.append("</td>");
 					/*
-					Add Description
+					Add Description*/
 					retStrBuf.append("<td>");
 					retStrBuf.append(testMethodName.substring(testMethodName.lastIndexOf(":")+1));
-					retStrBuf.append("</td>");*/
+					retStrBuf.append("</td>");
 
 					/* Add start time. */
 					retStrBuf.append("<td>");
@@ -573,7 +573,7 @@ public class CustomTestNGReporter implements IReporter {
 	@SuppressWarnings("deprecation")
 	private String encodeDefaultTestngReportFile() throws IOException {
 		String content = FileUtils
-				.readFileToString(new File("./target/surefire-reports/emailable-report.html").getAbsoluteFile());
+				.readFileToString(new File(System.getProperty("user.dir")+"/target/surefire-reports/emailable-report.html").getAbsoluteFile());
 		String base64encodedString = Base64.getEncoder().encodeToString(content.getBytes("utf-8"));
 		return base64encodedString;
 	}
