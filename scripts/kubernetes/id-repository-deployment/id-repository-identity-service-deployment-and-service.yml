@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: authentication-internal-service
+  name: id-repository-identity-service
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: authentication-internal-service
+        app: id-repository-identity-service
     spec:
       initContainers:
       - name: wait-for-config-server
@@ -29,8 +29,8 @@ spec:
          - name: spring_config_url_env
            value: http://kernel-config-server:51000/config
       containers:
-      - name: authentication-internal-service
-        image: docker-registry.mosip.io:5000/authentication-internal-service
+      - name: id-repository-identity-service
+        image: docker-registry.mosip.io:5000/id-repository-identity-service
         env:
         - name: active_profile_env
           value: dev
@@ -39,7 +39,7 @@ spec:
         - name: spring_config_url_env
           value: http://kernel-config-server:51000/config
         ports:
-        - containerPort: 8093
+        - containerPort: 8090
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
@@ -47,9 +47,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authentication-internal-service
+  name: id-repository-identity-service
 spec:
   ports:
-    - port: 8093
+    - port: 8090
   selector:
-    app: authentication-internal-service
+    app: id-repository-identity-service
