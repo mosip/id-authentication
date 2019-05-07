@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
@@ -33,16 +32,18 @@ public class BioDedupDao {
 
 	}
 
-	public List<AbisResponseDetEntity> getAbisResponseDetailRecords(String latestTransactionId) {
+	public List<AbisResponseDetEntity> getAbisResponseDetailRecords(String latestTransactionId, String requestType) {
 		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
 		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
 
-		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository.getAbisRequestIDs(latestTransactionId);
+		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
+				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
 		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
 			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity));
 		}
 		for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
-			abisResponseDetEntities.addAll(abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
+			abisResponseDetEntities.addAll(
+					abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
 		}
 		return abisResponseDetEntities;
 	}

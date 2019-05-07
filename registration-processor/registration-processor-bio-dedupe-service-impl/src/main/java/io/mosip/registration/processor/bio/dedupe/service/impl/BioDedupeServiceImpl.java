@@ -52,6 +52,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  *
  */
 @Service
+@Deprecated
 public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The reg proc logger. */
@@ -93,9 +94,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-	
+
 	private static final String ABIS_INSERT = "mosip.abis.insert";
-	
+
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	/*

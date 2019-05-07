@@ -108,6 +108,8 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 
+		statusMap.put(RegistrationExceptionTypeCode.ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+				RegistrationTransactionStatusCode.FAILED);
 		return unmodifiableMap;
 
 	}

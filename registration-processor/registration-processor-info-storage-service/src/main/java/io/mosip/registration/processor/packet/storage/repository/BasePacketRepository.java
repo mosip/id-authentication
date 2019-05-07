@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.storage.repository;
 
 import java.util.List;
 
-import io.mosip.registration.processor.packet.storage.entity.*;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
-import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
@@ -40,9 +38,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT qcUser FROM QcuserRegistrationIdEntity qcUser WHERE qcUser.id.usrId=:qcuserId")
 	public List<E> findByUserId(@Param("qcuserId") String qcuserId);
 
-	
-
-
 	/**
 	 * Find demo by id.
 	 *
@@ -52,9 +47,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
 	public List<E> findDemoById(@Param("regId") String regId);
-
-	
-
 
 	/**
 	 * This method gets the first created registration record
@@ -66,7 +58,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
 			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode AND mve2.trnTypCode=:trntyp_code) and mve.statusCode=:statusCode")
-	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode, @Param("trntyp_code") String matchType);
+	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode,
+			@Param("trntyp_code") String matchType);
 
 	/**
 	 * This method gets the first created registration record for source name as ALL
@@ -79,7 +72,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
 			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
 	public List<E> getFirstApplicantDetailsForAll(@Param("statusCode") String statusCode);
-	
+
 	/**
 	 * This method returns {@link ManualVerificationEntity} corresponding to
 	 * specified registration Id and manual verifier user Id.
@@ -137,17 +130,17 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 
 	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin") String uin);
-	
+
 	/**
 	 * Gets the UIN by rid.
 	 *
-	 * @param rid the rid
+	 * @param rid
+	 *            the rid
 	 * @return the UIN by rid
 	 */
 	@Query("SELECT demo.uin FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId =:rid")
 	public List<String> getUINByRid(@Param("rid") String rid);
 
-	
 	/**
 	 * Gets the reference id by rid.
 	 *
@@ -167,21 +160,26 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
 	public List<String> getRidByReferenceId(@Param("refId") String refId);
-	
+
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType")
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,@Param("requestType") String requestType);
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
+			@Param("requestType") String requestType);
 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getAbisRequestIDs(@Param("refRegtrnId") String transactionId);
+
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType=:requestType")
+	public List<AbisRequestEntity> getAbisRequestIDsbasedOnIdentity(@Param("refRegtrnId") String transactionId,
+			@Param("requestType") String requestType);
 
 	@Query("SELECT abisresp FROM AbisResponseEntity abisresp WHERE abisresp.abisRequest =:abisRequest")
 	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") AbisRequestEntity abisRequest);
 
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
-	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String  responseId);
+	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
 
 	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
-	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String  bioRefId);
+	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String bioRefId);
 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =: Identify")
 	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId);
