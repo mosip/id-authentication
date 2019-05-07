@@ -127,7 +127,7 @@ public class DataSyncService {
 					dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
 				}
 				PreRegIdsByRegCenterIdResponseDTO preRegIdsDTO = serviceUtil
-						.callBookedPreIdsByDateAndRegCenterIdRestService(dataSyncRequestDTO.getFromDate(),
+						.getBookedPreIdsByDateAndRegCenterIdRestService(dataSyncRequestDTO.getFromDate(),
 								dataSyncRequestDTO.getToDate(), dataSyncRequestDTO.getRegistrationCenterId());
 				PreRegIdsByRegCenterIdDTO byRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 				byRegCenterIdDTO.setPreRegistrationIds(preRegIdsDTO.getPreRegistrationIds());
@@ -168,10 +168,10 @@ public class DataSyncService {
 		responseDto.setId(fetchId);
 		responseDto.setVersion(version);
 		try {
-			DemographicResponseDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId.trim());
-			DocumentsMetaData documentsMetaData = serviceUtil.callGetDocDetailsRestService(preId.trim());
+			DemographicResponseDTO preRegistrationDTO = serviceUtil.getPreRegistrationData(preId.trim());
+			DocumentsMetaData documentsMetaData = serviceUtil.getDocDetails(preId.trim());
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil
-					.callGetAppointmentDetailsRestService(preId.trim());
+					.getAppointmentDetails(preId.trim());
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO,
 					documentsMetaData);
 			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());

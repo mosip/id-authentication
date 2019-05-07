@@ -120,7 +120,7 @@ export class DataStorageService {
     console.log('formData', formdata);
 
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + preRegId,
       formdata
     );
     // console.log('servvice called', formdata);

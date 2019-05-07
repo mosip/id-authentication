@@ -79,7 +79,7 @@ public class NotificationConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket notificationApiBean() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
