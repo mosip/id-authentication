@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -33,7 +35,7 @@ public class CoreConfigBean {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CoreConfigBean.class);
 	
 	@Bean
-	public String getPropertiesFromConfigServer(Environment environment) {
+	public PropertySourcesPlaceholderConfigurer getPropertiesFromConfigServer(Environment environment) {
 		try {
 			Vertx vertx = Vertx.vertx();
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
@@ -47,6 +49,7 @@ public class CoreConfigBean {
 			configStores.forEach(configRetrieverOptions::addStore);
 			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
 			regProcLogger.info(this.getClass().getName(), "","","Getting values from config Server");
+			CompletableFuture<JsonObject> configLoader = new CompletableFuture<JsonObject>();
 			retriever.getConfig(json -> {
 				if (json.succeeded()) {
 					JsonObject jsonObject = json.result();
@@ -54,6 +57,7 @@ public class CoreConfigBean {
 						jsonObject.iterator().forEachRemaining(sourceValue -> System.setProperty(sourceValue.getKey(),
 								sourceValue.getValue().toString()));
 					}
+					configLoader.complete(json.result());
 					json.mapEmpty();
 					retriever.close();
 					vertx.close();
@@ -64,10 +68,11 @@ public class CoreConfigBean {
 					vertx.close();
 				}
 			});
+			configLoader.get();
 		} catch (Exception exception) {
 			regProcLogger.error(this.getClass().getName(), "", "", exception.getMessage());
 		}
-		return "";
+		return new PropertySourcesPlaceholderConfigurer();
 	}
 
 	private static List<String> getAppNames(Environment env) {
