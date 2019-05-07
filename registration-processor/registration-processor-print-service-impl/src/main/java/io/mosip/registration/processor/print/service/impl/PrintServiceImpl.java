@@ -137,6 +137,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The template generator. */
 	@Autowired
 	private TemplateGenerator templateGenerator;
+	
+	@Autowired
+	private Utilities utilities;
 
 	/** The uin card generator. */
 	@Autowired
@@ -183,7 +186,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			if (idType.toString().equalsIgnoreCase(UIN)) {
 				uin = idValue;
 			} else if (idType.toString().equalsIgnoreCase(RID)) {
-				uin = packetInfoManager.getUINByRid(idValue).get(0);
+				uin =utilities.retrieveUIN(idValue);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), null,

@@ -225,7 +225,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
 
-			String uin = utilities.getUIn(regId).toString();
+			String uin = utilities.retrieveUIN(regId);
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
