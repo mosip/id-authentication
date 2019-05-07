@@ -174,7 +174,7 @@ public class DateValidation extends BaseController {
 			date.setText(RegistrationConstants.ONE);
 		} else {
 			int dateValue = Integer.parseInt(date.getText());
-			int age = Period.between(LocalDate.now(), LocalDate.of(year, monthVal, dateValue)).getYears();
+			int age = Period.between(LocalDate.of(year, monthVal, dateValue), LocalDate.now()).getYears();
 			if (age > 0) {
 				ageField.setText(RegistrationConstants.EMPTY + age);
 				ageLocalField.setText(RegistrationConstants.EMPTY + age);
