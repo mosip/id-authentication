@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.packet.storage.entity.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +41,6 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
-import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
-import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
-import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
@@ -85,6 +83,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
 
+	@Autowired
+	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisRequestEntity, String> regAbisRequestRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisApplicationEntity, String> regAbisApplicationRepository;
 
 	/** The demographic dedupe repository. */
 	@Autowired
@@ -560,5 +566,51 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
 
-}
+	@Override
+	public Boolean getIdentifyByTransactionId(String transactionId){
+		List<AbisRequestEntity> abisRequestList = packetInfoDao.getIdentifyByTransactionId(transactionId);
+		return abisRequestList.isEmpty() ? Boolean.FALSE : Boolean.TRUE;
+	}
 
+	@Override
+	public List<RegBioRefDto> getBioRefIdByRegId(String regId){
+		List<RegBioRefEntity> regBioRefEntityList = packetInfoDao.getBioRefIdByRegId(regId);
+		return PacketInfoMapper.convertRegBioRefEntityListToDto(regBioRefEntityList);
+	}
+
+	@Override
+	public List<AbisApplicationDto> getAllAbisDetails(){
+		List<AbisApplicationEntity> abisApplicationEntityList = regAbisApplicationRepository.findAll();
+		return PacketInfoMapper.convertAbisApplicationEntityListToDto(abisApplicationEntityList);
+	}
+
+	@Override
+	public void saveBioRef(RegBioRefDto regBioRefDto) {
+		try {
+			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
+			regBioRefRepository.save(regBioRefEntity);
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving ABIS data" + "::" + e.getMessage();
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		}
+	}
+
+	@Override
+	public void saveAbisRequest(AbisRequestDto abisRequestDto){
+		try{
+			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
+			regAbisRequestRepository.save(abisRequestEntity);
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving ABIS data" + "::" + e.getMessage();
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		}
+	}
+
+
+}

@@ -6,7 +6,9 @@ import java.util.List;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 
 /**
@@ -113,5 +115,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String abisRefId,String requestType);
 
+	public Boolean getIdentifyByTransactionId(String transactionId);
+
+	public List<RegBioRefDto> getBioRefIdByRegId(String regId);
+
+	public List<AbisApplicationDto> getAllAbisDetails();
+
+	public void saveBioRef(RegBioRefDto regBioRefDto);
+
+	public void saveAbisRequest(AbisRequestDto abisRequestDto);
 
 }

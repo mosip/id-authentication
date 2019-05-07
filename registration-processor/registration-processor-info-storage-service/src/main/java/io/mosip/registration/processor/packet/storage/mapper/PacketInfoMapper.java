@@ -14,14 +14,12 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
-import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
-import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
-import io.mosip.registration.processor.packet.storage.entity.RegAbisRefPkEntity;
+import io.mosip.registration.processor.packet.storage.entity.*;
 import io.mosip.registration.processor.packet.storage.exception.DateParseException;
 
 /**
@@ -47,7 +45,7 @@ public class PacketInfoMapper {
 	private PacketInfoMapper() {
 		super();
 	}
-	
+
 	/**
 	 * Convert reg abis ref to entity.
 	 *
@@ -72,8 +70,6 @@ public class PacketInfoMapper {
 				regAbisRefDto.getReg_id(), "PacketInfoMapper::convertRegAbisRefToEntity()::exit");
 		return regAbisRefEntity;
 	}
-
-	
 
 	/**
 	 * Gets the json values.
@@ -127,8 +123,8 @@ public class PacketInfoMapper {
 	 */
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
 			IndividualDemographicDedupe demoDto, String regId) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "PacketInfoMapper::converDemographicDedupeDtoToEntity()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"PacketInfoMapper::converDemographicDedupeDtoToEntity()::entry");
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
@@ -149,7 +145,7 @@ public class PacketInfoMapper {
 			String applicantName = null;
 			if (demoDto.getName() != null) {
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-			entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
+				entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
 			}
 
 			if (demoDto.getDateOfBirth() != null) {
@@ -158,8 +154,9 @@ public class PacketInfoMapper {
 
 					entity.setDob(getHMACHashCode(demoDto.getDateOfBirth()));
 				} catch (ParseException e) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-							regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId,
+							e.getMessage() + ExceptionUtils.getStackTrace(e));
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
@@ -168,25 +165,25 @@ public class PacketInfoMapper {
 
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "PacketInfoMapper::converDemographicDedupeDtoToEntity()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"PacketInfoMapper::converDemographicDedupeDtoToEntity()::exit");
 		return demogrphicDedupeEntities;
 	}
-	
 
 	public static String getHMACHashCode(String value) {
-		return  CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
-		
+		return CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
+
 	}
-	
-	public static List<AbisRequestDto> convertAbisRequestEntityListToDto(List<AbisRequestEntity> abisRequestEntityList) {
+
+	public static List<AbisRequestDto> convertAbisRequestEntityListToDto(
+			List<AbisRequestEntity> abisRequestEntityList) {
 		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
-		for(AbisRequestEntity entity : abisRequestEntityList) {
+		for (AbisRequestEntity entity : abisRequestEntityList) {
 			abisRequestDtoList.add(convertAbisRequestEntityToDto(entity));
 		}
 		return abisRequestDtoList;
 	}
-	
+
 	public static AbisRequestDto convertAbisRequestEntityToDto(AbisRequestEntity entity) {
 		AbisRequestDto abisReqDto = new AbisRequestDto();
 		abisReqDto.setId(entity.getId().getId());
@@ -209,5 +206,92 @@ public class PacketInfoMapper {
 
 		return abisReqDto;
 
+	}
+
+	public static List<RegBioRefDto> convertRegBioRefEntityListToDto(List<RegBioRefEntity> regBioRefEntityList) {
+		List<RegBioRefDto> regBioRefDtoList = new ArrayList<>();
+		for (RegBioRefEntity entity : regBioRefEntityList) {
+			regBioRefDtoList.add(convertBioRefEntityToDto(entity));
+		}
+		return regBioRefDtoList;
+	}
+
+	public static RegBioRefDto convertBioRefEntityToDto(RegBioRefEntity regBioRefEntity) {
+		RegBioRefDto bioRefDto = new RegBioRefDto();
+		bioRefDto.setBioRefId(regBioRefEntity.getBioRefId());
+		bioRefDto.setCrBy(regBioRefEntity.getCrBy());
+		bioRefDto.setCrDtimes(regBioRefEntity.getCrDtimes());
+		bioRefDto.setDelDtimes(regBioRefEntity.getDelDtimes());
+		bioRefDto.setIsActive(regBioRefEntity.getIsActive());
+		bioRefDto.setIsDeleted(regBioRefEntity.getIsDeleted());
+		bioRefDto.setRegId(regBioRefEntity.getId().getRegId());
+		bioRefDto.setUpdBy(regBioRefEntity.getUpdBy());
+		bioRefDto.setUpdDtimes(regBioRefEntity.getUpdDtimes());
+		return bioRefDto;
+	}
+
+	public static RegBioRefEntity convertBioRefDtoToEntity(RegBioRefDto regBioRefDto){
+		RegBioRefEntity entity = new RegBioRefEntity();
+		entity.setBioRefId(regBioRefDto.getBioRefId());
+		entity.setCrBy(regBioRefDto.getCrBy());
+		entity.setCrDtimes(regBioRefDto.getCrDtimes());
+		entity.setIsActive(regBioRefDto.getIsActive());
+		entity.setUpdBy(regBioRefDto.getUpdBy());
+		RegBioRefPKEntity refPKEntity = new RegBioRefPKEntity();
+		refPKEntity.setRegId(regBioRefDto.getRegId());
+		entity.setId(refPKEntity);
+		
+		return entity;
+	}
+
+	public static List<AbisApplicationDto> convertAbisApplicationEntityListToDto(List<AbisApplicationEntity> abisApplicationEntityList) {
+		List<AbisApplicationDto> abisApplicationDtos = new ArrayList<>();
+		for(AbisApplicationEntity entity : abisApplicationEntityList){
+			abisApplicationDtos.add(convertAbisApplicationEntityToDto(entity));
+		}
+		return abisApplicationDtos;
+	}
+
+	private static AbisApplicationDto convertAbisApplicationEntityToDto(AbisApplicationEntity entity) {
+		AbisApplicationDto applicationDto = new AbisApplicationDto();
+		applicationDto.setCode(entity.getId().getCode());
+		applicationDto.setCrBy(entity.getCrBy());
+		applicationDto.setCrDtimes(entity.getCrDtimes());
+		applicationDto.setDelDtimes(entity.getDelDtimes());
+		applicationDto.setDescr(entity.getDescr());
+		applicationDto.setIsDeleted(entity.getIsDeleted());
+		applicationDto.setLangCode(entity.getId().getLangCode());
+		applicationDto.setName(entity.getName());
+		applicationDto.setStatusCode(entity.getStatusCode());
+		applicationDto.setStatusUpdateDtimes(entity.getStatusUpdateDtimes());
+		applicationDto.setUpdBy(entity.getUpdBy());
+		applicationDto.setUpdDtimes(entity.getUpdDtimes());
+		
+		return applicationDto;
+	}
+
+	public static AbisRequestEntity convertAbisRequestDtoToEntity(AbisRequestDto abisRequestDto) {
+		AbisRequestEntity entity = new AbisRequestEntity();
+		entity.setAbisAppCode(abisRequestDto.getAbisAppCode());
+		entity.setBioRefId(abisRequestDto.getBioRefId());
+		entity.setCrBy(abisRequestDto.getCrBy());
+		entity.setCrDtimes(abisRequestDto.getCrDtimes());
+		entity.setDelDtimes(abisRequestDto.getDelDtimes());
+		AbisRequestPKEntity abisRequestPKEntity = new AbisRequestPKEntity();
+		abisRequestPKEntity.setId(abisRequestDto.getId());
+		entity.setId(abisRequestPKEntity);
+		entity.setIsDeleted(abisRequestDto.getIsDeleted());
+		entity.setLangCode(abisRequestDto.getLangCode());
+		entity.setRefRegtrnId(abisRequestDto.getRefRegtrnId());
+		entity.setReqBatchId(abisRequestDto.getReqBatchId());
+		entity.setReqText(abisRequestDto.getReqText());
+		entity.setRequestDtimes(abisRequestDto.getRequestDtimes());
+		entity.setRequestType(abisRequestDto.getRequestType());
+		entity.setStatusCode(abisRequestDto.getStatusCode());
+		entity.setStatusComment(abisRequestDto.getStatusComment());
+		entity.setUpdBy(abisRequestDto.getUpdBy());
+		entity.setUpdDtimes(abisRequestDto.getUpdDtimes());
+		
+		return entity;
 	}
 }

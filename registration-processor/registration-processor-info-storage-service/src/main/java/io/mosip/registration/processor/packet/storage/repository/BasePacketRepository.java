@@ -2,6 +2,7 @@ package io.mosip.registration.processor.packet.storage.repository;
 
 import java.util.List;
 
+import io.mosip.registration.processor.packet.storage.entity.*;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -169,17 +170,23 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,@Param("requestType") String requestType);
-	
+
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getAbisRequestIDs(@Param("refRegtrnId") String transactionId);
-	
+
 	@Query("SELECT abisresp FROM AbisResponseEntity abisresp WHERE abisresp.abisRequest =:abisRequest")
 	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") AbisRequestEntity abisRequest);
-	
+
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String  responseId);
 
 	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
 	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String  bioRefId);
+
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =: Identify")
+	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId);
+
+	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
+	public List<RegBioRefEntity> getBioRefIdByRegId(@Param("regId") String regId);
 
 }

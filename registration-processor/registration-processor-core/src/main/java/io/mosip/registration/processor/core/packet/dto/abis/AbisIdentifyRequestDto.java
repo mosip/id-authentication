@@ -1,11 +1,13 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
+import java.io.Serializable;
+
 /**
  * The Class AbisIdentifyRequestDto.
- * 
+ *
  * @author M1048860 Kiran Raj
  */
-public class AbisIdentifyRequestDto extends AbisCommonRequestDto{
+public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Serializable {
 
 	/** The max results. */
 	private Integer maxResults;

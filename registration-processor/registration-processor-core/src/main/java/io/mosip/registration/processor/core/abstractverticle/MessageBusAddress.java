@@ -138,12 +138,10 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_IN = new MessageBusAddress("abis-middle-ware-bus-in");
 	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_OUT = new MessageBusAddress("abis-middle-ware-bus-out");
 
+	public static final MessageBusAddress ABIS_HANDLER_BUS_IN =
+			new MessageBusAddress("abis-handler-bus-in");
 
-
-	public static final MessageBusAddress BIOMETRIC_IDENTIFICATION_HANDLER_BUS_IN =
-			new MessageBusAddress("biometric-identification-handler-bus-in");
-
-	public static final MessageBusAddress BIOMETRIC_IDENTIFICATION_HANDLER_BUS_OUT =
-			new MessageBusAddress("biometric-identification-handler-bus-out");
+	public static final MessageBusAddress ABIS_HANDLER_BUS_OUT =
+			new MessageBusAddress("abis-handler-bus-out");
 
 }
