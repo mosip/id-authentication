@@ -84,7 +84,6 @@
 			src/main/java/io/mosip/registration/cipher/**/*,
 			src/main/java/io/mosip/registration/update/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
-			src/main/java/io/mosip/registration/tpm/**/*,
 			src/main/java/io/mosip/registration/mdm/**/*,
 			src/main/java/io/mosip/registration/service/mdm/**/*
 		</sonar.exclusions>
