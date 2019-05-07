@@ -249,7 +249,11 @@ public class AuthServiceImpl implements AuthService {
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
 			try
 			{
-			mosipToken = validateToken(authToken.getAccessToken());
+			if(authToken!=null)
+			{
+				mosipToken = validateToken(authToken.getAccessToken());
+			}
+			
 			}catch(AuthManagerException auth)
 			{
 				if(auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode()))
