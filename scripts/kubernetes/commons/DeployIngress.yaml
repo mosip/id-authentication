@@ -130,6 +130,10 @@ spec:
         backend:
           serviceName: authentication-internal-service
           servicePort: 8093
+      - path: /idrepository/v1/identity 
+        backend:
+          serviceName: id-repository-identity-service
+          servicePort: 8090
       - path: /pre-registration-ui
         backend:
           serviceName: pre-registration-ui
