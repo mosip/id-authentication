@@ -15,6 +15,7 @@ import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 
 /**
  * The Interface BasePacketRepository.
