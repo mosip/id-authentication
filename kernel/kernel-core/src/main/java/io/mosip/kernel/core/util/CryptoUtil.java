@@ -93,17 +93,16 @@ public class CryptoUtil {
 		return Base64.decodeBase64(data);
 	}
 
-	public String computeFingerPrint(String publicKey, String salt) {
-		return computeFingerPrint(publicKey.getBytes(), salt);
+	public String computeFingerPrint(String data, String metaData) {
+		return computeFingerPrint(data.getBytes(), metaData);
 	}
 
-	public String computeFingerPrint(byte[] publicKey, String salt) {
-
-		byte[] combinedPlainTextBytes = null;
-		if (EmptyCheckUtils.isNullEmpty(salt)) {
-			combinedPlainTextBytes = ArrayUtils.addAll(publicKey);
+	public String computeFingerPrint(byte[] data, String metaData) {
+        byte[] combinedPlainTextBytes = null;
+		if (EmptyCheckUtils.isNullEmpty(metaData)) {
+			combinedPlainTextBytes = ArrayUtils.addAll(data);
 		} else {
-			combinedPlainTextBytes = ArrayUtils.addAll(publicKey, salt.getBytes());
+			combinedPlainTextBytes = ArrayUtils.addAll(data, metaData.getBytes());
 		}
 		return Hex.encodeHexString(HMACUtils.generateHash(combinedPlainTextBytes)).replaceAll("..(?!$)", "$0:");
 	}
