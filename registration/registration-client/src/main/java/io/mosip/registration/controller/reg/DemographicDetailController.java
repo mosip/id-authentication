@@ -1181,8 +1181,10 @@ public class DemographicDetailController extends BaseController {
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, parentName, validation, parentNameLocalLanguage,
 					hasToBeTransliterated);
-			fxUtils.validateOnFocusOut(parentFlowPane, parentRegId, validation, parentRegIdLocalLanguage, !hasToBeTransliterated);
-			fxUtils.validateOnFocusOut(parentFlowPane, parentUinId, validation, parentUinIdLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, parentRegId, validation, parentRegIdLocalLanguage,
+					!hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, parentUinId, validation, parentUinIdLocalLanguage,
+					!hasToBeTransliterated);
 			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
@@ -1199,16 +1201,20 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, localAdminAuthority, localAdminAuthorityLocalLanguage);
 
-			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
+			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage, ageField,
+					ageFieldLocalLanguage);
 			dateValidation.validateDate(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
-					fxUtils, null);
-			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
+					fxUtils, null, ageField, ageFieldLocalLanguage);
+			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage, ageField,
+					ageFieldLocalLanguage);
 			dateValidation.validateMonth(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage,
-					validation, fxUtils, null);
-			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
+					validation, fxUtils, null, ageField, ageFieldLocalLanguage);
+			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage, ageField,
+					ageFieldLocalLanguage);
 			dateValidation.validateYear(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
-					fxUtils, null);
-			fxUtils.dobListener(yyyy, ageField, ageFieldLocalLanguage, RegistrationConstants.FOUR_NUMBER_REGEX);
+					fxUtils, null, ageField, ageFieldLocalLanguage);
+			// fxUtils.dobListener(yyyy, ageField, ageFieldLocalLanguage,
+			// RegistrationConstants.FOUR_NUMBER_REGEX);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
