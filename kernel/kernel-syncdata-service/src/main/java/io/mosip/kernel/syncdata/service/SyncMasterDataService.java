@@ -31,13 +31,12 @@ public interface SyncMasterDataService {
 	MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNumber,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) throws InterruptedException, ExecutionException;
 
-	/** Upload a public key to identify a machine
+	/**
+	 * Upload a public key to identify a machine
+	 * 
 	 * @param uploadPublicKeyRequestDto {@link UploadPublicKeyRequestDto} inatance
 	 * @return {@link UploadPublicKeyResponseDto} instance
 	 */
 	UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto);
-
-
-	
 
 }
