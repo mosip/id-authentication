@@ -1,15 +1,12 @@
 package io.mosip.registration.processor.abis.messagequeue;
 
-import java.io.IOException;
-
 import javax.jms.Message;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,7 +14,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
@@ -29,7 +25,6 @@ import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.vertx.core.json.JsonObject;
 
 /**
  * The AbisMessageQueueImpl class
@@ -133,6 +128,7 @@ public class AbisMessageQueueImpl {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean consumeLogic(Message message, String abismiddlewareaddress) {
 		boolean isrequestAddedtoQueue = false;
 		String response=null;			
@@ -142,16 +138,16 @@ public class AbisMessageQueueImpl {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				"","---received---"+request);
 		try {
-			JsonObject object=JsonUtil.objectMapperReadValue(request, JsonObject.class);
+			JSONObject object=JsonUtil.objectMapperReadValue(request, JSONObject.class);
 			ObjectMapper obj = new ObjectMapper(); 
-			
-			if(object.getString(ID).matches(ABIS_INSERT)) {
+			String id= (String)object.get(ID);
+			if(id.matches(ABIS_INSERT)) {
 				abisInsertRequestDto = JsonUtil.objectMapperReadValue(request, AbisInsertRequestDto.class);
 				AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
 				response=obj.writeValueAsString(abisInsertResponseDto);
 			}
 			
-			else if(object.getString(ID).matches(ABIS_IDENTIFY)) {
+			else if(id.matches(ABIS_IDENTIFY)) {
 				identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
 				AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
 				response=obj.writeValueAsString(identifyResponseDto);
