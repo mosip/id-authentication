@@ -167,6 +167,7 @@
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
+		<module>kernel-idobjectvalidator</module>
 	</modules>
 
 	<dependencies>
