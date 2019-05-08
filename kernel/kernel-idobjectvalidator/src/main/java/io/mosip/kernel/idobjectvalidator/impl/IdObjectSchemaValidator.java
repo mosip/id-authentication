@@ -1,4 +1,4 @@
-package io.mosip.kernel.jsonvalidator.impl;
+package io.mosip.kernel.idobjectvalidator.impl;
 
 import java.io.IOException;
 import java.net.URL;
