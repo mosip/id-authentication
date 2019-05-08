@@ -378,7 +378,12 @@ public class IrisCaptureController extends BaseController {
 					.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT))))
 					|| (irisDetailsDTO == null
 							&& ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)))) {
-				auditFactory.audit(AuditEvent.REG_BIO_IRIS_SCAN, Components.REG_BIOMETRICS, SessionContext.userId(),
+				String irisType = (StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
+						? RegistrationConstants.LEFT
+						: RegistrationConstants.RIGHT).toUpperCase();
+
+				auditFactory.audit(AuditEvent.valueOf(String.format("REG_BIO_%s_IRIS_SCAN", irisType)),
+						Components.REG_BIOMETRICS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				scanPopUpViewController.init(this, RegistrationUIConstants.IRIS_SCAN);
