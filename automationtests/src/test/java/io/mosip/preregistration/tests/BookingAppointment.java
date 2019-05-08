@@ -175,7 +175,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 			break;
 
-		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
+		case "BookAnAppointmentByPassingInvalidStatusCode":
 
 			preRegLib.updateStatusCode("Consumed", preId);
 			/* Fetch availability[or]center details */
@@ -188,9 +188,10 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "cond4":
+		case "BookAnAppointmentByPassingInvalidId":
 
-			String preRegBookingAppURI = preReg_URI + "ABCD";
+		    String id= actualRequest.get("id").toString();
+			String preRegBookingAppURI = preReg_URI + id;
 
 			Response res = applicationLibrary.postRequest(actualRequest, preRegBookingAppURI);
 
@@ -199,7 +200,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "cond5":
+		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
 
 			String preRegBookAppURI = preReg_URI + preId;
 
@@ -209,7 +210,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "cond6":
+		case "BookAnAppointmentByPassingInvalidAppointmentDate":
 
 			String preRegiBookAppURI = preReg_URI + preId;
 
@@ -219,7 +220,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(respo, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "cond7":
+		case "BookAnAppointmentByPassingInvalidTimeSlotFrom":
 
 			String preRegisBookAppURI = preReg_URI + preId;
 
@@ -230,7 +231,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 			break;
 
-		case "cond8":
+		case "BookAnAppointmentByPassingInvalidTimeSlotTo":
 
 			String preRegistBookAppURI = preReg_URI + preId;
 
