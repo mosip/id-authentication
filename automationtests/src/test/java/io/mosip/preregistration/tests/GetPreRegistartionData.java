@@ -116,12 +116,12 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			Response createResponse = lib.CreatePreReg();
-			preId = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = createResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response getPreRegistrationResponse = lib.getPreRegistrationData(preId);
-			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response[0].preRegistrationId").toString(),
+			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.preRegistrationId").toString(),
 					preId);
-			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response[0].demographicDetails").toString(),
-					createResponse.jsonPath().get("response[0].demographicDetails").toString());
+			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.demographicDetails").toString(),
+					createResponse.jsonPath().get("response.demographicDetails").toString());
 			status = true;
 
 		} else {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbdto.Audit;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 
 
@@ -38,6 +39,12 @@ public class PreregistrationDAO
 		String date = sdf.format(c.getTime());
 		String hql="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
 		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "preregdev.cfg.xml", "preregqa.cfg.xml");
+	}
+	public List<Object> getAuditData(String userId)
+	{
+		String query = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
+		List<Object> auditData = prereg_dbread.dbConnection(query, Audit.class, "auditdev.cfg.xml", "auditqa.cfg.xml");
+		return auditData;
 	}
 	
 	

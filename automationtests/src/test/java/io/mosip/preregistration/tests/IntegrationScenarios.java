@@ -274,11 +274,11 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		
-			int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
+			int no = fetchResponse.jsonPath().getList("response.basicDetails").size();
 			Assert.assertEquals(no, 2);
-			fetchResponse.jsonPath().get("response.preRegistrationId").toString()
+			fetchResponse.jsonPath().get("response.basicDetails").toString()
 					.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
-			fetchResponse.jsonPath().get("response[1].preRegistrationId").toString()
+			fetchResponse.jsonPath().get("response.basicDetails").toString()
 					.contains((preRegResponse2.jsonPath().get("response.preRegistrationId")).toString());
 
 	}

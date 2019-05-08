@@ -124,11 +124,11 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = prl.createRequest(testSuite);
 			Response createPregResponse = prl.CreatePreReg(createPregRequest);
-			String preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			String preReg_Id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Actualresponse=prl.discardApplication(preReg_Id);
-			preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = Actualresponse.jsonPath().get("response.preRegistrationId").toString();
 			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
-			String message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
+			String message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 			prl.compareValues(message, "No data found for the requested pre-registration id");
 			Assert.assertEquals(preId, preReg_Id);
 			status=true;
@@ -167,7 +167,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			logger.info("Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
 		
 		}
-				preIds.add(preId);
+				//preIds.add(preId);
 	}
 	@AfterMethod(alwaysRun = true)
     public void setResultTestName(ITestResult result) {

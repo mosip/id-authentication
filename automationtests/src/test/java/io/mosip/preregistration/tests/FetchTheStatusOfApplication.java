@@ -122,11 +122,11 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			Response createPreRegResponse = preLab.CreatePreReg();
-			String preRegistrationId = (createPreRegResponse.jsonPath().get("response[0].preRegistrationId"))
+			String preRegistrationId = (createPreRegResponse.jsonPath().get("response.preRegistrationId"))
 					.toString();
 			Actualresponse = preLab.getPreRegistrationStatus(preRegistrationId);
-				preId = (Actualresponse.jsonPath().get("response[0].preRegistartionId")).toString();
-				if(preId.equals(Actualresponse.jsonPath().get("response[0].preRegistartionId").toString()) )
+				preId = (Actualresponse.jsonPath().get("response.preRegistartionId")).toString();
+				if(preId.equals(Actualresponse.jsonPath().get("response.preRegistartionId").toString()) )
 			status = true;
 		}
 		else {

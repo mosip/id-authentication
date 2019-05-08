@@ -53,12 +53,12 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createRequestResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String pre_registration_id = createRequestResponse.jsonPath().get("response.preRegistrationId").toString();
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
 		lib.compareValues(pre_registration_id,
-				updateDemographicDetailsResponse.jsonPath().get("response[0].preRegistrationId").toString());
+				updateDemographicDetailsResponse.jsonPath().get("response.preRegistrationId").toString());
 		Response getPreRegistrationData = lib.getPreRegistrationData(pre_registration_id);
 	}
 
@@ -68,7 +68,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String phone = "8240273209";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createPregResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String pre_registration_id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentUploadResponse = lib.documentUpload(createPregResponse);
 		Response fetchCentreResponse = lib.FetchCentre();
 		lib.BookAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
@@ -76,7 +76,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
 		lib.compareValues(pre_registration_id,
-				updateDemographicDetailsResponse.jsonPath().get("response[0].preRegistrationId").toString());
+				updateDemographicDetailsResponse.jsonPath().get("response.preRegistrationId").toString());
 		Response getPreRegistrationData = lib.getPreRegistrationData(pre_registration_id);
 	}
 
@@ -86,7 +86,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String CNIENumber = "8243417898217834901290";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createPregResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String pre_registration_id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentUploadResponse = lib.documentUpload(createPregResponse);
 		Response fetchCentreResponse = lib.FetchCentre();
 		lib.BookExpiredAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
@@ -94,7 +94,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
 		lib.compareValues(pre_registration_id,
-				updateDemographicDetailsResponse.jsonPath().get("response[0].preRegistrationId").toString());
+				updateDemographicDetailsResponse.jsonPath().get("response.preRegistrationId").toString());
 		Response getPreRegistrationData = lib.getPreRegistrationData(pre_registration_id);
 	}
 
@@ -104,9 +104,9 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String CNIENumber = "8243417898217834901290";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createPregResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String pre_registration_id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentUploadResponse = lib.documentUpload(createPregResponse);
-		String expectedDocumentId = documentUploadResponse.jsonPath().get("response[0].documentId").toString();
+		String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
 		Response fetchCentreResponse = lib.FetchCentre();
 		String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 		lib.BookAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
@@ -118,7 +118,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
 		lib.compareValues(
-				updateDemographicDetailsResponse.jsonPath().get("errors.message").toString(),"No data found for the requested pre-registration id");
+				updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),"No data found for the requested pre-registration id");
 	}
 	@Test
 	public void updateDemographicDetailsOfDiscardedApplication() {
@@ -126,7 +126,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String DOB = "25-09-1993";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createRequestResponse.jsonPath().get("response[0].pre_RegistrationId").toString();
+		String pre_registration_id = createRequestResponse.jsonPath().get("response.pre_RegistrationId").toString();
 		lib.discardApplication(pre_registration_id);
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
@@ -140,7 +140,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
-		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors.message").toString(),"No data found for the requested pre-registration id");
+		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),"No data found for the requested pre-registration id");
 	}
 	@BeforeMethod
 	public void getAuthToken()

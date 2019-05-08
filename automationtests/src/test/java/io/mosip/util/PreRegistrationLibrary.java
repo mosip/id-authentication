@@ -51,7 +51,10 @@ import org.testng.collections.Lists;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -83,7 +86,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	static String folder = "preReg";
 	static String testSuite = "";
-	static String userId = "";
+	public static String userId = "";
 	static String otp = "";
 	static Response createPregResponse;
 	static JSONObject createPregRequest;
@@ -1740,7 +1743,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public boolean validateRetrivePreRegistrationData(Response response, String PrID, Response craeteResponse) {
 		boolean finalResult = false;
 		HashMap<String, String> expectedDemographicDetails = craeteResponse.jsonPath()
-				.get("response[0].demographicDetails");
+				.get("response.demographicDetails");
 		String folderName = "PreRegDocs";
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
@@ -1777,7 +1780,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs"+"/"+PrID;
+		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
@@ -1808,6 +1811,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		Map<String, Object> map = gson.fromJson(object.toJSONString(), type);
 		return map;
 	}
+
 
 	/*
 	 * Generic method for Discard Booking
@@ -1944,6 +1948,84 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public List<? extends Object> preregFetchPreregDetails(String preregId) {
 		return dao.preregFetchPreregDetails(preregId);
+	}
+	public JSONObject getAuditData(List<? extends Object> objs, int data) {
+		List<Object> auditData = new ArrayList<>();
+		Map<String, String> map=new HashMap<>();
+		Object[] TestData = null;
+		for (Object obj : objs) {
+			TestData = (Object[]) obj;
+			int noOfData = TestData.length;
+			if (obj.equals(objs.get(data))) {
+				for (int i = 0; i < noOfData; i++) {
+					Object audit = TestData[i];
+					auditData.add(audit);
+				}
+			}
+			
+		}
+	
+		 JSONObject object = getAuditData(auditData);
+		return object;
+	}
+	public JSONObject getAuditData(List<Object> auditDatas)
+	{
+		JSONObject object=new JSONObject();
+		String log_desc = auditDatas.get(0).toString();
+		String event_id = auditDatas.get(1).toString();
+		String event_type = auditDatas.get(2).toString();
+		String event_name = auditDatas.get(3).toString();
+		String session_user_id = auditDatas.get(4).toString();
+		String module_name = auditDatas.get(5).toString();
+		String ref_id = auditDatas.get(6).toString();
+		String ref_id_type = auditDatas.get(7).toString();
+		object.put("log_desc", log_desc);
+		object.put("event_id", event_id);
+		object.put("event_type", event_type);
+		object.put("event_name", event_name);
+		object.put("session_user_id", session_user_id);
+		object.put("module_name", module_name);
+		object.put("ref_id", ref_id);
+		object.put("ref_id_type",ref_id_type );
+		return object;
+	}
+	/**
+	 * this function compare the request and response json and return the boolean
+	 * value
+	 * 
+	 * @param expectedResponseBody
+	 * @param actualResponseBody
+	 * @return boolean value
+	 */
+	public boolean jsonComparison(Object expectedResponseBody, Object actualResponseBody) {
+		JSONObject reqObj = (JSONObject) expectedResponseBody;
+		JSONObject resObj = (JSONObject) actualResponseBody;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode requestJson = mapper.readTree(reqObj.toString());
+			JsonNode responseJson = mapper.readTree(resObj.toString());
+			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
+
+			logger.error("======" + diffJson + "==========");
+			if (diffJson.toString().equals("[]")) {
+				logger.info("equal");
+				return true;
+			}
+
+			for (int i = 0; i < diffJson.size(); i++) {
+				JsonNode operation = diffJson.get(i);
+				if (!operation.get("op").toString().equals("\"move\"")) {
+					logger.error("not equal");
+					return false;
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.info("equal");
+		return true;
+
 	}
 
 	@BeforeClass

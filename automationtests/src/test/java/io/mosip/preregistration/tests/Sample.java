@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -70,33 +73,40 @@ public class Sample extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void createMultipleAppDeleteFewFetchAllAppsByUserId() {
+	/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createRequest = lib.createRequest(testSuite);
+		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		lib.fetchAllPreRegistrationCreatedByUser();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicUpdate");
+		expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		System.out.println("====================="+auditDatas.toString());*/
+		/*if(auditDatas.equals(expectedRequest))
+			logger.info("both object are equal");
+		else
+		{
+			logger.info("expected is==="+expectedRequest.toString());
+			logger.info("but found is === "+auditDatas.toString());
+			Assert.fail();
+		}*/
+	@Test
+	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
-		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
-		Response preRegResponse3 = lib.CreatePreReg(createPregRequest);
-		// Delete a preReg
-		String preRegIdToDelete = preRegResponse3.jsonPath().get("response.preRegistrationId").toString();
-		/*response = lib.discardApplication(preRegIdToDelete);
-		lib.compareValues(response.jsonPath().getString("response.preRegistrationId").toString(), preRegIdToDelete);*/
-
-		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		
-			int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
-			Assert.assertEquals(no, 2);
-			fetchResponse.jsonPath().get("response.preRegistrationId").toString()
-					.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
-			fetchResponse.jsonPath().get("response[1].preRegistrationId").toString()
-					.contains((preRegResponse2.jsonPath().get("response.preRegistrationId")).toString());
-
+		lib.CreatePreReg(createPregRequest);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
+		//expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		lib.jsonComparison(expectedRequest, auditDatas);
 	}
-
+		
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-
 	}
 
 	@AfterMethod

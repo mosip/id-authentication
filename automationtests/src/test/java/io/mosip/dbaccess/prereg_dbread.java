@@ -24,6 +24,7 @@ public class prereg_dbread {
 	public static SessionFactory factory;
 	static Session session;
 	private static Logger logger = Logger.getLogger(prereg_dbread.class);
+	
 
 	
 	@SuppressWarnings("deprecation")
@@ -155,6 +156,7 @@ public class prereg_dbread {
 		}
 	
 	}
+	
 	
 
 	public static boolean prereg_db_CleanUp(List<String> preIds)
@@ -395,6 +397,50 @@ public class prereg_dbread {
 		return flag;
 		
 
+	}
+	@SuppressWarnings("deprecation")
+	public static List<Object> dbConnection(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure(devdbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+			
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		objs=getData(session, queryStr);
+		
+		return objs;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static List<Object> getData(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		
+		Query query = session.createSQLQuery(queryString);
+	
+		List<Object> objs = (List<Object>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		
+			return objs;
+		
+	
 	}
 	@SuppressWarnings("deprecation")
 	public static void  dbConnectionUpdate(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )

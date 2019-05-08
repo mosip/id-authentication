@@ -75,14 +75,14 @@ public class BatchJob extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		dao.setDate(preID);
 		lib.expiredStatus();
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
-		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
+		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
 	
 	}
@@ -95,7 +95,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -105,7 +105,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String message = consumedResponse.jsonPath().get("response").toString();
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		message = getPreRegistrationDataResponse.jsonPath().get("errors.message").toString();
+		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
 	
