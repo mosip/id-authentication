@@ -47,7 +47,6 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -80,6 +79,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -960,8 +960,9 @@ public class BaseController {
 	 * processing accordingly.
 	 *
 	 * @return true, if is machine remap process started
+	 * @throws IOException 
 	 */
-	public boolean isMachineRemapProcessStarted() {
+	public boolean isMachineRemapProcessStarted()  {
 
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
@@ -975,15 +976,19 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
-
-			if (!service.isRunning())
-				service.start();
+			 
+			
+			 disableHomePage(true);
+			
+				service.restart();
 
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
 					service.reset();
+					disableHomePage(false);
 					packetHandlerController.getProgressIndicator().setVisible(false);
+					 
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
@@ -994,9 +999,23 @@ public class BaseController {
 
 				}
 			});
-
+			
 		}
 		return isRemapped;
+	}
+
+	private void disableHomePage(boolean isDisabled) {
+		GridPane HomePageRoot = null;
+		try {
+			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
+		} catch (IOException e) {
+
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+		}
+
+		HomePageRoot.setDisable(isDisabled);
+		
 	}
 
 	Service<String> service = new Service<String>() {
