@@ -1,0 +1,232 @@
+<div *ngIf="previewData !== undefined && secondaryLanguagelabels !== undefined" class="preview__container">
+  <mat-card class="preview__header-container card-padding">
+    <mat-card-header class="preview__header-container">
+      <div class="preview__header">
+        <p>{{ 'preview.title_preview' | translate }}</p>
+        <hr />
+      </div>
+      <hr />
+    </mat-card-header>
+    <mat-card-content>
+      <div class="preview__body-content-container">
+        <div [ngClass]="primaryLanguage === 'ara' ? 'preview__body-content-div right spacing' : 'preview__body-content-div'">
+          <div>
+            <p>{{ 'preview.language' | translate }}</p>
+            <h3>{{ 'preview.subheading_information' | translate }}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData !== undefined" class="preview__personal-info-table">
+              <tr>
+                <td>{{ 'preview.label_name' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.fullName[0].value }}</td>
+              </tr>
+              <tr>
+                <td>DOB</td>
+                <td> : </td>
+                <td>{{ dateOfBirthPrimary }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_age' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.age }} {{ 'preview.text_years' | translate }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.text_gender' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.gender[0].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.text_resident_status' | translate }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[0].name}}</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <h3>{{ 'preview.subheading_contact' | translate }}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr>
+                <td>{{ 'preview.label_address' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.primaryAddress }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_region' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.region[0].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_province' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.province[0].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_city' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.city[0].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_local_administrative_authority' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.localAdministrativeAuthority[0].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_mob_num' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.phone }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_email_id' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.email }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'preview.label_pin' | translate }}</td>
+                <td> : </td>
+                <td>{{ previewData.CNIENumber }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div [ngClass]="secondaryLanguage === 'ara' ? 'preview__body-content-div right' : 'preview__body-content-div'">
+          <div>
+            <div class="preview__modify-div">
+              <span>{{ secondaryLanguagelabels.language }}</span>
+              <span (click)="modifyDemographic()" class="preview__modify-div-span"
+                    matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate}}"
+                ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
+              >
+            </div>
+            <h3>{{ secondaryLanguagelabels.subheading_information }}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="secondaryLanguagelabels !== undefined" class="preview__personal-info-table">
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_name }}</td>
+                <td> : </td>
+                <td>{{ previewData.fullName[1].value }}</td>
+              </tr>
+              <tr>
+                <td>DOB</td>
+                <td> : </td>
+                <td>{{ dateOfBirthSecondary }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_age }}</td>
+                <td> : </td>
+                <td>{{ previewData.age }} {{ secondaryLanguagelabels.text_years }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.text_gender }}</td>
+                <td> : </td>
+                <td>{{ previewData.gender[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.text_resident_status }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[1].name}}</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <h3>{{ secondaryLanguagelabels.subheading_contact }}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_address }}</td>
+                <td> : </td>
+                <td>{{ previewData.secondaryAddress }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_region }}</td>
+                <td> : </td>
+                <td>{{ previewData.region[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_province }}</td>
+                <td> : </td>
+                <td>{{ previewData.province[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_city }}</td>
+                <td> : </td>
+                <td>{{ previewData.city[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_local_administrative_authority }}</td>
+                <td> : </td>
+                <td>{{ previewData.localAdministrativeAuthority[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_mob_num }}</td>
+                <td> : </td>
+                <td>{{ previewData.phone }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_email_id }}</td>
+                <td> : </td>
+                <td>{{ previewData.email }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.label_pin }}</td>
+                <td> : </td>
+                <td>{{ previewData.CNIENumber }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-footer class="preview__footer-container">
+      <hr />
+      <div class="preview__footer">
+        <span>{{ 'preview.title_document' | translate }}</span>
+        <span (click)="modifyDocument()" class="preview__modify-file"
+              matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate}}"
+          ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
+        >
+        <hr />
+        <div class="preview__file-container">
+          <!-- <span class="preview__file-span" *ngFor="let file of files">
+            <img src="assets/pdf.png" />&nbsp;&nbsp;{{ file.doc_name }}
+          </span> -->
+          <table style="width:100%" *ngIf="documentMapObject">
+            <tr class="preview__file__table__header">
+              <td *ngFor="let object of documentMapObject">{{object.name}}</td>
+            </tr>
+            <tr class="preview__file__table__data">
+              <td *ngFor="let object of documentMapObject">
+                <p *ngIf="object.fileName !== undefined">{{object.fileName}}</p>
+                <p class="error" *ngIf="object.fileName === undefined">{{ 'preview.text_not_uploaded' | translate }}</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>
+
+<div>
+  <mat-card class="center-selection__button-container">
+    <button mat-button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
+    <span class="spacer"></span>
+    <button matTooltip="{{ 'helpText.add_applicant' | translate}}" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
+      {{ 'preview.action_add_applicant' | translate }}
+    </button>
+      <button mat-button
+            (click)="navigateNext()"
+            class="user-continue-btn"
+            >
+      {{ 'preview.action_continue' | translate }}
+    </button>
+  </mat-card>
+</div>

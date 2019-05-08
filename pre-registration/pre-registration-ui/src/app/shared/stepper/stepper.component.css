@@ -1,0 +1,99 @@
+.progress {
+  display: inline-block;
+  width: 150px;
+  height: 0;
+  position: relative;
+  top: 3px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.progress-active {
+  border-top: 3px solid #4da6ff;
+}
+
+.progress-complete {
+  border-top: 3px solid green;
+}
+
+.progress-incomplete {
+  border-top: 3px solid grey;
+  opacity: 0.5;
+}
+
+.container {
+  justify-content: center;
+  align-items: center;
+  vertical-align: center;
+  align-content: center;
+  display: flex;
+  margin: 0 20% 0 20%;
+}
+
+p {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.inline-icon {
+  vertical-align: bottom;
+  font-size: 18px !important;
+  border-radius: 100%;
+}
+
+.inline-icon-background-active {
+  background: #4da6ff;
+}
+
+.inline-icon-background-complete {
+  background: green;
+}
+
+.inline-icon-background-incomplete {
+  background: grey;
+  opacity: 0.5;
+  padding: 1px;
+}
+
+.active {
+  color: #4da6ff;
+}
+
+.complete {
+  color: green;
+}
+
+.incomplete {
+  color: grey;
+  opacity: 0.5;
+}
+
+@media (max-width: 500px) {
+  .progress {
+    width: 0;
+  }
+
+  p {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 1032px) and (min-width: 801px) {
+  .progress {
+    width: 100px;
+  }
+
+  p {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 800px) and (min-width: 501px) {
+  .progress {
+    width: 60px;
+  }
+
+  p {
+    white-space: normal;
+  }
+}

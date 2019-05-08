@@ -1,0 +1,59 @@
+<div class="wrapper spacing" *ngIf="showSpinner">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!showSpinner" class="wrapper">
+
+  <div class="form_wrapper">
+    <div class="heading">
+      <span>{{'login.text' | translate }}</span>
+    </div>
+
+    <div class="subHeading pinkText">
+      {{'login.sub_text' | translate}} <span class="boldText"> {{'login.sub_text_UID' | translate}} </span>
+    </div>
+
+    <div [ngClass]="selectedLanguage !== 'Arabic' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'">
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="changeLanguage()" placeholder="Select your language">
+            <mat-option *ngFor="let lang of languages" [value]="lang">{{lang}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="showContactDetails">
+        <mat-form-field appearance="outline">
+          <input autofocus="autofocus" matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact" required />
+        </mat-form-field>
+        <p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
+      </div>
+
+      <div *ngIf="showOTP">
+        <mat-form-field appearance="outline">
+          <input autofocus="autofocus" matInput [(ngModel)]="inputOTP" placeholder="{{'login.label_otp' | translate}}" id="inputFieldOTP" (input)="showVerifyBtn()" />
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="showSendOTP">
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        [disabled]="inputContactDetails.length > 0 ? false : true" (click)="submit()"> {{'login.action_send' | translate}} </button>
+      </div>
+
+      <div *ngIf="showVerify">
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        disabled="{{disableBtn}}" (click)="submit()"> {{'login.action_verify' | translate}} </button>
+      </div>
+
+      <div *ngIf="showResend">
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        disabled="{{disableBtn}}" (click)="submit()">  {{'login.action_resend' | translate}}</button>
+      </div>
+
+      <div class="pinkText boldText" id="timer">
+        <span>{{'login.otp_valid_label' | translate}}&nbsp;</span><span id="minutesSpan">{{minutes}}</span>:<span id="secondsSpan">{{seconds}}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
