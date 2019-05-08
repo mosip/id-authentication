@@ -81,7 +81,7 @@ public class EncryptorUtil {
 	@Value("${mosip.kernel.rid.machineid-length}")
 	private int machineIdLength;
 	
-	@Value("${registration.processor.rid.machineid}")
+	@Value("${registration.processor.rid.machineidsubstring}")
 	private int machineIdSubStringLength;
 
 	@Autowired

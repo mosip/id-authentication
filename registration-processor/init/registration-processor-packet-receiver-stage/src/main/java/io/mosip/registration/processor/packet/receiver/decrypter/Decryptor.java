@@ -57,7 +57,7 @@ public class Decryptor {
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 	
-	@Value("${registration.processor.rid.machineid}")
+	@Value("${registration.processor.rid.machineidsubstring}")
 	private int machineIdSubStringLength;
 
 	@Autowired
