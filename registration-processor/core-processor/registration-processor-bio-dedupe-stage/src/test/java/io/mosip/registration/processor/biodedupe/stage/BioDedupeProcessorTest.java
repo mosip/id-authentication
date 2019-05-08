@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.biodedupe.stage;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -14,19 +15,24 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.registration.processor.biodedupe.dao.BioDedupDao;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.constant.StageNameConstant;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
-import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -49,6 +55,7 @@ import io.vertx.core.Vertx;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
+@PrepareForTest({ Utilities.class })
 public class BioDedupeProcessorTest {
 
 	/** The registration status service. */
@@ -102,6 +109,11 @@ public class BioDedupeProcessorTest {
 	@Mock
 	RegistrationStatusEntity entity = new RegistrationStatusEntity();
 
+	private RegistrationProcessorIdentity regProcessorIdentityJson = new RegistrationProcessorIdentity();
+
+	@Mock
+	ObjectMapper mapIdentityJsonStringToObject;
+
 	/**
 	 * Sets the up.
 	 *
@@ -111,7 +123,7 @@ public class BioDedupeProcessorTest {
 	@Before
 	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(bioDedupeProcessor, "ageLimit", "4");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(auditResponseDto);
@@ -121,6 +133,7 @@ public class BioDedupeProcessorTest {
 		dto.setRid("reg1234");
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("New");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(utilities.getElapseStatus(any(), any())).thenReturn("New-packet");
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn("1233445566".getBytes("UTF-16"));
@@ -141,7 +154,8 @@ public class BioDedupeProcessorTest {
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertTrue(messageDto.getDestinationStage().equalsIgnoreCase(StageNameConstant.ABISHANDLERSTAGE));
+		assertTrue(messageDto.getMessageBusAddress().toString()
+				.equalsIgnoreCase(MessageBusAddress.ABIS_HANDLER_BUS_IN.toString()));
 
 	}
 
@@ -152,7 +166,7 @@ public class BioDedupeProcessorTest {
 		Mockito.when(utilities.getApplicantAge(any())).thenReturn(2);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertTrue(messageDto.getDestinationStage().equalsIgnoreCase(StageNameConstant.UINGENERATORSTAGE));
+		assertTrue(messageDto.getIsValid());
 
 	}
 
@@ -162,7 +176,7 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(), any())).thenReturn(Collections.emptyList());
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertTrue(messageDto.getDestinationStage().equalsIgnoreCase(StageNameConstant.UINGENERATORSTAGE));
+		assertTrue(messageDto.getIsValid());
 
 	}
 
@@ -182,7 +196,26 @@ public class BioDedupeProcessorTest {
 		Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(), any())).thenReturn(abisResponseDetEntities);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertTrue(messageDto.getDestinationStage().equalsIgnoreCase(StageNameConstant.MANUALVERIFICATIONSTAGE));
+		assertFalse(messageDto.getIsValid());
 
 	}
+
+	@Test
+	public void testeHandlerIdentifyManualStage() throws Exception {
+
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn("");
+
+		Identity identity = new Identity();
+		regProcessorIdentityJson.setIdentity(identity);
+		Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(), any(Class.class)))
+				.thenReturn(regProcessorIdentityJson);
+		registrationStatusDto.setRegistrationId("reg1234");
+		registrationStatusDto.setRegistrationType("Update");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+
+		assertFalse(messageDto.getIsValid());
+	}
+
 }
