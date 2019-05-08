@@ -32,7 +32,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -73,6 +75,9 @@ public class OTPControllerTest {
 	@Mock
 	WebDataBinder binder;
 
+	@Mock
+	AuditHelper auditHelper;
+
 	/** inject the mocked object */
 	@InjectMocks
 	OTPController otpController;
@@ -81,6 +86,7 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(otpController, "env", env);
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 
@@ -97,14 +103,11 @@ public class OTPControllerTest {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 		date = new Date();
-
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
-
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
-		otpController.generateOTP(otpRequestDto, result, "TEST0000001",
-				"TEST0000001");
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001");
 
 	}
 
@@ -126,7 +129,7 @@ public class OTPControllerTest {
 
 	@Ignore
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testConstraintVoilation() throws IdAuthenticationAppException {
+	public void testConstraintVoilation() throws IdAuthenticationAppException, IDDataValidationException {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
@@ -187,7 +190,8 @@ public class OTPControllerTest {
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
+	public void testGenerateOtpDataValidationException()
+			throws IdAuthenticationAppException, IDDataValidationException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001");
