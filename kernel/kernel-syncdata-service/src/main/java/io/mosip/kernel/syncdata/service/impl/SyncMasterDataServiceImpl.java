@@ -416,7 +416,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
-		UploadPublicKeyResponseDto uploadPublicKeyResponseDto = new UploadPublicKeyResponseDto(keyIndex);
-		return uploadPublicKeyResponseDto;
+		return  new UploadPublicKeyResponseDto(keyIndex);
 	}
 }
