@@ -51,7 +51,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Prem Kumar
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })

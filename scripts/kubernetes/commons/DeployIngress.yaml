@@ -126,7 +126,7 @@ spec:
         backend:
           serviceName: authentication-otp-service
           servicePort: 8092
-      - path: /idauthentication/v1/internal/auth
+      - path: /idauthentication/v1/auth/internal
         backend:
           serviceName: authentication-internal-service
           servicePort: 8093

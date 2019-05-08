@@ -70,21 +70,12 @@ public class KeyManagerTest {
 	private Environment environment;
 
 	/**
-	 * Before.
-	 */
-	@Before
-	public void before() {
-		ReflectionTestUtils.setField(keyManager, "environment", environment);
-	}
-
-	/**
 	 * Request data test.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
 	@Test
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {

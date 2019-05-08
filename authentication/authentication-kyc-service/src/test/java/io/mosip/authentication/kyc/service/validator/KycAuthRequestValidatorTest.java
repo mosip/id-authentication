@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -112,7 +111,6 @@ public class KycAuthRequestValidatorTest {
 		assertFalse(KycAuthRequestValidator.supports(KycAuthRequestValidator.class));
 	}
 
-	@org.junit.Ignore
 	@Test
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -220,8 +218,7 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
-	@Ignore
+
 	@Test
 	public void TestMUAPermissionisNotAvail() {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -421,7 +418,7 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+
 	@Test
 	public void testForIsValidAuthtype() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -434,7 +431,9 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(false);
-		authTypeDTO.setOtp(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authTypeDTO.setBio(false);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -468,7 +467,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
-		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.FALSE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

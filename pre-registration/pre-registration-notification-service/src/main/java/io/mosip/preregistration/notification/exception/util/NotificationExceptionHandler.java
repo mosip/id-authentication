@@ -1,7 +1,4 @@
-/* 
- * Copyright
- * 
- */
+
 package io.mosip.preregistration.notification.exception.util;
 
 import java.util.ArrayList;

@@ -236,3 +236,16 @@ mat-select:focus {
 .file-buttons .nextFile:disabled {
   filter: brightness(170%);
 }
+
+.loader {
+  height: 100px;
+  width: 100px;
+  position: fixed;
+  top: 40vh;
+  left: 40vw;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}

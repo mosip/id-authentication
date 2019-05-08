@@ -105,6 +105,9 @@ stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
       sh " kubectl set image deployment/authentication-service authentication-service=$registryName/authentication-service:$dockerImagesTagVersion.$BUILD_NUMBER"
+      sh " kubectl set image deployment/authentication-internal-service authentication-internal-service=$registryName/authentication-internal-service:$dockerImagesTagVersion.$BUILD_NUMBER"
+      sh " kubectl set image deployment/authentication-kyc-service authentication-kyc-service=$registryName/authentication-kyc-service:$dockerImagesTagVersion.$BUILD_NUMBER"
+      sh " kubectl set image deployment/authentication-otp-service authentication-otp-service=$registryName/authentication-otp-service:$dockerImagesTagVersion.$BUILD_NUMBER"
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }

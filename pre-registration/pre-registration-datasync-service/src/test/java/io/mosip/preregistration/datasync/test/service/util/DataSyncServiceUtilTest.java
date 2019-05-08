@@ -241,7 +241,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = serviceUtil
-				.callBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
+				.getBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
 		assertEquals(preRegIdsByRegCenterIdResponseDTO.getPreRegistrationIds().get(0), preRegIds.get(0));
 	}
 
@@ -268,7 +268,7 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
-		serviceUtil.callBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
+		serviceUtil.getBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
 	}
 
 	@Test
@@ -289,7 +289,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = serviceUtil
-				.callBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
+				.getBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
 		assertEquals(preRegIdsByRegCenterIdResponseDTO.getPreRegistrationIds().get(0), preRegIds.get(0));
 	}
 
@@ -332,7 +332,7 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
-		DocumentsMetaData response = serviceUtil.callGetDocDetailsRestService(preId);
+		DocumentsMetaData response = serviceUtil.getDocDetails(preId);
 		assertEquals(documentsMetaData.getDocumentsMetaData().get(0).getDocName(),
 				response.getDocumentsMetaData().get(0).getDocName());
 	}
@@ -360,7 +360,7 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
-		serviceUtil.callGetDocDetailsRestService(preId);
+		serviceUtil.getDocDetails(preId);
 	}
 
 	@Test
@@ -380,7 +380,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		DemographicResponseDTO response = serviceUtil.callGetPreRegInfoRestService(preId);
+		DemographicResponseDTO response = serviceUtil.getPreRegistrationData(preId);
 		assertEquals(demographicResponseDTO.getPreRegistrationId(), response.getPreRegistrationId());
 	}
 
@@ -406,7 +406,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		serviceUtil.callGetPreRegInfoRestService(preId);
+		serviceUtil.getPreRegistrationData(preId);
 	}
 
 	@Test
@@ -422,7 +422,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		BookingRegistrationDTO response = serviceUtil.callGetAppointmentDetailsRestService(preId);
+		BookingRegistrationDTO response = serviceUtil.getAppointmentDetails(preId);
 		assertEquals(bookingRegistrationDTO.getRegistrationCenterId(), response.getRegistrationCenterId());
 	}
 
@@ -444,7 +444,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		serviceUtil.callGetAppointmentDetailsRestService(preId);
+		serviceUtil.getAppointmentDetails(preId);
 	}
 
 	@Test(expected = RecordNotFoundForDateRange.class)
@@ -461,7 +461,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		serviceUtil.callGetAppointmentDetailsRestService(preId);
+		serviceUtil.getAppointmentDetails(preId);
 	}
 
 	@Test

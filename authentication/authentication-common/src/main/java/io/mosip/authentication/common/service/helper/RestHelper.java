@@ -52,6 +52,8 @@ import reactor.core.publisher.Mono;
 @NoArgsConstructor
 public class RestHelper {
 
+	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
+
 	/** The Constant ERRORS. */
 	private static final String ERRORS = "errors";
 
@@ -269,15 +271,20 @@ public class RestHelper {
 			.syncBody(request)
 			.exchange()
 			.block();
-		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-		ResponseCookie responseCookie = response
-			.cookies()
-			.get("Authorization")
-			.get(0);
-		if (responseBody.get("response").get("status").asText().contentEquals("success")) {
-			authToken = responseCookie.getValue();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "generateAuthToken",
-					"Auth token generated successfully and set");
+		if(response.statusCode() == HttpStatus.OK) {
+			ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
+			if (responseBody.get("response").get("status").asText().contentEquals("success")) {
+				ResponseCookie responseCookie = response
+						.cookies()
+						.get("Authorization")
+						.get(0);
+				authToken = responseCookie.getValue();
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
+						"Auth token generated successfully and set");
+			}
+		} else {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
+					"AuthResponse : status-" + response.statusCode() + " :\n"+  response.toEntity(String.class).block().getBody());
 		}
 	}
 	
@@ -292,7 +299,7 @@ public class RestHelper {
 				&& responseBody.get("errors").size() > 0
 				&& Objects.nonNull(responseBody.get("errors").get(0).get("errorCode"))
 				&& !responseBody.get("errors").get(0).get("errorCode").isNull()
-				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-402")) {
 			authToken = null;
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
 					"Auth token expired. setting authToken as null to regenerate.");
