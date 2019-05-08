@@ -100,6 +100,8 @@ export class RegistrationService {
    * @memberof RegistrationService
    */
   addUser(user: UserModel) {
+    console.log('user getting added', user);
+
     this.users.push(user);
     this.usersChanged.next(this.users.slice());
   }
@@ -139,7 +141,7 @@ export class RegistrationService {
   }
 
   getUserFiles(index: number) {
-    return this.users[index].files.slice();
+    return this.users[index].files;
   }
 
   setRegCenterId(id: string) {
