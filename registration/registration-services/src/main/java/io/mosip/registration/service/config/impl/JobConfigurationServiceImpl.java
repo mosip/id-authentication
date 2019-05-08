@@ -149,7 +149,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		try {
-			
+
 			/* Registration Client Config Sync */
 			restartableJobList.add("SCD_J00011");
 
@@ -188,8 +188,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
-				
-				
+
 				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
 			}
@@ -347,7 +346,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
-		} 
+		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -378,7 +377,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		try {
 
-			if(schedulerFactoryBean!=null && isSchedulerRunning()) {
+			if (schedulerFactoryBean != null && isSchedulerRunning()) {
 				// Get currently executing jobs from scheduler factory
 				List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
 						.getCurrentlyExecutingJobs();
@@ -437,6 +436,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			if (syncJobDef != null && syncJobDef.getApiName() != null) {
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
+
+				BaseJob.removeCompletedJobInMap(jobId);
 
 				// Job Invocation
 				responseDTO = baseJob.executeJob(triggerPoint, jobId);
@@ -700,7 +701,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		BaseJob.clearCompletedJobMap();
-		
+
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
@@ -796,6 +797,5 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public Map<String, SyncJobDef> getActiveSyncJobMap() {
 		return syncActiveJobMap;
 	}
-	
 
 }
