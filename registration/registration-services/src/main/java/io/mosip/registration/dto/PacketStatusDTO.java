@@ -1,8 +1,5 @@
 package io.mosip.registration.dto;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-
 /**
  * The DTO Class PacketStatusDTO.
  * 
@@ -14,7 +11,6 @@ public class PacketStatusDTO {
 	private String fileName;
 	private String packetClientStatus;
 	private String packetServerStatus;
-	private BooleanProperty status = new SimpleBooleanProperty(false);
 	private String packetPath;
 	private String uploadStatus;
 	private String clientStatusComments;
@@ -68,7 +64,7 @@ public class PacketStatusDTO {
 		this.clientStatusComments = clientStatusComments;
 	}
 
-	public Boolean getStatus() {
+/*	public Boolean getStatus() {
 		return status.get();
 	}
 	
@@ -78,7 +74,7 @@ public class PacketStatusDTO {
 
 	public void setStatus(Boolean status) {
 		this.status.set(status);
-	}
+	}*/
 
 	public String getPacketStatus() {
 		return packetStatus;
