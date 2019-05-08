@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,10 +37,8 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	// bi-directional many-to-one association to AbisResponse
-	@ManyToOne
-	@JoinColumn(name = "abis_resp_id",insertable=false,updatable=false)
-	private AbisResponseEntity abisResponse;
+	@Column(name = "abis_resp_id")
+	private String abisResponse;
 
 	public AbisResponseDetEntity() {
 	}
@@ -112,11 +107,11 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 		this.updDtimes = updDtimes;
 	}
 
-	public AbisResponseEntity getAbisResponse() {
+	public String getAbisResponse() {
 		return this.abisResponse;
 	}
 
-	public void setAbisResponse(AbisResponseEntity abisResponse) {
+	public void setAbisResponse(String abisResponse) {
 		this.abisResponse = abisResponse;
 	}
 

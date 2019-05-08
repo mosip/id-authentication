@@ -63,14 +63,10 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	// bi-directional many-to-one association to AbisRequest
-	@ManyToOne
-	@JoinColumn(name = "abis_req_id")
-	private AbisRequestEntity abisRequest;
+	@Column(name = "abis_req_id")
+	private String abisRequest;
 
-	// bi-directional many-to-one association to AbisResponseDet
-	@OneToMany(mappedBy = "abisResponse")
-	private List<AbisResponseDetEntity> abisResponseDets;
+	
 
 	public AbisResponseEntity() {
 	}
@@ -163,34 +159,12 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 		this.updDtimes = updDtimes;
 	}
 
-	public AbisRequestEntity getAbisRequest() {
+	public String getAbisRequest() {
 		return this.abisRequest;
 	}
 
-	public void setAbisRequest(AbisRequestEntity abisRequest) {
+	public void setAbisRequest(String abisRequest) {
 		this.abisRequest = abisRequest;
-	}
-
-	public List<AbisResponseDetEntity> getAbisResponseDets() {
-		return this.abisResponseDets;
-	}
-
-	public void setAbisResponseDets(List<AbisResponseDetEntity> abisResponseDets) {
-		this.abisResponseDets = abisResponseDets;
-	}
-
-	public AbisResponseDetEntity addAbisResponseDet(AbisResponseDetEntity abisResponseDet) {
-		getAbisResponseDets().add(abisResponseDet);
-		abisResponseDet.setAbisResponse(this);
-
-		return abisResponseDet;
-	}
-
-	public AbisResponseDetEntity removeAbisResponseDet(AbisResponseDetEntity abisResponseDet) {
-		getAbisResponseDets().remove(abisResponseDet);
-		abisResponseDet.setAbisResponse(null);
-
-		return abisResponseDet;
 	}
 
 }
