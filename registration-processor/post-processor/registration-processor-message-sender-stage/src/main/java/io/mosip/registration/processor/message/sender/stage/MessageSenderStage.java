@@ -57,6 +57,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.util.StatusNotificationTypeMapUtil;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderStatusMessage;
+import io.mosip.registration.processor.message.sender.utility.NotificationStageStatus;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateCode;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -199,8 +200,17 @@ public class MessageSenderStage extends MosipVerticleManager {
 			List<FieldValue> metadataList = packetMetaInfo.getIdentity().getMetaData();
 			String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 
+			NotificationTemplateType type=null;
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
-			NotificationTemplateType type = map.getTemplateType(status);
+			if(status.equals("UIN_GENERATOR_PROCESSED")) {
+				if(registrationStatusDto.getRegistrationType().equals("NEW"))
+					type=NotificationTemplateType.UIN_CREATED;
+				if(registrationStatusDto.getRegistrationType().equals("UPDATE"))
+					type=NotificationTemplateType.UIN_UPDATE;
+			}
+			else {
+			 type = map.getTemplateType(status);
+			}
 			if (type != null) {
 				setTemplateAndSubject(type, regType);
 			}
