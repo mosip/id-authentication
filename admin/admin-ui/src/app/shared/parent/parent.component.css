@@ -3,15 +3,9 @@
     flex-wrap: nowrap;
     width: 100%;
 }
-.app-sidebar{
-    width: 20%;
-}
 .app-main{
-    width: 80%;
+  width:75%;
 }
-
-@media(max-width:800px){
-    .app-sidebar{
-        width:20px;
-    }
+.app-sidebar{
+    width:20%;
 }

@@ -1,7 +1,7 @@
-.mat-card {
-    padding: 5px;
-    display: flex;
-    flex-wrap: wrap;
+.mat-toolbar{
+border-bottom: 0.3px solid;
+border-bottom-color: rgb(197, 195, 195);
+background-color: white;
 }
 
 .image {
@@ -9,9 +9,8 @@
 }
 
 .logo-text {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
-    margin-top: 12px;
     margin-left: 4px;
 }
 
@@ -33,7 +32,7 @@
     margin-right: 70px;
 }
 
-.dropdown {
+/* .dropdown {
     position: relative;
     display: inline-block;
   }
@@ -67,4 +66,4 @@
     .placer {
         margin-right: 10px;
     }
-}
+} */
