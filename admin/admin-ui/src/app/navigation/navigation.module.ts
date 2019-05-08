@@ -6,6 +6,8 @@ import { LoginComponent } from './login/login.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { MaterialModule } from '../material.module';
 import { AppRoutingModule } from '../app-routing.module';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   imports: [
@@ -14,6 +16,6 @@ import { AppRoutingModule } from '../app-routing.module';
     MaterialModule,
     AppRoutingModule
   ],
-  declarations: [LoginComponent, AuthenticationComponent]
+  declarations: [LoginComponent, AuthenticationComponent, ForgotPasswordComponent, ResetPasswordComponent]
 })
 export class NavigationModule { }
