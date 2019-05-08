@@ -402,7 +402,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setPacketSize(dto.getPacketSize());
 		syncRegistrationEntity.setSupervisorStatus(dto.getSupervisorStatus());
 		syncRegistrationEntity.setSupervisorComment(dto.getSupervisorComment());
-		syncRegistrationEntity.setOptionalValues(dto.getOptionalValues().toString().getBytes());
+		if (dto.getOptionalValues() != null) {
+			syncRegistrationEntity.setOptionalValues(dto.getOptionalValues().toString().getBytes());
+		}
+
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
 		if (syncRegistrationEntity.getIsDeleted()) {

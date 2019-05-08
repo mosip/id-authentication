@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,25 +10,35 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
+import io.mosip.registration.processor.status.decryptor.Decryptor;
+import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
 import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
+import io.mosip.registration.processor.status.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 
@@ -36,7 +47,10 @@ import io.mosip.registration.processor.status.service.impl.SyncRegistrationServi
  * 
  * @author Ranjitha Siddegowda
  */
-@RunWith(MockitoJUnitRunner.class)
+@RefreshScope
+// @RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(JsonUtils.class)
 public class SyncRegistrationServiceTest {
 
 	/** The sync registration dto. */
@@ -74,6 +88,11 @@ public class SyncRegistrationServiceTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
+	@Mock
+	private Decryptor decryptor;
+
+	RegistrationSyncRequestDTO registrationSyncRequestDTO;
+
 	/**
 	 * Setup.
 	 *
@@ -89,7 +108,7 @@ public class SyncRegistrationServiceTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
+		registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
 		entities = new ArrayList<>();
 
 		syncRegistrationDto = new SyncRegistrationDto();
@@ -98,21 +117,21 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto.setLangCode("ENGLISH");
 		syncRegistrationDto.setIsActive(true);
 		syncRegistrationDto.setIsDeleted(false);
-
-		// syncRegistrationDto.setStatusComment("NEW");
-		// syncRegistrationDto.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto.setPacketHashValue("ab123");
+		syncRegistrationDto.setSupervisorStatus("APPROVED");
 		syncRegistrationDto.setSyncType(SyncTypeDto.NEW.getValue());
 
 		syncRegistrationDto1 = new SyncRegistrationDto();
 
 		syncRegistrationDto1.setRegistrationId("27847657360002520181208183052");
 		syncRegistrationDto1.setLangCode("eng");
+
 		syncRegistrationDto1.setIsActive(true);
 		syncRegistrationDto1.setIsDeleted(false);
 
-		// syncRegistrationDto1.setStatusComment("NEW");
-		// syncRegistrationDto1.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto1.setSyncType("NEW_REGISTRATION");
+		syncRegistrationDto1.setPacketHashValue("ab123");
+		syncRegistrationDto1.setSupervisorStatus("APPROVED");
 
 		syncRegistrationDto2 = new SyncRegistrationDto();
 
@@ -121,9 +140,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto2.setIsActive(true);
 		syncRegistrationDto2.setIsDeleted(false);
 
-		// syncRegistrationDto2.setStatusComment("NEW");
-		// syncRegistrationDto2.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto2.setSyncType(SyncTypeDto.UPDATE.getValue());
+		syncRegistrationDto2.setPacketHashValue("ab123");
+		syncRegistrationDto2.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto3 = new SyncRegistrationDto();
 		syncRegistrationDto3.setRegistrationId("53718436135988");
@@ -131,9 +150,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto3.setIsActive(true);
 		syncRegistrationDto3.setIsDeleted(false);
 
-		// syncRegistrationDto3.setStatusComment("NEW");
-		// syncRegistrationDto3.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto3.setSyncType(SyncTypeDto.CORRECTION.getValue());
+		syncRegistrationDto3.setPacketHashValue("ab123");
+		syncRegistrationDto3.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto4 = new SyncRegistrationDto();
 		syncRegistrationDto4.setRegistrationId("12345678901234567890123456789");
@@ -141,9 +160,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto4.setIsActive(true);
 		syncRegistrationDto4.setIsDeleted(false);
 
-		// syncRegistrationDto4.setStatusComment("NEW");
-		// syncRegistrationDto4.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto4.setSyncType(SyncTypeDto.LOST_UIN.getValue());
+		syncRegistrationDto4.setPacketHashValue("ab123");
+		syncRegistrationDto4.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto5 = new SyncRegistrationDto();
 		syncRegistrationDto5.setRegistrationId("12345678901234567890123456789");
@@ -151,9 +170,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto5.setIsActive(true);
 		syncRegistrationDto5.setIsDeleted(false);
 
-		// syncRegistrationDto5.setStatusComment("NEW");
-		// syncRegistrationDto5.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto5.setSyncType(SyncTypeDto.NEW.getValue());
+		syncRegistrationDto5.setPacketHashValue("ab123");
+		syncRegistrationDto5.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto6 = new SyncRegistrationDto();
 		syncRegistrationDto6.setRegistrationId("12345678901234567890123456789");
@@ -161,9 +180,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto6.setIsActive(true);
 		syncRegistrationDto6.setIsDeleted(false);
 
-		// syncRegistrationDto6.setStatusComment("NEW");
-		// syncRegistrationDto6.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto6.setSyncType(SyncTypeDto.UPDATE_UIN.getValue());
+		syncRegistrationDto6.setPacketHashValue("ab123");
+		syncRegistrationDto6.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto7 = new SyncRegistrationDto();
 		syncRegistrationDto7.setRegistrationId(null);
@@ -171,9 +190,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto7.setIsActive(true);
 		syncRegistrationDto7.setIsDeleted(false);
 
-		// syncRegistrationDto7.setStatusComment("NEW");
-		// syncRegistrationDto7.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto7.setSyncType(SyncTypeDto.ACTIVATE_UIN.getValue());
+		syncRegistrationDto7.setPacketHashValue("ab123");
+		syncRegistrationDto7.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto8 = new SyncRegistrationDto();
 		syncRegistrationDto8.setRegistrationId("12345678901234567890123456789");
@@ -181,9 +200,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto8.setIsActive(true);
 		syncRegistrationDto8.setIsDeleted(false);
 
-		// syncRegistrationDto8.setStatusComment("NEW");
-		/// syncRegistrationDto8.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto8.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto8.setPacketHashValue("ab123");
+		syncRegistrationDto8.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto9 = new SyncRegistrationDto();
 		syncRegistrationDto9.setRegistrationId("27847657360002520181208183050");
@@ -191,9 +210,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto9.setIsActive(true);
 		syncRegistrationDto9.setIsDeleted(false);
 
-		// syncRegistrationDto9.setStatusComment("NEW");
-		// syncRegistrationDto9.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto9.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto9.setPacketHashValue("ab123");
+		syncRegistrationDto9.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto10 = new SyncRegistrationDto();
 		syncRegistrationDto10.setRegistrationId("27847657360002520181208183050");
@@ -201,9 +220,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto10.setIsActive(true);
 		syncRegistrationDto10.setIsDeleted(false);
 
-		// syncRegistrationDto10.setStatusComment("NEW");
-		// syncRegistrationDto10.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto10.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto10.setPacketHashValue("ab123");
+		syncRegistrationDto10.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto11 = new SyncRegistrationDto();
 		syncRegistrationDto11.setRegistrationId("27847657360002520181208183050");
@@ -211,9 +230,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto11.setIsActive(true);
 		syncRegistrationDto11.setIsDeleted(false);
 
-		// syncRegistrationDto11.setStatusComment("NEW");
-		// syncRegistrationDto11.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto11.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto11.setPacketHashValue("ab123");
+		syncRegistrationDto11.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto12 = new SyncRegistrationDto();
 		syncRegistrationDto12.setRegistrationId("12345678901234567890123456799");
@@ -221,9 +240,9 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto12.setIsActive(true);
 		syncRegistrationDto12.setIsDeleted(false);
 
-		// syncRegistrationDto12.setStatusComment("NEW");
-		// syncRegistrationDto12.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto12.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto12.setPacketHashValue("ab123");
+		syncRegistrationDto12.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto13 = new SyncRegistrationDto();
 		syncRegistrationDto13.setRegistrationId("1234567890123456789012345ABCD");
@@ -231,9 +250,26 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto13.setIsActive(true);
 		syncRegistrationDto13.setIsDeleted(false);
 
-		// syncRegistrationDto13.setStatusComment("NEW");
-		// syncRegistrationDto13.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto13.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto13.setPacketHashValue("ab123");
+		syncRegistrationDto13.setSupervisorStatus("test");
+
+		SyncRegistrationDto syncRegistrationDto14 = new SyncRegistrationDto();
+		syncRegistrationDto14.setRegistrationId("27847657360002520181208183123");
+		syncRegistrationDto14.setLangCode("eng");
+		syncRegistrationDto14.setIsActive(true);
+		syncRegistrationDto14.setIsDeleted(false);
+
+		syncRegistrationDto14.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+
+		SyncRegistrationDto syncRegistrationDto15 = new SyncRegistrationDto();
+		syncRegistrationDto15.setRegistrationId("27847657360002520181208183124");
+		syncRegistrationDto15.setLangCode("eng");
+		syncRegistrationDto15.setIsActive(true);
+		syncRegistrationDto15.setIsDeleted(false);
+
+		syncRegistrationDto15.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto15.setSupervisorStatus("test");
 
 		entities.add(syncRegistrationDto);
 		entities.add(syncRegistrationDto1);
@@ -249,6 +285,8 @@ public class SyncRegistrationServiceTest {
 		entities.add(syncRegistrationDto11);
 		entities.add(syncRegistrationDto12);
 		entities.add(syncRegistrationDto13);
+		entities.add(syncRegistrationDto14);
+		entities.add(syncRegistrationDto15);
 
 		syncResponseDto = new SyncResponseSuccessDto();
 		syncResponseDto.setRegistrationId(syncRegistrationDto.getRegistrationId());
@@ -260,8 +298,6 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setRegistrationId(syncRegistrationDto.getRegistrationId());
 		syncRegistrationEntity.setRegistrationType(syncRegistrationDto.getRegistrationType().toString());
 
-		// syncRegistrationEntity.setStatusCode(syncRegistrationDto.getSyncStatus().toString());
-		// syncRegistrationEntity.setStatusComment(syncRegistrationDto.getStatusComment());
 		syncRegistrationEntity.setLangCode(syncRegistrationDto.getLangCode());
 
 		syncRegistrationEntity.setIsDeleted(syncRegistrationDto.getIsDeleted());
@@ -270,7 +306,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setCreatedBy("MOSIP");
 		syncRegistrationEntity.setUpdatedBy("MOSIP");
 
-		Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenReturn(true);
+		Mockito.when(ridValidator.validateId(any())).thenReturn(true);
 
 	}
 
@@ -282,14 +318,14 @@ public class SyncRegistrationServiceTest {
 	@Test
 	public void testGetSyncRegistrationStatusSuccess() {
 
-		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
+		Mockito.when(syncRegistrationDao.save(any())).thenReturn(syncRegistrationEntity);
 		List<SyncResponseDto> syncResponse = syncRegistrationService.sync(entities);
 
 		assertEquals("Verifing List returned", ((SyncResponseFailureDto) syncResponse.get(0)).getRegistrationId(),
 				syncRegistrationDto.getRegistrationId());
 
-		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
-		Mockito.when(syncRegistrationDao.update(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
+		Mockito.when(syncRegistrationDao.findById(any())).thenReturn(syncRegistrationEntity);
+		Mockito.when(syncRegistrationDao.update(any())).thenReturn(syncRegistrationEntity);
 		List<SyncResponseDto> syncResponseDto = syncRegistrationService.sync(entities);
 		assertEquals("Verifing if list is returned. Expected value should be 1002",
 				syncRegistrationDto.getRegistrationId(),
@@ -308,7 +344,7 @@ public class SyncRegistrationServiceTest {
 	public void getSyncRegistrationStatusFailureTest() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
-		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(syncRegistrationDao.save(any())).thenThrow(exp);
 		syncRegistrationService.sync(entities);
 
 	}
@@ -318,7 +354,7 @@ public class SyncRegistrationServiceTest {
 	 */
 	@Test
 	public void testIsPresentSuccess() {
-		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
+		Mockito.when(syncRegistrationDao.findById(any())).thenReturn(syncRegistrationEntity);
 		boolean result = syncRegistrationService.isPresent("1001");
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is true", true, result);
 	}
@@ -332,7 +368,7 @@ public class SyncRegistrationServiceTest {
 	public void getSyncRegistrationIdFailureTest() {
 		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(),
 				RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
-		Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(ridValidator.validateId(any())).thenThrow(exp);
 		syncRegistrationService.sync(entities);
 	}
 
@@ -400,4 +436,59 @@ public class SyncRegistrationServiceTest {
 		Mockito.when(ridValidator.validateId("1234567890123456789012345ABCD")).thenThrow(exp);
 		syncRegistrationService.sync(entities);
 	}
+
+	@Test
+	public void testdecryptAndGetSyncRequest() throws PacketDecryptionFailureException, ApisResourceAccessException,
+			JsonParseException, JsonMappingException, IOException {
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		Mockito.when(decryptor.decrypt(any(), any(), any())).thenReturn("test");
+		PowerMockito.mockStatic(JsonUtils.class);
+		PowerMockito.when(JsonUtils.jsonStringToJavaObject(any(), any())).thenReturn(registrationSyncRequestDTO);
+		RegistrationSyncRequestDTO regSyncDto = syncRegistrationService.decryptAndGetSyncRequest("", "", "1234",
+				syncResponseList);
+		assertEquals("decrypted and return the dto", regSyncDto, registrationSyncRequestDTO);
+
+	}
+
+	@Test
+	public void testDecryptionException() throws PacketDecryptionFailureException, ApisResourceAccessException,
+			JsonParseException, JsonMappingException, IOException {
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		Mockito.when(decryptor.decrypt(any(), any(), any())).thenThrow(new PacketDecryptionFailureException("", ""));
+		PowerMockito.mockStatic(JsonUtils.class);
+		PowerMockito.when(JsonUtils.jsonStringToJavaObject(any(), any())).thenReturn(registrationSyncRequestDTO);
+		RegistrationSyncRequestDTO regSyncDto = syncRegistrationService.decryptAndGetSyncRequest("", "", "1234",
+				syncResponseList);
+		assertEquals(1, syncResponseList.size());
+
+	}
+
+	@Test
+	public void testJsonParseException() throws PacketDecryptionFailureException, ApisResourceAccessException,
+			JsonParseException, JsonMappingException, IOException {
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		Mockito.when(decryptor.decrypt(any(), any(), any())).thenReturn("test");
+		PowerMockito.mockStatic(JsonUtils.class);
+		PowerMockito.when(JsonUtils.jsonStringToJavaObject(any(), any()))
+				.thenThrow(new JsonParseException("", "", new Throwable()));
+		RegistrationSyncRequestDTO regSyncDto = syncRegistrationService.decryptAndGetSyncRequest("", "", "1234",
+				syncResponseList);
+		assertEquals(1, syncResponseList.size());
+
+	}
+
+	@Test
+	public void testJsonMappingException() throws PacketDecryptionFailureException, ApisResourceAccessException,
+			JsonParseException, JsonMappingException, IOException {
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		Mockito.when(decryptor.decrypt(any(), any(), any())).thenReturn("test");
+		PowerMockito.mockStatic(JsonUtils.class);
+		PowerMockito.when(JsonUtils.jsonStringToJavaObject(any(), any()))
+				.thenThrow(new JsonMappingException("", "", new Throwable()));
+		RegistrationSyncRequestDTO regSyncDto = syncRegistrationService.decryptAndGetSyncRequest("", "", "1234",
+				syncResponseList);
+		assertEquals(1, syncResponseList.size());
+
+	}
+
 }

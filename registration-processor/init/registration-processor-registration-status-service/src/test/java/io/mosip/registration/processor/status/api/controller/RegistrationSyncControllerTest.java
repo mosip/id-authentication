@@ -129,7 +129,8 @@ public class RegistrationSyncControllerTest {
 		registrationSyncRequestDTO.setVersion("1.0");
 		registrationSyncRequestDTO
 				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		arrayToJson = gson.toJson(registrationSyncRequestDTO);
+		arrayToJson = registrationSyncRequestDTO.toString();
+		// arrayToJson = gson.toJson(registrationSyncRequestDTO);
 		SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
 		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		syncResponseDto.setRegistrationId("1001");
@@ -154,11 +155,16 @@ public class RegistrationSyncControllerTest {
 	 */
 	@Test
 	public void syncRegistrationControllerSuccessTest() throws Exception {
+		Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(registrationSyncRequestDTO);
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
+		Mockito.when(registrationSyncRequestValidator.validate(ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(Boolean.TRUE);
 
 		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.TEXT_PLAIN_VALUE)
 				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.TEXT_PLAIN_VALUE)
-				.content(arrayToJson)).andExpect(status().isOk());
+				.content(arrayToJson.getBytes()).header("Center-Machine-RefId", "10011_10011")
+				.header("timestamp", "2019-05-07T05:13:55.704Z")).andExpect(status().isOk());
 	}
 
 	/**

@@ -2,6 +2,7 @@ package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
@@ -66,7 +66,7 @@ public class TransactionServiceTest {
 
 	@Test
 	public void addRegistrationTransactionSuccessCheck() {
-		Mockito.when(transactionRepositary.save(ArgumentMatchers.any())).thenReturn(transcationEntity);
+		Mockito.when(transactionRepositary.save(any())).thenReturn(transcationEntity);
 		TransactionEntity transcationEntity1 = transactionService.addRegistrationTransaction(transactionDto);
 		assertEquals("The Transaction should be addded successfully", transcationEntity.getId(),
 				transcationEntity1.getId());
@@ -83,14 +83,14 @@ public class TransactionServiceTest {
 		DataAccessLayerException exception = new DataAccessLayerException(
 				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
-		Mockito.when(transactionRepositary.save(ArgumentMatchers.any())).thenThrow(exception);
+		Mockito.when(transactionRepositary.save(any())).thenThrow(exception);
 		transactionService.addRegistrationTransaction(transactionDto);
 	}
 
 	@Test
 	public void getTransactionByRegIdAndStatusCodeSuccessCheck() {
-		Mockito.when(transactionRepositary.getTransactionByRegIdAndStatusCode(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(transcationEntities);
+		Mockito.when(transactionRepositary.getTransactionByRegIdAndStatusCode(any(), any()))
+				.thenReturn(transcationEntities);
 		TransactionDto dto = transactionService.getTransactionByRegIdAndStatusCode("1234", "status");
 
 		assertNotEquals(dto, null);
