@@ -148,6 +148,7 @@ public class PacketUploadController extends BaseController implements Initializa
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_UPLOAD_EMPTY_ERROR);
 				}
 			} else {
+				loadInitialPage();
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
 			}
 		} catch (RegBaseCheckedException checkedException) {
