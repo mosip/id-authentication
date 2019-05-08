@@ -14,7 +14,6 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
-import io.mosip.registration.processor.core.packet.dto.TransactionDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
@@ -32,7 +31,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.exception.DateParseException;
-import io.mosip.registration.processor.status.entity.TransactionEntity;
 
 /**
  * The Class PacketInfoMapper.
@@ -325,21 +323,6 @@ public class PacketInfoMapper {
 		regDemoDedupeListDto.setIsDeleted(entity.getIsDeleted());
 		regDemoDedupeListDto.setMatchedRegId(entity.getId().getMatchedRegId());
 		regDemoDedupeListDto.setRegId(entity.getRegId());
-
-		TransactionDto transactionDto = new TransactionDto();
-		TransactionEntity transactionEntity = entity.getRegistrationTransaction();
-		transactionDto.setLangCode(transactionEntity.getLangCode());
-		transactionDto.setParentid(transactionEntity.getParentid());
-		transactionDto.setReferenceId(transactionEntity.getReferenceId());
-		transactionDto.setReferenceIdType(transactionEntity.getReferenceIdType());
-		transactionDto.setRegistrationId(transactionEntity.getRegistrationId());
-		transactionDto.setRemarks(transactionEntity.getRemarks());
-		transactionDto.setStatusCode(transactionEntity.getStatusCode());
-		transactionDto.setStatusComment(transactionEntity.getStatusComment());
-		transactionDto.setTransactionId(transactionEntity.getId());
-		transactionDto.setTrntypecode(transactionEntity.getTrntypecode());
-
-		regDemoDedupeListDto.setRegistrationTransaction(transactionDto);
 
 		regDemoDedupeListDto.setRegtrnId(entity.getId().getRegtrnId());
 		regDemoDedupeListDto.setUpdBy(entity.getUpdBy());

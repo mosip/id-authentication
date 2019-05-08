@@ -39,7 +39,7 @@ public class BioDedupDao {
 		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
 				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
 		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
-			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity));
+			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity.getId().getId()));
 		}
 		for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
 			abisResponseDetEntities.addAll(
