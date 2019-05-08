@@ -21,7 +21,8 @@ public enum ErrorMessages {
 	HASHING_FAILED("hashing failed"), // PRG_CORE_REQ_010
 	FAILED_TO_ENCRYPT("encryption failed"), // PRG_CORE_REQ_011
 	FAILED_TO_DECRYPT("decryption failes"), // PRG_CORE_REQ_012
-	MISSING_REQUEST_PARAMETER("request parameter is missing");
+	MISSING_REQUEST_PARAMETER("request parameter is missing"),
+	INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE("Request date should be current date");//PRG_CORE_REQ_013
 
 	private ErrorMessages(String message) {
 		this.message = message;

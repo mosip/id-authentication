@@ -338,11 +338,7 @@
       "postal_code_required": "Please enter valid postalCode",
       "mobile_required": "Please enter valid mobile number",
       "email_required": "Please enter valid email id",
-      "pin_required": "Please enter valid pin"
-    },
-    "error": {
-      "error": "Application can not be created. Please try after some time",
-      "button_ok": "OK"
+      "pin_required": "Please enter valid CNIE"
     }
   },
   "documents": {
@@ -559,5 +555,9 @@
     "nearBy": "Registration centers based on your geo-location",
     "magnifying_glass": "Search based on selection of dropdown.",
     "preview_continue": "Upload all files to proceed"
+  },
+  "error": {
+    "error": "Application can not be created. Please try after some time",
+    "button_ok": "OK"
   }
 }

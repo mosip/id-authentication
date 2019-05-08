@@ -83,7 +83,7 @@ public class DataSyncController {
 	 * @param consumedData
 	 * @return response object
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN','REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/sync/consumedPreRegIds", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),

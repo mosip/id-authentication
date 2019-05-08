@@ -7,18 +7,24 @@
         <form [formGroup]="userForm" class="user__form">
           <h4>{{ 'demographic.language' | translate }}</h4>
 
+          <!-- <div style="width:95%"> -->
           <mat-form-field>
             <input
+              [matKeyboard]="keyboardLang"
               matInput
               #fullName
-              [matKeyboard]="keyboardLang"
+              #keyboardRef
               placeholder="{{ 'demographic.label_name' | translate }}"
               [formControlName]="formControlNames.fullName"
               (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
               (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
-            <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
+            <mat-error *ngIf="!fullName.invalid">
+              {{ 'demographic.validation.name_required' | translate }}
+            </mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.fullName, 0)">keyboard</mat-icon> -->
+          <!-- </div> -->
 
           <div class="user__age-or-date">
             <div class="user__date">
@@ -127,9 +133,10 @@
 
           <mat-form-field>
             <input
-              matInput
               [matKeyboard]="keyboardLang"
+              matInput
               #addressLine1
+              #keyboardRef
               placeholder="{{ 'demographic.label_address1' | translate }}"
               [formControlName]="formControlNames.addressLine1"
               (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
@@ -139,11 +146,13 @@
               'demographic.validation.address_required' | translate
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine1, 1)">keyboard</mat-icon> -->
           <mat-form-field>
             <input
               matInput
-              #addressLine2
               [matKeyboard]="keyboardLang"
+              #addressLine2
+              #keyboardRef
               placeholder="{{ 'demographic.label_address2' | translate }}"
               [formControlName]="formControlNames.addressLine2"
               (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
@@ -153,11 +162,13 @@
               'demographic.validation.address_required' | translate
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine2, 2)">keyboard</mat-icon> -->
           <mat-form-field>
             <input
+              [matKeyboard]="keyboardLang"
               matInput
               #addressLine3
-              [matKeyboard]="keyboardLang"
+              #keyboardRef
               placeholder="{{ 'demographic.label_address3' | translate }}"
               [formControlName]="formControlNames.addressLine3"
               (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
@@ -167,6 +178,7 @@
               'demographic.validation.address_required' | translate
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine3, 3)">keyboard</mat-icon> -->
 
           <div class="user__dropdown">
             <mat-form-field>
@@ -176,7 +188,7 @@
                 [formControlName]="formControlNames.region"
                 #region
               >
-                <mat-option *ngFor="let region of regions1" [value]="region.valueCode">{{
+                <mat-option *ngFor="let region of regions_in_primary_lang" [value]="region.valueCode">{{
                   region.valueName
                 }}</mat-option>
               </mat-select>
@@ -192,7 +204,7 @@
                 [formControlName]="formControlNames.province"
                 #province
               >
-                <mat-option *ngFor="let province of provinces1" [value]="province.valueCode">{{
+                <mat-option *ngFor="let province of provinces_in_primary_lang" [value]="province.valueCode">{{
                   province.valueName
                 }}</mat-option>
               </mat-select>
@@ -216,7 +228,9 @@
                 [formControlName]="formControlNames.city"
                 #city
               >
-                <mat-option *ngFor="let city of cities1" [value]="city.valueCode">{{ city.valueName }}</mat-option>
+                <mat-option *ngFor="let city of cities_in_primary_lang" [value]="city.valueCode">{{
+                  city.valueName
+                }}</mat-option>
               </mat-select>
               <mat-error *ngIf="!city.invalid">{{ 'demographic.validation.city_required' | translate }}</mat-error>
             </mat-form-field>
@@ -230,7 +244,7 @@
                 #authority
               >
                 <mat-option
-                  *ngFor="let localAdministrativeAuthoritie of localAdministrativeAuthorities1"
+                  *ngFor="let localAdministrativeAuthoritie of localAdministrativeAuthorities_in_primary_lang"
                   [value]="localAdministrativeAuthoritie.valueCode"
                   >{{ localAdministrativeAuthoritie.valueName }}</mat-option
                 >
@@ -303,15 +317,17 @@
           <h4>{{ secondaryLanguagelabels.language }}</h4>
           <mat-form-field>
             <input
-              matInput
               [matKeyboard]="keyboardSecondaryLang"
+              matInput
               [placeholder]="secondaryLanguagelabels.label_name"
               [formControlName]="formControlNames.fullNameSecondary"
               name="t_fullName"
               #t_fullName
+              #keyboardRef
             />
             <mat-error *ngIf="!t_fullName.invalid">{{ secondaryLanguagelabels.validation.name_required }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.fullNameSecondary, 4)">keyboard</mat-icon> -->
 
           <div class="user__age-or-date">
             <div class="user__date">
@@ -410,9 +426,10 @@
 
           <mat-form-field>
             <input
-              matInput
               [matKeyboard]="keyboardSecondaryLang"
+              matInput
               #t_addressLine1
+              #keyboardRef
               name="t_addressLine1"
               [placeholder]="secondaryLanguagelabels.label_address1"
               [formControlName]="formControlNames.addressLine1Secondary"
@@ -421,12 +438,14 @@
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine1Secondary, 5)">keyboard</mat-icon> -->
           <mat-form-field>
             <input
+              [matKeyboard]="keyboardSecondaryLang"
               [formControlName]="formControlNames.addressLine2Secondary"
               matInput
-              [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine2
+              #keyboardRef
               name="t_addressLine2"
               [placeholder]="secondaryLanguagelabels.label_address2"
             />
@@ -434,29 +453,33 @@
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine2Secondary, 6)">keyboard</mat-icon> -->
           <mat-form-field>
             <input
+              [matKeyboard]="keyboardSecondaryLang"
               [formControlName]="formControlNames.addressLine3Secondary"
               name="t_addressLine3"
               matInput
-              [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine3
+              #keyboardRef
               [placeholder]="secondaryLanguagelabels.label_address3"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
           </mat-form-field>
+          <!-- <mat-icon (click)="onKeyboardDisplay(formControlNames.addressLine3Secondary, 7)">keyboard</mat-icon> -->
 
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
+                required
                 name="t_region"
                 [value]="userForm.get(formControlNames.region).value"
                 [disabled]="true"
                 [placeholder]="secondaryLanguagelabels.label_region"
               >
-                <mat-option *ngFor="let region of regions2" [value]="region.valueCode">{{
+                <mat-option *ngFor="let region of regions_in_secondary_lang" [value]="region.valueCode">{{
                   region.valueName
                 }}</mat-option>
               </mat-select>
@@ -471,7 +494,7 @@
                 [value]="userForm.get(formControlNames.province).value"
                 name="t_province"
               >
-                <mat-option *ngFor="let province of provinces2" [value]="province.valueCode">{{
+                <mat-option *ngFor="let province of provinces_in_secondary_lang" [value]="province.valueCode">{{
                   province.valueName
                 }}</mat-option>
               </mat-select>
@@ -485,7 +508,9 @@
                 [value]="userForm.get(formControlNames.city).value"
                 name="t_city"
               >
-                <mat-option *ngFor="let city of cities2" [value]="city.valueCode">{{ city.valueName }}</mat-option>
+                <mat-option *ngFor="let city of cities_in_secondary_lang" [value]="city.valueCode">{{
+                  city.valueName
+                }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -497,9 +522,11 @@
                 [value]="userForm.get(formControlNames.localAdministrativeAuthority).value"
                 name="t_localAdministrativeAuthority"
               >
-                <mat-option *ngFor="let LAA of localAdministrativeAuthorities2" [value]="LAA.valueCode">{{
-                  LAA.valueName
-                }}</mat-option>
+                <mat-option
+                  *ngFor="let LAA of localAdministrativeAuthorities_in_secondary_lang"
+                  [value]="LAA.valueCode"
+                  >{{ LAA.valueName }}</mat-option
+                >
               </mat-select>
             </mat-form-field>
           </div>

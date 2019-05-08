@@ -12,7 +12,7 @@
 	<artifactId>authentication-service</artifactId>
 	<packaging>jar</packaging>
 
-	<name>id-authentication-service</name>
+	<name>authentication-service</name>
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
 	<dependencies>

@@ -120,7 +120,7 @@ export class DataStorageService {
     console.log('formData', formdata);
 
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + preRegId,
       formdata
     );
     // console.log('servvice called', formdata);
@@ -249,6 +249,12 @@ export class DataStorageService {
     return this.httpClient.put(url, {
       observe: 'body',
       responseType: 'json'
+    });
+  }
+
+  getFileData(fileDocumentId, preId) {
+    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + fileDocumentId, {
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.preRegistrationId, preId)
     });
   }
 

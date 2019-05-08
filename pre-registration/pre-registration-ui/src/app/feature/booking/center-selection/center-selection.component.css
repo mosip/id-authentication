@@ -156,6 +156,7 @@ input[type="radio"] {
   opacity: 100%;
   font-family: Roboto;
   white-space: nowrap;
+  cursor: pointer;
 }
 .center_selection-nearby-btn {
   color: #afafaf;

@@ -39,6 +39,7 @@ import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -414,4 +415,19 @@ public class DemographicServiceUtil {
 		return false;
 	}
 
+	/**
+	 * This method will return the MainResponseDTO with id and version
+	 * 
+	 * @param mainRequestDto
+	 * @return MainResponseDTO<?>
+	 */
+	public  MainResponseDTO<?> getMainResponseDto(MainRequestDTO<?> mainRequestDto ){
+		log.info("sessionId", "idType", "id", "In getMainResponseDTO method of Login Common Util");
+		MainResponseDTO<?> response=new MainResponseDTO<>();
+		response.setId(mainRequestDto.getId());
+		response.setVersion(mainRequestDto.getVersion());
+		
+		return response;
+	}
+	
 }

@@ -130,20 +130,19 @@ public class RegistrationStatusServiceImpl
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::addRegistrationStatus()::entry");
-		String transactionId = generateId();
-		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
-				null, registrationStatusDto.getLatestTransactionTypeCode(), "Added registration status record",
-				registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
-		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-		transactionDto.setReferenceIdType("Added registration record");
-		transcationStatusService.addRegistrationTransaction(transactionDto);
-
-		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
+			String transactionId = generateId();
+			registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
 			description = "Registration status added successfully";
+			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
+					null, registrationStatusDto.getLatestTransactionTypeCode(), "Added registration status record",
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
+			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
+			transactionDto.setReferenceIdType("Added registration record");
+			transcationStatusService.addRegistrationTransaction(transactionDto);
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			description = "DataAccessLayerException while adding Registration status for Registration Id : "

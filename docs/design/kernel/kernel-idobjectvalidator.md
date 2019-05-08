@@ -1,4 +1,3 @@
-
 # ID Object Validator:
 
 ## 1. Background
@@ -19,7 +18,19 @@ This library can be used to validate ID Object. It performs below 4 validations.
 - Pre-Registration and Registration Processor can use ID Object Validator to validate ID Object against ID Schema configured for the country, and data of few ID attributes against Master Data stored for the country
 - Registration Client can use ID Object Validator to validate created ID Object against ID Schema for the country, verification for ID Attributes for Registration Processor will happen against their local database
 
-## Solution:    
+
+***1.2. Key Non-Functional Requirements -***   
+-	Logging :
+	-	Log all exceptions along with error code and short error message
+	-	As a security measure, Individualâ€™s UIN should not be logged
+-	Audit :
+	-	Audit all transaction details in database
+	-	Individualâ€™s UIN should not be audited     
+-	Exception :
+	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
+-	Security :  
+
+## 2. Solution:    
 
 The key solution considerations are - 
 - Create an interface IDObjectValidator with a method to validate input ID JSON
@@ -27,12 +38,13 @@ The key solution considerations are -
 - IDObjectValidator can be used in any MOSIP module to validate ID Object, after adding its jar in their class path
 
 
-**Class Diagram:**    
-![kernel_jsonvalidator_classdiagram](_images/kernel-jsonvalidator-cd.png)
-
-**Sequence Diagram:**    
-![kernel_jsonvalidator_classdiagram](_images/kernel-jsonvalidator-cd.png)
+**2.1. Class Diagram:**    
+![kernel_idobjectvalidator_classdiagram](_images/kernel-idobjectvalidator-cd.PNG)
 
 
-**Implementation**
-[kernel-jsonvalidator](https://github.com/mosip/mosip/tree/master/kernel/kernel-jsonvalidator)
+**2.2. Sequence Diagram:**    
+![kernel_idobjectvalidator_classdiagram](_images/kernel-idobjectvalidator-sd.PNG)
+
+
+**2.3. Implementation**
+[kernel-idobjectvalidator](https://github.com/mosip/mosip/tree/master/kernel/kernel-idobjectvalidator)
