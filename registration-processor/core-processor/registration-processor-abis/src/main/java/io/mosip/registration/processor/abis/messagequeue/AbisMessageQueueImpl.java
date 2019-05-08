@@ -158,7 +158,7 @@ public class AbisMessageQueueImpl {
 			}
 			
 			else {
-				object.put("response", "invalid request");
+				object.put("respoQueueConnectionNotFoundnse", "invalid request");
 				response=obj.writeValueAsString(object);
 			}
 			
@@ -167,7 +167,7 @@ public class AbisMessageQueueImpl {
 
 			isrequestAddedtoQueue = mosipQueueManager.send(queue,  response.getBytes("UTF-8"),
 						abismiddlewareaddress);
-		} catch (IOException | ApisResourceAccessException | ParserConfigurationException | SAXException e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getMessage(),e.getStackTrace().toString());
 		}

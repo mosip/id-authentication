@@ -20,10 +20,12 @@ import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.abis.exception.MissingMandatoryFieldsException;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
@@ -77,12 +79,12 @@ public class AbisServiceImpl implements AbisService {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
 
+	@Override
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
 	{
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::entry");
 
-		boolean isPresent = false;
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
 
@@ -105,12 +107,12 @@ public class AbisServiceImpl implements AbisService {
 				NodeList faceNodeList = doc.getElementsByTagName(testFace);
 
 				if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
-					isPresent = true;
-				}
-				if (isPresent) {
 					response.setReturnValue(1);
-				} else {
+
+				}
+				else {
 					response.setReturnValue(2);
+					response.setFailureReason(7);
 				}
 			}else {
 				response.setReturnValue(2);
@@ -123,7 +125,15 @@ public class AbisServiceImpl implements AbisService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url." + ExceptionUtils.getStackTrace(e));
 
-		}catch(Exception e) {
+		}
+		catch (MissingMandatoryFieldsException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(5);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "MissingMandatoryFieldsException : Mandatory fields are missing in Request." + ExceptionUtils.getStackTrace(e));
+
+		}
+		catch(Exception e) {
 			response.setReturnValue(2);
 			response.setFailureReason(3);
 
@@ -144,7 +154,7 @@ public class AbisServiceImpl implements AbisService {
 		if(referenceId != null) {
 			regId = packetInfoManager.getRidByReferenceId(referenceId);
 			List<String> pathSegments = new ArrayList<>();
-			if(regId != null && regId.size() > 0) {
+			if(regId != null && regId.isEmpty()) {
 				pathSegments.add(regId.get(0));
 
 				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
@@ -164,9 +174,9 @@ public class AbisServiceImpl implements AbisService {
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					return dBuilder.parse(is);
 				}
-			}else {
-				//bio request url send no data
 			}
+		}else {
+			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::getCbeffDocument()::exit");
@@ -174,12 +184,12 @@ public class AbisServiceImpl implements AbisService {
 		return null;
 	}
 
+	@Override
 	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest){
 		boolean duplicate = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::performDedupe()::entry");
 
-		int count = 0;
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
 		String referenceId = identifyRequest.getReferenceId();
 
@@ -209,33 +219,11 @@ public class AbisServiceImpl implements AbisService {
 				response.setReturnValue(1);
 
 				if (duplicate) {
-					CandidateListDto cd = new CandidateListDto();
-					CandidatesDto[] candidatesDto;
-					if(!identifyRequest.getGallery().getReferenceIds().isEmpty()) {
-						candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
-						for (int i = 0; i <candidatesDto.length; i++) {
-							candidatesDto[i] = new CandidatesDto();
-							candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
-							candidatesDto[i].setScaledScore(100 - i + "");
-							count++;
-						}							
-					}
-					else{
-						candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-						for (int i = 0; i <candidatesDto.length; i++) {
-							candidatesDto[i] = new CandidatesDto();
-							candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-							candidatesDto[i].setScaledScore(100 - i + "");
-							count++;
-						}
-					}
-					cd.setCount(count + "");
-					cd.setCandidates(candidatesDto);
-					response.setCandidateList(cd);
+					addCandidateList(identifyRequest,response);
 				}
 			}else {
 				response.setReturnValue(2);
-
+				response.setFailureReason(7);
 			}
 
 		}  catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
@@ -244,7 +232,15 @@ public class AbisServiceImpl implements AbisService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url." + ExceptionUtils.getStackTrace(e));
 
-		}catch(Exception e) {
+		}
+		catch (MissingMandatoryFieldsException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(5);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "MissingMandatoryFieldsException : Mandatory fields are missing in Request." + ExceptionUtils.getStackTrace(e));
+
+		}
+		catch(Exception e) {
 			response.setReturnValue(2);
 			response.setFailureReason(3);
 
@@ -256,6 +252,35 @@ public class AbisServiceImpl implements AbisService {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::performDedupe()::exit");
 		return response;
+	}
+
+	private void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
+		int count = 0;
+
+		CandidateListDto cd = new CandidateListDto();
+		CandidatesDto[] candidatesDto;
+		if(!identifyRequest.getGallery().getReferenceIds().isEmpty()) {
+			candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
+			for (int i = 0; i <candidatesDto.length; i++) {
+				candidatesDto[i] = new CandidatesDto();
+				candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
+				candidatesDto[i].setScaledScore(100 - i + "");
+				count++;
+			}							
+		}
+		else{
+			candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
+			for (int i = 0; i <candidatesDto.length; i++) {
+				candidatesDto[i] = new CandidatesDto();
+				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+				candidatesDto[i].setScaledScore(100 - i + "");
+				count++;
+			}
+		}
+		cd.setCount(count + "");
+		cd.setCandidates(candidatesDto);
+		response.setCandidateList(cd);
+
 	}
 
 	/**

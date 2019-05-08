@@ -635,8 +635,11 @@ public enum PlatformErrorMessages {
 	UNAUTHORIZED_ACCESS(PlatformConstants.ABIS + "06", "Unauthorized Access"),
 
 	/** Unable to fetch biometric details */
-	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS + "07", "Unable to fetch biometric details");
+	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS + "07", "Unable to fetch biometric details"),
 
+	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing");
+
+	
 	/** The error message. */
 	private final String errorMessage;
 
