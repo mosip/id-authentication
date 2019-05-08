@@ -39,8 +39,6 @@ public class MessageDTO implements Serializable {
 	/** The retry count. */
 	private Integer retryCount;
 
-	private String destinationStage;
-
 	/**
 	 * Gets the reg type
 	 *
@@ -157,19 +155,10 @@ public class MessageDTO implements Serializable {
 		return messageBusAddress;
 	}
 
-	public String getDestinationStage() {
-		return destinationStage;
-	}
-
-	public void setDestinationStage(String destinationStage) {
-		this.destinationStage = destinationStage;
-	}
-
 	@Override
 	public String toString() {
 		return "MessageDTO [reg_type=" + reg_type + ", rid=" + rid + ", isValid=" + isValid + ", internalError="
-				+ internalError + ", messageBusAddress=" + messageBusAddress + ", retryCount=" + retryCount
-				+ ", destinationStage=" + destinationStage + "]";
+				+ internalError + ", messageBusAddress=" + messageBusAddress + ", retryCount=" + retryCount + "]";
 	}
 
 }
