@@ -1,7 +1,5 @@
 package io.mosip.registration.dto;
 
-import javafx.beans.property.SimpleStringProperty;
-
 /**
  * The DTO Class UserMachineMappingDTO.
  *
@@ -9,10 +7,10 @@ import javafx.beans.property.SimpleStringProperty;
  * @version 1.0.0
  */
 public class UserMachineMappingDTO {
-	private SimpleStringProperty userID;
-	private SimpleStringProperty userName;
-	private SimpleStringProperty status;
-	private SimpleStringProperty role;
+	private String userID;
+	private String userName;
+	private String status;
+	private String role;
 
 	private String centreID;
 
@@ -26,28 +24,21 @@ public class UserMachineMappingDTO {
 	/**
 	 * UserMachineMapping constructor is to create DTO.
 	 *
-	 * @param userID 
-	 * 				the user ID
-	 * @param userName 
-	 * 				the user name
-	 * @param role 
-	 * 				the role
-	 * @param status 
-	 * 				the status
-	 * @param centreID 
-	 * 				the centre ID
-	 * @param stationID 
-	 * 				the station ID
-	 * @param machineID 
-	 * 				the machine ID
+	 * @param userID    the user ID
+	 * @param userName  the user name
+	 * @param role      the role
+	 * @param status    the status
+	 * @param centreID  the centre ID
+	 * @param stationID the station ID
+	 * @param machineID the machine ID
 	 */
 	public UserMachineMappingDTO(String userID, String userName, String role, String status, String centreID,
 			String stationID, String machineID) {
 		super();
-		this.userID = new SimpleStringProperty(userID);
-		this.userName = new SimpleStringProperty(userName);
-		this.role = new SimpleStringProperty(role);
-		this.status = new SimpleStringProperty(status);
+		this.userID = userID;
+		this.userName = userName;
+		this.role = role;
+		this.status = status;
 		this.centreID = centreID;
 		this.stationID = stationID;
 		this.machineID = machineID;
@@ -59,7 +50,7 @@ public class UserMachineMappingDTO {
 	 * @return the user ID
 	 */
 	public String getUserID() {
-		return userID.get();
+		return userID;
 	}
 
 	/**
@@ -68,7 +59,7 @@ public class UserMachineMappingDTO {
 	 * @param userID the new user ID
 	 */
 	public void setUserID(String userID) {
-		this.userID.set(userID);
+		this.userID = userID;
 	}
 
 	/**
@@ -77,7 +68,7 @@ public class UserMachineMappingDTO {
 	 * @return the user name
 	 */
 	public String getUserName() {
-		return userName.get();
+		return userName;
 	}
 
 	/**
@@ -86,7 +77,7 @@ public class UserMachineMappingDTO {
 	 * @param userName the new user name
 	 */
 	public void setUserName(String userName) {
-		this.userName.set(userName);
+		this.userName = userName;
 	}
 
 	/**
@@ -95,7 +86,7 @@ public class UserMachineMappingDTO {
 	 * @return the role
 	 */
 	public String getRole() {
-		return role.get();
+		return role;
 	}
 
 	/**
@@ -104,7 +95,7 @@ public class UserMachineMappingDTO {
 	 * @param role the new role
 	 */
 	public void setRole(String role) {
-		this.role.set(role);
+		this.role = role;
 
 	}
 
@@ -114,7 +105,7 @@ public class UserMachineMappingDTO {
 	 * @return the status
 	 */
 	public String getStatus() {
-		return status.get();
+		return status;
 	}
 
 	/**
@@ -123,7 +114,7 @@ public class UserMachineMappingDTO {
 	 * @param status the new status
 	 */
 	public void setStatus(String status) {
-		this.status.set(status);
+		this.status = status;
 	}
 
 	/**
