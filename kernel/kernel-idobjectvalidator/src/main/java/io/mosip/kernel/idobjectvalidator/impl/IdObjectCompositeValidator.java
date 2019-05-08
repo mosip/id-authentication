@@ -1,4 +1,4 @@
-package io.mosip.kernel.jsonvalidator.impl;
+package io.mosip.kernel.idobjectvalidator.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
