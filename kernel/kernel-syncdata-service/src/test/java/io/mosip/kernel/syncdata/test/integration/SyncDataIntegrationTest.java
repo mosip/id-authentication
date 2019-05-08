@@ -309,16 +309,16 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
-	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463";
-	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata";
+	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0&keyindex=abcd";
+	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630&keyindex=abcd";
+	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0&keyindex=abcd";
+	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463&keyindex=abcd";
+	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata?keyindex=abcd";
 	private SignatureResponse signResponse;
 
 	@Before
 	public void setup() {
-		signResponse=new SignatureResponse();
+		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
 		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
@@ -326,8 +326,9 @@ public class SyncDataIntegrationTest {
 		applications = new ArrayList<>();
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
 		machines = new ArrayList<>();
+		byte[] publicKey = { 1, 0, 1, 0 };
 		machines.add(new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG",
-				localdateTime, null));
+				localdateTime, publicKey, "abcd", null));
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
 				new MachineSpecification("1001", "Laptop", "Lenovo", "T480", "1001", "1.0", "Laptop", "ENG", null));
@@ -617,8 +618,8 @@ public class SyncDataIntegrationTest {
 		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(applications);
 		when(machineRepository.findMachineById(Mockito.anyString())).thenReturn(machines);
-		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(machines);
+		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.anyString())).thenReturn(machines);
 		when(machineSpecificationRepository.findByMachineId(Mockito.anyString())).thenReturn(machineSpecification);
 		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machineSpecification);
@@ -742,8 +743,8 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(builder.toUriString())).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 		when(signatureUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 	}
-	
-    @Test
+
+	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccess() throws Exception {
 		mockSuccess();
@@ -784,7 +785,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
 		mockMvc.perform(
-				get("/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
+				get("/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33&keyindex=abcd", "1001"))
 				.andExpect(status().isOk());
 	}
 
@@ -801,8 +802,8 @@ public class SyncDataIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineFetchException() throws Exception {
 		mockSuccess();
-		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
 

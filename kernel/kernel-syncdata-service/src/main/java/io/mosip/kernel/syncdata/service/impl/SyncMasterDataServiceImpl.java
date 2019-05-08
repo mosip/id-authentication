@@ -56,6 +56,8 @@ import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
@@ -99,7 +101,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Override
 	public MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNum,
-			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) throws InterruptedException, ExecutionException {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp,String keyIndex) throws InterruptedException, ExecutionException {
 		String machineId = null;
 		RegistrationCenterMachineDto regCenterMachineDto = null;
 		if (regCenterId == null) {
@@ -160,7 +162,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<ScreenDetailDto>> screenDetails;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
-		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp);
+		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp,keyIndex);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimeStamp);
 		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated, currentTimeStamp);
 		templates = serviceHelper.getTemplates(lastUpdated, currentTimeStamp);
@@ -370,4 +372,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 		return regCenterMachine;
 	}
+
+	@Override
+	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

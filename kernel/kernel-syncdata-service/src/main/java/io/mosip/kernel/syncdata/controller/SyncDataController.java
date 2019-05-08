@@ -145,14 +145,15 @@ public class SyncDataController {
 	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
+			@RequestParam(value="keyindex",required=true)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		String regCenterId = null;
 		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
-				timestamp, currentTimeStamp);
+				timestamp, currentTimeStamp,keyIndex);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 
@@ -178,13 +179,14 @@ public class SyncDataController {
 			@PathVariable("regcenterId") String regCenterId,
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
+			@RequestParam(value="keyindex",required=true)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
-				timestamp, currentTimeStamp);
+				timestamp, currentTimeStamp,keyIndex);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 
