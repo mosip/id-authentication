@@ -48,13 +48,31 @@ body {
 
 @media (max-width: 500px) {
   .mat-keyboard .mat-raised-button {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 12px;
-    margin-left: -30px;
+    margin-left: 0px;
     padding: 0;
-    height: 20px;
+    height: 30px;
   }
 }
 .user__date .mat-form-field-label {
   text-align: center;
+}
+
+mat-keyboard-container {
+  min-width: 100% !important;
+  padding: unset !important;
+  position: absolute !important;
+  bottom: 0% !important;
+}
+
+mat-keyboard-container mat-keyboard-key .mat-keyboard-key {
+  /* //padding: unset !important; */
+  padding: 0 0.485rem !important;
+}
+.mat-keyboard-col {
+  padding: 1px !important;
+}
+.mat-keyboard-wrapper {
+  padding: 0 !important;
 }

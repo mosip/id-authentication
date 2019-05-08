@@ -1,7 +1,6 @@
 package io.mosip.preregistration.login.controller;
 
 import java.net.HttpCookie;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,32 +8,25 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.coyote.http2.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.login.dto.MainRequestDTO;
-import io.mosip.preregistration.login.dto.MainResponseDTO;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
-import io.mosip.preregistration.login.dto.OtpUserDTO;
 import io.mosip.preregistration.login.dto.User;
-import io.mosip.preregistration.login.dto.UserOtpDTO;
 import io.mosip.preregistration.login.service.LoginService;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 import io.swagger.annotations.Api;
@@ -111,11 +103,10 @@ public class LoginController {
 	@PostMapping(value="/invalidateToken",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Inavlidate the token")
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResponseEntity<AuthNResponse> invalidateToken(HttpServletRequest req){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> invalidateToken(HttpServletRequest req){
 		log.info("sessionId", "idType", "id",
 				"In invalidateToken method of Login controller for invalidating access token ");
 		String authHeader=req.getHeader("Cookie");
-		System.out.println(authHeader);
 		//List<HttpCookie> authCookie=HttpCookie.parse(authHeader);
 		return ResponseEntity.status(HttpStatus.OK).body(loginService.invalidateToken(authHeader));
 		

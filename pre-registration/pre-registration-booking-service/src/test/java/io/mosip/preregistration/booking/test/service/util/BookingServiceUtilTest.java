@@ -52,7 +52,6 @@ import io.mosip.preregistration.booking.test.BookingApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
@@ -344,17 +343,17 @@ public class BookingServiceUtilTest {
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
 		@SuppressWarnings("rawtypes")
-		MainListResponseDTO preRegResponse = new MainListResponseDTO();
+		MainResponseDTO preRegResponse = new MainResponseDTO();
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
 
-		preRegResponse.setResponse(statusList);
+		preRegResponse.setResponse(preRegistartionStatusDTO);
 		preRegResponse.setErrors(null);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());		
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
 		
 	}
@@ -363,7 +362,7 @@ public class BookingServiceUtilTest {
 	public void demographicGetStatusExceptionTest() {
 		RestClientException ex =new RestClientException(null);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
 		
 	}
@@ -372,16 +371,18 @@ public class BookingServiceUtilTest {
 	public void callGetStatusRestServiceforCancel1Test() {
 		
 		@SuppressWarnings("rawtypes")
-		MainListResponseDTO preRegResponse = new MainListResponseDTO();
+		MainResponseDTO preRegResponse = new MainResponseDTO();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		preRegResponse.setErrors(err);
+		List<ExceptionJSONInfoDTO> list=new ArrayList<>();
+		list.add(err);
+		preRegResponse.setErrors(list);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
 		
 	}
@@ -390,16 +391,18 @@ public class BookingServiceUtilTest {
 	public void callGetStatusRestServiceTest() {
 		
 		@SuppressWarnings("rawtypes")
-		MainListResponseDTO preRegResponse = new MainListResponseDTO();
+		MainResponseDTO preRegResponse = new MainResponseDTO();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		preRegResponse.setErrors(err);
+		List<ExceptionJSONInfoDTO> list=new ArrayList<>();
+		list.add(err);
+		preRegResponse.setErrors(list);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusRestService("23587986034785");
 		
 	}
@@ -408,7 +411,7 @@ public class BookingServiceUtilTest {
 	public void callGetStatusRestService1Test() {
 		RestClientException ex =new RestClientException(null);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
 		serviceUtil.callGetStatusRestService("23587986034785");
 		
 	}

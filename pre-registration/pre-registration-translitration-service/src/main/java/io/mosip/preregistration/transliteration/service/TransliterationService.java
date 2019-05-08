@@ -111,17 +111,17 @@ public class TransliterationService {
 					}
 					else {
 						throw new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
-								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
+								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage(),null);
 					}
 
 					
 				} else {
 					throw new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode(),
-							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage());
+							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(),null);
 				}
 			}
 		} catch (Exception e) {
-			new TransliterationExceptionCatcher().handle(e);
+			new TransliterationExceptionCatcher().handle(e,responseDTO);
 		}
 		return responseDTO;
 	}

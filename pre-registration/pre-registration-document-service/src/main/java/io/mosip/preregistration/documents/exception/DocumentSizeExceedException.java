@@ -5,7 +5,8 @@
 package io.mosip.preregistration.documents.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * This class defines the DocumentSizeExceedException that occurs when the
@@ -15,10 +16,14 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
  * @since 1.0.0
  * 
  */
+
+@Getter
 public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4879473387592007255L;
+	
+	private MainResponseDTO<?> response;
 
 	/**
 	 * Default constructor
@@ -28,25 +33,7 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	}
 
-	/**
-	 * @param message
-	 *            pass Error Message
-	 * @param cause
-	 *            pass Error cause
-	 */
-	public DocumentSizeExceedException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM_DOC_007.toString(), message, cause);
 
-	}
-
-	/**
-	 * @param message
-	 *            pass Error Message
-	 */
-	public DocumentSizeExceedException(String message) {
-		super(ErrorCodes.PRG_PAM_DOC_007.toString(), message);
-
-	}
 
 	/**
 	 * @param errorCode
@@ -68,6 +55,20 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 	 */
 	public DocumentSizeExceedException(String errorCode, String message) {
 		super(errorCode, message);
+	}
+	
+	/**
+	 * 
+	 * @param errorCode
+	 *    	     pass Error code
+	 * @param message
+	 *           pass Error Message
+	 * @param response
+	 * 			 pass response
+	 */
+	public DocumentSizeExceedException(String errorCode, String message,MainResponseDTO<?> response) {
+		super(errorCode, message);
+		this.response=response;
 	}
 
 }

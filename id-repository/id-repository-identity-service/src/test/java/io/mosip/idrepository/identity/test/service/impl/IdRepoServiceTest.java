@@ -1,0 +1,1256 @@
+package io.mosip.idrepository.identity.test.service.impl;
+
+import static org.mockito.Mockito.when;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.hibernate.exception.JDBCConnectionException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
+import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.IdRequestDTO;
+import io.mosip.idrepository.core.dto.RequestDTO;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.AuditHelper;
+import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.idrepository.identity.entity.Uin;
+import io.mosip.idrepository.identity.entity.UinBiometric;
+import io.mosip.idrepository.identity.entity.UinDocument;
+import io.mosip.idrepository.identity.provider.impl.FingerprintProvider;
+import io.mosip.idrepository.identity.repository.UinBiometricHistoryRepo;
+import io.mosip.idrepository.identity.repository.UinDocumentHistoryRepo;
+import io.mosip.idrepository.identity.repository.UinHistoryRepo;
+import io.mosip.idrepository.identity.repository.UinRepo;
+import io.mosip.idrepository.identity.security.IdRepoSecurityManager;
+import io.mosip.idrepository.identity.service.impl.DefaultShardResolver;
+import io.mosip.idrepository.identity.service.impl.IdRepoProxyServiceImpl;
+import io.mosip.idrepository.identity.service.impl.IdRepoServiceImpl;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
+import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
+
+/**
+ * The Class IdRepoServiceTest.
+ *
+ * @author Manoj SP
+ */
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@ActiveProfiles("test")
+@ConfigurationProperties("mosip.idrepo")
+public class IdRepoServiceTest {
+
+	@Mock
+	FingerprintProvider fpProvider;
+
+	@Mock
+	CbeffImpl cbeffUtil;
+
+	@Mock
+	AuditHelper auditHelper;
+
+	@Mock
+	FileSystemAdapter connection;
+
+	/** The service. */
+	@InjectMocks
+	IdRepoProxyServiceImpl proxyService;
+
+	@InjectMocks
+	IdRepoServiceImpl service;
+
+	@InjectMocks
+	IdRepoSecurityManager securityManager;
+
+	@Mock
+	private UinBiometricHistoryRepo uinBioHRepo;
+
+	@Mock
+	private UinDocumentHistoryRepo uinDocHRepo;
+
+	/** The mapper. */
+	@Autowired
+	private ObjectMapper mapper;
+
+	/** The env. */
+	@Autowired
+	private Environment env;
+
+	/** The rest template. */
+	@Mock
+	private RestHelper restHelper;
+
+	@Mock
+	private DefaultShardResolver shardResolver;
+
+	BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
+			.withVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
+			.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
+			.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+			.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
+					.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+					.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
+							SingleAnySubtypeType.INDEX_FINGER.value()))
+					.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+					.withCreationDate(LocalDateTime.now()).build())
+			.withSbInfo(new SBInfo.SBInfoBuilder().setFormatOwner(257l).setFormatType(7l).build()).build();
+
+	/** The uin repo. */
+	@Mock
+	private UinRepo uinRepo;
+
+	/** The uin history repo. */
+	@Mock
+	private UinHistoryRepo uinHistoryRepo;
+
+	@Mock
+	RestRequestBuilder restBuilder;
+
+	/** The id. */
+	private Map<String, String> id;
+
+	/** The uin. */
+	Uin uin = new Uin();
+
+	/** The request. */
+	IdRequestDTO request = new IdRequestDTO();
+
+	public Map<String, String> getId() {
+		return id;
+	}
+
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+
+	/**
+	 * Setup.
+	 * 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws IdRepoDataValidationException
+	 * @throws RestServiceException
+	 */
+	@Before
+	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
+		ReflectionTestUtils.setField(securityManager, "env", env);
+		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
+		ReflectionTestUtils.setField(service, "securityManager", securityManager);
+		ReflectionTestUtils.setField(proxyService, "securityManager", securityManager);
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restHelper.requestSync(Mockito.any()))
+				.thenReturn(mapper.readValue("{\"response\":{\"data\":\"1234\"}}".getBytes(), ObjectNode.class));
+		ReflectionTestUtils.setField(proxyService, "mapper", mapper);
+		ReflectionTestUtils.setField(proxyService, "env", env);
+		ReflectionTestUtils.setField(proxyService, "id", id);
+		ReflectionTestUtils.setField(service, "mapper", mapper);
+		ReflectionTestUtils.setField(service, "env", env);
+		ReflectionTestUtils.setField(proxyService, "service", service);
+		ReflectionTestUtils.setField(proxyService, "allowedBioAttributes",
+				Collections.singletonList("individualBiometrics"));
+		ReflectionTestUtils.setField(service, "bioAttributes",
+				Lists.newArrayList("individualBiometrics", "parentOrGuardianBiometrics"));
+		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("registrationId");
+		request.setRequest(req);
+		uin.setUin("1234");
+		uin.setUinRefId("uinRefId");
+		uin.setUinData(mapper.writeValueAsBytes(request));
+		uin.setStatusCode(env.getProperty("mosip.idrepo.status.registered"));
+	}
+
+	/**
+	 * Test add identity.
+	 *
+	 * @throws IdRepoAppException   the id repo app exception
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void testAddIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		ObjectNode obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				ObjectNode.class);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test
+	public void testAddIdentityWithDemoDocuments()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddDocumentsDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinDocHRepo.save(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddDocumentsJDBCConnectionException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinDocHRepo.save(Mockito.any())).thenThrow(new JDBCConnectionException(null, null));
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityDocumentStoreFailed()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorCode(),
+						IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorMessage()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test
+	public void testAddIdentityWithBioDocuments() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		when(cbeffUtil.validateXML(Mockito.any(), Mockito.any())).thenReturn(true);
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("data".getBytes());
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper
+				.readValue(("{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
+								.getBytes(),
+						RequestDTO.class);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityRecordExists()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		ObjectNode obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				ObjectNode.class);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
+		proxyService.addIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		ObjectNode obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				ObjectNode.class);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
+		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
+		proxyService.addIdentity(request, "1234");
+	}
+
+	/**
+	 * Test add identity exception.
+	 *
+	 * @throws IdRepoAppException   the id repo app exception
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(uinRepo.save(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
+		RequestDTO request2 = new RequestDTO();
+		request2.setIdentity(mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class));
+		request.setRequest(request2);
+		proxyService.addIdentity(request, "1234");
+	}
+
+	/**
+	 * Test retrieve identity.
+	 *
+	 * @throws IdRepoAppException   the id repo app exception
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void testRetrieveIdentity()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setUinData(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", null);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityNoRecordExists()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setUinData(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		proxyService.retrieveIdentityByUin("1234", null);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setUinData(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenThrow(new JDBCConnectionException("", null));
+		proxyService.retrieveIdentityByUin("1234", null);
+	}
+
+	@Test
+	public void testRetrieveIdentityWithBioDocuments()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("dGVzdA", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "bio");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithBioDocumentsFileRetrievalError()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "bio");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithBioDocumentsFileRetrievalErrorUnknownError()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorCode(),
+						IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorMessage()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "bio");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithBioDocumentsFileRetrievalIOError()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		FileInputStream mockStream = Mockito.mock(FileInputStream.class);
+		when(mockStream.read(Mockito.any())).thenThrow(new FileNotFoundException());
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenReturn(mockStream);
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "bio");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithBioDocumentsHashFail()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhPeNfIRvQ");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "bio");
+	}
+
+	@Test
+	public void testRetrieveIdentityWithDemoDocuments()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "demo");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithDemoDocumentsIOError()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		FileInputStream mockStream = Mockito.mock(FileInputStream.class);
+		when(mockStream.read(Mockito.any())).thenThrow(new FileNotFoundException());
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenReturn(mockStream);
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "demo");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithDemoDocumentsFSError()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorCode(),
+						IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorMessage()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "demo");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithDemoDocumentsFileNotFound()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "demo");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithDemoDocumentsHashFail()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("A6xnQhbz4Vx2HuGl4lXwZ5U28iziLRFnhP5eNfIRvQ");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "demo");
+	}
+
+	@Test
+	public void testRetrieveIdentityWithAllType()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "all");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityWithUnknownType()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		UinDocument document = new UinDocument();
+		document.setDoctypCode("ProofOfIdentity");
+		document.setDocHash("47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.retrieveIdentityByUin("1234", "a");
+	}
+
+	@Test
+	public void testUpdateIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Object obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
+		req.setIdentity(obj);
+		request.setRequest(req);
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setStatusCode("REGISTERED");
+		Object obj2 = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"}],\"lastName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		uinObj.setUinData(mapper.writeValueAsBytes(obj2));
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.updateIdentity(request, "234").getResponse().equals(obj2);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateIdentityInvalidJsonException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Object obj = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+
+		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
+		req.setIdentity(obj);
+		request.setRequest(req);
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setStatusCode("REGISTERED");
+		uinObj.setUinData(
+				"rgAADOjjov89sjVwvI8Gc4ngK9lQgPxMpNDe+LXb5qI=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE="
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test
+	public void testUpdateIdentityWithDiff()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Object obj = mapper.readValue(
+				"{\"request\" : {\"age\" : 45}, \"UIN\" : 819431539502, \"identity\":{ \"fullName\" : [ {\"language\" : \"ara\"} ],\"IDSchemaVersion\" : 1.0, \"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"}], \"lastName\":[{\"language\":\"EN\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+
+		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
+		req.setIdentity(obj);
+		request.setRequest(req);
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setStatusCode("REGISTERED");
+		uinObj.setUinData(
+				"{\"identity\":{ \"fullName\" : [ {\"language\" : \"aba\"} ],\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test(expected = IdRepoAppException.class)
+	public void testConvertToBytes() throws Throwable {
+		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
+		ReflectionTestUtils.setField(service, "mapper", mockMapper);
+		try {
+			when(mockMapper.writeValueAsBytes(Mockito.any())).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(service, "convertToBytes", "1234");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test(expected = IdRepoAppException.class)
+	public void testConvertToObjectProxy() throws Throwable {
+		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
+		ReflectionTestUtils.setField(proxyService, "mapper", mockMapper);
+		try {
+			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(proxyService, "convertToObject", "1234".getBytes(), String.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test(expected = IdRepoAppException.class)
+	public void testConvertToObject() throws Throwable {
+		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
+		ReflectionTestUtils.setField(service, "mapper", mockMapper);
+		try {
+			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(service, "convertToObject", "1234".getBytes(), String.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateIdentityInvalidRegId() throws IdRepoAppException {
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
+		IdRequestDTO idRequestDTO = new IdRequestDTO();
+		idRequestDTO.setRequest(new RequestDTO());
+		proxyService.updateIdentity(idRequestDTO, "12343");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateIdentityUinNotExists() throws IdRepoAppException {
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		proxyService.updateIdentity(new IdRequestDTO(), "12343");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateIdentityDataAccessError() throws IdRepoAppException {
+		when(uinRepo.existsByUin(Mockito.any())).thenThrow(new DataAccessResourceFailureException(""));
+		proxyService.updateIdentity(new IdRequestDTO(), "12343");
+	}
+
+	@Test
+	public void testUpdateIdentityUpdateStatus() throws IdRepoAppException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setRegId("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setStatusCode("");
+		uinObj.setUinData(new byte[] { 0 });
+		uinObj.setUinDataHash("");
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		IdRequestDTO request = new IdRequestDTO();
+		RequestDTO req = new RequestDTO();
+		req.setStatus("status");
+		request.setRequest(req);
+		proxyService.updateIdentity(request, "12343");
+	}
+
+	@Test
+	public void testConvertToBIR() {
+		rFinger.getCbeffversion();
+		BIRType birType = rFinger.toBIRType(rFinger);
+		birType.setCBEFFVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build().toVersion());
+		SBInfoType sbInfoType = new SBInfoType();
+		sbInfoType.setFormatOwner(257l);
+		sbInfoType.setFormatType(7l);
+		birType.setSBInfo(sbInfoType);
+		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(birType));
+	}
+
+	@Test
+	public void testConvertToBIRNoData() {
+		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(new BIRType()));
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testEncryptDecryptDocumentsExceptionProxy() throws Throwable {
+		try {
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
+			when(restHelper.requestSync(Mockito.any()))
+					.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
+			Uin uin = new Uin();
+			uin.setUinData(new byte[] { 0 });
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testEncryptDecryptDocumentsException() throws Throwable {
+		try {
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
+			when(restHelper.requestSync(Mockito.any()))
+					.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
+			Uin uin = new Uin();
+			uin.setUinData(new byte[] { 0 });
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testEncryptDecryptDocumentsNoData() throws Throwable {
+		try {
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
+			when(restHelper.requestSync(Mockito.any())).thenReturn(mapper.readValue("{}".getBytes(), ObjectNode.class));
+			Uin uin = new Uin();
+			uin.setUinData(new byte[] { 0 });
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testConvertToFMR() throws Throwable {
+		try {
+			when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException());
+			ReflectionTestUtils.invokeMethod(service, "convertToFMR", "123", "123");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test
+	public void testIdentityUpdateBioDocuments() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper
+				.readValue(("{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
+								.getBytes(),
+						RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234.cbeff");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("dGVzdA", Charset.defaultCharset()));
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test
+	public void testIdentityUpdateNewBioDocument() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper
+				.readValue(("{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
+								.getBytes(),
+						RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234.cbeff");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Lists.newArrayList(biometrics));
+		uinObj.setUinData(("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test
+	public void testIdentityUpdateNewBioDocumentNonCbeff() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper
+				.readValue(("{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"pdf\",\"version\":1.0,\""
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
+								.getBytes(),
+						RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("individualBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234.cbeff");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Lists.newArrayList(biometrics));
+		uinObj.setUinData(("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testIdentityUpdateBioDocumentIdRepoAppException() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("parentOrGuardianBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new FSAdapterException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorCode(),
+						IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR.getErrorMessage()));
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testIdentityUpdateBioDocumentFSAdpapterException() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("parentOrGuardianBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenThrow(new FSAdapterException("", ""));
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testIdentityUpdateBioDocumentException() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		UinBiometric biometrics = new UinBiometric();
+		biometrics.setBiometricFileType("parentOrGuardianBiometrics");
+		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBioFileId("1234");
+		biometrics.setBiometricFileName("name");
+		uinObj.setBiometrics(Collections.singletonList(biometrics));
+		uinObj.setUinData(
+				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test
+	public void testIdentityUpdateNewDemoDocuments() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper
+				.readValue(("{\"identity\":{\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"1.0\",\""
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfRelationship\",\"value\":\"dGVzdA\"}]}")
+								.getBytes(),
+						RequestDTO.class);
+		request.setRequest(req);
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Lists.newArrayList(document));
+		uinObj.setUinData(("{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testIdentityUpdateNewDemoDocumentsNPE() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(
+				"{\"identity\":{\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"1.0\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfRelationship\",\"value\":\"dGVzdA\"}]}"
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Lists.newArrayList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test
+	public void testIdentityUpdateDemoDocuments() throws Exception {
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		RequestDTO req = mapper.readValue(("{\"identity\":{\"ProofOfIdentity\":{\"format\":\"pdf\",\"type\":\"1.0\",\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+				+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"ProofOfIdentity\",\"value\":\"dGVzdA\"}]}")
+						.getBytes(),
+				RequestDTO.class);
+		request.setRequest(req);
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Lists.newArrayList(document));
+		uinObj.setUinData(("{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\""
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
+				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		proxyService.updateIdentity(request, "1234");
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testNowParseException() throws Throwable {
+		try {
+			MockEnvironment mockEnv = new MockEnvironment();
+			mockEnv.merge((ConfigurableEnvironment) env);
+			mockEnv.setProperty("mosip.utc-datetime-pattern", "abcd");
+			ReflectionTestUtils.setField(service, "env", mockEnv);
+			ReflectionTestUtils.invokeMethod(service, "now");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test
+	public void testRetriveIdentityByRid_Valid() {
+		String value = "6158236213";
+		String ridValue = "27847657360002520190320095029";
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenReturn(IOUtils.toInputStream("data", Charset.defaultCharset()));
+		Uin uinObj = new Uin();
+		uinObj.setUin(value);
+		uinObj.setUinRefId(ridValue);
+		UinDocument document = new UinDocument();
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
+		document.setDocId("1234");
+		document.setDocName("name");
+		uinObj.setDocuments(Collections.singletonList(document));
+		uinObj.setUinData(
+				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
+						.getBytes());
+		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		Mockito.when(uinRepo.getUinByRid(Mockito.anyString())).thenReturn(value);
+		ReflectionTestUtils.invokeMethod(proxyService, "retrieveIdentityByRid", ridValue,
+				"demo");
+	}
+	
+	@Test(expected=IdRepoAppException.class)
+	public void testRetrieveIdentityByRid_Invalid() throws Throwable{
+		try {
+		Mockito.when(uinRepo.getUinByRid(Mockito.anyString())).thenReturn(null);
+		ReflectionTestUtils.invokeMethod(proxyService, "retrieveIdentityByRid", "27847657360002520190320095029",
+				"demo");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+}

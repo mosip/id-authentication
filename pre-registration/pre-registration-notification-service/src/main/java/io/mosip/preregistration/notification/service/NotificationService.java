@@ -36,7 +36,7 @@ import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
-import io.mosip.preregistration.notification.exception.RestCallException;
+import io.mosip.preregistration.notification.exception.NotificationSeriveException;
 import io.mosip.preregistration.notification.exception.util.NotificationExceptionCatcher;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
@@ -100,7 +100,8 @@ public class NotificationService {
 	@Value("${preregistartion.identity.phone}")
 	private String phone;
 
-	MainResponseDTO<ResponseDTO> response = new MainResponseDTO<>();
+	MainResponseDTO<ResponseDTO> response;
+
 
 	@PostConstruct
 	public void setupBookingService() {
@@ -119,6 +120,8 @@ public class NotificationService {
 	 * @return the response dto.
 	 */
 	public MainResponseDTO<ResponseDTO> sendNotification(String jsonString, String langCode, MultipartFile file) {
+
+		response=new MainResponseDTO<>();
 
 		ResponseDTO notificationResponse = new ResponseDTO();
 		log.info("sessionId", "idType", "id", "In notification service of sendNotification ");
@@ -145,7 +148,7 @@ public class NotificationService {
 					}
 					notificationResponse.setMessage(RequestCodes.MESSAGE.getCode());
 				} else {
-					resp = callGetDemographicDetailsWithPreIdRestService(notificationDto, langCode, file);
+					resp = getDemographicDetailsWithPreId(notificationDto, langCode, file);
 					notificationResponse.setMessage(resp);
 				}
 			}
@@ -161,7 +164,15 @@ public class NotificationService {
 		return response;
 	}
 
-	private String callGetDemographicDetailsWithPreIdRestService(NotificationDTO notificationDto, String langCode,
+	/**
+	 * This method is calling demographic getApplication service to get the user emailId and mobile number
+	 * @param notificationDto
+	 * @param langCode
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private String getDemographicDetailsWithPreId(NotificationDTO notificationDto, String langCode,
 			MultipartFile file) throws IOException {
 		String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
 		ObjectMapper mapper = new ObjectMapper();
@@ -174,7 +185,7 @@ public class NotificationService {
 
 		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 		if (!validationErrorList.isEmpty()) {
-			throw new RestCallException(validationErrorList, response);
+			throw new NotificationSeriveException(validationErrorList, response);
 		}
 
 		JsonNode responseNode = mapper.readTree(responseEntity.getBody());

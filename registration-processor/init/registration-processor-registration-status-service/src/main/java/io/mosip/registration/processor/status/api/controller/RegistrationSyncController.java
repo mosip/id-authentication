@@ -92,7 +92,7 @@ public class RegistrationSyncController {
 			@RequestHeader(name = "timestamp", required = true) String timeStamp,
 			@RequestBody(required = true) String encryptedSyncMetaInfo,
 			@CookieValue(value = "Authorization", required = true) String token) throws RegStatusAppException {
-		tokenValidator.validate(token, "registrationstatus");
+        tokenValidator.validate("Authorization=" + token, "sync");
 
 		try {
 			List<SyncResponseDto> syncResponseList = new ArrayList<>();

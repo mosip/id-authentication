@@ -19,9 +19,9 @@
     "login": {
       "name": "Login",
       "list": {
-        "line1": "On the Login page, enter your valid email ID or mobile number in the Email ID or mobile number text box.",
-        "line2": "Click Send OTP to receive an One Time Password (OTP) on your provided email address or mobile number.",
-        "line3": "Enter the OTP in the Enter OTP text box and Click Verify."
+        "line1": "Sur la page de connexion, entrez votre identifiant de messagerie valide ou votre numéro de portable dans la zone de texte Identifiant de messagerie ou numéro de portable.",
+        "line2": "Cliquez sur Envoyer OTP pour recevoir un mot de passe à usage unique sur votre adresse électronique ou votre numéro de téléphone portable.",
+        "line3": "Entrez l'OTP dans la zone de texte Entrer l'OTP et cliquez sur Vérifier."
       },
       "note": "Remarque: Si vous n'avez pas reçu OTP, cliquez sur Renvoyer pour recevoir à nouveau un OTP. Entrez l'OTP nouvellement reçu.",
       "line": "Lorsque votre OTP est vérifié, vous pouvez créer, afficher ou modifier votre application de pré-enregistrement."
@@ -341,11 +341,7 @@
       "postal_code_required": "Veuillez entrer un code postal valide",
       "mobile_required": "Veuillez entrer un numéro de téléphone valide",
       "email_required": "S'il vous plaît entrer email id valide",
-      "pin_required": "Veuillez entrer un code PIN valide"
-    },
-    "error": {
-      "error": "L'application ne peut pas être créée. S'il vous plaît essayer après un certain temps",
-      "button_ok": "D'accord"
+      "pin_required": "S'il vous plaît entrer CNIE valide"
     }
   },
   "documents": {
@@ -562,5 +558,9 @@
     "nearBy": "Centres d'inscription basés sur votre géolocalisation",
     "magnifying_glass": "Recherche basée sur la sélection du menu déroulant.",
     "preview_continue": "Téléchargez tous les fichiers pour continuer"
+  },
+  "error": {
+    "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
+    "button_ok": "OK"
   }
 }

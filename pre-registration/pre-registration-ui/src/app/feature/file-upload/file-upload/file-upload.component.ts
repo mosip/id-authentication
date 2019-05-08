@@ -9,9 +9,11 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-file-upload',
@@ -52,12 +54,13 @@ export class FileUploadComponent implements OnInit {
   documentIndex: number;
   LOD: DocumentCategory[];
   fileIndex: number = -1;
-  secondaryLanguagelabels: any;
+  fileUploadLanguagelabels: any;
+  errorlabels: any;
   fileExtension: string = '';
   sameAs: string;
   disableNavigation: boolean = false;
   // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
-
+  start: boolean = false;
   browseDisabled: boolean = true;
 
   // disabled = true;
@@ -76,6 +79,7 @@ export class FileUploadComponent implements OnInit {
   step: number = 0;
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
+  applicants: any = [];
   allowedFiles: string[];
   firstFile: Boolean = true;
   constructor(
@@ -84,11 +88,11 @@ export class FileUploadComponent implements OnInit {
     private router: Router,
     private config: ConfigService,
     private domSanitizer: DomSanitizer,
-    private sharedService: SharedService,
-    private translate: TranslateService
+    private bookingService: BookingService,
+    private translate: TranslateService,
+    private dialog: MatDialog
   ) {
-    this.translate.use(localStorage.getItem('langCode'));
-    this.isModify = localStorage.getItem('modifyDocument');
+    this.initiateComponent();
   }
 
   ngOnInit() {
@@ -97,34 +101,50 @@ export class FileUploadComponent implements OnInit {
       .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
       .split(',');
     this.getAllowedFileTypes(this.allowedFiles);
-    // this.allowedFiles.toString();
-    let applicants = [];
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants(); //for same as in POA
     this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
-    applicants = this.sharedService.getAllApplicants();
-    this.allApplicants = this.getApplicantsName(applicants);
-
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      if (response['message']) this.secondaryLanguagelabels = response['message'];
+      if (response['message']) this.fileUploadLanguagelabels = response['message'];
+      if (response['error']) this.errorlabels = response['error'];
     });
-
-    if (this.registration.getUsers().length > 0) {
-      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-      console.log('users', this.users);
-    }
-
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
     this.getApplicantTypeID();
-    // if (this.users[0].files[0] != null) {
-    //   this.viewFirstFile();
-    // }
     let i = 0;
+    if (!this.users[0].files[0].documentsMetaData) {
+      this.users[0].files[0].documentsMetaData = [];
+    } else {
+      // this.sortUserFiles();
+    }
+  }
+
+  /**
+   *@description This method initialises the users array and the language set by the user.
+   *@private
+   * @memberof FileUploadComponent
+   */
+  private initiateComponent() {
+    this.translate.use(localStorage.getItem('langCode'));
+    this.isModify = localStorage.getItem('modifyDocument');
+    if (this.registration.getUsers().length > 0) {
+      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+      console.log('users', this.users);
+    }
+  }
+
+  /**
+   *@description method to change the current user to be shown as None value in the same as array.
+   *@private
+   * @memberof FileUploadComponent
+   */
+  private setNoneApplicant() {
+    let i: number = 0;
     this.allApplicants.push(this.noneApplicant);
     let noneCount: Boolean = this.isNoneAvailable();
+    // console.log('allApplicants', this.allApplicants);
 
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
@@ -135,15 +155,14 @@ export class FileUploadComponent implements OnInit {
         i++;
       }
     }
-    i = 0;
-    if (!this.users[0].files[0]) {
-      this.users[0].files[0] = [];
-    } else {
-      // this.sortUserFiles();
-    }
   }
-
-  getAllowedFileTypes(allowedFiles) {
+  /**
+   *@description method to initialise the allowedFiles array used to show in the html page
+   *
+   * @param {string[]} allowedFiles
+   * @memberof FileUploadComponent
+   */
+  getAllowedFileTypes(allowedFiles: string[]) {
     let i = 0;
     for (let file of allowedFiles) {
       if (i == 0) {
@@ -154,13 +173,24 @@ export class FileUploadComponent implements OnInit {
       i++;
     }
   }
-
+  /**
+   *@description method to set the value of allowed file size to be displayed in html
+   *
+   * @memberof FileUploadComponent
+   */
   getFileSize() {
     this.allowedFileSize =
       (
         this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size) / 1000000
       ).toString() + 'mb';
   }
+
+  /**
+   *
+   *@description after add applicant the allaplicants array contains an extra none.
+   *This method removes this extra none.
+   * @memberof FileUploadComponent
+   */
   removeExtraNone() {
     let i: number = 0;
     for (let applicant of this.allApplicants) {
@@ -170,7 +200,12 @@ export class FileUploadComponent implements OnInit {
       i++;
     }
   }
-
+  /**
+   *@description method to check if none is available or not
+   *
+   * @returns
+   * @memberof FileUploadComponent
+   */
   isNoneAvailable() {
     let noneCount: number = 0;
     for (let applicant of this.allApplicants) {
@@ -180,7 +215,11 @@ export class FileUploadComponent implements OnInit {
     }
     return true;
   }
-
+  /**
+   *@description method to sorf the files in the users array according to the doccument categories in LOD
+   *
+   * @memberof FileUploadComponent
+   */
   sortUserFiles() {
     for (let document of this.LOD) {
       for (let file of this.users[0].files[0]) {
@@ -189,26 +228,40 @@ export class FileUploadComponent implements OnInit {
         }
       }
     }
-    for (let i = 0; i <= this.users[0].files[0]; i++) {
+    for (let i = 0; i <= this.users[0].files[0].documentsMetaData; i++) {
       this.users[0].files[0][i] = this.sortedUserFiles[i];
     }
   }
 
+  /**
+   *
+   *@description method to get applicants name array to be shown in same as List.
+   * @param {*} applicants
+   * @returns
+   * @memberof FileUploadComponent
+   */
   getApplicantsName(applicants) {
     let i = 0;
     let j = 0;
-    for (let applicant of applicants) {
+    let allApplicants: any[] = [];
+    allApplicants = applicants;
+    for (let applicant of allApplicants) {
       for (let name of applicant.fullname) {
         if (name.language != localStorage.getItem('langCode')) {
-          applicants[i].fullname.splice(j, 1);
+          allApplicants[i].fullname.splice(j, 1);
         } else {
         }
         j++;
       }
       i++;
     }
-    return applicants;
+    return allApplicants;
   }
+  /**
+   *
+   *@description method to get the applicant type code to fetch the document cagtegories to be uploaded.
+   * @memberof FileUploadComponent
+   */
   async getApplicantTypeID() {
     // let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
     let requestDTO: DocumentCategoryDTO = {
@@ -272,109 +325,179 @@ export class FileUploadComponent implements OnInit {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
-        alert('Servers unavailable,please try again after some time');
+        // alert('Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
-
+  /**
+   *@description method to set applicant type.
+   *
+   * @param {*} response
+   * @memberof FileUploadComponent
+   */
   async setApplicantType(response) {
     this.applicantType = await response['response'].applicationtypecode;
   }
-
+  /**
+   *@description method to get document catrgories from master data.
+   *
+   * @param {*} applicantcode
+   * @memberof FileUploadComponent
+   */
   async getDocumentCategories(applicantcode) {
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
       if (res['error'] == null) {
-        console.log('document Categories', res);
+        // console.log('document Categories', res);
 
         this.LOD = res['response'].documentCategories;
         this.registration.setDocumentCategories(res['response'].documentCategories);
       } else {
-        alert('Servers unavailable,please try again after some time');
+        // alert('Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
-
+  /**
+   *@description method to get the list of applicants to eb shown in same as options
+   *
+   * @memberof FileUploadComponent
+   */
   async getAllApplicants() {
     await this.dataStroage.getUsers(this.loginId).subscribe(
       response => {
-        if (response['error'] == null) {
-          this.sharedService.addApplicants(response);
+        if (response['errors'] == null) {
+          console.log('response from https call', response['response']);
+
+          this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
-          alert('Servers unavailable,please try again after some time');
+          // alert('Servers unavailable,please try again after some time');
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      err => {},
-      () => {}
+      err => {
+        this.displayMessage('Error', this.errorlabels.error);
+      },
+      () => {
+        this.setApplicants();
+      }
     );
   }
-
-  viewFirstFile() {
-    this.fileIndex = 0;
-    this.viewFile(this.users[0].files[0][0]);
-  }
-
-  viewFileByIndex(i: number) {
-    this.viewFile(this.users[0].files[0][i]);
-  }
-
-  viewFile(file: FileModel) {
-    console.log('file', file);
-
-    this.fileName = file.docName;
-    this.fileByteArray = file.multipartFile;
-    let i = 0;
-    for (let x of this.users[0].files[0]) {
-      if (this.fileName === x.doc_name) {
-        i++;
-        break;
-      }
-    }
-    if (this.firstFile) {
-      this.fileIndex = i;
-      this.firstFile = false;
-    }
-    this.fileExtension = file.docName.substring(file.docName.indexOf('.') + 1);
-    if (this.fileByteArray) {
-      console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
-
-      switch (file.docName.substring(file.docName.indexOf('.') + 1)) {
-        case 'pdf':
-          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-            'data:application/pdf;base64,' + this.fileByteArray
-          );
-          break;
-        case 'jpg':
-          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-            'data:image/jpeg;base64,' + this.fileByteArray
-          );
-
-        case 'png':
-          this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-            'data:image/png;base64,' + this.fileByteArray
-          );
-
-          break;
-      }
-      // if (file.docName.substring(file.docName.indexOf('.') + 1) == 'pdf') {
-      //   this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-      //     'data:application/pdf;base64,' + this.fileByteArray
-      //   );
-      // }
-    }
-  }
-
-  viewLastFile() {
-    this.fileIndex = this.users[0].files[0].length - 1;
-    this.viewFile(this.users[0].files[0][this.fileIndex]);
+  /**
+   *@description method to set the applicants array  used in same as options aray
+   *
+   * @memberof FileUploadComponent
+   */
+  setApplicants() {
+    this.applicants = this.bookingService.getAllApplicants();
+    console.log('applicants', this.applicants);
+    this.allApplicants = this.getApplicantsName(this.applicants);
+    this.setNoneApplicant();
   }
   /**
+   *@description method to preview the first file.
    *
+   * @memberof FileUploadComponent
+   */
+  viewFirstFile() {
+    this.fileIndex = 0;
+    this.viewFile(this.users[0].files[0].documentsMetaData[0]);
+  }
+  /**
+   *@description method to preview file by index.
+   *
+   * @param {number} i
+   * @memberof FileUploadComponent
+   */
+  viewFileByIndex(i: number) {
+    this.viewFile(this.users[0].files[0].documentsMetaData[i]);
+  }
+
+  setByteArray(fileByteArray) {
+    this.fileByteArray = fileByteArray;
+    console.log('file content', this.fileByteArray);
+  }
+
+  /**
+   *@description method to preview a specific file.
+   *
+   * @param {FileModel} file
+   * @memberof FileUploadComponent
+   */
+  viewFile(fileMeta: FileModel) {
+    // console.log('file', file);
+    this.start = true;
+    this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
+      res => {
+        this.setByteArray(res['response'].document);
+      },
+      error => {},
+      () => {
+        console.log('file meta', fileMeta);
+        console.log('file content', this.fileByteArray);
+
+        this.fileName = fileMeta.docName;
+        // this.fileByteArray = file;
+        let i = 0;
+        for (let x of this.users[0].files[0].documentsMetaData) {
+          if (this.fileName === x.doc_name) {
+            i++;
+            break;
+          }
+        }
+        if (this.firstFile) {
+          this.fileIndex = i;
+          this.firstFile = false;
+        }
+        this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
+        if (this.fileByteArray) {
+          // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
+
+          switch (fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1)) {
+            case 'pdf':
+              this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'data:application/pdf;base64,' + this.fileByteArray
+              );
+              break;
+            case 'jpg':
+              this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'data:image/jpeg;base64,' + this.fileByteArray
+              );
+
+            case 'png':
+              this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'data:image/png;base64,' + this.fileByteArray
+              );
+
+              break;
+          }
+          // if (file.docName.substring(file.docName.indexOf('.') + 1) == 'pdf') {
+          //   this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+          //     'data:application/pdf;base64,' + this.fileByteArray
+          //   );
+          // }
+        }
+        this.start = false;
+      }
+    );
+  }
+  /**
+   *@description method to preview last available file.
+   *
+   * @memberof FileUploadComponent
+   */
+  viewLastFile() {
+    this.fileIndex = this.users[0].files[0].documentsMetaData.length - 1;
+    this.viewFile(this.users[0].files[0].documentsMetaData[this.fileIndex]);
+  }
+  /**
+   *@description method gets called when a file has been uploaded from the html.
    *
    * @param {*} event
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
-    console.log('file input event', event);
+    // console.log('file input event', event);
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
@@ -406,21 +529,30 @@ export class FileUploadComponent implements OnInit {
             this.setJsonString(event);
             this.sendFile(event);
           } else {
-            alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+            // alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg4);
             this.disableNavigation = false;
           }
         } else {
-          alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
+          // alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
       }
     }
     if (!allowedFileUploaded) {
-      alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
+      // alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
+      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
   }
-
+  /**
+   *@description method to get base 64 of a file
+   *
+   * @param {*} file
+   * @returns
+   * @memberof FileUploadComponent
+   */
   getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -429,24 +561,46 @@ export class FileUploadComponent implements OnInit {
       reader.onerror = error => reject(error);
     });
   }
-
+  /**
+   *@description method called when the docuemnt type option has been changed in a document category
+   *
+   * @param {*} event
+   * @param {number} index
+   * @memberof FileUploadComponent
+   */
   selectChange(event, index: number) {
     this.documentCategory = event.source.placeholder;
     this.documentType = event.source.value;
     this.documentIndex = index;
   }
-
+  /**
+   *@description method called when the docuemnt type option has been opened in a document category
+   *
+   * @param {*} event
+   * @param {number} index
+   * @memberof FileUploadComponent
+   */
   openedChange(event, index: number) {
     this.documentCategory = this.LOD[index].code;
     this.documentIndex = index;
   }
 
   onFilesChange(fileList: FileList) {}
-
+  /**
+   *@description method to remove the preview of a file.
+   *
+   * @memberof FileUploadComponent
+   */
   removeFilePreview() {
     this.fileName = '';
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
   }
+  /**
+   *@description method to set the Json string required to send the file to server.
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   setJsonString(event) {
     this.documentUploadRequestBody.docCatCode = this.documentCategory;
     this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
@@ -455,7 +609,12 @@ export class FileUploadComponent implements OnInit {
     // this.documentRequest.doc_cat_code = this.documentType;
     // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
   }
-
+  /**
+   *@description method to send the file to the server.
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   sendFile(event) {
     // this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
@@ -465,11 +624,13 @@ export class FileUploadComponent implements OnInit {
         if (response['errors'] == null) {
           this.updateUsers(response);
         } else {
-          alert(response['errors'].errorCode + ' Invalid document format supported');
+          // alert(response['errors'].errorCode + ' Invalid document format supported');
+          this.displayMessage('Error', response['errors'].message);
         }
       },
       error => {
-        alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
+        // alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
+        this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg7);
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
@@ -478,26 +639,31 @@ export class FileUploadComponent implements OnInit {
     );
     this.formData = new FormData();
   }
-
+  /**
+   *@description method to update the users array after a file has been uploaded.
+   *
+   * @param {*} fileResponse
+   * @memberof FileUploadComponent
+   */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response[0].docCatCode;
-    this.userFiles.doc_file_format = fileResponse.response[0].docFileFormat;
-    this.userFiles.documentId = fileResponse.response[0].documentId;
-    this.userFiles.docName = fileResponse.response[0].docName;
-    this.userFiles.docTypCode = fileResponse.response[0].docTypCode;
+    this.userFiles.docCatCode = fileResponse.response.docCatCode;
+    this.userFiles.doc_file_format = fileResponse.response.docFileFormat;
+    this.userFiles.documentId = fileResponse.response.documentId;
+    this.userFiles.docName = fileResponse.response.docName;
+    this.userFiles.docTypCode = fileResponse.response.docTypCode;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
-    for (let file of this.users[0].files[0]) {
+    for (let file of this.users[0].files[0].documentsMetaData) {
       if (file.docCatCode == this.userFiles.docCatCode) {
-        this.removeFilePreview();
+        // this.removeFilePreview();
         this.users[this.step].files[0][i] = this.userFiles;
         this.fileIndex--;
         break;
       }
       i++;
     }
-    if (i == this.users[0].files[0].length) {
+    if (i == this.users[0].files[0].documentsMetaData.length) {
       this.users[this.step].files[0].push(this.userFiles);
     }
     this.userFiles = new FileModel();
@@ -511,7 +677,12 @@ export class FileUploadComponent implements OnInit {
     const fileUrl = URL.createObjectURL(file);
     window.open(fileUrl);
   }
-
+  /**
+   *@description method called when a same as option has been selected.
+   *
+   * @param {*} event
+   * @memberof FileUploadComponent
+   */
   sameAsChange(event) {
     if (event.value == '') {
       this.sameAsselected = false;
@@ -524,37 +695,48 @@ export class FileUploadComponent implements OnInit {
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
-            alert(response['errors'].message);
+            // alert(response['errors'].message);
+            this.displayMessage('Error', response['errors'].message);
           }
         },
         err => {
-          alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+          // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg8);
         }
       );
       this.sameAsselected = true;
     }
   }
+  /**
+   *@description method to remove the POA document from users array when same as option has been selected.
+   *
+   * @memberof FileUploadComponent
+   */
   removePOADocument() {
     this.userFiles = new FileModel();
     let i = 0;
-    for (let file of this.users[0].files[0]) {
+    for (let file of this.users[0].files[0].documentsMetaData) {
       if (file.docCatCode == 'POA') {
         // this.users[0].files[0][i] = this.userFiles;
-        this.users[0].files[0].splice(i, 1);
+        this.users[0].files[0].documentsMetaData.splice(i, 1);
       }
       i++;
     }
   }
 
   ifDisabled(category) {
-    this.users[0].files[0].forEach(element => {
+    this.users[0].files[0].documentsMetaData.forEach(element => {
       if ((element.docCatCode = category)) {
         return true;
       }
     });
     return false;
   }
-
+  /**
+   *@description method called when back button has been clicked.
+   *
+   * @memberof FileUploadComponent
+   */
   onBack() {
     this.registration.changeMessage({ modifyUser: 'true' });
     const arr = this.router.url.split('/');
@@ -563,6 +745,12 @@ export class FileUploadComponent implements OnInit {
     const url = arr.join('/');
     this.router.navigateByUrl(url);
   }
+
+  /**
+   *@description method called when next button has been clicked.
+   *
+   * @memberof FileUploadComponent
+   */
   onNext() {
     localStorage.setItem('modifyDocument', 'false');
     const arr = this.router.url.split('/');
@@ -572,16 +760,57 @@ export class FileUploadComponent implements OnInit {
     const url = arr.join('/');
     this.router.navigateByUrl(url);
   }
-
+  /**
+   *@description method to preview the next file in the html page
+   *
+   * @param {number} fileIndex
+   * @memberof FileUploadComponent
+   */
   nextFile(fileIndex: number) {
     this.fileIndex = fileIndex + 1;
 
     this.viewFileByIndex(this.fileIndex);
   }
-
+  /**
+   *@description method to preview the previous file in the html page
+   *
+   * @param {number} fileIndex
+   * @memberof FileUploadComponent
+   */
   previousFile(fileIndex: number) {
     this.fileIndex = fileIndex - 1;
     this.viewFileByIndex(this.fileIndex);
+  }
+
+  /**
+   *@description method to set and display error message.
+   *
+   * @param {string} title
+   * @param {string} message
+   * @memberof FileUploadComponent
+   */
+  displayMessage(title: string, message: string) {
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  /**
+   *@description method to open dialog box to show the error message
+   *
+   * @param {*} data
+   * @param {*} width
+   * @returns
+   * @memberof FileUploadComponent
+   */
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
   }
 }
 
@@ -610,6 +839,3 @@ export interface DocumentCategory {
     name: string;
   };
 }
-
-// console.log(ts.toJSON());
-// # 2019-03-06T05:24:10.264Z

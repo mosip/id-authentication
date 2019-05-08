@@ -2,21 +2,19 @@ package io.mosip.preregistration.login.util;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,17 +25,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.login.dto.MainRequestDTO;
-import io.mosip.preregistration.login.dto.MainResponseDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
@@ -63,6 +61,7 @@ public class LoginCommonUtil {
 	
 	
 	@Autowired
+	@Qualifier("restTemplateConfig")
 	private RestTemplate restTemplate;
 	
 	/**
@@ -133,11 +132,11 @@ public class LoginCommonUtil {
 	public  List<String> validateUserIdAndLangCode(String userId,String langCode) {
 		log.info("sessionId", "idType", "id", "In validateUserIdandLangCode method of Login Common Util");
 		List<String> list=new ArrayList<>();
-		if(langCode == null ) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_009.getCode(),ErrorMessages.INVALID_REQUEST_LANGCODE.getMessage());
+		if(langCode == null || langCode.isEmpty()) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_009.getCode(),ErrorMessages.INVALID_REQUEST_LANGCODE.getMessage(),null);
 		}
-		else if(userId == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage());
+		else if(userId == null || userId.isEmpty()) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 		}
 		if(ValidationUtil.phoneValidator(userId)) {
 			list.add(mobileChannel);
@@ -148,7 +147,7 @@ public class LoginCommonUtil {
 			return list;
 			}
 		
-		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage());
+		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 	}
 	
 	/**
@@ -170,16 +169,16 @@ public class LoginCommonUtil {
 	public boolean validateRequest(MainRequestDTO<?> mainRequest) {
 		log.info("sessionId", "idType", "id", "In validateRequest method of Login Common Util");
 	 if(mainRequest.getId() == null  ) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_004.getCode(), ErrorMessages.INVALID_REQUEST_ID.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_004.getCode(), ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
 		}
 		else if (mainRequest.getRequest() == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_007.getCode(), ErrorMessages.INVALID_REQUEST_BODY.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_007.getCode(), ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
 		}
 		else if (mainRequest.getRequesttime() == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_006.getCode(), ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_006.getCode(), ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
 		}
 		else if (mainRequest.getVersion() == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_005.getCode(), ErrorMessages.INVALID_REQUEST_VERSION.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_005.getCode(), ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
 		}
 		return true;
 	}
@@ -191,10 +190,10 @@ public class LoginCommonUtil {
 	public void validateOtpAndUserid(User user) {
 		log.info("sessionId", "idType", "id", "In validateOtpAndUserid method of Login Common Util");
 		if(user.getUserId() == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 		}
 		else if (user.getOtp() == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_010.getCode(), ErrorMessages.INVALID_REQUEST_OTP.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_010.getCode(), ErrorMessages.INVALID_REQUEST_OTP.getMessage(),null);
 		}
 	}
 	
@@ -203,20 +202,21 @@ public class LoginCommonUtil {
 	 * @param serviceResponseBody
 	 * @return
 	 */
-	public ResponseWrapper<?> requestBodyExchange(String serviceResponseBody) {
+	public ResponseWrapper<?> requestBodyExchange(String serviceResponseBody) throws ParseResponseException {
 		try {
 			return objectMapper.readValue(serviceResponseBody, ResponseWrapper.class);
 		} catch (IOException e) {
-			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage());
+			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage(),null);
 			
 		} 
 	}
 	
-	public Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) {
+	public Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) throws ParseResponseException{
 		try {
+			objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 			return objectMapper.readValue(serviceResponseBody,responseClass);
 		} catch (IOException e) {
-			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage());
+			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage(),null);
 			
 		} 
 	}
@@ -226,7 +226,7 @@ public class LoginCommonUtil {
 			return objectMapper.writeValueAsString(response);
 		} catch (JsonProcessingException e) {
 			
-			throw new ParseResponseException("","");
+			throw new ParseResponseException("","",null);
 		}
 	}
 	

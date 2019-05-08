@@ -33,7 +33,7 @@ import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
-import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -69,7 +69,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-//	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
@@ -114,7 +114,7 @@ public class BookingController {
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingStatusDTO>> bookAppoinment(
 			@PathVariable("preRegistrationId") String preRegistrationId,
-			@RequestBody(required = true) MainListRequestDTO<BookingRequestDTO> bookingDTO) {
+			@RequestBody(required = true) MainRequestDTO<BookingRequestDTO> bookingDTO) {
 		log.info("sessionId", "idType", "id",
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO, preRegistrationId));
@@ -134,7 +134,7 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<List<BookingStatusDTO>>> bookMultiAppoinment(
-			@RequestBody(required = true) MainListRequestDTO<MultiBookingRequestDTO> bookingDTO) {
+			@RequestBody(required = true) MainRequestDTO<List<MultiBookingRequestDTO>> bookingDTO) {
 		log.info("sessionId", "idType", "id",
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookMultiAppointment(bookingDTO));

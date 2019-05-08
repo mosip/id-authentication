@@ -5,6 +5,9 @@
 package io.mosip.preregistration.datasync.exception.system;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class defines the SystemFileIOException
@@ -13,59 +16,25 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  * 
  */
-/**
- * @author M1046129
- *
- */
+@Getter
+@Setter
 public class SystemFileIOException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor
-	 */
-	public SystemFileIOException() {
-		super();
-	}
-
-	/**
-	 * @param errorMessage
-	 *            pass the error message
-	 */
-	public SystemFileIOException(String errorMessage) {
-		super("", errorMessage);
-	}
+	private MainResponseDTO<?> mainResponseDto;
 
 	/**
 	 * @param errorCode
 	 *            pass the error code
 	 * @param errorMessage
 	 *            pass the error message
-	 */
-	public SystemFileIOException(String errorCode, String errorMessage) {
-		super(errorCode, errorMessage, null);
-	}
-
-	/**
-	 * @param errorMessage
-	 *            pass the error message
-	 * @param rootCause
+	 * @param response
 	 *            pass the cause
 	 */
-	public SystemFileIOException(String errorMessage, Throwable rootCause) {
-		super("", errorMessage, rootCause);
-	}
-
-	/**
-	 * @param errorCode
-	 *            pass the error code
-	 * @param errorMessage
-	 *            pass the error message
-	 * @param rootCause
-	 *            pass the cause
-	 */
-	public SystemFileIOException(String errorCode, String errorMessage, Throwable rootCause) {
-		super(errorCode, errorMessage, rootCause);
+	public SystemFileIOException(String errorCode, String errorMessage, MainResponseDTO<?> response) {
+		super(errorCode, errorMessage);
+		this.mainResponseDto = response;
 	}
 
 }

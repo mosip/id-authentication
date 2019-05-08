@@ -5,6 +5,7 @@
 package io.mosip.preregistration.application.exception.system;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
 /**
  * This class defines the DateParseException
@@ -16,6 +17,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 public class DateParseException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	 private MainResponseDTO<?> mainresponseDTO;
 
 	/**
 	 * @param msg pass the error message
@@ -30,6 +32,15 @@ public class DateParseException extends BaseUncheckedException {
 	 */
 	public DateParseException(String errCode, String msg) {
 		super(errCode, msg);
+	}
+	
+	/**
+	 * @param errCode pass the error code
+	 * @param msg pass the error message
+	 */
+	public DateParseException(String errCode, String msg,MainResponseDTO<?>response) {
+		super(errCode, msg);
+		this.mainresponseDTO=response;
 	}
 
 	/**

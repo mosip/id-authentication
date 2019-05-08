@@ -10,24 +10,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
-import org.apache.directory.api.ldap.model.entry.DefaultModification;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.entry.Modification;
-import org.apache.directory.api.ldap.model.entry.ModificationOperation;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
 import org.apache.directory.api.ldap.model.password.PasswordUtil;
-import org.apache.directory.api.util.Base64;
-import org.apache.directory.api.util.Strings;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
@@ -35,6 +28,7 @@ import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
@@ -74,8 +68,7 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
-				Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(), Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
 
@@ -102,12 +95,14 @@ public class ILdapDataStore implements IDataStore {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(otpUser.getUserId());
 		if (!connection.exists(userdn)) {
-			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 
 		}
 		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
 		return mosipUserDto;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,10 +141,10 @@ public class ILdapDataStore implements IDataStore {
 		Dn userdn = createUserDn(clientSecret.getClientId());
 		try {
 			connection.bind(userdn, clientSecret.getSecretKey());
-			}catch(Exception ex)
-			{
-				throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
-			}
+		} catch (Exception ex) {
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
 		}
@@ -169,10 +164,10 @@ public class ILdapDataStore implements IDataStore {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(loginUser.getUserName());
 		try {
-		connection.bind(userdn, loginUser.getPassword());
-		}catch(Exception ex)
-		{
-			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+			connection.bind(userdn, loginUser.getPassword());
+		} catch (Exception ex) {
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -201,17 +196,20 @@ public class ILdapDataStore implements IDataStore {
 				mosipUserDto
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
-				PasswordDetails password = PasswordUtil.splitCredentials(userLookup.get("userPassword").get().getBytes());
+				PasswordDetails password = PasswordUtil
+						.splitCredentials(userLookup.get("userPassword").get().getBytes());
 				mosipUserDto.setUserPassword(
 						userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
 								: null);
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
+				mosipUserDto.setRId(userLookup.get("rid").get().toString());
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -230,7 +228,8 @@ public class ILdapDataStore implements IDataStore {
 			rolesData.close();
 			return roles;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -273,7 +272,8 @@ public class ILdapDataStore implements IDataStore {
 
 			return rolesListDto;
 		} catch (Exception e) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -296,7 +296,8 @@ public class ILdapDataStore implements IDataStore {
 			userResponseDto.setMosipUserDtoList(mosipUserDtos);
 			return userResponseDto;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -311,17 +312,31 @@ public class ILdapDataStore implements IDataStore {
 		for (Entry entry : peoplesData) {
 			UserDetailsSalt saltDetails = new UserDetailsSalt();
 			saltDetails.setUserId(entry.get("uid").get().toString());
-				if(entry.get("userPassword").get()!=null)
-				{
-					PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
-					if(password.getSalt()!=null)
-					{
-						saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
-					}
+			if (entry.get("userPassword").get() != null) {
+				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
+				if (password.getSalt() != null) {
+					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
 				}
-				mosipUserDtos.add(saltDetails);
+			}
+			mosipUserDtos.add(saltDetails);
 		}
 		mosipUserSaltList.setMosipUserSaltList(mosipUserDtos);
 		return mosipUserSaltList;
+	}
+    
+	@Override
+	public RIdDto getRidFromUserId(String userId) throws Exception {
+		RIdDto ridDto= null;
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(userId);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+        if(data==null) {
+        	throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+        }
+        if(data.getRId()!=null) {
+        	ridDto= new RIdDto();
+        	ridDto.setRId(data.getRId());
+        }
+		return ridDto;
 	}
 }

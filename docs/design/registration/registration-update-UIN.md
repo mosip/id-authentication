@@ -36,7 +36,11 @@ The key **requirements** are
     -   Biometric-Exception \[Finger Print/Iris/Face ...\]
     -   Biometric-Iris
     -   Biometric-Fingerprint
-
+-   The documents should be mandaotry based on the below criteria.
+    - If the **Name** is going to be updated then 
+      **Proof Of Identity** document is mandatory to be scan and upload.
+    - If the **Address** is going to be updated then **Proof Of Address**
+      document is mandatory to be scan and upload.
 -   Based on the selection the required fields should only be editable.
 
 -   The capture of bio-metric should be a configurable form the admin

@@ -140,7 +140,7 @@ export class PreviewComponent implements OnInit {
     const locationName = locations.filter(
       location => location.languageCode === language && location.valueCode === locationCode
     );
-    return locationName[0].valueName;
+    return locationName[0] ? locationName[0].valueName : '';
   }
 
   enableContinue(): boolean {
