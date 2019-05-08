@@ -76,6 +76,10 @@ public class EncryptorUtil {
 	/** The center id length. */
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
+	
+	/** The center id length. */
+	@Value("${mosip.kernel.rid.machineid-length}")
+	private int machineIdLength;
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
@@ -143,6 +147,8 @@ public class EncryptorUtil {
 		try {
 
 			String centerId = regId.substring(0, centerIdLength);
+			String machineId = regId.substring(5, machineIdLength);
+			String refId = centerId + "_" + machineId;
 
 			byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
 
@@ -153,7 +159,7 @@ public class EncryptorUtil {
 			// Encrypt the Data using AES
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 			// Encrypt the AES Session Key using RSA
-			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), centerId, creationTime);
+			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), refId, creationTime);
 			return new ByteArrayInputStream(CryptoUtil
 					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER))
 					.getBytes());
@@ -192,7 +198,7 @@ public class EncryptorUtil {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	private byte[] encryptRSA(final byte[] sessionKey, String centerId, String creationTime)
+	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
 
 		// encrypt AES Session Key using RSA public key
@@ -203,7 +209,7 @@ public class EncryptorUtil {
 		PublicKeyResponseDto publicKeyResponsedto=null;
 
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
-				pathsegments, "timeStamp,referenceId", creationTime + ',' + centerId, ResponseWrapper.class);
+				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
 
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
