@@ -137,7 +137,17 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_DOC_005
 	 */
-	DOCUMENT_IS_MISSING("no document found for the requested pre-registration id");
+	DOCUMENT_IS_MISSING("no document found for the requested pre-registration id"),
+
+	/**
+	 * PRG_PAM_APP_016
+	 */
+	PAGE_NOT_FOUND("no record found for the requested page index"),
+
+	/**
+	 * PRG_PAM_APP_015
+	 */
+	PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO("Page size must be greater than zero"),;
 
 	private ErrorMessages(String message) {
 		this.message = message;
