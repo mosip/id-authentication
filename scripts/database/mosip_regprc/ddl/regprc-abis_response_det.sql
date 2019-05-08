@@ -13,7 +13,7 @@
 CREATE TABLE regprc.abis_response_det(
 	abis_resp_id character varying(36) NOT NULL,
 	matched_bio_ref_id character varying(36) NOT NULL,
-	score smallint NOT NULL,
+	score numeric(6,3) NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
