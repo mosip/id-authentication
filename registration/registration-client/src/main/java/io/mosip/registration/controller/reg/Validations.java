@@ -324,19 +324,22 @@ public class Validations extends BaseController {
 				return true;
 
 			if (node.getValue() == null) {
-				generateAlert(parentPane, id, applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
-						.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
-				if (isPreviousValid) {
-					node.requestFocus();
-					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demographicCombobox");
-					});
-					node.getStyleClass().add("demographicComboboxFocused");
+				if (!(Arrays
+						.asList(new String[] { RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POI_DOCUMENT,
+								RegistrationConstants.POR_DOCUMENT, RegistrationConstants.DOB_DOCUMENT })
+						.contains(id))) {
+					generateAlert(parentPane, id,
+							applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
+									.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
+					if (isPreviousValid) {
+						node.requestFocus();
+						node.getStyleClass().removeIf((s) -> {
+							return s.equals("demographicCombobox");
+						});
+						node.getStyleClass().add("demographicComboboxFocused");
+					}
 				}
-
 			} else {
-
-				;
 				if (Arrays
 						.asList(new String[] { RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POI_DOCUMENT,
 								RegistrationConstants.POR_DOCUMENT, RegistrationConstants.DOB_DOCUMENT })
