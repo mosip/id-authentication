@@ -27,7 +27,6 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.StageNameConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -145,6 +144,7 @@ public class BioDedupeProcessor {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
 			registrationStatusDto.setRegistrationStageName(stageName);
+			isTransactionSuccessful = true;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "BioDedupeStage::BioDedupeProcessor::exit");
 
@@ -278,13 +278,13 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			object.setDestinationStage(StageNameConstant.ABISHANDLERSTAGE);
+			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"Cbeff is present in the packet, destination stage is abis_handler");
 		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setDestinationStage(StageNameConstant.UINGENERATORSTAGE);
+			object.setIsValid(Boolean.TRUE);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"Cbeff is absent in the packet for child, destination stage is UIN");
@@ -303,14 +303,14 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			object.setDestinationStage(StageNameConstant.ABISHANDLERSTAGE);
+			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"Update packet individual biometric not null, destination stage is abis_handler");
 		}
 		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-		object.setDestinationStage(StageNameConstant.UINGENERATORSTAGE);
+		object.setIsValid(Boolean.TRUE);
 
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationStatusDto.getRegistrationId(),
@@ -325,15 +325,14 @@ public class BioDedupeProcessor {
 				.getAbisResponseDetailRecords(latestTransactionId, IDENTIFY);
 		if (abisResponseDetEntities.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setDestinationStage(StageNameConstant.UINGENERATORSTAGE);
+			object.setIsValid(Boolean.TRUE);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
 
 		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-			object.setDestinationStage(StageNameConstant.MANUALVERIFICATIONSTAGE);
-
+			object.setIsValid(Boolean.FALSE);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"ABIS response Details not null, destination stage is Manual_verification");
