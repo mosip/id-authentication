@@ -31,6 +31,18 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
+	
+	@Autowired
+	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseDetEntity, String> abisResponseDetRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseEntity, String> abisResponseRepository;
+
+	@Autowired
+	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
@@ -236,8 +248,31 @@ public class PacketInfoDao {
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
 		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
 	}
+	
+	public List<AbisRequestEntity> getAbisRequestIDs(String latestTransactionId) {
+		return abisRequestRepository.getAbisRequestIDs(latestTransactionId);
 
-	public String getStatusOfPacketByRegId(String refId) {
-		return abisRequestRepositary.getStatusOfPacketByRegId(refId);
 	}
+
+	public List<AbisResponseDetEntity> getAbisResponseDetailRecords(String latestTransactionId, String requestType) {
+		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
+
+		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
+				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
+		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
+			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity.getId().getId()));
+		}
+		for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
+			abisResponseDetEntities.addAll(
+					abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
+		}
+		return abisResponseDetEntities;
+	}
+
+	public List<RegBioRefEntity> getBioRefIds(String matchRefId) {
+		return regBioRefRepository.getBioRefIds(matchRefId);
+
+	}
+
 }
