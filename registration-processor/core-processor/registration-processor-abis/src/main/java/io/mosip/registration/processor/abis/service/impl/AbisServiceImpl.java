@@ -77,35 +77,23 @@ public class AbisServiceImpl implements AbisService {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
 
-	/**
-	 * Insert.
-	 *
-	 * @param abisInsertRequestDto
-	 *            the abis insert request dto
-	 * @return the abis insert responce dto
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+	{
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::entry");
 
 		boolean isPresent = false;
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
-		try {
-			response.setId(ABIS_INSERT);
-			response.setRequestId(abisInsertRequestDto.getRequestId());
-			response.setTimestamp(abisInsertRequestDto.getTimestamp());
 
-			Document doc = getCbeffDocument(referenceId);
+		response.setId(ABIS_INSERT);
+		response.setRequestId(abisInsertRequestDto.getRequestId());
+		response.setTimestamp(abisInsertRequestDto.getTimestamp());
+
+		Document doc;
+		try {
+			doc = getCbeffDocument(referenceId);
+
 
 			if (testFingerPrint == null || testIris == null || testFace == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -126,12 +114,22 @@ public class AbisServiceImpl implements AbisService {
 				}
 			}else {
 				response.setReturnValue(2);
-				response.setFailureReason(3);
+				response.setFailureReason(7);
 			}
 
-		} catch (Exception e) {
+		}  catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(7);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
+					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url." + ExceptionUtils.getStackTrace(e));
+
+		}catch(Exception e) {
+			response.setReturnValue(2);
+			response.setFailureReason(3);
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
+
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::exit");
@@ -139,23 +137,7 @@ public class AbisServiceImpl implements AbisService {
 		return response;
 	}
 
-	/**
-	 * Gets the cbeff document.
-	 *
-	 * @param referenceId
-	 *            the reference id
-	 * @return the cbeff document
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
-	private Document getCbeffDocument(String referenceId)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+	private Document getCbeffDocument(String referenceId) throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::getCbeffDocument()::entry");
 		List<String> regId = null;
@@ -192,23 +174,7 @@ public class AbisServiceImpl implements AbisService {
 		return null;
 	}
 
-	/**
-	 * Perform dedupe.
-	 *
-	 * @param identifyRequest
-	 *            the identity request
-	 * @return the identity responce dto
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest){
 		boolean duplicate = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::performDedupe()::entry");
@@ -217,12 +183,15 @@ public class AbisServiceImpl implements AbisService {
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
 		String referenceId = identifyRequest.getReferenceId();
 
-		try {
-			response.setId(ABIS_IDENTIFY);
-			response.setRequestId(identifyRequest.getRequestId());
-			response.setTimestamp(identifyRequest.getTimestamp());
 
-			Document doc = getCbeffDocument(referenceId);
+		response.setId(ABIS_IDENTIFY);
+		response.setRequestId(identifyRequest.getRequestId());
+		response.setTimestamp(identifyRequest.getTimestamp());
+
+		Document doc;
+		try {
+			doc = getCbeffDocument(referenceId);
+
 			if(doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
 				if(fingerNodeList != null) {
@@ -243,21 +212,21 @@ public class AbisServiceImpl implements AbisService {
 					CandidateListDto cd = new CandidateListDto();
 					CandidatesDto[] candidatesDto;
 					if(!identifyRequest.getGallery().getReferenceIds().isEmpty()) {
-						 candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
-						 for (int i = 0; i <candidatesDto.length; i++) {
-								candidatesDto[i] = new CandidatesDto();
-								candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
-								candidatesDto[i].setScaledScore(100 - i + "");
-								count++;
-						 }							
+						candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
+						for (int i = 0; i <candidatesDto.length; i++) {
+							candidatesDto[i] = new CandidatesDto();
+							candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
+							candidatesDto[i].setScaledScore(100 - i + "");
+							count++;
+						}							
 					}
 					else{
 						candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
 						for (int i = 0; i <candidatesDto.length; i++) {
-								candidatesDto[i] = new CandidatesDto();
-								candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-								candidatesDto[i].setScaledScore(100 - i + "");
-								count++;
+							candidatesDto[i] = new CandidatesDto();
+							candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+							candidatesDto[i].setScaledScore(100 - i + "");
+							count++;
 						}
 					}
 					cd.setCount(count + "");
@@ -265,14 +234,23 @@ public class AbisServiceImpl implements AbisService {
 					response.setCandidateList(cd);
 				}
 			}else {
-				response.setReturnValue(3);
+				response.setReturnValue(2);
 
 			}
-		} catch (Exception e) {
+
+		}  catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
 			response.setReturnValue(2);
-			response.setFailureReason(1);
+			response.setFailureReason(7);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url." + ExceptionUtils.getStackTrace(e));
+
+		}catch(Exception e) {
+			response.setReturnValue(2);
+			response.setFailureReason(3);
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
+
 		}
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -307,7 +285,7 @@ public class AbisServiceImpl implements AbisService {
 	public void delete() {
 		// Delete should be implemented in future
 	}
-	
+
 	@Override
 	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
 		// Ping should be implemented in future
