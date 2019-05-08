@@ -29,6 +29,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -136,6 +137,9 @@ public class PrintStageTest {
 	
 	@Mock
 	private UinValidator<String> uinValidatorImpl;
+	
+	@Mock
+	public Utilities utilities;
 
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
@@ -171,7 +175,10 @@ public class PrintStageTest {
 		System.setProperty("registration.processor.queue.address", "test");
 		System.setProperty("mosip.kernel.xsdstorage-uri", "http://104.211.212.28:51000");
 		System.setProperty("mosip.kernel.xsdfile", "mosip-cbeff.xsd");
-
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "4238135072");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utilities.retrieveUIN(any())).thenReturn(jsonObject);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
 		byte[] pdfbytes = "UIN Card Template pdf".getBytes();
@@ -290,16 +297,11 @@ public class PrintStageTest {
 		assertFalse(result.getIsValid());
 	}
 
-	@Test
+	@Test(expected = QueueConnectionNotFound.class)
 	public void testQueueConnectionNull() {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(null);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("1234567890987654321");
-
-		MessageDTO result = stage.process(dto);
-		assertTrue(result.getInternalError());
+		stage.deployVerticle();
 	}
 
 	@Test

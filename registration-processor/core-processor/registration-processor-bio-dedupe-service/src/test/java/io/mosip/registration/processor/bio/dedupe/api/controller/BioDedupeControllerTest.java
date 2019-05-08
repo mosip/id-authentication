@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import javax.servlet.http.Cookie;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -67,6 +68,7 @@ public class BioDedupeControllerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getFileSuccessTest() throws Exception {
 
 		this.mockMvc
