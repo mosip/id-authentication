@@ -59,6 +59,7 @@ import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -282,13 +283,28 @@ public class PacketValidateProcessor {
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
-		} catch (IdentityNotFoundException | ParseException | org.json.simple.parser.ParseException | IOException exc) {
+		} catch (IdentityNotFoundException | IOException exc) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage();
+			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
+							+ exc.getMessage() + ExceptionUtils.getStackTrace(exc));
+			object.setIsValid(Boolean.FALSE);
+			object.setInternalError(Boolean.TRUE);
+			object.setRid(registrationStatusDto.getRegistrationId());
+
+		} catch (ParsingException exc) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage());
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
+			isTransactionSuccessful = false;
+			description = PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage();
 			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
@@ -371,9 +387,9 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object)
-			throws IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException,
-			FileIOException, ApisResourceAccessException, JSONException, ParseException, org.json.simple.parser.ParseException {
+			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
+			org.json.simple.parser.ParseException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -515,9 +531,9 @@ public class PacketValidateProcessor {
 					isTransactionSuccessful = false;
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage();
 
-				}
-				else {
-					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()+" as parent registration id is not present";
+				} else {
+					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
+							+ " as parent registration id is not present";
 				}
 
 			}

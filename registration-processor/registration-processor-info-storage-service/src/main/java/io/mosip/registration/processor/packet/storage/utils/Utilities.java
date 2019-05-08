@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import lombok.Data;
 
 /**
@@ -75,7 +76,7 @@ public class Utilities {
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException, ParseException {
+	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -124,12 +125,19 @@ public class Utilities {
 
 	}
 
-	private int calculateAge(String applicantDob) throws ParseException {
+	private int calculateAge(String applicantDob) {
 		DateFormat sdf = new SimpleDateFormat(dobFormat);
-		Date birthDate = sdf.parse(applicantDob);
+		Date birthDate = null;
+		try {
+			birthDate = sdf.parse(applicantDob);
+
+		} catch (ParseException e) {
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
+		}
 		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
 		Period p = Period.between(ld, LocalDate.now());
 		return p.getYears();
+
 	}
 
 	public Long getUIn(String registrationId) throws IOException {

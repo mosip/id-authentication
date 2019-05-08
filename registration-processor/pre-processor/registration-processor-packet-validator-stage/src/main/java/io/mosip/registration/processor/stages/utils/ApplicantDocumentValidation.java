@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.stages.utils;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import io.mosip.registration.processor.core.packet.dto.applicantcategory.Applica
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
@@ -107,7 +107,7 @@ public class ApplicantDocumentValidation {
 	 *             the illegal argument exception
 	 */
 	public boolean validateDocument(String registrationId, String jsonString)
-			throws ApisResourceAccessException, IOException, ParseException, org.json.simple.parser.ParseException {
+			throws ApisResourceAccessException, IOException {
 
 		boolean isApplicantDocumentVerified = false;
 		String applicantType = null;
@@ -149,15 +149,20 @@ public class ApplicantDocumentValidation {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private Boolean applicantValidation(String applicantType, List<String> list)
-			throws org.json.simple.parser.ParseException, IOException {
+	private Boolean applicantValidation(String applicantType, List<String> list) throws IOException {
 
 		Boolean isApplicantValidated = false;
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorDocumentCategory());
 
 		JSONParser parser = new JSONParser();
-		JSONObject json = (JSONObject) parser.parse(getIdentityJsonString);
+
+		JSONObject json;
+		try {
+			json = (JSONObject) parser.parse(getIdentityJsonString);
+		} catch (org.json.simple.parser.ParseException e) {
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getCode(), e);
+		}
 		JSONObject identityJsonObject = (JSONObject) json.get("identity");
 
 		Set<String> documentCategoryList = new HashSet<>();
