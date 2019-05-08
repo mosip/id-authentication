@@ -327,7 +327,7 @@ public class SyncDataIntegrationTest {
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
 		machines = new ArrayList<>();
 		machines.add(new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG",
-				localdateTime, null));
+				localdateTime, null,null,null));
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
 				new MachineSpecification("1001", "Laptop", "Lenovo", "T480", "1001", "1.0", "Laptop", "ENG", null));
