@@ -33,9 +33,7 @@ public interface AbisService {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
-
+	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto);
 
 	/**
 	 * Perform dedupe.
@@ -47,9 +45,7 @@ public interface AbisService {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
-
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest);
 	/**
 	 * Delete.
 	 */

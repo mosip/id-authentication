@@ -31,6 +31,18 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
+	
+	@Autowired
+	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseDetEntity, String> abisResponseDetRepository;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseEntity, String> abisResponseRepository;
+
+	@Autowired
+	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
@@ -221,12 +233,12 @@ public class PacketInfoDao {
 		return demographicDedupeRepository.getUINByRid(rid);
 	}
 	
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String requestType) {
-		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType);
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String requestType,String refRegtrnId) {
+		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType,refRegtrnId);
 	}
 
-	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId){
-		return abisRequestRepositary.getIdentifyByTransactionId(transactionId);
+	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify){
+		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
 	}
 
 	public List<RegBioRefEntity> getBioRefIdByRegId(String regId){
@@ -236,4 +248,31 @@ public class PacketInfoDao {
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
 		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
 	}
+	
+	public List<AbisRequestEntity> getAbisRequestIDs(String latestTransactionId) {
+		return abisRequestRepository.getAbisRequestIDs(latestTransactionId);
+
+	}
+
+	public List<AbisResponseDetEntity> getAbisResponseDetailRecords(String latestTransactionId, String requestType) {
+		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
+
+		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
+				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
+		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
+			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity.getId().getId()));
+		}
+		for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
+			abisResponseDetEntities.addAll(
+					abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
+		}
+		return abisResponseDetEntities;
+	}
+
+	public List<RegBioRefEntity> getBioRefIds(String matchRefId) {
+		return regBioRefRepository.getBioRefIds(matchRefId);
+
+	}
+
 }

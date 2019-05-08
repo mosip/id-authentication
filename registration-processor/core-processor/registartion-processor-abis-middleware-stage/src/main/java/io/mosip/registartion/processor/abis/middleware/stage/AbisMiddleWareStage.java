@@ -40,6 +40,8 @@ import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 import io.vertx.core.json.JsonObject;
 
@@ -99,6 +101,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private RegistrationUtility registrationUtility;
 	@Autowired
 	private Utilities utility;
+	@Autowired
+	private RegistrationStatusDao registrationStatusDao;
 
 	private static final String INSERT = "INSERT";
 	private static final String IDENTIFY = "IDENTIFY";
@@ -128,11 +132,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
-						CompletableFuture<Boolean> weightInKgFuture = CompletableFuture.supplyAsync(() -> {
-							return cosnumerListener(message);
+						CompletableFuture<Boolean> checkListenerProcessed = CompletableFuture.supplyAsync(() -> {
+							return consumerListener(message);
 						});
 						try {
-							consumerListner.add(weightInKgFuture.get());
+							consumerListner.add(checkListenerProcessed.get());
 						} catch (InterruptedException | ExecutionException e) {
 						}
 					}
@@ -156,10 +160,15 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		List<String> abisRefList = packetInfoManager.getReferenceIdByRid(object.getRid());
 		if (abisRefList != null && !abisRefList.isEmpty()) {
 			try {
+				String refRegtrnId = getLatestTransactionId(object.getRid());
 				String abisRefId = abisRefList.get(0);
 				List<AbisRequestDto> abisInsertRequestList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
-						INSERT);
-
+						INSERT, refRegtrnId);
+				if (abisInsertRequestList.isEmpty()) {
+					object.setIsValid(true);
+					object.setInternalError(false);
+					return object;
+				}
 				for (int i = 0; i < abisInsertRequestList.size(); i++) {
 
 					byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
@@ -171,7 +180,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				}
 
 				List<AbisRequestDto> abisIdentifyRequestList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
-						IDENTIFY);
+						IDENTIFY, refRegtrnId);
 
 				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
 					byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
@@ -190,7 +199,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return null;
 	}
 
-	public boolean cosnumerListener(Message message) {
+	public boolean consumerListener(Message message) {
 
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
@@ -361,6 +370,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisResponseDetEntity.setUpdBy("SYSTEM");
 		abisResponseDetEntity.setIsDeleted(false);
 		abisResponseDetailRepositary.save(abisResponseDetEntity);
+
+	}
+
+	private String getLatestTransactionId(String registrationId) {
+		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
+		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
 	}
 

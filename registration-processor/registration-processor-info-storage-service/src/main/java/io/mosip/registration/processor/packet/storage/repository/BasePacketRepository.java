@@ -55,6 +55,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *
 	 * @param statusCode
 	 *            The statusCode
+	 * @param matchType
+	 *            the match type
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
@@ -116,6 +118,14 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
+	/**
+	 * Update uin wrt registraion id.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @param uin
+	 *            the uin
+	 */
 	@Modifying
 	@Transactional
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.uin =:uin WHERE demo.id.regId =:regId")
@@ -162,32 +172,102 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
 	public List<String> getRidByReferenceId(@Param("refId") String refId);
 
-	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType")
+	/**
+	 * Gets the insert or identify request.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param requestType
+	 *            the request type
+	 * @return the insert or identify request
+	 */
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType and abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
-			@Param("requestType") String requestType);
+			@Param("requestType") String requestType,@Param("refRegtrnId") String refRegtrnId);
 
+	/**
+	 * Gets the abis request I ds.
+	 *
+	 * @param transactionId
+	 *            the transaction id
+	 * @return the abis request I ds
+	 */
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getAbisRequestIDs(@Param("refRegtrnId") String transactionId);
 
+	/**
+	 * Gets the abis request I dsbased on identity.
+	 *
+	 * @param transactionId
+	 *            the transaction id
+	 * @param requestType
+	 *            the request type
+	 * @return the abis request I dsbased on identity
+	 */
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType=:requestType")
 	public List<AbisRequestEntity> getAbisRequestIDsbasedOnIdentity(@Param("refRegtrnId") String transactionId,
 			@Param("requestType") String requestType);
 
+	/**
+	 * Gets the abis response I ds.
+	 *
+	 * @param abisRequest
+	 *            the abis request
+	 * @return the abis response I ds
+	 */
 	@Query("SELECT abisresp FROM AbisResponseEntity abisresp WHERE abisresp.abisRequest =:abisRequest")
 	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") String abisRequest);
 
+	/**
+	 * Gets the abis response details.
+	 *
+	 * @param responseId
+	 *            the response id
+	 * @return the abis response details
+	 */
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
-	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
+	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String  responseId);
 
+	/**
+	 * Gets the bio ref ids.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @return the bio ref ids
+	 */
 	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
 	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String bioRefId);
 
-	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =\'IDENTIFY\'")
-	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId);
+	/**
+	 * Gets the identify by transaction id.
+	 *
+	 * @param transactionId
+	 *            the transaction id
+	 * @param identify
+	 *            the identify
+	 * @return the identify by transaction id
+	 */
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =:identify")
+	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId,
+			@Param("identify") String identify);
 
+	/**
+	 * Gets the bio ref id by reg id.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the bio ref id by reg id
+	 */
 	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
 	public List<RegBioRefEntity> getBioRefIdByRegId(@Param("regId") String regId);
 
+	/**
+	 * Gets the demo list by transaction id.
+	 *
+	 * @param regtrnId
+	 *            the regtrn id
+	 * @return the demo list by transaction id
+	 */
 	@Query("SELECT regDemo FROM RegDemoDedupeListEntity regDemo WHERE regDemo.id.regtrnId =:regtrnId")
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(@Param("regtrnId") String regtrnId);
 

@@ -24,19 +24,18 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Demograph
 public interface PacketInfoManager<T, /** D, M, */
 		A> {
 
-
 	/**
 	 * Save demographic data.
 	 *
-	 * @param demographicJsonStream
-	 *            the demographic json stream
+	 * @param bytes
+	 *            the bytes
+	 * @param regId
+	 *            the reg id
 	 * @param metaData
 	 *            the meta data
 	 */
-	public void saveDemographicInfoJson(byte[] bytes,String regId, List<FieldValue> metaData);
+	public void saveDemographicInfoJson(byte[] bytes, String regId, List<FieldValue> metaData);
 
-
-	
 	/**
 	 * Gets the packetsfor QC user.
 	 *
@@ -55,17 +54,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId);
 
-
-
 	/**
 	 * Gets the applicant registration id by UIN.
 	 *
-	 * @param uin the uin
+	 * @param uin
+	 *            the uin
 	 * @return the registration id by UIN
 	 */
 	public List<String> getRegIdByUIN(String uin);
-
-	
 
 	/**
 	 * Save manual adjudication data.
@@ -74,11 +70,12 @@ public interface PacketInfoManager<T, /** D, M, */
 	 *            the unique matched ref ids
 	 * @param registrationId
 	 *            the registration id
+	 * @param sourceName
+	 *            the source name
 	 */
 
-
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId, DedupeSourceName sourceName);
-
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,
+			DedupeSourceName sourceName);
 
 	/**
 	 * Save abis ref.
@@ -109,23 +106,74 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the UIN by rid.
 	 *
-	 * @param Rid the rid
+	 * @param rid
+	 *            the rid
 	 * @return the UIN by rid
 	 */
-	public List<String> getUINByRid(String Rid);
-	
-	public List<AbisRequestDto> getInsertOrIdentifyRequest(String abisRefId,String requestType);
+	public List<String> getUINByRid(String rid);
 
-	public Boolean getIdentifyByTransactionId(String transactionId);
+	/**
+	 * Gets the insert or identify request.
+	 *
+	 * @param bioRefId
+	 *            the abis ref id
+	 * @param requestType
+	 *            the request type
+	 * @return the insert or identify request
+	 */
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String requestType,String refRegtrnId);
 
+	/**
+	 * Gets the identify by transaction id.
+	 *
+	 * @param transactionId
+	 *            the transaction id
+	 * @param identify
+	 *            the identify
+	 * @return the identify by transaction id
+	 */
+	public Boolean getIdentifyByTransactionId(String transactionId, String identify);
+
+	/**
+	 * Gets the bio ref id by reg id.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the bio ref id by reg id
+	 */
 	public List<RegBioRefDto> getBioRefIdByRegId(String regId);
 
+	/**
+	 * Gets the all abis details.
+	 *
+	 * @return the all abis details
+	 */
 	public List<AbisApplicationDto> getAllAbisDetails();
 
+	/**
+	 * Save bio ref.
+	 *
+	 * @param regBioRefDto
+	 *            the reg bio ref dto
+	 */
 	public void saveBioRef(RegBioRefDto regBioRefDto);
 
+	/**
+	 * Save abis request.
+	 *
+	 * @param abisRequestDto
+	 *            the abis request dto
+	 */
 	public void saveAbisRequest(AbisRequestDto abisRequestDto);
 
+	/**
+	 * Gets the demo list by transaction id.
+	 *
+	 * @param transactionId
+	 *            the transaction id
+	 * @return the demo list by transaction id
+	 */
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId);
 
+	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto);
 }
