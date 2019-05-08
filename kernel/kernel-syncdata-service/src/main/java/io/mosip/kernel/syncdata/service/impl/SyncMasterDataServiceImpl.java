@@ -413,8 +413,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			}
 		} catch (DataAccessLayerException | DataAccessException ex) {
 
-			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.MACHINE_UPLOAD_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
+			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
 		return  new UploadPublicKeyResponseDto(keyIndex);
 	}
