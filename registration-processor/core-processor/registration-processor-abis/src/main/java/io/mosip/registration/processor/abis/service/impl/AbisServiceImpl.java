@@ -87,11 +87,11 @@ public class AbisServiceImpl implements AbisService {
 
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
-
-		response.setId(ABIS_INSERT);
-		response.setRequestId(abisInsertRequestDto.getRequestId());
-		response.setTimestamp(abisInsertRequestDto.getTimestamp());
-
+		
+			response.setId(ABIS_INSERT);
+			response.setRequestId(abisInsertRequestDto.getRequestId());
+			response.setTimestamp(abisInsertRequestDto.getTimestamp());
+		
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
@@ -140,8 +140,6 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 
 		}
-
-			
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::exit");
 
@@ -149,6 +147,7 @@ public class AbisServiceImpl implements AbisService {
 	}
 
 	private Document getCbeffDocument(String referenceId) throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::getCbeffDocument()::entry");
 		List<String> regId = null;
@@ -196,11 +195,9 @@ public class AbisServiceImpl implements AbisService {
 		String referenceId = identifyRequest.getReferenceId();
 
 
-
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
-
 	
 			response.setId(ABIS_IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
