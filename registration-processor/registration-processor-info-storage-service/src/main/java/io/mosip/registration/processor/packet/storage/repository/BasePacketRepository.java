@@ -181,9 +181,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            the request type
 	 * @return the insert or identify request
 	 */
-	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.requestType =:requestType and abisreq.refRegtrnId =:refRegtrnId")
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
-			@Param("requestType") String requestType,@Param("refRegtrnId") String refRegtrnId);
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId and abisreq.refRegtrnId =:refRegtrnId")
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,@Param("refRegtrnId") String refRegtrnId);
 
 	/**
 	 * Gets the abis request I ds.

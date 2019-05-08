@@ -583,8 +583,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * getInsertOrIdentifyRequest(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String requestType,String refRegtrnId) {
-		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, requestType,refRegtrnId);
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId) {
+		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId,refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
 

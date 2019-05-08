@@ -6,8 +6,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import javax.jms.Message;
 
@@ -41,6 +40,7 @@ import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntit
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 import io.vertx.core.json.JsonObject;
@@ -120,7 +120,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	List<String> queueUrlList;
 	List<String> typeOfQueueList;
 	List<MosipQueue> mosipQueueList;
-	List<Boolean> consumerListner;
+	InternalRegistrationStatusDto registrationStatusDto;
 
 	public void deployVerticle() {
 		try {
@@ -132,23 +132,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
-						CompletableFuture<Boolean> checkListenerProcessed = CompletableFuture.supplyAsync(() -> {
-							return consumerListener(message);
-						});
-						try {
-							consumerListner.add(checkListenerProcessed.get());
-						} catch (InterruptedException | ExecutionException e) {
-						}
+						consumerListener(message);
 					}
 				};
 				mosipQueueManager.consume(mosipQueueList.get(i), abisOutboundAddresses.get(i), listener);
 			}
-			boolean allEqual = consumerListner.stream().allMatch(val -> val == true);
-			if (allEqual) {
-				mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-				this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
-						MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
-			}
+			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+					MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
 
 		} catch (IOException e) {
 		}
@@ -162,8 +153,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			try {
 				String refRegtrnId = getLatestTransactionId(object.getRid());
 				String abisRefId = abisRefList.get(0);
-				List<AbisRequestDto> abisInsertRequestList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
-						INSERT, refRegtrnId);
+				List<AbisRequestDto> abisInsertIdentifyList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
+						refRegtrnId);
+				List<AbisRequestDto> abisInsertRequestList = abisInsertIdentifyList.stream()
+						.filter(dto -> dto.getRequestType().equals(INSERT)).collect(Collectors.toList());
+				List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
+						.filter(dto -> dto.getRequestType().equals(IDENTIFY)).collect(Collectors.toList());
 				if (abisInsertRequestList.isEmpty()) {
 					object.setIsValid(true);
 					object.setInternalError(false);
@@ -179,8 +174,9 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
 				}
 
-				List<AbisRequestDto> abisIdentifyRequestList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
-						IDENTIFY, refRegtrnId);
+				// List<AbisRequestDto> abisIdentifyRequestList =
+				// packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
+				// IDENTIFY, refRegtrnId);
 
 				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
 					byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
@@ -199,7 +195,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return null;
 	}
 
-	public boolean consumerListener(Message message) {
+	public void consumerListener(Message message) {
 
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
@@ -213,8 +209,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 				updateAbisResponseEntity(abisInsertResponseDto, response);
 				updteAbisRequestProcessed(abisInsertResponseDto.getRequestId(), INSERT);
-
-				return true;
 
 			}
 
@@ -231,14 +225,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				}
 
 				updteAbisRequestProcessed(abisIdentifyResponseDto.getRequestId(), IDENTIFY);
-				return true;
 
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
 
 	}
 
