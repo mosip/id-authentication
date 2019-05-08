@@ -421,9 +421,6 @@ public class DemographicDetailController extends BaseController {
 	private Label parentNameLabel;
 
 	@FXML
-	private Label ageFieldMessage;
-
-	@FXML
 	private Label ageFieldLabel;
 
 	@FXML
@@ -957,7 +954,6 @@ public class DemographicDetailController extends BaseController {
 				mmLocalLanguage.setPromptText(mmLocalLanguageLabel.getText());
 				yyyyLocalLanguage.setPromptText(yyyyLocalLanguageLabel.getText());
 
-				ageFieldMessage.setVisible(false);
 				ageFieldLabel.setVisible(false);
 				ageFieldLocalLanguageLabel.setVisible(false);
 				ageFieldLocalLanguageMessage.setVisible(false);
@@ -1096,8 +1092,8 @@ public class DemographicDetailController extends BaseController {
 					if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
 						if (Integer.parseInt(ageField.getText()) > maxAge) {
 							ageField.setText(oldValue);
-							generateAlert(RegistrationConstants.ERROR,
-									RegistrationUIConstants.MAX_AGE_WARNING + RegistrationConstants.SPACE + maxAge);
+							generateAlert(parentFlowPane, ageField.getId(),
+									RegistrationUIConstants.AGE_WARNING + RegistrationConstants.SPACE + 1 + RegistrationConstants.SPACE + RegistrationUIConstants.TO +RegistrationConstants.SPACE + maxAge );
 						} else {
 							age = Integer.parseInt(ageField.getText());
 							LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);

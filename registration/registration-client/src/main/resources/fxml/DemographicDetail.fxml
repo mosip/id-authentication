@@ -298,7 +298,7 @@
 																									<children>
 																										<Label fx:id="ageFieldLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
 																										<TextField fx:id="ageField" prefWidth="20.0" promptText="%ageField" styleClass="demoGraphicTextField" />
-																										<Label fx:id="ageFieldMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="false" />
+																										<Label styleClass="demoGraphicFieldMessageLabel" text="" visible="false" />
 																									</children>
 																								</VBox>
 																								<GridPane>

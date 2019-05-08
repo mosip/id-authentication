@@ -13,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
@@ -33,6 +34,8 @@ public class DateValidation extends BaseController {
 	@Autowired
 	private Validations validation;
 
+	int maxAge=0;
+	
 	/**
 	 * Validate the date and populate its corresponding local or secondary
 	 * language field if date is valid
@@ -54,13 +57,16 @@ public class DateValidation extends BaseController {
 	 */
 	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
 			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField) {
-
+		if(maxAge==0)
+			maxAge=Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 		try {
 			fxUtils.validateOnType(parentPane, date, validation, localField, false);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (!yearValidator(date, month, year, ageField, ageLocalField)
 						&& dateMonthYearNotNullOrEmpty(date, month, year)) {
 					date.setText(oldValue);
+					generateAlert(parentPane, RegistrationConstants.DD,
+							RegistrationUIConstants.AGE_WARNING + RegistrationConstants.SPACE + 1 + RegistrationConstants.SPACE + RegistrationUIConstants.TO +RegistrationConstants.SPACE + maxAge );
 				}
 			});
 		} catch (RuntimeException runTimeException) {
@@ -102,6 +108,8 @@ public class DateValidation extends BaseController {
 				if (!yearValidator(date, month, year, ageField, ageLocalField)
 						&& dateMonthYearNotNullOrEmpty(date, month, year)) {
 					month.setText(oldValue);
+					generateAlert(parentPane, RegistrationConstants.MM,
+							RegistrationUIConstants.AGE_WARNING + RegistrationConstants.SPACE + 1 + RegistrationConstants.SPACE + RegistrationUIConstants.TO +RegistrationConstants.SPACE + maxAge );
 				}
 			});
 		} catch (RuntimeException runTimeException) {
@@ -157,6 +165,8 @@ public class DateValidation extends BaseController {
 		if(year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 			yearVal  = Integer.parseInt(year.getText());
 		}
+		if(yearVal > localDate.getYear())
+			return false;
 		if(yearVal==0)
 			return true;
 		if (month != null && yearVal == localDate.getYear()
@@ -191,8 +201,7 @@ public class DateValidation extends BaseController {
 		} else {
 				int dateValue = Integer.parseInt(date.getText());
 				int age = Period.between(LocalDate.of(yearValue, monthVal, dateValue), LocalDate.now()).getYears();
-				int maxAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
-				if (age > maxAge || age == 0) {
+				if (age > maxAge) {
 					ageField.setText("");
 					ageLocalField.setText("");
 					return false;
@@ -232,6 +241,8 @@ public class DateValidation extends BaseController {
 				if (!yearValidator(date, month, year, ageField, ageLocalField)
 						&& dateMonthYearNotNullOrEmpty(date, month, year)) {
 					year.setText(oldValue);
+					generateAlert(parentPane, RegistrationConstants.YYYY,
+							RegistrationUIConstants.AGE_WARNING + RegistrationConstants.SPACE + 1 + RegistrationConstants.SPACE + RegistrationUIConstants.TO +RegistrationConstants.SPACE + maxAge );
 				}
 			});
 		} catch (RuntimeException runTimeException) {
