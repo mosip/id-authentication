@@ -11,9 +11,7 @@ public class UserMachineMappingDTO {
 	private String userName;
 	private String status;
 	private String role;
-
 	private String centreID;
-
 	private String stationID;
 	private String machineID;
 

@@ -69,7 +69,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Applicant applicant = new Applicant();
 			biometric.setApplicant(applicant);
 
-			FaceDetailsDTO applicantFaceDetailsDTO=source.getBiometricDTO().getApplicantBiometricDTO().getFace();
+			FaceDetailsDTO applicantFaceDetailsDTO = source.getBiometricDTO().getApplicantBiometricDTO().getFace();
 
 			// Set Photograph
 			identity.setApplicantPhotograph(buildPhotograph(applicantFaceDetailsDTO.getNumOfRetries(),
@@ -167,7 +167,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
 
-			setuinUpdatedFields(source, identity);
+			if (source.isNameNotUpdated()) {
+				identity.setPrintingName(source.getRegistrationMetaDataDTO().getFullName());
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
 					runtimeException.getMessage(), runtimeException);
@@ -175,37 +177,16 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return packetMetaInfo;
 	}
 
-	/**
-	 * Set uin updated fields.
-	 *
-	 * @param source the source
-	 * @param identity the identity
-	 */
-	private void setuinUpdatedFields(RegistrationDTO source, Identity identity) {
-		// uinUpdatedFields
-		if (source.getSelectionListDTO() != null) {
-			List<String> uinUpdateFields = new ArrayList<>();
-			BeanWrapper beanWrapper = new BeanWrapperImpl(source.getSelectionListDTO());
-			PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
-			for (PropertyDescriptor pd : pds) {
-				Object beanWrapperValue = beanWrapper.getPropertyValue(pd.getName());
-				addingUinUpdatedFieldstoIdentityObject(uinUpdateFields, pd, beanWrapperValue);
-			}
-			identity.setUinUpdatedFields(uinUpdateFields);
-		}
-	}
 
 	/**
 	 * Adding uin updated fieldsto identity object.
 	 *
-	 * @param uinUpdateFields 
-	 * 				the uin update fields
-	 * @param pd 
-	 * 				the pd
-	 * @param beanWrapperValue 
-	 * 				the bean wrapper value
+	 * @param uinUpdateFields  the uin update fields
+	 * @param pd               the pd
+	 * @param beanWrapperValue the bean wrapper value
 	 */
-	private void addingUinUpdatedFieldstoIdentityObject(List<String> uinUpdateFields, PropertyDescriptor pd, Object beanWrapperValue) {
+	private void addingUinUpdatedFieldstoIdentityObject(List<String> uinUpdateFields, PropertyDescriptor pd,
+			Object beanWrapperValue) {
 		if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue) {
 			if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_NAME)) {
 				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_NAME_LBL);
@@ -230,7 +211,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 		}
 	}
-	
+
 	private Photograph buildPhotograph(int numRetry, String photographName) {
 		Photograph photograph = null;
 		if (photographName != null) {
@@ -241,7 +222,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		return photograph;
 	}
-	
+
 	private ExceptionPhotograph buildExceptionPhotograph(int numRetry, byte[] face) {
 		ExceptionPhotograph exceptionPhotograph = null;
 		if (face != null) {
@@ -316,7 +297,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 				exceptionBiometrics.add(buildExceptionBiometric(biometricExceptionDTO.getBiometricType(),
 						biometricExceptionDTO.getMissingBiometric(), biometricExceptionDTO.getExceptionType(),
-						biometricExceptionDTO.getReason(),biometricExceptionDTO.getIndividualType()));
+						biometricExceptionDTO.getReason(), biometricExceptionDTO.getIndividualType()));
 			}
 		}
 

@@ -252,7 +252,6 @@ public class AuthenticationController extends BaseController implements Initiali
 					} else if (RegistrationConstants.FAILURE.equals(status)) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 					}
-					
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
@@ -463,15 +462,16 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Loading next authentication screen");
 		try {
 			Boolean toogleBioException = false;
-			if(!SessionContext.userMap().isEmpty()) {
+			if (!SessionContext.userMap().isEmpty()) {
 				if (SessionContext.userMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS) == null) {
 					SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, false);
 				}
 				toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
 						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-						|| (Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
+						|| (Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
 			}
-			
+
 			if (!userAuthenticationTypeList.isEmpty()) {
 				authCount++;
 				String authenticationType = String

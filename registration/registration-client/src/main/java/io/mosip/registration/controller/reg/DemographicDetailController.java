@@ -210,7 +210,7 @@ public class DemographicDetailController extends BaseController {
 	private ScrollPane parentScrollPane;
 
 	private SimpleBooleanProperty switchedOn;
-	
+
 	private SimpleBooleanProperty switchedOnParentUinOrRid;
 
 	@FXML
@@ -425,35 +425,34 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label ageFieldLocalLanguageMessage;
-	
+
 	@FXML
 	private TextField parentRegId;
-	
+
 	@FXML
 	private Label parentRegIdMessage;
-	
+
 	@FXML
 	private Label parentRegIdLocalLanguageMessage;
 
-	
 	@FXML
 	private TextField parentRegIdLocalLanguage;
-	
+
 	@FXML
 	private Label parentRegIdLocalLanguageLabel;
-	
+
 	@FXML
 	private TextField parentUinId;
-	
+
 	@FXML
 	private Label parentUinIdMessage;
-	
+
 	@FXML
 	private Label parentUinIdLocalLanguageMessage;
-	
+
 	@FXML
 	private TextField parentUinIdLocalLanguage;
-	
+
 	@FXML
 	private Label parentUinIdLocalLanguageLabel;
 
@@ -690,7 +689,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			RegistrationConstants.CNI_MANDATORY= String.valueOf(false);
+			RegistrationConstants.CNI_MANDATORY = String.valueOf(false);
 			if (getRegistrationDTOFromSession() == null) {
 				validation.updateAsLostUIN(false);
 				registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
@@ -741,10 +740,16 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	private void genderSettings() {
-		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
-		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
-		textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
-		textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream().filter(dto->dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get().getGenderName();
+		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+				.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
+				.getGenderName();
+		textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
+				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
+				.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
+				.getGenderName();
 		male.setText(textMale);
 		female.setText(textFemale);
 		maleLocalLanguage.setText(textMaleLocalLanguage);
@@ -862,7 +867,7 @@ public class DemographicDetailController extends BaseController {
 				if (newValue) {
 					uinRidToggleLabel1.setLayoutX(0);
 					uinRidToggleLabel1LocalLanguage.setLayoutX(0);
-					
+
 					parentRegIdLocalLanguage.clear();
 					parentRegId.clear();
 					parentUinIdLocalLanguage.clear();
@@ -873,11 +878,11 @@ public class DemographicDetailController extends BaseController {
 					parentRegIdLocalLanguageMessage.setVisible(false);
 					parentUinIdMessage.setVisible(false);
 					parentUinIdLocalLanguageMessage.setVisible(false);
-					
+
 				} else {
 					uinRidToggleLabel1.setLayoutX(30);
 					uinRidToggleLabel1LocalLanguage.setLayoutX(30);
-					
+
 					parentRegIdLocalLanguage.clear();
 					parentRegId.clear();
 					parentUinIdLocalLanguage.clear();
@@ -889,15 +894,18 @@ public class DemographicDetailController extends BaseController {
 					parentUinIdMessage.setVisible(false);
 					parentUinIdLocalLanguageMessage.setVisible(false);
 
-
 				}
-				
+
 			});
 
-			uinRidToggleLabel1.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
-			uinRidToggleLabel2.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
-			uinRidToggleLabel1LocalLanguage.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
-			uinRidToggleLabel2LocalLanguage.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel1
+					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel2
+					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel1LocalLanguage
+					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
+			uinRidToggleLabel2LocalLanguage
+					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -909,7 +917,6 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
-	
 	/**
 	 * Toggle functionality between age field and date picker.
 	 */
@@ -965,11 +972,9 @@ public class DemographicDetailController extends BaseController {
 				ddLocalLanguageLabel.setVisible(false);
 				mmLocalLanguageLabel.setVisible(false);
 				yyyyLocalLanguageLabel.setVisible(false);
-				
+
 				parentDetailPane.setManaged(false);
 				parentDetailPane.setVisible(false);
-				
-
 
 			});
 
@@ -991,8 +996,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
@@ -1016,8 +1020,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1036,8 +1039,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
@@ -1061,8 +1063,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1107,7 +1108,7 @@ public class DemographicDetailController extends BaseController {
 														RegistrationConstants.IRIS_DISABLE_FLAG))) {
 									isChild = true;
 									validation.setChild(isChild);
-									generateAlert(RegistrationConstants.ERROR,RegistrationUIConstants.PARENT_BIO_MSG);
+									generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
 
 								} else {
 									updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
@@ -1128,8 +1129,10 @@ public class DemographicDetailController extends BaseController {
 								}
 							} else {
 								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
-								updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.FINGERPRINT_CAPTURE);
-								updateBioPageFlow(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.IRIS_CAPTURE);
+								updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG,
+										RegistrationConstants.FINGERPRINT_CAPTURE);
+								updateBioPageFlow(RegistrationConstants.IRIS_DISABLE_FLAG,
+										RegistrationConstants.IRIS_CAPTURE);
 
 								parentDetailPane.setManaged(false);
 								parentDetailPane.setVisible(false);
@@ -1281,7 +1284,6 @@ public class DemographicDetailController extends BaseController {
 			parentUinIdLocalLanguageLabel.setMinWidth(Region.USE_PREF_SIZE);
 			parentUinIdLocalLanguageLabel.setMaxWidth(Region.USE_PREF_SIZE);
 
-
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1407,6 +1409,17 @@ public class DemographicDetailController extends BaseController {
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
+			String platformLanguageCode = ApplicationContext.applicationLanguage();
+			String localLanguageCode = ApplicationContext.localLanguage();
+			registrationMetaDataDTO.setFullName(((List<ValuesDTO>) Builder.build(LinkedList.class)
+					.with(values -> values.add(Builder.build(ValuesDTO.class)
+							.with(value -> value.setLanguage(platformLanguageCode))
+							.with(value -> value.setValue(fullName.getText())).get()))
+					.with(values -> values.add(Builder.build(ValuesDTO.class)
+							.with(value -> value.setLanguage(localLanguageCode))
+							.with(value -> value.setValue(fullNameLocalLanguage.getText()))
+							.get()))
+					.get()));
 			SessionContext.map().put(RegistrationConstants.IS_Child, isChild);
 			demographicInfoDTO = buildDemographicInfo();
 
@@ -1455,27 +1468,24 @@ public class DemographicDetailController extends BaseController {
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
 
-		Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
-				.getApplicantDocumentDTO().getDocuments();
-		BiometricInfoDTO applicantBiometric = getRegistrationDTOFromSession().getBiometricDTO()
-				.getApplicantBiometricDTO();
-		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
-				.getIntroducerBiometricDTO();
+		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
+		Map<String, DocumentDetailsDTO> documents = registrationDTO.getDemographicDTO().getApplicantDocumentDTO()
+				.getDocuments();
+		BiometricInfoDTO applicantBiometric = registrationDTO.getBiometricDTO().getApplicantBiometricDTO();
+		BiometricInfoDTO introducerBiometric = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO();
 
-	
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
-				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
-						.with(identity -> identity
-								.setFullName(fullName.isDisabled() || fullName.getText().isEmpty() ? null
-										: (List<ValuesDTO>) Builder.build(LinkedList.class)
-												.with(values -> values.add(Builder.build(ValuesDTO.class)
-														.with(value -> value.setLanguage(platformLanguageCode))
-														.with(value -> value.setValue(fullName.getText())).get()))
-												.with(values -> values.add(Builder.build(ValuesDTO.class)
-														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(fullNameLocalLanguage.getText()))
-														.get()))
-												.get()))
+				(MoroccoIdentity) Builder.build(MoroccoIdentity.class).with(identity -> identity.setFullName(
+						((fullName.isDisabled() || fullName.getText().isEmpty()) || registrationDTO.isNameNotUpdated())
+								? null
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
+										.with(values -> values.add(Builder.build(ValuesDTO.class)
+												.with(value -> value.setLanguage(platformLanguageCode))
+												.with(value -> value.setValue(fullName.getText())).get()))
+										.with(values -> values.add(Builder.build(ValuesDTO.class)
+												.with(value -> value.setLanguage(localLanguageCode))
+												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
+										.get()))
 						.with(identity -> identity
 								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
 										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
@@ -1598,11 +1608,13 @@ public class DemographicDetailController extends BaseController {
 														.get()))
 												.get()))
 						.with(identity -> identity
-								.setParentOrGuardianRID(!parentRegId.isDisabled() && !parentRegId.getText().isEmpty() ? 
-										new BigInteger(parentRegId.getText()) : null))
+								.setParentOrGuardianRID(!parentRegId.isDisabled() && !parentRegId.getText().isEmpty()
+										? new BigInteger(parentRegId.getText())
+										: null))
 						.with(identity -> identity
-								.setParentOrGuardianUIN(!parentUinId.isDisabled() && !parentUinId.getText().isEmpty() ? 
-										new BigInteger(parentUinId.getText()) : null))
+								.setParentOrGuardianUIN(!parentUinId.isDisabled() && !parentUinId.getText().isEmpty()
+										? new BigInteger(parentUinId.getText())
+										: null))
 						.with(identity -> identity.setParentOrGuardianName(
 								parentName.isDisabled() || parentName.getText().isEmpty() ? null
 										: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1665,7 +1677,7 @@ public class DemographicDetailController extends BaseController {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 			keyboardNode.setDisable(false);
-			RegistrationConstants.CNI_MANDATORY= String.valueOf(true);
+			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
 			copyPrevious.setDisable(true);
 			autoFillBtn.setVisible(false);
@@ -1716,7 +1728,7 @@ public class DemographicDetailController extends BaseController {
 			parentDetailPane
 					.setVisible(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 			parentDetailPane
-			.setManaged(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
+					.setManaged(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 			parentNameKeyboardImage
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 
@@ -1740,10 +1752,11 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) getRegistrationDTOFromSession().getDemographicDTO()
+			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
+			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
-
-			populateFieldValue(fullName, fullNameLocalLanguage, moroccoIdentity.getFullName());
+			
+			populateFieldValue(fullName, fullNameLocalLanguage, registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName() : registrationDTO.getRegistrationMetaDataDTO().getFullName());
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
@@ -1808,7 +1821,7 @@ public class DemographicDetailController extends BaseController {
 				parentDetailPane.setDisable(!isChild);
 				parentDetailPane.setVisible(isChild);
 			}
-			preRegistrationId.setText(getRegistrationDTOFromSession().getPreRegistrationId());
+			preRegistrationId.setText(registrationDTO.getPreRegistrationId());
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1972,8 +1985,8 @@ public class DemographicDetailController extends BaseController {
 				keyboardNode.setLayoutY(1110.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
-			keyboardNode.visibleProperty().addListener((abs,old,newValue)->{
-				if(old) {
+			keyboardNode.visibleProperty().addListener((abs, old, newValue) -> {
+				if (old) {
 					keyboardPane.setPrefHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
 				}
@@ -2191,7 +2204,7 @@ public class DemographicDetailController extends BaseController {
 		return residence.getText() != null ? residence.getId() : null;
 
 	}
-	
+
 	private void updateBioPageFlow(String flag, String pageId) {
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(flag)))) {
 			updatePageFlow(pageId, false);
@@ -2200,4 +2213,3 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 }
- 	 	

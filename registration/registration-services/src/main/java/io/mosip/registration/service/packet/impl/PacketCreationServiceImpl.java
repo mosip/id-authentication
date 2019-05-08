@@ -239,7 +239,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			packetInfo.getIdentity().setCapturedNonRegisteredDevices(null);
 
 			// Add HashSequence
-			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+			packetInfo.getIdentity().setHashSequence1(buildHashSequence(hashSequence));
 
 			// Add HashSequence for packet_osi_data
 			packetInfo.getIdentity()

@@ -2,6 +2,10 @@ package io.mosip.registration.dto.json.metadata;
 
 import java.util.List;
 
+import io.mosip.registration.dto.demographic.ValuesDTO;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This contains the attributes which have to be displayed in PacketMetaInfo
  * JSON
@@ -9,6 +13,8 @@ import java.util.List;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
+@Getter
+@Setter
 public class Identity {
 
 	private Biometric biometric;
@@ -23,197 +29,5 @@ public class Identity {
 	private List<FieldValue> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
-	private List<String> uinUpdatedFields;
-
-	/**
-	 * @return the biometric
-	 */
-	public Biometric getBiometric() {
-		return biometric;
+	private List<ValuesDTO> printingName;
 	}
-
-	/**
-	 * @param biometric
-	 *            the biometric to set
-	 */
-	public void setBiometric(Biometric biometric) {
-		this.biometric = biometric;
-	}
-
-	/**
-	 * @return the exceptionBiometrics
-	 */
-	public List<BiometricException> getExceptionBiometrics() {
-		return exceptionBiometrics;
-	}
-
-	/**
-	 * @param exceptionBiometrics
-	 *            the exceptionBiometrics to set
-	 */
-	public void setExceptionBiometrics(List<BiometricException> exceptionBiometrics) {
-		this.exceptionBiometrics = exceptionBiometrics;
-	}
-
-	/**
-	 * @return the applicantPhotograph
-	 */
-	public Photograph getApplicantPhotograph() {
-		return applicantPhotograph;
-	}
-
-	/**
-	 * @param applicantPhotograph
-	 *            the applicantPhotograph to set
-	 */
-	public void setApplicantPhotograph(Photograph applicantPhotograph) {
-		this.applicantPhotograph = applicantPhotograph;
-	}
-
-	/**
-	 * @return the exceptionPhotograph
-	 */
-	public ExceptionPhotograph getExceptionPhotograph() {
-		return exceptionPhotograph;
-	}
-
-	/**
-	 * @param exceptionPhotograph
-	 *            the exceptionPhotograph to set
-	 */
-	public void setExceptionPhotograph(ExceptionPhotograph exceptionPhotograph) {
-		this.exceptionPhotograph = exceptionPhotograph;
-	}
-
-	/**
-	 * @return the documents
-	 */
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	/**
-	 * @param documents
-	 *            the documents to set
-	 */
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-	}
-
-	/**
-	 * @return the metaData
-	 */
-	public List<FieldValue> getMetaData() {
-		return metaData;
-	}
-
-	/**
-	 * @param metaData
-	 *            the metaData to set
-	 */
-	public void setMetaData(List<FieldValue> metaData) {
-		this.metaData = metaData;
-	}
-
-	/**
-	 * @return the osiData
-	 */
-	public List<FieldValue> getOsiData() {
-		return osiData;
-	}
-
-	/**
-	 * @param osiData
-	 *            the osiData to set
-	 */
-	public void setOsiData(List<FieldValue> osiData) {
-		this.osiData = osiData;
-	}
-
-	/**
-	 * @return the hashSequence
-	 */
-	public List<FieldValueArray> getHashSequence1() {
-		return hashSequence1;
-	}
-
-	/**
-	 * @param hashSequence
-	 *            the hashSequence to set
-	 */
-	public void setHashSequence(List<FieldValueArray> hashSequence) {
-		this.hashSequence1 = hashSequence;
-	}
-
-	/**
-	 * @return the hashSequence2
-	 */
-	public List<FieldValueArray> getHashSequence2() {
-		return hashSequence2;
-	}
-
-	/**
-	 * @param hashSequence2 the hashSequence2 to set
-	 */
-	public void setHashSequence2(List<FieldValueArray> hashSequence2) {
-		this.hashSequence2 = hashSequence2;
-	}
-
-	/**
-	 * @return the capturedRegisteredDevices
-	 */
-	public List<FieldValue> getCapturedRegisteredDevices() {
-		return capturedRegisteredDevices;
-	}
-
-	/**
-	 * @param capturedRegisteredDevices the capturedRegisteredDevices to set
-	 */
-	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
-		this.capturedRegisteredDevices = capturedRegisteredDevices;
-	}
-
-	/**
-	 * @return the capturedNonRegisteredDevices
-	 */
-	public List<FieldValue> getCapturedNonRegisteredDevices() {
-		return capturedNonRegisteredDevices;
-	}
-
-	/**
-	 * @param capturedNonRegisteredDevices the capturedNonRegisteredDevices to set
-	 */
-	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
-		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
-	}
-
-	/**
-	 * @return the checkSum
-	 */
-	public List<FieldValue> getCheckSum() {
-		return checkSum;
-	}
-
-	/**
-	 * @param checkSum
-	 *            the checkSum to set
-	 */
-	public void setCheckSum(List<FieldValue> checkSum) {
-		this.checkSum = checkSum;
-	}
-
-	/**
-	 * @return the uinUpdatedFields
-	 */
-	public List<String> getUinUpdatedFields() {
-		return uinUpdatedFields;
-	}
-
-	/**
-	 * @param uinUpdatedFields the uinUpdatedFields to set
-	 */
-	public void setUinUpdatedFields(List<String> uinUpdatedFields) {
-		this.uinUpdatedFields = uinUpdatedFields;
-	}
-
-}

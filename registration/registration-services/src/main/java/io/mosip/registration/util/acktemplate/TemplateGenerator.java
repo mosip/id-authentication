@@ -560,9 +560,9 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
 				localProperties.getString("fullName"));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-				getValue(moroccoIdentity.getFullName(), platformLanguageCode));
+				getValue(registration.isNameNotUpdated() ? moroccoIdentity.getFullName() : registration.getRegistrationMetaDataDTO().getFullName(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
-				getValue(moroccoIdentity.getFullName(), localLanguageCode));
+				getValue(registration.isNameNotUpdated() ? moroccoIdentity.getFullName() : registration.getRegistrationMetaDataDTO().getFullName(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("gender"));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL, localProperties.getString("gender"));
@@ -1156,7 +1156,7 @@ public class TemplateGenerator extends BaseService {
 					.getIdentity();
 
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
-					getValue(moroccoIdentity.getFullName(), applicationLanguageCode));
+					getValue(registration.isNameNotUpdated() ? moroccoIdentity.getFullName() : registration.getRegistrationMetaDataDTO().getFullName(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_RID, getValue(registration.getRegistrationId()));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
@@ -1164,7 +1164,7 @@ public class TemplateGenerator extends BaseService {
 
 			values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
 			values.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-					getValue(moroccoIdentity.getFullName(), applicationLanguageCode));
+					getValue(registration.isNameNotUpdated() ? moroccoIdentity.getFullName() : registration.getRegistrationMetaDataDTO().getFullName(), applicationLanguageCode));
 			String dob = getValue(moroccoIdentity.getDateOfBirth());
 
 			if (dob == null || dob == "") {

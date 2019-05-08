@@ -29,4 +29,5 @@ public class RegistrationDTO extends BaseDTO {
 	private Timestamp auditLogStartTime;
 	private Timestamp auditLogEndTime;
 	private boolean isUpdateUINChild;	
+	private boolean isNameNotUpdated;	
 }
