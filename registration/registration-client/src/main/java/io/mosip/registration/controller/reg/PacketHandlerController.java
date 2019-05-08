@@ -186,7 +186,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			eodProcessGridPane.setVisible(false);
 		}
 		if(ApplicationContext.map().get(RegistrationConstants.SYNC_PROGRESS_BAR_VALUE)!=null) {
-			syncProgressBar.setProgress(Double.parseDouble((String)ApplicationContext.map().get(RegistrationConstants.SYNC_PROGRESS_BAR_VALUE)));
+		//	syncProgressBar.setProgress(Double.parseDouble((String)ApplicationContext.map().get(RegistrationConstants.SYNC_PROGRESS_BAR_VALUE)));
 		}
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
