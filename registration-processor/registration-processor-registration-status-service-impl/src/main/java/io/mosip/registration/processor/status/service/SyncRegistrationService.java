@@ -4,17 +4,22 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
-	
+
+// TODO: Auto-generated Javadoc
 /**
  * The Interface SyncRegistrationService.
  *
  * @author M1047487
- * @param <T>            the generic type
- * @param <U> the generic type
+ * @param <T>
+ *            the generic type
+ * @param <U>
+ *            the generic type
  */
 @Service
-public interface SyncRegistrationService<T,U> {
+public interface SyncRegistrationService<T, U> {
 
 	/**
 	 * Sync.
@@ -42,5 +47,21 @@ public interface SyncRegistrationService<T,U> {
 	 * @return the sync registration entity
 	 */
 	public SyncRegistrationEntity findByRegistrationId(String resgistrationId);
+
+	/**
+	 * Decrypt and get sync request.
+	 *
+	 * @param encryptedSyncMetaInfo
+	 *            the encrypted sync meta info
+	 * @param referenceId
+	 *            the reference id
+	 * @param timeStamp
+	 *            the time stamp
+	 * @param syncResponseList
+	 *            the sync response list
+	 * @return the registration sync request DTO
+	 */
+	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(String encryptedSyncMetaInfo, String referenceId,
+			String timeStamp, List<SyncResponseDto> syncResponseList);
 
 }

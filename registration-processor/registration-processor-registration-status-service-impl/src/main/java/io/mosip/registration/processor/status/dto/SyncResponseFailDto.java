@@ -1,11 +1,6 @@
 package io.mosip.registration.processor.status.dto;
 
-/**
- * The Class SyncResponseFailureDto.
- * 
- * @author Ranjitha Siddegowda
- */
-public class SyncResponseFailureDto extends SyncResponseDto {
+public class SyncResponseFailDto extends SyncResponseDto {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7322317597489527406L;
@@ -16,13 +11,10 @@ public class SyncResponseFailureDto extends SyncResponseDto {
 	/** The message. */
 	private String message;
 
-	/** The registration id. */
-	private String registrationId;
-
 	/**
 	 * Instantiates a new sync response failure dto.
 	 */
-	public SyncResponseFailureDto() {
+	public SyncResponseFailDto() {
 		super();
 	}
 
@@ -51,25 +43,6 @@ public class SyncResponseFailureDto extends SyncResponseDto {
 
 	public void setMessage(String message) {
 		this.message = message;
-	}
-
-	/**
-	 * Gets the registration id.
-	 *
-	 * @return the registration id
-	 */
-	public String getRegistrationId() {
-		return registrationId;
-	}
-
-	/**
-	 * Sets the registration id.
-	 *
-	 * @param registrationId
-	 *            the new registration id
-	 */
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
 	}
 
 }

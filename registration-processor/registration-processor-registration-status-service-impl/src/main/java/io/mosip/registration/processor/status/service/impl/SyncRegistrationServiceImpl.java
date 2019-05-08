@@ -9,33 +9,43 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import io.mosip.kernel.core.logger.spi.Logger;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.SupervisorStatus;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
+import io.mosip.registration.processor.status.decryptor.Decryptor;
+import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.dto.SyncResponseFailDto;
 import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
+import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
+import io.mosip.registration.processor.status.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 
-/**	
+/**
  * The Class SyncRegistrationServiceImpl.
  *
  * @author M1048399
@@ -71,11 +81,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
-	
+
 	String description = "";
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
+
+	@Autowired
+	private Decryptor decryptor;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -93,8 +106,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	public List<SyncResponseDto> sync(List<SyncRegistrationDto> resgistrationDtos) {
 		List<SyncResponseDto> synchResponseList = new ArrayList<>();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "SyncRegistrationServiceImpl::sync()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"SyncRegistrationServiceImpl::sync()::entry");
 
 		boolean isTransactionSuccessful = false;
 		try {
@@ -103,12 +116,12 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			}
 			isTransactionSuccessful = true;
 			description = "Registartion Id's are successfully synched in Sync Registration table";
-			
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "");
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage();						
-			
+			description = "DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage();
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
@@ -123,11 +136,12 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
+			// auditLogRequestBuilder.createAuditRequestBuilder(description, eventId,
+			// eventName, eventType,
+			// AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "SyncRegistrationServiceImpl::sync()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"SyncRegistrationServiceImpl::sync()::exit");
 		return synchResponseList;
 
 	}
@@ -144,32 +158,36 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	private List<SyncResponseDto> validateSync(SyncRegistrationDto registrationDto,
 			List<SyncResponseDto> syncResponseList) {
 		if (validateLanguageCode(registrationDto, syncResponseList)
-				&& validateStatusCode(registrationDto, syncResponseList)) {
+				&& validateRegistrationType(registrationDto, syncResponseList)
+				&& validateHashValue(registrationDto, syncResponseList)
+				&& validateSupervisorStatus(registrationDto, syncResponseList)) {
 			if (validateRegistrationID(registrationDto, syncResponseList)) {
 				SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 				try {
 					if (ridValidator.validateId(registrationDto.getRegistrationId())) {
-						if (registrationDto.getParentRegistrationId() != null) {
-							if (validateRegIdAndParentRegId(registrationDto, syncResponseList)) {
-								syncResponseList = validateParentRegId(registrationDto, syncResponseList);
-							}
-						} else {
-							syncResponseList = validateRegId(registrationDto, syncResponseList);
-						}
+
+						syncResponseList = validateRegId(registrationDto, syncResponseList);
+
 					}
 				} catch (InvalidIDException e) {
 					syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-					syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 					syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
 					if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
-						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getMessage());
-						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getCode());
+						syncResponseFailureDto
+								.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getMessage());
+						syncResponseFailureDto
+								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_LENGTH.getCode());
 					} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
-						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getMessage());
-						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getCode());
+						syncResponseFailureDto
+								.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getMessage());
+						syncResponseFailureDto
+								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID.getCode());
 					} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
-						syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getMessage());
-						syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getCode());
+						syncResponseFailureDto.setMessage(
+								PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getMessage());
+						syncResponseFailureDto
+								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getCode());
 					}
 					syncResponseList.add(syncResponseFailureDto);
 				}
@@ -178,39 +196,41 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return syncResponseList;
 	}
 
-	/**
-	 * Validate parent RegId by Kernel RidValiator.
-	 *
-	 * @param registrationDto
-	 *            the registration dto
-	 * @param syncResponseList
-	 *            the sync response list
-	 * @return the list
-	 */
-	private List<SyncResponseDto> validateParentRegId(SyncRegistrationDto registrationDto,
+	private boolean validateSupervisorStatus(SyncRegistrationDto registrationDto,
 			List<SyncResponseDto> syncResponseList) {
-		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
-		try {
-			if (ridValidator.validateId(registrationDto.getParentRegistrationId())) {
-				syncResponseList = validateRegId(registrationDto, syncResponseList);
-			}
-		} catch (InvalidIDException e) {
+		String value = registrationDto.getSupervisorStatus();
+		if (SupervisorStatus.APPROVED.toString().equals(value)) {
+			return true;
+		} else if (SupervisorStatus.REJECT.toString().equals(value)) {
+			return true;
+
+		} else {
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode())) {
-				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID_LENGTH.getMessage());
-				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID_LENGTH.getCode());
-			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID.getErrorCode())) {
-				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID.getMessage());
-				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID.getCode());
-			} else if (e.getErrorCode().equals(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode())) {
-				syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_PRID_TIMESTAMP.getMessage());
-				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_PRID_TIMESTAMP.getCode());
-			}
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_SUPERVISOR_STATUS.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_SUPERVISOR_STATUS.getCode());
 			syncResponseList.add(syncResponseFailureDto);
+			return false;
 		}
-		return syncResponseList;
+
+	}
+
+	private boolean validateHashValue(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
+
+		if (registrationDto.getPacketHashValue() == null) {
+			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_HASHVALUE.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_HASHVALUE.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -222,9 +242,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 *            the sync response list
 	 * @return true, if successful
 	 */
-	private boolean validateStatusCode(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
+	private boolean validateRegistrationType(SyncRegistrationDto registrationDto,
+			List<SyncResponseDto> syncResponseList) {
 
-		String value = registrationDto.getSyncType();
+		String value = registrationDto.getRegistrationType();
 		if (SyncTypeDto.NEW.getValue().equals(value)) {
 			return true;
 		} else if (SyncTypeDto.CORRECTION.getValue().equals(value)) {
@@ -242,7 +263,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
 			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_SYNCTYPE.getMessage());
 			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_SYNCTYPE.getCode());
@@ -266,35 +287,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
 			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_LANGUAGECODE.getMessage());
 			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_LANGUAGECODE.getCode());
-			syncResponseList.add(syncResponseFailureDto);
-			return false;
-		}
-	}
-
-	/**
-	 * Validate reg id and parent reg id.
-	 *
-	 * @param registrationDto
-	 *            the registration dto
-	 * @param syncResponseList
-	 *            the sync response list
-	 * @return true, if successful
-	 */
-	private boolean validateRegIdAndParentRegId(SyncRegistrationDto registrationDto,
-			List<SyncResponseDto> syncResponseList) {
-		if (!registrationDto.getRegistrationId().equals(registrationDto.getParentRegistrationId())) {
-			return true;
-		} else {
-			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
-			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
-			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGID_PARENTREGID.getCode());
-			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_INVALID_REGID_PARENTREGID.getMessage());
 			syncResponseList.add(syncResponseFailureDto);
 			return false;
 		}
@@ -316,7 +312,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseFailureDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
 			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_EMPTY_REGISTRATIONID.getCode());
 			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_EMPTY_REGISTRATIONID.getMessage());
@@ -338,7 +333,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			List<SyncResponseDto> syncResponseList) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationDto.getRegistrationId(), "SyncRegistrationServiceImpl::validateRegId()::entry");
-		SyncResponseDto syncResponseDto = new SyncResponseDto();
+		SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
 		SyncRegistrationEntity existingSyncRegistration = findByRegistrationId(
 				registrationDto.getRegistrationId().trim());
 		SyncRegistrationEntity syncRegistration;
@@ -349,7 +344,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
 			syncRegistrationDao.update(syncRegistration);
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 			eventId = EventId.RPR_402.toString();
 		} else {
 			// first time sync registration
@@ -357,11 +352,10 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			syncRegistration.setId(RegistrationUtility.generateId());
 			syncRegistrationDao.save(syncRegistration);
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			syncResponseDto.setParentRegistrationId(registrationDto.getParentRegistrationId());
+
 			eventId = EventId.RPR_407.toString();
 		}
 		syncResponseDto.setStatus(ResponseStatusCode.SUCCESS.toString());
-		syncResponseDto.setMessage("Registartion Id's are successfully synched in Sync table");
 		syncResponseList.add(syncResponseDto);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationDto.getRegistrationId(), "SyncRegistrationServiceImpl::validateRegId()::exit");
@@ -401,13 +395,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	private SyncRegistrationEntity convertDtoToEntity(SyncRegistrationDto dto) {
 		SyncRegistrationEntity syncRegistrationEntity = new SyncRegistrationEntity();
 		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId().trim());
-		syncRegistrationEntity.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : Boolean.TRUE);
 		syncRegistrationEntity.setIsDeleted(dto.getIsDeleted() != null ? dto.getIsDeleted() : Boolean.FALSE);
 		syncRegistrationEntity.setLangCode(dto.getLangCode());
-		syncRegistrationEntity.setParentRegistrationId(dto.getParentRegistrationId());
-		syncRegistrationEntity.setStatusComment(dto.getStatusComment());
-		syncRegistrationEntity.setStatusCode(dto.getSyncStatus().toString());
-		syncRegistrationEntity.setRegistrationType(dto.getSyncType().toString());
+		syncRegistrationEntity.setRegistrationType(dto.getRegistrationType());
+		syncRegistrationEntity.setPacketHashValue(dto.getPacketHashValue());
+		syncRegistrationEntity.setPacketSize(dto.getPacketSize());
+		syncRegistrationEntity.setSupervisorStatus(dto.getSupervisorStatus());
+		syncRegistrationEntity.setSupervisorComment(dto.getSupervisorComment());
+		syncRegistrationEntity.setOptionalValues(dto.getOptionalValues().toString().getBytes());
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
 		if (syncRegistrationEntity.getIsDeleted()) {
@@ -417,5 +412,47 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		}
 
 		return syncRegistrationEntity;
+	}
+
+	@Override
+	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(String encryptedSyncMetaInfo, String referenceId,
+			String timeStamp, List<SyncResponseDto> syncResponseList) {
+		RegistrationSyncRequestDTO registrationSyncRequestDTO = null;
+		try {
+			String decryptedSyncMetaData = decryptor.decrypt(encryptedSyncMetaInfo, referenceId, timeStamp);
+			registrationSyncRequestDTO = (RegistrationSyncRequestDTO) JsonUtils
+					.jsonStringToJavaObject(RegistrationSyncRequestDTO.class, decryptedSyncMetaData);
+
+		} catch (PacketDecryptionFailureException | ApisResourceAccessException e) {
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_DECRYPTION_FAILED.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_DECRYPTION_FAILED.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+		} catch (JsonParseException e) {
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+
+		} catch (JsonMappingException e) {
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+		} catch (IOException e) {
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+		}
+		return registrationSyncRequestDTO;
 	}
 }
