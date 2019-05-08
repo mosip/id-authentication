@@ -237,8 +237,8 @@ public class PacketInfoDao {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType,refRegtrnId);
 	}
 
-	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId){
-		return abisRequestRepositary.getIdentifyByTransactionId(transactionId);
+	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify){
+		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
 	}
 
 	public List<RegBioRefEntity> getBioRefIdByRegId(String regId){

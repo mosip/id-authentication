@@ -324,7 +324,7 @@ public class DemodedupeProcessor {
 					"Record is inserted in demo dedupe potential match, destination stage is abis_handler");
 		} else {
 			object.setIsValid(Boolean.TRUE);
-			
+
 			registrationStatusDto
 			.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
@@ -356,11 +356,11 @@ public class DemodedupeProcessor {
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
 	}
-	
-	
+
+
 	private void processDemoDedupeRequesthandler(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
