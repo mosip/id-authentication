@@ -311,11 +311,13 @@ public class DemographicService {
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is sucessfully saved in the demographic table",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com", "test@gmail.com");
+						AuditLogVariables.NO_ID.toString(),  authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Failed to save the Pre-Registration data", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						 authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 			}
 		}
 		return mainResponseDTO;
@@ -387,11 +389,13 @@ public class DemographicService {
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is sucessfully updated in the demographic table",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com", "test@gmail.com");
+						AuditLogVariables.NO_ID.toString(),  authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Failed to update the Pre-Registration data", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						 authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 			}
 		}
 		return mainResponseDTO;
@@ -466,11 +470,13 @@ public class DemographicService {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
 						"Retrieve All Pre-Registration id, Full name, Status and Appointment details by user id",
-						AuditLogVariables.MULTIPLE_ID.toString(), "test@gmail.com", "test@gmail.com");
+						AuditLogVariables.MULTIPLE_ID.toString(),  authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Retrieve All Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						 authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 			}
 		}
 		return response;
@@ -606,11 +612,13 @@ public class DemographicService {
 			if (isDeleteSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is successfully deleted from demographic table",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com", "test@gmail.com");
+						AuditLogVariables.NO_ID.toString(),  authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Deletion of Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						 authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 			}
 		}
 

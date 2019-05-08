@@ -21,12 +21,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 //import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -166,13 +168,13 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-	//	requiredRequestMap.put("id", uploadId);
+		// requiredRequestMap.put("id", uploadId);
 		requiredRequestMap.put("version", ver);
 	}
 
-//	public AuthUserDetails authUserDetails() {
-//		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//	}
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
 
 	/**
 	 * This method is used to upload the document by accepting the JsonString and
@@ -219,13 +221,13 @@ public class DocumentService {
 			if (isUploadSuccess) {
 				setAuditValues(EventId.PRE_404.toString(), EventName.UPLOAD.toString(), EventType.BUSINESS.toString(),
 						"Document uploaded & the respective Pre-Registration data is saved in the document table",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document upload failed & the respective Pre-Registration data save unsuccessfull ",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 
@@ -250,7 +252,7 @@ public class DocumentService {
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,"test@gmail.com",
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, "test@gmail.com",
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
@@ -350,13 +352,13 @@ public class DocumentService {
 			if (isCopySuccess) {
 				setAuditValues(EventId.PRE_409.toString(), EventName.COPY.toString(), EventType.BUSINESS.toString(),
 						"Document copied from source PreId to destination PreId is successfully saved in the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document failed to copy from source PreId to destination PreId ",
-						AuditLogVariables.NO_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -419,11 +421,11 @@ public class DocumentService {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
 						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -479,11 +481,11 @@ public class DocumentService {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
 						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
-						"test@gmail.com", "test@gmail.com");
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -582,12 +584,12 @@ public class DocumentService {
 			if (isDeleteSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
 						"Document successfully deleted from the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Document deletion failed", AuditLogVariables.NO_ID.toString(), "test@gmail.com",
-						"test@gmail.com");
+						"Document deletion failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return deleteRes;

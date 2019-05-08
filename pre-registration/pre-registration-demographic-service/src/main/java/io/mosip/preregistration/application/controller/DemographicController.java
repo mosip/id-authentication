@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,7 +75,7 @@ public class DemographicController {
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	 @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create form data")
@@ -94,7 +95,7 @@ public class DemographicController {
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	 @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PutMapping(path = "/applications/{preRegistrationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update form data")
@@ -116,7 +117,7 @@ public class DemographicController {
 	 * @return the application data for a pre-id
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+    @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 	@GetMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Get Pre-Registartion data")
@@ -139,7 +140,7 @@ public class DemographicController {
 	 * @return the updation status of application for a pre-id
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+    @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PutMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
@@ -163,7 +164,7 @@ public class DemographicController {
 	 * @return List of applications created by User
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 	@GetMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully") })
@@ -185,7 +186,7 @@ public class DemographicController {
 	 * @return status of application
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@GetMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
@@ -207,7 +208,7 @@ public class DemographicController {
 	 * @return the deletion status of application for a pre-id
 	 */
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 	@DeleteMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard individual")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully") })
@@ -219,7 +220,7 @@ public class DemographicController {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId));
 	}
 
-	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 	@PostMapping(path = "/applications/updatedTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Updated Date Time for List of Pre-Registration Id")
 	@ApiResponses(value = {
