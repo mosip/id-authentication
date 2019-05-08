@@ -167,6 +167,16 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	ProgressIndicator progressIndicator;
+	
+	@FXML
+	public GridPane progressPane;
+	
+	@FXML
+	public ProgressBar syncProgressBar;
+	
+	@Autowired
+	HeaderController headerController;
+
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -515,15 +525,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
 
-	@FXML
-	public GridPane progressPane;
-	
-	@FXML
-	public ProgressBar syncProgressBar;
-	
-	@Autowired
-	HeaderController headerController;
-	
 	/**
 	 * Sync data through batch jobs.
 	 */
