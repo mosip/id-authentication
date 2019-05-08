@@ -54,6 +54,6 @@ public class MachineDto extends BaseDto {
 	
 	private String keyIndex;
 	
-	private byte[] publicKey;
+	private String publicKey;
 
 }

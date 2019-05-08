@@ -29,6 +29,7 @@ import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
@@ -290,7 +291,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<MachineDto>> getMachines(String regCenterId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp,String keyIndex) {
 		List<Machine> machineDetailList = new ArrayList<>();
-		List<MachineDto> machineDetailDtoList = null;
+		List<MachineDto> machineDetailDtoList = new ArrayList<>();
 		try {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -303,9 +304,25 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
-
-			machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
-
+			
+			//machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
+          machineDetailList.forEach(machine->{
+        	  MachineDto responseDto=new MachineDto();
+        	  responseDto.setPublicKey(CryptoUtil.encodeBase64(machine.getPublicKey()));
+        	  responseDto.setId(machine.getId());
+        	  responseDto.setIpAddress(machine.getIpAddress());
+        	  responseDto.setIsActive(machine.getIsActive());
+        	  responseDto.setIsDeleted(machine.getIsDeleted());
+        	  responseDto.setKeyIndex(keyIndex);
+        	  responseDto.setLangCode(machine.getLangCode());
+        	  responseDto.setMacAddress(machine.getMacAddress());
+        	  responseDto.setMachineSpecId(machine.getMachineSpecId());
+              responseDto.setName(machine.getName());
+              responseDto.setSerialNum(machine.getSerialNum());
+              responseDto.setValidityDateTime(machine.getValidityDateTime());
+              machineDetailDtoList.add(responseDto);
+          });
+			
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
