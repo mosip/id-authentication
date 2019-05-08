@@ -1,4 +1,4 @@
-package io.mosip.admin.accountmgmt.constant;
+package io.mosip.admin.accountmgmt.config;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.logger.logback.appender.ConsoleAppender;

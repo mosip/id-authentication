@@ -1,5 +1,8 @@
 package io.mosip.admin.accountmgmt.service;
 
+import io.mosip.admin.accountmgmt.dto.UnBlockResponseDto;
+import io.mosip.admin.accountmgmt.dto.UserNameDto;
+
 
 /**
  * The Interface AccountManagementService.
@@ -12,10 +15,17 @@ public interface AccountManagementService {
 	/**
 	 * Gets the user name.
 	 *
-	 * @param userId the user id
-	 * @param phoneNumber the phone number
+	 * @param userId            the user id
 	 * @return {@link String} user name
 	 */
-	public String getUserName(String userId,String phoneNumber);
+	public UserNameDto getUserName(String userId);
+	
+	
+	/**
+	 * Un block user name.
+	 *
+	 * @param userId the user id
+	 * @return the un block response dto
+	 */
+	public UnBlockResponseDto unBlockUserName(String userId);
 }
-

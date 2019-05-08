@@ -1,4 +1,4 @@
-package io.mosip.admin.accountmgmt.constant;
+package io.mosip.admin.accountmgmt.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

@@ -1,4 +1,4 @@
-package io.mosip.admin.accountmgmt.constant;
+package io.mosip.admin.accountmgmt.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;

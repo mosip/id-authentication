@@ -40,12 +40,12 @@ public enum AuthErrorCode {
 	 * USER VALIDATION ERROR
 	 */
 	USER_VALIDATION_ERROR("KER-ATH-003", "User Detail doesn't exist"),
-	
+
 	/**
 	 * PASSWORD VALIDATION ERROR
 	 */
 	PASSWORD_VALIDATION_ERROR("KER-ATH-005", "Incorrect Password"),
-	
+
 	/**
 	 * Empty Cookie error
 	 */
@@ -54,11 +54,15 @@ public enum AuthErrorCode {
 	 * Empty Cookie error
 	 */
 	TOKEN_NOTPRESENT_ERROR("KER-ATH-007", "Token is not present in cookies"),
-	
+
 	/**
 	 * Empty Cookie error
 	 */
-	INVALID_DATASOURCE_ERROR("KER-ATH-008", "Invalid datasource and Please check the application id");
+	INVALID_DATASOURCE_ERROR("KER-ATH-008", "Invalid datasource and Please check the application id"),
+
+	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
+	
+	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context");
 
 	/**
 	 * The error code
@@ -72,8 +76,10 @@ public enum AuthErrorCode {
 	/**
 	 * Constructor to set error code and message
 	 * 
-	 * @param errorCode    the error code
-	 * @param errorMessage the error message
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
 	 */
 	private AuthErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

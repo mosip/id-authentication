@@ -22,6 +22,7 @@ import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.ClientSecretDto;
 import io.mosip.kernel.auth.entities.LoginUser;
@@ -32,6 +33,7 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -349,6 +351,24 @@ public class AuthController {
 		ResponseWrapper<RIdDto> responseWrapper = new ResponseWrapper<>();
 		RIdDto rIdDto = authService.getRidBasedOnUid(userId, appId);
 		responseWrapper.setResponse(rIdDto);
+		return responseWrapper;
+	}
+	
+	
+	/**
+	 * Fetch username based on the user id.
+	 * @param appId - application id
+	 * @param userId - user id
+	 * @return {@link UserNameDto}
+	 * @throws Exception - exception is thrown if
+	 */
+	@ResponseFilter
+	@GetMapping(value="unblock/{appid}/{userid}")
+	public ResponseWrapper<AuthZResponseDto> getUserName(@PathVariable("appid") String appId,
+			@PathVariable("userid") String userId) throws Exception{
+		AuthZResponseDto authZResponseDto= authService.unBlockUser(userId, appId);
+		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authZResponseDto);
 		return responseWrapper;
 	}
 
