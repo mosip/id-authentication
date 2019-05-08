@@ -90,13 +90,12 @@ public class SendNotificationController extends BaseController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		String modeOfCommunication = String
-				.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+		String modeOfCommunication = (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION)).toLowerCase();
+		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toLowerCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);
 		}
-		if (!modeOfCommunication.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+		if (!modeOfCommunication.contains(RegistrationConstants.SMS_SERVICE.toLowerCase())) {
 			mobile.setVisible(false);
 			mobileIcon.setVisible(false);
 		}
