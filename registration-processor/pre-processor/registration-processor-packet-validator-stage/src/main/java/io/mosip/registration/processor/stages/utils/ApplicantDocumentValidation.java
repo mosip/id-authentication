@@ -118,18 +118,15 @@ public class ApplicantDocumentValidation {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ApplicantDocumentValidation::validateApplicantData::entry");
 		demographicIdentity = getDemographicJson(jsonString);
-		List<String> list = new ArrayList<>();
+
 		List<String> mapperJsonKeys = new ArrayList<>(demographicIdentity.keySet());
-		for (String key : mapperJsonKeys) {
-			list.add(key);
-		}
 
 		if (age < ageThreshold)
 			applicantType = APPLICANTTYPECHILD;
 		else
 			applicantType = APPLICANTTYPEADULT;
 
-		isApplicantDocumentVerified = applicantValidation(applicantType, list);
+		isApplicantDocumentVerified = applicantValidation(applicantType, mapperJsonKeys);
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ApplicantDocumentValidation::validateApplicantData::exit");
