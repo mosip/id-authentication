@@ -51,8 +51,8 @@ public class FXUtils {
 	}
 
 	/**
-	 * Method to get the instance of {@link FXUtils}. If instance does not exists,
-	 * instantiates a new object of {@link FXUtils} and returns the same
+	 * Method to get the instance of {@link FXUtils}. If instance does not
+	 * exists, instantiates a new object of {@link FXUtils} and returns the same
 	 * 
 	 * @return the instance of the {@link FXUtils}
 	 */
@@ -69,7 +69,7 @@ public class FXUtils {
 	 * @param field
 	 *            the {@link CheckBox}
 	 */
-	public void listenOnSelectedCheckBoxParentOrGuardian(CheckBox parentOrGuardian,CheckBox biometrics) {
+	public void listenOnSelectedCheckBoxParentOrGuardian(CheckBox parentOrGuardian, CheckBox biometrics) {
 
 		parentOrGuardian.selectedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
@@ -78,10 +78,10 @@ public class FXUtils {
 				biometrics.getStyleClass().remove("updateUinCheckBoxSelected");
 				biometrics.getStyleClass().add("updateUinCheckBox");
 				biometrics.setSelected(false);
-			}else {
+			} else {
 				parentOrGuardian.getStyleClass().remove("updateUinCheckBoxSelected");
 				parentOrGuardian.getStyleClass().add("updateUinCheckBox");
-			} 
+			}
 		});
 		biometrics.selectedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
@@ -96,7 +96,7 @@ public class FXUtils {
 			}
 		});
 	}
-	
+
 	/**
 	 * Listener to change the style when field is selected for.
 	 *
@@ -141,8 +141,8 @@ public class FXUtils {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				field.setText(oldValue);
-			}else {
-				field.getStyleClass().removeIf((s)->{
+			} else {
+				field.getStyleClass().removeIf((s) -> {
 					return s.equals("demoGraphicTextFieldFocus");
 				});
 				field.getStyleClass().add("demoGraphicTextField");
@@ -164,14 +164,14 @@ public class FXUtils {
 	 * @return <code>true</code> if input is valid, else <code>false</code>
 	 */
 	private boolean isInputTextValid(Pane parentPane, TextField field, String fieldId, Validations validation) {
-		return validation.validateTextField(parentPane, field, fieldId,true);
+		return validation.validateTextField(parentPane, field, fieldId, true);
 	}
 
 	/**
-	 * Populate local or secondary language combo box based on the application or
-	 * primary language. The value in the local or secondary language
-	 * {@link ComboBox} will be selected based on the code of the value selected in
-	 * application or secondary language {@link ComboBox}.
+	 * Populate local or secondary language combo box based on the application
+	 * or primary language. The value in the local or secondary language
+	 * {@link ComboBox} will be selected based on the code of the value selected
+	 * in application or secondary language {@link ComboBox}.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} in which {@link TextField} is present
@@ -211,9 +211,9 @@ public class FXUtils {
 
 	/**
 	 * Validates the value of field during on-type event. If validation is
-	 * successful, populate the local or secondary language field (transliterate, if
-	 * required) if present. Else retain the previous value and display error
-	 * message.
+	 * successful, populate the local or secondary language field
+	 * (transliterate, if required) if present. Else retain the previous value
+	 * and display error message.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} in which {@link TextField} is present
@@ -224,16 +224,17 @@ public class FXUtils {
 	 * @param localField
 	 *            the local or secondary language {@link TextField}
 	 * @param haveToTransliterate
-	 *            the flag to know whether the field value has to be transliterated
+	 *            the flag to know whether the field value has to be
+	 *            transliterated
 	 */
 	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
-		
+
 		focusAction(parentPane, field);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			showLabel(parentPane, field);
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
-				field.getStyleClass().removeIf((s)->{
+				field.getStyleClass().removeIf((s) -> {
 					return s.equals("demoGraphicTextFieldFocus");
 				});
 				field.getStyleClass().add("demoGraphicTextField");
@@ -243,20 +244,20 @@ public class FXUtils {
 						try {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
-							}catch(RuntimeException runtimeException) {
-								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
-										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-							}
+						} catch (RuntimeException runtimeException) {
+							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						}
 					} else {
 						localField.setText(field.getText());
 					}
 				}
 			} else {
-				if(!haveToTransliterate && field.getText().equals(RegistrationConstants.EMPTY)) {
+				if (!haveToTransliterate && field.getText().equals(RegistrationConstants.EMPTY)) {
 					localField.setText(field.getText());
 					hideLabel(parentPane, localField);
 				}
-				if(!field.getText().equals(RegistrationConstants.EMPTY))
+				if (!field.getText().equals(RegistrationConstants.EMPTY))
 					field.setText(oldValue);
 			}
 		});
@@ -265,9 +266,9 @@ public class FXUtils {
 
 	/**
 	 * Validates the value of field during focus-out event. If validation is
-	 * successful, populate the local or secondary language field (transliterate, if
-	 * required) if present. Else retain the previous value and display error
-	 * message.
+	 * successful, populate the local or secondary language field
+	 * (transliterate, if required) if present. Else retain the previous value
+	 * and display error message.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} in which {@link TextField} is present
@@ -278,15 +279,16 @@ public class FXUtils {
 	 * @param localField
 	 *            the local or secondary language {@link TextField}
 	 * @param haveToTransliterate
-	 *            the flag to know whether the field value has to be transliterated
+	 *            the flag to know whether the field value has to be
+	 *            transliterated
 	 */
 	public void validateOnFocusOut(Pane parentPane, TextField field, Validations validation, TextField localField,
 			boolean haveToTransliterate) {
 
 		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (oldValue) {
-				if (isInputTextValid(parentPane, field, field.getId()+"_ontype", validation)) {
-					field.getStyleClass().removeIf((s)->{
+				if (isInputTextValid(parentPane, field, field.getId() + "_ontype", validation)) {
+					field.getStyleClass().removeIf((s) -> {
 						return s.equals("demoGraphicTextFieldFocus");
 					});
 					field.getStyleClass().add("demoGraphicTextField");
@@ -295,9 +297,10 @@ public class FXUtils {
 					if (localField != null) {
 						if (haveToTransliterate) {
 							try {
-							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
-									ApplicationContext.localLanguage(), field.getText()));
-							}catch(RuntimeException runtimeException) {
+								localField
+										.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+												ApplicationContext.localLanguage(), field.getText()));
+							} catch (RuntimeException runtimeException) {
 								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
 										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 							}
@@ -319,9 +322,9 @@ public class FXUtils {
 	}
 
 	/**
-	 * Display the secondary or local language's {@link Label}, {@link TextField}
-	 * Prompt Text and Error Message {@link Label} based on the {@link TextField}
-	 * change event.
+	 * Display the secondary or local language's {@link Label},
+	 * {@link TextField} Prompt Text and Error Message {@link Label} based on
+	 * the {@link TextField} change event.
 	 * 
 	 * @param parentPane
 	 *            the {@link Pane} in which secondary or local language's Label,
@@ -330,17 +333,19 @@ public class FXUtils {
 	 *            the secondary or local {@link TextField}
 	 */
 	public void onTypeFocusUnfocusListener(Pane parentPane, TextField field) {
-		if(field!=null) {
+		if (field != null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				field.getStyleClass().removeIf((s)->{
+				field.getStyleClass().removeIf((s) -> {
 					return s.equals("demoGraphicTextFieldFocus");
 				});
 				field.getStyleClass().add("demoGraphicTextField");
-				if(newValue.isEmpty()) {
-					hideLabel(parentPane, field);
-				} else {
-					hideErrorMessageLabel(parentPane, field);
-					showLabel(parentPane, field);
+				if (newValue != null) {
+					if (newValue.isEmpty()) {
+						hideLabel(parentPane, field);
+					} else {
+						hideErrorMessageLabel(parentPane, field);
+						showLabel(parentPane, field);
+					}
 				}
 			});
 
@@ -357,18 +362,20 @@ public class FXUtils {
 	 *            the secondary or local {@link TextField}
 	 */
 	public void onTypeFocusUnfocusForLabel(Pane parentPane, TextField field) {
-		if(field!=null) {
+		if (field != null) {
 			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if(newValue.isEmpty()) {
-					hideLabel(parentPane, field);
-				} else {
-					showLabel(parentPane, field);
+				if (newValue != null) {
+					if (newValue.isEmpty()) {
+						hideLabel(parentPane, field);
+					} else {
+						showLabel(parentPane, field);
+					}
 				}
 			});
 
 		}
 	}
-	
+
 	/**
 	 * Display the secondary or local language's Label, Field's Prompt Text and
 	 * Error Message Label based on the focus in or focus out event.
@@ -399,8 +406,8 @@ public class FXUtils {
 	}
 
 	/**
-	 * If the value of field is empty, the label will be hidden and prompt text will
-	 * be displayed for the corresponding field
+	 * If the value of field is empty, the label will be hidden and prompt text
+	 * will be displayed for the corresponding field
 	 * 
 	 * @param parentPane
 	 *            the {@link Pane} containing the {@link TextField}
@@ -408,7 +415,7 @@ public class FXUtils {
 	 *            the {@link TextField}
 	 */
 	public void hideLabel(Pane parentPane, TextField field) {
-		if (field.getText().isEmpty()) {
+		if (field == null || field.getText().isEmpty()) {
 			try {
 				Label label = ((Label) parentPane
 						.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL));
@@ -429,8 +436,8 @@ public class FXUtils {
 	 * @param parentPane
 	 *            the {@link Pane} containing the {@link TextField}
 	 * @param field
-	 *            the {@link TextField} for which Prompt Text has to be removed and
-	 *            show its corresponding {@link Label}
+	 *            the {@link TextField} for which Prompt Text has to be removed
+	 *            and show its corresponding {@link Label}
 	 */
 	private void showLabel(Pane parentPane, TextField field) {
 		toggleUIField(parentPane, field.getId() + RegistrationConstants.LABEL, true);
@@ -448,9 +455,9 @@ public class FXUtils {
 	 */
 	private void hideErrorMessageLabel(Pane parentPane, TextField field) {
 		if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
-			toggleUIField(parentPane,  RegistrationConstants.DOB_MESSAGE, false);
+			toggleUIField(parentPane, RegistrationConstants.DOB_MESSAGE, false);
 		} else {
-			toggleUIField(parentPane,  field.getId() + RegistrationConstants.MESSAGE, false);
+			toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, false);
 		}
 	}
 
@@ -460,8 +467,8 @@ public class FXUtils {
 	 * @param field
 	 *            the {@link TextField} for which listener has to be set
 	 * @param fieldToPopulate
-	 *            the {@link TextField} whose value has to be changed based on the
-	 *            input field
+	 *            the {@link TextField} whose value has to be changed based on
+	 *            the input field
 	 * @param regex
 	 *            the regular expression pattern to validate the input of field
 	 */
@@ -473,7 +480,7 @@ public class FXUtils {
 				if (age > 0) {
 					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 					localFieldToPopulate.setText(RegistrationConstants.EMPTY + age);
-				}else {
+				} else {
 					fieldToPopulate.setText("1");
 					localFieldToPopulate.setText("1");
 				}

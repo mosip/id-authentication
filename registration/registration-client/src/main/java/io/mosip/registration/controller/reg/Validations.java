@@ -242,7 +242,7 @@ public class Validations extends BaseController {
 
 			if (node.isDisabled() || (!isMandatory && inputText.isEmpty())) {
 				isInputValid = true;
-			} else if (isMandatory && inputText.isEmpty()) {
+			} else if (isMandatory &&(inputText==null || inputText.isEmpty())) {
 				generateInvalidValueAlert(parentPane, id,
 						labelBundle.getString(label).concat(RegistrationConstants.SPACE)
 								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
