@@ -54,7 +54,7 @@ The key solution considerations are
 
 
 **2.1.	Class Diagram**   
-![Class Diagram](_images/idrepo-cd.PNG)   
+![Class Diagram](_images/idrepo-identityservice-cd.PNG)   
 
 
 **2.2.	REST Services**   
@@ -102,7 +102,7 @@ MOSIP Products can use ID Repo API spec available here - [Retrieve ID By UIN API
 Below sequence diagram for create Identity service shows sequence of operations to retrieve Identity details associated with a UIN.   
 ![Get Identity Sequence Diagram](_images/idrepo-getIdentitybyuin-sd.PNG)    
 
-***2.2.4.	Get Identity By UIN***   
+***2.2.4.	Get Identity By RID***   
 
 MOSIP Products can use ID Repo API spec available here - [Retrieve ID By RID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#read-id-by-rid) - to retrieve Identity of an Individual by providing a RID.    
 1. 	Integrate with Kernel RID validator to validate RID     

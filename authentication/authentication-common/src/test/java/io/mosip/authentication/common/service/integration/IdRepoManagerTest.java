@@ -32,6 +32,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 
 /**
@@ -99,7 +100,7 @@ public class IdRepoManagerTest {
 				.thenReturn(restRequestDTO);
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("mosip.kernel.idrepo.status.registered", "Invalid");
+		environment.setProperty(IdRepoConstants.ACTIVE_STATUS.getValue(), "Invalid");
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("status", "invalid");
