@@ -54,7 +54,8 @@ export class FileUploadComponent implements OnInit {
   documentIndex: number;
   LOD: DocumentCategory[];
   fileIndex: number = -1;
-  secondaryLanguagelabels: any;
+  fileUploadLanguagelabels: any;
+  errorlabels: any;
   fileExtension: string = '';
   sameAs: string;
   disableNavigation: boolean = false;
@@ -105,7 +106,8 @@ export class FileUploadComponent implements OnInit {
     this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      if (response['message']) this.secondaryLanguagelabels = response['message'];
+      if (response['message']) this.fileUploadLanguagelabels = response['message'];
+      if (response['error']) this.errorlabels = response['error'];
     });
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
@@ -324,7 +326,7 @@ export class FileUploadComponent implements OnInit {
         this.setApplicantType(response);
       } else {
         // alert('Servers unavailable,please try again after some time');
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
@@ -352,7 +354,7 @@ export class FileUploadComponent implements OnInit {
         this.registration.setDocumentCategories(res['response'].documentCategories);
       } else {
         // alert('Servers unavailable,please try again after some time');
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
@@ -370,11 +372,11 @@ export class FileUploadComponent implements OnInit {
           this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
           // alert('Servers unavailable,please try again after some time');
-          this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       err => {
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       },
       () => {
         this.setApplicants();
@@ -528,19 +530,19 @@ export class FileUploadComponent implements OnInit {
             this.sendFile(event);
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
-            this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg4);
             this.disableNavigation = false;
           }
         } else {
           // alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
-          this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg5);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
       }
     }
     if (!allowedFileUploaded) {
       // alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
-      this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg6);
+      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
   }
@@ -628,7 +630,7 @@ export class FileUploadComponent implements OnInit {
       },
       error => {
         // alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
-        this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg7);
+        this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg7);
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
@@ -699,7 +701,7 @@ export class FileUploadComponent implements OnInit {
         },
         err => {
           // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
-          this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg8);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg8);
         }
       );
       this.sameAsselected = true;
