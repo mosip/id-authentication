@@ -52,7 +52,7 @@ public class InternalAuthController {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(InternalAuthController.class);
 
-	private static final String EMPTY_PARTNER_ID = "";
+	public static final String EMPTY_PARTNER_ID = "INTERNAL";
 
 	/**
 	 * Inits the binder.

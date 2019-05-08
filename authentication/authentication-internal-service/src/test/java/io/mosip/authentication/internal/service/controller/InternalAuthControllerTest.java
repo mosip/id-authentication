@@ -101,7 +101,7 @@ public class InternalAuthControllerTest {
 	public void auhtenticationTspvalid()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, ""))
+		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.EMPTY_PARTNER_ID))
 				.thenReturn(new AuthResponseDTO());
 		authController.authenticate(authReqestDTO, error);
 	}
@@ -110,7 +110,7 @@ public class InternalAuthControllerTest {
 	public void TestAuthIdException()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, ""))
+		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.EMPTY_PARTNER_ID))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		authController.authenticate(authReqestDTO, error);
 	}
@@ -119,7 +119,7 @@ public class InternalAuthControllerTest {
 	public void TestAuthIdException2()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, ""))
+		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.EMPTY_PARTNER_ID))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error);
 	}
