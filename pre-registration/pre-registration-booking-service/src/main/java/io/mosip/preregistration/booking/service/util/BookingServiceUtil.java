@@ -152,28 +152,21 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 					});
-			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
+			if(!responseEntity.getBody().getErrors().isEmpty()) {
+				throw new MasterDataNotAvailableException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
+						responseEntity.getBody().getErrors().get(0).getMessage());
+			}
 			if (regCenter == null || regCenter.isEmpty()) {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 			}
+			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-			try {
-				@SuppressWarnings("unchecked")
-				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
-						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
-				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
-						errorResponse.getErrors().get(0).getMessage());
-			} catch (JsonParseException | JsonMappingException | IOException e1) {
-				log.error("sessionId", "idType", "id",
-						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
-								+ e1.getMessage());
-				throw new RestCallException(e1.getErrorCode(), e1.getErrorText());
-			}
-
+				throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
+						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 		}
 		return regCenter;
 	}
@@ -188,7 +181,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
-			// RestTemplate restTemplate = restTemplateBuilder.build();
+
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
@@ -202,6 +195,10 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, httpHolidayEntity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
 					});
+			if(!responseEntity2.getBody().getErrors().isEmpty()) {
+				throw new MasterDataNotAvailableException(responseEntity2.getBody().getErrors().get(0).getErrorCode(),
+						responseEntity2.getBody().getErrors().get(0).getMessage());
+			}
 			holidaylist = new ArrayList<>();
 			if (!responseEntity2.getBody().getResponse().getHolidays().isEmpty()) {
 				for (HolidayDto holiday : responseEntity2.getBody().getResponse().getHolidays()) {
@@ -213,19 +210,9 @@ public class BookingServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-
-			try {
-				@SuppressWarnings("unchecked")
-				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
-						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
-				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
-						errorResponse.getErrors().get(0).getMessage());
-			} catch (JsonParseException | JsonMappingException | IOException e1) {
-				log.error("sessionId", "idType", "id",
-						"In callGetHolidayListRestService method of Booking Service Util for JsonParseException- "
-								+ ex.getMessage());
-			}
-
+				throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
+						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
+			
 		}
 		return holidaylist;
 	}
@@ -240,8 +227,6 @@ public class BookingServiceUtil {
 	public boolean callUpdateStatusRestService(String preId, String status) {
 		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
 		try {
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder

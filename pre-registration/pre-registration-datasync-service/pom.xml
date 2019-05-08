@@ -82,6 +82,12 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency> 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-crypto-signature</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

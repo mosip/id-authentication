@@ -78,10 +78,10 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>io.mosip.kernel</groupId>
-		    <artifactId>kernel-auth-adapter</artifactId>
-		    <version>${kernel.core.version}</version>
-		</dependency> 
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>

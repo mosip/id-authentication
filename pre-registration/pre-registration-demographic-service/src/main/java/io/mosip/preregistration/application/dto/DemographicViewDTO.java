@@ -25,7 +25,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PreRegistrationViewDTO implements Serializable {
+public class DemographicViewDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -2770204280374548395L;
 

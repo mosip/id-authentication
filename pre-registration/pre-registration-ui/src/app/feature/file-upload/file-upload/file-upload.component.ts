@@ -70,7 +70,7 @@ export class FileUploadComponent implements OnInit {
     docTypCode: '',
     langCode: ''
   };
-
+  files: FilesModel;
   documentCategoryDto: DocumentCategoryDTO = {
     attribute: '',
     value: ''
@@ -115,8 +115,9 @@ export class FileUploadComponent implements OnInit {
     }
     this.getApplicantTypeID();
     let i = 0;
+    let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
     if (!this.users[0].files) {
-      // this.users[0].files.documentsMetaData = [];
+      this.users[0].files.documentsMetaData.push(fileModel);
     } else {
       // this.sortUserFiles();
     }

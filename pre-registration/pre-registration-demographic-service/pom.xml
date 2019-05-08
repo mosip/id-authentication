@@ -79,13 +79,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
-		 <dependency>
-		    <groupId>io.mosip.kernel</groupId>
-		    <artifactId>kernel-auth-adapter</artifactId>
-		    <version>${kernel.core.version}</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -98,7 +94,7 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-	
+
 	</dependencies>
 
 	<build>
