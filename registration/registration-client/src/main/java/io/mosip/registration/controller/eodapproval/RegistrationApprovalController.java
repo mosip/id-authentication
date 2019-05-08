@@ -307,9 +307,6 @@ public class RegistrationApprovalController extends BaseController implements In
 				if (reg.getId().contains(lowerCaseFilter)) {
 					// Filter matches first name.
 					table.getSelectionModel().selectFirst();
-					if (table.getSelectionModel().getSelectedItem() != null) {
-						viewAck();
-					}
 					return true;
 				}
 				return false; // Does not match.
