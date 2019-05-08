@@ -365,7 +365,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 * adding assertion
 		 */
 		lib.compareValues((createPreRegResponse.jsonPath().get("response.preRegistrationId")).toString(),
-				fetchResponse.jsonPath().get("response.preRegistrationId").toString());
+				fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString());
 	
 	}
 
@@ -408,9 +408,9 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-			lib.compareValues(preID, fetchResponse.jsonPath().get("response.preRegistrationId").toString());
+			lib.compareValues(preID, fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString());
 			Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-			lib.compareValues(fetchResponse.jsonPath().get("response.bookingRegistrationDTO").toString(),
+			lib.compareValues(fetchResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO").toString(),
 					fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
 
 	}
@@ -436,13 +436,12 @@ public class IntegrationScenarios extends BaseTestCase {
 				"Appointment cancelled successfully");
 		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		Assert.assertEquals(
-				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.preRegistrationId").toString(),
+				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(),
 				preID);
 		Assert.assertNull(
-				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.bookingRegistrationDTO"));
+				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO"));
 
 	}
-
 
 
 	/**

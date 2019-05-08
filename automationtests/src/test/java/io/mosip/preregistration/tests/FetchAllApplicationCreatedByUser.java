@@ -69,8 +69,8 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 		actualRequest = lib.createRequest("Create_PreRegistration/createPreRegistration_smoke");
 		Response createResponse = lib.CreatePreReg(actualRequest);
 		Actualresponse = lib.fetchAllPreRegistrationCreatedByUser();
-		String expectedResult = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		String actualResult = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String expectedResult = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		String actualResult = Actualresponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString();
 		lib.compareValues(actualResult, expectedResult);
 	}
 	@AfterMethod

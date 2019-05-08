@@ -64,27 +64,23 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
-	PreregistrationDAO dao=new PreregistrationDAO();
+	PreregistrationDAO dao = new PreregistrationDAO();
+	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
+
 	/**
 	 * Batch job service for expired application
-	 */ 
+	 */
 	@Test
-	public void getAuditDataForDemographicCreate() {
-	   JSONObject configParamMap=new JSONObject();
-		JSONObject map = lib.readConfigProperty("http://104.211.212.28:51000/pre-registration/qa/0.10.0/application-qa.properties", "applicationProperty",configParamMap);
-	   	map = lib.readConfigProperty("http://104.211.212.28:51000/pre-registration/qa/0.10.0/pre-registration-qa.properties",  "preRegistrationProperty",map);
-		System.out.println(map.toString());
-		JSONObject expected = lib.getRequest("PreRegistrationConfigData/PreRegistrationConfigData_smoke");
-		boolean re = lib.jsonComparison(expected, map);
-		System.out.println(re);
+	public void updateDemographicDetailsOfExpiredAppointment() {
+		lib.syncAvailability();
 	}
-		
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
