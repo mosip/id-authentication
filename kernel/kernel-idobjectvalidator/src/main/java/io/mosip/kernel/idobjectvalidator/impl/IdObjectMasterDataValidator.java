@@ -211,21 +211,23 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	@SuppressWarnings("unchecked")
 	private void loadDocTypes() {
 		docTypeMap = new LinkedMultiValueMap<>();
-		docCatMap.keySet().parallelStream().forEach(langCode ->
-		docCatMap.get(langCode).forEach(docCat -> {
-			String uri = UriComponentsBuilder
-					.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_DOCUMENT_TYPES_URI.getValue()))
-					.buildAndExpand(docCat, langCode).toUriString();
-				ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-						.getForObject(uri, ResponseWrapper.class);
-				if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-					ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-					IntStream.range(0, response.size()).parallel()
-						.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-						.forEach(index -> docTypeMap.add(docCat, String.valueOf(response.get(index).get(NAME))));
-				}
-			})
-		);
+		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
+			docCatMap.keySet().parallelStream().forEach(langCode ->
+			docCatMap.get(langCode).forEach(docCat -> {
+				String uri = UriComponentsBuilder
+						.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_DOCUMENT_TYPES_URI.getValue()))
+						.buildAndExpand(docCat, langCode).toUriString();
+					ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+							.getForObject(uri, ResponseWrapper.class);
+					if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+						ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
+						IntStream.range(0, response.size()).parallel()
+							.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
+							.forEach(index -> docTypeMap.add(docCat, String.valueOf(response.get(index).get(NAME))));
+					}
+				})
+			);
+		}
 	}
 	
 	/**
