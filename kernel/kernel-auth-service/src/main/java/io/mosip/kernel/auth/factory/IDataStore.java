@@ -5,6 +5,7 @@ package io.mosip.kernel.auth.factory;
 
 import java.util.List;
 
+import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
@@ -23,6 +24,8 @@ public interface IDataStore extends AuthNDataService {
 
 	public MosipUserSaltList getAllUserDetailsWithSalt()  throws Exception;
 	
-	public RIdDto getRidFromUserId(String userId) throws Exception; 
+	public RIdDto getRidFromUserId(String userId) throws Exception;
+	
+	public MosipUserDto getUserRoleByUserId(String username)throws Exception;
 
 }

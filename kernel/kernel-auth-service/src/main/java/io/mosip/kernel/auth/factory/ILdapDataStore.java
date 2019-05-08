@@ -339,4 +339,15 @@ public class ILdapDataStore implements IDataStore {
         }
 		return ridDto;
 	}
+	
+	@Override
+	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(username);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+        if(data==null) {
+        	throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+        }
+		return data;
+	}
 }

@@ -33,6 +33,7 @@ import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserRoleDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -349,6 +350,16 @@ public class AuthController {
 		ResponseWrapper<RIdDto> responseWrapper = new ResponseWrapper<>();
 		RIdDto rIdDto = authService.getRidBasedOnUid(userId, appId);
 		responseWrapper.setResponse(rIdDto);
+		return responseWrapper;
+	}
+
+	@GetMapping("/role/{appId}/{userId}")
+	@ResponseFilter
+	public ResponseWrapper<UserRoleDto> getUserRole(@PathVariable("appId") String appId,
+			@PathVariable("userId") String userId) throws Exception {
+		ResponseWrapper<UserRoleDto> responseWrapper = new ResponseWrapper<>();
+		UserRoleDto userRole = authService.getUserRole(appId, userId);
+		responseWrapper.setResponse(userRole);
 		return responseWrapper;
 	}
 
