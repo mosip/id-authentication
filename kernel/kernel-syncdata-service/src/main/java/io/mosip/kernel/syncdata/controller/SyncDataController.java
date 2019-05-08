@@ -264,9 +264,9 @@ public class SyncDataController {
 		return response;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
-	@PostMapping(value = "/publickey", produces = "application/json")
+	@PostMapping(value = "/tpm/publickey", produces = "application/json")
 	public ResponseWrapper<UploadPublicKeyResponseDto> uploadpublickey(@RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
 		ResponseWrapper<UploadPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.uploadpublickey(uploadPublicKeyRequestDto.getRequest()));
