@@ -188,6 +188,10 @@ public class PacketInfoMapper {
 	public static List<AbisRequestDto> convertAbisRequestEntityListToDto(
 			List<AbisRequestEntity> abisRequestEntityList) {
 		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
+		if(abisRequestEntityList==null)
+			return abisRequestDtoList;
+		if(abisRequestEntityList.isEmpty())
+			return abisRequestDtoList;
 		for (AbisRequestEntity entity : abisRequestEntityList) {
 			abisRequestDtoList.add(convertAbisRequestEntityToDto(entity));
 		}

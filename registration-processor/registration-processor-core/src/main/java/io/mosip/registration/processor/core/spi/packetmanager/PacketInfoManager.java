@@ -114,7 +114,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<String> getUINByRid(String Rid);
 	
-	public List<AbisRequestDto> getInsertOrIdentifyRequest(String abisRefId,String requestType);
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String abisRefId,String requestType,String refRegtrnId);
 
 	public Boolean getIdentifyByTransactionId(String transactionId);
 
