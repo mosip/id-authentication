@@ -224,7 +224,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/* Check Whether Scheduler is running or not */
-		if (isSchedulerRunning) {
+		if (isSchedulerRunning()) {
 			return setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STARTED, null);
 		} else {
 			try {
@@ -259,7 +259,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		syncActiveJobMap.forEach((jobId, syncJob) -> {
 			try {
 				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName() != null
-						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning
+						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning()
 						&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
 					// Get Job instance through application context
@@ -291,7 +291,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			}
 
-			if (isSchedulerRunning) {
+			if (isSchedulerRunning()) {
 				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE, null);
 			}
 
@@ -378,7 +378,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		try {
 
-			if(schedulerFactoryBean!=null && isSchedulerRunning) {
+			if(schedulerFactoryBean!=null && isSchedulerRunning()) {
 				// Get currently executing jobs from scheduler factory
 				List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
 						.getCurrentlyExecutingJobs();
