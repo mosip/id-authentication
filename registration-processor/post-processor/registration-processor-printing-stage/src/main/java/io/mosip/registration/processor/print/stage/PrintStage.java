@@ -181,6 +181,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private static final String SEPERATOR = "::";
 	
 	private MosipQueue queue;
+	
+	private static final String UIN = "UIN";
 
 	/**
 	 * Deploy verticle.
@@ -225,7 +227,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
 
-			String uin = utilities.retrieveUIN(regId);
+			JSONObject jsonObject = utilities.retrieveUIN(regId);
+			String uin=JsonUtil.getJSONValue(jsonObject, UIN);
+			
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);

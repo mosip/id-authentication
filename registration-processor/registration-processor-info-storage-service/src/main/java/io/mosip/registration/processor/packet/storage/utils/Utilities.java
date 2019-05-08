@@ -171,21 +171,19 @@ public class Utilities {
                              return null;
               }
 
-              public String retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException {
+              public JSONObject retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException {
 
                   if (regId != null) {
                                 List<String> pathSegments = new ArrayList<>();
                                 pathSegments.add(regId);
-                                IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
+                                IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
                                                              pathSegments, "", "", IdResponseDTO1.class);
                                 if (!idResponseDto.getErrors().isEmpty())
                                                throw new IdRepoAppException(
                                                                            PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
 
                                 ObjectMapper objMapper = new ObjectMapper();
-                                JSONObject jsonObject=objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
-                                String uin=JsonUtil.getJSONValue(jsonObject, UIN);
-                                return uin;
+                                return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
 
                   }
 

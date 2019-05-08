@@ -141,7 +141,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			}
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			object.setInternalError(true);
@@ -178,8 +178,6 @@ public class ExternalStage extends MosipVerticleAPIManager {
 		}
 
 		regProcLogger.debug("", "", "sent to next stage --> ", object.toString());
-		object.setIsValid(true);
-		object.setInternalError(false);
 		return object;
 	}
 

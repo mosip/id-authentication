@@ -142,7 +142,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				dto.setUpdatedBy(USER);
 			}
 		} catch (TablenotAccessibleException e) {
-			dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
@@ -167,7 +167,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ExceptionUtils.getStackTrace(ex));
 			description = "Packet not found in DFS for registrationId " + registrationId + "::" + ex.getMessage();
 		} catch (FSAdapterException e) {
-			dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
