@@ -49,63 +49,70 @@ import io.restassured.response.Response;
  */
 
 public class BookingAppointment extends BaseTestCase implements ITest {
+
 	/**
 	 * Declaration of all variables
 	 **/
 
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(BookingAppointment.class);
+	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	static CommonLibrary commonLibrary = new CommonLibrary();
+	static String testCaseName = "";
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI;
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg/BookingAppointment";
-	static String outputFile = "BookingAppointmentOutput.json";
-	static String requestKeyFile = "BookingAppointmentRequest.json";
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	String preReg_URI;
+	String dest = "";
+	String configPaths = "";
+	String folderPath = "preReg/BookingAppointment";
+	String outputFile = "BookingAppointmentOutput.json";
+	String requestKeyFile = "BookingAppointmentRequest.json";
 	String testParam = null;
 	boolean status_val = false;
-	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	JSONParser parser = new JSONParser();
+	Object[][] readFolder = null;
 
 	/* implement,IInvokedMethodListener */
 	public BookingAppointment() {
 
 	}
 
-	/**
-	 * Data Providers to read the input json files from the folders
+	/*
+	 * Given Booking Appointment valid request when I Send POST request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
+	 * should get success response with elements defined as per specifications
+	 * Given Invalid request when I send POST request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
+	 * should get Error response along with Error Code and Error messages as per
+	 * Specification
 	 * 
-	 * @param context
-	 * @return input request file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws ParseException
 	 */
+
 	@DataProvider(name = "bookAppointment")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public Object[][] readData(ITestContext context) {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+		try {
+			switch ("smoke") {
+			case "smoke":
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			case "regression":
+
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+			default:
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			}
+		} catch (IOException | ParseException e) {
+			logger.error("Exception occurred in Booking Appointment class in readData method" + e);
 		}
-
+		return readFolder;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -120,6 +127,8 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		String val = null;
 		String name = null;
+		
+		/*Reading test case name from folder and based on the test case name the switching happens */
 		if (testCaseName.contains("smoke")) {
 			val = testCaseName;
 		} else {
@@ -127,16 +136,17 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			val = parts[0];
 			name = parts[1];
 		}
-		// Creating the Pre-Registration Application
+		
+		/*Creating the Pre-Registration Application*/
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-		System.out.println("Book App Res:"+bookAppointmentResponse.asString());
+		System.out.println("Book App Res:" + bookAppointmentResponse.asString());
 
 		switch (val) {
 
@@ -147,14 +157,13 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-			
-			
+
 		case "ReBookingAppointment_smoke":
 			fetchCenter = preRegLib.FetchCentre();
 			Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
-			System.out.println("Rebook app::"+rebookAppointmentRes.asString());
+			System.out.println("Rebook app::" + rebookAppointmentRes.asString());
 			break;
-			
+
 		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
 			String preRegBookingAppointmentURI = preReg_URI + preId;
 
@@ -280,10 +289,11 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		CommonLibrary.backUpFiles(source, folderPath);
 
 		/*
-		 * Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		 * Add generated PreRegistrationId to list to be Deleted from DB
+		 * AfterSuite
 		 */
 
-	/*	preIds.add(preId);*/
+		/* preIds.add(preId); */
 
 	}
 
@@ -308,12 +318,13 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * Declaring the Booking Appointment Resource URI and getting the test case name
+	 * Declaring the Booking Appointment Resource URI and getting the test case
+	 * name
 	 * 
 	 * @param result
 	 */
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 

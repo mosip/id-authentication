@@ -98,7 +98,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -119,7 +119,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 	
 		//Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId=createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 		
 		//Document Upload for created application
 		
@@ -127,10 +127,10 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		
 		
 		//Get PreId from Document upload response
-		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId=docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 		
 		//Get docId from Document upload response
-		docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
+		docId=docUploadResponse.jsonPath().get("response.documentId").toString();
 				
 		
 		if(testCaseName.contains("smoke"))
@@ -138,7 +138,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		
 		//Get All Document For PreID
 		Response getAllDocRes=preRegLib.getAllDocumentForDocId(preId, docId);
-		
+		System.out.println("Get All Doc Res:"+getAllDocRes.asString());
 		outerKeys.add("responsetime");
 		innerKeys.add("documentId");
 		innerKeys.add("multipartFile");
