@@ -1,0 +1,70 @@
+.body-height{
+    height: 60px;
+}
+
+.button-placer{
+    margin: 0 0 0 20px;
+}
+
+.close-button-sizing {
+    color: red;
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+.table-container td {
+    padding-right: 10px;
+}
+.consent-popup-title{
+  font-size:14px;
+  margin:0px;
+}
+/* consent story desgin css */
+.consent-popup-subtitle{
+font-size:10px;
+margin:0px;
+}
+.accept-button{
+  margin: 0 auto;
+  color: white;
+  background-color: #ff4081;
+}
+.accept-button-disabled{
+  margin: 0 auto;
+  color: white;
+  background-color: gray;
+}
+.consentpopup-content{
+  font-size:14px;
+  max-height: 100px;
+}
+.consentpopup-content::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+.consentpopup-content::-webkit-scrollbar-thumb {
+  background-color: #ff4081;
+}
+.consentpopup-content::-webkit-scrollbar {
+  width: 3px;
+  background-color: #F5F5F5;
+}
+
+.consent-popup-parent{
+  position: relative;
+}
+
+.consent-popup-cross{
+  position: absolute;
+  top: -8%;
+  right: -4%;
+  width: 17px;
+  height: 16px;
+  background: transparent;
+  min-height: 29px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* consent story desgin css  */
