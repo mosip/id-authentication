@@ -333,7 +333,7 @@ public class OSIValidator {
 			}
 			String introducerRidString = bigIntegerToString(introducerRID);
 			String introducerUinString = bigIntegerToString(introducerUIN);
-			Boolean isIntroducerUinPresent=false;
+			Boolean isIntroducerUinPresent=introducerUinString!=null?true:false;
 			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
 
 				isIntroducerUinPresent = getIntroducerUIN(introducerRidString);
@@ -343,7 +343,7 @@ public class OSIValidator {
 					return false;
 				}
 			}
-			if (isIntroducerUinPresent) {
+			if (introducerUinString!=null) {
 				return validateIntroducer(registrationId, introducerUinString);
 			} else {
 				return false;

@@ -255,7 +255,7 @@ public class DemodedupeProcessorTest {
 
 		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), any())).thenReturn(false);
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -283,7 +283,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		registrationStatusDto.setRetryCount(2);
-		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), any())).thenReturn(true);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString(), any());
@@ -311,7 +311,7 @@ public class DemodedupeProcessorTest {
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
-		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), any())).thenReturn(true);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		registrationStatusDto.setRetryCount(3);
@@ -340,7 +340,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
@@ -366,7 +366,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -381,7 +381,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		FSAdapterException exp = new FSAdapterException("errorMessage", "test");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -396,7 +396,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		IntrospectionException exp = new IntrospectionException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -411,7 +411,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		Exception e=new Exception();
 		InvocationTargetException exp = new InvocationTargetException(e,"errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -425,7 +425,7 @@ public class DemodedupeProcessorTest {
 			InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IllegalAccessException exp = new IllegalAccessException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -439,7 +439,7 @@ public class DemodedupeProcessorTest {
 			InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		ParseException exp = new ParseException("errorMessage", 1);
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -453,7 +453,7 @@ public class DemodedupeProcessorTest {
 			InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IllegalArgumentException exp = new IllegalArgumentException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -467,7 +467,7 @@ public class DemodedupeProcessorTest {
 			InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IOException exp = new IOException("errorMessage");
-		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), any());
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);

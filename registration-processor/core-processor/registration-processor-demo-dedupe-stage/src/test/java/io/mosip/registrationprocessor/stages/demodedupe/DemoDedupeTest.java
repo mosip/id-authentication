@@ -2,7 +2,6 @@ package io.mosip.registrationprocessor.stages.demodedupe;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
@@ -12,8 +11,9 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -40,6 +40,9 @@ import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class DemoDedupeTest.
@@ -64,7 +67,11 @@ public class DemoDedupeTest {
 	/** The filesystem adapter impl. */
 	@Mock
 	FileSystemAdapter filesystemAdapterImpl;
-
+	
+	/** The registration status service. */
+	@Mock
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	
 	/** The auth response DTO. */
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -115,6 +122,7 @@ public class DemoDedupeTest {
 
 		Mockito.when(filesystemAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(filesystemAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(anyString())).thenReturn(true);
 
 		byte[] data = "1234567890".getBytes();
 		PowerMockito.mockStatic(IOUtils.class);
@@ -141,8 +149,7 @@ public class DemoDedupeTest {
 		Dtos.add(dto2);
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
-		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(anyString(), anyString(), any(), anyString()))
-				.thenReturn(Dtos);
+
 
 		List<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals("Test for Dedupe Duplicate found", false, duplicates.isEmpty());
@@ -158,8 +165,6 @@ public class DemoDedupeTest {
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
-		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(anyString(), anyString(), any(), anyString()))
-				.thenReturn(Dtos);
 
 		List<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals("Test for Demo Dedupe Empty", true, duplicates.isEmpty());
@@ -183,7 +188,7 @@ public class DemoDedupeTest {
 
 		String regId = "1234567890";
 
-		List<String> duplicateIds = new ArrayList<>();
+		Set<String> duplicateIds = new HashSet<String>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
 		
@@ -213,7 +218,7 @@ public class DemoDedupeTest {
 
 		String regId = "1234567890";
 
-		List<String> duplicateIds = new ArrayList<>();
+		Set<String> duplicateIds = new HashSet<String>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
 
@@ -245,7 +250,7 @@ public class DemoDedupeTest {
 
 		String regId = "1234567890";
 
-		List<String> duplicateIds = new ArrayList<>();
+		Set<String> duplicateIds = new HashSet<String>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
 		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(true);
