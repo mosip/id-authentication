@@ -20,9 +20,9 @@ The key requirements -
 - Internally call an ICU4j API to generate transliterated value. If it transliterated sucessfully send the response otherwise throw an respetive exception.
 
 **Class Diagram**
-![pre-registration transliterate](_class_diagram/pre-registration-transliterate.png)
+![pre-registration transliterate](_images/_class_diagram/pre-registration-transliterate.png)
 **Sequence Diagram**
-![pre-registration transliterate](_sequence_diagram/pre-registration-transliterate.png)
+![pre-registration transliterate](_images/_sequence_diagram/pre-registration-transliterate.png)
 
 **Error Code** 
   Code   |       Type  | Message|

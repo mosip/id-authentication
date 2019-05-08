@@ -71,10 +71,12 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the data sync mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration data-sync service sync all](_class_diagram/data-sync-service.png)
+
+![pre-registration data-sync service sync all](_images/_class_diagram/data-sync-service.png)
 
 **Sequence Diagram**
-![pre-registration data-sync service sync all](_sequence_diagram/dataSync-reterive-all-preRegIds.png)
+
+![pre-registration data-sync service sync all](_images/_sequence_diagram/dataSync-reterive-all-preRegIds.png)
 
 
 
@@ -94,10 +96,12 @@ The key non-functional requirements are
 -   Audit the exception/start/exit of the each stages of the data sync mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration data-sync service sync data](_class_diagram/data-sync-service.png)
+
+![pre-registration data-sync service sync data](_images/_class_diagram/data-sync-service.png)
 
 **Sequence Diagram**
-![pre-registration data-sync service sync data](_sequence_diagram/dataSync-reterive-data.png)
+
+![pre-registration data-sync service sync data](_images/_sequence_diagram/dataSync-reterive-data.png)
 
 
 
@@ -119,14 +123,12 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the reverse data sync mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration data-sync service sync consumed](_class_diagram/data-sync-service-consumed.png)
+
+![pre-registration data-sync service sync consumed](_images/_class_diagram/data-sync-service-consumed.png)
 
 **Sequence Diagram**
-![pre-registration data-sync service sync consumed]((_sequence_diagram/dataSync-consumed-preRegId.png)
 
-
-
-
+![pre-registration data-sync service sync consumed]((_images/_sequence_diagram/dataSync-consumed-preRegId.png)
 
 
 **Success / Error Code** 
