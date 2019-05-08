@@ -3,6 +3,7 @@ package io.mosip.registrationprocessor.abis.messagequeue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 
 import javax.jms.Message;
 
@@ -20,20 +21,24 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.annotation.PropertySource;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.abis.messagequeue.AbisMessageQueueImpl;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
-
+@SuppressWarnings("deprecated")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class})
 @PowerMockIgnore({ "javax.management.*", "javax.net.*" })
@@ -53,12 +58,8 @@ public class AbisMessageQueueImplTest {
 	@Mock
 	private MosipQueue queue;
 	
-	@Mock
-	private AbisInsertRequestDto abisInsertRequestDto;
-	
-	@Mock
-	private AbisIdentifyRequestDto identifyRequestDto;
 	ObjectMapper obj = new ObjectMapper(); 
+	
 	@Before
 	public void setup() throws Exception  {
 		System.setProperty("server.port", "8099");
@@ -79,7 +80,7 @@ public class AbisMessageQueueImplTest {
 		.thenReturn(queue);
 		
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(true);
-		
+		 
 		QueueListener listener = new QueueListener() {
 			@Override
 			public void setListener(Message message) {
@@ -87,6 +88,16 @@ public class AbisMessageQueueImplTest {
 			}
 		};
 		PowerMockito.whenNew(QueueListener.class).withNoArguments().thenReturn(listener);
+	}
+	@Test
+	public void testrunAbis()  {
+		abisMessageQueueImpl.runAbisQueue();
+	}
+	@Test(expected = QueueConnectionNotFound.class)
+	public void testrunAbisFailure()  {
+		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
+		.thenReturn(null);
+		abisMessageQueueImpl.runAbisQueue();
 	}
 	@Test
 	public void testrunAbisQueueforInsert() throws Exception {
@@ -102,6 +113,9 @@ public class AbisMessageQueueImplTest {
         ByteSequence byteSeq = new ByteSequence();
         byteSeq.setData(request.getBytes());
         amq.setContent(byteSeq);
+        AbisInsertResponseDto abisInsertResponseDto=new AbisInsertResponseDto();
+        abisInsertResponseDto.setId("mosip.abis.insert");
+        Mockito.when(abisService.insert(any())).thenReturn(abisInsertResponseDto);
        assertTrue( abisMessageQueueImpl.consumeLogic(amq,""));
         
 	}
@@ -120,6 +134,9 @@ public class AbisMessageQueueImplTest {
         ByteSequence byteSeq = new ByteSequence();
         byteSeq.setData(request.getBytes());
         amq.setContent(byteSeq);
+        AbisIdentifyResponseDto abisIdentifyResponseDto= new AbisIdentifyResponseDto();
+        abisIdentifyResponseDto.setId("mosip.abis.identify");
+        Mockito.when(abisService.performDedupe(any())).thenReturn(abisIdentifyResponseDto);
         assertTrue( abisMessageQueueImpl.consumeLogic(amq,""));
         
 	}
@@ -143,7 +160,7 @@ public class AbisMessageQueueImplTest {
 	}
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testrunAbisQueueException() throws Exception {
+	public void abisServiceException() throws Exception {
 		AbisIdentifyRequestDto  dto= new AbisIdentifyRequestDto ();
 		dto.setId("mosip.abis.identify");
 		dto.setReferenceId("01234567-89AB-CDEF-0123-456789ABCDEF");
