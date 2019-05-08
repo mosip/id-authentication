@@ -3,19 +3,13 @@ package io.mosip.registartion.processor.abis.middleware.stage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.Message;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,11 +19,12 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisCommonRequestDto;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisCommonResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -38,10 +33,14 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
-import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.status.utilities.RegistrationUtility;
+import io.vertx.core.json.JsonObject;
 
 public class AbisMiddleWareStage extends MosipVerticleManager {
 
@@ -57,6 +56,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseEntity, String> abisResponseRepositary;
+
+	@Autowired
+	private BasePacketRepository<AbisResponseDetEntity, String> abisResponseDetailRepositary;
 
 	private MosipQueue queue;
 	private MosipEventBus mosipEventBus;
@@ -91,25 +96,56 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	/** The url. */
 	@Value("${registration.processor.queue.url}")
 	private String url;
-	
+
+	@Autowired
+	private RegistrationUtility registrationUtility;
+	@Autowired
+	private Utilities utility;
+
 	private static final String INSERT = "INSERT";
 	private static final String IDENTIFY = "IDENTIFY";
+	private static final String ABIS_INSERT = "mosip.abis.insert";
 
+	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
+	private static final String ID = "id";
+	private Map<Integer, String> failureReason = new HashMap<>();
+	private static final String CANDIDATELIST = "candidateList";
+	private static final String CANDIDATES = "candidates";
+	private List<String> abisInboundAddresses;
+	List<String> abisOutboundAddresses;
+	List<String> queueUserNameList;
+	List<String> queuePasswordList;
+	List<String> queueUrlList;
+
+	// create map
 
 	public void deployVerticle() {
 		queue = getQueueConnection();
 		if (queue != null) {
 
-			QueueListener listener = new QueueListener() {
-				@Override
-				public void setListener(Message message) {
-					cosnumerListener(message);
-				}
-			};
+			List<List<String>> inBoundOutBoundList;
+			try {
+				inBoundOutBoundList = utility.getMosipQueueDetails();
+				abisInboundAddresses = inBoundOutBoundList.get(0);
+				abisOutboundAddresses = inBoundOutBoundList.get(1);
+				queueUserNameList = inBoundOutBoundList.get(2);
+				queuePasswordList = inBoundOutBoundList.get(3);
+				queueUrlList = inBoundOutBoundList.get(4);
 
-			mosipQueueManager.consume(queue, abisOutboundAddress1, listener);
-			mosipQueueManager.consume(queue, abisOutboundAddress2, listener);
-			mosipQueueManager.consume(queue, abisOutboundAddress3, listener);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
+			for (String outBoundAddress : abisOutboundAddresses) {
+				QueueListener listener = new QueueListener() {
+					@Override
+					public void setListener(Message message) {
+						cosnumerListener(message);
+					}
+				};
+				mosipQueueManager.consume(queue, outBoundAddress, listener);
+
+			}
+
 			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
 					MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
@@ -118,15 +154,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		List<String> abisInboundAddresses = new ArrayList<>();
-		abisInboundAddresses.add(abisInboundAddress1);
-		abisInboundAddresses.add(abisInboundAddress2);
-		abisInboundAddresses.add(abisInboundAddress3);
-
-		List<String> abisOutboundAddresses = new ArrayList<>();
-		abisOutboundAddresses.add(abisOutboundAddress1);
-		abisOutboundAddresses.add(abisOutboundAddress2);
-		abisOutboundAddresses.add(abisOutboundAddress3);
 
 		List<String> abisRefList = packetInfoManager.getReferenceIdByRid(object.getRid());
 		if (abisRefList != null && !abisRefList.isEmpty()) {
@@ -136,30 +163,21 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 						INSERT);
 
 				for (int i = 0; i < abisInsertRequestList.size(); i++) {
-					AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
-					abisInsertRequestDto.setId("mosip.abis.insert");
-					abisInsertRequestDto.setVer("1.0");
-					abisInsertRequestDto.setTimestamp(String.valueOf(LocalDateTime.now()));
-					//abisInsertRequestDto.setReferenceId(abisRefId);
-					//abisInsertRequestDto.setReferenceURL(referenceURL);
-					////abisInsertRequestDto.setRequestId(requestId);
-					
-					boolean isAddedToQueue = sendToQueue(queue, abisInsertRequestDto,
-							abisInboundAddresses.get(i));
+
+					byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
+
+					boolean isAddedToQueue = sendToQueue(queue, new String(reqBytearray), abisInboundAddresses.get(i));
 
 					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
 				}
-
-				// send dto to queue
 
 				List<AbisRequestDto> abisIdentifyRequestList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
 						IDENTIFY);
 
 				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
-					AbisIdentifyRequestDto abisIdentifyRequestDto = new AbisIdentifyRequestDto();
-					boolean isAddedToQueue = sendToQueue(queue, abisIdentifyRequestDto,
-							abisInboundAddresses.get(i));
-					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
+					byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
+					boolean isAddedToQueue = sendToQueue(queue, new String(identifyReq), abisInboundAddresses.get(i));
+					updateAbisRequest(isAddedToQueue, abisIdentifyRequestList.get(i));
 
 				}
 
@@ -177,29 +195,50 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
 	}
 
-	public void cosnumerListener(Message message){
-		
+	public boolean cosnumerListener(Message message) {
+
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
-		
-		AbisResponseDto abisResponseDto;
+
 		try {
-			abisResponseDto = JsonUtil.objectMapperReadValue(response, AbisResponseDto.class);
+			JSONObject jsonResponse = JsonUtil.objectMapperReadValue(response, JsonObject.class);
+			String id = JsonUtil.getJSONValue(jsonResponse, ID);
+			if (id.equals(ABIS_INSERT)) {
 
-		if (abisResponseDto != null) {
-			//update table
-			
+				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
+						AbisInsertResponseDto.class);
 
-		}
-		
+				updateAbisResponseEntity(abisInsertResponseDto, response);
+				updteAbisRequestProcessed(abisInsertResponseDto.getRequestId(), INSERT);
+
+				return true;
+
+			}
+
+			if (id.equals(ABIS_IDENTIFY)) {
+
+				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
+						AbisIdentifyResponseDto.class);
+				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
+				CandidatesDto[] candidatesDtos = abisIdentifyResponseDto.getCandidateList().getCandidates();
+				if (candidatesDtos != null) {
+					for (CandidatesDto candidatesDto : candidatesDtos) {
+						updateAbisResponseDetail(abisIdentifyResponseDto, candidatesDto, abisResponseDto);
+					}
+				}
+
+				updteAbisRequestProcessed(abisIdentifyResponseDto.getRequestId(), IDENTIFY);
+				return true;
+
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+		return false;
+
 	}
 
-	private boolean sendToQueue(MosipQueue queue, AbisCommonRequestDto abisInsertRequestDto, String abisQueueAddress)
+	private boolean sendToQueue(MosipQueue queue, String abisInsertRequestDto, String abisQueueAddress)
 			throws IOException {
 		boolean isAddedToQueue;
 
@@ -223,7 +262,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		}
 
 	}
-	
+
+	private void updteAbisRequestProcessed(String abisRequestId, String requestType) {
+
+	}
+
 	private AbisRequestEntity convertAbisRequestDtoToAbisRequestEntity(AbisRequestDto abisRequestDto) {
 		AbisRequestEntity abisReqEntity = new AbisRequestEntity();
 		abisReqEntity.setAbisAppCode(abisRequestDto.getAbisAppCode());
@@ -239,11 +282,29 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisReqEntity.setStatusCode(abisRequestDto.getStatusCode());
 		abisReqEntity.setStatusComment(abisRequestDto.getStatusComment());
 		abisReqEntity.setUpdBy(abisRequestDto.getUpdBy());
-		
+
 		return abisReqEntity;
-		
+
 	}
-		
+
+	private AbisResponseEntity convertAbisResponseDtoToAbisResponseEntity(AbisResponseDto abisResponseDto) {
+		AbisResponseEntity abisResponseEntity = new AbisResponseEntity();
+		AbisResponsePKEntity abisResponsePKEntity = new AbisResponsePKEntity();
+		abisResponsePKEntity.setId(abisResponseDto.getId());
+		abisResponseEntity.setId(abisResponsePKEntity);
+		abisResponseEntity.setAbisRequest(abisResponseDto.getAbisRequest());
+		abisResponseEntity.setRespText(abisResponseDto.getRespText());
+		abisResponseEntity.setStatusCode(abisResponseDto.getStatusCode());
+		abisResponseEntity.setStatusComment(abisResponseDto.getStatusComment());
+		abisResponseEntity.setLangCode(abisResponseDto.getLangCode());
+		abisResponseEntity.setCrBy(abisResponseDto.getCrBy());
+		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
+		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
+
+		return abisResponseEntity;
+
+	}
+
 	private AbisResponseEntity updateAbisResponse(boolean isAddedToQueue, AbisResponseDto abisResponseDto) {
 		if (isAddedToQueue) {
 
@@ -259,6 +320,53 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			return abisResponseEntity;
 		}
 		return null;
+	}
+
+	private String getFaliureReason(int key) {
+		failureReason.put(1, "Internal error - Unknown");
+		failureReason.put(2, "Aborted");
+		failureReason.put(3, "Unexpected error - Unable to access biometric data");
+		failureReason.put(4, "Unable to serve the request");
+		failureReason.put(5, "Invalid request / Missing mandatory fields");
+		failureReason.put(6, "Unauthorized Access");
+		failureReason.put(7, "Unable to fetch biometric details");
+		return failureReason.get(key);
+
+	}
+
+	private AbisResponseDto updateAbisResponseEntity(AbisCommonResponseDto abisCommonResponseDto, String response) {
+		AbisResponseDto abisResponseDto = new AbisResponseDto();
+
+		abisResponseDto.setId(registrationUtility.generateId());
+		abisResponseDto.setRespText(response.getBytes());
+		int responseStatus = abisCommonResponseDto.getReturnValue();
+
+		abisResponseDto.setStatusCode(responseStatus == 1 ? "SUCCESS" : "FAILED");
+		abisResponseDto.setStatusComment(getFaliureReason(abisCommonResponseDto.getFailureReason()));
+		abisResponseDto.setLangCode("eng");
+		abisResponseDto.setCrBy("SYSTEM");
+		abisResponseDto.setUpdBy("SYSTEM");
+		abisResponseDto.setIsDeleted(false);
+		abisResponseDto.setAbisRequest(abisCommonResponseDto.getRequestId());
+
+		abisResponseRepositary.save(convertAbisResponseDtoToAbisResponseEntity(abisResponseDto));
+
+		return abisResponseDto;
+	}
+
+	private void updateAbisResponseDetail(AbisCommonResponseDto abisCommonResponseDto, CandidatesDto candidatesDto,
+			AbisResponseDto abisResponseDto) {
+		AbisResponseDetEntity abisResponseDetEntity = new AbisResponseDetEntity();
+		AbisResponseDetPKEntity abisResponseDetPKEntity = new AbisResponseDetPKEntity();
+		abisResponseDetPKEntity.setAbisRespId(abisResponseDto.getId());
+		abisResponseDetPKEntity.setMatchedBioRefId(candidatesDto.getReferenceId());
+		abisResponseDetEntity.setId(abisResponseDetPKEntity);
+		abisResponseDetEntity.setScore(Integer.valueOf(candidatesDto.getScaledScore()));
+		abisResponseDetEntity.setCrBy("SYSTEM");
+		abisResponseDetEntity.setUpdBy("SYSTEM");
+		abisResponseDetEntity.setIsDeleted(false);
+		abisResponseDetailRepositary.save(abisResponseDetEntity);
+
 	}
 
 }

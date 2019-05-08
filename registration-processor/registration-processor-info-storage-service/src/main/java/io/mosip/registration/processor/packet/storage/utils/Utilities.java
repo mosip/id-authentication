@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,8 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
@@ -57,6 +60,9 @@ public class Utilities {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	@Autowired
+	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
+
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
@@ -79,9 +85,51 @@ public class Utilities {
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private long elapseTime;
 
+	@Value("${registration.processor.abis.json}")
+	private String registrationProcessorAbisJson;
+
+	private static final String INBOUNDQUEUENAME = "inboundQueueName";
+	private static final String OUTBOUNDQUEUENAME = "outboundQueueName";
+	private static final String ABIS = "abis";
+	private static final String USERNAME = "userName";
+	private static final String PASSWORD = "password";
+	private static final String BROKERURL = "brokerUrl";
+
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
+	}
+
+	public List<List<String>> getMosipQueueDetails() throws IOException {
+		String registrationProcessorAbis = Utilities.getJson(getRegistrationProcessorAbisJson(),
+				getGetRegProcessorIdentityJson());
+		List<String> inBoundAddressList = new ArrayList<>();
+		List<String> outBountAddressList = new ArrayList<>();
+		List<String> userNameList = new ArrayList<>();
+		List<String> passwordList = new ArrayList<>();
+		List<String> urlList = new ArrayList<>();
+
+		List<List<String>> inboundOutBoundList = new ArrayList<>();
+		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
+		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+		for (Object jsonObject : regProcessorAbisArray) {
+			if (jsonObject instanceof JSONObject) {
+				inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
+				outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
+				userNameList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, USERNAME));
+				passwordList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, PASSWORD));
+				urlList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, BROKERURL));
+
+				inboundOutBoundList.add(inBoundAddressList);
+				inboundOutBoundList.add(outBountAddressList);
+				inboundOutBoundList.add(userNameList);
+				inboundOutBoundList.add(passwordList);
+				inboundOutBoundList.add(urlList);
+
+			}
+
+		}
+		return inboundOutBoundList;
 	}
 
 	public int getApplicantAge(String registrationId)
