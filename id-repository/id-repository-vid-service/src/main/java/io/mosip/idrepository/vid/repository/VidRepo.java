@@ -13,10 +13,10 @@ import io.mosip.idrepository.vid.entity.Vid;
  */
 public interface VidRepo extends JpaRepository<Vid, String>{
 	
-	@Query("select vidTypeCode from Vid where vid = :vid")
-	String retrieveVidTypeCode(@Param("vid")String vid);
+	@Query("select v from Vid v where vid = :vid")
+	public Vid retrieveVid(@Param("vid")String vid);
 
-	@Query("select uinHash from Vid where vid = :vid")
-	String retrieveUinByVid(String vid);
+	@Query("select uin from Vid where vid = :vid")
+	public String retrieveUinByVid(@Param("vid")String vid);
 
 }

@@ -26,13 +26,13 @@ public class Vid {
 	/** The vid value */
 	private String vid;
 
-	public Vid(String id, String vid, String uinHash, String vidTypeCode, LocalDateTime generatedDTimes,
+	public Vid(String id, String vid, String uinHash, String uin,String vidTypeCode, LocalDateTime generatedDTimes,
 			LocalDateTime expiryDTimes, String statusCode, String createdBy, LocalDateTime createdDTimes,
 			String updatedBy, LocalDateTime updatedDTimes, boolean isDeleted, LocalDateTime deletedDTimes) {
-		super();
 		this.id = id;
 		this.vid = vid;
 		this.uinHash = uinHash;
+		this.uin=uin;
 		this.vidTypeCode = vidTypeCode;
 		this.generatedDTimes = generatedDTimes;
 		this.expiryDTimes = expiryDTimes;
@@ -47,6 +47,8 @@ public class Vid {
 
 	/** The uin Hash value */
 	private String uinHash;
+	/** The uin value */
+	private String uin;
 
 	/** The vid Type Code */
 	@Column(name = "vidtyp_code")

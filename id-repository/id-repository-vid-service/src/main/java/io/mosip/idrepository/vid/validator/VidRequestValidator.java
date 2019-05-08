@@ -8,8 +8,7 @@ import org.springframework.validation.Validator;
 
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
-import io.mosip.idrepository.vid.repository.VidRepo;
-import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 
 /**
  * 
@@ -20,10 +19,10 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 public class VidRequestValidator implements Validator {
 
 	@Autowired
-	private VidRepo vidRepo;
-
-	@Autowired
 	Environment env;
+	
+	@Autowired
+	private VidValidator<String> vidValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -44,20 +43,9 @@ public class VidRequestValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
-
 	}
 
-	public void validateId(String vid, Errors errors) throws IdRepoAppException {
-		if (vidRepo.existsById(vid)) {
-			String vidTypeCode = vidRepo.retrieveVidTypeCode(vid);
-			String vidPolicy = env.getProperty("" + vidTypeCode);
-
-		} else {
-			// TODO Throw an proper error.
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
-					IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
-		}
-
+	public void validateId(String vid) throws IdRepoAppException {
+	vidValidator.validateId(vid);
 	}
-
 }
