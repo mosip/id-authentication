@@ -1,10 +1,10 @@
 {
-    "id": null,
-    "version": null,
-    "errors": {
+    "id": "mosip.pre-registration.datasync.fetch.ids",
+    "version": "1.0",
+    "errors":[ {
         "errorCode": "PRG_DATA_SYNC_010",
         "message": "INVALID_REQUESTED_DATE"
-    },
+    }],
     "responsetime": "2019-04-24T10:47:40.361Z",
     "response": null
 }

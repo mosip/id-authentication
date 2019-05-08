@@ -1,6 +1,6 @@
 {
-    "id": null,
-    "version": null,
+  "id": "mosip.pre-registration.datasync.fetch.ids",
+    "version": "1.0",
     "responsetime": "2019-03-29T09:35:40.219Z",
     "response": {
         "transactionId": "04046917-5206-11e9-b760-af8dac7057aa",

@@ -51,7 +51,10 @@ import org.testng.collections.Lists;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -64,7 +67,7 @@ import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
-import io.mosip.preregistration.dao.PreregistratonDAO;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -83,7 +86,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	static String folder = "preReg";
 	static String testSuite = "";
-	static String userId = "";
+	public static String userId = "";
 	static String otp = "";
 	static Response createPregResponse;
 	static JSONObject createPregRequest;
@@ -96,7 +99,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	private static String preReg_CreateApplnURI;
-	PreregistratonDAO dao = new PreregistratonDAO();
+	PreregistrationDAO dao = new PreregistrationDAO();
 	private static String preReg_DataSyncnURI;
 	private static String preReg_NotifyURI;
 	private static String preReg_DocumentUploadURI;
@@ -132,6 +135,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_BookingAppointmenturi;
 	private static String uiConfigParams;
 	private static String preReg_syncAvailability;
+
+	private static String preReg_FecthAppointmentDetailsuri;
+
 	private static String qrCode_URI;
 
 	/*
@@ -272,7 +278,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public String getConsumedStatus(String PreID) {
 		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
 				+ "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml",
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String status = preId_status.get(0).toString();
 		return status;
@@ -286,7 +292,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public String getDocumentIdOfConsumedApplication(String PreID) {
 		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml",
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String documentId = preId_status.get(0).toString();
 		return documentId;
@@ -294,7 +300,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
 		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml",
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String regCenterId = preId_status.get(0).toString();
 		return regCenterId;
@@ -561,6 +567,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			} catch (ClassCastException e) {
 				continue;
 			}
+			reverseDataSyncRequest.put("requesttime", getCurrentDate());
 		}
 
 		response = applnLib.dataSyncPostRequest(reverseDataSyncRequest.toJSONString(), preReg_ReverseDataSyncURI);
@@ -768,7 +775,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request = getRequest(testSuite);
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 		JSONObject parm = getRequest(testSuite);
-		String PreRegistrationId = responseCreate.jsonPath().get("response[0].preRegistrationId").toString();
+		String PreRegistrationId = responseCreate.jsonPath().get("response.preRegistrationId").toString();
 		parm.put("preRegistrationId", PreRegistrationId);
 		request.put("requesttime", getCurrentDate());
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
@@ -817,7 +824,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
 				object.put("pre_registartion_id",
-						responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+						responseCreate.jsonPath().get("response.preRegistrationId").toString());
 				request.replace(key, object);
 			}
 		}
@@ -963,7 +970,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request.put("registrationCenterId", regCenterID);
 		try {
 
-			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
+			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDuri");
 			response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1142,9 +1149,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("time_slot_from", timeSlotFrom);
 				object.put("time_slot_to", timeSlotTo);
 				//object.put("preRegistrationId", preID);
+
 				//JSONArray objArr = new JSONArray();
 				//objArr.add(object);
 				//request.replace(key, objArr);
+
+				/*JSONArray objArr = new JSONArray();
+				objArr.add(object);*/
+
 				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
 			}
@@ -1181,8 +1193,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 				/*JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");*/
-				// object.put("preRegistrationId", preID);
+				json.get("preRegistrationId");
+*/				// object.put("preRegistrationId", preID);
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
@@ -1242,8 +1254,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
-				JSONObject json = (JSONObject) data.get(0);
+				/*JSONArray data = (JSONArray) resp.get("response");
+				JSONObject json = (JSONObject) data.get(0);*/
 				/*
 				 * json.get("preRegistrationId"); object.put("preRegistrationId", preID);
 				 */
@@ -1265,9 +1277,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("time_slot_from", timeSlotFrom);
 				object.put("time_slot_to", timeSlotTo);
 				// object.put("newBookingDetails", innerData);
-				JSONArray objArr = new JSONArray();
-				objArr.add(object);
-				request.replace(key, objArr);
+				/*JSONArray objArr = new JSONArray();
+				objArr.add(object);*/
+				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
 
 			}
@@ -1292,7 +1304,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 *
 		 */
 		request.put("preRegistrationId", preID);
-		response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsURI, request);
+		response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsuri, request);
 		return response;
 	}
 
@@ -1344,7 +1356,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		JSONObject parm = getRequest(testSuite);
 		parm.put("preRegistrationId", preID);
 		cancelAppjson.put("requesttime", getCurrentDate());
-		response = applnLib.putRequestWithParameter(preReg_CancelAppointmentURI, parm, cancelAppjson);
+		response = applnLib.putRequestWithParameter(preReg_CancelAppointmenturi, parm, cancelAppjson);
 		return response;
 	}
 
@@ -1568,7 +1580,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
 				object.put("pre_registartion_id",
-						responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+						responseCreate.jsonPath().get("response.preRegistrationId").toString());
 				request.replace(key, object);
 			}
 
@@ -1608,7 +1620,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
 				value = (String) object.get(langCodeKey);
-				// object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+				// object.put("pre_registartion_id",responseCreate.jsonPath().get("response.preRegistrationId").toString());
 				// request.replace(key, object);
 				object.remove(langCodeKey);
 			}
@@ -1737,7 +1749,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public boolean validateRetrivePreRegistrationData(Response response, String PrID, Response craeteResponse) {
 		boolean finalResult = false;
 		HashMap<String, String> expectedDemographicDetails = craeteResponse.jsonPath()
-				.get("response[0].demographicDetails");
+				.get("response.demographicDetails");
 		String folderName = "PreRegDocs";
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
@@ -1774,7 +1786,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs"+"/"+PrID;
+		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
@@ -1805,6 +1817,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		Map<String, Object> map = gson.fromJson(object.toJSONString(), type);
 		return map;
 	}
+
 
 	/*
 	 * Generic method for Discard Booking
@@ -1942,6 +1955,84 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public List<? extends Object> preregFetchPreregDetails(String preregId) {
 		return dao.preregFetchPreregDetails(preregId);
 	}
+	public JSONObject getAuditData(List<? extends Object> objs, int data) {
+		List<Object> auditData = new ArrayList<>();
+		Map<String, String> map=new HashMap<>();
+		Object[] TestData = null;
+		for (Object obj : objs) {
+			TestData = (Object[]) obj;
+			int noOfData = TestData.length;
+			if (obj.equals(objs.get(data))) {
+				for (int i = 0; i < noOfData; i++) {
+					Object audit = TestData[i];
+					auditData.add(audit);
+				}
+			}
+			
+		}
+	
+		 JSONObject object = getAuditData(auditData);
+		return object;
+	}
+	public JSONObject getAuditData(List<Object> auditDatas)
+	{
+		JSONObject object=new JSONObject();
+		String log_desc = auditDatas.get(0).toString();
+		String event_id = auditDatas.get(1).toString();
+		String event_type = auditDatas.get(2).toString();
+		String event_name = auditDatas.get(3).toString();
+		String session_user_id = auditDatas.get(4).toString();
+		String module_name = auditDatas.get(5).toString();
+		String ref_id = auditDatas.get(6).toString();
+		String ref_id_type = auditDatas.get(7).toString();
+		object.put("log_desc", log_desc);
+		object.put("event_id", event_id);
+		object.put("event_type", event_type);
+		object.put("event_name", event_name);
+		object.put("session_user_id", session_user_id);
+		object.put("module_name", module_name);
+		object.put("ref_id", ref_id);
+		object.put("ref_id_type",ref_id_type );
+		return object;
+	}
+	/**
+	 * this function compare the request and response json and return the boolean
+	 * value
+	 * 
+	 * @param expectedResponseBody
+	 * @param actualResponseBody
+	 * @return boolean value
+	 */
+	public boolean jsonComparison(Object expectedResponseBody, Object actualResponseBody) {
+		JSONObject reqObj = (JSONObject) expectedResponseBody;
+		JSONObject resObj = (JSONObject) actualResponseBody;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode requestJson = mapper.readTree(reqObj.toString());
+			JsonNode responseJson = mapper.readTree(resObj.toString());
+			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
+
+			logger.error("======" + diffJson + "==========");
+			if (diffJson.toString().equals("[]")) {
+				logger.info("equal");
+				return true;
+			}
+
+			for (int i = 0; i < diffJson.size(); i++) {
+				JsonNode operation = diffJson.get(i);
+				if (!operation.get("op").toString().equals("\"move\"")) {
+					logger.error("not equal");
+					return false;
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.info("equal");
+		return true;
+
+	}
 
 	@BeforeClass
 	public void PreRegistrationResourceIntialize() {
@@ -1981,7 +2072,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
 		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
 		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
+
+		preReg_FecthAppointmentDetailsuri = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsuri");
+
 		qrCode_URI=commonLibrary.fetch_IDRepo().get("qrCode_URI");
+
 	}
 
 }

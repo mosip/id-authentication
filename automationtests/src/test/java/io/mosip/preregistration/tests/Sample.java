@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,7 +37,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
-import io.mosip.preregistration.dao.PreregistratonDAO;
+import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -60,6 +63,7 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
+	PreregistrationDAO dao=new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -69,25 +73,40 @@ public class Sample extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void retrivePreRegistrationDataForCancelAppointment() {
+	/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createRequest = lib.createRequest(testSuite);
+		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		lib.fetchAllPreRegistrationCreatedByUser();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicUpdate");
+		expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		System.out.println("====================="+auditDatas.toString());*/
+		/*if(auditDatas.equals(expectedRequest))
+			logger.info("both object are equal");
+		else
+		{
+			logger.info("expected is==="+expectedRequest.toString());
+			logger.info("but found is === "+auditDatas.toString());
+			Assert.fail();
+		}*/
+	@Test
+	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		PreregistratonDAO dao=new PreregistratonDAO();
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		dao.setDate(preID);
-		lib.expiredStatus();
-		lib.getPreRegistrationStatus(preID);
-		
+		lib.CreatePreReg(createPregRequest);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
+		//expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		lib.jsonComparison(expectedRequest, auditDatas);
 	}
+		
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-
 	}
 
 	@AfterMethod

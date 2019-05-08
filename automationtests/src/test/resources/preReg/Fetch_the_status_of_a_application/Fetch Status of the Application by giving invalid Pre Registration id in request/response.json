@@ -1,10 +1,12 @@
 {
-    "id": null,
-    "version": null,
-    "errors": {
-        "errorCode": "PRG_PAM_APP_005",
-        "message": "No data found for the requested pre-registration id"
-    },
-    "responsetime": "2019-04-12T09:00:16.373Z",
-    "response": null
+    "id": "mosip.pre-registration.demographic.retrieve.status",
+    "version": "1.0",
+    "responsetime": "2019-05-06T13:17:25.233Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_APP_005",
+            "message": "No data found for the requested pre-registration id"
+        }
+    ]
 }
