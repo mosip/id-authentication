@@ -149,11 +149,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		try {
-			/*
-			 * Master Data Sync restartableJobList.add("MDS_J00001");
-			 * 
-			 * Policy Sync restartableJobList.add("POS_J00008");
-			 */
+			
 			/* Registration Client Config Sync */
 			restartableJobList.add("SCD_J00011");
 
@@ -195,11 +191,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				
 				
 				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
-
-				// Will be launch post successful LOGIN
-				/*
-				 * Start Scheduler startScheduler();
-				 */
 
 			}
 
@@ -393,24 +384,28 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		try {
 
-			// Get currently executing jobs from scheduler factory
-			List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
-					.getCurrentlyExecutingJobs();
+			if(schedulerFactoryBean!=null && isSchedulerRunning) {
+				// Get currently executing jobs from scheduler factory
+				List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
+						.getCurrentlyExecutingJobs();
 
-			if (isNull(executingJobList) || isEmpty(executingJobList)) {
-				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
+				if (isNull(executingJobList) || isEmpty(executingJobList)) {
+					setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
+				} else {
+					List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
+
+						SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
+
+						return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
+								Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).toString());
+
+					}).collect(Collectors.toList());
+
+					setResponseDTO(dataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_RUNNING);
+
+				}
 			} else {
-				List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
-
-					SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
-
-					return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
-							Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).toString());
-
-				}).collect(Collectors.toList());
-
-				setResponseDTO(dataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_RUNNING);
-
+				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
 			}
 
 		} catch (SchedulerException schedulerException) {
