@@ -80,6 +80,9 @@ public class EncryptorUtil {
 	/** The center id length. */
 	@Value("${mosip.kernel.rid.machineid-length}")
 	private int machineIdLength;
+	
+	@Value("${registration.processor.rid.machineid}")
+	private int machineIdSubStringLength;
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
@@ -147,7 +150,7 @@ public class EncryptorUtil {
 		try {
 
 			String centerId = regId.substring(0, centerIdLength);
-			String machineId = regId.substring(5, machineIdLength);
+			String machineId = regId.substring(centerIdLength, machineIdSubStringLength);
 			String refId = centerId + "_" + machineId;
 
 			byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);

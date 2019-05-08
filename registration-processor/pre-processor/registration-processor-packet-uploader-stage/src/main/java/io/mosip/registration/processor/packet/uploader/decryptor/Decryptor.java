@@ -56,6 +56,9 @@ public class Decryptor {
 
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
+	
+	@Value("${registration.processor.rid.machineid}")
+	private int machineIdSubStringLength;
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -103,13 +106,15 @@ public class Decryptor {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			String centerId = registrationId.substring(0, centerIdLength);
+			String machineId = registrationId.substring(centerIdLength, machineIdSubStringLength);
+			String refId = centerId + "_" + machineId;
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
 			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
-			cryptomanagerRequestDto.setReferenceId(centerId);
+			cryptomanagerRequestDto.setReferenceId(refId);
 			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
 
 			// setLocal Date Time
