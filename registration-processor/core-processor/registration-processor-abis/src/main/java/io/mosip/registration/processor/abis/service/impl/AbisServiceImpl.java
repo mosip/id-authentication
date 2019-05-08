@@ -241,13 +241,24 @@ public class AbisServiceImpl implements AbisService {
 
 				if (duplicate) {
 					CandidateListDto cd = new CandidateListDto();
-					CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-
-					for (int i = 0; i <candidatesDto.length; i++) {
-						candidatesDto[i] = new CandidatesDto();
-						candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-						candidatesDto[i].setScaledScore(100 - i + "");
-						count++;
+					CandidatesDto[] candidatesDto;
+					if(!identifyRequest.getGallery().getReferenceIds().isEmpty()) {
+						 candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
+						 for (int i = 0; i <candidatesDto.length; i++) {
+								candidatesDto[i] = new CandidatesDto();
+								candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
+								candidatesDto[i].setScaledScore(100 - i + "");
+								count++;
+						 }							
+					}
+					else{
+						candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
+						for (int i = 0; i <candidatesDto.length; i++) {
+								candidatesDto[i] = new CandidatesDto();
+								candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+								candidatesDto[i].setScaledScore(100 - i + "");
+								count++;
+						}
 					}
 					cd.setCount(count + "");
 					cd.setCandidates(candidatesDto);
