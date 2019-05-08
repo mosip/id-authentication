@@ -20,6 +20,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.registration.tpm.spi.TPMService;
 
 /**
  * Spring Configuration class for Registration-Service Module
@@ -71,6 +72,11 @@ public class AppConfig {
 	@Bean
 	public TemplateManagerBuilder getTemplateManagerBuilder() {
 		return new TemplateManagerBuilderImpl();
+	}
+
+	@Bean
+	public TPMService getTPMService() {
+		return new TPMService();
 	}
 
 }

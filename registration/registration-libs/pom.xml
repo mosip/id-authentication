@@ -91,6 +91,11 @@
 			<artifactId>powermock-core</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.registration</groupId>
+			<artifactId>registration-tpm</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -114,6 +119,16 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
@@ -144,7 +159,7 @@
 						<configuration>
 							<filters>
 								<filter>
-									<artifact>org.bouncycastle:*</artifact>
+									<artifact>*:*</artifact>
 									<excludes>
 										<exclude>META-INF/*.SF</exclude>
 										<exclude>META-INF/*.DSA</exclude>
