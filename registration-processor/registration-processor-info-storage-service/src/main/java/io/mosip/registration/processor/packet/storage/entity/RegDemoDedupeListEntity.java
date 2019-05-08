@@ -48,9 +48,6 @@ public class RegDemoDedupeListEntity extends BasePacketEntity<RegDemoDedupeListP
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	@Column(name = "regtrn_id")
-	private String registrationTransaction;
-
 	public RegDemoDedupeListEntity() {
 	}
 

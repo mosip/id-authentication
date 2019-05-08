@@ -182,7 +182,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
 	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String bioRefId);
 
-	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =: Identify")
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =\'IDENTIFY\'")
 	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId);
 
 	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")

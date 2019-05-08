@@ -23,6 +23,7 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
+	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")
@@ -37,7 +38,7 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	@Column(name = "abis_resp_id")
+	@Column(name = "abis_resp_id",insertable=false, updatable=false)
 	private String abisResponse;
 
 	public AbisResponseDetEntity() {

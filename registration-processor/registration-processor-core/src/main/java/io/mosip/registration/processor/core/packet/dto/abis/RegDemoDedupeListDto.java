@@ -32,5 +32,5 @@ public class RegDemoDedupeListDto implements Serializable{
 
 	private LocalDateTime updDtimes;
 	
-	private TransactionDto registrationTransaction;
+	
 }

@@ -73,11 +73,11 @@ public class Utilities {
 	@Value("${registration.processor.demographic.identity}")
 	private String getRegProcessorDemographicIdentity;
 
-	@Value("${registration.processor.document.category}")
+	/*@Value("${registration.processor.document.category}")
 	private String getRegProcessorDocumentCategory;
 
 	@Value("${registration.processor.applicant.type}")
-	private String getRegProcessorApplicantType;
+	private String getRegProcessorApplicantType;*/
 
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
