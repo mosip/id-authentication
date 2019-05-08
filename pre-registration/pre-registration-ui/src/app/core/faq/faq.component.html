@@ -1,0 +1,18 @@
+<mat-card>
+  <div class="header-container">
+      <span class="breadcrumb">{{'faq.breadcrumb.home' | translate}}/<strong>{{'faq.breadcrumb.getting_started' | translate}}</strong></span>
+      <span class="spacer"></span>
+      <span class="header-text">{{'faq.breadcrumb.getting_started' | translate}}</span>
+      <span class="spacer"></span>
+  </div>
+</mat-card>
+
+<div [ngClass]="langCode === 'ara' ? 'body-container text-direction': 'body-container'">
+  <mat-card>
+    <div *ngFor="let item of data">
+      <p>{{item.question}}</p>
+      <p><b>{{answerTranslation}}:</b>&nbsp;&nbsp;&nbsp;{{item.answer}}</p>
+      <br />
+    </div>
+  </mat-card>
+</div>

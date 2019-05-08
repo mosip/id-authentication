@@ -1,0 +1,145 @@
+<div *ngIf="input.case === 'APPLICANTS'">
+  <h1 mat-dialog-title>{{ 'dialog.content_applicant' | translate }}</h1>
+  <div mat-dialog-content>
+    <table class="table-container">
+      <tr>
+        <td><i class="material-icons">email</i></td>
+        <td>
+          <mat-form-field>
+            <input
+              #email
+              matInput
+              placeholder="{{ 'dialog.text_email' | translate }}"
+              (keyup)="validateEmail()"
+              type="text"
+              [(ngModel)]="applicantEmail"
+              (focusout)="enableButton(email, mobile)"
+            />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="material-icons">chat</i></td>
+        <td>
+          <mat-form-field>
+            <input
+              #mobile
+              matInput
+              placeholder="{{ 'dialog.text_mobile' | translate }}"
+              (keyup)="validateMobile()"
+              type="text"
+              [(ngModel)]="applicantNumber"
+              (focusout)="enableButton(email, mobile)"
+            />
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+
+    <div *ngIf="invalidApplicantNumber">
+      <div>{{ 'dialog.invalidApplicantNumber' | translate }}</div>
+    </div>
+    <div *ngIf="invalidApplicantEmail">
+      <div>{{ 'dialog.invalidApplicantEmailId' | translate }}</div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button [disabled]="disableSend" mat-button [mat-dialog-close]="inputList" cdkFocusInitial>
+      {{ 'dialog.action_ok' | translate }}
+    </button>
+  </div>
+</div>
+<div *ngIf="input.case === 'DISCARD'">
+  <h1 mat-dialog-title>{{ 'dialog.title_discard' | translate }}</h1>
+  <div mat-dialog-content class="body-height">
+    <mat-radio-group [(ngModel)]="selectedOption">
+      <mat-radio-button [disabled]="input.disabled.radioButton1" value="1">{{
+        'dialog.action_discard_app' | translate
+      }}</mat-radio-button>
+      <mat-radio-button [disabled]="input.disabled.radioButton2" value="2">{{
+        'dialog.action_cancel' | translate
+      }}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="selectedOption" cdkFocusInitial>
+      {{ 'dialog.action_submit' | translate }}
+    </button>
+  </div>
+</div>
+<div *ngIf="input.case === 'MESSAGE'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" cdkFocusInitial>{{ 'dialog.action_dismiss' | translate }}</button>
+  </div>
+</div>
+<div *ngIf="input.case === 'CONFIRMATION'">
+  <h1 mat-dialog-title>{{ input.title }}</h1>
+  <div mat-dialog-content>
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <span
+      ><button mat-button [mat-dialog-close]="confirm" cdkFocusInitial>{{ input.yesButtonText }}</button></span
+    >
+    <span
+      ><button mat-button (click)="onNoClick()" cdkFocusInitial>{{ input.noButtonText }}</button></span
+    >
+  </div>
+</div>
+
+<div class="consent-popup-parent" *ngIf="input.case === 'CONSENTPOPUP'">
+  <!-- based upon the matching condition the popup appears for consent -->
+  <button class="consent-popup-cross" mat-dialog-actions (click)="onNoClick(); userRedirection()" cdkFocusInitial>
+    x
+  </button>
+  <!-- user redirection button for moving out -->
+  <h3 class="consent-popup-title" mat-dialog-title>{{ input.title }}</h3>
+  <h3 class="consent-popup-subtitle" mat-dialog-title>{{ input.subtitle }}</h3>
+  <div mat-dialog-content class="consentpopup-content">
+    <p>{{ input.message }}</p>
+  </div>
+  <mat-checkbox (change)="onSelectCheckbox()" class="checkbox-accept">
+    {{ input.checkCondition }}
+  </mat-checkbox>
+  <div mat-dialog-actions>
+    <button
+      class="accept-button"
+      [ngClass]="isChecked ? 'accept-button-disabled' : 'accept-button'"
+      [disabled]="isChecked"
+      mat-button
+      (click)="onNoClick()"
+      cdkFocusInitial
+    >
+      {{ input.acceptButton }}
+    </button>
+  </div>
+</div>
+
+<div class="logout-pre-message" *ngIf="input.case === 'POPUP'">
+  <div mat-dialog-content class="consentpopup-content">
+    <p>{{ input.content }}</p>
+  </div>
+</div>
+<div class="logout-post-message" *ngIf="input.case === 'POSTLOGOUT'">
+  <div mat-dialog-content class="consentpopup-content">
+    <p>{{ input.contentLogout }}</p>
+  </div>
+</div>
+
+<div class="logout-pre-message" *ngIf="input.case === 'ERROR'">
+  <h3 class="consent-popup-title" mat-dialog-title>{{ input.title }}</h3>
+  <div mat-dialog-content class="consentpopup-content">
+    <p>{{ input.message }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <span
+      ><button (click)="onNoClick()" mat-button [mat-dialog-close]="confirm" cdkFocusInitial>
+        {{ input.yesButtonText }}
+      </button></span
+    >
+  </div>
+</div>
