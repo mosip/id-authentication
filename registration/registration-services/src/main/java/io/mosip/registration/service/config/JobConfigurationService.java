@@ -84,5 +84,12 @@ public interface JobConfigurationService {
 	 * @return response
 	 */
 	ResponseDTO getRestartTime();
+	
+	/**
+	 * Find whether scheduler running or not
+	 * @return is scheduler running
+	 */
+	boolean isSchedulerRunning();
+	
 
 }

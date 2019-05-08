@@ -341,19 +341,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
 
 			}
-		} catch (SchedulerException schedulerException) {
+		} catch (RuntimeException | SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
-
-		}
+		} 
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -790,5 +784,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		schFactoryBean.afterPropertiesSet();
 		return schFactoryBean;
 	}
+
+	@Override
+	public boolean isSchedulerRunning() {
+		return isSchedulerRunning;
+	}
+	
 
 }

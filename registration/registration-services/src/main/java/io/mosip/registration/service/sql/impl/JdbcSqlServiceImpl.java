@@ -17,9 +17,11 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sql.JdbcSqlService;
 
 /**
@@ -40,10 +42,14 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	@Autowired
 	private GlobalParamService globalParamService;
 
+	@Autowired
+	private JobConfigurationService jobConfigurationService;
+
 	@Override
 	public ResponseDTO executeSqlFile(String version) {
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		clearScheduler();
 		// Get JDBC Connection
 		derbyRegConnection = getConnection();
 
@@ -54,6 +60,28 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 			setErrorResponse(responseDTO, "unable to esablish connection", null);
 		}
 		return responseDTO;
+	}
+
+	private void clearScheduler() {
+		if (jobConfigurationService.isSchedulerRunning()) {
+			while (!isRunningJobsCompleted()) {
+				jobConfigurationService.stopScheduler();
+			}
+		}
+
+	}
+
+	private boolean isRunningJobsCompleted() {
+
+		boolean isCompleted = false;
+		List<ErrorResponseDTO> errorResponseDTOs = jobConfigurationService.getCurrentRunningJobDetails()
+				.getErrorResponseDTOs();
+
+		if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+			isCompleted = RegistrationConstants.NO_JOBS_RUNNING.equals(errorResponseDTOs.get(0).getMessage());
+		}
+
+		return isCompleted;
 	}
 
 	private Connection getConnection() {
