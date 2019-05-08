@@ -56,6 +56,11 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>io.mosip.registration.cipher:ClientJarEncryption</exclude>
+                </excludes>
+              </artifactSet>
               <filters>
                 <filter>
                   <artifact>org.bouncycastle:*</artifact>
@@ -85,6 +90,9 @@
               <mainClass>io.mosip.registration.cipher.CilentJarDecryption</mainClass>
             </manifest>
           </archive>
+          <excludes>
+            <exclude>**/cipher/ClientJarEncryption</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
