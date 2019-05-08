@@ -494,7 +494,6 @@ public class HeaderController extends BaseController {
 							success = totalJobs - responseDto.getErrorResponseDTOs().size();
 							packetHandlerController.syncProgressBar.setProgress(success/totalJobs);
 						}
-						ApplicationContext.map().put(RegistrationConstants.SYNC_PROGRESS_BAR_VALUE, success/totalJobs);
 						return responseDto;
 					}
 				};
