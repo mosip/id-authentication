@@ -54,7 +54,7 @@ The key solution considerations are
 
 
 **2.1.	Class Diagram**   
-![Class Diagram](_images/idrepo-cd.PNG)   
+![Class Diagram](_images/idrepo-identityservice-cd.PNG)   
 
 
 **2.2.	REST Services**   
