@@ -29,6 +29,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
+import io.mosip.registration.controller.vo.PendingApprovalVO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -89,21 +90,21 @@ public class RegistrationApprovalController extends BaseController implements In
 	/** Table to display the created packets. */
 
 	@FXML
-	private TableView<RegistrationApprovalDTO> table;
+	private TableView<PendingApprovalVO> table;
 
 	/** Registration Id column in the table. */
 
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> id;
+	private TableColumn<PendingApprovalVO, String> id;
 
 	/** status comment column in the table. */
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> statusComment;
+	private TableColumn<PendingApprovalVO, String> statusComment;
 
 	/** Acknowledgement form column in the table. */
 
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> acknowledgementFormPath;
+	private TableColumn<PendingApprovalVO, String> acknowledgementFormPath;
 
 	/** Button for approval. */
 
@@ -151,7 +152,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private TextField filterField;
 
-	private ObservableList<RegistrationApprovalDTO> observableList;
+	private ObservableList<PendingApprovalVO> observableList;
 
 	/*
 	 * (non-Javadoc)
@@ -169,7 +170,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private void tableCellColorChangeListener() {
 		statusComment.setCellFactory(column -> {
-			return new TableCell<RegistrationApprovalDTO, String>() {
+			return new TableCell<PendingApprovalVO, String>() {
 				@Override
 				public void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
@@ -198,10 +199,10 @@ public class RegistrationApprovalController extends BaseController implements In
 		imageAnchorPane.setVisible(false);
 
 		id.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalDTO, String>(RegistrationConstants.EOD_PROCESS_ID));
-		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				new PropertyValueFactory<PendingApprovalVO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		statusComment.setCellValueFactory(new PropertyValueFactory<PendingApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
-		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PendingApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
@@ -273,15 +274,18 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
-
+		List<PendingApprovalVO> pendingApprovalDTO = new ArrayList<>();
+		
+		
+		
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
+			listData.forEach(approvalDTO -> pendingApprovalDTO.add(new PendingApprovalVO(approvalDTO.getId(), approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)) );
 			
 			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-			observableList = FXCollections.observableArrayList(listData);			
+			observableList = FXCollections.observableArrayList(pendingApprovalDTO);			
 			wrapListAndAddFiltering(observableList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
@@ -292,8 +296,8 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 
-	protected void wrapListAndAddFiltering(ObservableList<RegistrationApprovalDTO> oList) {
-		FilteredList<RegistrationApprovalDTO> filteredData = new FilteredList<>(oList, p -> true);
+	protected void wrapListAndAddFiltering(ObservableList<PendingApprovalVO> oList) {
+		FilteredList<PendingApprovalVO> filteredData = new FilteredList<>(oList, p -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -317,7 +321,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 		});
 		// 3. Wrap the FilteredList in a SortedList.
-		SortedList<RegistrationApprovalDTO> sortedList = new SortedList<>(filteredData);
+		SortedList<PendingApprovalVO> sortedList = new SortedList<>(filteredData);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
@@ -362,7 +366,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			authenticateBtn.setDisable(false);
 
 			int rowNum = table.getSelectionModel().getFocusedIndex();
-			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
+			PendingApprovalVO approvalDTO = new PendingApprovalVO(
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);

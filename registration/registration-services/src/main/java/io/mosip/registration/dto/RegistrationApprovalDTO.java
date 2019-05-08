@@ -1,7 +1,5 @@
 package io.mosip.registration.dto;
 
-import javafx.beans.property.SimpleStringProperty;
-
 /**
  * The Class RegistrationApprovalDTO.
  * 
@@ -9,9 +7,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class RegistrationApprovalDTO {
 
-	private SimpleStringProperty id;
-	private SimpleStringProperty acknowledgementFormPath;
-	private SimpleStringProperty statusComment;
+	private String id;
+	private String acknowledgementFormPath;
+	private String statusComment;
 
 	/**
 	 * Instantiates a new registration approval DTO.
@@ -25,10 +23,14 @@ public class RegistrationApprovalDTO {
 	 */
 	public RegistrationApprovalDTO(String id, String acknowledgementFormPath, String statusComment) {
 		super();
-		this.id = new SimpleStringProperty(id);
+		/*this.id = new SimpleStringProperty(id);
 		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
 		this.statusComment = new SimpleStringProperty(statusComment);
-	}
+*/
+		this.id = id;
+		this.acknowledgementFormPath =acknowledgementFormPath;
+		this.statusComment = statusComment;
+		}
 
 	/**
 	 * Gets the id.
@@ -36,7 +38,7 @@ public class RegistrationApprovalDTO {
 	 * @return the id
 	 */
 	public String getId() {
-		return id.get();
+		return id;
 	}
 
 	/**
@@ -45,7 +47,7 @@ public class RegistrationApprovalDTO {
 	 * @return the acknowledgementFormPath
 	 */
 	public String getAcknowledgementFormPath() {
-		return acknowledgementFormPath.get();
+		return acknowledgementFormPath;
 	}
 
 	/**
@@ -54,27 +56,6 @@ public class RegistrationApprovalDTO {
 	 * @return the statusComment
 	 */
 	public String getStatusComment() {
-		return statusComment.get();
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = new SimpleStringProperty(id);
-	}
-
-	/**
-	 * @param acknowledgementFormPath the acknowledgementFormPath to set
-	 */
-	public void setAcknowledgementFormPath(String acknowledgementFormPath) {
-		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
-	}
-
-	/**
-	 * @param statusComment the statusComment to set
-	 */
-	public void setStatusComment(String statusComment) {
-		this.statusComment = new SimpleStringProperty(statusComment);
+		return statusComment;
 	}
 }

@@ -20,7 +20,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.RegistrationApprovalDTO;
+import io.mosip.registration.controller.vo.PendingApprovalVO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
 import javafx.collections.FXCollections;
@@ -72,12 +72,12 @@ public class RejectionController extends BaseController implements Initializable
 	private List<Map<String, String>> rejectionmapList;
 
 	/** The rej reg data. */
-	private RegistrationApprovalDTO rejRegData;
+	private PendingApprovalVO rejRegData;
 
 	/** The rejection table. */
-	private TableView<RegistrationApprovalDTO> regRejectionTable;
+	private TableView<PendingApprovalVO> regRejectionTable;
 	
-	private ObservableList<RegistrationApprovalDTO> observableList;
+	private ObservableList<PendingApprovalVO> observableList;
 
 	private String controllerName;
 	
@@ -112,8 +112,8 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param mapList
 	 * @param table
 	 */
-	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalDTO> oList,
-			TableView<RegistrationApprovalDTO> table, String controller) {
+	public void initData(PendingApprovalVO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<PendingApprovalVO> oList,
+			TableView<PendingApprovalVO> table, String controller) {
 		rejRegData = regData;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
@@ -151,7 +151,7 @@ public class RejectionController extends BaseController implements Initializable
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
 			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
-			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
+			PendingApprovalVO approvalDTO = new PendingApprovalVO(
 					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
 					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
