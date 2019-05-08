@@ -58,7 +58,12 @@ public enum IdRepoErrorConstants {
 	AUTHORIZATION_FAILED("IDR-IDS-021", "Authorization Failed"),
 	
 	NO_RECORD_FOUND_VID("IDR-VID-006", "No Record(s) found"),
-	INVALID_VID("IDR-VID-002","%s VID");
+	
+	INVALID_VID("IDR-VID-002","%s VID"),
+	
+	INVALID_INPUT_PARAMETER_VID("IDR-VID-001","Invalid Input Parameter - %s"),
+	/** The missing input parameter. */
+	MISSING_INPUT_PARAMETER_VID("IDR-VID-007", "Missing Input Parameter - %s");
 	
 
 	/** The error code. */

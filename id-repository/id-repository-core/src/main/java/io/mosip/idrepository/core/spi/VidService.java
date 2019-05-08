@@ -11,4 +11,6 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 public interface VidService<REQUEST, RESPONSE> {
 
 	RESPONSE retrieveUinByVid(String vid) throws IdRepoAppException;
+
+	RESPONSE updateVid(String vid, REQUEST request) throws IdRepoAppException;
 }

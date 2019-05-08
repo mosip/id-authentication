@@ -1,6 +1,7 @@
 package io.mosip.idrepository.vid.config;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -18,7 +19,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  *
  */
 @Configuration
-@ConfigurationProperties("mosip.vid")
+@ConfigurationProperties("mosip.idrepo.vid")
 public class VidRepoConfig {
 	
 	/** The env. */
@@ -27,6 +28,9 @@ public class VidRepoConfig {
 	
 	/** The id. */
 	private Map<String, String> id;
+	
+	/** The status. */
+	private List<String> allowedStatus;
 	
 	/**
 	 * Sets the id.
@@ -37,6 +41,16 @@ public class VidRepoConfig {
 		this.id = id;
 	}
 	
+
+	/**
+	 * Sets the status.
+	 *
+	 * @param status the status
+	 */
+	public void setAllowedStatus(List<String> status) {
+		this.allowedStatus = status;
+	}
+
 	/**
 	 * Id.
 	 *
@@ -46,7 +60,16 @@ public class VidRepoConfig {
 	public Map<String, String> id() {
 		return Collections.unmodifiableMap(id);
 	}
-
+	
+	/**
+	 * Status.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public List<String> allowedStatus() {
+		return Collections.unmodifiableList(allowedStatus);
+	}
 	
 	/**
 	 * Builds the data source.
