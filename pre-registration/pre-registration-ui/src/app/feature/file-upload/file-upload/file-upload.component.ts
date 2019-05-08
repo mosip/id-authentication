@@ -14,6 +14,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
+import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 
 @Component({
   selector: 'app-file-upload',
@@ -44,7 +45,7 @@ export class FileUploadComponent implements OnInit {
   fileByteArray;
   fileUrl;
   applicantPreRegId: string;
-  userFiles: FileModel = new FileModel();
+  userFiles: FilesModel = new FilesModel();
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
@@ -114,8 +115,8 @@ export class FileUploadComponent implements OnInit {
     }
     this.getApplicantTypeID();
     let i = 0;
-    if (!this.users[0].files[0].documentsMetaData) {
-      this.users[0].files[0].documentsMetaData = [];
+    if (!this.users[0].files) {
+      // this.users[0].files.documentsMetaData = [];
     } else {
       // this.sortUserFiles();
     }
@@ -222,8 +223,8 @@ export class FileUploadComponent implements OnInit {
    */
   sortUserFiles() {
     for (let document of this.LOD) {
-      for (let file of this.users[0].files[0]) {
-        if (document.code === file.doc_cat_code) {
+      for (let file of this.users[0].files.documentsMetaData) {
+        if (document.code === file.docCatCode) {
           this.sortedUserFiles.push(file);
         }
       }
@@ -625,7 +626,7 @@ export class FileUploadComponent implements OnInit {
           this.updateUsers(response);
         } else {
           // alert(response['errors'].errorCode + ' Invalid document format supported');
-          this.displayMessage('Error', response['errors'].message);
+          this.displayMessage('Error', response['errors'][0].message);
         }
       },
       error => {
@@ -647,15 +648,15 @@ export class FileUploadComponent implements OnInit {
    */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response.docCatCode;
-    this.userFiles.doc_file_format = fileResponse.response.docFileFormat;
-    this.userFiles.documentId = fileResponse.response.documentId;
-    this.userFiles.docName = fileResponse.response.docName;
-    this.userFiles.docTypCode = fileResponse.response.docTypCode;
-    this.userFiles.multipartFile = this.fileByteArray;
-    this.userFiles.prereg_id = this.users[0].preRegId;
-    for (let file of this.users[0].files[0].documentsMetaData) {
-      if (file.docCatCode == this.userFiles.docCatCode) {
+    this.userFiles.documentsMetaData[0].docCatCode = fileResponse.response.docCatCode;
+    this.userFiles.documentsMetaData[0].doc_file_format = fileResponse.response.docFileFormat;
+    this.userFiles.documentsMetaData[0].documentId = fileResponse.response.documentId;
+    this.userFiles.documentsMetaData[0].docName = fileResponse.response.docName;
+    this.userFiles.documentsMetaData[0].docTypCode = fileResponse.response.docTypCode;
+    this.userFiles.documentsMetaData[0].multipartFile = this.fileByteArray;
+    this.userFiles.documentsMetaData[0].prereg_id = this.users[0].preRegId;
+    for (let file of this.users[0].files.documentsMetaData) {
+      if (file.docCatCode == this.userFiles.documentsMetaData[0].docCatCode) {
         // this.removeFilePreview();
         this.users[this.step].files[0][i] = this.userFiles;
         this.fileIndex--;
@@ -663,10 +664,10 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
-    if (i == this.users[0].files[0].documentsMetaData.length) {
-      this.users[this.step].files[0].push(this.userFiles);
+    if (i == this.users[0].files.documentsMetaData.length) {
+      this.users[this.step].files.documentsMetaData.push(this.userFiles.documentsMetaData[0]);
     }
-    this.userFiles = new FileModel();
+    this.userFiles = new FilesModel();
     this.registration.updateUser(this.step, this.users[this.step]);
     // this.sortUserFiles();
     // this.viewFileByIndex(this.fileIndex);
@@ -696,7 +697,7 @@ export class FileUploadComponent implements OnInit {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
             // alert(response['errors'].message);
-            this.displayMessage('Error', response['errors'].message);
+            this.displayMessage('Error', response['errors'][0].message);
           }
         },
         err => {
@@ -713,7 +714,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   removePOADocument() {
-    this.userFiles = new FileModel();
+    this.userFiles = new FilesModel();
     let i = 0;
     for (let file of this.users[0].files[0].documentsMetaData) {
       if (file.docCatCode == 'POA') {
