@@ -95,8 +95,6 @@ public class AbisServiceImpl implements AbisService {
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
-
-
 			if (testFingerPrint == null || testIris == null || testFace == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
@@ -118,6 +116,7 @@ public class AbisServiceImpl implements AbisService {
 				response.setReturnValue(2);
 				response.setFailureReason(7);
 			}
+
 
 		}  catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
 			response.setReturnValue(2);
@@ -141,6 +140,8 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 
 		}
+
+			
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::exit");
 
@@ -184,6 +185,7 @@ public class AbisServiceImpl implements AbisService {
 		return null;
 	}
 
+
 	@Override
 	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest){
 		boolean duplicate = false;
@@ -194,13 +196,16 @@ public class AbisServiceImpl implements AbisService {
 		String referenceId = identifyRequest.getReferenceId();
 
 
-		response.setId(ABIS_IDENTIFY);
-		response.setRequestId(identifyRequest.getRequestId());
-		response.setTimestamp(identifyRequest.getTimestamp());
 
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
+
+	
+			response.setId(ABIS_IDENTIFY);
+			response.setRequestId(identifyRequest.getRequestId());
+			response.setTimestamp(identifyRequest.getTimestamp());
+
 
 			if(doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
