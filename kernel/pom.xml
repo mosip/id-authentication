@@ -165,7 +165,7 @@
 		<module>kernel-applicanttype-service</module>
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
-		<module>kernel-admin-service</module>
+		<module>kernel-syncjob-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-idobjectvalidator</module>
 	</modules>
