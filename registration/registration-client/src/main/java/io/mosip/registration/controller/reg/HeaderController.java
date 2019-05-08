@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -26,11 +25,12 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
@@ -39,7 +39,6 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -49,8 +48,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -111,6 +110,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	MasterSyncService masterSyncService;
+	
+	@Autowired
+	MasterSyncDao masterSyncDao;
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
@@ -460,10 +462,10 @@ public class HeaderController extends BaseController {
 	private void executeSyncDataTask() {
 		progressIndicator = packetHandlerController.getProgressIndicator();
 		GridPane gridPane = homeController.getMainBox();
-
+		List<SyncJobDef> syncJobs = masterSyncDao.getSyncJobs();
+		double totalJobs  =  syncJobs.size();
 		gridPane.setDisable(true);
 		progressIndicator.setVisible(true);
-
 		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
 			@Override
 			protected Task<ResponseDTO> createTask() {
@@ -483,7 +485,17 @@ public class HeaderController extends BaseController {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						return jobConfigurationService.executeAllJobs();
+						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
+
+						if(responseDto.getErrorResponseDTOs()==null || responseDto.getErrorResponseDTOs().size()==0) {
+							packetHandlerController.syncProgressBar.setProgress(1);
+						}
+						else {
+							double success = totalJobs - responseDto.getErrorResponseDTOs().size();
+							packetHandlerController.syncProgressBar.setProgress(success/totalJobs);
+						}
+						
+						return responseDto;
 					}
 				};
 			}

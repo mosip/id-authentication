@@ -10,6 +10,14 @@
 	-fx-font-size:10.0px;
 }
 
+
+#syncProgressBar > .bar{
+	-fx-background-color : red;
+	 -fx-padding: 0;
+	 -fx-background-insets : 0;
+	
+}
+
 .demoGraphicTextFieldFocused{
 	-fx-border-color: red;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	

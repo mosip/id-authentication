@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,16 +62,14 @@ import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -518,34 +515,20 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
 
+	@FXML
+	public GridPane progressPane;
+	
+	@FXML
+	public ProgressBar syncProgressBar;
+	
+	@Autowired
+	HeaderController headerController;
+	
 	/**
 	 * Sync data through batch jobs.
 	 */
 	public void syncData() {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info("REGISTRATION - SYNC_DATA - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
-		AnchorPane syncData;
-		try {
-			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
-			ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-			IntStream.range(1, nodes.size()).forEach(index -> {
-				nodes.get(index).setVisible(false);
-				nodes.get(index).setManaged(false);
-			});
-			nodes.add(syncData);
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen ended.");
+		headerController.syncData(null);
 	}
 
 	/**
