@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -43,6 +42,7 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptio
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketSizeNotInSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
@@ -324,6 +324,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		}
 
 	}
+
 	/**
 	 * Gets the max file size.
 	 *
@@ -390,9 +391,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void validateHashCode(InputStream inputStream) throws IOException {
 		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
-		byte[] packetHashSequenceFromEntity = hashSequence;// PacketHashSequesnce
-		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
+		String hashSequence = HMACUtils.digestAsPlainText(isbytearray);
+		String packetHashSequence = regEntity.getPacketHashValue();
+		if (!(packetHashSequence.equals(hashSequence))) {
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
 					+ registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -411,15 +412,15 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the regid
 	 */
 	private void validatePacketSize(long length) {
-		// TO-DO need to umcomment once we get new columns in sync
-		/*
-		 * if(length > regEntity.getPacketSize()) {
-		 * regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-		 * LoggerFileConstant.REGISTRATIONID.toString(), regid,
-		 * PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage()); throw
-		 * new PacketSizeNotInSyncException(PlatformErrorMessages.
-		 * RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage()); }
-		 */
+
+		long packetSize = regEntity.getPacketSize().longValue();
+		if (length > packetSize) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
+			throw new PacketSizeNotInSyncException(
+					PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
+		}
+
 		if (length > getMaxFileSize()) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());

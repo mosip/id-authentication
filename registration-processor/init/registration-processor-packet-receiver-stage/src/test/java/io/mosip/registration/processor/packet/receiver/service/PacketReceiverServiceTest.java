@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -78,7 +80,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
 @RefreshScope
 // @RunWith(SpringRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(IOUtils.class)
+@PrepareForTest({ IOUtils.class, HMACUtils.class })
 public class PacketReceiverServiceTest {
 
 	private static final String fileExtension = ".zip";
@@ -141,6 +143,9 @@ public class PacketReceiverServiceTest {
 		regEntity.setRegistrationType("new");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
+		regEntity.setPacketHashValue("abcd1234");
+		BigInteger size = new BigInteger("2291584");
+		regEntity.setPacketSize(size);
 
 		registrationStatusDto.setStatusCode("RESEND");
 		registrationStatusDto.setRegistrationId("12345");
@@ -148,6 +153,8 @@ public class PacketReceiverServiceTest {
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
 				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
+		PowerMockito.mockStatic(HMACUtils.class);
+		PowerMockito.when(HMACUtils.digestAsPlainText(any())).thenReturn("abcd1234");
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -286,6 +293,7 @@ public class PacketReceiverServiceTest {
 	public void testFileSizeExceeded() {
 
 		regEntity.setRegistrationId("2222");
+		regEntity.setPacketSize(new BigInteger("6241828"));
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
