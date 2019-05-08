@@ -165,7 +165,7 @@ public class AuthServiceImpl implements AuthService {
 		AuthNResponseDto authNResponseDto = null;
 		MosipUserDto mosipUser = null;
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
-			mosipUser = uinService.getDetailsFromUin(otpUser);
+			mosipUser = uinService.getDetailsFromUin(otpUser.getUserId());
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser);
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
@@ -200,6 +200,10 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDtoToken mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
+		if(mosipUser==null)
+		{
+			mosipUser = uinService.getDetailsFromUin(userOtp.getUserId());
+		}
 		if (mosipUser != null) {
 			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
 		} else {
