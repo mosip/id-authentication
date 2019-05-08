@@ -4,6 +4,7 @@
 // export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
+export const METADATA = 'documentsMetaData';
 export const ERROR = 'error';
 export const NESTED_ERROR = 'errors';
 export const ERROR_CODE = 'errorCode';
