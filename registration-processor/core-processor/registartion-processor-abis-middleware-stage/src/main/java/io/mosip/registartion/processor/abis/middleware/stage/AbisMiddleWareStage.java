@@ -28,7 +28,6 @@ import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -44,9 +43,6 @@ import io.vertx.core.json.JsonObject;
 
 public class AbisMiddleWareStage extends MosipVerticleManager {
 
-	/** The mosip connection factory. */
-	@Autowired
-	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 	/** The mosip queue manager. */
 	@Autowired
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
@@ -63,7 +59,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	@Autowired
 	private BasePacketRepository<AbisResponseDetEntity, String> abisResponseDetailRepositary;
 
-	private MosipQueue queue;
+	// private MosipQueue queue;
 	private MosipEventBus mosipEventBus;
 
 	@Value("${vertx.cluster.configuration}")
@@ -116,39 +112,30 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	List<String> queueUserNameList;
 	List<String> queuePasswordList;
 	List<String> queueUrlList;
-
-	// create map
+	List<String> typeOfQueueList;
+	List<MosipQueue> mosipQueueList;
 
 	public void deployVerticle() {
-		queue = getQueueConnection();
-		if (queue != null) {
-
-			List<List<String>> inBoundOutBoundList;
-			try {
-				inBoundOutBoundList = utility.getMosipQueueDetails();
-				abisInboundAddresses = inBoundOutBoundList.get(0);
-				abisOutboundAddresses = inBoundOutBoundList.get(1);
-				queueUserNameList = inBoundOutBoundList.get(2);
-				queuePasswordList = inBoundOutBoundList.get(3);
-				queueUrlList = inBoundOutBoundList.get(4);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-			}
-			for (String outBoundAddress : abisOutboundAddresses) {
+		try {
+			mosipQueueList = utility.getMosipQueuesForAbis();
+			List<List<String>> inBoundOutBoundList = utility.getMInboundOutBoundAddressList();
+			abisInboundAddresses = inBoundOutBoundList.get(0);
+			abisOutboundAddresses = inBoundOutBoundList.get(1);
+			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
 						cosnumerListener(message);
 					}
 				};
-				mosipQueueManager.consume(queue, outBoundAddress, listener);
+				mosipQueueManager.consume(mosipQueueList.get(i), abisOutboundAddresses.get(i), listener);
 
 			}
 
 			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
 					MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
+		} catch (IOException e) {
 		}
 	}
 
@@ -166,7 +153,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 					byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
 
-					boolean isAddedToQueue = sendToQueue(queue, new String(reqBytearray), abisInboundAddresses.get(i));
+					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
+							abisInboundAddresses.get(i));
 
 					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
 				}
@@ -176,14 +164,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
 					byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
-					boolean isAddedToQueue = sendToQueue(queue, new String(identifyReq), abisInboundAddresses.get(i));
+					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(identifyReq),
+							abisInboundAddresses.get(i));
 					updateAbisRequest(isAddedToQueue, abisIdentifyRequestList.get(i));
 
 				}
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
 
 		}
@@ -191,9 +179,10 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return null;
 	}
 
-	private MosipQueue getQueueConnection() {
-		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
-	}
+	// private MosipQueue getQueueConnection() {
+	// return mosipConnectionFactory.createConnection(typeOfQueue, username,
+	// password, url);
+	// }
 
 	public boolean cosnumerListener(Message message) {
 

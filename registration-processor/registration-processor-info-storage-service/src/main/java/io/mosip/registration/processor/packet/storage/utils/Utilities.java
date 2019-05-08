@@ -94,20 +94,18 @@ public class Utilities {
 	private static final String USERNAME = "userName";
 	private static final String PASSWORD = "password";
 	private static final String BROKERURL = "brokerUrl";
+	private static final String TYPEOFQUEUE = "typeOfQueue";
 
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public List<List<String>> getMosipQueueDetails() throws IOException {
+	public List<List<String>> getMInboundOutBoundAddressList() throws IOException {
 		String registrationProcessorAbis = Utilities.getJson(getRegistrationProcessorAbisJson(),
 				getGetRegProcessorIdentityJson());
 		List<String> inBoundAddressList = new ArrayList<>();
 		List<String> outBountAddressList = new ArrayList<>();
-		List<String> userNameList = new ArrayList<>();
-		List<String> passwordList = new ArrayList<>();
-		List<String> urlList = new ArrayList<>();
 
 		List<List<String>> inboundOutBoundList = new ArrayList<>();
 		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
@@ -116,20 +114,36 @@ public class Utilities {
 			if (jsonObject instanceof JSONObject) {
 				inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
 				outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
-				userNameList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, USERNAME));
-				passwordList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, PASSWORD));
-				urlList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, BROKERURL));
-
 				inboundOutBoundList.add(inBoundAddressList);
 				inboundOutBoundList.add(outBountAddressList);
-				inboundOutBoundList.add(userNameList);
-				inboundOutBoundList.add(passwordList);
-				inboundOutBoundList.add(urlList);
 
 			}
 
 		}
 		return inboundOutBoundList;
+	}
+
+	public List<MosipQueue> getMosipQueuesForAbis() throws IOException {
+		String registrationProcessorAbis = Utilities.getJson(getRegistrationProcessorAbisJson(),
+				getGetRegProcessorIdentityJson());
+		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
+		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+		List<MosipQueue> mosipQueueList = new ArrayList<>();
+
+		for (Object jsonObject : regProcessorAbisArray) {
+			if (jsonObject instanceof JSONObject) {
+				String userName = JsonUtil.getJSONValue((JSONObject) jsonObject, USERNAME);
+				String password = JsonUtil.getJSONValue((JSONObject) jsonObject, PASSWORD);
+				String brokerUrl = JsonUtil.getJSONValue((JSONObject) jsonObject, BROKERURL);
+				String typeOfQueue = JsonUtil.getJSONValue((JSONObject) jsonObject, TYPEOFQUEUE);
+
+				mosipQueueList.add(mosipConnectionFactory.createConnection(typeOfQueue, userName, password, brokerUrl));
+
+			}
+
+		}
+		return mosipQueueList;
+
 	}
 
 	public int getApplicantAge(String registrationId)
