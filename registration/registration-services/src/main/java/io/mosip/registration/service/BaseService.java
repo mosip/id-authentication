@@ -26,6 +26,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -61,21 +62,25 @@ public class BaseService {
 	/**
 	 * Global Param Map as a Application Map
 	 */
-	private static Map<String, Object> applicationMap=new HashMap<>();
+	private static Map<String, Object> applicationMap = new HashMap<>();
+
+	@Autowired
+	private GlobalParamService globalParamService;
 
 	/**
 	 * create error response.
 	 *
-	 * @param response 
-	 * 				the response
-	 * @param message 
-	 * 				the message
-	 * @param attributes 
-	 * 				the attributes
+	 * @param response
+	 *            the response
+	 * @param message
+	 *            the message
+	 * @param attributes
+	 *            the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate error
 	 *         response and mapping to it
 	 */
-	protected ResponseDTO getErrorResponse(final ResponseDTO response, final String message, Map<String, Object> attributes) {
+	protected ResponseDTO getErrorResponse(final ResponseDTO response, final String message,
+			Map<String, Object> attributes) {
 
 		/** Create list of Error Response */
 		List<ErrorResponseDTO> errorResponses = (response.getErrorResponseDTOs() != null)
@@ -100,12 +105,12 @@ public class BaseService {
 	/**
 	 * create success response.
 	 *
-	 * @param responseDTO 
-	 * 				the response DTO
-	 * @param message 
-	 * 				the message
-	 * @param attributes 
-	 * 				the attributes
+	 * @param responseDTO
+	 *            the response DTO
+	 * @param message
+	 *            the message
+	 * @param attributes
+	 *            the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate
 	 *         success response and mapping to it
 	 */
@@ -127,12 +132,12 @@ public class BaseService {
 	/**
 	 * create error response.
 	 *
-	 * @param response 
-	 * 				the response
-	 * @param message 
-	 * 				the message
-	 * @param attributes 
-	 * 				the attributes
+	 * @param response
+	 *            the response
+	 * @param message
+	 *            the message
+	 * @param attributes
+	 *            the attributes
 	 * @return ResponseDTO returns the responseDTO after creating appropriate error
 	 *         response and mapping to it
 	 */
@@ -181,10 +186,10 @@ public class BaseService {
 	/**
 	 * To check the device is valid or not.
 	 *
-	 * @param deviceType 
-	 * 				the device type
-	 * @param serialNo 
-	 * 				the serial no
+	 * @param deviceType
+	 *            the device type
+	 * @param serialNo
+	 *            the serial no
 	 * @return true, if is valid device
 	 */
 	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
@@ -197,8 +202,8 @@ public class BaseService {
 	/**
 	 * Checks if is null.
 	 *
-	 * @param list 
-	 * 				the list
+	 * @param list
+	 *            the list
 	 * @return true, if is null
 	 */
 	public boolean isNull(List<?> list) {
@@ -210,8 +215,8 @@ public class BaseService {
 	/**
 	 * Checks if is empty.
 	 *
-	 * @param list 
-	 * 				the list
+	 * @param list
+	 *            the list
 	 * @return true, if is empty
 	 */
 	public boolean isEmpty(List<?> list) {
@@ -222,8 +227,8 @@ public class BaseService {
 	/**
 	 * Gets the station id.
 	 *
-	 * @param macAddress 
-	 * 				the mac address
+	 * @param macAddress
+	 *            the mac address
 	 * @return the station id
 	 */
 	public String getStationId(String macAddress) {
@@ -262,8 +267,8 @@ public class BaseService {
 	/**
 	 * Gets the center id.
 	 *
-	 * @param stationId 
-	 * 				the station id
+	 * @param stationId
+	 *            the station id
 	 * @return the center id
 	 */
 	public String getCenterId(String stationId) {
@@ -295,33 +300,26 @@ public class BaseService {
 	/**
 	 * Get Global Param configuration value.
 	 *
-	 * @param key            
-	 * 				the name
+	 * @param key
+	 *            the name
 	 * @return value
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		if (applicationMap == null || applicationMap.isEmpty()) {
+		if (applicationMap.isEmpty()) {
 
-			if (applicationContext == null) {
+			applicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
 
-				/* Get Application Instance */
-				applicationContext = ApplicationContext.getInstance();
-			}
-
-			/* Get Application Map */
-			setBaseGlobalMap(ApplicationContext.map());
 		}
 
 		return (String) applicationMap.get(key);
 	}
-	
 
 	/**
 	 * Convertion of Registration to Packet Status DTO.
 	 *
-	 * @param registration 
-	 * 				the registration
+	 * @param registration
+	 *            the registration
 	 * @return the packet status DTO
 	 */
 	public PacketStatusDTO packetStatusDtoPreperation(Registration registration) {
@@ -334,13 +332,13 @@ public class BaseService {
 		statusDTO.setPacketStatus(registration.getStatusCode());
 		return statusDTO;
 	}
-	
-	public static void setBaseGlobalMap(Map<String,Object> map) {
+
+	public static void setBaseGlobalMap(Map<String, Object> map) {
 		applicationMap = map;
 	}
 
-	public static Map<String,Object> getBaseGlobalMap() {
+	public static Map<String, Object> getBaseGlobalMap() {
 		return applicationMap;
 	}
-	
+
 }

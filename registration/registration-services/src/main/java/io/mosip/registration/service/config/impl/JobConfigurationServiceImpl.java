@@ -699,6 +699,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public ResponseDTO executeAllJobs() {
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		BaseJob.clearCompletedJobMap();
+		
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
@@ -788,6 +790,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public boolean isSchedulerRunning() {
 		return isSchedulerRunning;
+	}
+
+	@Override
+	public Map<String, SyncJobDef> getActiveSyncJobMap() {
+		return syncActiveJobMap;
 	}
 	
 

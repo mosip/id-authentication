@@ -17,8 +17,8 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -50,13 +50,20 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		clearScheduler();
-		// Get JDBC Connection
-		derbyRegConnection = getConnection();
+		
 
-		if (derbyRegConnection != null) {
-			executeSqlFile(responseDTO, version);
-		} else {
-			// Prepare Error Response as unable to esablish connection
+		try (Connection connection = getConnection()) {
+			// Get JDBC Connection
+			this.derbyRegConnection = connection;
+
+			if (derbyRegConnection != null) {
+				executeSqlFile(responseDTO, version);
+			} else {
+				// Prepare Error Response as unable to establish connection
+				setErrorResponse(responseDTO, "unable to esablish connection", null);
+			}
+		} catch (SQLException e) {
+			// Prepare Error Response as unable to establish connection
 			setErrorResponse(responseDTO, "unable to esablish connection", null);
 		}
 		return responseDTO;
@@ -64,8 +71,12 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 
 	private void clearScheduler() {
 		if (jobConfigurationService.isSchedulerRunning()) {
-			while (!isRunningJobsCompleted()) {
-				jobConfigurationService.stopScheduler();
+			jobConfigurationService.stopScheduler();
+
+			boolean isCompleted = false;
+
+			while (!isCompleted) {
+				isCompleted = isRunningJobsCompleted();
 			}
 		}
 
@@ -74,12 +85,8 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	private boolean isRunningJobsCompleted() {
 
 		boolean isCompleted = false;
-		List<ErrorResponseDTO> errorResponseDTOs = jobConfigurationService.getCurrentRunningJobDetails()
-				.getErrorResponseDTOs();
-
-		if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-			isCompleted = RegistrationConstants.NO_JOBS_RUNNING.equals(errorResponseDTOs.get(0).getMessage());
-		}
+		isCompleted = BaseJob.getCompletedJobMap().keySet()
+				.containsAll(jobConfigurationService.getActiveSyncJobMap().keySet());
 
 		return isCompleted;
 	}
