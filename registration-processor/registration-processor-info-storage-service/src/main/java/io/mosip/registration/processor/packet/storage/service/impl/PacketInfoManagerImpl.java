@@ -574,11 +574,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	@Override
-	public String getStatusOfPacketByRegId(String refId) {
-		return regAbisRefRepository.getStatusOfPacketByRegId(refId);
-	}
-
-	@Override
 	public Boolean getIdentifyByTransactionId(String transactionId){
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getIdentifyByTransactionId(transactionId);
 		return abisRequestList.isEmpty() ? Boolean.FALSE : Boolean.TRUE;
