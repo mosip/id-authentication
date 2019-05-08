@@ -23,10 +23,7 @@ public class RegistrationApprovalDTO {
 	 */
 	public RegistrationApprovalDTO(String id, String acknowledgementFormPath, String statusComment) {
 		super();
-		/*this.id = new SimpleStringProperty(id);
-		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
-		this.statusComment = new SimpleStringProperty(statusComment);
-*/
+		
 		this.id = id;
 		this.acknowledgementFormPath =acknowledgementFormPath;
 		this.statusComment = statusComment;

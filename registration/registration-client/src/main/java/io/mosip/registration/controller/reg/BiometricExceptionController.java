@@ -26,7 +26,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
-import io.mosip.registration.dto.ExceptionListDTO;
+import io.mosip.registration.controller.vo.ExceptionListVO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -117,9 +117,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private GridPane registrationTrackerImg;
 	@FXML
-	private TableView<ExceptionListDTO> exceptionTable;
+	private TableView<ExceptionListVO> exceptionTable;
 	@FXML
-	private TableColumn<ExceptionListDTO, String> exceptionTableColumn;
+	private TableColumn<ExceptionListVO, String> exceptionTableColumn;
 	@FXML
 	private Label irisExceptionLabel;
 	@FXML
@@ -532,11 +532,11 @@ public class BiometricExceptionController extends BaseController implements Init
 	 * Method to show the exception list
 	 */
 	private void showExceptionList() {
-		List<ExceptionListDTO> exceptionList = new ArrayList<>();
-		fingerList.forEach(finger -> exceptionList.add(new ExceptionListDTO(applicationLabelBundle.getString(finger))));
-		irisList.forEach(iris -> exceptionList.add(new ExceptionListDTO(applicationLabelBundle.getString(iris))));
-		ObservableList<ExceptionListDTO> listOfException = FXCollections.observableArrayList(exceptionList);
-		exceptionTableColumn.setCellValueFactory(new PropertyValueFactory<ExceptionListDTO, String>("exceptionItem"));
+		List<ExceptionListVO> exceptionList = new ArrayList<>();
+		fingerList.forEach(finger -> exceptionList.add(new ExceptionListVO(applicationLabelBundle.getString(finger))));
+		irisList.forEach(iris -> exceptionList.add(new ExceptionListVO(applicationLabelBundle.getString(iris))));
+		ObservableList<ExceptionListVO> listOfException = FXCollections.observableArrayList(exceptionList);
+		exceptionTableColumn.setCellValueFactory(new PropertyValueFactory<ExceptionListVO, String>("exceptionItem"));
 		exceptionTable.getItems().clear();
 		exceptionTable.setItems(listOfException);
 	}

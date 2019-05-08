@@ -1,18 +1,24 @@
-package io.mosip.registration.dto;
+package io.mosip.registration.controller.vo;
 
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * The DTO Class ExceptionListDTO.
+ * The Class ExceptionListVO.
  * 
- * @author Sreekar Chukka
+ * @author Sravya Surampalli
  * @since 1.0.0
  */
-public class ExceptionListDTO {
+public class ExceptionListVO {
 	
 	private SimpleStringProperty exceptionItem;
 	
-	public ExceptionListDTO(String exceptionItem) {
+	/**
+	 * Instantiates a new exception list VO.
+	 *
+	 * @param exceptionItem   the exception Item
+	 */
+	public ExceptionListVO(String exceptionItem) {
+		super();
 		this.exceptionItem = new SimpleStringProperty(exceptionItem);
 	}
 
@@ -27,6 +33,7 @@ public class ExceptionListDTO {
 	 * @param exceptionItem the exceptionItem to set
 	 */
 	public void setExceptionItem(String exceptionItem) {
-		this.exceptionItem.set(exceptionItem);
+		this.exceptionItem = new SimpleStringProperty(exceptionItem);
 	}
+
 }

@@ -3,24 +3,24 @@ package io.mosip.registration.controller.vo;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * The Class PendingApprovalDTO.
+ * The Class RegistrationApprovalVO.
  * 
  * @author Mahesh Kumar
  */
-public class PendingApprovalVO {
+public class RegistrationApprovalVO {
 
 	private SimpleStringProperty id;
 	private SimpleStringProperty acknowledgementFormPath;
 	private SimpleStringProperty statusComment;
 
 	/**
-	 * Instantiates a new registration approval DTO.
+	 * Instantiates a new registration approval VO.
 	 *
 	 * @param id                      the id
 	 * @param acknowledgementFormPath the acknowledgement form path
 	 * @param statusComment           the status comment
 	 */
-	public PendingApprovalVO(String id, String acknowledgementFormPath, String statusComment) {
+	public RegistrationApprovalVO(String id, String acknowledgementFormPath, String statusComment) {
 		super();
 		this.id = new SimpleStringProperty(id);
 		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);

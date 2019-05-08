@@ -34,7 +34,6 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-import javafx.scene.image.WritableImage;
 
 /**
  * It takes a decision based on the input provider name and initialize the
@@ -78,16 +77,6 @@ public class FingerprintFacade {
 	public String getErrorMessage() {
 		return fingerprintProvider.getErrorMessage();
 
-	}
-
-	/**
-	 * Gets the finger print image.
-	 *
-	 * @return the finger print image
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public WritableImage getFingerPrintImage() throws IOException {
-		return fingerprintProvider.getFingerPrintImage();
 	}
 
 	/**
