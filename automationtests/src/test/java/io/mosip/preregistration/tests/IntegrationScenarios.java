@@ -1447,7 +1447,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 
-	@Test(groups = { "IntegrationScenarios" })
+	
 	public void retriveAllPreRegIdsByRegId() {
 		PreRegistrationLibrary lib = new PreRegistrationLibrary();
 

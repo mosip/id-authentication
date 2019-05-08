@@ -91,7 +91,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	@DataProvider(name = "DeleteDocumentByDocId")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -115,7 +115,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		
 		//Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId=createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 		
 		//Document Upload for created application
 		

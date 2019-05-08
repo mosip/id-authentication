@@ -791,8 +791,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response documentUploadParm(Response responseCreate, String PreRegistrationId) {
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 		JSONObject parm = getRequest(testSuite);
-		parm.put("preRegistrationId", PreRegistrationId);
-
+		//parm.put("preRegistrationId", PreRegistrationId);
+		parm.put("preRegistrationId", "ABCD");
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
@@ -1153,8 +1153,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("time_slot_from", timeSlotFrom);
 				object.put("time_slot_to", timeSlotTo);
 				//object.put("preRegistrationId", preID);
+
+				//JSONArray objArr = new JSONArray();
+				//objArr.add(object);
+				//request.replace(key, objArr);
+
 				/*JSONArray objArr = new JSONArray();
 				objArr.add(object);*/
+
 				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
 			}

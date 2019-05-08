@@ -45,6 +45,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
+		
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
 	}
 	

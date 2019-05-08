@@ -159,19 +159,20 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
-					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					//Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, "", file, parm);
 
 					System.out.println("Actual response::" + Actualresponse.asString());
 				} else {
 					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 					JSONObject parm = preRegLib.getRequest(testSuite);
 					parm.put("preRegistrationId", preRegIdCreateAPI);
-					actualRequest.put("requesttime", preRegLib.getCurrentDate());
+					//actualRequest.put("requesttime", preRegLib.getCurrentDate());
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
-					System.out.println("Actual responseeee::" + Actualresponse.asString());
+					System.out.println("Testcase name:"+testCaseName+"Actual responseeee::" + Actualresponse.asString());
 				}
 
 			} catch (Exception e) {

@@ -90,7 +90,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	public static Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -111,8 +111,10 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
+		System.out.println("PreId::"+preId);
+		
 		if (testCaseName.contains("smoke")) {
 			Response fetchCenter = null;
 
@@ -127,6 +129,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
 			}
 
+			System.out.println("PreId22222222::"+preId);
 			// Cancel Booked Appointment Details
 			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
 
