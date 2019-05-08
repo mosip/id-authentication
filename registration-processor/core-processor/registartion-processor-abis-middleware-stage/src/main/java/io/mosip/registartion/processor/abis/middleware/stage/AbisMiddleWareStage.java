@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javax.jms.Message;
 
@@ -114,6 +116,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	List<String> queueUrlList;
 	List<String> typeOfQueueList;
 	List<MosipQueue> mosipQueueList;
+	List<Boolean> consumerListner;
 
 	public void deployVerticle() {
 		try {
@@ -125,16 +128,24 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
-						cosnumerListener(message);
+						CompletableFuture<Boolean> weightInKgFuture = CompletableFuture.supplyAsync(() -> {
+							return cosnumerListener(message);
+						});
+						try {
+							consumerListner.add(weightInKgFuture.get());
+						} catch (InterruptedException | ExecutionException e) {
+						}
 					}
 				};
 				mosipQueueManager.consume(mosipQueueList.get(i), abisOutboundAddresses.get(i), listener);
-
+			}
+			boolean allEqual = consumerListner.stream().allMatch(val -> val == true);
+			if (allEqual) {
+				mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+				this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+						MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
 			}
 
-			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-			this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
-					MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
 		} catch (IOException e) {
 		}
 	}
@@ -178,11 +189,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		return null;
 	}
-
-	// private MosipQueue getQueueConnection() {
-	// return mosipConnectionFactory.createConnection(typeOfQueue, username,
-	// password, url);
-	// }
 
 	public boolean cosnumerListener(Message message) {
 
