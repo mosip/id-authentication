@@ -486,15 +486,15 @@ public class HeaderController extends BaseController {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
-
+						double success=1;
 						if(responseDto.getErrorResponseDTOs()==null || responseDto.getErrorResponseDTOs().size()==0) {
 							packetHandlerController.syncProgressBar.setProgress(1);
 						}
 						else {
-							double success = totalJobs - responseDto.getErrorResponseDTOs().size();
+							success = totalJobs - responseDto.getErrorResponseDTOs().size();
 							packetHandlerController.syncProgressBar.setProgress(success/totalJobs);
 						}
-						
+						ApplicationContext.map().put(RegistrationConstants.SYNC_PROGRESS_BAR_VALUE, success/totalJobs);
 						return responseDto;
 					}
 				};

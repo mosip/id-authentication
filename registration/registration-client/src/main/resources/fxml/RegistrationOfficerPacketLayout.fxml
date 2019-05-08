@@ -192,7 +192,7 @@
                               </VBox>
                            </children>
                         </GridPane>
-                        <GridPane onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetailsPreReg" GridPane.rowIndex="2">
+                        <GridPane onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetails" GridPane.rowIndex="2">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
@@ -252,7 +252,7 @@
                             <RowConstraints percentHeight="0.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ProgressBar fx:id="syncProgressBar" minHeight="1.0" prefHeight="1.0" prefWidth="${progressPane.width}" progress="0.0" />
+                              <ProgressBar fx:id="syncProgressBar" minHeight="1.0" prefHeight="${progressPane.height}" prefWidth="${progressPane.width}" progress="0.0" />
                            </children>
                         </GridPane>
                      </children>

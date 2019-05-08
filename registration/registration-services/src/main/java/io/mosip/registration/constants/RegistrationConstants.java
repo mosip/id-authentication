@@ -702,6 +702,7 @@ public class RegistrationConstants {
 	public static final String SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ = "mosip.registration.softwareUpdateCheck_configured_frequency";
 
 	/** Packet Status Sync Constants */
+	public static final String SYNC_PROGRESS_BAR_VALUE = "syncProgressVlaue";
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
 	public static final String PACKET_STATUS_READER_URL_PARAMETER = "request";

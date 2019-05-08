@@ -15,7 +15,6 @@
 	-fx-background-color : red;
 	 -fx-padding: 0;
 	 -fx-background-insets : 0;
-	
 }
 
 .demoGraphicTextFieldFocused{
@@ -1411,6 +1410,13 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
+
+.operationalPaneDetails{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+
 .operationalPaneDetailsBioUpdate{
 	-fx-border-width: 0.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
