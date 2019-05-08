@@ -30,6 +30,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegAbisRefPkEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
 import io.mosip.registration.processor.packet.storage.exception.DateParseException;
 
 /**
@@ -333,6 +334,25 @@ public class PacketInfoMapper {
 		regDemoDedupeListDto.setUpdDtimes(entity.getUpdDtimes());
 
 		return regDemoDedupeListDto;
+	}
+	
+	public static RegDemoDedupeListEntity convertDemoDedupeEntityToDto(RegDemoDedupeListDto regDemoDedupeListDto) {
+		RegDemoDedupeListEntity entity = new RegDemoDedupeListEntity();
+		RegDemoDedupeListPKEntity pkEntity = new RegDemoDedupeListPKEntity();
+
+		entity.setCrBy(regDemoDedupeListDto.getCrBy());
+		entity.setCrDtimes(regDemoDedupeListDto.getCrDtimes());
+		entity.setDelDtimes(regDemoDedupeListDto.getDelDtimes());
+		entity.setIsDeleted(regDemoDedupeListDto.getIsDeleted());
+		entity.setRegId(regDemoDedupeListDto.getRegId());
+		entity.setUpdBy(regDemoDedupeListDto.getUpdBy());
+		entity.setUpdDtimes(regDemoDedupeListDto.getUpdDtimes());
+
+		pkEntity.setMatchedRegId(regDemoDedupeListDto.getMatchedRegId());
+		pkEntity.setRegtrnId(regDemoDedupeListDto.getRegtrnId());
+		entity.setId(pkEntity);
+
+		return entity;
 	}
 
 }

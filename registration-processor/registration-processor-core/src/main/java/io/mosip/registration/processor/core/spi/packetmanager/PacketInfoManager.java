@@ -128,4 +128,7 @@ public interface PacketInfoManager<T, /** D, M, */
 
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId);
 
+	public String getStatusOfPacketByRegId(String regId);
+
+	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto);
 }

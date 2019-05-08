@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
@@ -53,6 +54,7 @@ import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.dto.TransactionDto;
 import lombok.Cleanup;
 
 /**
@@ -93,6 +95,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Autowired
 	private BasePacketRepository<AbisApplicationEntity, String> regAbisApplicationRepository;
+	
+	@Autowired
+	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
 
 	/** The demographic dedupe repository. */
 	@Autowired
@@ -569,6 +574,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	@Override
+	public String getStatusOfPacketByRegId(String refId) {
+		return regAbisRefRepository.getStatusOfPacketByRegId(refId);
+	}
+
+	@Override
 	public Boolean getIdentifyByTransactionId(String transactionId){
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getIdentifyByTransactionId(transactionId);
 		return abisRequestList.isEmpty() ? Boolean.FALSE : Boolean.TRUE;
@@ -617,6 +627,45 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId){
 		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList= packetInfoDao.getDemoListByTransactionId(transactionId);
 		return PacketInfoMapper.convertDemoDedupeEntityListToDto(regDemoDedupeListEntityList);
+	}
+
+	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
+		boolean isTransactionSuccessful = false;
+
+		try {
+
+			if (regDemoDedupeListDto != null) {
+				regId = regDemoDedupeListDto.getRegId();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+						regId, "PacketInfoManagerImpl::saveDemoDedupePotentialData()::entry");
+
+				RegDemoDedupeListEntity regDemoDedupeListEntity = PacketInfoMapper
+						.convertDemoDedupeEntityToDto(regDemoDedupeListDto);
+				regDemoDedupeListRepository.save(regDemoDedupeListEntity);
+				isTransactionSuccessful = true;
+				description = "Demo dedupe potential match data saved successfully";
+
+			}
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Demo dedupe potential match data" + "::" + e.getMessage();
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "PacketInfoManagerImpl::saveAbisRef()::exit");
 	}
 
 }

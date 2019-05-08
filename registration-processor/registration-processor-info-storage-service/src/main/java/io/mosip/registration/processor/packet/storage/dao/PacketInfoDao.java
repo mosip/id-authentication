@@ -236,4 +236,8 @@ public class PacketInfoDao {
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
 		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
 	}
+
+	public String getStatusOfPacketByRegId(String refId) {
+		return abisRequestRepositary.getStatusOfPacketByRegId(refId);
+	}
 }

@@ -177,10 +177,13 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public List<AbisResponseEntity> getAbisResponseIDs(@Param("abisRequest") String abisRequest);
 
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
-	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
+	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String  responseId);
 
 	@Query("SELECT regBioRef FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId =:bioRefId")
 	public List<RegBioRefEntity> getBioRefIds(@Param("bioRefId") String bioRefId);
+
+	@Query("SELECT regStatus.statusCode FROM RegistrationStatusEntity regStatus WHERE regStatus.referenceRegistrationId=:regId")
+	public String getStatusOfPacketByRegId(@Param("regId") String regId);
 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:transactionId and abisreq.requestType =\'IDENTIFY\'")
 	public List<AbisRequestEntity> getIdentifyByTransactionId(@Param("transactionId") String transactionId);
