@@ -361,7 +361,7 @@ public class DemographicService {
 					if (!serviceUtil.isNull(demographicEntity)) {
 						demographicEntity = demographicRepository.update(
 								serviceUtil.prepareDemographicEntityForUpdate(demographicEntity, demographicRequest,
-										demographicEntity.getStatusCode(), "test@gmail.com", preRegistrationId));
+										demographicEntity.getStatusCode(), authUserDetails().getUserId(), preRegistrationId));
 					} else {
 						throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.getCode(),
 								ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
