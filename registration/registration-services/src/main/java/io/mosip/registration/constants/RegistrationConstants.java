@@ -949,7 +949,11 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
+	public static final String LEFTSLAPCOUNT = "leftSlapCount";
+	public static final String RIGHTSLAPCOUNT = "rightSlapCount";
+	public static final String THUMBCOUNT = "thumbCount";
 
+	
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
 

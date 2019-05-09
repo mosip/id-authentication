@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -22,6 +23,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -42,6 +44,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
@@ -1243,6 +1246,71 @@ public class BaseController {
 		generateAlert(RegistrationConstants.SUCCESS.toUpperCase(), RegistrationUIConstants.RESTART_APPLICATION);
 		restartController.restart();
 
+	}
+
+	/**
+	 * Exception fingers count.
+	 */
+	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount,int rightSlapCount,int thumbCount) {
+		
+		Map<String, Integer> exceptionCountMap = new HashMap<>();
+		List<BiometricExceptionDTO> biometricExceptionDTOs;
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
+		} else if (getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO();
+		} else {
+			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO();
+		}
+		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
+
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+				leftSlapCount++;
+			}
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+				rightSlapCount++;
+			}
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+					&& biometricExceptionDTO.isMarkedAsException())) {
+				thumbCount++;
+			}
+		}
+		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
+		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
+		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
+
+		return exceptionCountMap;
+	}
+	
+	protected List<BiometricExceptionDTO> getIrisExceptions() {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
+		}else if(getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO();
+		}else {
+			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO();
+		}
+	}
+
+	/**
+	 * Any iris exception.
+	 *
+	 * @param iris the iris
+	 * @return true, if successful
+	 */
+	protected boolean anyIrisException(String iris) {
+		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
+				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
 
 }

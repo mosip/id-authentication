@@ -25,6 +25,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.vo.ExceptionListVO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -139,6 +140,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	@Autowired
 	private IrisCaptureController irisCaptureController;
 
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
+	
 	@FXML
 	private Label registrationNavlabel;
 
@@ -373,6 +377,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			}
 			fingerPrintCaptureController.clearImage();
 			irisCaptureController.clearIrisBasedOnExceptions();
+			guardianBiometricsController.manageBiometricsListBasedOnExceptions();
 		}
 	}
 
@@ -412,7 +417,7 @@ public class BiometricExceptionController extends BaseController implements Init
 					|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
-			} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			} else if (getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.getIntroducerBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			} else {

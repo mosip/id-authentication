@@ -692,15 +692,6 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	private List<BiometricExceptionDTO> getIrisExceptions() {
-		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else {
-			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.getBiometricExceptionDTO();
-		}
-	}
-
 	private Stream<IrisDetailsDTO> getIrisBySelectedPane() {
 		return getIrises().stream().filter(iris -> iris.getIrisType().contains(getSelectedIris()));
 	}
@@ -795,17 +786,6 @@ public class IrisCaptureController extends BaseController {
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
 		}
-	}
-
-	/**
-	 * Any iris exception.
-	 *
-	 * @param iris the iris
-	 * @return true, if successful
-	 */
-	private boolean anyIrisException(String iris) {
-		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
-				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
 
 	private void clearAttemptsBox(String styleClass, int retries) {

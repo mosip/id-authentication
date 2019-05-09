@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -25,6 +26,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -736,5 +738,43 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	}
 
+	/**
+	 * Manage biometrics list based on exceptions.
+	 */
+	public void manageBiometricsListBasedOnExceptions() {
+
+		if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+				.getBiometricExceptionDTO() != null
+				|| !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+						.getBiometricExceptionDTO().isEmpty()) {
+			
+			int leftSlapCount = 0;
+			int rightSlapCount = 0;
+			int thumbCount = 0;
+
+			Map<String, Integer> exceptionCount = exceptionFingersCount(leftSlapCount, rightSlapCount, thumbCount);
+			
+			biometricTypecombo.getItems().removeAll(biometricTypecombo.getItems());
+			biometricTypecombo.getItems().addAll(RegistrationConstants.RIGHT_HAND, RegistrationConstants.LEFT_HAND, RegistrationConstants.THUMB, RegistrationConstants.RIGHT_IRIS, RegistrationConstants.LEFT_IRIS);
+			if (exceptionCount.get(RegistrationConstants.LEFTSLAPCOUNT) == 4) {
+				biometricTypecombo.getItems().remove(RegistrationConstants.LEFT_HAND);
+			} 
+			if (exceptionCount.get(RegistrationConstants.RIGHTSLAPCOUNT) == 4) {
+				biometricTypecombo.getItems().remove(RegistrationConstants.RIGHT_HAND);
+			} 
+			if (exceptionCount.get(RegistrationConstants.THUMBCOUNT) == 2) {
+				biometricTypecombo.getItems().remove(RegistrationConstants.THUMB);
+			} 
+			if (anyIrisException(RegistrationConstants.LEFT)) {
+				biometricTypecombo.getItems().remove(RegistrationConstants.LEFT_IRIS);
+
+			}
+			if (anyIrisException(RegistrationConstants.RIGHT)) {
+				biometricTypecombo.getItems().remove(RegistrationConstants.RIGHT_IRIS);
+
+			}
+		}
+
+	}
 
 }
