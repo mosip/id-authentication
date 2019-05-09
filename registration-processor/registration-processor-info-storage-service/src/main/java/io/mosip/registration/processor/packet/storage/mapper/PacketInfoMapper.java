@@ -189,9 +189,9 @@ public class PacketInfoMapper {
 	public static List<AbisRequestDto> convertAbisRequestEntityListToDto(
 			List<AbisRequestEntity> abisRequestEntityList) {
 		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
-		if(abisRequestEntityList==null)
+		if (abisRequestEntityList == null)
 			return abisRequestDtoList;
-		if(abisRequestEntityList.isEmpty())
+		if (abisRequestEntityList.isEmpty())
 			return abisRequestDtoList;
 		for (AbisRequestEntity entity : abisRequestEntityList) {
 			abisRequestDtoList.add(convertAbisRequestEntityToDto(entity));
@@ -335,7 +335,7 @@ public class PacketInfoMapper {
 
 		return regDemoDedupeListDto;
 	}
-	
+
 	public static RegDemoDedupeListEntity convertDemoDedupeEntityToDto(RegDemoDedupeListDto regDemoDedupeListDto) {
 		RegDemoDedupeListEntity entity = new RegDemoDedupeListEntity();
 		RegDemoDedupeListPKEntity pkEntity = new RegDemoDedupeListPKEntity();

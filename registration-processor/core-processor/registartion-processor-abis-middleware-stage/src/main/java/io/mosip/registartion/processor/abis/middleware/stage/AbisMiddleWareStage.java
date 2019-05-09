@@ -3,9 +3,13 @@ package io.mosip.registartion.processor.abis.middleware.stage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.jms.Message;
@@ -15,10 +19,18 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisCommonResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
@@ -39,13 +51,17 @@ import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 import io.vertx.core.json.JsonObject;
 
 public class AbisMiddleWareStage extends MosipVerticleManager {
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisMiddleWareStage.class);
 
 	/** The mosip queue manager. */
 	@Autowired
@@ -68,31 +84,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
-	/** The type of queue. */
-	@Value("${registration.processor.queue.typeOfQueue}")
-	private String typeOfQueue;
-	/** The username. */
-	@Value("${registration.processor.queue.username}")
-	private String username;
-
-	/** The password. */
-	@Value("${registration.processor.queue.password}")
-	private String password;
-
-	@Value("${registration.processor.abis.inbound.queue1}")
-	private String abisInboundAddress1;
-	@Value("${registration.processor.abis.inbound.queue2}")
-	private String abisInboundAddress2;
-	@Value("${registration.processor.abis.inbound.queue3}")
-	private String abisInboundAddress3;
-
-	@Value("${registration.processor.abis.outbound.queue1}")
-	private String abisOutboundAddress1;
-	@Value("${registration.processor.abis.outbound.queue1}")
-	private String abisOutboundAddress2;
-	@Value("${registration.processor.abis.outbound.queue1}")
-	private String abisOutboundAddress3;
-
 	/** The url. */
 	@Value("${registration.processor.queue.url}")
 	private String url;
@@ -103,7 +94,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private Utilities utility;
 	@Autowired
 	private RegistrationStatusDao registrationStatusDao;
-
+	@Autowired
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	/** The core audit request builder. */
+	@Autowired
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 	private static final String INSERT = "INSERT";
 	private static final String IDENTIFY = "IDENTIFY";
 	private static final String ABIS_INSERT = "mosip.abis.insert";
@@ -147,11 +142,15 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		boolean isTransactionSuccessful = false;
+		String description = "";
+		String registrationId = object.getRid();
 
-		List<String> abisRefList = packetInfoManager.getReferenceIdByRid(object.getRid());
-		if (abisRefList != null && !abisRefList.isEmpty()) {
-			try {
-				String refRegtrnId = getLatestTransactionId(object.getRid());
+		List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);
+		try {
+			if (abisRefList != null && !abisRefList.isEmpty()) {
+
+				String refRegtrnId = getLatestTransactionId(registrationId);
 				String abisRefId = abisRefList.get(0);
 				List<AbisRequestDto> abisInsertIdentifyList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
 						refRegtrnId);
@@ -159,40 +158,49 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 						.filter(dto -> dto.getRequestType().equals(INSERT)).collect(Collectors.toList());
 				List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
 						.filter(dto -> dto.getRequestType().equals(IDENTIFY)).collect(Collectors.toList());
-				if (abisInsertRequestList.isEmpty()) {
-					object.setIsValid(true);
-					object.setInternalError(false);
-					return object;
-				}
-				for (int i = 0; i < abisInsertRequestList.size(); i++) {
+				if (abisInsertRequestList != null && !abisInsertRequestList.isEmpty()) {
+					List<Future<Boolean>> futures = new ArrayList<>();
+					ExecutorService executorService = Executors.newFixedThreadPool(abisInsertRequestList.size());
+					for (int i = 0; i < abisInsertRequestList.size(); i++) {
+						RequestQueueSender requestQueueSender = new RequestQueueSender(mosipQueueList.get(i),
+								new String(abisInsertRequestList.get(i).getReqText()), abisInboundAddresses.get(i),
+								new String(abisIdentifyRequestList.get(i).getReqText()), abisOutboundAddresses.get(i),
+								abisInsertRequestList.get(i), abisIdentifyRequestList.get(i));
+						Future<Boolean> future = executorService.submit(requestQueueSender);
+						futures.add(future);
+					}
 
-					byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
+					executorService.shutdown();
 
-					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
-							abisInboundAddresses.get(i));
-
-					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
-				}
-
-				// List<AbisRequestDto> abisIdentifyRequestList =
-				// packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
-				// IDENTIFY, refRegtrnId);
-
-				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
-					byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
-					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(identifyReq),
-							abisInboundAddresses.get(i));
-					updateAbisRequest(isAddedToQueue, abisIdentifyRequestList.get(i));
+					for (Future<?> future : futures) {
+						System.out.println(future.get());
+					}
 
 				}
-
-			} catch (IOException e) {
 
 			}
+		} catch (Exception e) {
+			object.setInternalError(true);
+			object.setIsValid(false);
+			registrationStatusDto
+					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			// regProcLogger
+		} finally {
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
+			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
+			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
+
+			String moduleId = isTransactionSuccessful ? "Abis-Handler Success" : "";
+			String moduleName = "Abis-Handler";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
+					moduleName, registrationId);
 		}
 
-		return null;
+		return object;
 	}
 
 	public void consumerListener(Message message) {
@@ -235,13 +243,20 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	}
 
 	private boolean sendToQueue(MosipQueue queue, String abisInsertRequestDto, String abisQueueAddress)
-			throws IOException {
+			throws RegistrationProcessorCheckedException {
 		boolean isAddedToQueue;
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(abisInsertRequestDto);
-		oos.flush();
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(abisInsertRequestDto);
+			oos.flush();
+		} catch (IOException e) {
+			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
+		}
+
 		byte[] abisRequestDtoBytes = bos.toByteArray();
 		isAddedToQueue = mosipQueueManager.send(queue, abisRequestDtoBytes, abisQueueAddress);
 
