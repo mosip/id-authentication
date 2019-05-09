@@ -29,7 +29,7 @@ import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
+import io.mosip.registration.service.security.impl.RSAEncryptionServiceImpl;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })

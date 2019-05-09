@@ -27,7 +27,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.entity.BlacklistedWords;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;

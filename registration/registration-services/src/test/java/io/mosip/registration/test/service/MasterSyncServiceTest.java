@@ -56,8 +56,8 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
+import io.mosip.registration.service.operator.UserOnboardService;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 

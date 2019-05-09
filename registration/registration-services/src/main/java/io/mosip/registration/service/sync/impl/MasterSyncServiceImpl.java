@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.sync.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -48,7 +48,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 

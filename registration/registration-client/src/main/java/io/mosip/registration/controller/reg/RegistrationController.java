@@ -49,7 +49,7 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;

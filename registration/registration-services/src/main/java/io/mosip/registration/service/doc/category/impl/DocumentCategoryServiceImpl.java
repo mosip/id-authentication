@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.doc.category.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -13,6 +13,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.DocumentCategoryDAO;
 import io.mosip.registration.dao.impl.DocumentCategoryDAOImpl;
 import io.mosip.registration.entity.DocumentCategory;
+import io.mosip.registration.service.doc.category.DocumentCategoryService;
 
 /**
  * Implementation for {@link DocumentCategoryService} 

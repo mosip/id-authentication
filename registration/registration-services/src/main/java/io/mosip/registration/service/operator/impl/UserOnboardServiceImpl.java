@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.operator.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -24,7 +24,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**

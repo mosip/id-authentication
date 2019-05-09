@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.security;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 

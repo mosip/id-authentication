@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.operator.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL;
@@ -29,8 +29,8 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.UserDetailService;
-import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.operator.UserDetailService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**

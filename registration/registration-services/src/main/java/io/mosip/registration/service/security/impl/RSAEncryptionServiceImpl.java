@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.security.impl;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -17,7 +17,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.RSAEncryptionService;
+import io.mosip.registration.service.security.RSAEncryptionService;
 import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;

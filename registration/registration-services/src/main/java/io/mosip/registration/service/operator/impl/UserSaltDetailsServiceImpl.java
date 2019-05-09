@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.operator.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_SALT_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -23,7 +23,7 @@ import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.UserSaltDetailsService;
+import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 @Service

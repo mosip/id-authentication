@@ -28,7 +28,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
-import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.operator.UserOnboardService;
 /**
  * @author Leona Mary S
  *

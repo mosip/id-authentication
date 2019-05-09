@@ -28,7 +28,7 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.PublicKeySyncJob;
-import io.mosip.registration.service.PublicKeySync;
+import io.mosip.registration.service.sync.PublicKeySync;
 
 public class PublicKeySyncJobTest {
 	@Mock

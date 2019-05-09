@@ -1,4 +1,4 @@
-package io.mosip.registration.service.device.impl;
+package io.mosip.registration.device.fp.impl;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.service.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 
 /**
  * The FingerPrintCaptureServiceImpl class.

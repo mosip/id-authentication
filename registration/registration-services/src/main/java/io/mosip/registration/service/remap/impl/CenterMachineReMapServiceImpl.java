@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.remap.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -43,6 +43,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
+import io.mosip.registration.service.remap.CenterMachineReMapService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 

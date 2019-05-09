@@ -28,7 +28,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.UserOnboardServiceImpl;
+import io.mosip.registration.service.operator.impl.UserOnboardServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 

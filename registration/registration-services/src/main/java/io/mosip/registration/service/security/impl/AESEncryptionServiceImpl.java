@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.security.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -29,8 +29,8 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-import io.mosip.registration.service.AESEncryptionService;
-import io.mosip.registration.service.RSAEncryptionService;
+import io.mosip.registration.service.security.AESEncryptionService;
+import io.mosip.registration.service.security.RSAEncryptionService;
 
 /**
  * API class to encrypt the data using AES algorithm

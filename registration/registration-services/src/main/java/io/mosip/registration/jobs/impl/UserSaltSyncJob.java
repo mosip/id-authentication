@@ -13,7 +13,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.service.UserSaltDetailsService;
+import io.mosip.registration.service.operator.UserSaltDetailsService;
 
 /**
  * This is a job to sync the user salt.

@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.remap;
 
 /**
  * Service class for Center Machine Remapping

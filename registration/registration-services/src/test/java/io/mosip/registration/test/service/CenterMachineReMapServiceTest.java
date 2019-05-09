@@ -41,9 +41,9 @@ import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.impl.CenterMachineReMapServiceImpl;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
+import io.mosip.registration.service.remap.impl.CenterMachineReMapServiceImpl;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 

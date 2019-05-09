@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.login.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -23,7 +23,7 @@ import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.login.LoginService;
 
 /**
  * Class for implementing login service

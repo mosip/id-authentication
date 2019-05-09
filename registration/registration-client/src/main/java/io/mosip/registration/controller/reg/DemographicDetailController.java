@@ -64,7 +64,7 @@ import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;

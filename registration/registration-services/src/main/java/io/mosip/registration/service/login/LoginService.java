@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.login;
 
 import java.util.List;
 import java.util.Set;

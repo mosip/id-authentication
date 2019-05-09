@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.operator.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -27,7 +27,7 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.UserMachineMappingService;
+import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -50,7 +50,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.UserMachineMappingService#syncUserDetails()
+	 * @see io.mosip.registration.service.operator.UserMachineMappingService#syncUserDetails()
 	 * 
 	 */
 	public ResponseDTO syncUserDetails() {

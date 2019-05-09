@@ -22,7 +22,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.vo.RegistrationApprovalVO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

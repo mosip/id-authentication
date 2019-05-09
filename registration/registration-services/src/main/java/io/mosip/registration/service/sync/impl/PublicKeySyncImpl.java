@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.sync.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.REGISTRATION_PUBLIC_KEY_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -29,7 +29,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.PublicKeySync;
+import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**

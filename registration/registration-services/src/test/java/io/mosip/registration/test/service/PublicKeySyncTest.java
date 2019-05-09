@@ -30,7 +30,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.PublicKeySyncImpl;
+import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 

@@ -1,5 +1,5 @@
 
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.doc.category.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.DocumentType;
+import io.mosip.registration.service.doc.category.ValidDocumentService;
 
 /**
  * Implementation for {@link ValidDocumentService} 

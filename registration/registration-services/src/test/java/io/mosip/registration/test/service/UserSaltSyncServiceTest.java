@@ -22,7 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.UserDetailRepository;
-import io.mosip.registration.service.impl.UserSaltDetailsServiceImpl;
+import io.mosip.registration.service.operator.impl.UserSaltDetailsServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 

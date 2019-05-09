@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.sync;
 
 import io.mosip.registration.dto.ResponseDTO;
 

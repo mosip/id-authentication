@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service.sync.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -34,7 +34,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.PolicySyncService;
+import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
@@ -156,7 +156,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.PolicySyncService#checkKeyValidation()
+	 * @see io.mosip.registration.service.sync.PolicySyncService#checkKeyValidation()
 	 */
 	@Override
 	public ResponseDTO checkKeyValidation() {
