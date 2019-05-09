@@ -629,6 +629,8 @@ public class DocumentService {
 		auditRequestDto.setEventName(eventName);
 		auditRequestDto.setEventType(eventType);
 		auditRequestDto.setDescription(description);
+		auditRequestDto.setSessionUserId(userId);
+		auditRequestDto.setSessionUserName(userName);
 		auditRequestDto.setId(idType);
 		auditRequestDto.setModuleId(AuditLogVariables.DOC.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.DOCUMENT_SERVICE.toString());
