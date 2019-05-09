@@ -719,7 +719,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "PacketInfoManagerImpl::saveAbisRef()::exit");
+				regId, "PacketInfoManagerImpl::saveDemoDedupePotentialData()::exit");
 	}
 
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {

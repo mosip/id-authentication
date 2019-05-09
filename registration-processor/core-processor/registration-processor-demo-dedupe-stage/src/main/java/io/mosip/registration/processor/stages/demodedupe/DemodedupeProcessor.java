@@ -143,7 +143,7 @@ public class DemodedupeProcessor {
 					bytesArray = IOUtils.toByteArray(demographicInfoStream);
 					packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
 							packetMetaInfo.getIdentity().getMetaData());
-					boolean result = performDemoDedupe(registrationStatusDto,object);
+					performDemoDedupe(registrationStatusDto,object);
 				} else if (packetStatus.equalsIgnoreCase("HANDLER")) {
 					// Do the handler process
 					processDemoDedupeRequesthandler(registrationStatusDto,object);
@@ -304,12 +304,11 @@ public class DemodedupeProcessor {
 				} else if (potentialMatchRegistrationDto.getLatestTransactionStatusCode().equalsIgnoreCase("IN-PROGRESS")
 						|| potentialMatchRegistrationDto.getLatestTransactionStatusCode()
 								.equalsIgnoreCase("PROCESSED")) {
-					String latestTransactionId = getLatestTransactionId(demographicInfoDto.getRegId());
+					String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 					RegDemoDedupeListDto regDemoDedupeListDto = new RegDemoDedupeListDto();
 					regDemoDedupeListDto.setRegId(registrationStatusDto.getRegistrationId());
 					regDemoDedupeListDto.setMatchedRegId(demographicInfoDto.getRegId());
 					regDemoDedupeListDto.setRegtrnId(latestTransactionId);
-					regDemoDedupeListDto.setCrBy(CREATED_BY);
 					regDemoDedupeListDto.setIsDeleted(Boolean.FALSE);
 					packetInfoManager.saveDemoDedupePotentialData(regDemoDedupeListDto);
 				}
@@ -326,6 +325,7 @@ public class DemodedupeProcessor {
 
 			registrationStatusDto
 			.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			
 			registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 
@@ -350,26 +350,22 @@ public class DemodedupeProcessor {
 
 		List<AbisResponseDto> abisResponseDto = packetInfoImpl.getAbisResponseRecords(latestTransactionId, IDENTIFY);
 
-		for(AbisResponseDto responseDto : abisResponseDto) {
-			if(responseDto.getStatusCode().equalsIgnoreCase("PROCESSED")) {
-				List<AbisResponseDetDto> abisResponseDetDto =  packetInfoImpl.getAbisResponseDetRecords(responseDto);
+		for (AbisResponseDto responseDto : abisResponseDto) {
+			if (responseDto.getStatusCode().equalsIgnoreCase(RegistrationTransactionStatusCode.PROCESSED.toString())) {
+				List<AbisResponseDetDto> abisResponseDetDto = packetInfoImpl.getAbisResponseDetRecords(responseDto);
+				if (abisResponseDetDto.isEmpty()) {
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+					object.setIsValid(Boolean.TRUE);
+				} else {
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+					object.setIsValid(Boolean.FALSE);
+				}
+			} else {
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			}
 		}
-
-/*		if (abisResponseDetEntities.isEmpty()) {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
-
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-			object.setIsValid(Boolean.FALSE);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"ABIS response Details not null, destination stage is Manual_verification");
-
-		}*/
 	}
 }
