@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +18,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.common.service.integration.dto.EncryptDataRequestDto;
-import io.mosip.authentication.common.service.integration.dto.SymmetricKeyRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -87,6 +87,9 @@ public class KeyManager {
 	@Value("${" +IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID+ "}")
 	private String partnerId;
 
+	
+	@Value("${" +IdAuthConfigKeyConstants.KEY_SPLITTER+ "}")
+	private String keySplitter;
 	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
@@ -117,11 +120,8 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(SESSION_KEY))
-					.map(String::valueOf);
-			if (encryptedSessionKey.isPresent()) {
-				request = decipherData(mapper, encryptedRequest, encryptedSessionKey.get());
-			}
+			byte[] encryptedSessionkey = Base64.decodeBase64((String)requestBody.get(SESSION_KEY));
+			request = decipherData(mapper, encryptedRequest, encryptedSessionkey);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -142,28 +142,34 @@ public class KeyManager {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, String encryptedSessionKey)
+	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException, IOException {
-		SecretKey secretKey=null;
-		byte[] decryptedData=null;
+		String decodedIdentity=null;
 		Map<String, Object> request;
+		decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
+		request = mapper.readValue(decodedIdentity,Map.class);
+		return request;
+	}
+
+	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
+			throws IdAuthenticationAppException {
+		String decryptedRequest=null;
 		RestRequestDTO restRequestDTO = null;
-		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto();
-		Map<String,Object> symmetricKeyResponseDto = null;
-		byte[] decryptedSymmetricKey = null;
+		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
+		Map<String,Object> cryptoResponseMap= null;
 		try {
-			symmetricKeyRequestDto.setApplicationId(appId);
-			symmetricKeyRequestDto.setReferenceId(partnerId);
-			symmetricKeyRequestDto.setTimeStamp(
+			cryptoManagerRequestDto.setApplicationId(appId);
+			cryptoManagerRequestDto.setReferenceId(partnerId);
+			cryptoManagerRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
-			symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey);
+			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
+					CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)));
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
-					RestRequestFactory.createRequest(symmetricKeyRequestDto), Map.class);
-			symmetricKeyResponseDto = restHelper.requestSync(restRequestDTO);
-			Object symmetricKeyValue = ((Map<String,Object>) symmetricKeyResponseDto.get("response")).get("symmetricKey");
-			decryptedSymmetricKey = Base64.decodeBase64(symmetricKeyValue instanceof String ? (String) symmetricKeyValue : "");
-			secretKey=new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length, SYMMETRIC_ALGORITHM_NAME);
-				decryptedData=symmetricDecrypt(secretKey, encryptedRequest);
+					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
+			cryptoResponseMap = restHelper.requestSync(restRequestDTO);
+			Object encodedIdentity= ((Map<String,Object>) cryptoResponseMap.get("response")).get("data");
+			decryptedRequest = new String(Base64.decodeBase64((String)encodedIdentity),
+					StandardCharsets.UTF_8);
 		}
 		catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
@@ -178,10 +184,7 @@ public class KeyManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-
-		request = mapper.readValue(decryptedData,Map.class);
-		request.put(SECRET_KEY, secretKey);
-		return request;
+		return decryptedRequest;
 	}
 
 	/**
