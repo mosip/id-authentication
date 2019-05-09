@@ -45,7 +45,7 @@ public class EncryptDataRequestDto {
 	 * The string encryptedSymmetricKey
 	 */
 	@ApiModelProperty(notes = "Data to be encrypted", required = true)
-	private String hashedData;
+	private String data;
 
 
 

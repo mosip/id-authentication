@@ -122,7 +122,7 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_REGISTRATION_STATUS_NOT_EXIST(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "025",
 			"RegistrationStatusCode is null"),
-	
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
@@ -220,6 +220,17 @@ public enum PlatformErrorMessages {
 
 	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
 			"A Mandatory Field is missing from ID JSON for NEW registration "),
+
+	RPR_PVM_DOCUMENT_TYPE_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "008",
+			"Document type Value Invalid in Applicant Document Validation for"),
+
+	RPR_PVM_IDJSON_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "009",
+			"IDJSON is null in Applicant document validation"),
+
+	RPR_PVM_APPLICANTDOCUMENT_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
+			"Applicant document validation failed for"),
+
+	RPR_PVM_INVALID_UIN(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011", "Invalid UIN"),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -486,29 +497,29 @@ public enum PlatformErrorMessages {
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
 
-	/** The rpr sys data access exception*/
+	/** The rpr sys data access exception */
 	RPR_SYS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "013", "Data Access Exception"),
 
-	/** The rpr sys api resource exception*/
+	/** The rpr sys api resource exception */
 	RPR_SYS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "014", "API Resource Exception"),
 
-	/** The rpr sys illegal access exception*/
+	/** The rpr sys illegal access exception */
 	RPR_SYS_ILLEGAL_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "015", "ILLEGAL ACCESS Exception"),
 
-	/** The rpr sys Invocation target exception*/
+	/** The rpr sys Invocation target exception */
 	RPR_SYS_INVOCATION_TARGET_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "016", "Invocation target Exception"),
 
-	/** The rpr sys Invocation target exception*/
+	/** The rpr sys Invocation target exception */
 	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
 
-	//Cbeff Util Exceptions
+	// Cbeff Util Exceptions
 	/** The rpr utl biometric tag match. */
 	RPR_UTL_BIOMETRIC_TAG_MATCH(PlatformConstants.RPR_UTIL + "001", "Both Files have same biometrics"),
 
 	/** The rpr utl cbeff version mismatch. */
 	RPR_UTL_CBEFF_VERSION_MISMATCH(PlatformConstants.RPR_UTIL + "002", "Both Files have different versions"),
 
-    /** The rpr prt pdf not generated. */
+	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions
 	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
 
@@ -599,13 +610,13 @@ public enum PlatformErrorMessages {
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
-	
+
 	/** invalid token present in header */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
-	
-	/** Access denied for the token present*/
+
+	/** Access denied for the token present */
 	RPR_AUT_ACCESS_DENIED(PlatformConstants.RPR_AUTHENTICATION + "02", "Access Denied For Role - %s"),
-	
+
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
 
 	EXTERNAL_STAGE_FAILED("", "External Stage Failed");

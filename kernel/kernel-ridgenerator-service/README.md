@@ -1,8 +1,8 @@
 # kernel-ridgenerator-service
 
-[Background & Design -TBA-](../../docs/design/kernel/kernel-ridgenerator.md)
+[Background & Design](../../docs/design/kernel/kernel-ridgenerator.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#7-ridgenerator)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#rid-generator)
 
 Default Port and Context Path
 
@@ -16,7 +16,12 @@ localhost:8096/ridgenerator/swagger-ui.html
 
 **Application Properties**
 
-[application-dev.properties](../../config/application-dev.properties)
+```
+mosip.kernel.registrationcenterid.length=5
+mosip.kernel.machineid.length=5
+mosip.kernel.rid.sequence-length=5
+mosip.kernel.rid.timestamp-length=14
+```
 
 
 ** Usage Sample**

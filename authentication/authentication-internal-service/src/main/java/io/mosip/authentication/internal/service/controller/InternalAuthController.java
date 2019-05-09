@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -51,6 +52,8 @@ public class InternalAuthController {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(InternalAuthController.class);
 
+	public static final String EMPTY_PARTNER_ID = "INTERNAL";
+
 	/**
 	 * Inits the binder.
 	 *
@@ -72,16 +75,15 @@ public class InternalAuthController {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/{Auth-Partner-ID}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e,
-			@PathVariable("Auth-Partner-ID") String partnerId)
+	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, partnerId);
+			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, EMPTY_PARTNER_ID);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
@@ -94,4 +96,5 @@ public class InternalAuthController {
 
 		return authResponseDTO;
 	}
+	
 }

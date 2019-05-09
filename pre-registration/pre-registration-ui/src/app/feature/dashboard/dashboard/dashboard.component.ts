@@ -18,6 +18,7 @@ import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
+import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 
 /**
  * @description This is the dashbaord component which displays all the users linked to the login id
@@ -34,15 +35,15 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
-  userFile: FileModel;
-  userFiles: any[] = [];
+  userFile: FileModel[];
+  userFiles: FilesModel = new FilesModel(this.userFile);
   loginId = '';
   message = {};
 
   primaryLangCode = localStorage.getItem('langCode');
   textDir = localStorage.getItem('dir');
   secondaryLanguagelabels: any;
-  primaryLanguagelabels: any;
+  errorLanguagelabels: any;
   disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
@@ -442,23 +443,26 @@ export class DashBoardComponent implements OnInit {
     const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
-    this.dataStorageService
-      .getUserDocuments(preId)
-      .subscribe(response => this.setUserFiles(response), error => console.log('response from modify data', error));
-    this.addtoNameList(user);
-    console.log(this.bookingService.getNameList());
+    this.dataStorageService.getUserDocuments(preId).subscribe(
+      response => this.setUserFiles(response),
+      error => console.log('response from modify data', error),
+      () => {
+        this.addtoNameList(user);
+        console.log(this.bookingService.getNameList());
 
-    console.log('preid', preId);
+        console.log('preid', preId);
 
-    this.dataStorageService.getUser(preId).subscribe(
-      response => {
-        console.log('RESPONSE [Modify Information]', response);
-        this.onModification(response, preId);
-      },
-      error => {
-        console.log('error', error);
-        // return this.router.navigate(['error']);
-        this.onError();
+        this.dataStorageService.getUser(preId).subscribe(
+          response => {
+            console.log('RESPONSE [Modify Information]', response);
+            this.onModification(response, preId);
+          },
+          error => {
+            console.log('error', error);
+            // return this.router.navigate(['error']);
+            this.onError();
+          }
+        );
       }
     );
   }
@@ -472,7 +476,7 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private onModification(response: any, preId: string) {
-    const request = response[appConstants.RESPONSE][0];
+    const request = response[appConstants.RESPONSE];
     this.disableModifyDataButton = true;
     this.regService.addUser(new UserModel(preId, request, this.userFiles));
     this.fetchedDetails = true;
@@ -553,8 +557,11 @@ export class DashBoardComponent implements OnInit {
   setUserFiles(response) {
     console.log('user files', response);
 
-    this.userFile = response[appConstants.RESPONSE];
-    this.userFiles.push(this.userFile);
+    this.userFile = response[appConstants.RESPONSE][appConstants.METADATA];
+    console.log('user file from daashboard', this.userFile);
+
+    this.userFiles.documentsMetaData = this.userFile;
+    console.log('user files from daashboard', this.userFiles);
   }
 
   getColor(value: string) {
@@ -590,10 +597,10 @@ export class DashBoardComponent implements OnInit {
    * @returns the `Promise`
    * @memberof DemographicComponent
    */
-  private getPrimaryLabels() {
+  private getErrorLabels() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-        this.primaryLanguagelabels = response['dashboard'];
+        this.errorLanguagelabels = response['error'];
         resolve(true);
       });
     });
@@ -606,12 +613,12 @@ export class DashBoardComponent implements OnInit {
    * @memberof DemographicComponent
    */
   private async onError() {
-    await this.getPrimaryLabels();
+    await this.getErrorLabels();
     const body = {
       case: 'ERROR',
       title: 'ERROR',
-      message: this.primaryLanguagelabels.error.error,
-      yesButtonText: this.primaryLanguagelabels.error.button_ok
+      message: this.errorLanguagelabels.error,
+      yesButtonText: this.errorLanguagelabels.button_ok
     };
     this.dialog.open(DialougComponent, {
       width: '250px',

@@ -22,12 +22,14 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+//import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -166,7 +168,7 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-		requiredRequestMap.put("id", uploadId);
+		// requiredRequestMap.put("id", uploadId);
 		requiredRequestMap.put("version", ver);
 	}
 
@@ -191,10 +193,12 @@ public class DocumentService {
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = new MainRequestDTO<>();
 		boolean isUploadSuccess = false;
+
 		try {
 			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
 			responseDto.setId(docReqDto.getId());
 			responseDto.setVersion(docReqDto.getVersion());
+			requiredRequestMap.put("id", uploadId);
 			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto), requiredRequestMap)) {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
@@ -246,9 +250,9 @@ public class DocumentService {
 			throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
-		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
+		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,authUserDetails().getUserId(),
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, "test@gmail.com",
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
@@ -314,8 +318,8 @@ public class DocumentService {
 						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage(),
 						null);
 			} else if (serviceUtil.isValidCatCode(catCode)) {
-				boolean sourceStatus = serviceUtil.callGetPreRegInfoRestService(sourcePreId);
-				boolean destinationStatus = serviceUtil.callGetPreRegInfoRestService(destinationPreId);
+				boolean sourceStatus = serviceUtil.getPreRegInfoRestService(sourcePreId);
+				boolean destinationStatus = serviceUtil.getPreRegInfoRestService(destinationPreId);
 
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
 				DocumentEntity destEntity = documnetDAO.findSingleDocument(destinationPreId, catCode);
@@ -404,7 +408,7 @@ public class DocumentService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
-				responseDto.setResponse(dtoSetter(documentEntities));
+				responseDto.setResponse(createDocumentResponse(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			}
 			isRetrieveSuccess = true;
@@ -495,7 +499,7 @@ public class DocumentService {
 	 * @return List<DocumentMultipartResponseDTO>
 	 * @throws IOException
 	 */
-	public DocumentsMetaData dtoSetter(List<DocumentEntity> entityList) throws IOException {
+	public DocumentsMetaData createDocumentResponse(List<DocumentEntity> entityList) throws IOException {
 		List<DocumentMultipartResponseDTO> allDocRes = new ArrayList<>();
 		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
 		for (DocumentEntity doc : entityList) {

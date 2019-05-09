@@ -287,11 +287,11 @@ public class DataSyncServiceTest {
 	@Test
 	public void successGetPreRegistrationTest() throws Exception {
 
-		Mockito.when(serviceUtil.callGetPreRegInfoRestService(Mockito.anyString())).thenReturn(demography);
-		Mockito.when(serviceUtil.callGetDocDetailsRestService(Mockito.anyString())).thenReturn(documentsMetaData);
-		Mockito.when(serviceUtil.callGetDocBytesRestService(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(serviceUtil.getPreRegistrationData(Mockito.anyString())).thenReturn(demography);
+		Mockito.when(serviceUtil.getDocDetails(Mockito.anyString())).thenReturn(documentsMetaData);
+		Mockito.when(serviceUtil.getDocBytesDetails(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(documentDTO);
-		Mockito.when(serviceUtil.callGetAppointmentDetailsRestService(Mockito.anyString()))
+		Mockito.when(serviceUtil.getAppointmentDetails(Mockito.anyString()))
 				.thenReturn(bookingRegistrationDTO);
 		Mockito.when(serviceUtil.archivingFiles(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(archiveDTO);
 		Mockito.doNothing().when(spyDataSyncService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(),
@@ -305,14 +305,14 @@ public class DataSyncServiceTest {
 	public void GetPreRegistrationTest1() throws Exception {
 		DemographicGetDetailsException ex = new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
 				ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), null);
-		Mockito.when(serviceUtil.callGetPreRegInfoRestService(Mockito.anyString())).thenThrow(ex);
+		Mockito.when(serviceUtil.getPreRegistrationData(Mockito.anyString())).thenThrow(ex);
 		dataSyncService.getPreRegistrationData(preId);
 	}
 
 	@Test
 	public void successRetrieveAllPreRegIdTest() throws Exception {
 		Mockito.when(serviceUtil.validateDataSyncRequest(Mockito.any(), Mockito.any())).thenReturn(true);
-		Mockito.when(serviceUtil.callBookedPreIdsByDateAndRegCenterIdRestService(Mockito.any(), Mockito.any(),
+		Mockito.when(serviceUtil.getBookedPreIdsByDateAndRegCenterIdRestService(Mockito.any(), Mockito.any(),
 				Mockito.anyString())).thenReturn(preRegIdsByRegCenterIdResponseDTO);
 		Mockito.when(serviceUtil.getLastUpdateTimeStamp(Mockito.any())).thenReturn(preRegistrationIdsDTO);
 		Mockito.doNothing().when(spyDataSyncService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(),

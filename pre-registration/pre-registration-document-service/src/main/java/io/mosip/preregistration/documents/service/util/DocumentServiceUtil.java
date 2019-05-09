@@ -133,10 +133,8 @@ public class DocumentServiceUtil {
 		MainRequestDTO<DocumentRequestDTO> uploadReqDto = new MainRequestDTO<>();
 		JSONObject documentData = new JSONObject(documentJsonString);
 		JSONObject docDTOData = (JSONObject) documentData.get("request");
-		System.out.println("docDTOData " + docDTOData);
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
-		System.out.println("documentDto " + documentDto);
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
 		uploadReqDto.setRequesttime(
@@ -357,7 +355,7 @@ public class DocumentServiceUtil {
 		}
 	}
 
-	public boolean callGetPreRegInfoRestService(String preId) {
+	public boolean getPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
 			Map<String, Object> params = new HashMap<>();

@@ -74,10 +74,14 @@ spec:
         backend:
           serviceName: kernel-tokenidgenerator-service
           servicePort: 8097
+      - path: /v1/syncjob
+        backend:
+          serviceName: kernel-syncjob-service
+          servicePort: 8099
       - path: /v1/admin
         backend:
-          serviceName: kernel-admin-service
-          servicePort: 8099    
+          serviceName: admin-service
+          servicePort: 8098    
       - path: /preregistration/v1/login
         backend:
           serviceName: pre-registration-login-service
@@ -126,7 +130,7 @@ spec:
         backend:
           serviceName: authentication-otp-service
           servicePort: 8092
-      - path: /idauthentication/v1/internal/auth
+      - path: /idauthentication/v1/auth/internal
         backend:
           serviceName: authentication-internal-service
           servicePort: 8093

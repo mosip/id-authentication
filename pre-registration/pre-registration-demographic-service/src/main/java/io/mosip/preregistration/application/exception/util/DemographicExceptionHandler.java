@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
@@ -31,6 +33,8 @@ import io.mosip.preregistration.application.exception.system.SystemIllegalArgume
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
@@ -59,16 +63,8 @@ public class DemographicExceptionHandler {
 	 * @return response for TableNotAccessibleException
 	 */
 	@ExceptionHandler(TableNotAccessibleException.class)
-	public ResponseEntity<MainResponseDTO> databaseerror(final TableNotAccessibleException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResposneDTO().getId());
-		errorRes.setVersion(e.getMainResposneDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> databaseerror(final TableNotAccessibleException e) {
+		return GenericUtil.errorResponse(e,e.getMainResposneDTO());
 	}
 
 	/**
@@ -79,17 +75,8 @@ public class DemographicExceptionHandler {
 	 * @return response for JsonValidationException
 	 */
 	@ExceptionHandler(JsonValidationException.class)
-	public ResponseEntity<MainResponseDTO> jsonValidationException(final JsonValidationException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResposneDTO().getId());
-		errorRes.setVersion(e.getMainResposneDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> jsonValidationException(final JsonValidationException e) {
+		return GenericUtil.errorResponse(e, e.getMainResposneDTO());
 	}
 
 	/**
@@ -100,16 +87,8 @@ public class DemographicExceptionHandler {
 	 * @return response for RecordNotFoundException
 	 */
 	@ExceptionHandler(RecordNotFoundException.class)
-	public ResponseEntity<MainResponseDTO> recException(final RecordNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> recException(final RecordNotFoundException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -120,17 +99,8 @@ public class DemographicExceptionHandler {
 	 * @return response for RecordNotFoundException
 	 */
 	@ExceptionHandler(RecordNotFoundForPreIdsException.class)
-	public ResponseEntity<MainResponseDTO> recPreIdsException(final RecordNotFoundForPreIdsException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
-		exceptionJSONInfoDTOs.add(errorDetails);
-		errorRes.setId(e.getMainResponseDTO().getId());
-		errorRes.setVersion(e.getMainResponseDTO().getVersion());
-		errorRes.setErrors(exceptionJSONInfoDTOs);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> recPreIdsException(final RecordNotFoundForPreIdsException e) {
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
 
 	/**
@@ -141,17 +111,8 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemIllegalArgumentException
 	 */
 	@ExceptionHandler(SystemIllegalArgumentException.class)
-	public ResponseEntity<MainResponseDTO> illegalArgumentException(final SystemIllegalArgumentException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
-		exceptionJSONInfoDTOs.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(exceptionJSONInfoDTOs);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> illegalArgumentException(final SystemIllegalArgumentException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -162,17 +123,8 @@ public class DemographicExceptionHandler {
 	 * @return response for DocumentFailedToDeleteException
 	 */
 	@ExceptionHandler(DocumentFailedToDeleteException.class)
-	public ResponseEntity<MainResponseDTO> documentFailedToDeleteException(final DocumentFailedToDeleteException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> documentFailedToDeleteException(final DocumentFailedToDeleteException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -183,17 +135,8 @@ public class DemographicExceptionHandler {
 	 * @return response for RecordFailedToDeleteException
 	 */
 	@ExceptionHandler(RecordFailedToDeleteException.class)
-	public ResponseEntity<MainResponseDTO> recordFailedToDeleteException(final RecordFailedToDeleteException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResponseDTO().getId());
-		errorRes.setVersion(e.getMainResponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> recordFailedToDeleteException(final RecordFailedToDeleteException e) {
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
 
 	/**
@@ -204,17 +147,8 @@ public class DemographicExceptionHandler {
 	 * @return response for OperationNotAllowedException
 	 */
 	@ExceptionHandler(OperationNotAllowedException.class)
-	public ResponseEntity<MainResponseDTO> operationNotAllowedException(final OperationNotAllowedException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -225,17 +159,8 @@ public class DemographicExceptionHandler {
 	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
-	public ResponseEntity<MainResponseDTO> invalidRequest(final InvalidRequestParameterException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResponseDto().getId());
-		errorRes.setVersion(e.getMainResponseDto().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e) {
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	}
 
 	/**
@@ -246,17 +171,8 @@ public class DemographicExceptionHandler {
 	 * @return response for RecordFailedToUpdateException
 	 */
 	@ExceptionHandler(RecordFailedToUpdateException.class)
-	public ResponseEntity<MainResponseDTO> recordFailedToUpdateException(final RecordFailedToUpdateException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResponseDTO().getId());
-		errorRes.setVersion(e.getMainResponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> recordFailedToUpdateException(final RecordFailedToUpdateException e) {
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
 
 	/**
@@ -267,17 +183,9 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemUnsupportedEncodingException
 	 */
 	@ExceptionHandler(SystemUnsupportedEncodingException.class)
-	public ResponseEntity<MainResponseDTO> systemUnsupportedEncodingException(
-			final SystemUnsupportedEncodingException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> systemUnsupportedEncodingException(
+			final SystemUnsupportedEncodingException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -288,17 +196,9 @@ public class DemographicExceptionHandler {
 	 * @return response for MissingRequestParameterException
 	 */
 	@ExceptionHandler(MissingRequestParameterException.class)
-	public ResponseEntity<MainResponseDTO> missingRequestParameterException(
-			final MissingRequestParameterException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> missingRequestParameterException(
+			final MissingRequestParameterException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -309,16 +209,8 @@ public class DemographicExceptionHandler {
 	 * @return response for JsonParseException
 	 */
 	@ExceptionHandler(JsonParseException.class)
-	public ResponseEntity<MainResponseDTO> jsonParseException(final JsonParseException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> jsonParseException(final JsonParseException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -329,17 +221,8 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemFileIOException
 	 */
 	@ExceptionHandler(SystemFileIOException.class)
-	public ResponseEntity<MainResponseDTO> systemFileIOException(final SystemFileIOException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainResposneDTO().getId());
-		errorRes.setVersion(e.getMainResposneDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> systemFileIOException(final SystemFileIOException e) {
+		return GenericUtil.errorResponse(e, e.getMainResposneDTO());
 	}
 
 	/**
@@ -350,8 +233,7 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemFileIOException
 	 */
 	@ExceptionHandler(InvalidDateFormatException.class)
-	public ResponseEntity<MainResponseDTO> InvalidDateFormatException(final InvalidDateFormatException e,
-			WebRequest request) {
+	public ResponseEntity<MainResponseDTO<?>> InvalidDateFormatException(final InvalidDateFormatException e) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
@@ -371,17 +253,8 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemFileIOException
 	 */
 	@ExceptionHandler(BookingDeletionFailedException.class)
-	public ResponseEntity<MainResponseDTO> bookingDeletionFailedException(final BookingDeletionFailedException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> bookingDeletionFailedException(final BookingDeletionFailedException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -392,16 +265,8 @@ public class DemographicExceptionHandler {
 	 * @return response for SystemFileIOException
 	 */
 	@ExceptionHandler(HashingException.class)
-	public ResponseEntity<MainResponseDTO> HashingException(final HashingException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> HashingException(final HashingException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -412,17 +277,8 @@ public class DemographicExceptionHandler {
 	 * @return response for EncryptionFailedException
 	 */
 	@ExceptionHandler(EncryptionFailedException.class)
-	public ResponseEntity<MainResponseDTO> encryptionFailedException(final EncryptionFailedException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> encryptionFailedException(final EncryptionFailedException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -433,17 +289,8 @@ public class DemographicExceptionHandler {
 	 * @return response for DecryptionFailedException
 	 */
 	@ExceptionHandler(DecryptionFailedException.class)
-	public ResponseEntity<MainResponseDTO> decryptionFailedException(final DecryptionFailedException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> decryptionFailedException(final DecryptionFailedException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -454,16 +301,8 @@ public class DemographicExceptionHandler {
 	 * @return response for RestCallException
 	 */
 	@ExceptionHandler(RestCallException.class)
-	public ResponseEntity<MainResponseDTO> restCallException(final RestCallException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> restCallException(final RestCallException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**
@@ -474,17 +313,18 @@ public class DemographicExceptionHandler {
 	 * @return response for SchemaValidationException
 	 */
 	@ExceptionHandler(SchemaValidationException.class)
-	public ResponseEntity<MainResponseDTO> restCallException(final SchemaValidationException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+	public ResponseEntity<MainResponseDTO<?>> restCallException(final SchemaValidationException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
+	}
+
+	@ExceptionHandler(InvalidFormatException.class)
+	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e,WebRequest request){
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
-		errorRes.setId(e.getMainresponseDTO().getId());
-		errorRes.setVersion(e.getMainresponseDTO().getVersion());
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
-
 }
