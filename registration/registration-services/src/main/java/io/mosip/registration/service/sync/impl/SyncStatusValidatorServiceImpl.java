@@ -440,7 +440,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				String configuredValue = String.valueOf(ApplicationContext.map().get(
 						RegistrationConstants.MOSIP_REGISTRATION.concat(syncJobDef.getApiName())
 								.concat(RegistrationConstants.DOT).concat(RegistrationConstants.FREQUENCY)));
-				if (configuredValue != null) {
+				if (configuredValue != null && !configuredValue.equalsIgnoreCase("null")) {
 					jobsMap.put(syncJobDef.getId(), configuredValue.trim());
 				}
 			}
