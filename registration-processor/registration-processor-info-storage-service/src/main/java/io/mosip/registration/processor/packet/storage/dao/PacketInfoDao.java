@@ -259,7 +259,7 @@ public class PacketInfoDao {
 		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
 	}
 
-	public List<RegBioRefEntity> getBioRefIdByRegId(String regId) {
+	public List<String> getBioRefIdByRegId(String regId) {
 		return abisRequestRepositary.getBioRefIdByRegId(regId);
 	}
 
@@ -272,29 +272,24 @@ public class PacketInfoDao {
 
 	}
 
-	public List<AbisResponseDetEntity> getAbisResponseDetailRecords(String latestTransactionId, String requestType) {
-		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
-		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
+	public List<AbisResponseEntity> getAbisResponseIDs(String abisReqId) {
+		return abisRequestRepository.getAbisResponseIDs(abisReqId);
 
-		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
-				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
-		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
-			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity.getId().getId()));
-		}
-		for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
-			abisResponseDetEntities.addAll(
-					abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
-		}
+	}
+	
+	public List<AbisResponseDetEntity> getAbisResponseDetails(String abisResponseId) {
+		return abisRequestRepository.getAbisResponseDetails(abisResponseId);
 
-		for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
-			machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
-		}
-		return abisResponseDetEntities;
 	}
 
-	public List<String> getRegAbisRefRegIds(List<String> matchRefIds) {
-		return regBioRefRepository.getAbisRefRegIds(matchRefIds);
+	public List<String> getAbisRefRegIdsByMatchedRefIds(List<String> matchRefIds) {
+		return regBioRefRepository.getAbisRefRegIdsByMatchedRefIds(matchRefIds);
 
+	}
+
+	public List<String> getAbisRefMatchedRefIdByRid(String registrationId) {
+		return regBioRefRepository.getAbisRefMatchedRefIdByRid(registrationId);
+		
 	}
 
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {

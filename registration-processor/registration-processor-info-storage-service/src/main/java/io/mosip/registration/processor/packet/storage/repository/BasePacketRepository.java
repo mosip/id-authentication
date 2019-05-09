@@ -236,7 +236,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @return the bio ref ids
 	 */
 	@Query("SELECT regBioRef.regId FROM RegBioRefEntity regBioRef WHERE regBioRef.bioRefId in :bioRefIds")
-	public List<String> getAbisRefRegIds(@Param("bioRefIds") List<String> bioRefId);
+	public List<String> getAbisRefRegIdsByMatchedRefIds(@Param("bioRefIds") List<String> bioRefId);
 
 	/**
 	 * Gets the identify by transaction id.
@@ -258,8 +258,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            the reg id
 	 * @return the bio ref id by reg id
 	 */
-	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
-	public List<RegBioRefEntity> getBioRefIdByRegId(@Param("regId") String regId);
+	@Query("SELECT bioRef.bioRefId FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
+	public List<String> getBioRefIdByRegId(@Param("regId") String regId);
 
 	/**
 	 * Gets the demo list by transaction id.
@@ -270,5 +270,11 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT regDemo FROM RegDemoDedupeListEntity regDemo WHERE regDemo.id.regtrnId =:regtrnId")
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(@Param("regtrnId") String regtrnId);
+	
+	@Query("SELECT regBioRef.bioRefId FROM RegBioRefEntity regBioRef WHERE regBioRef.regId =:regId")
+	public List<String> getAbisRefMatchedRefIdByRid(@Param("regId") String regId);
+	
+	
+
 
 }

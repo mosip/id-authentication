@@ -4,10 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.registration.processor.bio.dedupe.service.impl.BioDedupeServiceImpl;
-import io.mosip.registration.processor.biodedupe.dao.BioDedupDao;
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeProcessor;
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 
 @Configuration
 public class BioDedupeBeanConfig {
@@ -28,7 +28,7 @@ public class BioDedupeBeanConfig {
 	}
 
 	@Bean
-	public BioDedupDao getBioDedupeDao() {
-		return new BioDedupDao();
+	public PacketInfoDao getPacketInfoDao() {
+		return new PacketInfoDao();
 	}
 }
