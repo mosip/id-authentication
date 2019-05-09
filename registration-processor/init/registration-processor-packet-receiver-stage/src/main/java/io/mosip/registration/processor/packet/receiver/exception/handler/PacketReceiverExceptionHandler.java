@@ -9,8 +9,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -28,14 +30,18 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvaila
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketSizeNotInSyncException;
+import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
+import io.mosip.registration.processor.packet.receiver.exception.VirusScanFailedException;
+import io.mosip.registration.processor.packet.receiver.exception.VirusScannerServiceException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
-
 /**
  * The Class PacketReceiverExceptionHandler.
+ *
  * @author Rishabh Keshari
  */
 @Component
@@ -54,105 +60,116 @@ public class PacketReceiverExceptionHandler {
 
 	@Autowired
 	private Environment env;
+
 	/**
 	 * Duplicateentry.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String duplicateentry(final DuplicateUploadRequestException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
-
 
 	/**
 	 * Handle packet not available exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
-	public String handlePacketNotAvailableException(
-			final MissingServletRequestPartException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getMessage(),  e.getStackTrace()[0].toString());
-		PacketNotAvailableException packetNotAvailableException=new PacketNotAvailableException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage(),e);
-		return buildPacketReceiverExceptionResponse((Exception)packetNotAvailableException);
+	public String handlePacketNotAvailableException(final MissingServletRequestPartException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getMessage(), e.getStackTrace()[0].toString());
+		PacketNotAvailableException packetNotAvailableException = new PacketNotAvailableException(
+				PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage(), e);
+		return buildPacketReceiverExceptionResponse((Exception) packetNotAvailableException);
 	}
-
 
 	/**
 	 * Handle packet not valid exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handlePacketNotValidException(final PacketNotValidException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
 
 	/**
 	 * Handle file size exceed exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handleFileSizeExceedException(final FileSizeExceedException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
-
-
 
 	/**
 	 * Handle tablenot accessible exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handleTablenotAccessibleException(final TablenotAccessibleException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
 
 	/**
 	 * Handle timeout exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handleTimeoutException(final TimeoutException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
-
 
 	/**
 	 * Handle unexpected exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handleUnexpectedException(final UnexpectedException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
-
 
 	/**
 	 * Handle validation exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handleValidationException(final ValidationException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
 
 	/**
 	 * Invalid token exception
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -160,10 +177,10 @@ public class PacketReceiverExceptionHandler {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
-	
+
 	/**
 	 * Handles access denied exception
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -171,40 +188,118 @@ public class PacketReceiverExceptionHandler {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(),  e.getStackTrace()[0].toString());
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
-	
+
 	/**
 	 * Data exception handler.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String dataExceptionHandler(final DataIntegrityViolationException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 Data integrity violation exception",e.getMessage());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"RPR-DBE-001 Data integrity violation exception", e.getMessage());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
-
 
 	/**
 	 * Handle packet not sync exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the string
 	 */
 	public String handlePacketNotSyncException(final PacketNotSyncException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getStackTrace()[0].toString());
-		return buildPacketReceiverExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getStackTrace()[0].toString());
+		return buildPacketReceiverExceptionResponse((Exception) e);
 	}
 
+	/**
+	 * Unknown exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
 	public String unknownExceptionHandler(Exception e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Unknow Exception",e.getMessage());
-		PacketReceiverAppException packetReceiverAppException=new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION,e);
-		return buildPacketReceiverExceptionResponse((Exception)packetReceiverAppException);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Unknow Exception", e.getMessage());
+		PacketReceiverAppException packetReceiverAppException = new PacketReceiverAppException(
+				PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION, e);
+		return buildPacketReceiverExceptionResponse((Exception) packetReceiverAppException);
+	}
+
+	/**
+	 * Packet size not synced exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
+	private String packetSizeNotSyncedExceptionHandler(final PacketSizeNotInSyncException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Uploaded packet sized not synced", e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
+	/**
+	 * Virus scan failed exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
+	private String virusScanFailedExceptionHandler(final VirusScanFailedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Virus scan failed", e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
+	/**
+	 * Unequal hash sequence exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
+	private String unequalHashSequenceExceptionHandler(UnequalHashSequenceException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Unequal Hash Sequence", e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
+	/**
+	 * Packet size not in sync exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
+	private String packetSizeNotInSyncExceptionHandler(PacketSizeNotInSyncException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Synced packet size not equals", e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
+	}
+
+	/**
+	 * Virus scanner service exception handler.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
+	private String virusScannerServiceExceptionHandler(VirusScannerServiceException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"Virus Scanner Service Failed", e.getMessage());
+		return buildPacketReceiverExceptionResponse(e);
 	}
 
 	/**
 	 * Builds the packet receiver exception response.
 	 *
-	 * @param ex the ex
+	 * @param ex
+	 *            the ex
 	 * @return the string
 	 */
 	private String buildPacketReceiverExceptionResponse(Exception ex) {
@@ -220,7 +315,9 @@ public class PacketReceiverExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
@@ -244,7 +341,8 @@ public class PacketReceiverExceptionHandler {
 	/**
 	 * Handler.
 	 *
-	 * @param exe the exe
+	 * @param exe
+	 *            the exe
 	 * @return the string
 	 */
 	public String handler(Throwable exe) {
@@ -254,29 +352,34 @@ public class PacketReceiverExceptionHandler {
 			return handleInvalidTokenException((InvalidTokenException)exe);
 		if(exe instanceof ValidationException)
 			return handleValidationException((ValidationException) exe);
-		if(exe instanceof UnexpectedException)
-			return handleUnexpectedException((UnexpectedException)exe);
-		if(exe instanceof TimeoutException)
-			return handleTimeoutException((TimeoutException)exe);
-		if(exe instanceof TablenotAccessibleException)
-			return handleTablenotAccessibleException((TablenotAccessibleException)exe);
-		if(exe instanceof PacketNotSyncException)
-			return handlePacketNotSyncException((PacketNotSyncException)exe);
-		if(exe instanceof FileSizeExceedException)
-			return handleFileSizeExceedException((FileSizeExceedException)exe);
-		if(exe instanceof PacketNotValidException)
-			return handlePacketNotValidException((PacketNotValidException)exe);
-		if(exe instanceof DuplicateUploadRequestException)
-			return duplicateentry((DuplicateUploadRequestException)exe);
-		if(exe instanceof MissingServletRequestPartException)
-			return handlePacketNotAvailableException((MissingServletRequestPartException)exe);
-		if(exe instanceof DataIntegrityViolationException)
-			return dataExceptionHandler((DataIntegrityViolationException)exe);
+		if (exe instanceof UnexpectedException)
+			return handleUnexpectedException((UnexpectedException) exe);
+		if (exe instanceof TimeoutException)
+			return handleTimeoutException((TimeoutException) exe);
+		if (exe instanceof TablenotAccessibleException)
+			return handleTablenotAccessibleException((TablenotAccessibleException) exe);
+		if (exe instanceof PacketNotSyncException)
+			return handlePacketNotSyncException((PacketNotSyncException) exe);
+		if (exe instanceof FileSizeExceedException)
+			return handleFileSizeExceedException((FileSizeExceedException) exe);
+		if (exe instanceof PacketNotValidException)
+			return handlePacketNotValidException((PacketNotValidException) exe);
+		if (exe instanceof DuplicateUploadRequestException)
+			return duplicateentry((DuplicateUploadRequestException) exe);
+		if (exe instanceof MissingServletRequestPartException)
+			return handlePacketNotAvailableException((MissingServletRequestPartException) exe);
+		if (exe instanceof DataIntegrityViolationException)
+			return dataExceptionHandler((DataIntegrityViolationException) exe);
+		if (exe instanceof PacketSizeNotInSyncException)
+			return packetSizeNotSyncedExceptionHandler((PacketSizeNotInSyncException) exe);
+		if (exe instanceof VirusScanFailedException)
+			return virusScanFailedExceptionHandler((VirusScanFailedException) exe);
+		if (exe instanceof UnequalHashSequenceException)
+			return unequalHashSequenceExceptionHandler((UnequalHashSequenceException) exe);
+		if (exe instanceof VirusScannerServiceException)
+			return virusScannerServiceExceptionHandler((VirusScannerServiceException) exe);
 		else
 			return unknownExceptionHandler((Exception) exe);
 
 	}
-
-
-
 }
