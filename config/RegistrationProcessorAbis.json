@@ -9,7 +9,8 @@
 			"pingInboundQueueName": "",
 			"pingOutboundQueueName": "",
 			"userName": "admin",
-			"password": "admin"
+			"password": "admin",
+		        "typeOfQueue": "ACTIVEMQ"
 		},
 		{
 			"name": "ABIS2",
@@ -21,7 +22,8 @@
 			"pingInboundQueueName": "",
 			"pingOutboundQueueName": "",
 			"userName": "admin",
-			"password": "admin"
+			"password": "admin",
+			"typeOfQueue": "ACTIVEMQ"
 		},
 		{
 			"name": "ABIS3",
@@ -33,7 +35,8 @@
 			"pingInboundQueueName": "",
 			"pingOutboundQueueName": "",
 			"userName": "admin",
-			"password": "admin"
+			"password": "admin",
+			"typeOfQueue": "ACTIVEMQ"
 		}
 	]
 
