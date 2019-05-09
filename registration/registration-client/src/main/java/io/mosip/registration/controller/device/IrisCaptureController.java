@@ -464,6 +464,7 @@ public class IrisCaptureController extends BaseController {
 			IrisDetailsDTO irisDetailsDTO = null;
 			if (!captiredIrisDetailsDTO.isPresent()) {
 				irisDetailsDTO = new IrisDetailsDTO();
+				getIrises().add(irisDetailsDTO);
 			} else {
 				irisDetailsDTO = captiredIrisDetailsDTO.get();
 			}
@@ -484,7 +485,6 @@ public class IrisCaptureController extends BaseController {
 			// irisType.concat(RegistrationConstants.EYE));
 
 			if (irisDetailsDTO.getIris() != null) {
-				getIrises().add(irisDetailsDTO);
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
@@ -524,6 +524,7 @@ public class IrisCaptureController extends BaseController {
 					continueBtn.setDisable(false);
 				}
 			} else {
+				getIrises().remove(irisDetailsDTO);
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 			}
 
