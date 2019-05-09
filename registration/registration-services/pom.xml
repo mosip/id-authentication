@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.1</version>
 	</parent>
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
-			<version>2.0.0-RC.3</version>
+			<version>2.0.0</version>
 			<scope>test</scope>
 		</dependency>
 

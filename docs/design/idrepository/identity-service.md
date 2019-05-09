@@ -20,16 +20,16 @@ Identity Repository service can be used internally by modules to create, read an
 -	Check status of UIN for validating a UIN    
 
 #### 1.2.1. Functional Flow Diagram - Create ID - 
-![Functional Flow Diagram - Create ID](_images/idrepo-createid-fd.PNG)      
+![Functional Flow Diagram - Create ID](_images/idrepo-identity-createid-fd.PNG)      
 
 #### 1.2.2. Functional Flow Diagram - Retrieve ID By UIN - 
-![Functional Flow Diagram - Retrieve ID](_images/idrepo-getidentitybyuin-fd.PNG) 
+![Functional Flow Diagram - Retrieve ID](_images/idrepo-identity-getidbyuin-fd.PNG) 
 
 #### 1.2.3. Functional Flow Diagram - Retrieve ID By RID - 
-![Functional Flow Diagram - Retrieve ID](_images/idrepo-getidentitybyrid-fd.PNG) 
+![Functional Flow Diagram - Retrieve ID](_images/idrepo-identity-getidbyrid-fd.PNG) 
 
 #### 1.2.4. Functional Flow Diagram - Update ID - 
-![Functional Flow Diagram - Update ID](_images/idrepo-updateid-fd.PNG) 
+![Functional Flow Diagram - Update ID](_images/idrepo-identity-updateid-fd.PNG) 
 
 
 ***1.3. Key Non-Functional Requirements -***   
@@ -54,7 +54,7 @@ The key solution considerations are
 
 
 **2.1.	Class Diagram**   
-![Class Diagram](_images/idrepo-identityservice-cd.PNG)   
+![Class Diagram](_images/idrepo-identity-cd.PNG)   
 
 
 **2.2.	REST Services**   
@@ -74,7 +74,7 @@ c.	_DEACTIVATED_
 5. 	Once UIN details are stored in UIN and UIN_detail table, assign _ACTIVATED_ as UIN status   
 
 Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.   
-![Create Identity Sequence Diagram](_images/idrepo-createid-sd.PNG)      
+![Create Identity Sequence Diagram](_images/idrepo-identity-createid-sd.PNG)      
 
 
 
@@ -86,7 +86,7 @@ MOSIP Products can use ID Repo API spec available here - [Update ID API Spec](ht
 3.	Once the request is successfully validated, update Identity details in UIN and UIN_detail tables, CBEFF and documents of proof in DFS, and biometric and document references in uin_biometric and uin_document tables respectively.   
  
 Below sequence diagram for Update Identity service shows sequence of operations to update Identity details associated with a UIN.   
-![Update Identity Sequence Diagram](_images/idrepo-updateid-sd.PNG)   
+![Update Identity Sequence Diagram](_images/idrepo-identity-updateid-sd.PNG)   
 
 When UIN status is updated using Update ID API, the status is first validated against the configured status for the country. Once input UIN status matches the one among all the configured UIN status, it is updated in the database. 
 Default configuration of UIN status has ACTIVATED, BLOCKED and DEACTIVATED. This can be changed based on country's requirements.       
@@ -100,9 +100,9 @@ MOSIP Products can use ID Repo API spec available here - [Retrieve ID By UIN API
 
 
 Below sequence diagram for create Identity service shows sequence of operations to retrieve Identity details associated with a UIN.   
-![Get Identity Sequence Diagram](_images/idrepo-getIdentitybyuin-sd.PNG)    
+![Get Identity Sequence Diagram](_images/idrepo-identity-getidbyuin-sd.PNG)    
 
-***2.2.4.	Get Identity By UIN***   
+***2.2.4.	Get Identity By RID***   
 
 MOSIP Products can use ID Repo API spec available here - [Retrieve ID By RID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#read-id-by-rid) - to retrieve Identity of an Individual by providing a RID.    
 1. 	Integrate with Kernel RID validator to validate RID     
@@ -110,7 +110,7 @@ MOSIP Products can use ID Repo API spec available here - [Retrieve ID By RID API
 
 
 Below sequence diagram for create Identity service shows sequence of operations to retrieve Identity details associated with a UIN.   
-![Get Identity Sequence Diagram](_images/idrepo-getidentitybyrid-sd.PNG)    
+![Get Identity Sequence Diagram](_images/idrepo-identity-getidbyrid-sd.PNG)    
 
 
 **2.3.	Database Sharding**    
@@ -118,7 +118,7 @@ Below sequence diagram for create Identity service shows sequence of operations 
 UIN DB stores UIN and the corresponding identity details. In order to decrease load and increase search performance, UIN DB is horizontally partitioned into shards. Each shard is a separate database instance with same tables and rows in tables are distributed across shards.
 ID Repo provides default shard implementation where shards are decided based on starting character of UIN. Below diagram shows the approach for sharding UIN DB.
 
-![UIN Database Sharding](_images/idrepo-databasesharding.png)   
+![UIN Database Sharding](_images/idrepo-identity-databasesharding.png)   
 
 
 **2.4.	Encrypting/Decrypting Identity**    
@@ -128,4 +128,4 @@ Identity stored in UIN DB is encrypted/decrypted outside the DB. Details on the 
 **2.5.	Database Model**
 
 ID Repo DB contains tables to store ID JSON, references to CBEFF and proof documents in DFS and salts to be used for hashing and encrypting UIN. Details DB model is as below.
-![ID Repo DB Model](_images/idrepo_datamodel.PNG)  
+![ID Repo DB Model](_images/idrepo-identity-datamodel.PNG)  

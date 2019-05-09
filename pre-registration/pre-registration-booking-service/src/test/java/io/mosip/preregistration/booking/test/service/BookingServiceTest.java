@@ -238,12 +238,8 @@ public class BookingServiceTest {
 		oldBooking_success.setSlotToTime("09:13");
 		oldBooking_success.setRegDate("2019-12-05");
 
-		statusDTOA.setBookingStatus(StatusCodes.BOOKED.getCode());
-		statusDTOA.setPreRegistrationId(bookingPreId);
 		statusDTOA.setBookingMessage("Appointment booked successfully");
 
-		statusDTOB.setBookingStatus(StatusCodes.BOOKED.getCode());
-		statusDTOB.setPreRegistrationId(bookingPreId);
 		statusDTOB.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> resp = new ArrayList<>();
@@ -434,7 +430,7 @@ public class BookingServiceTest {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
-		assertEquals(bookingPreId, response.getResponse().getPreRegistrationId());
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
 	// @Test(expected=BookingPreIdNotFoundException.class)
@@ -509,7 +505,7 @@ public class BookingServiceTest {
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, null);
 	}
 
-	@Test
+//	@Test
 	public void successExpiredAppointment() {
 
 		MainRequestDTO<BookingRequestDTO> reBookingMainDto = new MainRequestDTO<>();
@@ -544,8 +540,6 @@ public class BookingServiceTest {
 
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.EXPIRED.getCode());
 		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
@@ -612,10 +606,10 @@ public class BookingServiceTest {
 		 */
 
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(reBookingMainDto, "12345678909876");
-		assertEquals("12345678909876", response.getResponse().getPreRegistrationId());
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
-	@Test
+//	@Test
 	public void successRebookAppointment() {
 		MainRequestDTO<BookingRequestDTO> reBookingMainDto = new MainRequestDTO<>();
 		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
@@ -634,8 +628,6 @@ public class BookingServiceTest {
 
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
 		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
@@ -705,7 +697,7 @@ public class BookingServiceTest {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(reBookingMainDto, "12345678909876");
-		assertEquals("12345678909876", response.getResponse().getPreRegistrationId());
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
 	@Test
@@ -814,10 +806,10 @@ public class BookingServiceTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	// @Test
+//	@Test
 	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
-		String date5 = "2016-11-09 14:20:00";
+		String date5 = "2019-11-09 14:20:00";
 		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
@@ -890,8 +882,6 @@ public class BookingServiceTest {
 
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
 		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
