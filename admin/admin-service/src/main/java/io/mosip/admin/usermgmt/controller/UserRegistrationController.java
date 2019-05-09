@@ -45,8 +45,9 @@ public class UserRegistrationController {
 	@PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserRegistrationResponseDto> register(
 			@ApiParam("Basic User Details") @RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userRegistrationRequestDto) {
-
-		return null;
+       ResponseWrapper<UserRegistrationResponseDto> responseWrapper= new ResponseWrapper<>();
+       responseWrapper.setResponse(userRegistrationService.register(userRegistrationRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 }
