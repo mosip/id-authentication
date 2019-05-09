@@ -106,8 +106,12 @@ public class DemoDedupe {
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		demographicInfoDtos = getAllDemographicInfoDtosWithUin(applicantDemoDto);
-
+		List<DemographicInfoDto> infoDtos = new ArrayList<>();
+		for (DemographicInfoDto demoDto : applicantDemoDto) {
+			infoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
+					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
+		}
+		demographicInfoDtos = getAllDemographicInfoDtosWithUin(infoDtos);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				refId, "DemoDedupe::performDedupe()::exit");
 		return demographicInfoDtos;
