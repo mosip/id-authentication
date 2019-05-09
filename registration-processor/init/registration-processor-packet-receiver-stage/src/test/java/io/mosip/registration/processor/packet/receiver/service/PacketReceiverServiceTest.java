@@ -64,6 +64,8 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptio
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketSizeNotInSyncException;
+import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequenceException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -485,4 +487,56 @@ public class PacketReceiverServiceTest {
 		assertEquals(false, successResult.getIsValid());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test(expected = PacketSizeNotInSyncException.class)
+	public void testPacketSize() {
+
+		regEntity.setRegistrationId("2222");
+		regEntity.setPacketSize(new BigInteger("624182"));
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+		when(mockAppender.getName()).thenReturn("MOCK");
+		root.addAppender(mockAppender);
+
+		packetReceiverService.validatePacket(largerFile, stageName);
+
+		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+
+			@Override
+			public boolean matches(Object argument) {
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("Synced packet size not same as uploaded packet");
+
+			}
+		}));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = UnequalHashSequenceException.class)
+	public void testHashSequence() {
+
+		regEntity.setRegistrationId("2222");
+		regEntity.setPacketHashValue("abcd");
+		regEntity.setPacketSize(new BigInteger("624182"));
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+		when(mockAppender.getName()).thenReturn("MOCK");
+		root.addAppender(mockAppender);
+
+		packetReceiverService.validatePacket(largerFile, stageName);
+
+		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+
+			@Override
+			public boolean matches(Object argument) {
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("The Registration Packet HashSequence is not equal as synced packet HashSequence");
+
+			}
+		}));
+	}
 }
