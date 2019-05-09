@@ -39,7 +39,7 @@ spec:
         - name: spring.cloud.config.uri
           value: http://kernel-config-server:51000/config
         ports:
-        - containerPort: 8080
+        - containerPort: 8098
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
