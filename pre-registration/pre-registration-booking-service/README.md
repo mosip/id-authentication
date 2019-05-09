@@ -1,97 +1,35 @@
 # Pre-Registration-booking-service:
 
-[Background & Design](pre-registration-individual.md)
+[Background & Design](https://github.com/mosip/mosip/blob/SPRINT11_PREREG_TEAM_BRANCH/docs/design/pre-registration/pre-registration-booking-service.md)
 
 This service is used by Pre-Registration portal for booking an appointment by taking users basic appointment details.
 
-#### Api Documentation
+[Api Documentation](https://github.com/mosip/mosip/wiki/Pre-Registration-Services#booking-service-public)
 
+### Default Port and Context Path
 ```
-mvn javadoc:javadoc
-
+server.port=9095
+server.servlet.context-path=/preregistration/v1
 ```
+#### Url 
+```https://{dns-name}:9095/preregistration/v1/appointment/swagger-ui.html```
 
-####  POST Operation
-#### Path -  `/preRegistrationId`
-#### Summary
+[Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
-This request is used to book a registration center. If the appointment data exists for user, then it will cancel and update the new data else it will book a new appointment based upon the date and registration center selected.
+The following are the Api name use in this service.
 
-#### Request Path Parameters
+1. POST /appointment/{preRegistrationId} - This Api is use to book an appointment for the provided pre-registration Id.
 
-1. preRegsitrationId
+2. POST /appointment - This post Api is use for multiple booking by providing booking details in the request body.
 
-#### Request body Parameters
+3. PUT /appointment/{preRegistrationId} - This Api is use to cancel an appointment for given pre-registration Id.
 
-1. Id
-2. version
-3. requestTime
-4. request
-5. request.registration_center_id
-6. request.appointment_date	
-7. request.time_slot_from	
-8. request.time_slot_from	
+4. GET /appointment/{preRegistrationId} - This get api is use for fetch the appointment details for provided pre-registration Id.
 
+5. GET /appointment/availability/{registrationCenterId} - This Api is used to retrieve all the availability details for provided registration center Id.
 
-#### Response
+6. GET /appointment/preRegistrationId/{registrationCenterId}?from_date=:date&to_date=:date - This request is used to retrieve all pre-registration ids available for specified registration center and date range.
 
-Returns a message saying that appointment booked successfully else returns a error message.
+Following are the APIs which are using internally in this service.
 
-
-#### PUT Operation
-#### Path -  `/preRegistrationId`
-#### Summary
-
-This request is used to reterive the appointement details for the specified pre-registration id, if exist update the availability for the slot and delete the record from the table and update the demographic record status "Pending_Appointment".
-
-#### Response
-
-Returns a message saying appointment cancelled successfully else returns a error message.
-
-#### GET Operation
-#### Path -  `appointment/:preRegistrationId`
-#### Summary
-
-This request is used to retrieve Pre-Registration appointment details by using pre-Registration id.
-
-#### Request Path Parameters
-
-1. preRegistrationId
-
-#### Response
-
-Returns registration_center_id, appointment_date , time_slot_from, time_slot_to as response if request is successful else gives a error message.
-
-#### GET Operation
-#### Path -  `appointment/:preRegistrationId`
-#### Summary
-
-This request is used to retrieve all appointment slots available for booking based on the specified registration center id.
-
-#### Request Path Parameters
-
-1. registrationCenterId
-
-#### Response
-
-On successful response it returns registrationCenterId , an array centerDetails containing date, timeslots, and a boolean variable holiday. In case of error returns appropriate error message.
-
-
-#### GET Operation
-#### Path -  `appointment/:registrationCenterId?`
-#### Summary
-
-This request is used to retrieve all pre-registration ids available for specified registration center and date range.
-
-#### Request Path Parameters
-
-1. registrationCenterId
-
-#### Request query Parameters
-
-1. fromDate
-2. toDate
-
-#### Response
-
-On a successful response it returns a list of preRegistrationIds, on error it will give a message saying 'No available slots found for specified registration center with date range'.
+1. DELETE /appointment - This api is use to delete the Individual booking associated with the pre-registration Id.

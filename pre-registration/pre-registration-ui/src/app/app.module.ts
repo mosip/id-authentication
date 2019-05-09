@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-import { config } from 'rxjs';
 import { ConfigService } from 'src/app/core/services/config.service';
 
 const appInitialization = (appConfig: AppConfigService) => {

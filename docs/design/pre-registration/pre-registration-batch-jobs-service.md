@@ -10,9 +10,6 @@
 
 The target users are -
    - Pre-Registration system
-   
-   
-   
 
 **Solution**
 
@@ -27,7 +24,7 @@ The target users are -
 - Update each reterived pre-registration entity's status code to **expired**.
 
 **Sequence Diagram**
-![pre-registration, Expired batch job](_sequence_diagram/pre-registration-expired-batch-job.png)
+![pre-registration, Expired batch job](_images/_sequence_diagram/pre-registration-expired-batch-job.png)
 
 
 
@@ -44,7 +41,7 @@ The target users are -
 - Update each reterived pre-registration entity's status code to **Processed**.
 
 **Sequence Diagram**
-![pre-registration, Processed batch job](_sequence_diagram/pre-registration-processed-batch-job.png)
+![pre-registration, Processed batch job](_images/_sequence_diagram/pre-registration-processed-batch-job.png)
 
 
 **Archival for the Processed Pre-Registrations:**
@@ -58,7 +55,7 @@ The target users are -
 - Insert pre-registration entity to **proccessed_pre_registration** table.
 
 **Sequence Diagram**
-![pre-registration, Archival batch job](_sequence_diagram/pre-registration-archive-batch-job.png)
+![pre-registration, Archival batch job](_images/_sequence_diagram/pre-registration-archive-batch-job.png)
 
 
 

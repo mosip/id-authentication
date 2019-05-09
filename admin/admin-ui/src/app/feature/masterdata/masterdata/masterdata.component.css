@@ -1,0 +1,6 @@
+.master-table{
+    display: flex;
+    margin-top:50px;
+    overflow: auto;
+    margin-left:5px;
+}
