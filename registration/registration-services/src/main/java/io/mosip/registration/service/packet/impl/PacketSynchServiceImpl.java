@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
@@ -29,6 +29,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.PacketStatusDTO;
@@ -40,9 +41,9 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.PacketSynchService;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * The PacketSynchServiceImpl class is to sync the packets to server.
@@ -56,13 +57,10 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	private RegistrationDAO syncRegistrationDAO;
 
 	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
-
-	@Autowired
 	protected AuditFactory auditFactory;
-
-	@Value("${PACKET_SYNC_URL}")
-	private String syncUrlPath;
+	
+	@Autowired
+	private AESEncryptionService aesEncryptionService;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
@@ -98,11 +96,13 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			if (!packetsToBeSynched.isEmpty()) {
 				for (PacketStatusDTO packetToBeSynch : packetsToBeSynched) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode("ENG");
-					syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
-							+ packetToBeSynch.getClientStatusComments());
+					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
-					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+					syncDto.setSyncType(packetToBeSynch.getPacketStatus());
+					syncDto.setPacketHash(packetToBeSynch.getPacketHash());
+					syncDto.setPacketSize(packetToBeSynch.getPacketSize());
+					syncDto.setSupervisorStatus(packetToBeSynch.getSupervisorStatus());
+					syncDto.setSupervisorComments(packetToBeSynch.getSupervisorComments());
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
@@ -110,7 +110,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				responseDTO = syncPacketsToServer(registrationPacketSyncDTO,
+				responseDTO = syncPacketsToServer(
+						CryptoUtil.encodeBase64(
+								aesEncryptionService.encrypt(javaObjectToJsonString(syncDtoList).getBytes())),
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -186,7 +188,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList, String triggerPoint)
+	public ResponseDTO syncPacketsToServer(String encodedString, String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
@@ -194,7 +196,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.PACKET_SYNC, javaObjectToJsonString(syncDtoList), triggerPoint);
+					.post(RegistrationConstants.PACKET_SYNC, encodedString, triggerPoint);
 			if (response.get("response") != null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				Map<String, Object> statusMap = new WeakHashMap<>();
