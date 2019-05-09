@@ -13,6 +13,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 
 /**
  * The Interface PacketInfoManager.
@@ -182,4 +183,21 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
 	
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
+	
+	/**
+	 * Save individual demographic dedupe update packet.
+	 *
+	 * @param demoDedupeData the demo dedupe data
+	 * @param regId the reg id
+	 */
+	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demoDedupeData, String regId);
+
+	/**
+	 * Gets the identity keys and fetch values from JSON.
+	 *
+	 * @param demographicJsonString the demographic json string
+	 * @return the identity keys and fetch values from JSON
+	 */
+	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString);
+	
 }

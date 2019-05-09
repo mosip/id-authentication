@@ -356,6 +356,40 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveIndividualDemographicDedupeUpdatePacket(io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe, java.lang.String)
+	 */
+	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData, String registrationId ) {
+		boolean isTransactionSuccessful = false;
+		try {
+			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
+					.converDemographicDedupeDtoToEntity(demographicData, registrationId);
+			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
+				demographicDedupeRepository.save(applicantDemographicEntity);
+
+			}
+			isTransactionSuccessful = true;
+			description = "Individual Demographic Dedupe data saved ";
+
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
+					+ e.getMessage();
+
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+
+		}
+
+	}
 
 	/*
 	 * (non-Javadoc)

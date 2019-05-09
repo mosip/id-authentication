@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,8 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -41,6 +44,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -102,6 +106,13 @@ public class DemodedupeProcessor {
 
 	@Autowired
 	private PacketInfoManager packetInfoImpl = new PacketInfoManagerImpl();
+	
+	@Autowired
+	Utilities util;
+	
+	/** The reg processor identity json. */
+	@Autowired
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	InputStream demographicInfoStream = null;
 
@@ -144,6 +155,31 @@ public class DemodedupeProcessor {
 					packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
 							packetMetaInfo.getIdentity().getMetaData());
 					performDemoDedupe(registrationStatusDto,object);
+				} else if (registrationStatusDto.getRegistrationType().equals(RegistrationType.UPDATE.name())
+						|| registrationStatusDto.getRegistrationType().equals(RegistrationType.RESUPDATE.name())) {
+					IndividualDemographicDedupe demoDedupeData = new IndividualDemographicDedupe();
+
+					demographicInfoStream = adapter.getFile(registrationId,
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+					bytesArray = IOUtils.toByteArray(demographicInfoStream);
+					String demographicJsonString = new String(bytesArray);
+					IndividualDemographicDedupe demographicData = packetInfoManager
+							.getIdentityKeysAndFetchValuesFromJSON(demographicJsonString);
+					regProcessorIdentityJson = util.getRegistrationProcessorIdentityJson();
+					Long uinFieldCheck = util.getUIn(registrationId);
+					JSONObject jsonObject = util.retrieveIdrepoJson(uinFieldCheck);
+					if (jsonObject == null) {
+						throw new IdRepoAppException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+					}
+					demoDedupeData.setName(demographicData.getName() == null ? JsonUtil.getJsonValues(jsonObject,
+							regProcessorIdentityJson.getIdentity().getName().getValue()) : demographicData.getName());
+					demoDedupeData.setDateOfBirth(demographicData.getDateOfBirth() == null
+							? JsonUtil.getJSONValue(jsonObject, regProcessorIdentityJson.getIdentity().getDob().getValue())
+							: demographicData.getDateOfBirth());
+					demoDedupeData.setGender(demographicData.getGender() == null ? JsonUtil.getJsonValues(jsonObject,
+							regProcessorIdentityJson.getIdentity().getGender().getValue()) : demographicData.getGender());
+					packetInfoManager.saveIndividualDemographicDedupeUpdatePacket(demoDedupeData, registrationId);
+
 				} else if (packetStatus.equalsIgnoreCase("HANDLER")) {
 					// Do the handler process
 					processDemoDedupeRequesthandler(registrationStatusDto,object);
