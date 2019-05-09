@@ -262,6 +262,8 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
 	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
 	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
+	public static final String EOD_DETAILS_EXPORT_FAILURE = bundle.getString("EOD_DETAILS_EXPORT_FAILURE");
+	public static final String EOD_DETAILS_EXPORT_SUCCESS = bundle.getString("EOD_DETAILS_EXPORT_SUCCESS");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

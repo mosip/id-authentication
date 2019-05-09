@@ -301,6 +301,8 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_STATUSCOMMENT = "statusComment";
 	public static final String EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH = "acknowledgementFormPath";
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
+	public static final String EXPORT_FILE_NAME = "PendingApprovalList";
+	public static final String EXPORT_FILE_TYPE = ".csv";
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";

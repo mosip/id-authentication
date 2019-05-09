@@ -6,16 +6,22 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,6 +65,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -509,4 +516,42 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		new Thread(upload).start();
 	}
+	
+	/**
+	 * Export data.
+	 */
+	public void exportData(){
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+				"Exporting Registration status details has been started");
+		
+			Stage stage = new Stage();
+			DirectoryChooser destinationSelector = new DirectoryChooser();
+			destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
+			Path currentRelativePath = Paths.get("");
+			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
+			destinationSelector.setInitialDirectory(defaultDirectory);
+			File destinationPath = destinationSelector.showDialog(stage);
+			if (destinationPath != null) {
+
+				List<RegistrationApprovalDTO> listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
+				String fileData=listData.stream()
+								.map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE).concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE).concat(RegistrationConstants.PENDING))
+								.collect(Collectors.joining("\n"));
+
+						try (Writer writer = new BufferedWriter(new FileWriter(destinationPath+"/"+RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))){
+							writer.write(fileData);
+							
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_SUCCESS);
+						
+						} catch (IOException ioException) {
+							LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));						
+
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_FAILURE);
+
+						}	
+			}
+			LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"Exporting Registration status details has been ended");
+	}	
 }

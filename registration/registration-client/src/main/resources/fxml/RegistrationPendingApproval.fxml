@@ -56,7 +56,12 @@
                         </TableView>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <TextField fx:id="filterField" prefWidth="230.0" styleClass="searchBoxTextStyle" promptText="%searchRegistration" />
+                              <TextField fx:id="filterField" prefWidth="230.0" promptText="%searchRegistration" styleClass="searchBoxTextStyle" />
+                              <ImageView fitHeight="33.0" fitWidth="38.0" onMouseClicked="#exportData" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/export-icon.jpg" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </HBox>
                      </children>
