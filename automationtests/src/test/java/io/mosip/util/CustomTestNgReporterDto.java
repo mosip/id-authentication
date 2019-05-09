@@ -11,6 +11,8 @@ public class CustomTestNgReporterDto {
 
 	private String testClassName;
 	private String testMathodName;
+	private String testDescription;
+	private String testApiName;
 	private long startTimeMillis;
 	private long endTimeMillis;
 	private long deltaMillis;

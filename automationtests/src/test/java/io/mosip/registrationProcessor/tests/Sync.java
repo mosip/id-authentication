@@ -119,6 +119,7 @@ public class Sync extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		description=common.getDescription(testSuite,object);
+		//testCaseName =testCaseName +": "+ description;
 		try{
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			// Expected response generation
@@ -221,7 +222,7 @@ public class Sync extends BaseTestCase implements ITest {
 	       
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
-			 Verify.verify(false);
+			 //Verify.verify(false);
 		}
 	}  
 
@@ -258,11 +259,11 @@ public class Sync extends BaseTestCase implements ITest {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
 			test=extent.createTest(testCaseName);
-			if(result.getStatus()==ITestResult.SUCCESS) {
-				/*Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
+	/*		if(result.getStatus()==ITestResult.SUCCESS) {
+				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
 				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
 				test.log(Status.PASS, m);
-				test.log(Status.PASS, m1);*/
+				test.log(Status.PASS, m1);
 			}
 			
 			if(result.getStatus()==ITestResult.FAILURE) {
@@ -276,7 +277,7 @@ public class Sync extends BaseTestCase implements ITest {
 				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
 				test.log(Status.SKIP, m);
 				test.log(Status.SKIP, m1);
-			}
+			}*/
 	}
 
 	/**

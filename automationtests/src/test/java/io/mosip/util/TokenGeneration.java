@@ -64,7 +64,6 @@ public String getToken(TokenGenerationEntity tokenGenerateEntity) {
 	requestToBeSent.put("version",tokenGenerateEntity.getVersion());
 	System.out.println(requestToBeSent);
 	Response response=applnMethods.postRequest(requestToBeSent, "/v1/authmanager/authenticate/useridPwd");
-	System.out.println(response.getCookie("Authorization"));
 	return response.getCookie("Authorization");
 }
 public String readPropertyFile() {
@@ -79,9 +78,5 @@ public String readPropertyFile() {
 	}
 	return prop.getProperty("tokenGenerationFilePath");
 }
-@Test
-public void generateTest() {
-	TokenGeneration generate=new TokenGeneration();
-	generate.getToken(generate.createTokenGeneratorDto(readPropertyFile()));
-}
+
 }

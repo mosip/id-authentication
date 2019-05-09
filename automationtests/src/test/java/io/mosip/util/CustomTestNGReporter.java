@@ -394,11 +394,21 @@ public class CustomTestNGReporter implements IReporter {
 				exceptionMessage = element[0].toString();
 			}*/
 		}
+		//Sort ApiName
+		SortedSet<String> sortedApiName = new TreeSet<>();
+		for (ITestResult testResult : testResultSet) {
+			String apiName = testResult.getTestName().toString().substring(0,
+					testResult.getTestName().toString().indexOf(":"));
+			if (!sortedApiName.contains(apiName))
+				sortedApiName.add(apiName);
+		}
 		// Sorting testMethodName
 		SortedSet<String> sortedTestsMethodName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {
 			sortedTestsMethodName.add(testResult.getMethod().getMethodName());
-		}
+			//sortedTestsMethodName.add(testResult.getName());
+			//testResult.getName();
+			}
 		TreeMap<String, CustomTestNgReporterDto> customTestReport = new TreeMap<String, CustomTestNgReporterDto>();
 		for (String testsName : sortedTestsName) {
 			for (String testMethodName : sortedTestsMethodName) {
@@ -417,24 +427,24 @@ public class CustomTestNGReporter implements IReporter {
 				});
 			}
 		}
-		for (String testsName : sortedTestsName) {
+		for (String apiName : sortedApiName) {
 		
 			testClassNameFlag = false;
 			customTestReport.forEach((testMethod, object) -> {
 				countTestClassName = 0;
 				customTestReport.forEach((k, v) -> {
-					if (v.getTestClassName().toString().equals(testsName))
+					if (v.getTestMathodName().toString().contains(apiName))
 						countTestClassName++;
 				});
 				String exceptionMessage="";
-				if (object.getTestClassName().toString().equals(testsName)) {
+				if (object.getTestMathodName().toString().contains(apiName)) {
 					String testClassName = "";
 					String testMethodName = "";
 					String startDateStr = "";
 					String endDateStr = "";
 					String executeTimeStr = "";
 					// Get testClassName
-					testClassName = object.getTestClassName().toString();
+					testClassName = object.getTestMathodName().toString();
 
 					// Get testMethodName
 					testMethodName = testMethod.toString();

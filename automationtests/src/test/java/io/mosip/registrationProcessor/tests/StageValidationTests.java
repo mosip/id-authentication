@@ -289,7 +289,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 
 	@Override
 	public String getTestName() {
-		// TODO Auto-generated method stub
+		
 		return this.testCaseName;
 	}
 }
