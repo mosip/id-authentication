@@ -1,10 +1,14 @@
 package io.mosip.registration.mdm.integrator;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
@@ -79,11 +83,23 @@ public class MosipBioDeviceIntegrator {
 	 * @return Map<String, byte[]> - the captured biometric details
 	 * @throws RegBaseCheckedException
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, byte[]> capture(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
+		ObjectMapper mapper = new ObjectMapper();
+		String value = "";
+		MosipBioCaptureResponseDto mosipBioCaptureResponseDto=null;
 
-		MosipBioCaptureResponseDto mosipBioCaptureResponseDto = (MosipBioCaptureResponseDto) mosipBioDeviceServiceDelagate
-				.invokeRestService(url, serviceName, request, responseType);
+		Map<String, Object> mosipBioCaptureResponseMap = (HashMap<String, Object>) mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName, request, responseType);
+
+		try {
+			value = mapper.writeValueAsString(mosipBioCaptureResponseMap);
+			mosipBioCaptureResponseDto = mapper.readValue(value, MosipBioCaptureResponseDto.class);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return MdmRequestResponseBuilder.parseBioCaptureResponse(mosipBioCaptureResponseDto);
 

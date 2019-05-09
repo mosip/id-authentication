@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -316,7 +318,7 @@ public class BaseService {
 	}
 
 	/**
-	 * Convertion of Registration to Packet Status DTO.
+	 * Conversion of Registration to Packet Status DTO.
 	 *
 	 * @param registration
 	 *            the registration
@@ -330,6 +332,13 @@ public class BaseService {
 		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
 		statusDTO.setUploadStatus(registration.getFileUploadStatus());
 		statusDTO.setPacketStatus(registration.getStatusCode());
+		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
+		statusDTO.setSupervisorComments(registration.getClientStatusComments());
+		
+		byte[] packetHash = HMACUtils.generateHash(registration.getAckFilename().replace("_Ack.html", ".zip").getBytes());
+		statusDTO.setPacketHash(new String(packetHash));
+		statusDTO.setPacketSize(BigInteger.valueOf(packetHash.length));
+		
 		return statusDTO;
 	}
 

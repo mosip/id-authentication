@@ -29,6 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
@@ -305,6 +306,14 @@ public class ServiceDelegateUtil {
 			for (String subheader : header) {
 				if (subheader != null) {
 					headerValues = subheader.split(":");
+					if(headerValues[0].equalsIgnoreCase("timestamp")) {
+						headerValues[1] = DateUtils.getUTCCurrentDateTimeString();
+					} else if(headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
+						headerValues[1] = String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID))
+								.concat(RegistrationConstants.UNDER_SCORE).concat(String
+										.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID)));
+					} 
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}

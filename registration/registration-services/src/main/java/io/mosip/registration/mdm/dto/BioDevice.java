@@ -43,7 +43,7 @@ public class BioDevice {
 
 		/* build the request object for capture */
 		MosipBioCaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder
-				.buildMosipBioCaptureRequestDto();
+				.buildMosipBioCaptureRequestDto(this);
 
 		return mosipBioDeviceIntegrator.capture(url, MosipBioDeviceConstants.CAPTURE_SERVICENAME,
 				mosipBioCaptureRequestDto, MosipBioCaptureResponseDto.class);

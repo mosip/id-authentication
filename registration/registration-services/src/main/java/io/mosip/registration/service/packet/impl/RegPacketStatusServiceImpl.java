@@ -1,5 +1,6 @@
 package io.mosip.registration.service.packet.impl;
 
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -25,6 +26,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -32,6 +34,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -47,6 +50,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 import io.mosip.registration.service.sync.PacketSynchService;
@@ -68,6 +72,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	@Autowired
 	private PacketSynchService packetSynchService;
+	
+	@Autowired
+	private AESEncryptionService aesEncryptionService;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusServiceImpl.class);
 
@@ -401,12 +408,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 				for (PacketStatusDTO packetToBeSynch : packetDto) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode("ENG");
-					syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
-							+ packetToBeSynch.getClientStatusComments());
+					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
-					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+					syncDto.setSyncType(packetToBeSynch.getPacketStatus());
+					syncDto.setPacketHash(packetToBeSynch.getPacketHash());
+					syncDto.setPacketSize(packetToBeSynch.getPacketSize());
+					syncDto.setSupervisorStatus(packetToBeSynch.getSupervisorStatus());
+					syncDto.setSupervisorComments(packetToBeSynch.getSupervisorComments());
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
@@ -414,7 +422,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				response = packetSynchService.syncPacketsToServer(registrationPacketSyncDTO, triggerPoint);
+				response = packetSynchService.syncPacketsToServer(
+						CryptoUtil.encodeBase64(
+								aesEncryptionService.encrypt(javaObjectToJsonString(syncDtoList).getBytes())),
+						triggerPoint);
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {
 				for (PacketStatusDTO registration : packetDto) {

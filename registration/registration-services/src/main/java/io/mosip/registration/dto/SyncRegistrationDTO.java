@@ -1,11 +1,16 @@
 package io.mosip.registration.dto;
 
+import java.math.BigInteger;
+
+import lombok.Data;
+
 /**
  * The DTO Class SyncRegistrationDTO.
  * 
  * @author Sreekar Chukka
  * @version 1.0.0
  */
+@Data
 public class SyncRegistrationDTO {
 	private String langCode;
 	private String parentRegistrationId;
@@ -13,53 +18,9 @@ public class SyncRegistrationDTO {
 	private String statusComment;
 	private String syncStatus;
 	private String syncType;
-
-	public String getLangCode() {
-		return langCode;
-	}
-
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
-
-	public String getParentRegistrationId() {
-		return parentRegistrationId;
-	}
-
-	public void setParentRegistrationId(String parentRegistrationId) {
-		this.parentRegistrationId = parentRegistrationId;
-	}
-
-	public String getRegistrationId() {
-		return registrationId;
-	}
-
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
-	}
-
-	public String getStatusComment() {
-		return statusComment;
-	}
-
-	public void setStatusComment(String statusComment) {
-		this.statusComment = statusComment;
-	}
-
-	public String getSyncStatus() {
-		return syncStatus;
-	}
-
-	public void setSyncStatus(String syncStatus) {
-		this.syncStatus = syncStatus;
-	}
-
-	public String getSyncType() {
-		return syncType;
-	}
-
-	public void setSyncType(String syncType) {
-		this.syncType = syncType;
-	}
+	private BigInteger packetSize;
+	private String packetHash;
+	private String supervisorStatus;
+	private String supervisorComments;
 
 }
