@@ -17,6 +17,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,10 +37,13 @@ import io.mosip.util.CryptoUtil;
 import io.mosip.util.DateUtils;
 import io.mosip.util.JsonUtil;
 import io.mosip.util.JsonValue;
+import io.mosip.util.MosipActiveMq;
+import io.mosip.util.MosipActiveMqImpl;
 import io.mosip.util.MosipQueue;
 import io.mosip.util.MosipQueueConnectionFactory;
 import io.mosip.util.MosipQueueConnectionFactoryImpl;
 import io.mosip.util.MosipQueueManager;
+import io.mosip.util.PrintPostServiceImpl;
 import io.mosip.util.QrCodeGenerator;
 import io.mosip.util.QrVersion;
 import io.mosip.util.QrcodeGeneratorImpl;
@@ -61,6 +66,7 @@ public class PrintingStage extends BaseTestCase{
 	Map<String, Object> attributes = new LinkedHashMap<>();
 	String primaryLang= "ara" ;
 	String secondaryLang = "fra";
+	MosipQueueManager<MosipQueue, byte[]> mosipQueueManager = new MosipActiveMqImpl();
 
 	public boolean validatePrintingStage(String rid) throws IOException{
 		boolean isPrintingStageValidated =  false;
@@ -111,6 +117,7 @@ public class PrintingStage extends BaseTestCase{
 				}
 			}
 			attributes.put("UIN", uin);
+			logger.info("attributes : "+attributes.toString());
 
 			//creating text file
 			byte[] textFileByte = createTextFile();
@@ -150,11 +157,23 @@ public class PrintingStage extends BaseTestCase{
 			}
 
 			boolean isAddedToQueue = sendToQueue(queue, byteMap, 0, uin);
-			if(!isAddedToQueue){
+			
+			if (isAddedToQueue) {
+				isPrintingStageValidated = true;
+				logger.info("Pdf added to the mosip queue for printing");
+				
+			} else {
 				isPrintingStageValidated = false;
-				logger.info("not added to queue........");
+				logger.info("Pdf was not added to queue due to queue failure");
 			}
-
+			PrintPostServiceImpl printPostService = new PrintPostServiceImpl();
+			printPostService.generatePrintandPostal(rid, queue, mosipQueueManager);
+			
+			if (consumeResponseFromQueue(rid, queue)) {
+				logger.info("Print and Post Completed for the regId : " + rid);
+			} else {
+				logger.info("Re-Send uin card with regId " + rid + " for printing");		
+			}
 		}
 		//	logger.info("uin : "+uin);
 		return isPrintingStageValidated;
@@ -188,6 +207,30 @@ public class PrintingStage extends BaseTestCase{
 			
 		}
 		return isAddedToQueue;
+		
+	}
+	
+	
+	
+	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
+		boolean result = false;
+
+		// Consuming the response from the third party service provider
+		
+		byte[] responseFromQueue = mosipQueueManager.consume(queue, "postal-service");
+		String response = new String(responseFromQueue);
+		JSONParser parser = new JSONParser();
+		JSONObject identityJson = null;
+		try {
+			identityJson = (JSONObject) parser.parse(response);
+			String uinFieldCheck = (String) identityJson.get("Status");
+			if (uinFieldCheck.equals("Success")) {
+				result = true;
+			}
+		} catch (ParseException e) {
+			logger.error("parse exception ",e);
+		}
+		return result;
 	}
 
 	private boolean setQrCode(byte[] textFileByte) {
@@ -343,6 +386,7 @@ public class PrintingStage extends BaseTestCase{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		test=extent.createTest("testRun");
 	}
 
 }

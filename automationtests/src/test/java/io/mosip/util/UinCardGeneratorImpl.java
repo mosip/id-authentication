@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,10 +14,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStream> {
-
-	/** The pdf generator. */
-	@Autowired
-	private PDFGenerator pdfGenerator;
 
 	/** The reg proc logger. */
 	private static Logger logger = Logger.getLogger(UinCardGeneratorImpl.class);
@@ -36,6 +30,7 @@ public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStr
 	public ByteArrayOutputStream generateUinCard(InputStream in, UinCardType type) {
 		ByteArrayOutputStream out = null;
 		try {
+			PDFGenerator pdfGenerator = new PDFGeneratorImpl();
 			out = (ByteArrayOutputStream) pdfGenerator.generate(in);
 		} catch (IOException e) {
 			logger.error("exception occurred ",e);
