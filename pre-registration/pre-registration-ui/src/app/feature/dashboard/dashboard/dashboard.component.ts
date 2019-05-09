@@ -35,7 +35,8 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
-  userFile: FileModel[];
+  userFile: FileModel[] = [];
+  file: FileModel = new FileModel();
   userFiles: FilesModel = new FilesModel(this.userFile);
   loginId = '';
   message = {};
@@ -556,11 +557,19 @@ export class DashBoardComponent implements OnInit {
 
   setUserFiles(response) {
     console.log('user files', response);
+    if (!response['errors']) {
+      console.log('if');
 
-    this.userFile = response[appConstants.RESPONSE][appConstants.METADATA];
-    console.log('user file from daashboard', this.userFile);
+      this.userFile = response[appConstants.RESPONSE][appConstants.METADATA];
+      console.log('user file from daashboard', this.userFile);
+    } else {
+      console.log('else');
 
-    this.userFiles.documentsMetaData = this.userFile;
+      let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
+      this.userFile.push(fileModel);
+      console.log('user file from daashboard', this.userFile);
+    }
+    this.userFiles['documentsMetaData'] = this.userFile;
     console.log('user files from daashboard', this.userFiles);
   }
 
