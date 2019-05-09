@@ -10,7 +10,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
 import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
-import io.mosip.registration.service.mdm.util.MdmRequestResponseBuilder;
+import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
 
 /**
  * Handles the request and response of bio devices

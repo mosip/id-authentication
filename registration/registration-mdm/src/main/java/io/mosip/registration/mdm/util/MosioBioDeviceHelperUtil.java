@@ -1,4 +1,4 @@
-package io.mosip.registration.service.mdm.util;
+package io.mosip.registration.mdm.util;
 
 import java.util.Collection;
 

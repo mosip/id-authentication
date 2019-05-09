@@ -1,4 +1,4 @@
-package io.mosip.registration.service.mdm.impl;
+package io.mosip.registration.mdm.service.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosio.registration.mdm.constants.MosipBioDeviceConstants;
@@ -28,8 +25,7 @@ import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegrator;
-import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
-import io.mosip.registration.service.mdm.util.MosioBioDeviceHelperUtil;
+import io.mosip.registration.mdm.util.MosioBioDeviceHelperUtil;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**

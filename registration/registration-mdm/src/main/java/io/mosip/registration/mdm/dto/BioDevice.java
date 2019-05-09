@@ -5,7 +5,7 @@ import java.util.Map;
 import io.mosio.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegrator;
-import io.mosip.registration.service.mdm.util.MdmRequestResponseBuilder;
+import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
