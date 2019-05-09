@@ -44,7 +44,7 @@ public class CryptomanagerController {
 	 * {@link CryptomanagerService} instance
 	 */
 	@Autowired
-	CryptomanagerService cryptomanagerService;
+	private CryptomanagerService cryptomanagerService;
 
 	/**
 	 * Controller for Encrypt the data
