@@ -19,7 +19,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.AuthenticationService;
-import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
+import io.mosip.registration.service.device.impl.FingerPrintCaptureService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 
@@ -35,7 +35,7 @@ public class FingerPrintCaptureServiceTest {
 	private FingerprintValidatorImpl fingerprintValidator;
 
 	@InjectMocks
-	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
+	private FingerPrintCaptureService fingerPrintCaptureServiceImpl;
 
 	@BeforeClass
 	public static void initialize() {

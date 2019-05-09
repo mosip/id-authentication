@@ -28,7 +28,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.AuthenticationService;
-import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
+import io.mosip.registration.service.device.impl.FingerPrintCaptureService;
 /**
  * @author Leona Mary S
  *
@@ -38,7 +38,7 @@ import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
 public class FingerPrintServiceTest extends BaseIntegrationTest
 {	
 	@Autowired
-	private FingerPrintCaptureServiceImpl fingerprintservice;
+	private FingerPrintCaptureService fingerprintservice;
 	@Autowired
 	private AuthenticationService authenticationService;
 	

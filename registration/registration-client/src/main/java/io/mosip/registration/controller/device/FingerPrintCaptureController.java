@@ -39,7 +39,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
-import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
+import io.mosip.registration.service.device.impl.FingerPrintCaptureService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -73,7 +73,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
+	private FingerPrintCaptureService fingerPrintCaptureService;
 
 	/** The registration controller. */
 	@Autowired
@@ -1244,7 +1244,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs,
 			boolean isValid, List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+			if (!fingerPrintCaptureService.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 				isValid = true;
 			} else {
 				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
