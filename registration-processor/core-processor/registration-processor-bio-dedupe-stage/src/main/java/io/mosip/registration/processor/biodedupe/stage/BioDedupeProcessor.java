@@ -38,6 +38,9 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -387,28 +390,28 @@ public class BioDedupeProcessor {
 			throws ApisResourceAccessException, IOException {
 
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
-		Map<String, String> filteredRegMap = new LinkedHashMap<String, String>();
+		Map<String, String> filteredRegMap = new LinkedHashMap<>();
 		List<String> regBioRefIds = new ArrayList<>();
 		List<String> matchedRegistrationIds = new ArrayList<>();
 		List<String> filteredRIds = new ArrayList<>();
-		List<AbisRequestEntity> abisRequestEntities = new ArrayList<>();
-		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
-		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
+		List<AbisResponseDto> abisResponseDtoList = new ArrayList<>();
+		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
 
 		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0), latestTransactionId,
+			abisRequestDtoList = packetInfoManager.getInsertOrIdentifyRequest(regBioRefIds.get(0), latestTransactionId,
 					IDENTIFY);
-			for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
-				abisResponseEntities.addAll(packetInfoDao.getAbisResponseIDs(abisRequestEntity.getId().getId()));
+			for (AbisRequestDto abisRequestDto : abisRequestDtoList) {
+				abisResponseDtoList.addAll(packetInfoManager.getAbisResponseIDs(abisRequestDto.getId()));
 			}
-			for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
-				abisResponseDetEntities
-						.addAll(packetInfoDao.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
+			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
+				abisResponseDetDtoList
+						.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
 			}
-			if (!abisResponseDetEntities.isEmpty()) {
-				for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
-					machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
+			if (!abisResponseDetDtoList.isEmpty()) {
+				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
+					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
 				matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
 

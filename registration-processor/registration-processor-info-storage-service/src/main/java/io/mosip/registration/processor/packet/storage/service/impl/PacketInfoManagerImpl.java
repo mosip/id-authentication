@@ -641,6 +641,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public String getBatchIdByRequestId(String abisRequestId) {
 		return packetInfoDao.getBatchIdByRequestId(abisRequestId);
 	}
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType) {
+		List<AbisRequestEntity> abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
+		return  PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntities);
+	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -776,6 +781,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				regId, "PacketInfoManagerImpl::saveDemoDedupePotentialData()::exit");
 	}
 
+	@Override
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
 		return packetInfoDao.getAbisResponseRecords(latestTransactionId, requestType);
 	}
@@ -785,4 +791,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.getAbisResponseDetailedRecords(abisResponseDto);
 	}
 
+	@Override
+	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId) {
+		return PacketInfoMapper.convertAbisResponseEntityListToDto(packetInfoDao.getAbisResponseIDs(abisRequestId));
+	}
+
+	@Override
+	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId) {
+		return PacketInfoMapper.convertAbisResponseDetEntityListToDto(packetInfoDao.getAbisResponseDetails(abisResponseId));
+	}
+
+	
 }

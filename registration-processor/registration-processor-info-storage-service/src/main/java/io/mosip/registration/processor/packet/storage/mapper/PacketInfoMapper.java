@@ -26,6 +26,7 @@ import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEnti
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
@@ -433,6 +434,8 @@ public class PacketInfoMapper {
 	public static AbisResponseDetDto convertAbisResponseDetEntityToDto(AbisResponseDetEntity entity) {
 
 		AbisResponseDetDto abisResDetDto = new AbisResponseDetDto();
+		abisResDetDto.setAbiRespId(entity.getId().getAbisRespId());
+		abisResDetDto.setMatchedBioRefId(entity.getId().getMatchedBioRefId());
 		abisResDetDto.setCrBy(entity.getCrBy());
 		abisResDetDto.setCrDtimes(entity.getCrDtimes());
 		abisResDetDto.setDelDtimes(entity.getDelDtimes());
@@ -441,6 +444,26 @@ public class PacketInfoMapper {
 		abisResDetDto.setUpdBy(entity.getUpdBy());
 		abisResDetDto.setUpdDtimes(entity.getUpdDtimes());
 		return abisResDetDto;
+
+	}
+	
+	public static AbisResponseDetEntity  convertAbisResponseDetEntityToDto(AbisResponseDetDto abisResponseDetDto ) {
+
+		AbisResponseDetEntity entity = new AbisResponseDetEntity();
+		AbisResponseDetPKEntity entityPk = new AbisResponseDetPKEntity();
+		
+		entityPk.setAbisRespId(abisResponseDetDto.getAbiRespId());
+		entityPk.setMatchedBioRefId(abisResponseDetDto.getMatchedBioRefId());
+		
+		entity.setId(entityPk);
+		entity.setCrBy(abisResponseDetDto.getCrBy());
+		entity.setCrDtimes(abisResponseDetDto.getCrDtimes());
+		entity.setDelDtimes(abisResponseDetDto.getDelDtimes());
+		entity.setIsDeleted(abisResponseDetDto.getIsDeleted());
+		entity.setScore(abisResponseDetDto.getScore());
+		entity.setUpdBy(abisResponseDetDto.getUpdBy());
+		entity.setUpdDtimes(abisResponseDetDto.getUpdDtimes());
+		return entity;
 
 	}
 

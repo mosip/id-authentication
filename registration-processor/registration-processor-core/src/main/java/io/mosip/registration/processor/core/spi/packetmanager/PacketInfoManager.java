@@ -133,7 +133,10 @@ public interface PacketInfoManager<T, /** D, M, */
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
 	
 	public String getBatchIdByRequestId(String abisRequestId);
+	
 	public List<String> getBatchStatusbyBatchId(String batchId);
+	
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId,String requestType);
 
 	/**
 	 * Gets the identify by transaction id.
@@ -191,7 +194,11 @@ public interface PacketInfoManager<T, /** D, M, */
 
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
 	
+	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId);
+	
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
+	
+	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId);
 	
 	/**
 	 * Save individual demographic dedupe update packet.

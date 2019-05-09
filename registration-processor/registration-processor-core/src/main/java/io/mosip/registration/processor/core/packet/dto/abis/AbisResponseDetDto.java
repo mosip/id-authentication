@@ -12,6 +12,10 @@ public class AbisResponseDetDto implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private String abiRespId;
+	
+	private String matchedBioRefId;
 
 	private String crBy;
 

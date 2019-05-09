@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -15,6 +17,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Embedded
+	AbisResponseDetPKEntity id;
+	
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "SYSTEM";
 
@@ -37,9 +42,6 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
-
-	@Column(name = "abis_resp_id",insertable=false, updatable=false)
-	private String abisResponse;
 
 	public AbisResponseDetEntity() {
 	}
@@ -107,13 +109,4 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;
 	}
-
-	public String getAbisResponse() {
-		return this.abisResponse;
-	}
-
-	public void setAbisResponse(String abisResponse) {
-		this.abisResponse = abisResponse;
-	}
-
 }
