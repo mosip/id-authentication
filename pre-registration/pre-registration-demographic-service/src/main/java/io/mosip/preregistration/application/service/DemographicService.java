@@ -292,7 +292,7 @@ public class DemographicService {
 						"Pre ID generation end time : " + DateUtils.getUTCCurrentDateTimeString());
 				DemographicEntity demographicEntity = demographicRepository
 						.save(serviceUtil.prepareDemographicEntityForCreate(demographicRequest,
-								StatusCodes.PENDING_APPOINTMENT.getCode(), "test@gmail.com", preId));
+								StatusCodes.PENDING_APPOINTMENT.getCode(), authUserDetails().getUserId(), preId));
 				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity);
 
 				mainResponseDTO.setResponse(res);
