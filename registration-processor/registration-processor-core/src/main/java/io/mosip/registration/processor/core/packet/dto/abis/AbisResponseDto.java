@@ -37,6 +37,4 @@ public class AbisResponseDto implements Serializable{
 
 	private String abisRequest;
 
-	// bi-directional many-to-one association to AbisResponseDet
-	private List<AbisResponseDetDto> abisResponseDets;
 }

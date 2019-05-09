@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biodedupe.dao.BioDedupDao;
@@ -19,6 +21,7 @@ import io.mosip.registration.processor.biodedupe.stage.exception.AdultCbeffNotPr
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -30,10 +33,16 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -106,6 +115,9 @@ public class BioDedupeProcessor {
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	@Autowired
+	public PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	String description = "";
 
@@ -340,7 +352,7 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto) {
+	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		List<RegBioRefEntity> regBioRefEntities = new ArrayList<>();
 		// TODO logic for abis handler update scenario
@@ -371,9 +383,19 @@ public class BioDedupeProcessor {
 			}
 			for (RegBioRefEntity regBioRefEntity : regBioRefEntities) {
 				regBioRefEntity.getId().getRegId();
-				// Get UIN from IDrepo API using regId
-				// If all UIN's are identical send to UIN stage else
-				// send to manual varification stage
+				List<String> pathSegments = new ArrayList<>();
+				pathSegments.add("27847657360002520190320095010");
+					IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "type", "all", ResponseWrapper.class);
+					System.out.println(response);
+					Gson gsonObj = new Gson();
+					String jsonString = gsonObj.toJson(response.getResponse());
+					JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+					System.out.println(jsonString);
+					String uin = (String) identityJson.get("UIN");
+					if(uin!=""/*Current RID UIN*/) {
+						// send to Manual Varificatiom
+						//packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIds, String registrationStatusDto.getRegistrationId(),DedupeSourceName sourceName)
+					}
 			}
 		}
 	}

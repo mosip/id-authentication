@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.biodedupe.stage;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -218,4 +219,58 @@ public class BioDedupeProcessorTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	
+	@Test
+	public void testBioDeDupUpdatePacketHandlerProcessingSuccess() {
+		Mockito.when(utilities.getElapseStatus(any(), any())).thenReturn("Handler");
+		AbisResponseDetEntity abisDet = new AbisResponseDetEntity();
+		abisDet.setCrBy("mosip");
+
+		AbisResponseEntity abis = new AbisResponseEntity();
+		abis.setStatusCode("status");
+
+		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+
+		abisResponseDetEntities.add(abisDet);
+		Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(), any())).thenReturn(abisResponseDetEntities);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+
+		assertTrue(messageDto.getDestinationStage().equalsIgnoreCase(StageNameConstant.UINGENERATORSTAGE));
+	}
+	
+	@Test
+	public void testBioDeDupUpdatePacketHandlerProcessingFailure() {
+		Mockito.when(utilities.getElapseStatus(any(), any())).thenReturn("Handler");
+		AbisResponseDetEntity abisDet = new AbisResponseDetEntity();
+		abisDet.setCrBy("mosip");
+
+		AbisResponseEntity abis = new AbisResponseEntity();
+		abis.setStatusCode("status");
+
+		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+
+		abisResponseDetEntities.add(abisDet);
+		Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(), any())).thenReturn(abisResponseDetEntities);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+
+		assertTrue(messageDto.getInternalError());
+	}
+	
+	@Test
+	public void testBioDeDupUpdatePacketHandlerProcessingBiometricHandler() {
+		Mockito.when(utilities.getElapseStatus(any(), any())).thenReturn("Handler");
+		AbisResponseDetEntity abisDet = new AbisResponseDetEntity();
+		abisDet.setCrBy("mosip");
+
+		AbisResponseEntity abis = new AbisResponseEntity();
+		abis.setStatusCode("status");
+
+		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
+
+		abisResponseDetEntities.add(abisDet);
+		Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(), any())).thenReturn(abisResponseDetEntities);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+
+		assertEquals(messageDto.getMessageBusAddress().getAddress(),"abis-handler-bus-in");
+	}
 }

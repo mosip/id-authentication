@@ -46,6 +46,4 @@ public class AbisRequestDto implements Serializable {
 
 	private LocalDateTime updDtimes;
 
-	// bi-directional many-to-one association to AbisResponse
-	private List<AbisResponseDto> abisResponses;
 }
