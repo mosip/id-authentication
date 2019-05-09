@@ -68,6 +68,13 @@ public class KeyManagerTest {
 
 	@Autowired
 	private Environment environment;
+	
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(keyManager, "keySplitter", "#KEY_SPLITTER#");
+		ReflectionTestUtils.setField(keyManager, "partnerId", "PARTNER");
+		ReflectionTestUtils.setField(keyManager, "appId", "IDA");
+	}
 
 	/**
 	 * Request data test.
@@ -82,18 +89,15 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		ResponseWrapper<Map<String, Object>> symmetricKeyResponse = new ResponseWrapper<>();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj2tDM");
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "eyJ0aW1lc3RhbXAiOiIyMDE5LTA1LTA3VDEyOjQxOjU3LjA4NiswNTozMCIsInRyYW5zYWN0aW9uSUQiOiIxMjM0NTY3ODkwIiwiYmlvbWV0cmljcyI6W3siZGF0YSI6eyJiaW9UeXBlIjoiRklEIiwiYmlvU3ViVHlwZSI6IlVOS05PV04iLCJkZXZpY2VQcm92aWRlcklEIjoiY29nZW50IiwiYmlvVmFsdWUiOiJSazFTQUNBeU1BQUFBQUZjQUFBQlBBRmlBTVVBeFFFQUFBQW9OVUI5QU1GMFY0Q0JBS0JCUEVDMEFMNjhaSUM0QUtqTlpFQmlBSnZXWFVCUEFOUFdOVURTQUs3UlVJQzJBUUlmWkVESkFQTXhQRUJ5QUd3UFhZQ3BBUllQWkVDZkFGam9aRUNHQUV2OVpFQkVBRm10VjBCcEFVR05YVUMvQVVFRVNVQ1VBVklFUEVDMkFWTnhQSUNjQUxXdVpJQ3VBTG0zWkVDTkFKcXhRMENVQUkzR1EwQ1hBUGdoVjBCVkFLRE9aRUJmQVBxSFhVQkRBS2UvWklCOUFHM3hYVURQQUliWlVFQmNBR1loWkVDSUFTZ0hYWUJKQUdBblYwRGpBUjRqRzBES0FUcUpJVUNHQURHU1pFRFNBVVlHSVVBeEFEK25WMENYQUsrb1NVQm9BTHI2UTRDU0FPdUtYVUNpQUl2TlpFQzlBSnpRWklCTkFMYlRYVUJCQUw2OFYwQ2VBSERaWkVDd0FIUGFaRUJSQVB3SFVJQkhBSFcyWFVEWEFSQVVEVUM0QVM0SFpFRFhBUzBDUTBDWUFETDRaRUNzQVV6dVBFQmtBQ2dSWkFBQSIsInRpbWVzdGFtcCI6IjIwMTktMDUtMDdUMTM6NDE6NTcuMDg2KzA1OjMwIiwidHJhbnNhY3Rpb25JRCI6IjEyMzQ1Njc4OTAifX1dfQ");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
-		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(Base64.encodeBase64URLSafeString(
-				("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}")
-						.getBytes()));
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
 		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper);
-		assertTrue(decryptedReqMap.containsKey("secretKey"));
+		assertTrue(decryptedReqMap.containsKey("transactionID"));
 	}
 
 	/**
@@ -109,10 +113,10 @@ public class KeyManagerTest {
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
@@ -189,10 +193,10 @@ public class KeyManagerTest {
 	public void requestInvalidDataIOException() throws IDDataValidationException, IdAuthenticationAppException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
