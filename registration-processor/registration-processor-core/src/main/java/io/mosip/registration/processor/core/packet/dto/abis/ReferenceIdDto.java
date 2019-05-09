@@ -1,9 +1,13 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
+import java.io.Serializable;
+
 /**
  * The Class ReferenceIdDto.
  */
-public class ReferenceIdDto {
+public class ReferenceIdDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/** The reference id. */
 	private String referenceId;

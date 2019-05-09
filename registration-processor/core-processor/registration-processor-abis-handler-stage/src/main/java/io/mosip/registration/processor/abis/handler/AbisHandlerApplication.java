@@ -16,8 +16,8 @@ public class AbisHandlerApplication {
                 "io.mosip.registration.processor.core.config",
                 "io.mosip.registration.processor.core.kernel.beans");
         ctx.refresh();
-        AbisHandlerStage handlerStage = new AbisHandlerStage();
-       // handlerStage.deployVerticle();
+        AbisHandlerStage handlerStage = ctx.getBean(AbisHandlerStage.class);
+        handlerStage.deployVerticle();
 
         MessageDTO dto = new MessageDTO();
         dto.setRid("10003100030001520190422074511");

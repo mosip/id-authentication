@@ -1,12 +1,14 @@
 package io.mosip.registration.processor.abis.handler.stage;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.abis.handler.exception.AbisHandlerException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.*;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.*;
@@ -135,7 +137,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 					insertInBioRef(regId, bioRefId);
 					createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
 					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
-					object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				} else {
 					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
 					object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
@@ -158,8 +160,6 @@ public class AbisHandlerStage extends MosipVerticleManager {
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} finally {
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
@@ -203,6 +203,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setUpdBy(null);
 			abisRequestDto.setUpdDtimes(LocalDateTime.now());
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
+			abisRequestDto.setRequestDtimes(LocalDateTime.now());
 			packetInfoManager.saveAbisRequest(abisRequestDto);
 		}
 	}
@@ -234,6 +235,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 				description = "Potential Match Records are Not Found for Demo Dedupe Potential Match";
 				regProcLogger.error("Potential Match Records are Not Found for Demo Dedupe Potential Match", "", "",
 						"");
+				throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 			}
 			List<ReferenceIdDto> referenceIdDtos = new ArrayList<>();
 
@@ -255,6 +257,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		} catch (IOException e) {
 			description = "Internal Error occured in Abis Handler identify request";
 			regProcLogger.error("Internal Error occured in Abis Handler in identify", "", "", "");
+			throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 		}
 		return bos.toByteArray();
 	}
@@ -301,13 +304,14 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setRefRegtrnId(transactionId);
 			abisRequestDto.setReqText(abisInsertRequestBytes);
 			abisRequestDto.setStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			abisRequestDto.setStatusComment("");
+			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
 			abisRequestDto.setCrBy(USER);
 			abisRequestDto.setCrDtimes(LocalDateTime.now());
 			abisRequestDto.setUpdBy(null);
 			abisRequestDto.setUpdDtimes(LocalDateTime.now());
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
+			abisRequestDto.setRequestDtimes(LocalDateTime.now());
 			packetInfoManager.saveAbisRequest(abisRequestDto);
 		}
 	}
@@ -334,6 +338,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		} catch (IOException e) {
 			description = "Internal Error occured in Abis Handler in insert request";
 			regProcLogger.error("Internal Error occured in Abis Handler in insert", "", "", "");
+			throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 		}
 		return bos.toByteArray();
 	}

@@ -623,7 +623,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public List<AbisApplicationDto> getAllAbisDetails() {
-		List<AbisApplicationEntity> abisApplicationEntityList = regAbisApplicationRepository.findAll();
+		List<AbisApplicationEntity> abisApplicationEntityList = regAbisApplicationRepository.findAll(AbisApplicationEntity.class);
 		return PacketInfoMapper.convertAbisApplicationEntityListToDto(abisApplicationEntityList);
 	}
 

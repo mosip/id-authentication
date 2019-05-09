@@ -87,7 +87,7 @@ public class Utilities {
 	private long elapseTime;
 
 	@Value("${registration.processor.abis.json}")
-	private String registrationProcessorAbisJson;
+	private String registrationProcessorAbisJson  ;
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
 	private static final String OUTBOUNDQUEUENAME = "outboundQueueName";
