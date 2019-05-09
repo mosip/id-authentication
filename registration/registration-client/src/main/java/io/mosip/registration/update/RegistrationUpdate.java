@@ -273,11 +273,6 @@ public class RegistrationUpdate {
 
 		File jarInFolder = new File(folderName + jarFileName);
 
-		// TODO Need to be removed once rxtx jars added to jfrog repo
-		List<String> notJars = java.util.Arrays.asList(
-				new String[] { "rxtxSerial.dll", "rxtxParallel.dll", "rxtxcomm-2.2", "bcprov-jdk14-138", "RXTXcomm" });
-
-		if (!notJars.contains(jarFileName)) {
 			if (!jarInFolder.exists()
 					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
 							&& FileUtils.deleteQuietly(jarInFolder))) {
@@ -288,7 +283,6 @@ public class RegistrationUpdate {
 				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
 			}
-		}
 
 	}
 
