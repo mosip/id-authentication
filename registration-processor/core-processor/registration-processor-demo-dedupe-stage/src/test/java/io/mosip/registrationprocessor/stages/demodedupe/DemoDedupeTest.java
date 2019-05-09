@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -143,12 +144,12 @@ public class DemoDedupeTest {
 		DemographicInfoDto dto1 = new DemographicInfoDto();
 		DemographicInfoDto dto2 = new DemographicInfoDto();
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
-//		dto1.setDob(new Date());
-//		dto2.setDob(new Date());
 		Dtos.add(dto1);
 		Dtos.add(dto2);
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
+		
+		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(any(),any(),any(),any())).thenReturn(Dtos);
 
 
 		List<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
