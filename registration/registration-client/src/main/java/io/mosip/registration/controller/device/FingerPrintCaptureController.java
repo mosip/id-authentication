@@ -9,7 +9,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,6 +39,7 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -60,6 +63,7 @@ import javafx.stage.Stage;
  * @author Mahesh Kumar
  * @since 1.0
  */
+
 @Controller
 public class FingerPrintCaptureController extends BaseController implements Initializable {
 
@@ -229,6 +233,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The thumb count. */
 	private int thumbCount;
+	
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
 
 	/*
 	 * (non-Javadoc)
@@ -1076,6 +1083,48 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 	}
+
+	/**
+	 * Scan fingers by making the  call to service Api.
+	 *
+	 * @param detailsDTO             the details DTO
+	 * @param fingerType             the finger type
+	 */
+
+	public void getFingerPrintImage(FingerprintDetailsDTO detailsDTO, String fingerType) {
+		String type = fingerType;
+		switch (fingerType) {
+		case RegistrationConstants.LEFTPALM:
+			fingerType = RegistrationConstants.FINGER_SINGLE;
+			break;
+		case RegistrationConstants.RIGHTPALM:
+			fingerType = RegistrationConstants.FINGER_SINGLE;
+			break;
+		case RegistrationConstants.THUMBS:
+			fingerType = RegistrationConstants.FINGER_SLAP;
+			break;
+
+		default:
+			break;
+		}
+		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
+		try {
+			byteMap = mosipBioDeviceManager.scan(fingerType);
+			if (byteMap != null) {
+				byte[] imageByte = byteMap.get(fingerType);
+				if (imageByte != null) {
+					detailsDTO.setFingerPrint(imageByte);
+					detailsDTO.setFingerType(type);
+					detailsDTO.setQualityScore(80);
+				}
+			}
+		} catch (RegBaseCheckedException exception) {
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+		}
+	}
+
 
 	/**
 	 * {@code saveBiometricDetails} is to check the deduplication of captured finger

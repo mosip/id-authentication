@@ -126,6 +126,10 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Button backBtn;
+	
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
+
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -409,20 +413,23 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	@Autowired
-	MosipBioDeviceManager mosipBioDeviceManager;
-
-	private void getIrisImage(IrisDetailsDTO detailsDTO, String eyeType) {
+	/**
+	 * Scan irises by making the  call to service Api.
+	 *
+	 * @param detailsDTO             the details DTO
+	 * @param fingerType             the eye type
+	 */
+	public void getIrisImage(IrisDetailsDTO detailsDTO, String eyeType) {
 		String type = eyeType;
 		switch (eyeType) {
 		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
-			eyeType = "IRIS_SINGLE";
+			eyeType = RegistrationConstants.IRIS_SINGLE;
 			break;
 		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
-			eyeType = "IRIS_SINGLE";
+			eyeType = RegistrationConstants.IRIS_SINGLE;
 			break;
-		case "IRIS_DOUBLE":
-			eyeType = "IRIS_DOUBLE";
+		case RegistrationConstants.IRIS_DOUBLE:
+			eyeType = RegistrationConstants.IRIS_DOUBLE;
 			break;
 
 		default:
@@ -439,8 +446,10 @@ public class IrisCaptureController extends BaseController {
 					detailsDTO.setQualityScore(80);
 				}
 			}
-		} catch (RegBaseCheckedException e) {
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
+					ExceptionUtils.getStackTrace(exception)));
 		}
 	}
 

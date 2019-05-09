@@ -63,7 +63,12 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_PANE = "exceptionPane";
 	public static final String BIOMETRIC_EXCEPTION = "biometricException";
 	public static final String FINGER_PANE = "fingerPane";
+	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
+	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
+	
 	public static final String IRIS_PANE = "irisPane";
+	public static final String IRIS_SINGLE = "IRIS_SINGLE";
+	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
 	public static final String IRIS_CAPTURE = "irisCapture";
 	public static final String FACE_CAPTURE = "faceCapture";

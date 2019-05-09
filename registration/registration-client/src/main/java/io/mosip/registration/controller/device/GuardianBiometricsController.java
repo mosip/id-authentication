@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -27,7 +26,6 @@ import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerPrintCaptureService;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
-import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -414,11 +412,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 			if (detailsDTO == null) {
 				detailsDTO = new IrisDetailsDTO();
 				detailsDTO.setNumOfIrisRetry(detailsDTO.getNumOfIrisRetry() + 1);
-				irisDetailsDTOs.add(detailsDTO);
 			}
 		}
 		irisFacade.getIrisImageAsDTO(detailsDTO, irisType);
-
+		
+		//irisCaptureController.getIrisImage(detailsDTO, irisType);
+		
+		if(detailsDTO.getIris()!=null) {
+		irisDetailsDTOs.add(detailsDTO);
 		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 
@@ -434,11 +435,19 @@ public class GuardianBiometricsController extends BaseController implements Init
 			scanBtn.setDisable(false);
 			continueBtn.setDisable(true);
 		}
-		
+		}else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+		}
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Iris scanning is completed");
 
 	}
+	
+	@Autowired
+	FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	IrisCaptureController irisCaptureController;
 	
 	/**
 	 * Scan Fingers
@@ -488,31 +497,39 @@ public class GuardianBiometricsController extends BaseController implements Init
 			if (detailsDTO == null) {
 				detailsDTO = new FingerprintDetailsDTO();
 				detailsDTO.setNumRetry(detailsDTO.getNumRetry() + 1);
-				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
 		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+		
+		//fingerPrintCaptureController.getFingerPrintImage(detailsDTO, fingerType);
 
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
-		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
-
-		setCapturedValues(detailsDTO.getFingerPrint(), detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
+		if(detailsDTO.getFingerPrint()!=null) {
 		
-		popupStage.close();
-
-		if (validateFingerPrintQulaity(detailsDTO, thresholdValue) && fingerdeduplicationCheck(fingerprintDetailsDTOs)) {
-			scanBtn.setDisable(true);
-			continueBtn.setDisable(false);
+			fingerprintDetailsDTOs.add(detailsDTO);
+			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+	
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
+	
+			setCapturedValues(detailsDTO.getFingerPrint(), detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
+			
+			popupStage.close();
+	
+			if (validateFingerPrintQulaity(detailsDTO, thresholdValue) && fingerdeduplicationCheck(fingerprintDetailsDTOs)) {
+				scanBtn.setDisable(true);
+				continueBtn.setDisable(false);
+			}
+		
+		}else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_DEVICE_ERROR);
 		}
 		
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Fingerprints Scanning is completed");
 
 	}
-	
+
 	/**
 	 * Updating captured values
 	 * 
