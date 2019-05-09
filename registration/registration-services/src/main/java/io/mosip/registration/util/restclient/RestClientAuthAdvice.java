@@ -1,8 +1,5 @@
 package io.mosip.registration.util.restclient;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,7 +9,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
@@ -22,6 +23,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.tpm.spi.TPMService;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -41,6 +43,8 @@ public class RestClientAuthAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	@Autowired
+	private TPMService tpmService;
 
 	/**
 	 * The {@link Around} advice method which be invoked for all web services. This
@@ -60,6 +64,11 @@ public class RestClientAuthAdvice {
 					"Adding authZ token to web service request header if required");
 
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
+			
+			if (requestHTTPDTO.isRequestSignRequired()) {
+				addRequestSignature(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getRequestBody());
+			}
+			
 			if (requestHTTPDTO.isAuthRequired()) {
 				boolean haveToAuthZByClientId = false;
 
@@ -189,6 +198,33 @@ public class RestClientAuthAdvice {
 
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 				"Adding of authZ token to request header completed");
+	}
+
+	/**
+	 * Add request signature to the request header
+	 * 
+	 * @param httpHeaders
+	 *            the HTTP headers for the web-service request
+	 * @param requestBody
+	 *            the request body
+	 * @throws RegBaseCheckedException
+	 *             exception while generating request signature
+	 */
+	private void addRequestSignature(HttpHeaders httpHeaders, Object requestBody) throws RegBaseCheckedException {
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Adding request signature to request header");
+
+		try {
+			httpHeaders.add("request-signature", String.format("Authorization:%s",
+					CryptoUtil.encodeBase64(tpmService.signData(new ObjectMapper().writeValueAsBytes(requestBody)))));
+		} catch (JsonProcessingException jsonProcessingException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorCode(),
+					RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorMessage(),
+					jsonProcessingException);
+		}
+
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Completed adding request signature to request header completed");
 	}
 
 }

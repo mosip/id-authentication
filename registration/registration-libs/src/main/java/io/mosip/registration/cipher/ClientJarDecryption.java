@@ -3,8 +3,10 @@ package io.mosip.registration.cipher;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
@@ -19,9 +21,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 import io.mosip.registration.config.RegistrationUpdate;
+import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
+import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
+import io.mosip.registration.tpm.initialize.TPMInitialization;
+
 import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -50,11 +57,17 @@ public class ClientJarDecryption extends Application {
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
+	private static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	private static final String MOSIP_REGISTRATION_APP_KEY = "mosip.registration.app.key";
+	private static final String ENCRYPTED_KEY = "mosip.registration.key.encrypted";
+	private static final String IS_KEY_ENCRYPTED = "Y";
 
 	ProgressBar progressBar = new ProgressBar();
 	Stage primaryStage = new Stage();
 
 	static String tempPath;
+	private AsymmetricEncryptionService asymmetricEncryptionService = new AsymmetricEncryptionService();
+	private AsymmetricDecryptionService asymmetricDecryptionService = new AsymmetricDecryptionService();
 
 	/**
 	 * Decrypt the bytes
@@ -130,6 +143,10 @@ public class ClientJarDecryption extends Application {
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
+
+		// Encrypt the Keys
+		encryptRequiredProperties(properties, propsFilePath);
+		
 		try {
 		String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
 		if (!new File(dbpath).exists()) {
@@ -189,8 +206,10 @@ public class ClientJarDecryption extends Application {
 					System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
 					byte[] decryptedRegFileBytes;
 					try {
+						byte[] decryptedKey = getValue(MOSIP_REGISTRATION_APP_KEY, properties);
+						
 						decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
-								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+								decryptedKey);
 					
 
 					String clientJar = tempPath + SLASH + UUID.randomUUID();
@@ -199,14 +218,16 @@ public class ClientJarDecryption extends Application {
 
 					System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
 					byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
-							Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+							decryptedKey);
 
 					FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
 							decryptedRegServiceBytes);
 
 					String libPath = new File("lib").getAbsolutePath();
-					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -Dmosip.dbpath="+properties.getProperty("mosip.dbpath")+" -cp " + tempPath + "/*;" + libPath
-							+ "/* io.mosip.registration.controller.Initialization";
+					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -Dmosip.dbpath="
+								+ properties.getProperty("mosip.dbpath") + " -Dmosip.dbkey="
+								+ new String(getValue(MOSIP_REGISTRATION_DB_KEY, properties)) + " -cp " + tempPath
+								+ "/*;" + libPath + "/* io.mosip.registration.controller.Initialization";
 					System.out.println("Command-->>" + cmd);
 					Process process = Runtime.getRuntime().exec(cmd);
 					System.out.println("the output stream is " + process.getOutputStream().getClass());
@@ -245,5 +266,28 @@ public class ClientJarDecryption extends Application {
 		stackPane.getChildren().add(progressBar);
 		Scene scene = new Scene(stackPane, 400, 500);
 		primaryStage.setScene(scene);
+	}
+
+	private byte[] getValue(String key, Properties properties) {
+		return asymmetricDecryptionService.decryptUsingTPM(TPMInitialization.getTPMInstance(),
+				CryptoUtil.decodeBase64(properties.getProperty(key)));
+	}
+
+	private void encryptRequiredProperties(Properties properties, String propertiesFilePath) throws IOException {
+		if (!(properties.containsKey(ENCRYPTED_KEY)
+				&& properties.getProperty(ENCRYPTED_KEY).equals(IS_KEY_ENCRYPTED))) {
+			try (OutputStream propertiesFile = new FileOutputStream(propertiesFilePath)) {
+				properties.put(ENCRYPTED_KEY, IS_KEY_ENCRYPTED);
+				properties.put(MOSIP_REGISTRATION_APP_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_APP_KEY));
+				properties.put(MOSIP_REGISTRATION_DB_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_DB_KEY));
+				properties.store(propertiesFile, "Updated");
+				propertiesFile.flush();
+			}
+		}
+	}
+
+	private String getEncryptedValue(Properties properties, String key) {
+		return CryptoUtil.encodeBase64String(asymmetricEncryptionService.encryptUsingTPM(
+				TPMInitialization.getTPMInstance(), Base64.getDecoder().decode(properties.getProperty(key))));
 	}
 }
