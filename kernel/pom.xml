@@ -31,16 +31,19 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-		
-		<!-- spring -->	
+
+		<!-- spring -->
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
+		<swagger.core.version>2.0.7</swagger.core.version>
+		<swagger.annotations.version>1.5.20</swagger.annotations.version>
+		<springfox.version>2.9.2</springfox.version>
+
 		<vertx.version>3.6.2</vertx.version>
 		<vertx.health.check.version>3.7.0</vertx.health.check.version>
-		<swagger.version>2.9.2</swagger.version>
-		<swagger-annotations.version>2.0.7</swagger-annotations.version>
+
 
 		<!-- javax -->
 		<javax.interceptor.version>1.2</javax.interceptor.version>
@@ -156,7 +159,7 @@
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
-		<module>kernel-smsnotification-service</module> 
+		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-syncdata-service</module>
@@ -210,6 +213,11 @@
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${maven.javadoc.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -247,6 +255,26 @@
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo>***********************************************************************************</echo>
+								<echo>BaseDir : ${project.basedir}</echo>
+								<echo>ArtifactId : ${project.artifactId}</echo>
+								<echo>***********************************************************************************</echo>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
