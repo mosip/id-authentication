@@ -1,27 +1,25 @@
-/**
- * 
- *//*
+
 package io.mosip.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-*//**
+/**
  * @author Ramadurai Pandian
  * 
  * A Container Class where the BIR is created and updated
  *
- *//*
+ */
 public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 
 	private BIRType birType;
 
-	*//**
+	/**
 	 * Method where the initialization of BIR happens
 	 * 
 	 * @param birList List of BIR data
 	 * @return BIRType data with all images
-	 *//*
+	 */
 	@Override
 	public BIRType createBIRType(List<BIR> birList) {
 		load();
@@ -52,7 +50,7 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 		birType.setBIRInfo(birInfo);
 	}
 
-	*//**
+	/**
 	 * Method to the update of BIR
 	 * 
 	 * @param birList List of BIR data
@@ -60,7 +58,7 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	 * @param fileBytes Cbeff XML data as bytes
 	 * 
 	 * @return birType BIR data with all images
-	 *//*
+	 */
 	@Override
 	public BIRType updateBIRType(List<BIR> birList, byte[] fileBytes) throws Exception {
 		BIRType birType = CbeffValidator.getBIRFromXML(fileBytes);
@@ -72,7 +70,7 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 		return birType;
 	}
 
-	*//**
+	/**
 	 * Method to the validate the BIR
 	 * 
 	 * @param xmlBytes Cbeff XML data as bytes array
@@ -80,11 +78,10 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	 * @param xsdBytes Cbeff XSD data as bytes array
 	 * 
 	 * @return boolean of validated XML against XSD
-	 *//*
+	 */
 	@Override
 	public boolean validateXML(byte[] xmlBytes, byte[] xsdBytes) throws Exception {
 		return CbeffXSDValidator.validateXML(xsdBytes, xmlBytes);
 	}
 
 }
-*/

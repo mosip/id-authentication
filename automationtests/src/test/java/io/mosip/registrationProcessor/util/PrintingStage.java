@@ -1,33 +1,57 @@
-/*package io.mosip.registrationProcessor.util;
+package io.mosip.registrationProcessor.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.testng.ITest;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.mosip.dbaccess.RegProcStageDb;
-
+import io.mosip.dbdto.JsonFileDTO;
+import io.mosip.dbdto.JsonRequestDTO;
+import io.mosip.dbdto.PrintQueueDTO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CbeffImpl;
 import io.mosip.util.CbeffToBiometricUtil;
 import io.mosip.util.CbeffUtil;
 import io.mosip.util.CryptoUtil;
+import io.mosip.util.DateUtils;
 import io.mosip.util.JsonUtil;
 import io.mosip.util.JsonValue;
+import io.mosip.util.MosipActiveMq;
+import io.mosip.util.MosipActiveMqImpl;
 import io.mosip.util.MosipQueue;
 import io.mosip.util.MosipQueueConnectionFactory;
 import io.mosip.util.MosipQueueConnectionFactoryImpl;
+import io.mosip.util.MosipQueueManager;
+import io.mosip.util.PrintPostServiceImpl;
+import io.mosip.util.QrCodeGenerator;
+import io.mosip.util.QrVersion;
+import io.mosip.util.QrcodeGeneratorImpl;
+import io.mosip.util.TemplateGenerator;
+import io.mosip.util.UINCardConstant;
+import io.mosip.util.UinCardGenerator;
+import io.mosip.util.UinCardGeneratorImpl;
+import io.mosip.util.UinCardType;
 import io.mosip.util.Utilities;
 import io.restassured.response.Response;
 
@@ -38,8 +62,12 @@ public class PrintingStage extends BaseTestCase{
 	private String password = "admin";
 	private String url = "tcp://104.211.200.46:61616";
 	private String typeOfQueue = "ACTIVEMQ";
+	private String address = "print-service-qa";
 	Map<String, Object> attributes = new LinkedHashMap<>();
-	
+	String primaryLang= "ara" ;
+	String secondaryLang = "fra";
+	MosipQueueManager<MosipQueue, byte[]> mosipQueueManager = new MosipActiveMqImpl();
+
 	public boolean validatePrintingStage(String rid) throws IOException{
 		boolean isPrintingStageValidated =  false;
 		RegProcStageDb dbData= new RegProcStageDb();
@@ -47,9 +75,9 @@ public class PrintingStage extends BaseTestCase{
 		Response actualResponse = null;
 		ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 		String id_url = "/v1/idrepo/identity";
-		
+		Map<String, byte[]> byteMap = new HashMap<>();
 
-		
+
 
 		if(uin == null){
 			isPrintingStageValidated = false;
@@ -73,20 +101,52 @@ public class PrintingStage extends BaseTestCase{
 				isPrintingStageValidated = false;
 				logger.info("Photo is not set");
 			}
-			
-			//creating text file
+
+			//creating template
 			if (response!= null) {
-				
-					for (Map.Entry<String, Map<String,String>> entry : response.entrySet()) {
-						//	logger.info(entry.getKey() + "/" + entry.getValue());
-						if(entry.getKey().contains("identity")){
-							Map<String, String> values =  entry.getValue();
-							setTemplateAttributes(values.toString(),attributes);
-						}
+
+				for (Map.Entry<String, Map<String,String>> entry : response.entrySet()) {
+					//	logger.info(entry.getKey() + "/" + entry.getValue());
+					if(entry.getKey().contains("identity")){
+						Map<String, String> values =  entry.getValue();
+						ObjectMapper mapperObj = new ObjectMapper();
+						String jsonResp = mapperObj.writeValueAsString(values);
+						logger.info("jsonResp : "+jsonResp);
+						setTemplateAttributes(jsonResp,attributes);
 					}
+				}
 			}
-		//	String jsonString = response.
-				
+			attributes.put("UIN", uin);
+			logger.info("attributes : "+attributes.toString());
+
+			//creating text file
+			byte[] textFileByte = createTextFile();
+			byteMap.put("textFile", textFileByte);
+
+			boolean isQRcodeSet = setQrCode(textFileByte);
+			if(!isQRcodeSet){
+				isPrintingStageValidated = false;
+				logger.info("qr code not set");
+			}
+
+			// getting template and placing original values
+			TemplateGenerator templateGenerator = new TemplateGenerator();
+			InputStream uinArtifact = templateGenerator.getTemplate("RPR_UIN_CARD_TEMPLATE", attributes, primaryLang);
+			if (uinArtifact == null) {
+				isPrintingStageValidated = false;
+			}else
+				logger.info("template generated............");
+
+			// generating pdf
+			UinCardGenerator<ByteArrayOutputStream> uinCardGenerator = new UinCardGeneratorImpl();
+			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+
+			byte[] pdfbytes = pdf.toByteArray();
+			byteMap.put("uinPdf", pdfbytes);
+
+			byte[] uinbyte = attributes.get("UIN").toString().getBytes();
+			byteMap.put("UIN", uinbyte);
+
 			//create active mq connection
 			MosipQueueConnectionFactory mosipConnectionFactory = new MosipQueueConnectionFactoryImpl();
 			MosipQueue queue = (MosipQueue) mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
@@ -96,19 +156,150 @@ public class PrintingStage extends BaseTestCase{
 				logger.info("Conenction not created...");
 			}
 
-			//	boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
-
+			boolean isAddedToQueue = sendToQueue(queue, byteMap, 0, uin);
+			
+			if (isAddedToQueue) {
+				isPrintingStageValidated = true;
+				logger.info("Pdf added to the mosip queue for printing");
+				
+			} else {
+				isPrintingStageValidated = false;
+				logger.info("Pdf was not added to queue due to queue failure");
+			}
+			PrintPostServiceImpl printPostService = new PrintPostServiceImpl();
+			printPostService.generatePrintandPostal(rid, queue, mosipQueueManager);
+			
+			if (consumeResponseFromQueue(rid, queue)) {
+				logger.info("Print and Post Completed for the regId : " + rid);
+			} else {
+				logger.info("Re-Send uin card with regId " + rid + " for printing");		
+			}
 		}
 		//	logger.info("uin : "+uin);
 		return isPrintingStageValidated;
 
 	}
 
+	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> byteMap, int count, String uin) {
+		boolean isAddedToQueue = false;
+		try {
+			PrintQueueDTO queueDto = new PrintQueueDTO();
+			queueDto.setPdfBytes(byteMap.get("uinPdf"));
+			queueDto.setTextBytes(byteMap.get("textFile"));
+			queueDto.setUin(uin);
+
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(queueDto);
+			oos.flush();
+			byte[] printQueueBytes = bos.toByteArray();
+			MosipQueueManager<MosipQueue, byte[]> mosipQueueManager = null;
+			isAddedToQueue = mosipQueueManager.send(queue, printQueueBytes, address);
+
+		
+			if (count < 5) {
+				sendToQueue(queue, byteMap, count + 1, uin);
+			} else {
+				logger.error("count is more than 5..");
+				isAddedToQueue = false;
+			}
+		} catch (Exception e) {
+			
+		}
+		return isAddedToQueue;
+		
+	}
+	
+	
+	
+	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
+		boolean result = false;
+
+		// Consuming the response from the third party service provider
+		
+		byte[] responseFromQueue = mosipQueueManager.consume(queue, "postal-service");
+		String response = new String(responseFromQueue);
+		JSONParser parser = new JSONParser();
+		JSONObject identityJson = null;
+		try {
+			identityJson = (JSONObject) parser.parse(response);
+			String uinFieldCheck = (String) identityJson.get("Status");
+			if (uinFieldCheck.equals("Success")) {
+				result = true;
+			}
+		} catch (ParseException e) {
+			logger.error("parse exception ",e);
+		}
+		return result;
+	}
+
+	private boolean setQrCode(byte[] textFileByte) {
+		String qrString = new String(textFileByte);
+		boolean isQRCodeSet = false;
+		QrCodeGenerator<QrVersion> qrCodeGenerator = new QrcodeGeneratorImpl();
+		byte[] qrCodeBytes = qrCodeGenerator.generateQrCode(qrString, QrVersion.V30);
+		if (qrCodeBytes != null) {
+			String imageString = CryptoUtil.encodeBase64String(qrCodeBytes);
+			attributes.put("QrCode", "data:image/png;base64," + imageString);
+			isQRCodeSet = true;
+		}
+		return isQRCodeSet;
+	}
+
+	private byte[] createTextFile() {
+		JsonFileDTO jsonDto = new JsonFileDTO();
+		jsonDto.setId("mosip.registration.print.send");
+		jsonDto.setVersion("1.0");
+		jsonDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+
+		JsonRequestDTO request = new JsonRequestDTO();
+		request.setNameLang1((String) attributes.get(UINCardConstant.NAME + "_" + primaryLang));
+		request.setAddressLine1Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE1 + "_" + primaryLang));
+		request.setAddressLine2Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE2 + "_" + primaryLang));
+		request.setAddressLine3Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE3 + "_" + primaryLang));
+		request.setRegionLang1((String) attributes.get(UINCardConstant.REGION + "_" + primaryLang));
+		request.setProvinceLang1((String) attributes.get(UINCardConstant.PROVINCE + "_" + primaryLang));
+		request.setCityLang1((String) attributes.get(UINCardConstant.CITY + "_" + primaryLang));
+
+		request.setNameLang2((String) attributes.get(UINCardConstant.NAME + "_" + secondaryLang));
+		request.setAddressLine1Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE1 + "_" + secondaryLang));
+		request.setAddressLine2Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE2 + "_" + secondaryLang));
+		request.setAddressLine3Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE3 + "_" + secondaryLang));
+		request.setRegionLang2((String) attributes.get(UINCardConstant.REGION + "_" + secondaryLang));
+		request.setProvinceLang2((String) attributes.get(UINCardConstant.PROVINCE + "_" + secondaryLang));
+		request.setCityLang2((String) attributes.get(UINCardConstant.CITY + "_" + secondaryLang));
+		request.setPostalCode((String) attributes.get(UINCardConstant.POSTALCODE));
+		request.setPhoneNumber((String) attributes.get(UINCardConstant.PHONE));
+
+		jsonDto.setRequest(request);
+
+		File jsonText = new File(attributes.get("UIN").toString() + ".txt");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		byte[] jsonTextFileBytes = null;
+
+		try {
+			mapper.writeValue(jsonText, jsonDto);
+
+
+			InputStream fileStream = new FileInputStream(jsonText);
+			jsonTextFileBytes = IOUtils.toByteArray(fileStream);
+			fileStream.close();
+			FileUtils.forceDelete(jsonText);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return jsonTextFileBytes;
+	}
+
 	private void setTemplateAttributes(String string, Map<String, Object> attributes) throws IOException {
 		JSONObject demographicIdentity = JsonUtil.objectMapperReadValue(string, JSONObject.class);
+		Utilities utility = new Utilities();
 		if (demographicIdentity == null)
 			isPrintingStageValidated = false;
-			//throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		//throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 		String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
@@ -140,10 +331,10 @@ public class PrintingStage extends BaseTestCase{
 		String value = null;
 		boolean isPhotoSet = false;
 		String documents = null;
-		for (String res : response){
+		/*for (String res : response){
 			documents = res.get("documents").toString();
 			logger.info("documents  : "+documents);
-		}
+		}*/
 		if (response!= null) {
 			try {
 				for (Map.Entry<String, Map<String,String>> entry : response.entrySet()) {
@@ -177,32 +368,15 @@ public class PrintingStage extends BaseTestCase{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			//List<Documents> documents = response.getResponse().getDocuments();
-
-			for (Documents doc : documents) {
-				if (doc.getCategory().equals(INDIVIDUAL_BIOMETRICS)) {
-					value = doc.getValue();
-					break;
-				}
-			}
 		}
-			if (value != null) {
-			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
-			List<String> subtype = new ArrayList<>();
-			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
-			String imageString = CryptoUtil.encodeBase64String(photobyte);
-			attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
-			isPhotoSet = true;
-		}
-
+			
 		return isPhotoSet;
 	}
-
+/*
 	public static void main(String args[]){
 		PrintingStage ps = new PrintingStage();
 		ps.validatePrintingStage("10002100320000220190417100557");
-	}
+	}*/
 	@Test
 	public void testRun(){
 		PrintingStage ps = new PrintingStage();
@@ -212,7 +386,7 @@ public class PrintingStage extends BaseTestCase{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		test=extent.createTest("testRun");
 	}
 
 }
-*/
