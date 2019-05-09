@@ -335,7 +335,9 @@ public class BaseService {
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
 		
-		byte[] packetHash = HMACUtils.generateHash(registration.getAckFilename().replace("_Ack.html", ".zip").getBytes());
+		byte[] packetHash = HMACUtils.generateHash(registration.getAckFilename()
+				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)
+				.getBytes());
 		statusDTO.setPacketHash(new String(packetHash));
 		statusDTO.setPacketSize(BigInteger.valueOf(packetHash.length));
 		
