@@ -127,6 +127,9 @@ public class MessageSenderStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		Mockito.when(transcationStatusService.addRegistrationTransaction(any())).thenReturn(null);
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
+		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 		FieldValue registrationType = new FieldValue();

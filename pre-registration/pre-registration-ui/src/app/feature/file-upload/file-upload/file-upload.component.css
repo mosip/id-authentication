@@ -168,11 +168,14 @@ mat-select:focus {
   height: 95%;
   width: 100%;
 }
+
 .user__buttons {
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
+  position: fixed;
+  bottom: 0;
 }
 
 .user__btn {
@@ -232,4 +235,17 @@ mat-select:focus {
 .file-buttons .previousFile:disabled,
 .file-buttons .nextFile:disabled {
   filter: brightness(170%);
+}
+
+.loader {
+  height: 100px;
+  width: 100px;
+  position: fixed;
+  top: 40vh;
+  left: 40vw;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }

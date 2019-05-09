@@ -46,12 +46,12 @@ public class DocumentDAO {
 			entityList = documentRepository.findBypreregId(preId);
 			if (serviceUtil.isNull(entityList)) {
 				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
-						DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+						DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findBydocumentId method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 		return entityList;
 	}
@@ -61,12 +61,12 @@ public class DocumentDAO {
 		try {
 			entity = documentRepository.findBydocumentId(documentId);
 			if (entity == null) {
-				throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findBydocumentId method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 		return entity;
 	}
@@ -78,7 +78,7 @@ public class DocumentDAO {
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findSingleDocument method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 		return entity;
 	}
@@ -90,7 +90,7 @@ public class DocumentDAO {
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In deleteAllBydocumentId method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 	}
 
@@ -100,7 +100,7 @@ public class DocumentDAO {
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In deleteAllBypreregId method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 	}
 
@@ -114,7 +114,7 @@ public class DocumentDAO {
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In saveDocument method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
-					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.toString(), ex.getCause());
+					ErrorMessages.DOCUMENT_TABLE_NOTACCESSIBLE.getMessage(), ex.getCause());
 		}
 	}
 

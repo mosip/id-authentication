@@ -130,4 +130,4 @@ The key solution considerations are --
 
 Sequence and Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/registration-user-device-mapping_class_seq.png>
+![User Device mapping](_images/registration-user-device-mapping_class_seq.png)

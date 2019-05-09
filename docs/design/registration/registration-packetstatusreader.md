@@ -63,7 +63,7 @@ The key **non-functional requirements** are
 
 
 **Technical Approach**
-=======================
+
 The key solution considerations are -
 
 -   Create ***RegistrationPacketStatusService*** and create DTO and DAO
@@ -101,11 +101,11 @@ List of Status provided by the Registration-Processor:
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-packetstatusreader-classDiagram.png>
+![Packet Status Reader](_images/_class_diagram/registration-packetstatusreader-classDiagram.png)
 
 Sequence Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-packetstatusreader-sequenceDiagram.png>
+![Packet Status Reader](_images/_sequence_diagram/registration-packetstatusreader-sequenceDiagram.png)
 
                                  
 **Request and Response \[RegistrationStatus REST Service\]:**
@@ -114,6 +114,6 @@ Provided the request and response of the 'registrationstatus' service.
 This service would accept the single / multiple enrollment id and
 respond with the respective status.
 
-1.  <https://github.com/mosip/mosip/blob/DEV/design/registration/_images/registration-packetstatusreader_restrequest.png>
+1.  ![Request](_images/registration-packetstatusreader_restrequest.png)
 
-2.  <https://github.com/mosip/mosip/blob/DEV/design/registration/_images/registration-packetstatusreader_restresponse.png>
+2.  ![Response](_images/registration-packetstatusreader_restresponse.png)

@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BookingModel } from '../center-selection/booking.model';
 
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
-import { SharedService } from '../booking.service';
+import { BookingService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
@@ -45,7 +45,7 @@ export class TimeSelectionComponent implements OnInit {
   disableContinueButton = false;
 
   constructor(
-    private sharedService: SharedService,
+    private bookingService: BookingService,
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private router: Router,
@@ -58,14 +58,14 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.names = this.sharedService.getNameList();
-    this.temp = this.sharedService.getNameList();
+    this.names = this.bookingService.getNameList();
+    this.temp = this.bookingService.getNameList();
     console.log('ngOninit temp', this.temp);
     this.days = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_availability_noOfDays);
     if (this.temp[0]) {
       this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
     }
-    this.sharedService.resetNameList();
+    this.bookingService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
     console.log('in onInit', this.names);
@@ -136,12 +136,13 @@ export class TimeSelectionComponent implements OnInit {
       element.TotalAvailable = sumAvailability;
       element.inActive = false;
       element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
-        // element.date.split('-')[2] +
-        // ' ' +
-        // appConstants.MONTHS[Number(element.date.split('-')[1])] +
-        // ', ' +
-        // element.date.split('-')[0];
-      element.displayDay = appConstants.DAYS[localStorage.getItem('langCode')][new Date(Date.parse(element.date)).getDay()];
+      // element.date.split('-')[2] +
+      // ' ' +
+      // appConstants.MONTHS[Number(element.date.split('-')[1])] +
+      // ', ' +
+      // element.date.split('-')[0];
+      element.displayDay =
+        appConstants.DAYS[localStorage.getItem('langCode')][new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -243,12 +244,12 @@ export class TimeSelectionComponent implements OnInit {
               this.temp.forEach(name => {
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
                 if (booking[0]) {
-                  this.sharedService.addNameList(name);
+                  this.bookingService.addNameList(name);
                   const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
-                  this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                  this.bookingService.updateBookingDetails(name.preRegId, appointmentDateTime);
                 }
               });
-              this.sharedService.setSendNotification(true);
+              this.bookingService.setSendNotification(true);
               const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
               this.router.navigateByUrl(url);
             });
@@ -282,9 +283,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
-    this.sharedService.flushNameList();
+    this.bookingService.flushNameList();
     this.temp.forEach(name => {
-      this.sharedService.addNameList(name);
+      this.bookingService.addNameList(name);
     });
     const url = Utils.getURL(this.router.url, 'pick-center');
     // const routeParams = this.router.url.split('/');

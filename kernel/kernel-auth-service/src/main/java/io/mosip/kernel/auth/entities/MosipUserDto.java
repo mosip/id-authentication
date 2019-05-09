@@ -19,4 +19,5 @@ public class MosipUserDto {
 	private String userPassword;
 	private String name;
 	private String role;
+	private String rId;
 }
