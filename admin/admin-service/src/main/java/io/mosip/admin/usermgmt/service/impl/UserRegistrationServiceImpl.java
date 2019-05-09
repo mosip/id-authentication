@@ -10,7 +10,8 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
 	@Override
 	public UserRegistrationResponseDto register(UserRegistrationRequestDto request) {
-		return null;
+		UserRegistrationResponseDto dto= new UserRegistrationResponseDto("SUCCESS");
+		return dto;
 	}
 
 }
