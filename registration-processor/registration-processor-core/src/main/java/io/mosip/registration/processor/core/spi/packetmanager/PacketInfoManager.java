@@ -131,6 +131,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return
 	 */
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
+	
+	public String getBatchIdByRequestId(String abisRequestId);
 
 	/**
 	 * Gets the identify by transaction id.

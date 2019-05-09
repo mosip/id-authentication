@@ -3,14 +3,8 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
-import io.mosip.registration.processor.packet.storage.entity.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +33,9 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -65,7 +60,6 @@ import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.TransactionDto;
 import lombok.Cleanup;
 
 /**
@@ -635,6 +629,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			return null;
 
 		}
+	}
+	
+	@Override
+	public String getBatchIdByRequestId(String abisRequestId) {
+		return packetInfoDao.getBatchIdByRequestId(abisRequestId);
 	}
 
 	/*
