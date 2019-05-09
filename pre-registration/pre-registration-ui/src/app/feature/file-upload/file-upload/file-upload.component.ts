@@ -45,7 +45,9 @@ export class FileUploadComponent implements OnInit {
   fileByteArray;
   fileUrl;
   applicantPreRegId: string;
-  userFiles: FilesModel = new FilesModel();
+  file: FileModel = new FileModel();
+  userFile: FileModel[] = [this.file];
+  userFiles: FilesModel = new FilesModel(this.userFile);
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
@@ -117,7 +119,7 @@ export class FileUploadComponent implements OnInit {
     let i = 0;
     let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
     if (!this.users[0].files) {
-      this.users[0].files.documentsMetaData.push(fileModel);
+      this.users[0].files = this.userFiles;
     } else {
       // this.sortUserFiles();
     }
@@ -431,7 +433,14 @@ export class FileUploadComponent implements OnInit {
     this.start = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
-        this.setByteArray(res['response'].document);
+        console.log(res);
+
+        if (!res['errors']) {
+          this.setByteArray(res['response'].document);
+        } else {
+          this.displayMessage('Error', 'Servers unavailable');
+          this.start = false;
+        }
       },
       error => {},
       () => {
@@ -623,6 +632,8 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
+        console.log(response);
+
         if (response['errors'] == null) {
           this.updateUsers(response);
         } else {
@@ -649,27 +660,33 @@ export class FileUploadComponent implements OnInit {
    */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.documentsMetaData[0].docCatCode = fileResponse.response.docCatCode;
-    this.userFiles.documentsMetaData[0].doc_file_format = fileResponse.response.docFileFormat;
-    this.userFiles.documentsMetaData[0].documentId = fileResponse.response.documentId;
-    this.userFiles.documentsMetaData[0].docName = fileResponse.response.docName;
-    this.userFiles.documentsMetaData[0].docTypCode = fileResponse.response.docTypCode;
-    this.userFiles.documentsMetaData[0].multipartFile = this.fileByteArray;
-    this.userFiles.documentsMetaData[0].prereg_id = this.users[0].preRegId;
+    this.file = new FileModel();
+    this.userFile = [this.file];
+    this.userFile[0].docCatCode = fileResponse.response.docCatCode;
+    this.userFile[0].doc_file_format = fileResponse.response.docFileFormat;
+    this.userFile[0].documentId = fileResponse.response.documentId;
+    this.userFile[0].docName = fileResponse.response.docName;
+    this.userFile[0].docTypCode = fileResponse.response.docTypCode;
+    this.userFile[0].multipartFile = this.fileByteArray;
+    this.userFile[0].prereg_id = this.users[0].preRegId;
+    console.log('userFiles', this.userFiles);
+
     for (let file of this.users[0].files.documentsMetaData) {
-      if (file.docCatCode == this.userFiles.documentsMetaData[0].docCatCode) {
+      if (file.docCatCode == this.userFile[0].docCatCode) {
         // this.removeFilePreview();
-        this.users[this.step].files[0][i] = this.userFiles;
+        this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
         this.fileIndex--;
         break;
       }
       i++;
     }
     if (i == this.users[0].files.documentsMetaData.length) {
-      this.users[this.step].files.documentsMetaData.push(this.userFiles.documentsMetaData[0]);
+      this.users[this.step].files.documentsMetaData.push(this.userFile[0]);
     }
-    this.userFiles = new FilesModel();
+    this.userFile = [];
     this.registration.updateUser(this.step, this.users[this.step]);
+    console.log('users', this.users);
+
     // this.sortUserFiles();
     // this.viewFileByIndex(this.fileIndex);
   }
