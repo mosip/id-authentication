@@ -3,7 +3,9 @@ package io.mosip.registration.processor.biodedupe.stage;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -154,7 +156,7 @@ public class BioDedupeProcessor {
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					updatePacketProcessing(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
-					updatePacketHandlerProcessing(registrationStatusDto);
+					updatePacketHandlerProcessing(registrationStatusDto,object);
 				}
 
 			}
@@ -381,9 +383,10 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto)
+	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
 			throws ApisResourceAccessException, IOException {
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
+		Map<String,String> filteredRegMap = new LinkedHashMap<String,String>();
 		List<String> regBioRefIds = new ArrayList<>();
 		List<String> matchedRegistrationIds = new ArrayList<>();
 		List<AbisRequestEntity> abisRequestEntities = new ArrayList<>();
@@ -405,8 +408,8 @@ public class BioDedupeProcessor {
 		 */
 		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0), "identify",
-					latestTransactionId);
+			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0),
+					latestTransactionId, "identify");
 			for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
 				abisResponseEntities.addAll(packetInfoDao.getAbisResponseIDs(abisRequestEntity.getId().getId()));
 			}
@@ -435,12 +438,21 @@ public class BioDedupeProcessor {
 				Number matchedUin = JsonUtil.getJSONValue(demographicIdentity, "UIN");
 				Number packetUin = utilities.getUIn(registrationStatusDto.getRegistrationId());
 				if (matchedUin != null && packetUin != matchedUin) {
-					filteredRIds.add(machedRegId);
+					filteredRegMap.put(matchedUin.toString(),machedRegId);
+					
+				}
+				if(!filteredRegMap.isEmpty()) {
+					 filteredRIds = new ArrayList<String>(filteredRegMap.values());
 					 packetInfoManager.saveManualAdjudicationData(filteredRIds, registrationStatusDto.getRegistrationId(),DedupeSourceName.BIO);
 				}
 			}
 		}else {
-			//Send to UIN Stage 
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
+ 
 		}
 	}
 
