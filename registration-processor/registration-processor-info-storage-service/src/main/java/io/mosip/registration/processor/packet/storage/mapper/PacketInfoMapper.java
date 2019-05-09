@@ -16,6 +16,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
@@ -23,6 +25,9 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue
 import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponsePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
@@ -353,6 +358,103 @@ public class PacketInfoMapper {
 		entity.setId(pkEntity);
 
 		return entity;
+	}
+	
+	public static AbisResponseDto convertAbisResponseEntityToDto(AbisResponseEntity entity) {
+
+		AbisResponseDto abisResDto = new AbisResponseDto();
+		abisResDto.setId(entity.getId().getId());
+		abisResDto.setCrBy(entity.getCrBy());
+		abisResDto.setCrDtimes(entity.getCrDtimes());
+		abisResDto.setDelDtimes(entity.getDelDtimes());
+		abisResDto.setIsDeleted(entity.getIsDeleted());
+		abisResDto.setLangCode(entity.getLangCode());
+		abisResDto.setRespDtimes(entity.getRespDtimes());
+		abisResDto.setRespText(entity.getRespText());
+		abisResDto.setStatusCode(entity.getLangCode());
+		abisResDto.setStatusComment(entity.getStatusComment());
+		abisResDto.setUpdBy(entity.getUpdBy());
+		abisResDto.setUpdDtimes(entity.getUpdDtimes());
+		abisResDto.setAbisRequest(entity.getAbisRequest());
+
+		return abisResDto;
+
+	}
+
+	public static List<AbisResponseDto> convertAbisResponseEntityListToDto(
+			List<AbisResponseEntity> abisResponseEntityList) {
+		List<AbisResponseDto> abisResponseDtoList = new ArrayList<>();
+		if (abisResponseEntityList == null)
+			return abisResponseDtoList;
+		if (abisResponseEntityList.isEmpty())
+			return abisResponseDtoList;
+		for (AbisResponseEntity entity : abisResponseEntityList) {
+			abisResponseDtoList.add(convertAbisResponseEntityToDto(entity));
+		}
+		return abisResponseDtoList;
+	}
+
+	public static AbisResponseEntity convertAbisResponseEntityToDto(AbisResponseDto abisResDto) {
+
+		AbisResponseEntity entity = new AbisResponseEntity();
+		AbisResponsePKEntity resPkEntity = new AbisResponsePKEntity();
+		resPkEntity.setId(abisResDto.getId());
+
+		entity.setId(resPkEntity);
+		entity.setCrBy(abisResDto.getCrBy());
+		entity.setCrDtimes(abisResDto.getCrDtimes());
+		entity.setDelDtimes(abisResDto.getDelDtimes());
+		entity.setIsDeleted(abisResDto.getIsDeleted());
+		entity.setLangCode(abisResDto.getLangCode());
+		entity.setRespDtimes(abisResDto.getRespDtimes());
+		entity.setRespText(abisResDto.getRespText());
+		entity.setStatusCode(abisResDto.getLangCode());
+		entity.setStatusComment(abisResDto.getStatusComment());
+		entity.setUpdBy(abisResDto.getUpdBy());
+		entity.setUpdDtimes(abisResDto.getUpdDtimes());
+		entity.setAbisRequest(abisResDto.getAbisRequest());
+
+		return entity;
+
+	}
+
+	public static List<AbisResponseEntity> convertAbisResponseDtoToEntity(List<AbisResponseDto> abisResponsesDtoList) {
+		List<AbisResponseEntity> abisResponseEntityList = new ArrayList<>();
+		if (abisResponsesDtoList == null)
+			return abisResponseEntityList;
+		if (abisResponsesDtoList.isEmpty())
+			return abisResponseEntityList;
+		for (AbisResponseDto responsDto : abisResponsesDtoList) {
+			abisResponseEntityList.add(convertAbisResponseEntityToDto(responsDto));
+		}
+		return abisResponseEntityList;
+	}
+	
+	public static AbisResponseDetDto convertAbisResponseDetEntityToDto(AbisResponseDetEntity entity) {
+
+		AbisResponseDetDto abisResDetDto = new AbisResponseDetDto();
+		abisResDetDto.setCrBy(entity.getCrBy());
+		abisResDetDto.setCrDtimes(entity.getCrDtimes());
+		abisResDetDto.setDelDtimes(entity.getDelDtimes());
+		abisResDetDto.setIsDeleted(entity.getIsDeleted());
+		abisResDetDto.setScore(entity.getScore());
+		abisResDetDto.setUpdBy(entity.getUpdBy());
+		abisResDetDto.setUpdDtimes(entity.getUpdDtimes());
+		return abisResDetDto;
+
+	}
+
+	public static List<AbisResponseDetDto> convertAbisResponseDetEntityListToDto(
+			List<AbisResponseDetEntity> abisResponseDetEntity) {
+		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
+		if (abisResponseDetEntity == null)
+			return abisResponseDetDtoList;
+		if (abisResponseDetEntity.isEmpty())
+			return abisResponseDetDtoList;
+		for (AbisResponseDetEntity abisResDetEntity : abisResponseDetEntity) {
+			abisResponseDetDtoList.add(convertAbisResponseDetEntityToDto(abisResDetEntity));
+		}
+		return abisResponseDetDtoList;
 	}
 
 }

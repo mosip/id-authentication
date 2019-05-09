@@ -37,8 +37,8 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
@@ -720,6 +720,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regId, "PacketInfoManagerImpl::saveAbisRef()::exit");
+	}
+
+	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
+		return packetInfoDao.getAbisResponseRecords(latestTransactionId, requestType);
+	}
+
+	@Override
+	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto) {
+		return packetInfoDao.getAbisResponseDetailedRecords(abisResponseDto);
 	}
 
 }

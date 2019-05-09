@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
+import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -102,7 +106,7 @@ public class PacketInfoDao {
 						 * else if (object instanceof ApplicantPhotographEntity) {
 						 * applicantInfoDto.setApplicantPhotograph(
 						 * convertEntityToPhotographDto((ApplicantPhotographEntity) object));
-						 * 
+						 *
 						 * }
 						 */
 				}
@@ -291,6 +295,26 @@ public class PacketInfoDao {
 	public List<String> getRegAbisRefRegIds(List<String> matchRefIds) {
 		return regBioRefRepository.getAbisRefRegIds(matchRefIds);
 
+	}
+
+	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
+		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
+		List<AbisResponseDto> abisResponseDto = new ArrayList<>();
+		List<AbisRequestEntity> abisRequestEntities = abisRequestRepository
+				.getAbisRequestIDsbasedOnIdentity(latestTransactionId, requestType);
+		for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
+			abisResponseEntities.addAll(abisResponseRepository.getAbisResponseIDs(abisRequestEntity.getId().getId()));
+		}
+		abisResponseDto.addAll(PacketInfoMapper.convertAbisResponseEntityListToDto(abisResponseEntities));
+		return abisResponseDto;
+	}
+	
+	public List<AbisResponseDetDto> getAbisResponseDetailedRecords(AbisResponseDto abisResponseDto) {
+		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
+		List<AbisResponseDetEntity> abisResEntity = abisRequestRepository
+				.getAbisResponseDetails(abisResponseDto.getId());
+		abisResponseDetDtoList.addAll(PacketInfoMapper.convertAbisResponseDetEntityListToDto(abisResEntity));
+		return abisResponseDetDtoList;
 	}
 
 }

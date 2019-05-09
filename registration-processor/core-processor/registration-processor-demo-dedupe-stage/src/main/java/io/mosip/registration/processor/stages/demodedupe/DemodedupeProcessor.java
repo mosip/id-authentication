@@ -1,15 +1,8 @@
 package io.mosip.registration.processor.stages.demodedupe;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -20,11 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.constant.DateUtilConstants;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -34,21 +24,25 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCo
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.packet.dto.TransactionDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -72,6 +66,8 @@ public class DemodedupeProcessor {
 	
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "MOSIP";
+
+	private static final String IDENTIFY = "IDENTIFY";
 
 	/** The registration status service. */
 	@Autowired
@@ -103,6 +99,9 @@ public class DemodedupeProcessor {
 	
 	@Autowired
 	private RegistrationStatusDao registrationStatusDao;
+
+	@Autowired
+	private PacketInfoManager packetInfoImpl = new PacketInfoManagerImpl();
 
 	InputStream demographicInfoStream = null;
 
@@ -338,29 +337,39 @@ public class DemodedupeProcessor {
 		}
 		return isTransactionSuccessful;
 	}
-	
-	private TransactionDto getTransactionDtoByRegId(InternalRegistrationStatusDto registrationStatusDto) {
-		
-		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
-		registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
-		TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-				registrationStatusDto.getRegistrationId(), latestTransactionId, "Bio-dedupe", "", "IN-Progress",
-				registrationStatusDto.getStatusComment());
-		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-		transactionDto.setReferenceIdType("Added registration record");
-		return transactionDto;
-	}
-	
+
 	private String getLatestTransactionId(String registrationId) {
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
-
 	}
-
-
+	
+	
 	private void processDemoDedupeRequesthandler(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object) {
-		// TODO Auto-generated method stub
+		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 
+		List<AbisResponseDto> abisResponseDto = packetInfoImpl.getAbisResponseRecords(latestTransactionId, IDENTIFY);
+
+		for(AbisResponseDto responseDto : abisResponseDto) {
+			if(responseDto.getStatusCode().equalsIgnoreCase("PROCESSED")) {
+				List<AbisResponseDetDto> abisResponseDetDto =  packetInfoImpl.getAbisResponseDetRecords(responseDto);
+			}
+		}
+
+/*		if (abisResponseDetEntities.isEmpty()) {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
+
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			object.setIsValid(Boolean.FALSE);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"ABIS response Details not null, destination stage is Manual_verification");
+
+		}*/
 	}
 }

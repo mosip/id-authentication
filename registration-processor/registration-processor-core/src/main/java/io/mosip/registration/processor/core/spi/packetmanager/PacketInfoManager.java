@@ -8,6 +8,8 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -176,4 +178,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId);
 
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto);
+
+	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
+	
+	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
 }
