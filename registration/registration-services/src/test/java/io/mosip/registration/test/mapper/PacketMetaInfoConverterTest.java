@@ -71,8 +71,6 @@ public class PacketMetaInfoConverterTest {
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getMetaData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getOsiData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getCheckSum());
-		//Assert.assertEquals("Age/DOB", packetMetaInfo.getIdentity().getUinUpdatedFields().get(0));
-		//Assert.assertEquals("Gender", packetMetaInfo.getIdentity().getUinUpdatedFields().get(1));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
