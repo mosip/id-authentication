@@ -1,4 +1,4 @@
-package io.mosio.registration.mdm.constants;
+package io.mosip.registration.mdm.constants;
 
 /**
  * 
