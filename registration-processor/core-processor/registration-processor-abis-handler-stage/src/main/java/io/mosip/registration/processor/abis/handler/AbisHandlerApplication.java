@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.abis.handler;
 
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.abis.handler.stage.AbisHandlerStage;
@@ -18,9 +17,5 @@ public class AbisHandlerApplication {
         ctx.refresh();
         AbisHandlerStage handlerStage = ctx.getBean(AbisHandlerStage.class);
         handlerStage.deployVerticle();
-
-        MessageDTO dto = new MessageDTO();
-        dto.setRid("10003100030001520190422074511");
-        handlerStage.process(dto);
     }
 }

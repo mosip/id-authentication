@@ -122,11 +122,11 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		Boolean isTransactionSuccessful = false;
 		String regId = object.getRid();
 		InternalRegistrationStatusDto registrationStatusDto = null;
+		String bioRefId = null;
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			String transactionTypeCode = registrationStatusDto.getLatestTransactionTypeCode();
 			String transactionId = registrationStatusDto.getLatestRegistrationTransactionId();
-			String bioRefId = getUUID();
 
 			Boolean isIdentifyRequestPresent = packetInfoManager.getIdentifyByTransactionId(transactionId, IDENTIFY);
 			List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
@@ -134,13 +134,15 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			if (!isIdentifyRequestPresent) {
 				List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
 				if (bioRefDtos.isEmpty()) {
+					bioRefId = getUUID();
 					insertInBioRef(regId, bioRefId);
 					createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
 					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
 					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				} else {
+					bioRefId = bioRefDtos.get(0).getBioRefId();
 					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
-					object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				}
 			} else {
 				if (transactionTypeCode.equalsIgnoreCase(DEMOGRAPHIC_VERIFICATION)) {
