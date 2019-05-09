@@ -17,6 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
@@ -86,12 +87,15 @@ public class SyncRegistrationServiceTest {
 
 	/** The audit log request builder. */
 	@Mock
-	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Mock
 	private Decryptor decryptor;
 
 	RegistrationSyncRequestDTO registrationSyncRequestDTO;
+
+	@Mock
+	Environment env;
 
 	/**
 	 * Setup.
