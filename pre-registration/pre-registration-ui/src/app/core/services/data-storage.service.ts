@@ -236,7 +236,7 @@ export class DataStorageService {
     const url =
       this.BASE_URL +
       this.PRE_REG_URL +
-      appConstants.APPEND_URL.document +
+      appConstants.APPEND_URL.post_document +
       destinationId +
       '?catCode=' +
       appConstants.PARAMS_KEYS.POA +
