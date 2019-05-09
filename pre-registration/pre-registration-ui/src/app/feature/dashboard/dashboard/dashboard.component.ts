@@ -136,6 +136,7 @@ export class DashBoardComponent implements OnInit {
         ) {
           localStorage.setItem('newApplicant', 'true');
           this.onNewApplication();
+          return;
         }
 
         if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
@@ -451,9 +452,7 @@ export class DashBoardComponent implements OnInit {
       () => {
         this.addtoNameList(user);
         console.log(this.bookingService.getNameList());
-
         console.log('preid', preId);
-
         this.dataStorageService.getUser(preId).subscribe(
           response => {
             console.log('RESPONSE [Modify Information]', response);

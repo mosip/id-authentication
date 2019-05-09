@@ -438,7 +438,7 @@ export class FileUploadComponent implements OnInit {
         if (!res['errors']) {
           this.setByteArray(res['response'].document);
         } else {
-          this.displayMessage('Error', 'Servers unavailable');
+          this.displayMessage('Error', this.errorlabels.error);
           this.start = false;
         }
       },
