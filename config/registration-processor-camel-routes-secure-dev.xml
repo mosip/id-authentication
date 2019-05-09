@@ -98,6 +98,7 @@
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"messageBusAddress":"abis-handler-bus-in"'</simple>
+				<to uri="vertx:abis-handler-bus-in" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
@@ -141,7 +142,7 @@
 				<to uri="vertx:uin-generator-bus-in" />
 			</when>
 			<when>
-				<simple>${bodyAs(String)} contains ''</simple>
+				<simple>${bodyAs(String)} contains '"messageBusAddress":"abis-handler-bus-in"'</simple>
 				<to uri="vertx:abis-handler-bus-in" />
 			</when>
 			<when>
