@@ -24,13 +24,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.mosip.registration</groupId>
-			<artifactId>registration-mdm</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 		</dependency>
