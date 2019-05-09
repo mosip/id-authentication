@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,9 @@ import io.mosip.registration.processor.packet.manager.exception.FilePathNotAcces
 @Service
 public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStream> {
 
-	private static final String EXTENSION = "registration.processor.packet.ext";
+	/** The extention. */
+	@Value("${registration.processor.packet.ext}")
+	private String extension;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
@@ -173,7 +176,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @return the file name
 	 */
 	private String getFileName(String fileName) {
-		return fileName + env.getProperty(EXTENSION);
+		return fileName + extension;
 	}
 
 	/*

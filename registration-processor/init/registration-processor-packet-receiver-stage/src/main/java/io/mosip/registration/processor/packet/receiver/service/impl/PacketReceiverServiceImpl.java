@@ -391,7 +391,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void validateHashCode(InputStream inputStream) throws IOException {
 		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		String hashSequence = HMACUtils.digestAsPlainText(isbytearray);
+		HMACUtils.update(isbytearray);
+		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
 		if (!(packetHashSequence.equals(hashSequence))) {
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
@@ -414,7 +415,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private void validatePacketSize(long length) {
 
 		long packetSize = regEntity.getPacketSize().longValue();
-		if (length > packetSize) {
+		if (length != packetSize) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE_SYNCED.getMessage());
 			throw new PacketSizeNotInSyncException(

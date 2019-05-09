@@ -64,8 +64,8 @@ public class MosipRouter {
 
 	public void handler(Handler<RoutingContext> requestHandler, Handler<RoutingContext> requestHandler2,
 			Handler<RoutingContext> failureHandler) {
-		this.route.blockingHandler(this::validateToken).blockingHandler(requestHandler2, false)
-				.blockingHandler(requestHandler, false).failureHandler(failureHandler);
+		this.route.blockingHandler(this::validateToken).blockingHandler(requestHandler, false)
+				.blockingHandler(requestHandler2, false).failureHandler(failureHandler);
 	}
 
 	/**

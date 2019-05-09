@@ -62,8 +62,8 @@ public class FileManagerTest {
 	/** The env. */
 	@MockBean
 	private Environment env;
-	
-	@Mock 
+
+	@Mock
 	private Environment env1;
 
 	private SftpJschConnectionDto sftpDto = new SftpJschConnectionDto();
@@ -75,26 +75,25 @@ public class FileManagerTest {
 	/** The virus scan dec. */
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
-	
 
 	@Mock
 	private ChannelSftp sftp = new ChannelSftp();
 
 	@Mock
 	private Session session;
-	
+
 	private Channel channel;
-	
-	
-	JSch jSch=new JSch();
-	
+
+	JSch jSch = new JSch();
+
 	@InjectMocks
-	private FileManagerImpl impl=new FileManagerImpl() {
+	private FileManagerImpl impl = new FileManagerImpl() {
 		@Override
 		public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
 			return sftp;
-		
-	}};
+
+		}
+	};
 
 	@Mock
 	private InputStream is;
@@ -108,7 +107,7 @@ public class FileManagerTest {
 	@Before
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
-		ReflectionTestUtils.setField(impl, "extention", ".zip");
+		ReflectionTestUtils.setField(impl, "extension", ".zip");
 		file = new File(classLoader.getResource("1001.zip").getFile());
 		is = new FileInputStream(file);
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
@@ -120,6 +119,7 @@ public class FileManagerTest {
 		sftpDto.setProtocal("http");
 		sftpDto.setUser("System");
 	}
+
 	/**
 	 * Gets the put and if file exists and copy method check.
 	 *
@@ -151,12 +151,13 @@ public class FileManagerTest {
 	}
 
 	@Test
-	//@Ignore
+	// @Ignore
 	public void testGetFileByteArray() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
+		// Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(),
+		// Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
@@ -164,10 +165,9 @@ public class FileManagerTest {
 		impl.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn, sftpDto);
 
 	}
-	
-	@Test(expected=SftpFileOperationException.class)
-	public void testSftpExceptoin() throws Exception
-	{
+
+	@Test(expected = SftpFileOperationException.class)
+	public void testSftpExceptoin() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -176,12 +176,11 @@ public class FileManagerTest {
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenThrow(new SftpException(0, fileNameWithoutExtn));
 		impl.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn, sftpDto);
-		
+
 	}
-	
+
 	@Test
-	public void testCopyFile() throws Exception
-	{
+	public void testCopyFile() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -189,12 +188,11 @@ public class FileManagerTest {
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenReturn(is);
-		impl.copy(fileNameWithoutExtn,DirectoryPathDto.VIRUS_SCAN_ENC,DirectoryPathDto.VIRUS_SCAN_DEC ,sftpDto);
+		impl.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, sftpDto);
 	}
-	
-	@Test 
-	public void testCleanUpFile() throws Exception
-	{
+
+	@Test
+	public void testCleanUpFile() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -202,26 +200,25 @@ public class FileManagerTest {
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenReturn(is);
-		impl.cleanUp(fileNameWithoutExtn,DirectoryPathDto.VIRUS_SCAN_ENC,DirectoryPathDto.VIRUS_SCAN_DEC ,sftpDto);
+		impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, sftpDto);
 	}
-	
-	@Test(expected=SftpFileOperationException.class)
-	public void testSftpExceptoinForCopyFile() throws Exception
-	{
+
+	@Test(expected = SftpFileOperationException.class)
+	public void testSftpExceptoinForCopyFile() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		//Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(session);
+		// Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(),
+		// Mockito.any())).thenReturn(session);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenThrow(new SftpException(0, fileNameWithoutExtn));
-		impl.copy(fileNameWithoutExtn,DirectoryPathDto.VIRUS_SCAN_ENC,DirectoryPathDto.VIRUS_SCAN_DEC ,sftpDto);
+		impl.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, sftpDto);
 	}
-	
-	@Test(expected=SftpFileOperationException.class)
-	public void testCleanUpException() throws Exception
-	{
+
+	@Test(expected = SftpFileOperationException.class)
+	public void testCleanUpException() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -229,15 +226,14 @@ public class FileManagerTest {
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenThrow(new SftpException(0, fileNameWithoutExtn));
-		impl.cleanUp(fileNameWithoutExtn,DirectoryPathDto.VIRUS_SCAN_ENC,DirectoryPathDto.VIRUS_SCAN_DEC ,sftpDto);	
+		impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, sftpDto);
 	}
-	
-	@Test(expected=JschConnectionException.class)
-	public void testgetSftpConnectionException() throws IOException, JSchException, JschConnectionException
-	{
-		
-		FileManagerImpl manager=new FileManagerImpl();
-				manager.getSftpConnection(sftpDto);
+
+	@Test(expected = JschConnectionException.class)
+	public void testgetSftpConnectionException() throws IOException, JSchException, JschConnectionException {
+
+		FileManagerImpl manager = new FileManagerImpl();
+		manager.getSftpConnection(sftpDto);
 	}
 
 }
