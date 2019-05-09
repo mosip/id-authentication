@@ -1,23 +1,24 @@
 .form-container{
-  position: absolute;
-  z-index: 15;
-  top: 50%;
-  left: 50%;
-  margin: -100px 0 0 -150px;
+ margin-top: 3rem;
+ display: flex;
+ justify-content: center;
+ align-items: center
+}
+
+.login-form{
   display: flex;
+  flex-flow: column wrap;
+  align-items: center;
 }
 .input-full-width{
-  border-radius: 0;
-  padding-left: 40px;
-  padding-right: 25px;
-  margin-left: 10px;
+  width: 100%;
+ flex: 1;
 }
 .input-full{
-  border-radius: 0;
-  padding-left: 40px;
-  padding-right: 5px;
-  margin-left: 10px;
+  width: 100%;
+ flex: 1;
 }
+
 .button-container {
     padding-top: 2em;
     padding-right: 1.4rem;
@@ -33,12 +34,25 @@
     margin-left: 10px;
   }
   .cancel-button {
-background-color: gray;
+   background-color: gray;
     border-radius: 0;
     padding-left: 25px;
     padding-right: 25px;
   }
   .horizontal-line{
-    padding-left: 25px;
-    padding-right: 25px;
+    width:90%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
   }
+
+  mat-icon {
+    vertical-align: middle;
+  }
+  .title{
+    margin-top:3em;
+  }
+  .title-word{
+    margin-left:6em;
+  }
+  

@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    component: ParentComponent,
+   component:ParentComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadChildren: './feature/masterdata/masterdata.module#MasterdataModule' },
