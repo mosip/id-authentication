@@ -36,6 +36,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import lombok.Data;
 
@@ -136,8 +137,12 @@ public class Utilities {
 				String password = JsonUtil.getJSONValue((JSONObject) jsonObject, PASSWORD);
 				String brokerUrl = JsonUtil.getJSONValue((JSONObject) jsonObject, BROKERURL);
 				String typeOfQueue = JsonUtil.getJSONValue((JSONObject) jsonObject, TYPEOFQUEUE);
-
-				mosipQueueList.add(mosipConnectionFactory.createConnection(typeOfQueue, userName, password, brokerUrl));
+				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
+						brokerUrl);
+				if (mosipQueue == null)
+					throw new QueueConnectionNotFound(
+							PlatformErrorMessages.RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL.getMessage());
+				mosipQueueList.add(mosipQueue);
 
 			}
 

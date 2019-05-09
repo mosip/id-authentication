@@ -135,7 +135,8 @@ public enum PlatformErrorMessages {
 	/** The rpr pis file not found in Packet Store. */
 	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
 			"File not found in Packet Store"),
-
+	RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "005",
+			"Abis Queue Connection null "),
 	/** The rpr fac connection not available. */
 	// File adaptor Exception error code and message
 	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001",

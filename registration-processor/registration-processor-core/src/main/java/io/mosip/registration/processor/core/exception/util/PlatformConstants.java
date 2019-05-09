@@ -91,6 +91,8 @@ public final class PlatformConstants {
 	public static final String RPR_UTIL = RPR_REGISTRATION_PROCESSOR_PREFIX + "UTL-";
 
 	public static final String ABIS = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
+	
+	public static final String RPR_ABIS_MIDDLEWARE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-MIDDLEWARE";
 
 	/**
 	 * Instantiates a new RPR platform error codes.

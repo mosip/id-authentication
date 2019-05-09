@@ -233,8 +233,8 @@ public class PacketInfoDao {
 		return demographicDedupeRepository.getUINByRid(rid);
 	}
 	
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String requestType,String refRegtrnId) {
-		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType,refRegtrnId);
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId) {
+		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 	}
 
 	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify){
