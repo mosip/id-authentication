@@ -315,10 +315,10 @@ public class LoginController extends BaseController implements Initializable {
 					headerController.executeUpdateTask(loginRoot, progressIndicator);
 				}
 			}
-			if (!isInitialSetUp) {
-				executePreLaunchTask(loginRoot, progressIndicator);
-				jobConfigurationService.startScheduler();
-			}
+//			if (!isInitialSetUp) {
+//				executePreLaunchTask(loginRoot, progressIndicator);
+//				jobConfigurationService.startScheduler();
+//			}
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,

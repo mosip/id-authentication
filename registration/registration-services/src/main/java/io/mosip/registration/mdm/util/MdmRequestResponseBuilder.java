@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureRequestDto;
 import io.mosip.registration.mdm.dto.MosipBioCaptureResponse;
@@ -19,7 +20,7 @@ import io.mosip.registration.mdm.dto.MosipBioRequest;
  */
 public class MdmRequestResponseBuilder {
 
-	public static MosipBioCaptureRequestDto buildMosipBioCaptureRequestDto() {
+	public static MosipBioCaptureRequestDto buildMosipBioCaptureRequestDto(BioDevice bioDevice) {
 
 		MosipBioCaptureRequestDto bioCaptureRequestDto = new MosipBioCaptureRequestDto();
 
@@ -30,7 +31,8 @@ public class MdmRequestResponseBuilder {
 
 		MosipBioRequest mosipBioRequest = new MosipBioRequest();
 		mosipBioRequest.setCount(1);
-		mosipBioRequest.setDeviceSubId("");
+		mosipBioRequest.setDeviceId(bioDevice.getDeviceType());
+		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubType());
 		mosipBioRequest.setFormat("");
 		mosipBioRequest.setPreviousHash("");
 		mosipBioRequest.setType("");
@@ -56,7 +58,11 @@ public class MdmRequestResponseBuilder {
 				// TODO - have to clarify how the array of bio data response handled
 				// TODO- clarify how the sengmented values handled
 				if (mosipBioCaptureResponse.getCaptureResponseData() != null) {
-					responseBioData.put(mosipBioCaptureResponse.getCaptureResponseData().getBioSubType(),
+					String capturedType= mosipBioCaptureResponse.getCaptureResponseData().getBioType();
+					if(mosipBioCaptureResponse.getCaptureResponseData().getBioSubType()!=null || !mosipBioCaptureResponse.getCaptureResponseData().getBioSubType().isEmpty()) {
+						capturedType=capturedType+"_"+mosipBioCaptureResponse.getCaptureResponseData().getBioSubType();	
+					}
+					responseBioData.put(capturedType,
 							mosipBioCaptureResponse.getCaptureResponseData().getBioValue());
 				}
 
