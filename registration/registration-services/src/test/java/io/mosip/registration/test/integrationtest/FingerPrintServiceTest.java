@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.fp.impl.FingerPrintCaptureServiceImpl;
+import io.mosip.registration.device.fp.FingerPrintCaptureService;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -38,7 +38,7 @@ import io.mosip.registration.service.security.AuthenticationService;
 public class FingerPrintServiceTest extends BaseIntegrationTest
 {	
 	@Autowired
-	private FingerPrintCaptureServiceImpl fingerprintservice;
+	private FingerPrintCaptureService fingerprintservice;
 	@Autowired
 	private AuthenticationService authenticationService;
 	

@@ -24,8 +24,8 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.device.fp.FingerPrintCaptureService;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.fp.impl.FingerPrintCaptureServiceImpl;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -125,7 +125,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	
 	/** The finger print capture service impl. */
 	@Autowired
-	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
+	private FingerPrintCaptureService fingerPrintCaptureServiceImpl;
 	
 	/** The finger print facade. */
 	@Autowired
