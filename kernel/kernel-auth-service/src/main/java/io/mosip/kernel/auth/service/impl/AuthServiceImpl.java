@@ -15,6 +15,7 @@ import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
@@ -25,6 +26,7 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -180,7 +182,6 @@ public class AuthServiceImpl implements AuthService {
 		return authNResponseDto;
 	}
 
-
 	/**
 	 * Method used for Authenticating User based with username and OTP
 	 * 
@@ -243,12 +244,11 @@ public class AuthServiceImpl implements AuthService {
 		BasicTokenDto basicTokenDto = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
-		if(mosipUser==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+		if (mosipUser == null) {
+			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
 		}
-		if(mosipUser!=null)
-		{
+		if (mosipUser != null) {
 			MosipUserDtoToken mosipToken = null;
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
 			try
@@ -269,8 +269,7 @@ public class AuthServiceImpl implements AuthService {
 					throw new AuthManagerException(auth.getErrorCode(),auth.getMessage());
 				}
 			}
-			if(authToken!=null && mosipToken!=null)
-			{
+			if (authToken != null && mosipToken != null) {
 				authNResponseDto = new AuthNResponseDto();
 				authNResponseDto.setToken(authToken.getAccessToken());
 				authNResponseDto.setUserId(mosipUser.getUserId());
@@ -278,9 +277,7 @@ public class AuthServiceImpl implements AuthService {
 				authNResponseDto.setExpiryTime(authToken.getExpirationTime());
 				authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
 				authNResponseDto.setMessage(AuthConstant.CLIENT_SECRET_SUCCESS_MESSAGE);
-			}
-			else
-			{
+			} else {
 				basicTokenDto = tokenGenerator.basicGenerate(mosipUser);
 				if (basicTokenDto != null) {
 					authNResponseDto = new AuthNResponseDto();
@@ -293,7 +290,7 @@ public class AuthServiceImpl implements AuthService {
 					AuthToken newAuthToken = getAuthToken(authNResponseDto);
 					customTokenServices.StoreToken(newAuthToken);
 				}
-				
+
 			}
 		}
 		return authNResponseDto;
@@ -383,9 +380,14 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public RIdDto getRidBasedOnUid(String userId,String appId) throws Exception {
+	public RIdDto getRidBasedOnUid(String userId, String appId) throws Exception {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getRidFromUserId(userId);
-		
+
+	}
+
+	@Override
+	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).unBlockAccount(userId);
 	}
 
 }

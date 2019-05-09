@@ -282,7 +282,7 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private SignatureUtil signatureUtil;
 
-	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8099/v1/admin/syncjobdef}")
+	@Value("${mosip.kernel.syncdata.syncjob-base-url:http://localhost:8099/v1/admin/syncjobdef}")
 	private String baseUri;
 	/*
 	 * @MockBean private RestTemplate restTemplateM;

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -136,15 +137,15 @@ public class DocumentController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.getAllDocumentForPreId(preRegistrationId));
 	}
-	
+
 	/**
 	 * Get API to fetch document for a document Id
 	 * 
 	 * @param documentId
 	 *            pass documentId as path variable
-	 *            
+	 * 
 	 * @param preRegistrationId
-	 * 			  pass preRegistrationId as request param
+	 *            pass preRegistrationId as request param
 	 * @return response in a format specified in API document
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
@@ -159,7 +160,7 @@ public class DocumentController {
 				"In getAllDocumentforDocId method of document controller to get all the document for documentId "
 						+ documentId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(documentUploadService.getDocumentForDocId(documentId,preRegistrationId));
+				.body(documentUploadService.getDocumentForDocId(documentId, preRegistrationId));
 	}
 
 	/**

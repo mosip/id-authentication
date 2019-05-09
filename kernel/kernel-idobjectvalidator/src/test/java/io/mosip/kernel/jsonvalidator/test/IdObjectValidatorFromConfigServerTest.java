@@ -30,7 +30,7 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOExceptio
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
 import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
 import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
-import io.mosip.kernel.jsonvalidator.impl.IdObjectSchemaValidator;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 
 /**
  * 
