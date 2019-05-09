@@ -266,6 +266,11 @@ public class PacketInfoDao {
 		return null;
 
 	}
+	
+	public List<String> getBatchStatusbyBatchId(String batchId) {
+		return abisRequestRepositary.getBatchStatusbyBatchId(batchId);
+		
+	}
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId,String requestType) {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
 

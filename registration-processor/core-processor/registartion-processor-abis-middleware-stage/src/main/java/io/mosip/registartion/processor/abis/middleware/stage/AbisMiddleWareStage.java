@@ -133,9 +133,9 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				};
 				mosipQueueManager.consume(mosipQueueList.get(i), abisOutboundAddresses.get(i), listener);
 			}
-			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-			this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
-					MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
+			// mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			// this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+			// MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
 
 		} catch (IOException e) {
 		}
@@ -287,6 +287,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				}
 
 				updteAbisRequestProcessed(abisIdentifyResponseDto.getRequestId(), IDENTIFY);
+				String batchId = packetInfoManager.getBatchIdByRequestId(abisIdentifyResponseDto.getRequestId());
+				if (checkAllIdentifyRequestsProcessed(batchId)) {
+					mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+					this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+							MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT);
+				}
 
 			}
 		} catch (IOException e) {
@@ -447,8 +453,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	}
 
-	private boolean checkAllIdentifyRequestsProcessed() {
-
+	private boolean checkAllIdentifyRequestsProcessed(String batchId) {
+		List<String> batchStatus = packetInfoManager.getBatchStatusbyBatchId(batchId);
+		if (batchStatus != null) {
+			boolean flag = batchStatus.stream().allMatch(status -> status.equals("SUCCESS"));
+			if (flag)
+				return true;
+		}
+		return false;
 	}
 
 }

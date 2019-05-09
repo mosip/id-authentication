@@ -133,6 +133,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
 	
 	public String getBatchIdByRequestId(String abisRequestId);
+	public List<String> getBatchStatusbyBatchId(String batchId);
 
 	/**
 	 * Gets the identify by transaction id.

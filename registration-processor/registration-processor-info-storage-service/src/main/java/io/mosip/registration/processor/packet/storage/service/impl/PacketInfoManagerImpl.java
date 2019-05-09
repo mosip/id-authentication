@@ -616,6 +616,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
 	
+	@Override
+	public List<String> getBatchStatusbyBatchId(String batchId){
+		return packetInfoDao.getBatchStatusbyBatchId(batchId);
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestByRequestId(java.lang.String)
 	 */
