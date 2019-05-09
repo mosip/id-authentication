@@ -533,11 +533,9 @@ public class RegistrationApprovalController extends BaseController implements In
 			File destinationPath = destinationSelector.showDialog(stage);
 			if (destinationPath != null) {
 
-				List<RegistrationApprovalDTO> listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
-				String fileData=listData.stream()
-								.map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE).concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE).concat(RegistrationConstants.PENDING))
+				String fileData = table.getItems().stream().map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE).concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE).concat(approvaldto.getStatusComment()))
 								.collect(Collectors.joining("\n"));
-
+				
 						try (Writer writer = new BufferedWriter(new FileWriter(destinationPath+"/"+RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))){
 							writer.write(fileData);
 							
