@@ -225,7 +225,7 @@ String actualmsg=null;
 		// }
 
 		try {
-			response = PsyncService.syncPacketsToServer(dtoList, "System");
+			response = PsyncService.syncPacketsToServer("System", "System");
 			//System.out.println(response.getErrorResponseDTOs().get(0));
 			// Map<String,String>m2=(Map<String, String>) m1.get("error");
 			// String actualmsg=(String) m1.get("response");
@@ -256,7 +256,7 @@ String actualmsg=null;
 		// Implemented dynamic test data creation
 		dtoList = syncdatatoserver_Testdata();
 		try {
-			response = PsyncService.syncPacketsToServer(dtoList, "System");
+			response = PsyncService.syncPacketsToServer("System", "System");
 			Map<String, Object> m1 = response.getSuccessResponseDTO().getOtherAttributes();
 			System.out.println(m1.size());
 			boolean status = false;
