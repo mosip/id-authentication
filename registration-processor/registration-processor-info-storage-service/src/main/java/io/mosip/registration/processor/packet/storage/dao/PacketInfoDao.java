@@ -254,14 +254,22 @@ public class PacketInfoDao {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 
 	}
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId,String requestType) {
+		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
+
+	}
 
 	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify) {
 		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
 	}
 
-	public List<String> getBioRefIdByRegId(String regId) {
+	public List<RegBioRefEntity> getBioRefIdByRegId(String regId) {
 		return abisRequestRepositary.getBioRefIdByRegId(regId);
 	}
+	public List<String> getBioRefIdByRegIds(String regId) {
+		return abisRequestRepositary.getBioRefIdByRegIds(regId);
+	}
+	
 
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
 		return abisRequestRepositary.getDemoListByTransactionId(transactionId);

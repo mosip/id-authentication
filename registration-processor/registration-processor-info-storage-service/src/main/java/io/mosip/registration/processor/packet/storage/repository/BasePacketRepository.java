@@ -185,6 +185,10 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId);
 
+	
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType =:requestType")
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId,@Param("requestType") String requestType);
+
 	/**
 	 * Gets the abis request I ds.
 	 *
@@ -259,7 +263,10 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @return the bio ref id by reg id
 	 */
 	@Query("SELECT bioRef.bioRefId FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
-	public List<String> getBioRefIdByRegId(@Param("regId") String regId);
+	public List<String> getBioRefIdByRegIds(@Param("regId") String regId);
+	
+	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
+	public List<RegBioRefEntity> getBioRefIdByRegId(@Param("regId") String regId);
 
 	/**
 	 * Gets the demo list by transaction id.
