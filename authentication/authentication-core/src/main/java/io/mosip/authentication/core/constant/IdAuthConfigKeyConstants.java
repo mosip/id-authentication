@@ -69,4 +69,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String SERVER_PORT = "server.port";
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
+	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
+	public static final String USERID_RID = null;
 }
