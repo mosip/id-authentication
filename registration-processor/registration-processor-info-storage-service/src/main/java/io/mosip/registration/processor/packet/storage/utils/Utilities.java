@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -22,22 +24,34 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import lombok.Data;
 
 /**
@@ -88,6 +102,19 @@ public class Utilities {
 
 	@Value("${registration.processor.abis.json}")
 	private String registrationProcessorAbisJson  ;
+	
+	@Autowired
+	private PacketInfoDao packetInfoDao;
+	
+	@Autowired
+	private RegistrationStatusDao registrationStatusDao;
+	
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	private static final String REG_TYPE_NEW = "New";
+	private static final String REG_TYPE_UPDATE = "Update";
+	private static final String IDENTIFY = "identify";
 
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
@@ -252,6 +279,81 @@ public class Utilities {
 				return HANDLER;
 		}
 		return NEW_PACKET;
+	}
+	
+	public String getLatestTransactionId(String registrationId) {
+		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
+		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
+
+	}
+	public List<String> getMatchedRegistrationIds(InternalRegistrationStatusDto registrationStatusDto, String status)
+			throws ApisResourceAccessException, IOException {
+
+		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
+		Map<String, String> filteredRegMap = new LinkedHashMap<>();
+		List<String> regBioRefIds = new ArrayList<>();
+		List<String> machedRefIds = new ArrayList<>();
+		
+		List<String> matchedRegistrationIds = new ArrayList<>();
+		List<String> filteredRIds = new ArrayList<>();
+		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
+		List<AbisResponseDto> abisResponseDtoList = new ArrayList<>();
+		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
+
+		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
+		if (!regBioRefIds.isEmpty()) {
+			abisRequestDtoList = packetInfoManager.getInsertOrIdentifyRequest(regBioRefIds.get(0), latestTransactionId,
+					IDENTIFY);
+			for (AbisRequestDto abisRequestDto : abisRequestDtoList) {
+				abisResponseDtoList.addAll(packetInfoManager.getAbisResponseIDs(abisRequestDto.getId()));
+			}
+			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
+				abisResponseDetDtoList
+						.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
+			}
+			if (!abisResponseDetDtoList.isEmpty()) {
+				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
+					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
+				}
+				matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+
+				for (String machedRegId : matchedRegistrationIds) {
+					List<String> pathSegments = new ArrayList<>();
+					pathSegments.add(machedRegId);
+					@SuppressWarnings("unchecked")
+					ResponseWrapper<IdResponseDTO> response = (ResponseWrapper<IdResponseDTO>) restClientService
+							.getApi(ApiName.IDREPOSITORY, pathSegments, "type", "all", ResponseWrapper.class);
+					Gson gsonObj = new Gson();
+					String jsonString = gsonObj.toJson(response.getResponse());
+					JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+					JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
+							getGetRegProcessorDemographicIdentity());
+					Number matchedUin = JsonUtil.getJSONValue(demographicIdentity, "UIN");
+
+					if (status.equalsIgnoreCase(REG_TYPE_UPDATE)) {
+						Number packetUin = getUIn(registrationStatusDto.getRegistrationId());
+						if (matchedUin != null && packetUin != matchedUin) {
+							filteredRegMap.put(matchedUin.toString(), machedRegId);
+
+						}
+					}
+
+					if (status.equalsIgnoreCase(REG_TYPE_NEW) && matchedUin != null) {
+
+						filteredRegMap.put(matchedUin.toString(), machedRegId);
+
+					}
+
+					if (!filteredRegMap.isEmpty()) {
+						filteredRIds = new ArrayList<String>(filteredRegMap.values());
+					}
+
+				}
+			}
+		}
+
+		return filteredRIds;
+
 	}
 
 }
