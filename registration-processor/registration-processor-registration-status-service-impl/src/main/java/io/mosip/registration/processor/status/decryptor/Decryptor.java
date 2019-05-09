@@ -169,9 +169,8 @@ public class Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			// auditLogRequestBuilder.createAuditRequestBuilder(description, eventId,
-			// eventName, eventType, "",
-			// ApiName.DMZAUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, "",
+					ApiName.DMZAUDIT);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				DECRYPTION_SUCCESS);

@@ -8,7 +8,6 @@ import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface SyncRegistrationService.
  *
@@ -61,7 +60,7 @@ public interface SyncRegistrationService<T, U> {
 	 *            the sync response list
 	 * @return the registration sync request DTO
 	 */
-	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(String encryptedSyncMetaInfo, String referenceId,
+	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList);
 
 }

@@ -83,14 +83,14 @@ public class RegistrationSyncController {
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@PostMapping(path = "/sync/v1.0", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/sync/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
 	public ResponseEntity<Object> syncRegistrationController(
 			@RequestHeader(name = "Center-Machine-RefId", required = true) String referenceId,
 			@RequestHeader(name = "timestamp", required = true) String timeStamp,
-			@RequestBody(required = true) String encryptedSyncMetaInfo,
+			@RequestBody(required = true) Object encryptedSyncMetaInfo,
 			@CookieValue(value = "Authorization", required = true) String token) throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "sync");
 
