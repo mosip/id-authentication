@@ -799,6 +799,7 @@ public class RegistrationConstants {
 	public static final String DOC_SCAN_CONTRAST = "mosip.registration.document_scanner_contrast";
 	public static final String DOC_SCAN_BRIGHTNESS = "mosip.registration.document_scanner_brightness";
 	public static final String DOC_SCANNER_ENABLED = "mosip.registration.document_scanner_enabled";
+	public static final String SCANNER_IMG_TYPE = "jpg";
 	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity_class_name";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
 	public static final String ASYMMETRIC_ALG_NAME = "RSA";
