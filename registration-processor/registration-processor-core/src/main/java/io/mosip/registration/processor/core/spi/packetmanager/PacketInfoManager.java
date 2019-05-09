@@ -125,6 +125,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the insert or identify request
 	 */
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId);
+	
+	/**
+	 * @param abisRequestId
+	 * @return
+	 */
+	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
+	
+	public String getBatchIdByRequestId(String abisRequestId);
 
 	/**
 	 * Gets the identify by transaction id.

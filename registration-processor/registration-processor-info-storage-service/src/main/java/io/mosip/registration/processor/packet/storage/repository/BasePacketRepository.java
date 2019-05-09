@@ -184,11 +184,16 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId);
+	
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
+	public List<AbisRequestEntity>getAbisRequestByRequestId(@Param("id") String id);
 
 	
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType =:requestType")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId,@Param("requestType") String requestType);
 
+	@Query("SELECT abisreq.reqBatchId FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
+	public List<String>getBatchIdByRequestId(@Param("id") String id);
 	/**
 	 * Gets the abis request I ds.
 	 *

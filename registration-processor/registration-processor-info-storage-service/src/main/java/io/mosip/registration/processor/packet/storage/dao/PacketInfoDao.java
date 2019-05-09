@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
-import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
@@ -21,6 +19,7 @@ import io.mosip.registration.processor.packet.storage.entity.IndividualDemograph
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
 /**
@@ -252,6 +251,19 @@ public class PacketInfoDao {
 
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId) {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
+
+	}
+	
+	public List<AbisRequestEntity>getAbisRequestByRequestId(String abisRequestId){
+		return abisRequestRepositary.getAbisRequestByRequestId(abisRequestId);
+	}
+	
+	public String getBatchIdByRequestId(String requestId) {
+		List<String> batchreqId = abisRequestRepositary.getBatchIdByRequestId(requestId);
+		if (batchreqId != null && !batchreqId.isEmpty()) {
+			return batchreqId.get(0);
+		}
+		return null;
 
 	}
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId,String requestType) {
