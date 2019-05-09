@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 
 import org.aspectj.lang.JoinPoint;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +41,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ResponseSignatureAdvice;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
 public class ResponseSignatureAdviceTest {

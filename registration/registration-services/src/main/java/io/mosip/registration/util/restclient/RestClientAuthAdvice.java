@@ -1,5 +1,8 @@
 package io.mosip.registration.util.restclient;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -7,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -44,11 +48,10 @@ public class RestClientAuthAdvice {
 	 * authorization is required. If Authorization Token had expired, a new token
 	 * will be requested.
 	 * 
-	 * @param joinPoint
-	 *            the join point of the advice
+	 * @param joinPoint the join point of the advice
 	 * @return the response from the web-service
 	 * @throws RegBaseCheckedException
-	 *             the checked exception
+	 * @throws Throwable
 	 */
 	@Around("execution(* io.mosip.registration.util.restclient.RestClientUtil.invoke(..))")
 	public Object addAuthZToken(ProceedingJoinPoint joinPoint) throws RegBaseCheckedException {
@@ -73,10 +76,58 @@ public class RestClientAuthAdvice {
 					"Adding authZ token to web service request header if required completed");
 
 			return response;
+			
+		} catch (HttpClientErrorException httpClientErrorException) {
+			if (401 == httpClientErrorException.getRawStatusCode()) {
+				try {
+					RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
+					getNewAuthZToken(requestHTTPDTO);
+					return joinPoint.proceed(joinPoint.getArgs());
+				} catch (Throwable throwableError) {
+					throw new RegBaseCheckedException(
+							RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
+							RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(), throwableError);
+				}
+
+			}
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
+					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(), httpClientErrorException);
 		} catch (Throwable throwable) {
+			
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(), throwable);
 		}
+	}
+
+	/**
+	 * Gets the new auth Z token.
+	 *
+	 * @return the new auth Z token
+	 * @throws RegBaseCheckedException
+	 */
+	private void getNewAuthZToken(RequestHTTPDTO requestHTTPDTO) throws RegBaseCheckedException {
+		String authZToken = RegistrationConstants.EMPTY;
+		boolean haveToAuthZByClientId = false;
+		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
+			LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+			if (loginUserDTO == null || loginUserDTO.getPassword() == null
+					|| SessionContext.isSessionContextAvailable()) {
+				haveToAuthZByClientId = true;
+			} else {
+				serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+				authZToken = SessionContext.authTokenDTO().getCookie();
+			}
+		}
+
+		// Get the AuthZ Token By Client ID and Secret Key if
+		if ((haveToAuthZByClientId
+				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
+			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			authZToken = ApplicationContext.authTokenDTO().getCookie();
+		}
+
+		setAuthHeaders(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getAuthZHeader(), authZToken);
+
 	}
 
 	private String getAuthZToken(RequestHTTPDTO requestHTTPDTO, boolean haveToAuthZByClientId)
@@ -87,8 +138,7 @@ public class RestClientAuthAdvice {
 		// Get the AuthZ Token from AuthZ Web-Service only if Job is triggered by User
 		// and existing AuthZ Token had expired
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
-			if (SessionContext.isSessionContextAvailable()
-					&& serviceDelegateUtil.isAuthTokenValid(SessionContext.authTokenDTO().getCookie())) {
+			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO().getCookie()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
 			} else {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
@@ -104,7 +154,7 @@ public class RestClientAuthAdvice {
 		// Get the AuthZ Token By Client ID and Secret Key if
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
-			if (!serviceDelegateUtil.isAuthTokenValid(ApplicationContext.authTokenDTO().getCookie())) {
+			if (null == ApplicationContext.authTokenDTO() || null == ApplicationContext.authTokenDTO().getCookie()) {
 				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
 			}
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
@@ -118,19 +168,16 @@ public class RestClientAuthAdvice {
 	/**
 	 * Setup of Auth Headers.
 	 *
-	 * @param httpHeaders
-	 *            http headers
-	 * @param authHeader
-	 *            auth header
-	 * @param authZCookie
-	 *            the Authorization Token or Cookie
+	 * @param httpHeaders http headers
+	 * @param authHeader  auth header
+	 * @param authZCookie the Authorization Token or Cookie
 	 */
 	private void setAuthHeaders(HttpHeaders httpHeaders, String authHeader, String authZCookie) {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 				"Adding authZ token to request header");
 
 		String[] arrayAuthHeaders = null;
-		
+
 		if (authHeader != null) {
 			arrayAuthHeaders = authHeader.split(":");
 			if (arrayAuthHeaders[1].equalsIgnoreCase(RegistrationConstants.REST_OAUTH)) {
