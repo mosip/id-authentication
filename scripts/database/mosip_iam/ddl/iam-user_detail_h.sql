@@ -13,10 +13,11 @@ create schema if not exists iam
 create table iam.user_detail_h (
 	
 	id 			character varying (256) not null,
-	uin		 	character varying (28),					--	UIN of indivisuals and referenced from idrepo database 
+	reg_id		character varying (39),					--	RID of indivisuals and referenced from idrepo database 
 	name 		character varying (64) not null,
 	email 		character varying (256),
 	mobile 		character varying (16),
+	salt 		character varying (64),
 	
 	status_code character varying(36) not null,			-- master.status_list.code
 	lang_code 	character varying (3) not null,			-- master.language.code
@@ -49,7 +50,7 @@ create table iam.user_detail_h (
 COMMENT ON TABLE iam.user_detail_h IS 'User Detail History : This to track changes to iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer iam.user_detail table description for details.' ;
 
 COMMENT ON COLUMN iam.user_detail_h.id IS 'User ID : Unique ID generated / assigned for a user' ;
-COMMENT ON COLUMN iam.user_detail_h.uin IS 'UIN: UIN of the user. Typically this will be used for bio authentication' ;
+COMMENT ON COLUMN iam.user_detail_h.reg_id IS 'Registration ID: RID of the user. Typically this will be used for authentication and validation of users' ;
 COMMENT ON COLUMN iam.user_detail_h.name IS 'Name : User name' ;
 COMMENT ON COLUMN iam.user_detail_h.email IS 'Email: Email address of the user' ;
 COMMENT ON COLUMN iam.user_detail_h.mobile IS 'Mobile: Mobile number of the user' ;

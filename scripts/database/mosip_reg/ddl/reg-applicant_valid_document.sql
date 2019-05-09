@@ -3,11 +3,6 @@
 -- table 		: applicant_valid_document  - Registration Applicant valid document list, mapping table for applicant type, document type and category. 
 -- table alias  : avaldoc	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------------------------------------
 
@@ -33,18 +28,3 @@ create schema if not exists reg
 -- keys section -------------------------------------------------------------------------------
 alter table reg.applicant_valid_document add constraint pk_avaldoc_code primary key (apptyp_code, doccat_code, doctyp_code)
  ;
-
--- comments section -------------------------------------------------------------------------- 
--- COMMENT ON TABLE reg.applicant_valid_document IS 'Applicant Valid Document : This is mapping table that relates applicant type, document category and document type, that is valid document proof for UIN registration process.' ;
-
--- COMMENT ON COLUMN reg.applicant_valid_document.apptyp_code IS 'Applicant Type Code: Code of the applicant type defined/configured by the country admin' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.doccat_code IS 'Document Category Code: Refers to reg.doc_category.code' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.doctyp_code IS 'Document Type Code: Refers to reg.doc_type.code' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.lang_code IS 'Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.is_active IS 'IS_Active : Flag to mark whether the record is Active or In-active' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.cr_by IS 'Created By : ID or name of the user who create / insert record' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.upd_by IS 'Updated By : ID or name of the user who update the record with new values' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.' ;
--- COMMENT ON COLUMN reg.applicant_valid_document.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE' ;

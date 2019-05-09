@@ -15,3 +15,4 @@ UDM_J00012,User Machine Mapping Job,regUserMappingSyncJob,NULL,0 0 11 * * ?,NULL
 ADJ_J00012,Audit Log Deletion Job,deleteAuditLogsJob,NULL,0 0 11 * * ?,NULL,eng,FALSE,M1046559,now(),System,now(),FALSE,now()
 RSJ_J00014,Registration Packet Sync,registrationPacketSyncJob,NULL,0 0 11 * * ?,NULL,eng,FALSE,M1046559,now(),System,now(),FALSE,now()
 PVS_J00015,Registration Packet Virus Scan,registrationPacketVirusScanJob,NULL,0 0 11 * * ?,NULL,eng,FALSE,M1046559,now(),System,now(),FALSE,now()
+PKS_J00016,Public key Sync service,publicKeySyncJob,NULL,0 0 11 * * ?,NULL,eng,FALSE,SYSTEM,now(),System,now(),FALSE,now()
