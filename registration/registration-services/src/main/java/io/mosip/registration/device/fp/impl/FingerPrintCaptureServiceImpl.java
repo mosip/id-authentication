@@ -16,18 +16,18 @@ import io.mosip.registration.service.security.AuthenticationService;
  * @author Saravana Kumar
  */
 @Service
-public class FingerPrintCaptureServiceImpl {
+public class FingerPrintCaptureServiceImpl implements FingerPrintCaptureService {
 
 	@Autowired
 	private AuthenticationService authenticationService;
 
-	/**
-	 * Validate the scanned fingers.
-	 *
-	 * @param fingerprintDetailsDTOs 
-	 * 				the fingerprint details DT os
-	 * @return Boolean isMatched
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.device.impl.FingerPrintCaptureService#validateFingerprint(java.util.List)
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.device.impl.FingerPrintCaptureService#validateFingerprint(java.util.List)
+	 */
+	@Override
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
