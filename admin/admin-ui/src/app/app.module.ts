@@ -10,8 +10,7 @@ import { NavigationModule } from './navigation/navigation.module';
 import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
-import { UserregistrationService } from './shared/services/userregistration.service';
-import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -24,10 +23,9 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    UsermgmtModule,
-    HttpClientModule
+    UsermgmtModule
   ],
-  providers: [UserregistrationService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
