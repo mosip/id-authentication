@@ -1,6 +1,7 @@
 package io.mosip.kernel.idobjectvalidator.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
@@ -14,7 +15,8 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
  *
  * @author Manoj SP
  */
-@Component("composite")
+@Component
+@Primary
 public class IdObjectCompositeValidator implements IdObjectValidator {
 	
 	/** The schema validator. */

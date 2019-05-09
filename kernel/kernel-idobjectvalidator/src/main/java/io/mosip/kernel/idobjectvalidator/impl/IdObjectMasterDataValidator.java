@@ -2,10 +2,12 @@ package io.mosip.kernel.idobjectvalidator.impl;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -162,11 +164,15 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 				env.getProperty(IdObjectValidatorConstant.MASTERDATA_LANGUAGE_URI.getValue()), ObjectNode.class);
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.MASTERDATA_LANGUAGE_PATH.getValue());
 		JSONArray response = jsonPath.read(responseBody.toString(), READ_LIST_OPTIONS);
-		languageList = response.parallelStream()
-			.map(obj -> ((LinkedHashMap<String, Object>) obj))
-			.filter(obj -> (Boolean) obj.get(IS_ACTIVE))
-			.map(obj -> String.valueOf(obj.get(CODE)))
-			.collect(Collectors.toList());
+		languageList = Optional
+				.ofNullable(response)
+				.filter(data -> !data.isEmpty())
+				.orElse(new JSONArray())
+				.parallelStream()
+				.map(obj -> ((LinkedHashMap<String, Object>) obj))
+				.filter(obj -> (Boolean) obj.get(IS_ACTIVE))
+				.map(obj -> String.valueOf(obj.get(CODE)))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -211,21 +217,23 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	@SuppressWarnings("unchecked")
 	private void loadDocTypes() {
 		docTypeMap = new LinkedMultiValueMap<>();
-		docCatMap.keySet().parallelStream().forEach(langCode ->
-		docCatMap.get(langCode).forEach(docCat -> {
-			String uri = UriComponentsBuilder
-					.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_DOCUMENT_TYPES_URI.getValue()))
-					.buildAndExpand(docCat, langCode).toUriString();
-				ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-						.getForObject(uri, ResponseWrapper.class);
-				if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-					ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-					IntStream.range(0, response.size()).parallel()
-						.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-						.forEach(index -> docTypeMap.add(docCat, String.valueOf(response.get(index).get(NAME))));
-				}
-			})
-		);
+		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
+			docCatMap.keySet().parallelStream().forEach(langCode ->
+			docCatMap.get(langCode).forEach(docCat -> {
+				String uri = UriComponentsBuilder
+						.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_DOCUMENT_TYPES_URI.getValue()))
+						.buildAndExpand(docCat, langCode).toUriString();
+					ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+							.getForObject(uri, ResponseWrapper.class);
+					if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+						ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
+						IntStream.range(0, response.size()).parallel()
+							.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
+							.forEach(index -> docTypeMap.add(docCat, String.valueOf(response.get(index).get(NAME))));
+					}
+				})
+			);
+		}
 	}
 	
 	/**
