@@ -377,22 +377,23 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	}
 
 
-
-
-
 	/**
 	 * Validate hash code.
 	 *
-	 * @param inputStream the input stream
-	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param registrationId
+	 *            the registration id
+	 * @param inputStream
+	 *            the input stream
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private boolean validateHashCode(InputStream inputStream) throws IOException {
 		boolean isValidHash=false;
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		byte[] hashSequence = HMACUtils.generateHash(isbytearray);
-		byte[] packetHashSequenceFromEntity = hashSequence;//Todo: PacketHashSequesnce
-		if (!(Arrays.equals(hashSequence, packetHashSequenceFromEntity))) {
+		HMACUtils.update(isbytearray);
+		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
+		String packetHashSequence = regEntity.getPacketHashValue();
+		if (!(packetHashSequence.equals(hashSequence))) {
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"	+ registrationId;
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
@@ -402,10 +403,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			return isValidHash;
 		}else {
-
 			isValidHash=true;
 			return isValidHash;
-
 		}
 	}
 
