@@ -5,13 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
-import io.mosip.registration.processor.packet.storage.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
 /**
@@ -24,14 +29,13 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
-
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
-	
+
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepository;
 
@@ -43,9 +47,11 @@ public class PacketInfoDao {
 
 	@Autowired
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
+
+	List<String> machedRefIds = new ArrayList<>();
+
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
-
 
 	/** The Constant SELECT. */
 	private static final String SELECT = " SELECT ";
@@ -70,7 +76,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the packetsfor QC user.
 	 *
-	 * @param qcuserId the qcuser id
+	 * @param qcuserId
+	 *            the qcuser id
 	 * @return the packetsfor QC user
 	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
@@ -81,8 +88,8 @@ public class PacketInfoDao {
 		if (!assignedPackets.isEmpty()) {
 			assignedPackets.forEach(assignedPacket -> {
 				String regId = assignedPacket.getId().getRegId();
-				//TODO Need to clarify about QCUSER concept
-				applicantInfo = new ArrayList<>();//qcuserRegRepositary.getApplicantInfo(regId);
+				// TODO Need to clarify about QCUSER concept
+				applicantInfo = new ArrayList<>();// qcuserRegRepositary.getApplicantInfo(regId);
 			});
 			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
@@ -91,11 +98,13 @@ public class PacketInfoDao {
 					if (object instanceof IndividualDemographicDedupeEntity) {
 						demoDedupeList.add(convertEntityToDemographicDto((IndividualDemographicDedupeEntity) object));
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
-					} /*else if (object instanceof ApplicantPhotographEntity) {
-						applicantInfoDto.setApplicantPhotograph(
-								convertEntityToPhotographDto((ApplicantPhotographEntity) object));
-
-					}*/
+					} /*
+						 * else if (object instanceof ApplicantPhotographEntity) {
+						 * applicantInfoDto.setApplicantPhotograph(
+						 * convertEntityToPhotographDto((ApplicantPhotographEntity) object));
+						 * 
+						 * }
+						 */
 				}
 				applicantInfoDtoList.add(applicantInfoDto);
 			});
@@ -104,10 +113,6 @@ public class PacketInfoDao {
 		}
 		return applicantInfoDtoList;
 	}
-
-
-
-
 
 	/**
 	 * Convert entity to demographic dto.
@@ -148,11 +153,11 @@ public class PacketInfoDao {
 		return demographicDedupeDtoList;
 	}
 
-
 	/**
 	 * Update is active if duplicate found.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 */
 	public void updateIsActiveIfDuplicateFound(String regId) {
 		demographicDedupeRepository.updateIsActiveIfDuplicateFound(regId);
@@ -162,14 +167,18 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic entities.
 	 *
-	 * @param name the name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
+	 * @param name
+	 *            the name
+	 * @param gender
+	 *            the gender
+	 * @param dob
+	 *            the dob
+	 * @param langCode
+	 *            the lang code
 	 * @return the all demographic entities
 	 */
-	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
-			String dob, String langCode) {
+	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender, String dob,
+			String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
@@ -201,18 +210,21 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic info dtos.
 	 *
-	 * @param name the name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
+	 * @param name
+	 *            the name
+	 * @param gender
+	 *            the gender
+	 * @param dob
+	 *            the dob
+	 * @param langCode
+	 *            the lang code
 	 * @return the all demographic info dtos
 	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, String dob,
-			String langCode) {
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, String dob, String langCode) {
 
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(name,
-				gender, dob, langCode);
+		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(name, gender, dob,
+				langCode);
 		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
 			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
 		}
@@ -226,29 +238,31 @@ public class PacketInfoDao {
 	/**
 	 * Gets the UIN by rid.
 	 *
-	 * @param rid the rid
+	 * @param rid
+	 *            the rid
 	 * @return the UIN by rid
 	 */
 	public List<String> getUINByRid(String rid) {
 		return demographicDedupeRepository.getUINByRid(rid);
 	}
-	
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId) {
-		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
+
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId, String requestType, String refRegtrnId) {
+		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, requestType, refRegtrnId);
+
 	}
 
-	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify){
+	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify) {
 		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
 	}
 
-	public List<RegBioRefEntity> getBioRefIdByRegId(String regId){
+	public List<RegBioRefEntity> getBioRefIdByRegId(String regId) {
 		return abisRequestRepositary.getBioRefIdByRegId(regId);
 	}
 
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
 		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
 	}
-	
+
 	public List<AbisRequestEntity> getAbisRequestIDs(String latestTransactionId) {
 		return abisRequestRepository.getAbisRequestIDs(latestTransactionId);
 
@@ -267,11 +281,15 @@ public class PacketInfoDao {
 			abisResponseDetEntities.addAll(
 					abisResponseDetRepository.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
 		}
+
+		for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
+			machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
+		}
 		return abisResponseDetEntities;
 	}
 
-	public List<RegBioRefEntity> getBioRefIds(String matchRefId) {
-		return regBioRefRepository.getBioRefIds(matchRefId);
+	public List<String> getRegAbisRefRegIds(List<String> matchRefIds) {
+		return regBioRefRepository.getAbisRefRegIds(matchRefIds);
 
 	}
 

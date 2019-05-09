@@ -42,6 +42,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
@@ -81,6 +82,12 @@ public class BioDedupeProcessor {
 	@Autowired
 	Utilities utilities;
 
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	@Autowired
+	private PacketInfoDao packetInfoDao;
+
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
@@ -115,13 +122,12 @@ public class BioDedupeProcessor {
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
-	
-	@Autowired
-	public PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	String description = "";
 
 	private String code = "";
+
+	List<String> machedRefIds = new ArrayList<>();
 
 	public MessageDTO process(MessageDTO object, String stageName) {
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
@@ -331,10 +337,16 @@ public class BioDedupeProcessor {
 	}
 
 	private void newPacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
-		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 
-		List<AbisResponseDetEntity> abisResponseDetEntities = bioDedupDao
+		String registrationId = registrationStatusDto.getRegistrationId();
+		String latestTransactionId = getLatestTransactionId(registrationId);
+
+		List<AbisResponseDetEntity> abisResponseDetEntities = packetInfoDao
 				.getAbisResponseDetailRecords(latestTransactionId, IDENTIFY);
+		for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
+			machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
+		}
+
 		if (abisResponseDetEntities.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
@@ -345,6 +357,8 @@ public class BioDedupeProcessor {
 		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 			object.setIsValid(Boolean.FALSE);
+			packetInfoManager.saveManualAdjudicationData(packetInfoDao.getRegAbisRefRegIds(machedRefIds),
+					registrationId, DedupeSourceName.BIO);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"ABIS response Details not null, destination stage is Manual_verification");
@@ -352,7 +366,9 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
+	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto)
+			throws ApisResourceAccessException, IOException {
+
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		List<RegBioRefEntity> regBioRefEntities = new ArrayList<>();
 		// TODO logic for abis handler update scenario
@@ -385,17 +401,21 @@ public class BioDedupeProcessor {
 				regBioRefEntity.getId().getRegId();
 				List<String> pathSegments = new ArrayList<>();
 				pathSegments.add("27847657360002520190320095010");
-					IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "type", "all", ResponseWrapper.class);
-					System.out.println(response);
-					Gson gsonObj = new Gson();
-					String jsonString = gsonObj.toJson(response.getResponse());
-					JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-					System.out.println(jsonString);
-					String uin = (String) identityJson.get("UIN");
-					if(uin!=""/*Current RID UIN*/) {
-						// send to Manual Varificatiom
-						//packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIds, String registrationStatusDto.getRegistrationId(),DedupeSourceName sourceName)
-					}
+
+				IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
+						"type", "all", ResponseWrapper.class);
+				System.out.println(response);
+				Gson gsonObj = new Gson();
+				String jsonString = gsonObj.toJson(response.getResponse());
+				JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+				System.out.println(jsonString);
+				String uin = (String) identityJson.get("UIN");
+				if (uin != ""/* Current RID UIN */) {
+					// send to Manual Varificatiom
+					// packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIds, String
+					// registrationStatusDto.getRegistrationId(),DedupeSourceName sourceName)
+				}
+
 			}
 		}
 	}
