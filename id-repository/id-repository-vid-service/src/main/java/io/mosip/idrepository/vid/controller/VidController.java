@@ -28,22 +28,28 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
+ * The Class Vid Controller
  * 
  * @author Prem Kumar
  *
  */
 @RestController
 public class VidController {
-
+	
+	/** The Constant RETRIEVE_UIN_BY_VID */
 	private static final String RETRIEVE_UIN_BY_VID = "retrieveUinByVid";
 
+	/** The Constant UPDATE_VID_STATUS */
 	private static final String UPDATE_VID_STATUS = "updateVidStatus";
 
+	/** The Constant VID_CONTROLLER */
 	private static final String VID_CONTROLLER = "VidController";
-
+	
+	/** The Vid Service */
 	@Autowired
 	private VidService<VidRequestDTO, VidResponseDTO> vidService;
-
+	
+	/** The Vid Request Validator */
 	@Autowired
 	private VidRequestValidator vidRequestValidator;
 
@@ -91,7 +97,7 @@ public class VidController {
 	 * @param vid
 	 * @param request
 	 * @param errors
-	 * @return VidResponseDTO 
+	 * @return VidResponseDTO
 	 * @throws IdRepoAppException
 	 */
 	@PatchMapping(path = "/vid/{VID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

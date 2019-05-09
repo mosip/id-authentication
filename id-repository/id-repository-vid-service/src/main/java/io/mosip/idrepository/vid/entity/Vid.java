@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
+ * The Entity for Vid.
  * 
  * @author Prem Kumar
  *
@@ -26,13 +27,13 @@ public class Vid {
 	/** The vid value */
 	private String vid;
 
-	public Vid(String id, String vid, String uinHash, String uin,String vidTypeCode, LocalDateTime generatedDTimes,
+	public Vid(String id, String vid, String uinHash, String uin, String vidTypeCode, LocalDateTime generatedDTimes,
 			LocalDateTime expiryDTimes, String statusCode, String createdBy, LocalDateTime createdDTimes,
 			String updatedBy, LocalDateTime updatedDTimes, boolean isDeleted, LocalDateTime deletedDTimes) {
 		this.id = id;
 		this.vid = vid;
 		this.uinHash = uinHash;
-		this.uin=uin;
+		this.uin = uin;
 		this.vidTypeCode = vidTypeCode;
 		this.generatedDTimes = generatedDTimes;
 		this.expiryDTimes = expiryDTimes;
@@ -47,44 +48,45 @@ public class Vid {
 
 	/** The uin Hash value */
 	private String uinHash;
+	
 	/** The uin value */
 	private String uin;
 
-	/** The vid Type Code */
+	/** The value to hold vid Type Code */
 	@Column(name = "vidtyp_code")
 	private String vidTypeCode;
 
-	/** The generated DTimes */
+	/** The value to hold generated DTimes */
 	@Column(name = "generated_dtimes")
 	private LocalDateTime generatedDTimes;
 
-	/** The expiry DTimes */
+	/** The value to hold expiry DTimes */
 	@Column(name = "expiry_dtimes")
 	private LocalDateTime expiryDTimes;
 
-	/** The status Code */
+	/** The value to hold status Code */
 	private String statusCode;
 
-	/** The created By */
+	/** The value to hold created By */
 	@Column(name = "cr_by")
 	private String createdBy;
 
-	/** The created DTimes */
+	/** The value to hold created DTimes */
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createdDTimes;
 
-	/** The updated By */
+	/** The value to hold updated By */
 	@Column(name = "upd_by")
 	private String updatedBy;
 
-	/** The updated Time */
+	/** The value to hold updated Time */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedDTimes;
 
 	/** The boolean of isDeleted */
 	private boolean isDeleted;
 
-	/** The deleted DTimes */
+	/** The value to hold deleted DTimes */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDTimes;
 

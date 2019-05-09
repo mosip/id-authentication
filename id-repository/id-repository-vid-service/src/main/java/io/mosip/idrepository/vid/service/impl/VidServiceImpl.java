@@ -67,10 +67,23 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		}
 	}
 
+	/**
+	 * This Method will accepts vid as parameter and will return Vid Object from DB.
+	 * 
+	 * @param Vid
+	 * @return The Vid Object
+	 */
 	private Vid retrieveVidEntity(String vid) {
 		return vidRepo.retrieveVid(vid);
 	}
 
+	/**
+	 * This method will check expiry date of the vid, if vid is expired then it will
+	 * throw IdRepoAppException.
+	 * 
+	 * @param expiryDTimes
+	 * @throws IdRepoAppException
+	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime();
@@ -80,6 +93,12 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		}
 	}
 
+	/**
+	 * This method will check Status of the vid.
+	 * 
+	 * @param statusCode
+	 * @throws IdRepoAppException
+	 */
 	private void checkStatus(String statusCode) throws IdRepoAppException {
 		if (!statusCode.equalsIgnoreCase(env.getProperty(IdRepoConstants.MOSIP_IDREPO_VID_STATUS.getValue()))) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
@@ -87,6 +106,13 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		}
 	}
 
+	/**
+	 * This Method will build the Vid Response
+	 * 
+	 * @param response
+	 * @param id
+	 * @return The Vid Response
+	 */
 	private VidResponseDTO buildResponse(ResponseDto response, String id) {
 		VidResponseDTO responseDto = new VidResponseDTO();
 		responseDto.setId(id);
@@ -97,6 +123,12 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		return responseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.idrepository.core.spi.VidService#updateVid(java.lang.String,
+	 * java.lang.Object)
+	 */
 	@Override
 	public VidResponseDTO updateVid(String vid, VidRequestDTO request) throws IdRepoAppException {
 		Vid vidObject = retrieveVidEntity(vid);
@@ -113,7 +145,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 			vidRepo.save(vidObject);
 			return buildResponse(response, id.get("update"));
 		} else {
-			// TODO throw proper error
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
 					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
 		}

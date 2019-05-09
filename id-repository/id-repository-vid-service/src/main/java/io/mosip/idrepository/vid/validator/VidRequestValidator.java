@@ -23,6 +23,7 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
+ * This class will validate the Vid Request.
  * 
  * @author Prem Kumar
  *
@@ -31,8 +32,10 @@ import io.mosip.kernel.core.util.DateUtils;
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRequestValidator implements Validator {
 
+	/** The Constant ID. */
 	private static final String ID = "id";
 
+	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
 
 	/** The Constant VER. */
@@ -40,30 +43,32 @@ public class VidRequestValidator implements Validator {
 
 	/** The Constant TIMESTAMP. */
 	private static final String REQUEST_TIME = "requestTime";
-	
+
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-	
+
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "vidStatus";
-	
+
 	/** The Constant verPattern. */
 	private static final Pattern verPattern = Pattern.compile(IdRepoConstants.VERSION_PATTERN.getValue());
-	
+
+	/** The Environment */
 	@Autowired
 	Environment env;
-	
+
+	/** The Vid Validator */
 	@Autowired
 	private VidValidator<String> vidValidator;
 
 	/** The allowed types. */
 	@Resource
 	private List<String> allowedStatus;
-	
+
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,28 +87,34 @@ public class VidRequestValidator implements Validator {
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
-		VidRequestDTO request=(VidRequestDTO) target;
+		VidRequestDTO request = (VidRequestDTO) target;
 		validateReqTime(request.getRequestTime(), errors);
 		if (!errors.hasErrors()) {
 			validateVersion(request.getVersion(), errors);
 		}
 		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(UPDATE))) {
-			validateStatus(request.getRequest().getVidStatus(),errors);
-			}else {
+				validateStatus(request.getRequest().getVidStatus(), errors);
+			} else {
 				errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), ID));
 			}
 		}
-		
+
 	}
 
+	/**
+	 * This method will validate the Status of Vid.
+	 * 
+	 * @param vidStatus
+	 * @param errors
+	 */
 	private void validateStatus(String vidStatus, Errors errors) {
-		if(Objects.nonNull(vidStatus) && !allowedStatus.contains(vidStatus)) {
+		if (Objects.nonNull(vidStatus) && !allowedStatus.contains(vidStatus)) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), STATUS_FIELD));
 		}
-		
+
 	}
 
 	/**
@@ -118,8 +129,8 @@ public class VidRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
 		} else {
 			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
+				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), String
+						.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
 			}
 		}
 	}
@@ -139,8 +150,14 @@ public class VidRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), VER));
 		}
 	}
-	
+
+	/**
+	 * This method will validate the Vid value.
+	 * 
+	 * @param vid
+	 * @throws IdRepoAppException
+	 */
 	public void validateId(String vid) throws IdRepoAppException {
-	vidValidator.validateId(vid);
+		vidValidator.validateId(vid);
 	}
 }
