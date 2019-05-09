@@ -151,8 +151,9 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         } else {
-          localStorage.setItem('newApplicant', 'true');
-          this.onNewApplication();
+          // localStorage.setItem('newApplicant', 'true');
+          // this.onNewApplication();
+          this.onError();
         }
       },
       error => {
