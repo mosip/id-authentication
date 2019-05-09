@@ -47,7 +47,11 @@ public enum IdRepoConstants {
 	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path");
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path"),
+	
+	MOSIP_IDREPO_VID_STATUS("mosip.idrepo.vid.status"),
+	
+	MOSIP_IDREPO_VID_ALLOWED_STATUS("mosip.idrepo.vid.allowedStatus");
 	/** The value. */
 	private final String value;
 
