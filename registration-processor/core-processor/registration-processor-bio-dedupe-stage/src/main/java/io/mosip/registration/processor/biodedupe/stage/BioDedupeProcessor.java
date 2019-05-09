@@ -156,7 +156,7 @@ public class BioDedupeProcessor {
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
 					updatePacketProcessing(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
-					updatePacketHandlerProcessing(registrationStatusDto,object);
+					updatePacketHandlerProcessing(registrationStatusDto, object);
 				}
 
 			}
@@ -338,33 +338,11 @@ public class BioDedupeProcessor {
 
 	}
 
-	private void newPacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
+	private void newPacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
+			throws ApisResourceAccessException, IOException {
 
-		String registrationId = registrationStatusDto.getRegistrationId();
-		String latestTransactionId = getLatestTransactionId(registrationId);
-		List<String> regBioRefIds = new ArrayList<>();
-		List<AbisRequestEntity> abisRequestEntities = new ArrayList<>();
-		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
-		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
-
-		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
-		if (!regBioRefIds.isEmpty()) {
-			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0), "identify",
-					latestTransactionId);
-			for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
-				abisResponseEntities.addAll(packetInfoDao.getAbisResponseIDs(abisRequestEntity.getId().getId()));
-			}
-			for (AbisResponseEntity abisResponseEntity : abisResponseEntities) {
-				abisResponseDetEntities
-						.addAll(packetInfoDao.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
-			}
-
-		}
-		for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
-			machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
-		}
-
-		if (abisResponseDetEntities.isEmpty()) {
+		List<String> matchedRegIds = getMatchedRegistrationIds(registrationStatusDto, REG_TYPE_NEW);
+		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
 
@@ -374,8 +352,8 @@ public class BioDedupeProcessor {
 		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 			object.setIsValid(Boolean.FALSE);
-			packetInfoManager.saveManualAdjudicationData(packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds),
-					registrationId, DedupeSourceName.BIO);
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
+					DedupeSourceName.BIO);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"ABIS response Details not null, destination stage is Manual_verification");
@@ -385,31 +363,42 @@ public class BioDedupeProcessor {
 
 	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
 			throws ApisResourceAccessException, IOException {
+		List<String> matchedRegIds = getMatchedRegistrationIds(registrationStatusDto, REG_TYPE_UPDATE);
+		if (matchedRegIds.isEmpty()) {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
+
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			object.setIsValid(Boolean.FALSE);
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
+					DedupeSourceName.BIO);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"ABIS response Details not null, destination stage is Manual_verification");
+
+		}
+	}
+
+	private List<String> getMatchedRegistrationIds(InternalRegistrationStatusDto registrationStatusDto, String status)
+			throws ApisResourceAccessException, IOException {
+
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
-		Map<String,String> filteredRegMap = new LinkedHashMap<String,String>();
+		Map<String, String> filteredRegMap = new LinkedHashMap<String, String>();
 		List<String> regBioRefIds = new ArrayList<>();
 		List<String> matchedRegistrationIds = new ArrayList<>();
+		List<String> filteredRIds = new ArrayList<>();
 		List<AbisRequestEntity> abisRequestEntities = new ArrayList<>();
 		List<AbisResponseEntity> abisResponseEntities = new ArrayList<>();
 		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
-		// TODO logic for abis handler update scenario
-		/*
-		 * 1.get abis requestIDs(List<AbisRequestDto>) from ABIS_REQUEST TABLE based on
-		 * latestTransactionId (ref_regtrn_id) 2.get Abis
-		 * ResponseIDs(List<AbisResponseDto>) from ABIS_RESPONSE Table Base on
-		 * abisRequestDto (abis_request_id) 3.get ABIS_RESPONSE_DET
-		 * (List<AbisResponseDetailDto>) from ABIS_RESPONSE_DET based on AbisResponseDto
-		 * ( abis_response_id) 4.IF list<AbisResponseDetailDto> is not Emplty THEN get
-		 * RIDs from reg_abisref From abis_response_det table base on
-		 * (mactched_abis_ref_id) get UIN based on RID check if all UIN are same for all
-		 * RID if all are same sent it to UIN stage if atleast one UIN are not same send it to
-		 * Manual-varificatin stage
-		 * 
-		 */
+
 		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0),
-					latestTransactionId, "identify");
+			abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(regBioRefIds.get(0), latestTransactionId,
+					IDENTIFY);
 			for (AbisRequestEntity abisRequestEntity : abisRequestEntities) {
 				abisResponseEntities.addAll(packetInfoDao.getAbisResponseIDs(abisRequestEntity.getId().getId()));
 			}
@@ -417,43 +406,49 @@ public class BioDedupeProcessor {
 				abisResponseDetEntities
 						.addAll(packetInfoDao.getAbisResponseDetails(abisResponseEntity.getId().getId().toString()));
 			}
-
-		}
-		if (!abisResponseDetEntities.isEmpty()) {
-			for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
-				machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
-			}
-			matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-			List<String> filteredRIds = new ArrayList<>();
-			for (String machedRegId : matchedRegistrationIds) {
-				List<String> pathSegments = new ArrayList<>();
-				pathSegments.add(machedRegId);
-				@SuppressWarnings("unchecked")
-				ResponseWrapper<IdResponseDTO> response = (ResponseWrapper<IdResponseDTO>) restClientService
-						.getApi(ApiName.IDREPOSITORY, pathSegments, "type", "all", ResponseWrapper.class);
-				Gson gsonObj = new Gson();
-				String jsonString = gsonObj.toJson(response.getResponse());
-				JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-				JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,utility.getGetRegProcessorDemographicIdentity());
-				Number matchedUin = JsonUtil.getJSONValue(demographicIdentity, "UIN");
-				Number packetUin = utilities.getUIn(registrationStatusDto.getRegistrationId());
-				if (matchedUin != null && packetUin != matchedUin) {
-					filteredRegMap.put(matchedUin.toString(),machedRegId);
-					
+			if (!abisResponseDetEntities.isEmpty()) {
+				for (AbisResponseDetEntity abisResponseDetEntity : abisResponseDetEntities) {
+					machedRefIds.add(abisResponseDetEntity.getId().getMatchedBioRefId());
 				}
-				if(!filteredRegMap.isEmpty()) {
-					 filteredRIds = new ArrayList<String>(filteredRegMap.values());
-					 packetInfoManager.saveManualAdjudicationData(filteredRIds, registrationStatusDto.getRegistrationId(),DedupeSourceName.BIO);
+				matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+
+				for (String machedRegId : matchedRegistrationIds) {
+					List<String> pathSegments = new ArrayList<>();
+					pathSegments.add(machedRegId);
+					@SuppressWarnings("unchecked")
+					ResponseWrapper<IdResponseDTO> response = (ResponseWrapper<IdResponseDTO>) restClientService
+							.getApi(ApiName.IDREPOSITORY, pathSegments, "type", "all", ResponseWrapper.class);
+					Gson gsonObj = new Gson();
+					String jsonString = gsonObj.toJson(response.getResponse());
+					JSONObject identityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+					JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
+							utility.getGetRegProcessorDemographicIdentity());
+					Number matchedUin = JsonUtil.getJSONValue(demographicIdentity, "UIN");
+
+					if (status.equalsIgnoreCase(REG_TYPE_UPDATE)) {
+						Number packetUin = utilities.getUIn(registrationStatusDto.getRegistrationId());
+						if (matchedUin != null && packetUin != matchedUin) {
+							filteredRegMap.put(matchedUin.toString(), machedRegId);
+
+						}
+					}
+
+					if (status.equalsIgnoreCase(REG_TYPE_NEW) && matchedUin != null) {
+
+						filteredRegMap.put(matchedUin.toString(), machedRegId);
+
+					}
+
+					if (!filteredRegMap.isEmpty()) {
+						filteredRIds = new ArrayList<String>(filteredRegMap.values());
+					}
+
 				}
 			}
-		}else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
- 
 		}
+
+		return filteredRIds;
+
 	}
 
 }
