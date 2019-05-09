@@ -56,7 +56,6 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -481,6 +480,7 @@ public class BaseController {
 		clearAllValues();
 
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		SessionContext.userMap().remove(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
 		updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION,

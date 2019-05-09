@@ -227,7 +227,7 @@ public class SendNotificationController extends BaseController implements Initia
 					contentsList.add(content);
 				}
 			}
-			if (contentsList.size() == 0) {
+			if (contentsList.isEmpty()) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
 				} else {
