@@ -3,13 +3,9 @@ package io.mosip.registartion.processor.abis.middleware.stage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.jms.Message;
@@ -116,6 +112,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	List<String> typeOfQueueList;
 	List<MosipQueue> mosipQueueList;
 	InternalRegistrationStatusDto registrationStatusDto;
+	List<AbisRequestDto> abisInsertRequestList;
+	List<AbisRequestDto> abisIdentifyRequestList;
 
 	public void deployVerticle() {
 		try {
@@ -124,10 +122,13 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			abisInboundAddresses = inBoundOutBoundList.get(0);
 			abisOutboundAddresses = inBoundOutBoundList.get(1);
 			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
+				String abisInBoundaddress = abisInboundAddresses.get(i);
+				MosipQueue queue = mosipQueueList.get(i);
+				byte[] identifyReq = abisIdentifyRequestList.get(i).getReqText();
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
-						consumerListener(message);
+						consumerListener(message, abisInBoundaddress, queue, identifyReq);
 					}
 				};
 				mosipQueueManager.consume(mosipQueueList.get(i), abisOutboundAddresses.get(i), listener);
@@ -154,29 +155,48 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				String abisRefId = abisRefList.get(0);
 				List<AbisRequestDto> abisInsertIdentifyList = packetInfoManager.getInsertOrIdentifyRequest(abisRefId,
 						refRegtrnId);
-				List<AbisRequestDto> abisInsertRequestList = abisInsertIdentifyList.stream()
+				abisInsertRequestList = abisInsertIdentifyList.stream()
 						.filter(dto -> dto.getRequestType().equals(INSERT)).collect(Collectors.toList());
-				List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
+				abisIdentifyRequestList = abisInsertIdentifyList.stream()
 						.filter(dto -> dto.getRequestType().equals(IDENTIFY)).collect(Collectors.toList());
-				if (abisInsertRequestList != null && !abisInsertRequestList.isEmpty()) {
-					List<Future<Boolean>> futures = new ArrayList<>();
-					ExecutorService executorService = Executors.newFixedThreadPool(abisInsertRequestList.size());
-					for (int i = 0; i < abisInsertRequestList.size(); i++) {
-						RequestQueueSender requestQueueSender = new RequestQueueSender(mosipQueueList.get(i),
-								new String(abisInsertRequestList.get(i).getReqText()), abisInboundAddresses.get(i),
-								new String(abisIdentifyRequestList.get(i).getReqText()), abisOutboundAddresses.get(i),
-								abisInsertRequestList.get(i), abisIdentifyRequestList.get(i));
-						Future<Boolean> future = executorService.submit(requestQueueSender);
-						futures.add(future);
-					}
 
-					executorService.shutdown();
+				for (int i = 0; i < abisInsertRequestList.size(); i++) {
 
-					for (Future<?> future : futures) {
-						System.out.println(future.get());
-					}
+					byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
 
+					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
+							abisInboundAddresses.get(i));
+
+					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
 				}
+
+				// if (abisInsertRequestList != null && !abisInsertRequestList.isEmpty()) {
+				// List<Future<Boolean>> futures = new ArrayList<>();
+				// ExecutorService executorService =
+				// Executors.newFixedThreadPool(abisInsertRequestList.size());
+				// for (int i = 0; i < abisInsertRequestList.size(); i++) {
+				// AbisRequestDto dtoInsert= abisInsertRequestList.get(i);
+				// List<AbisRequestDto> abisIdentifyrequestDto =
+				// abisIdentifyRequestList.stream().filter(dto->dto.getAbisAppCode().equals(dtoInsert.getAbisAppCode())).collect(Collectors.toList());
+				//
+				// RequestQueueSender requestQueueSender = new
+				// RequestQueueSender(mosipQueueList.get(i),
+				// new String(abisInsertRequestList.get(i).getReqText()),
+				// abisInboundAddresses.get(i),
+				// new String(abisIdentifyRequestList.get(i).getReqText()),
+				// abisOutboundAddresses.get(i),
+				// abisInsertRequestList.get(i), abisIdentifyRequestList.get(i));
+				// Future<Boolean> future = executorService.submit(requestQueueSender);
+				// futures.add(future);
+				// }
+				//
+				// executorService.shutdown();
+				//
+				// for (Future<?> future : futures) {
+				// System.out.println(future.get());
+				// }
+				//
+				// }
 
 			}
 		} catch (Exception e) {
@@ -203,11 +223,45 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return object;
 	}
 
-	public void consumerListener(Message message) {
+	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, byte[] identifyReq) {
 
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
-
 		try {
+			AbisCommonResponseDto abisCommonResponseDto = JsonUtil.objectMapperReadValue(response,
+					AbisCommonResponseDto.class);
+			AbisRequestDto abisRequestDto = packetInfoManager
+					.getAbisRequestByRequestId(abisCommonResponseDto.getRequestId());
+			if (abisRequestDto.getRequestType().equals(INSERT)) {
+				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
+						AbisInsertResponseDto.class);
+
+				updateAbisResponseEntity(abisInsertResponseDto, response);
+				updteAbisRequestProcessed(abisInsertResponseDto.getRequestId(), INSERT);
+				if (abisInsertResponseDto.getReturnValue() == 1) {
+					List<AbisRequestDto> temp = abisIdentifyRequestList.stream()
+							.filter(dto1 -> dto1.getAbisAppCode().equals(abisRequestDto.getAbisAppCode()))
+							.collect(Collectors.toList());
+					AbisRequestDto abisIdentifyRequestDto = temp.get(0);
+					boolean isAddedToQueue = sendToQueue(queue, new String(abisIdentifyRequestDto.getReqText()),
+							abisInBoundAddress);
+					updateAbisRequest(isAddedToQueue, abisIdentifyRequestDto);
+				}
+			} else if (abisRequestDto.getRequestType().equals(IDENTIFY)) {
+
+				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
+						AbisIdentifyResponseDto.class);
+				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
+				CandidatesDto[] candidatesDtos = abisIdentifyResponseDto.getCandidateList().getCandidates();
+				if (candidatesDtos != null) {
+					for (CandidatesDto candidatesDto : candidatesDtos) {
+						updateAbisResponseDetail(abisIdentifyResponseDto, candidatesDto, abisResponseDto);
+					}
+				}
+
+				updteAbisRequestProcessed(abisIdentifyResponseDto.getRequestId(), IDENTIFY);
+
+			}
+
 			JSONObject jsonResponse = JsonUtil.objectMapperReadValue(response, JsonObject.class);
 			String id = JsonUtil.getJSONValue(jsonResponse, ID);
 			if (id.equals(ABIS_INSERT)) {
@@ -238,6 +292,9 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (RegistrationProcessorCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
@@ -264,13 +321,17 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	}
 
 	private void updateAbisRequest(boolean isAddedToQueue, AbisRequestDto abisRequestDto) {
+		AbisRequestEntity abisReqEntity = convertAbisRequestDtoToAbisRequestEntity(abisRequestDto);
+
 		if (isAddedToQueue) {
 
-			AbisRequestEntity abisReqEntity = convertAbisRequestDtoToAbisRequestEntity(abisRequestDto);
 			abisReqEntity.setStatusCode("SENT");
-			abisReqEntity.setStatusComment("Sent sucessfully to ABIS");
-			abisRequestRepositary.update(abisReqEntity);
+			abisReqEntity.setStatusComment("Request sent to ABIS is sucessful");
+		} else {
+			abisReqEntity.setStatusCode("FAILED");
+			abisReqEntity.setStatusComment("Request sent to ABIS is unsucessful");
 		}
+		abisRequestRepositary.update(abisReqEntity);
 
 	}
 
@@ -383,6 +444,10 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String getLatestTransactionId(String registrationId) {
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
+
+	}
+
+	private boolean checkAllIdentifyRequestsProcessed() {
 
 	}
 

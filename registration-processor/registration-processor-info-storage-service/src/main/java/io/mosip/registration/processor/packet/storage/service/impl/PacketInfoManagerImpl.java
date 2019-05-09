@@ -621,6 +621,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId,refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestByRequestId(java.lang.String)
+	 */
+	@Override
+	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId) {
+		List<AbisRequestEntity> abisRequestList = packetInfoDao.getAbisRequestByRequestId(abisRequestId);
+		List<AbisRequestDto> abisRequestDtoList = PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
+		if(!abisRequestDtoList.isEmpty()) {
+			return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList).get(0);
+		}else {
+			return null;
+
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

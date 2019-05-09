@@ -254,6 +254,10 @@ public class PacketInfoDao {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 
 	}
+	
+	public List<AbisRequestEntity>getAbisRequestByRequestId(String abisRequestId){
+		return abisRequestRepositary.getAbisRequestByRequestId(abisRequestId);
+	}
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId,String refRegtrnId,String requestType) {
 		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
 
