@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class OtpRequestDTO {
 	private String userId;
-    private String langCode;
 }

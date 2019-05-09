@@ -31,6 +31,7 @@ import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
+import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.AppointmentBookException;
@@ -146,6 +147,9 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof TableNotAccessibleException) {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
 					((TableNotAccessibleException) ex).getErrorText(),mainResponseDTO);
+		}else if (ex instanceof RestCallException) {
+			throw new RestCallException(((RestCallException) ex).getErrorCode(),
+					((RestCallException) ex).getErrorText(),mainResponseDTO);
 		}
 
 	}

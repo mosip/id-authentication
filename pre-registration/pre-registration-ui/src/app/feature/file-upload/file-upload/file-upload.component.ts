@@ -14,6 +14,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
+import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 
 @Component({
   selector: 'app-file-upload',
@@ -44,7 +45,9 @@ export class FileUploadComponent implements OnInit {
   fileByteArray;
   fileUrl;
   applicantPreRegId: string;
-  userFiles: FileModel = new FileModel();
+  file: FileModel = new FileModel();
+  userFile: FileModel[] = [this.file];
+  userFiles: FilesModel = new FilesModel(this.userFile);
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
@@ -54,7 +57,8 @@ export class FileUploadComponent implements OnInit {
   documentIndex: number;
   LOD: DocumentCategory[];
   fileIndex: number = -1;
-  secondaryLanguagelabels: any;
+  fileUploadLanguagelabels: any;
+  errorlabels: any;
   fileExtension: string = '';
   sameAs: string;
   disableNavigation: boolean = false;
@@ -68,7 +72,7 @@ export class FileUploadComponent implements OnInit {
     docTypCode: '',
     langCode: ''
   };
-
+  files: FilesModel;
   documentCategoryDto: DocumentCategoryDTO = {
     attribute: '',
     value: ''
@@ -105,15 +109,17 @@ export class FileUploadComponent implements OnInit {
     this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      if (response['message']) this.secondaryLanguagelabels = response['message'];
+      if (response['message']) this.fileUploadLanguagelabels = response['message'];
+      if (response['error']) this.errorlabels = response['error'];
     });
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
     this.getApplicantTypeID();
     let i = 0;
-    if (!this.users[0].files[0].documentsMetaData) {
-      this.users[0].files[0].documentsMetaData = [];
+    let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
+    if (!this.users[0].files) {
+      this.users[0].files = this.userFiles;
     } else {
       // this.sortUserFiles();
     }
@@ -220,8 +226,8 @@ export class FileUploadComponent implements OnInit {
    */
   sortUserFiles() {
     for (let document of this.LOD) {
-      for (let file of this.users[0].files[0]) {
-        if (document.code === file.doc_cat_code) {
+      for (let file of this.users[0].files.documentsMetaData) {
+        if (document.code === file.docCatCode) {
           this.sortedUserFiles.push(file);
         }
       }
@@ -324,7 +330,7 @@ export class FileUploadComponent implements OnInit {
         this.setApplicantType(response);
       } else {
         // alert('Servers unavailable,please try again after some time');
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
@@ -352,7 +358,7 @@ export class FileUploadComponent implements OnInit {
         this.registration.setDocumentCategories(res['response'].documentCategories);
       } else {
         // alert('Servers unavailable,please try again after some time');
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       }
     });
   }
@@ -370,11 +376,11 @@ export class FileUploadComponent implements OnInit {
           this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
           // alert('Servers unavailable,please try again after some time');
-          this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       err => {
-        this.displayMessage('Error', 'Servers unavailable,please try again after some time');
+        this.displayMessage('Error', this.errorlabels.error);
       },
       () => {
         this.setApplicants();
@@ -427,7 +433,14 @@ export class FileUploadComponent implements OnInit {
     this.start = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
-        this.setByteArray(res['response'].document);
+        console.log(res);
+
+        if (!res['errors']) {
+          this.setByteArray(res['response'].document);
+        } else {
+          this.displayMessage('Error', 'Servers unavailable');
+          this.start = false;
+        }
       },
       error => {},
       () => {
@@ -528,19 +541,19 @@ export class FileUploadComponent implements OnInit {
             this.sendFile(event);
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
-            this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg4);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg4);
             this.disableNavigation = false;
           }
         } else {
           // alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
-          this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg5);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg5);
           this.disableNavigation = false;
         }
       }
     }
     if (!allowedFileUploaded) {
       // alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
-      this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg6);
+      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
   }
@@ -619,16 +632,18 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
+        console.log(response);
+
         if (response['errors'] == null) {
           this.updateUsers(response);
         } else {
           // alert(response['errors'].errorCode + ' Invalid document format supported');
-          this.displayMessage('Error', response['errors'].message);
+          this.displayMessage('Error', response['errors'][0].message);
         }
       },
       error => {
         // alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
-        this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg7);
+        this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg7);
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
@@ -645,27 +660,33 @@ export class FileUploadComponent implements OnInit {
    */
   updateUsers(fileResponse) {
     let i = 0;
-    this.userFiles.docCatCode = fileResponse.response.docCatCode;
-    this.userFiles.doc_file_format = fileResponse.response.docFileFormat;
-    this.userFiles.documentId = fileResponse.response.documentId;
-    this.userFiles.docName = fileResponse.response.docName;
-    this.userFiles.docTypCode = fileResponse.response.docTypCode;
-    this.userFiles.multipartFile = this.fileByteArray;
-    this.userFiles.prereg_id = this.users[0].preRegId;
-    for (let file of this.users[0].files[0].documentsMetaData) {
-      if (file.docCatCode == this.userFiles.docCatCode) {
+    this.file = new FileModel();
+    this.userFile = [this.file];
+    this.userFile[0].docCatCode = fileResponse.response.docCatCode;
+    this.userFile[0].doc_file_format = fileResponse.response.docFileFormat;
+    this.userFile[0].documentId = fileResponse.response.documentId;
+    this.userFile[0].docName = fileResponse.response.docName;
+    this.userFile[0].docTypCode = fileResponse.response.docTypCode;
+    this.userFile[0].multipartFile = this.fileByteArray;
+    this.userFile[0].prereg_id = this.users[0].preRegId;
+    console.log('userFiles', this.userFiles);
+
+    for (let file of this.users[0].files.documentsMetaData) {
+      if (file.docCatCode == this.userFile[0].docCatCode) {
         // this.removeFilePreview();
-        this.users[this.step].files[0][i] = this.userFiles;
+        this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
         this.fileIndex--;
         break;
       }
       i++;
     }
-    if (i == this.users[0].files[0].documentsMetaData.length) {
-      this.users[this.step].files[0].push(this.userFiles);
+    if (i == this.users[0].files.documentsMetaData.length) {
+      this.users[this.step].files.documentsMetaData.push(this.userFile[0]);
     }
-    this.userFiles = new FileModel();
+    this.userFile = [];
     this.registration.updateUser(this.step, this.users[this.step]);
+    console.log('users', this.users);
+
     // this.sortUserFiles();
     // this.viewFileByIndex(this.fileIndex);
   }
@@ -694,12 +715,12 @@ export class FileUploadComponent implements OnInit {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
             // alert(response['errors'].message);
-            this.displayMessage('Error', response['errors'].message);
+            this.displayMessage('Error', response['errors'][0].message);
           }
         },
         err => {
           // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
-          this.displayMessage('Error', this.secondaryLanguagelabels.uploadDocuments.msg8);
+          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg8);
         }
       );
       this.sameAsselected = true;
@@ -711,7 +732,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   removePOADocument() {
-    this.userFiles = new FileModel();
+    this.userFiles = new FilesModel();
     let i = 0;
     for (let file of this.users[0].files[0].documentsMetaData) {
       if (file.docCatCode == 'POA') {

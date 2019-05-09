@@ -44,22 +44,22 @@ describe('BookingService', () => {
     expect(service.getNameList()[0]).toBe(x);
   }));
 
-  it('adds and gets applicants', inject([BookingService], (service: BookingService) => {
-    const user: NameList = {
-      fullName: 'Agnitra',
-      preRegId: '1234'
-    };
-    const x = {
-      response: [
-        {
-          ...user
-        }
-      ]
-    };
-    service.addApplicants(x);
-    const c = service.getAllApplicants();
-    expect(c[0]).toBe(x.response[0]);
-  }));
+  // it('adds and gets applicants', inject([BookingService], (service: BookingService) => {
+  //   const user: NameList = {
+  //     fullName: 'Agnitra',
+  //     preRegId: '1234'
+  //   };
+  //   const x = {
+  //     response: [
+  //       {
+  //         ...user
+  //       }
+  //     ]
+  //   };
+  //   service.addApplicants(x);
+  //   const c = service.getAllApplicants();
+  //   expect(c[0]).toBe(x.response[0]);
+  // }));
 
   it('should reset the namelist', inject([BookingService], (service: BookingService) => {
     const x: NameList = {

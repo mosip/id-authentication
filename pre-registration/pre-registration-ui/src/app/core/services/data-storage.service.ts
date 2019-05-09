@@ -340,7 +340,7 @@ export class DataStorageService {
     console.log(userId);
 
     const req = {
-      langCode: localStorage.getItem('langCode'),
+      // langCode: localStorage.getItem('langCode'),
       userId: userId
     };
 

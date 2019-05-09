@@ -97,7 +97,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 		try {
 			List<ServiceError> validationErrorsList = null;
 			OtpGenerateResponseDto otpGenerateResponseDto;
-			OtpGenerateRequest otpGenerateRequestDto = new OtpGenerateRequest(mosipUserDto,otpUser);
+			OtpGenerateRequest otpGenerateRequestDto = new OtpGenerateRequest(mosipUserDto);
 			final String url = mosipEnvironment.getGenerateOtpApi();
 			
 			RequestWrapper<OtpGenerateRequest> reqWrapper = new RequestWrapper<>();

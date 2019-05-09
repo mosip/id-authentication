@@ -34,7 +34,9 @@ The key non-functional requirements are
 
 **Booking an appointment :**
 
-- Create a REST API as '/appointment/:preRegistrationId' POST method, which accept the PreRegistrationId as path parameter and in request body json object contains registration center id, booking date, from slot and to slot.
+- Create a REST API as '/appointment/{preRegistrationId}' POST method, which accept the PreRegistrationId as path parameter and in request body json object contains registration center id, booking date, from slot and to slot.
+
+- Check for the pre-registration whether it is existing or not and check for availability slot for the requested details.
 
 - Update the availability by decrementing the value by 1.
 
@@ -43,14 +45,39 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration create mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration booking service ](_class_diagram/booking-book.png)
+
+![pre-registration booking service ](_images/_class_diagram/booking-book.png)
+
 **Sequence Diagram**
-![pre-registration booking service](_sequence_diagram/booking-book.png)
+
+![pre-registration booking service](_images/_sequence_diagram/booking-book.png)
+
+**Booking an multiple appointment :**
+
+- Create a REST API as '/appointment/' POST method, which accept the json object from request body which contains PreRegistrationId, registration center id, booking date, from slot and to slot.
+
+- Itrate the booikng request and check for the pre-registration whether it is existing or not.
+
+- Check for the pre-registration whether it is existing or not and check for availability slot for the requested details.
+
+- Update the availability by decrementing the value by 1.
+
+- Save the booking data in the pre-registration booking table. after inserting the booking data system need to update the main table (applicant_demographic) with the status code "Booked"
+
+- Audit the exception/start/exit of the each stages of the Pre-registration create mechanism using AuditManager component.
+
+**Class Diagram**
+
+![pre-registration booking service ](_images/_class_diagram/booking-book.png)
+
+**Sequence Diagram**
+
+![pre-registration booking service](_images/_sequence_diagram/booking-book-multiple.png)
 
 
 **Cancel an appointment :**
 
-- Create a REST API as '/appointment/:preRegistrationId' PUT method, which accept the Pre-Registration Id as path parameter.
+- Create a REST API as '/appointment/{preRegistrationId}' PUT method, which accept the Pre-Registration Id as path parameter.
 
 - Update the availability by incrementing the value by 1.
 
@@ -59,14 +86,17 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration Cancel Booking mechanism using AuditManager component.
 
 **Class Diagram**
+
 ![pre-registration cancel booking service](_images/_class_diagram/booking-cancel.png)
+
 **Sequence Diagram**
+
 ![pre-registration cancel booking service](_images/_sequence_diagram/booking-cancel.png)
 
 
 **Re-Booking an appointment :**
 
-- Create a REST API as '/appointment/:preRegistrationId' POST method, which accept the PreRegistrationId as path parameter and in request body json object contains registration center id, booking date, from slot and to slot.
+- Create a REST API as '/appointment/{preRegistrationId}' POST method, which accept the PreRegistrationId as path parameter and in request body json object contains registration center id, booking date, from slot and to slot.
 
 - Reterive the existing booking details and update the availability by incrementing the value by 1.
 
@@ -79,79 +109,77 @@ The key non-functional requirements are
 - Audit the exception/start/exit of the each stages of the Pre-registration Re Booking mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration re-booking service](_images/_class_diagram/booking-rebook.png)
-**Sequence Diagram**
-![pre-registration re-booking service](_images/_sequence_diagram/booking-rebook.png)
 
+![pre-registration re-booking service](_images/_class_diagram/booking-rebook.png)
+
+**Sequence Diagram**
+
+![pre-registration re-booking service](_images/_sequence_diagram/booking-rebook.png)
 
 
 **Get appointment details :**
 
-- Create a REST API as '/appointment/availability/:registrationCenterId' GET method, accept the Registration center id, current system date time from the pre-registration application portal.
+- Create a REST API as '/appointment/{preRegistrationId}' GET method, which accept the Pre-Registration Id as path parameter 
 
-- Need to calaculate "To Date" from the configuration and the requested Date.
-
-- Reterive the availability time slots from database based on the requested registration center id and the date.
-
-- Generate an cache key using Registration center id, booking date time and slot.
-
-- Once the key generated successfully update the cache using the generated key get the values.
+- Reterive the booking details from database based on the requested Pre-Registration Id.
 
 - Prepare an response with the fetched values and send this reponse to this API call.
 
 - Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration, registration center availability sevice ](_images/_class_diagram/booking-book.png)
-**Sequence Diagram**
-![pre-registration, registration center availability sevice](_images/_sequence_diagram/booking-reterive-bookingDetails.png)
 
+![pre-registration, registration center availability sevice ](_images/_class_diagram/booking-book.png)
+
+**Sequence Diagram**
+
+![pre-registration, registration center availability sevice](_images/_sequence_diagram/booking-reterive-bookingDetails.png)
 
 
 
 **Get Registration center availability :**
 
--   Create a REST API as '/bookingAvailability' accept the Registration center id, current system date time from the pre-registration application portal.
+- Create a REST API as '/appointment/availability/{registrationCenterId}' accept the Registration center id in the request path parameter.
 
-- Need to calaculate "To Date" from the configuration and the requested Date.
+- Get the configured offset from the properties file and prepare the date range
 
-- Reterive the availability time slots from database based on the requested registration center id and the date.
+- Reterive the availability time slots from database based on the requested registration center id and the date range.
 
--  Generate an cache key using Registration center id, booking date time and slot.
+- Prepare an response with the fetched values and send this reponse to this API call.
 
--   Once the key generated successfully update the cache using the generated key get the values.
-
--   Prepare an response with the fetched values and send this reponse to this API call.
-
--   Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
+
 ![pre-registration, registration center availability sevice ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
+
 **Sequence Diagram**
+
 ![pre-registration, registration center availability sevice](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
 
 
 
 **Get Pre-Registration IDs by Appointment date range :**
 
--   Create a REST API as '/bookingAvailability' accept the Registration center id, current system date time from the pre-registration application portal.
+- Create a REST API as '/appointment/preRegistrationId/{registrationCenterId}' accept the Registration center id
+
+- Get the current system date time from the pre-registration application portal.
 
 - Need to calaculate "To Date" from the configuration and the requested Date.
 
-- Reterive the availability time slots from database based on the requested registration center id and the date.
+- Reterive the pre-registration IDs from database based on the requested registration center id and the date.
 
--  Generate an cache key using Registration center id, booking date time and slot.
+- Prepare an response with the fetched values and send this reponse to this API call.
 
--   Once the key generated successfully update the cache using the generated key get the values.
-
--   Prepare an response with the fetched values and send this reponse to this API call.
-
--   Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
-![pre-registration, registration center availability sevice ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
+
+![pre-registration, Get Pre-Registration IDs ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
+
 **Sequence Diagram**
-![pre-registration, registration center availability sevice](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
+
+![pre-registration, Get Pre-Registration IDs](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
 
 
 **Success / Error Code** 

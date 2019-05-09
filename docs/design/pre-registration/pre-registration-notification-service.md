@@ -33,9 +33,9 @@ The key non-functional requirements are
 - DO the REST call to the KERNEL notifiaction service based on SMS and Email. If it is successful send the success response otherwise throw an exception. 
 
 **Class Diagram**
-![pre-registration notification service](_class_diagram/pre-registration-notify.png)
+![pre-registration notification service](_images/_class_diagram/pre-registration-notify.png)
 **Sequence Diagram**
-![pre-registration notification service](_sequence_diagram/pre-registration-notify.png)
+![pre-registration notification service](_images/_sequence_diagram/pre-registration-notify.png)
 
 **Error Code**
  While notify the OTP if there is any error then send the respective error code to the UI from API layer as Response object.

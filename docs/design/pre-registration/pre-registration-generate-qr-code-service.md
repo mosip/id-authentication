@@ -26,9 +26,9 @@ The key non-functional requirements are
 - Internally call an KERNEL API to generate QR code which return bytearray. If it generate sucessfully send the response otherwise throw an respetive exception.
 
 **Class Diagram**
-![pre-registration generateQRCode](_class_diagram/pre-registration-generateQRCode.png)
+![pre-registration generateQRCode](_images/_class_diagram/pre-registration-generateQRCode.png)
 **Sequence Diagram**
-![pre-registration generateQRCode](_sequence_diagram/pre-registration-generateQRCode.png)
+![pre-registration generateQRCode](_images/_sequence_diagram/pre-registration-generateQRCode.png)
 
 **Error Code** 
   Code   |       Type  | Message|

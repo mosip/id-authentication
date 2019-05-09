@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 import javax.servlet.http.Cookie;
 
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,13 +44,16 @@ import io.mosip.registration.processor.core.token.validation.TokenValidator;
 public class BioDedupeControllerTest {
 
 	@InjectMocks
-	BioDedupeController bioDedupeController = new BioDedupeController();
+	private BioDedupeController bioDedupeController = new BioDedupeController();
 
 	@MockBean
-	BioDedupeService bioDedupeService;
+	private BioDedupeService bioDedupeService;
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private Utilities utilities;
 
 	@MockBean
 	private TokenValidator tokenValidator;

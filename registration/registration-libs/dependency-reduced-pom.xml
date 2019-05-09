@@ -3,7 +3,7 @@
   <parent>
     <artifactId>registration-parent</artifactId>
     <groupId>io.mosip.registration</groupId>
-    <version>0.11.0</version>
+    <version>0.11.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>registration-libs</artifactId>
@@ -56,6 +56,11 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>io.mosip.registration.cipher:ClientJarEncryption</exclude>
+                </excludes>
+              </artifactSet>
               <filters>
                 <filter>
                   <artifact>org.bouncycastle:*</artifact>
@@ -85,6 +90,9 @@
               <mainClass>io.mosip.registration.cipher.CilentJarDecryption</mainClass>
             </manifest>
           </archive>
+          <excludes>
+            <exclude>**/cipher/ClientJarEncryption</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

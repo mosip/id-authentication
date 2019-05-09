@@ -29,6 +29,7 @@ import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.otp.OtpEmailSendResponseDto;
+import io.mosip.kernel.auth.entities.otp.OtpGenerateRequest;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpSmsSendRequestDto;
@@ -296,7 +297,7 @@ public class OTPServiceImpl implements OTPService {
 
 	@Override
 	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
-		String key = new OtpGenerateRequestDto(mosipUser).getKey();
+		String key = new OtpGenerateRequest(mosipUser).getKey();
 		MosipUserDtoToken mosipUserDtoToken = null;
 		ResponseEntity<String> response = null;
 		final String url = mosipEnvironment.getVerifyOtpUserApi();
