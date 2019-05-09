@@ -87,7 +87,6 @@ public class PacketGeneratorController {
 		binder.addValidators(validator);
 	}
 
-
 	/**
 	 * Gets the status.
 	 *
@@ -105,8 +104,8 @@ public class PacketGeneratorController {
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-					throws RegBaseCheckedException, IOException {
-		tokenValidator.validate(token, "packetgenerator");
+			throws RegBaseCheckedException, IOException {
+		tokenValidator.validate("Authorization=" + token, "packetgenerator");
 		try {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;

@@ -89,12 +89,11 @@ public class RegistrationStatusController {
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest,
 		@CookieValue(value = "Authorization") String token
-			) 
-					throws RegStatusAppException {
-		tokenValidator.validate(token, "registrationstatus");
+			)throws RegStatusAppException {
+		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,RegistrationStatusRequestDTO.class);
-			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));	
+			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
 			HttpHeaders headers = new HttpHeaders();
 			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());

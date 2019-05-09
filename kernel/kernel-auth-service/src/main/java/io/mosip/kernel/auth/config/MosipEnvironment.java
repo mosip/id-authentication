@@ -46,6 +46,8 @@ public class MosipEnvironment implements EnvironmentAware {
 	private String ldapRolesClass = "ldap.roles.class";
 
 	private String otpPrimaryLanguage = "auth.primary.language";
+	
+	private String otpSecondaryLanguage = "auth.secondary.language";
 
 	private String uinGetDetailsUrl = "idrepo.api.getuindetails";
 
@@ -81,6 +83,10 @@ public class MosipEnvironment implements EnvironmentAware {
 
 	public String getPrimaryLanguage() {
 		return environment.getProperty(otpPrimaryLanguage);
+	}
+	
+	public String getSecondaryLanguage() {
+		return environment.getProperty(otpSecondaryLanguage);
 	}
 
 	@Override

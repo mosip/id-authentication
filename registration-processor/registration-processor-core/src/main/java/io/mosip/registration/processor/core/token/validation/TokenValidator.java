@@ -113,6 +113,11 @@ public class TokenValidator {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
+		} else if (url.contains("uin-card")) {
+			for (String assignedRole : APIAuthorityList.PRINTUINCARD.getList()) {
+				if (role.compareToIgnoreCase(assignedRole) == 0)
+					return true;
+			}
 		}
 		return false;
 	}

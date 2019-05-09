@@ -5,6 +5,8 @@
 package io.mosip.preregistration.booking.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * This class defines the OperationNotAllowedException
@@ -13,9 +15,12 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  * 
  */
+
+@Getter
 public class OperationNotAllowedException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	private MainResponseDTO<?> mainResponseDTO;
 
 	/**
 	 * @param errorMessage pass the error message
@@ -30,6 +35,11 @@ public class OperationNotAllowedException extends BaseUncheckedException {
 	 */
 	public OperationNotAllowedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
+	}
+	
+	public OperationNotAllowedException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+		super(errorCode, errorMessage, null);
+		this.mainResponseDTO=response;
 	}
 
 	/**

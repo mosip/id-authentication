@@ -35,6 +35,8 @@ The key **requirements** are
 -   Sync User machine mapping from client to server.
 -   Sync platform configuration from server.
 -   Policy sync from server.
+-   Signature Key sync from server.
+-   user id's salt sync from server.
 -   Sync Audit data to server.
 -   Clean up Jobs:
     - Registration Packet cleanup.

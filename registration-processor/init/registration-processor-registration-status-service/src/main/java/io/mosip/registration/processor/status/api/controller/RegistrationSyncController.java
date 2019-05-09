@@ -106,8 +106,8 @@ public class RegistrationSyncController {
 	public ResponseEntity<Object> syncRegistrationController(
 			@Validated @RequestBody(required = true) RegistrationSyncRequestDTO registrationSyncRequestDTO,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-					throws RegStatusAppException {
-		tokenValidator.validate(token, "registrationstatus");
+			throws RegStatusAppException {
+		tokenValidator.validate("Authorization=" + token, "sync");
 		try {
 			RegStatusValidationUtil.validate(errors);
 			List<SyncResponseDto> syncResponseDtoList = syncRegistrationService

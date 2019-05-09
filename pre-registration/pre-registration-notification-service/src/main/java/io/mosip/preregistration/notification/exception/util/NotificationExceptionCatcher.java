@@ -10,15 +10,15 @@ import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.IOException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
-import io.mosip.preregistration.notification.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.MissingRequestParameterException;
-import io.mosip.preregistration.notification.exception.RestCallException;
+import io.mosip.preregistration.notification.exception.NotificationSeriveException;
 
 
 /**
@@ -62,7 +62,7 @@ public class NotificationExceptionCatcher {
 					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause(),mainResponseDto);
 		}
 		else if (ex instanceof HttpServerErrorException) {
-			throw new RestCallException();
+			throw new NotificationSeriveException();
 		}
 		else if (ex instanceof JsonParseException) {
 			throw new JsonValidationException(ErrorCodes.PRG_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getCode(),
@@ -73,6 +73,11 @@ public class NotificationExceptionCatcher {
 		} else if (ex instanceof MissingRequestParameterException) {
 			throw new MissingRequestParameterException(((MissingRequestParameterException) ex).getErrorCode(),
 					((MissingRequestParameterException) ex).getErrorText(),mainResponseDto);
+		}
+		
+		else if (ex instanceof NotificationSeriveException) {
+			throw new NotificationSeriveException(((NotificationSeriveException) ex).getValidationErrorList(),((NotificationSeriveException) ex).getMainResposneDTO());
+		
 		}
 	}
 

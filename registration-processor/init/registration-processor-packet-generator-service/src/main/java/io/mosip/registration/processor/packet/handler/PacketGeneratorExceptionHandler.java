@@ -28,6 +28,8 @@ import io.mosip.registration.processor.core.token.validation.exception.InvalidTo
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
+import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
+import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 
 /**
  * The Class PacketGeneratorExceptionHandler.
@@ -56,7 +58,12 @@ public class PacketGeneratorExceptionHandler {
 
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
-	
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> accessDenied(AccessDeniedException e) {
+        regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+                e.getErrorCode(), e.getMessage());
+        return packetGenExceptionResponse((Exception) e);
+    }
 	/**
 	 * Badrequest.
 	 *
@@ -131,7 +138,7 @@ public class PacketGeneratorExceptionHandler {
 		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().create();
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(gson.toJson(response));

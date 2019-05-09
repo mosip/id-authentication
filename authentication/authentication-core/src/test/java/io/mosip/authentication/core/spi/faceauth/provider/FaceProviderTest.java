@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.authentication.core.spi.provider.bio.FaceProvider;
+
 public class FaceProviderTest {
 
 	private FaceProvider face;

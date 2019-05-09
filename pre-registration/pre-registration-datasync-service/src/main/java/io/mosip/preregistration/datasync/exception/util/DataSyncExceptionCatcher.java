@@ -3,6 +3,7 @@ package io.mosip.preregistration.datasync.exception.util;
 import java.io.IOException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
@@ -29,36 +30,34 @@ public class DataSyncExceptionCatcher {
 	 * @param ex
 	 *            pass the exception
 	 */
-	public void handle(Exception ex) {
-		if (ex instanceof DataAccessLayerException) {
-			throw new ReverseDataFailedToStoreException(((DataAccessLayerException) ex).getErrorText());
+	public void handle(Exception ex, MainResponseDTO<?> mainResponsedto) {
+		if (ex instanceof DataAccessLayerException || ex instanceof ReverseDataFailedToStoreException) {
+			throw new ReverseDataFailedToStoreException(((DataAccessLayerException) ex).getErrorCode(),
+					mainResponsedto);
 		} else if (ex instanceof DocumentGetDetailsException) {
 			throw new DocumentGetDetailsException(((DocumentGetDetailsException) ex).getErrorCode(),
-					((DocumentGetDetailsException) ex).getErrorText());
+					((DocumentGetDetailsException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof DemographicGetDetailsException) {
 			throw new DemographicGetDetailsException(((DemographicGetDetailsException) ex).getErrorCode(),
-					((DemographicGetDetailsException) ex).getErrorText());
+					((DemographicGetDetailsException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
-					((InvalidRequestParameterException) ex).getErrorText());
+					((InvalidRequestParameterException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof DataSyncRecordNotFoundException) {
 			throw new DataSyncRecordNotFoundException(((DataSyncRecordNotFoundException) ex).getErrorCode(),
-					((DataSyncRecordNotFoundException) ex).getErrorText());
+					((DataSyncRecordNotFoundException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof TableNotAccessibleException) {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
 					((TableNotAccessibleException) ex).getErrorText());
 		} else if (ex instanceof ZipFileCreationException) {
 			throw new ZipFileCreationException(((ZipFileCreationException) ex).getErrorCode(),
-					((ZipFileCreationException) ex).getErrorText(), ex.getCause());
+					((ZipFileCreationException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof IOException) {
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
-		} else if (ex instanceof ReverseDataFailedToStoreException) {
-			throw new ReverseDataFailedToStoreException(((ReverseDataFailedToStoreException) ex).getErrorText());
+					ErrorMessages.FILE_IO_EXCEPTION.toString(), mainResponsedto);
 		} else if (ex instanceof RecordNotFoundForDateRange) {
 			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorCode(),
-					((RecordNotFoundForDateRange) ex).getErrorText());
-
+					((RecordNotFoundForDateRange) ex).getErrorText(), mainResponsedto);
 		}
 	}
 }

@@ -139,4 +139,4 @@ Reference: https://github.com/mosip/mosip/wiki/Auth-Angular-User-Guide
 ## Implementation
 
 
-**kernel-auth** [README](../../kernel/kernel-auth/README.md)
+**kernel-auth-service** [README](../../../kernel/kernel-auth-service/README.md)

@@ -374,7 +374,7 @@ public class RegistrationController extends BaseController {
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
 		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
 			registrationMetaDataDTO
 					.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
 			registrationMetaDataDTO
