@@ -293,10 +293,10 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
 		<dependency>
-			<groupId>io.mosip.registration</groupId>
-			<artifactId>registration-tpm</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.github.microsoft</groupId>
+			<artifactId>TSS.Java</artifactId>
 		</dependency>
 	
 	</dependencies>

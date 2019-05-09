@@ -91,10 +91,10 @@
 			<artifactId>powermock-core</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
 		<dependency>
-			<groupId>io.mosip.registration</groupId>
-			<artifactId>registration-tpm</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.github.microsoft</groupId>
+			<artifactId>TSS.Java</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

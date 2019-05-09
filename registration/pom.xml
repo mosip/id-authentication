@@ -90,7 +90,6 @@
 	</properties>
 
 	<modules>
-		<module>registration-tpm</module>
 		<module>registration-services</module>
 		<module>registration-client</module>
 		<module>registration-libs</module>
