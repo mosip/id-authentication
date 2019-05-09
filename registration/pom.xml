@@ -92,7 +92,6 @@
 	<modules>
 		<module>registration-tpm</module>
 		<module>registration-services</module>
-		<module>registration-mdm</module>
 		<module>registration-client</module>
 		<module>registration-libs</module>
 	</modules>
