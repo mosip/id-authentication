@@ -8,6 +8,7 @@ import {FormGroup,FormBuilder,Validators } from '@angular/forms';
 })
 export class UserregistrationComponent implements OnInit {
   submitted = false;
+  maxDob=new Date();
   userRegistrationForm:FormGroup;
   constructor(private router: Router,private formBuilder:FormBuilder) {
     this.userRegistrationForm = this.formBuilder.group({

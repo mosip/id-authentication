@@ -28,7 +28,7 @@
     </div>
     <div>
         <mat-form-field class="input-full">
-            <input formControlName="DOB" matInput readonly [matDatepicker]="picker" (focus)="picker.open()" placeholder="DOB">
+            <input [max]="maxDob" formControlName="DOB" matInput readonly [matDatepicker]="picker" (focus)="picker.open()" placeholder="DOB">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
