@@ -12,14 +12,14 @@ TRUNCATE TABLE iam.role_list cascade ;
 ----- TRUNCATE iam.user_detail TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE iam.user_detail cascade ;
 
-\COPY iam.user_detail (id,uin,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes) FROM './dml/iam-user_detail.csv' delimiter ',' HEADER  csv;
+\COPY iam.user_detail (id,reg_id,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes) FROM './dml/iam-user_detail.csv' delimiter ',' HEADER  csv;
 
 
 -------------- Level 2 data load scripts ------------------------
 
-TRUNCATE TABLE iam.user_detail cascade ;
+TRUNCATE TABLE iam.user_detail_h cascade ;
 
-\COPY iam.user_detail (id,uin,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes) FROM './dml/iam-user_detail.csv' delimiter ',' HEADER  csv;
+\COPY iam.user_detail_h (id,reg_id,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes) FROM './dml/iam-user_detail_h.csv' delimiter ',' HEADER  csv;
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -2,13 +2,7 @@
 -- schema 		: reg  - reg  schema
 -- table 		: device_type  - reg device_type list
 -- table alias  : dtyp	
- 
--- schemas section ---------------------------------------------------------------
 
--- create schema if reg  schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 	create table reg.device_type (
@@ -35,11 +29,4 @@ create schema if not exists reg
 alter table reg.device_type add constraint pk_dtyp_code primary key (code, lang_code)
  ;
 
--- indexes section -----------------------------------------------------------------------
--- create index idx_dtyp_<col> on reg.device_type (col)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.device_type is 'reg device_type table'
-;
 
