@@ -11,10 +11,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 
 /**
  * @author Ramadurai Pandian
@@ -79,6 +82,10 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 		String datasource = null;
 		if (appId != null) {
 			datasource = mosipEnvironment.getDataStore(appId.toLowerCase() + AuthConstant.DATASOURCE);
+		}
+		if(datasource==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.INVALID_DATASOURCE_ERROR.getErrorCode(),AuthErrorCode.INVALID_DATASOURCE_ERROR.getErrorMessage());
 		}
 		return dataStoreMap.get(datasource);
 	}

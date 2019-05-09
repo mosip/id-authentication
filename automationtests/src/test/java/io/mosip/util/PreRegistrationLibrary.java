@@ -203,7 +203,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	/**
 	 * Generate OTP
-	 * @return
+	 * @return response
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
@@ -1888,8 +1888,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		request.remove(langCodeKey);
 		
-		response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
-
+		//response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
+					
 		return response;
 	}
 	

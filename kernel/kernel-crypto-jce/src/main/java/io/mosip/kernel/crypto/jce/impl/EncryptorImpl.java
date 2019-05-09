@@ -87,7 +87,26 @@ public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data) {
 		if (SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING.getValue().contains(symmetricAlgorithm)) {
 			return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, key, data,
-					Cipher.ENCRYPT_MODE);
+					Cipher.ENCRYPT_MODE, null);
+		} else {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.core.crypto.spi.Encryptor#symmetricEncrypt(java.lang.Object,
+	 * byte[], byte)
+	 */
+	@Override
+	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] randomIV) {
+		if (SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING.getValue().contains(symmetricAlgorithm)) {
+			return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, key, data,
+					Cipher.ENCRYPT_MODE, randomIV);
 		} else {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),

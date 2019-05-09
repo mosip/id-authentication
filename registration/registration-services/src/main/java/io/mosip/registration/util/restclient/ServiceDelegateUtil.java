@@ -84,23 +84,16 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param requestParams
-	 *            parameters along with url
-	 * @param hasPathParams
-	 *            the has path params
-	 * @param triggerPoint
-	 *            system or user driven invocation
+	 * @param serviceName   service to be invoked
+	 * @param requestParams parameters along with url
+	 * @param hasPathParams the has path params
+	 * @param triggerPoint  system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException
-	 *             generalised exception with errorCode and errorMessage
-	 * @throws HttpClientErrorException
-	 *             when client error exception from server
-	 * @throws SocketTimeoutException
-	 *             the socket timeout exception
-	 * @throws HttpServerErrorException
-	 *             when server exception from server
+	 * @throws RegBaseCheckedException  generalised exception with errorCode and
+	 *                                  errorMessage
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
@@ -118,6 +111,8 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setAuthRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.AUTH_REQUIRED)));
 			requestHTTPDTO.setAuthZHeader(getEnvironmentProperty(serviceName, RegistrationConstants.AUTH_HEADER));
+			requestHTTPDTO.setIsSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestHTTPDTO.setTriggerPoint(triggerPoint);
 
 			// URI creation
@@ -153,23 +148,16 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request.
 	 *
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param object
-	 *            request type
-	 * @param triggerPoint
-	 *            system or user driven invocation
+	 * @param serviceName  service to be invoked
+	 * @param object       request type
+	 * @param triggerPoint system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException
-	 *             generalised exception with errorCode and errorMessage
-	 * @throws HttpClientErrorException
-	 *             when client error exception from server
-	 * @throws SocketTimeoutException
-	 *             the socket timeout exception
-	 * @throws ResourceAccessException
-	 *             the resource access exception
-	 * @throws HttpServerErrorException
-	 *             when server exception from server
+	 * @throws RegBaseCheckedException  generalised exception with errorCode and
+	 *                                  errorMessage
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws ResourceAccessException  the resource access exception
+	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object post(String serviceName, Object object, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
@@ -185,6 +173,8 @@ public class ServiceDelegateUtil {
 			requestDto.setAuthRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.AUTH_REQUIRED)));
 			requestDto.setAuthZHeader(getEnvironmentProperty(serviceName, RegistrationConstants.AUTH_HEADER));
+			requestDto.setIsSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestDto.setTriggerPoint(triggerPoint);
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
@@ -325,12 +315,9 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param requestHTTPDTO
-	 *            create requestedHTTPDTO
-	 * @param serviceName
-	 *            service name to be called
-	 * @param requestBody
-	 *            object to be included in HTTP entities
+	 * @param requestHTTPDTO create requestedHTTPDTO
+	 * @param serviceName    service name to be called
+	 * @param requestBody    object to be included in HTTP entities
 	 */
 	private void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object requestBody) {
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
@@ -343,8 +330,7 @@ public class ServiceDelegateUtil {
 		// set timeout
 		setTimeout(requestHTTPDTO);
 		// Headers
-		setHeaders(requestHTTPDTO.getHttpHeaders(),
-				getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
+		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
 				"Completed preparing RequestHTTPDTO object for web-service");
@@ -420,7 +406,8 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setClazz(Object.class);
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
-
+			requestHTTPDTO.setIsSignRequired(false);
+			
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
 
@@ -428,6 +415,7 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
+			
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -443,13 +431,19 @@ public class ServiceDelegateUtil {
 						RegistrationExceptionConstants.INVALID_RESPONSE_HEADER.getErrorMessage());
 			}
 
-			LinkedHashMap<String, String> responseBody = (LinkedHashMap<String, String>) responseMap
+			LinkedHashMap<String, Object> responseBody = (LinkedHashMap<String, Object>) responseMap
 					.get(RegistrationConstants.REST_RESPONSE_BODY);
 
-			if (loginMode.equals(LoginMode.OTP)
-					&& !"Validation_Successful".equalsIgnoreCase(responseBody.get("message"))) {
-				throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
-						RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
+			if (loginMode.equals(LoginMode.OTP) && responseBody.get("response") != null) {
+
+				LinkedHashMap<String, String> otpResponseBody = (LinkedHashMap<String, String>) responseBody
+						.get("response");
+
+				if (otpResponseBody == null
+						|| !"Validation_Successful".equalsIgnoreCase(otpResponseBody.get("message"))) {
+					throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
+							RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
+				}
 			}
 
 			cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
@@ -457,8 +451,8 @@ public class ServiceDelegateUtil {
 			properties.load(new StringReader(cookie.replaceAll(";", "\n")));
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
 			authTokenDTO.setCookie(cookie);
-			//authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
-			//authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
+			// authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
+			// authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
 			if (loginMode.equals(LoginMode.CLIENTID)) {
@@ -466,6 +460,7 @@ public class ServiceDelegateUtil {
 			} else {
 				SessionContext.setAuthTokenDTO(authTokenDTO);
 			}
+
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| IOException restException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
@@ -559,10 +554,8 @@ public class ServiceDelegateUtil {
 	 * Create a {@link RequestHTTPDTO} for a web-service. Add Cookie to the request
 	 * header and URL to request
 	 *
-	 * @param cookie
-	 *            the cookie
-	 * @param requestHTTPDTO
-	 *            the request HTTPDTO
+	 * @param cookie         the cookie
+	 * @param requestHTTPDTO the request HTTPDTO
 	 * @throws URISyntaxException if requestURL is invalid
 	 */
 	private RequestHTTPDTO buildRequestHTTPDTO(String cookie, String requestURL, HttpMethod httpMethod)
@@ -578,6 +571,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setUri(new URI(requestURL));
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
+		requestHTTPDTO.setIsSignRequired(false);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);

@@ -15,24 +15,33 @@ package io.mosip.preregistration.notification.code;
 public enum RequestCodes {
 
 	/* preRegistration Id */
-	PREID,
-
-	/*
-	 * appointmentDate
+	PREID(""),
+   /**
+ * 
+ */
+SMS("sms"),  
+/**
+ * 
+ */
+EMAIL("email"),
+MESSAGE("Email and sms request successfully submitted");
+	
+	/**
+	 * @param code
 	 */
-	APPOINTMENTDATE,
+	private RequestCodes(String code) {
+		this.code = code;
+	}
 
-	/* appointmentTime */
-	APPOINTMENTTIME,
-
-	/*
-	 * mobNum
+	/**
+	 * Code
 	 */
-	MOBNUM,
+	private final String code;
 
-	/* emailID */
-	EMAILID,
-
-	/* language Code */
-	LANGCODE;
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 }

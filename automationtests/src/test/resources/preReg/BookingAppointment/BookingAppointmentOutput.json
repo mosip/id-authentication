@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 [{"testType":"smoke","testCaseName":"BookingAppointment_smoke","jiraId":"MOS-1002","empty_registration_center_id":"valid","empty reqTime":"valid","invalid_appointment_date":"valid","empty preRegistrationId":"valid","empty Id":"valid","empty version":"valid","invalid reqTime":"valid","empty_appointment_date":"valid","invalid Id":"valid","invalid version":"valid","status":""}]
 =======
 []
 >>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866
+=======
+[]
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429

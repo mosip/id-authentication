@@ -294,7 +294,7 @@ public class MessageNotificationServiceImplTest {
 		wrapper.setErrors(null);
 		wrapper.setResponse(responseDto);
 
-		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(wrapper);
+		Mockito.when(restApiClient.postApi(any(), any(), any(), any())).thenReturn(wrapper);
 		Mockito.when(mapper.writeValueAsString(any())).thenReturn(responseDto.toString());
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(responseDto);
 

@@ -1,6 +1,9 @@
 package io.mosip.registration.service.sync;
 
+import java.util.List;
+
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.PreRegistrationList;
 
 /**
  * Pre Registration Data Sync Service
@@ -36,4 +39,22 @@ public interface PreRegistrationDataSyncService {
 	 */
 	public ResponseDTO fetchAndDeleteRecords();
 
+	/**
+	 * Deletes pre registration records.
+	 *
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param preRegList 
+	 * 				the pre registration list
+	 */
+	public void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList);
+	
+	/**
+	 * Gets the pre registration record for deletion.
+	 *
+	 * @param preRegistrationId 
+	 * 				the pre registration id
+	 * @return the pre registration record for deletion
+	 */
+	public PreRegistrationList getPreRegistrationRecordForDeletion(String preRegistrationId);
 }

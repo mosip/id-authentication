@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "timestamp": 1549878671821,
   "status": 200,
@@ -7,4 +8,18 @@
       "errorMessage": "CreatedBy size must be between 1 and 255"
     }
   ]
+=======
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:32:02.167Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "Request.createdBy size must be between 1 and 255"
+    }
+  ]
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }

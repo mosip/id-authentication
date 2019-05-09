@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T10:04:38.169Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-033",
+      "message": "Invalid date format Text '2019-01-25T12:01:00.000' could not be parsed at index 23"
+    }
+  ]
+}

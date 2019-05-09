@@ -36,6 +36,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class UINStatusUpdate extends BaseTestCase implements ITest {
 
 	public UINStatusUpdate() {
@@ -52,7 +56,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String updateUIN = "/uingenerator/v1.0/uin";
+	private static final String updateUIN = "/v1/uingenerator/uin";
 	static String dest = "";
 	static String folderPath = "kernel/UINStatusUpdate";
 	static String outputFile = "UINStatusUpdateOutput.json";
@@ -63,7 +67,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		
@@ -78,7 +82,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

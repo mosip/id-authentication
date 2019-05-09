@@ -342,7 +342,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDemographicInfoJson(byte[] bytes,String registrationId, List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
-		DemographicInfoJson demoJson = new DemographicInfoJson();
+		
 		regId=registrationId;
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;

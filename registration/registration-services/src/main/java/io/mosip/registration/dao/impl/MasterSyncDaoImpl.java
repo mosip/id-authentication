@@ -26,7 +26,6 @@ import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.mastersync.AppAuthenticationMethodDto;
 import io.mosip.registration.dto.mastersync.AppDetailDto;
 import io.mosip.registration.dto.mastersync.AppRolePriorityDto;
-import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
@@ -36,7 +35,6 @@ import io.mosip.registration.dto.mastersync.DeviceTypeDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.DocumentTypeDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
-import io.mosip.registration.dto.mastersync.HolidayDto;
 import io.mosip.registration.dto.mastersync.IdTypeDto;
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
@@ -66,7 +64,6 @@ import io.mosip.registration.entity.AppAuthenticationMethod;
 import io.mosip.registration.entity.AppDetail;
 import io.mosip.registration.entity.AppRolePriority;
 import io.mosip.registration.entity.ApplicantValidDocument;
-import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
 import io.mosip.registration.entity.BlacklistedWords;
@@ -74,7 +71,6 @@ import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
-import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
@@ -114,7 +110,6 @@ import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.AppDetailRepository;
 import io.mosip.registration.repositories.AppRolePriorityRepository;
 import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
-import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
@@ -125,7 +120,6 @@ import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
-import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
 import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
@@ -167,10 +161,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private SyncJobControlRepository syncStatusRepository;
 
-	/** Object for Sync Application Repository. */
-	@Autowired
-	private ApplicationRepository applicationRepository;
-
 	/** Object for Sync Biometric Attribute Repository. */
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
@@ -206,10 +196,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync Gender Type Repository. */
 	@Autowired
 	private GenderRepository genderRepository;
-
-	/** Object for Sync Holiday Repository. */
-	@Autowired
-	private HolidayRepository holidayRepository;
 
 	/** Object for Sync Id Type Repository. */
 	@Autowired
@@ -380,7 +366,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<DeviceDto> masterDeviceDto = masterSyncDto.getDevices();
 		List<DeviceTypeDto> masterDeviceTypeDto = masterSyncDto.getDeviceTypes();
 		List<DeviceSpecificationDto> masterDeviceSpecificDto = masterSyncDto.getDeviceSpecifications();
-		List<HolidayDto> masterHolidaysDto = masterSyncDto.getHolidays();
 		List<DocumentCategoryDto> masterDocumnetCategoryDto = masterSyncDto.getDocumentCategories();
 		List<DocumentTypeDto> masterDocumnetTypeDto = masterSyncDto.getDocumentTypes();
 		List<ApplicantValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getApplicantValidDocuments();
@@ -393,7 +378,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<LocationDto> masterLocationDto = masterSyncDto.getLocationHierarchy();
 		List<BiometricAttributeDto> masterBiometricAttributeDto = masterSyncDto.getBiometricattributes();
 		List<BiometricTypeDto> masterBiometricTypeDto = masterSyncDto.getBiometricTypes();
-		List<ApplicationDto> masterApplicationDto = masterSyncDto.getApplications();
 		List<IdTypeDto> masterIdTypeDto = masterSyncDto.getIdTypes();
 		List<TitleDto> masterTitleDto = masterSyncDto.getTitles();
 		List<GenderDto> masterGenderDto = masterSyncDto.getGenders();
@@ -425,13 +409,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<Language> masterLangauge = MetaDataUtils.setCreateMetaData(languageDto, Language.class);
 			languageRepository.saveAll(masterLangauge);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Application details syncing....");
-
-			List<Application> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
-					Application.class);
-			applicationRepository.saveAll(masterApplicationDtoEntity);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric Type details syncing....");
@@ -487,11 +464,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					"Gender details syncing....");
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Holiday details syncing....");
-			List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
-			holidayRepository.saveAll(masterHolidaysDtoEntity);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"IdType details syncing....");

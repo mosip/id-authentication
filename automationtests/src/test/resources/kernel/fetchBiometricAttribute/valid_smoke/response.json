@@ -1,0 +1,91 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T10:46:21.436Z",
+  "metadata": null,
+  "response": {
+    "biometricattributes": [
+      {
+        "code": "LTM",
+        "name": "Left Thumb",
+        "description": "Print of Left Thumb",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "RTM",
+        "name": "Right Thumb",
+        "description": "Print of Right Thumb",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "LIF",
+        "name": "Left Index Finger",
+        "description": "Print of Left Index Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "RIF",
+        "name": "Right Index Finger",
+        "description": "Print of Right Index Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "LMF",
+        "name": "Left Middle Finger",
+        "description": "Print of Left Middle Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "RMF",
+        "name": "Right Middle Finger",
+        "description": "Print of Right Middle Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "LRF",
+        "name": "Left Ring Finger",
+        "description": "Print of Left Ring Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "RRF",
+        "name": "Right Ring Finger",
+        "description": "Print of Right Ring Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "LLF",
+        "name": "Left Little Finger",
+        "description": "Print of Left Little Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "RLF",
+        "name": "Right Little Finger",
+        "description": "Print of Right Little Finger",
+        "biometricTypeCode": "FNR",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+}

@@ -494,6 +494,7 @@ public class CommonLibrary extends BaseTestCase{
            return getResponse;
      } // end GET_REQUEST
 
+     
      public Response getRequestWithoutParameters(String url) {
 
          logger.info("REST-ASSURED: Sending a GET request to " + url);

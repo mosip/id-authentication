@@ -154,6 +154,7 @@ public class RegistrationUIConstants {
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
 	public static final String INVALID_DATE_OF_BIRTH = bundle.getString("INVALID_DATE_OF_BIRTH");
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
+	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
 
 	// OPT TO REGISTER
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = bundle.getString("REG_PKT_APPRVL_CNT_EXCEED");
@@ -297,8 +298,9 @@ public class RegistrationUIConstants {
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
-	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
-	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
+	public static final String TIMEOUT_INITIAL = bundle.getString("TIMEOUT_INITIAL");
+	public static final String TIMEOUT_MIDDLE = bundle.getString("TIMEOUT_MIDDLE");
+	public static final String TIMEOUT_END = bundle.getString("TIMEOUT_END");
 
 	// Notification
 	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");
@@ -312,4 +314,7 @@ public class RegistrationUIConstants {
 	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
 	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
 	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
+	
+	//AUTH TOKEN
+		public static String UNABLE_TO_GET_AUTH_TOKEN= bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "applicationtypes": [
     {
@@ -141,4 +142,23 @@
       "isActive": true
     }
   ]
+=======
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T10:14:53.237Z",
+  "metadata": null,
+  "response": {
+    "applicationtypes": [
+      {
+        "code": "1111",
+        "name": "Pre_Reg",
+        "description": "string",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }

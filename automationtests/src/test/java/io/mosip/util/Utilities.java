@@ -46,7 +46,7 @@ public class Utilities {
 		Response actualResponse = null;
 		ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 		HashMap<String, String> request = null;
-		actualResponse = applicationLibrary.getRequestDev(configServerFileStorageURL + uri);
+		//actualResponse = applicationLibrary.getRequestDev(configServerFileStorageURL + uri);
 		return actualResponse.asString();
 	}
 

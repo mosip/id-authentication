@@ -22,13 +22,20 @@ import io.mosip.authentication.service.policy.AuthPolicy;
 @Component
 public class OTPFilter extends IdAuthFilter {
 
+	/** The Constant OTP_REQUEST. */
 	private static final String OTP_REQUEST = "otp-request";
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
+	 */
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	 */
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
@@ -39,7 +46,8 @@ public class OTPFilter extends IdAuthFilter {
 	}
 
 	/**
-	 * Construct response.
+	 * This method is used to construct the response
+	 * for OTP by removing the null values
 	 *
 	 * @param responseMap the response map
 	 * @return the map
@@ -60,6 +68,9 @@ public class OTPFilter extends IdAuthFilter {
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#checkMandatoryAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	 */
 	@Override
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {

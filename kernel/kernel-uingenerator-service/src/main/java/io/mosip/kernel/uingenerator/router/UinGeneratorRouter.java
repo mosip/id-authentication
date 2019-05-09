@@ -1,7 +1,6 @@
-/**
- * 
- */
 package io.mosip.kernel.uingenerator.router;
+
+import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
 
@@ -19,6 +18,11 @@ import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
+import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.uingenerator.config.UINHealthCheckerhandler;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -33,6 +37,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 /**
  * Router for vertx server
@@ -58,6 +63,9 @@ public class UinGeneratorRouter {
 	@Autowired
 	private AuthHandler authHandler;
 
+	@Autowired
+	private SignatureUtil signatureUtil;
+
 	/**
 	 * Field for UinGeneratorService
 	 */
@@ -70,35 +78,75 @@ public class UinGeneratorRouter {
 	 * @param vertx vertx
 	 * @return Router
 	 */
-
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-		String path = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.VUIN;
+		final String servletPath = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH);
+		String path = servletPath + UinGeneratorConstant.VUIN;
 		String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+
+		router.route().handler(routingContext -> {
+			routingContext.response().headers().add(CONTENT_TYPE, UinGeneratorConstant.APPLICATION_JSON);
+			routingContext.next();
+		});
+
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
 		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
+
 		router.route().handler(BodyHandler.create());
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
 		}
-		router.put(path).consumes("application/json").handler(this::updateRouter);
+		router.put(path).consumes(UinGeneratorConstant.APPLICATION_JSON).handler(this::updateRouter);
+
+		configureHealthCheckEndpoint(vertx, router, servletPath);
+
+		router.route(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/*").handler(
+				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH));
 		return router;
 	}
 
+	private void configureHealthCheckEndpoint(Vertx vertx, Router router, final String servletPath) {
+		UINHealthCheckerhandler healthCheckHandler = new UINHealthCheckerhandler(vertx, null, objectMapper,
+				environment);
+		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
+		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
+		healthCheckHandler.register("diskspace", healthCheckHandler::dispSpaceHealthChecker);
+		healthCheckHandler.register("uingeneratorverticle",
+				future -> healthCheckHandler.verticleHealthHandler(future, vertx));
+	}
+
 	private void getRouter(Vertx vertx, RoutingContext routingContext) {
-		UinResponseDto uin = new UinResponseDto();
+
+		String resWrpJsonString = null;
+		String signedData = null;
+
 		try {
+			UinResponseDto uin = new UinResponseDto();
 			uin = uinGeneratorService.getUin();
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
+			String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+
+			if (!profile.equalsIgnoreCase("test")) {
+				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
+				SignatureResponse cryptoManagerResponseDto=signatureUtil.signResponse(resWrpJsonString);
+				signedData = cryptoManagerResponseDto.getData();
+				reswrp.setResponsetime(cryptoManagerResponseDto.getResponseTime());
+			}
+			routingContext.response().putHeader("response-signature", signedData)
 					.end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			setError(routingContext, error);
+		} catch (SignatureUtilClientException e1) {
+			setError(routingContext, e1.getList().get(0));
+		} catch (SignatureUtilException e1) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					e1.toString());
 			setError(routingContext, error);
 		} catch (Exception e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
@@ -142,8 +190,8 @@ public class UinGeneratorRouter {
 			reswrp.setId(reqwrp.getId());
 			reswrp.setVersion(reqwrp.getVersion());
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -187,8 +235,8 @@ public class UinGeneratorRouter {
 			}
 		}
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
@@ -200,10 +248,11 @@ public class UinGeneratorRouter {
 		errorResponse.setId(reqwrp.getId());
 		errorResponse.setVersion(reqwrp.getVersion());
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
-					.end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
+					.setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
 	}
+
 }

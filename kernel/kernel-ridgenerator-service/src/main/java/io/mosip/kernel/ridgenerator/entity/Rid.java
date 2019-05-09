@@ -51,7 +51,7 @@ public class Rid implements Serializable {
 	/**
 	 * Created by.
 	 */
-	@Column(name = "cr_by", nullable = false, length = 24)
+	@Column(name = "cr_by", nullable = false, length = 256)
 	private String createdBy;
 
 	/**
@@ -63,7 +63,7 @@ public class Rid implements Serializable {
 	/**
 	 * Updated by.
 	 */
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", length = 256)
 	private String updatedBy;
 
 	/**

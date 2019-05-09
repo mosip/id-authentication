@@ -24,6 +24,8 @@ public enum RestServicesConstants {
 	SMS_NOTIFICATION_SERVICE("sms-notification"),
 
 	ID_REPO_SERVICE("id-repo-service"),
+	
+	ID_REPO_SERVICE_WITHOUT_TYPE("id-repo-service-auth"),
 
 	ID_MASTERDATA_TEMPLATE_SERVICE("id-masterdata-template-service"),
 	

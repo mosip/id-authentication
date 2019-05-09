@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,7 +44,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  */
 @Service
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
- 
+
 	/**
 	 * Instance of LOGGER
 	 */
@@ -84,8 +85,9 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			/* If unable to fetch from server and no data in DB create error response */
 			if (responseDTO.getSuccessResponseDTO() == null && getGlobalParams().isEmpty()) {
 				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			} else if (responseDTO.getSuccessResponseDTO() != null){
-				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, responseDTO.getSuccessResponseDTO().getOtherAttributes());
+			} else if (responseDTO.getSuccessResponseDTO() != null) {
+				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+						responseDTO.getSuccessResponseDTO().getOtherAttributes());
 			}
 		}
 
@@ -116,7 +118,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
-				HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
+				LinkedHashMap<String, Object> globalParamJsonMap = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
 				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 					HashMap<String, String> globalParamMap = new HashMap<>();
@@ -131,14 +133,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 						if (globalParamMap.get(globalParamId.getCode()) != null) {
 
-						/* update (Local already exists) but val change */
-						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
-								|| !(globalParam.getIsActive().booleanValue())) {
-							String val = globalParamMap.get(globalParamId.getCode()).trim();
-							updateVal(globalParam, val);
+							/* update (Local already exists) but val change */
+							if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
+									|| !(globalParam.getIsActive().booleanValue())) {
+								String val = globalParamMap.get(globalParamId.getCode()).trim();
+								updateVal(globalParam, val);
 
 								/* Add in application map */
-								ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
+								updateApplicationMap(globalParamId.getCode(), val);
 
 								isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
 							}
@@ -156,7 +158,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 						isToBeRestarted = isPropertyRequireRestart(key.getKey());
 						/* Add in application map */
-						ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
+						updateApplicationMap(key.getKey(), key.getValue());
 					}
 
 					/* Save all Global Params */
@@ -183,7 +185,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		}
 	}
 
-	private boolean isPropertyRequireRestart(String  key) {
+	private boolean isPropertyRequireRestart(String key) {
 		return (key.contains("kernel") || key.contains("mosip.primary"));
 	}
 
@@ -196,7 +198,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	}
 
 	private void updateIsDeleted(GlobalParam globalParam) {
-		globalParam.setIsActive(true); 
+		globalParam.setIsActive(true);
 		globalParam.setIsDeleted(true);
 		globalParam.setDelDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		globalParam.setUpdBy(getUserIdFromSession());
@@ -221,14 +223,17 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		globalParamList.add(globalParam);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.config.GlobalParamService#updateSoftwareUpdateStatus(boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.config.GlobalParamService#
+	 * updateSoftwareUpdateStatus(boolean)
 	 */
 	@Override
 	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Updating the SoftwareUpdate flag started."); 
+				"Updating the SoftwareUpdate flag started.");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
@@ -245,5 +250,56 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag ended.");
 		return responseDTO;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.config.GlobalParamService#update(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public void update(String code, String val) {
+
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Update global param started");
+
+		// Primary Key
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode(code);
+		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+
+		// Get Current global param
+		GlobalParam globalParam = globalParamDAO.get(globalParamId);
+
+		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+		if (globalParam == null) {
+			globalParam = new GlobalParam();
+			globalParam.setGlobalParamId(globalParamId);
+			globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			globalParam.setCrDtime(time);
+
+		}
+		globalParam.setVal(val);
+		globalParam.setName(code);
+		globalParam.setIsActive(true);
+		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+		globalParam.setUpdDtimes(time);
+
+		// Update Global Param
+		globalParamDAO.update(globalParam);
+
+		updateApplicationMap(code, val);
+
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Update global param ended");
+
+	}
+
+	private void updateApplicationMap(String code, String val) {
+		ApplicationContext.setGlobalConfigValueOf(code, val);
+		getBaseGlobalMap().put(code, val);
+
 	}
 }

@@ -156,8 +156,28 @@ img {
 .checkbox {
   white-space: nowrap;
   margin-left: 10px;
+  margin-right: 8px;
   /* vertical-align: center; */
 }
 .footer-download-btn {
   margin-left: 18px;
+}
+
+/* [dir='rtl'] mat-checkbox-inner-container {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+mat-checkbox-inner-container:dir('rtl') {
+  margin-left: 8px;
+  margin-right: 8px;
+} */
+
+mat-card-actions {
+  margin-right: 14px;
+  padding: 8px 0;
+}
+
+mat-card-content {
+  padding-right: 16px;
 }

@@ -1,9 +1,9 @@
 package io.mosip.kernel.core.util.constant;
 
 public enum DateUtilConstants {
-	ILLEGALARGUMENT_ERROR_CODE("KER-UTL-001", "Invalid Argument Found"),
-	NULL_ARGUMENT_ERROR_CODE("KER-UTL-XXX", "Null Argument Found"),
-	PARSE_EXCEPTION_ERROR_CODE("KER-UTL-XXX", "Parsing error occours");
+	ILLEGALARGUMENT_ERROR_CODE("KER-UTL-101", "Invalid Argument Found"),
+	NULL_ARGUMENT_ERROR_CODE("KER-UTL-102", "Null Argument Found"),
+	PARSE_EXCEPTION_ERROR_CODE("KER-UTL-103", "Parsing error occours");
 
 	/** Error code. */
 	public final String errorCode;

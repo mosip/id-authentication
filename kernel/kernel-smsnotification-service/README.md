@@ -4,6 +4,8 @@
 
 [Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#5-sms-notification)
 
+This service is developed based on **MSG91** SMS gateway. Register on https://control.msg91.com/signup/ as developer and get an authkey.
+
 Default Port and Context Path
 
 ```

@@ -50,9 +50,9 @@ create table reg.registration (
 	latest_regtrn_dtimes 	timestamp,	
 
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes 	timestamp
 	
 )

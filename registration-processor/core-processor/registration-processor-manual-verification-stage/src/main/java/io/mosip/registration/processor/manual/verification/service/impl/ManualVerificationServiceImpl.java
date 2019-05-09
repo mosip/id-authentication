@@ -35,6 +35,7 @@ import io.mosip.registration.processor.manual.verification.dto.ManualVerificatio
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
+import io.mosip.registration.processor.manual.verification.exception.MatchTypeNotFoundException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
@@ -103,6 +104,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		if (dto.getUserId().isEmpty()) {
 			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage());
+		}else if(!(matchType.equals(DedupeSourceName.ALL.toString()) || matchType.equals(DedupeSourceName.DEMO.toString()) || matchType.equals(DedupeSourceName.BIO.toString() ) )) {
+			throw new MatchTypeNotFoundException(PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
+	
 		}
 		ManualVerificationEntity manualVerificationEntity;
 
@@ -118,7 +123,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			if (matchType.equals(DedupeSourceName.ALL.toString())) {
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
 
-			} else {
+			} else if(matchType.equals(DedupeSourceName.DEMO.toString()) || matchType.equals(DedupeSourceName.BIO.toString() ))  {
 				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),
 						matchType);
 

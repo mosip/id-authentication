@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/auth/auth.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-error',
@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/auth.service';
   styleUrls: ['./error.component.css']
 })
 export class ErrorComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit() {
     // if (this.authService.isAuthenticated()) this.authService.onLogout();

@@ -39,6 +39,6 @@ Digital signatures are needed in various places of the MOSIP system. Few example
 ## Implementation
 
 
-**kernel-cryptography-digitalsignature** [README](../../../kernel/kernel-cryptography-digitalsignature/README.md)
+**kernel-crypto-signature** [README](../../../kernel/kernel-crypto-signature/README.md)
 
 
