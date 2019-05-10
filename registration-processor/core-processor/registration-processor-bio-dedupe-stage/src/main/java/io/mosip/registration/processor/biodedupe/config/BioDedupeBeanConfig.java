@@ -8,7 +8,6 @@ import io.mosip.registration.processor.biodedupe.stage.BioDedupeProcessor;
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
-import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 
 @Configuration
 public class BioDedupeBeanConfig {
@@ -33,8 +32,4 @@ public class BioDedupeBeanConfig {
 		return new PacketInfoDao();
 	}
 
-	@Bean
-	public ABISHandlerUtil getABISHandlerUtil() {
-		return new ABISHandlerUtil();
-	}
 }

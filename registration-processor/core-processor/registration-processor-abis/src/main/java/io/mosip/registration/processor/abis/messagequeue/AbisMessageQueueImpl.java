@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
@@ -97,28 +98,37 @@ public class AbisMessageQueueImpl {
 		List<String> abisInboundAddresses;
 		List<String> abisOutboundAddresses;
 
-		List<List<String>> inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
-		List<MosipQueue> mosipQueseList = utilities.getMosipQueuesForAbis();
-		if (mosipQueseList != null) {
+		List<List<String>> inboundOutBoundAddressList;
+		List<MosipQueue> mosipQueseList;
+		try {
+			inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
+			mosipQueseList = utilities.getMosipQueuesForAbis();
+			if (mosipQueseList != null) {
 
-			abisInboundAddresses = inboundOutBoundAddressList.get(0);
-			abisOutboundAddresses = inboundOutBoundAddressList.get(1);
-			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
-				String outBoundAddress = abisOutboundAddresses.get(i);
-				MosipQueue queue = mosipQueseList.get(i);
-				QueueListener listener = new QueueListener() {
-					@Override
-					public void setListener(Message message) {
-						consumeLogic(message, outBoundAddress,queue);
-					}
-				};
-				mosipQueueManager.consume(mosipQueseList.get(i), abisInboundAddresses.get(i), listener);
+				abisInboundAddresses = inboundOutBoundAddressList.get(0);
+				abisOutboundAddresses = inboundOutBoundAddressList.get(1);
+				for (int i = 0; i < abisOutboundAddresses.size(); i++) {
+					String outBoundAddress = abisOutboundAddresses.get(i);
+					MosipQueue queue = mosipQueseList.get(i);
+					QueueListener listener = new QueueListener() {
+						@Override
+						public void setListener(Message message) {
+							consumeLogic(message, outBoundAddress,queue);
+						}
+					};
+					mosipQueueManager.consume(mosipQueseList.get(i), abisInboundAddresses.get(i), listener);
+				}
+
+				isConnection = true;
+			} else {
+				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
 			}
-
-			isConnection = true;
-		} else {
-			throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
+		} catch (RegistrationProcessorCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		
 	}
 
 	/**
