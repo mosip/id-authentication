@@ -2,7 +2,7 @@
   "id": "mosip.pre-registration.demographic.fetch.details",
   "version":"1.0",
   "responsetime": "2019-02-11T13:46:00.534Z",
-  "response":{
+  "response":[{
          "preRegistrationId":"20180396713560",
          "createdBy":"9900806086",
          "createdDateTime":"2019-01-11T11:01:21.947Z",
@@ -19,7 +19,7 @@
                },
                {
                   "language":"ara",
-                  "value":"سهَسهَنك "
+                  "value":"Ø³Ù‡ÙŽØ³Ù‡ÙŽÙ†Ùƒ "
                }
             ],
             "dateOfBirth":"1993/12/12",
@@ -40,7 +40,7 @@
                },
                {
                   "language":"ara",
-                  "value":"٠٠٥-دس مَكس سِلِكُن"
+                  "value":"Ù Ù Ù¥-Ø¯Ø³ Ù…ÙŽÙƒØ³ Ø³Ù�Ù„Ù�ÙƒÙ�Ù†"
                }
             ],
             "residenceStatus":[
@@ -60,7 +60,7 @@
                },
                {
                   "language":"ara",
-                  "value":"گلُبَل ڤِللَگِ"
+                  "value":"Ú¯Ù„Ù�Ø¨ÙŽÙ„ Ú¤Ù�Ù„Ù„ÙŽÚ¯Ù�"
                }
             ],
             "addressLine3":[
@@ -70,7 +70,7 @@
                },
                {
                   "language":"ara",
-                  "value":"كَرنَتَكَ"
+                  "value":"ÙƒÙŽØ±Ù†ÙŽØªÙŽÙƒÙŽ"
                }
             ],
             "region":[
@@ -122,4 +122,5 @@
       },
  "errors":null
 }
+]
 }

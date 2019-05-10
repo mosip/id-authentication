@@ -3,6 +3,7 @@
  */
 package io.mosip.registration.processor.status.entity;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "registration_list", schema = "regprc")
-public class SyncRegistrationEntity extends BaseRegistrationEntity{
+public class SyncRegistrationEntity extends BaseRegistrationEntity {
 
 	/** The registration id. */
 	@Column(name = "reg_id", nullable = false)
@@ -29,9 +30,25 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity{
 	@Column(name = "reg_type")
 	private String registrationType;
 
-	/** The parent registration id. */
-	@Column(name = "parent_reg_id")
-	private String parentRegistrationId;
+	/** The lang code. */
+	@Column(name = "packet_checksum", nullable = false)
+	private String packetHashValue;
+
+	/** The lang code. */
+	@Column(name = "packet_size", nullable = false)
+	private BigInteger packetSize;
+
+	/** The status code. */
+	@Column(name = "client_status_code")
+	private String supervisorStatus;
+
+	/** The status comment. */
+	@Column(name = "client_status_comment")
+	private String supervisorComment;
+
+	/** The doc store. */
+	@Column(name = "additional_info")
+	private byte[] optionalValues;
 
 	/** The status code. */
 	@Column(name = "status_code")
@@ -44,10 +61,6 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity{
 	/** The lang code. */
 	@Column(name = "lang_code", nullable = false)
 	private String langCode;
-
-	/** The is active. */
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
 
 	/** The created by. */
 	@Column(name = "cr_by", nullable = false)
@@ -81,7 +94,6 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity{
 	public SyncRegistrationEntity() {
 		super();
 	}
-
 
 	/**
 	 * Gets the registration id.
@@ -122,22 +134,98 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity{
 	}
 
 	/**
-	 * Gets the parent registration id.
+	 * Gets the packet hash value.
 	 *
-	 * @return the parent registration id
+	 * @return the packet hash value
 	 */
-	public String getParentRegistrationId() {
-		return parentRegistrationId;
+	public String getPacketHashValue() {
+		return packetHashValue;
 	}
 
 	/**
-	 * Sets the parent registration id.
+	 * Sets the packet hash value.
 	 *
-	 * @param parentRegistrationId
-	 *            the new parent registration id
+	 * @param packetHashValue
+	 *            the new packet hash value
 	 */
-	public void setParentRegistrationId(String parentRegistrationId) {
-		this.parentRegistrationId = parentRegistrationId;
+	public void setPacketHashValue(String packetHashValue) {
+		this.packetHashValue = packetHashValue;
+	}
+
+	/**
+	 * Gets the supervisor status.
+	 *
+	 * @return the supervisor status
+	 */
+	public String getSupervisorStatus() {
+		return supervisorStatus;
+	}
+
+	/**
+	 * Sets the supervisor status.
+	 *
+	 * @param supervisorStatus
+	 *            the new supervisor status
+	 */
+	public void setSupervisorStatus(String supervisorStatus) {
+		this.supervisorStatus = supervisorStatus;
+	}
+
+	/**
+	 * Gets the supervisor comment.
+	 *
+	 * @return the supervisor comment
+	 */
+	public String getSupervisorComment() {
+		return supervisorComment;
+	}
+
+	/**
+	 * Sets the supervisor comment.
+	 *
+	 * @param supervisorComment
+	 *            the new supervisor comment
+	 */
+	public void setSupervisorComment(String supervisorComment) {
+		this.supervisorComment = supervisorComment;
+	}
+
+	/**
+	 * Gets the packet size.
+	 *
+	 * @return the packet size
+	 */
+	public BigInteger getPacketSize() {
+		return packetSize;
+	}
+
+	/**
+	 * Sets the packet size.
+	 *
+	 * @param packetSize
+	 *            the new packet size
+	 */
+	public void setPacketSize(BigInteger packetSize) {
+		this.packetSize = packetSize;
+	}
+
+	/**
+	 * Gets the optional values.
+	 *
+	 * @return the optional values
+	 */
+	public byte[] getOptionalValues() {
+		return optionalValues;
+	}
+
+	/**
+	 * Sets the optional values.
+	 *
+	 * @param optionalValues
+	 *            the new optional values
+	 */
+	public void setOptionalValues(byte[] optionalValues) {
+		this.optionalValues = optionalValues;
 	}
 
 	/**
@@ -195,25 +283,6 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity{
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
-	}
-
-	/**
-	 * Gets the checks if is active.
-	 *
-	 * @return the checks if is active
-	 */
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	/**
-	 * Sets the checks if is active.
-	 *
-	 * @param isActive
-	 *            the new checks if is active
-	 */
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
 	}
 
 	/**

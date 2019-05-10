@@ -26,7 +26,7 @@ import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
+import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {

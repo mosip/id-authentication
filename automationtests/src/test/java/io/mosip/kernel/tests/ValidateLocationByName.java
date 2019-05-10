@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -28,9 +28,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -42,47 +43,41 @@ import io.restassured.response.Response;
 public class ValidateLocationByName extends BaseTestCase implements ITest{
 
 	public ValidateLocationByName() {
-		// TODO Auto-generated constructor stub
 		super();
 	}
 	
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(ValidateLocationByName.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateLocationByName = "/v1/masterdata/locations/validate/{locationname}";
-	
-	static String dest = "";
-	static String folderPath = "kernel/ValidateLocationByName";
-	static String outputFile = "ValidateLocationByNameOutput.json";
-	static String requestKeyFile = "ValidateLocationByNameInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
+	private boolean status = false;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private AssertKernel assertKernel = new AssertKernel();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String validateLocationByName = props.get("validateLocationByName");
+	private String folderPath = "kernel/ValidateLocationByName";
+	private String outputFile = "ValidateLocationByNameOutput.json";
+	private String requestKeyFile = "ValidateLocationByNameInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private String testParam="";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
+
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		// testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateLocationByName")
-	public static Object[][] readData1(ITestContext context) throws Exception {
+	public Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -97,52 +92,46 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getAllConfiguration
+	 * validateLocationByName
 	 * Given input Json as per defined folders When GET request is sent to /masterdata/v1.0/locations/validate/{locationname}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="ValidateLocationByName")
 	public void validateLocationByName(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
-		Response res=applicationLibrary.getRequestPathPara(validateLocationByName, actualRequest);
-		/*
-		 * Removing the unstable attributes from response	
-		 */
+		
+		
+		 // Calling GET method with path parameters
+		 
+		Response res=applicationLibrary.getRequestPathPara(validateLocationByName, actualRequest,cookie);
+		
+		 // Removing the unstable attributes from response	
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		
-		/*
-		 * Getting the response time in milliseconds	
-		 */
+		
+		 // Getting the response time in milliseconds	
 		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
 	
-		/*
-		 * Comparing expected and actual response
-		 */
+		
+		 // Comparing expected and actual response	
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
-				/*if(response_time<=300)
+				if(response_time<=300)
 					finalStatus = "Pass";
 				else
-					finalStatus = "Fail";*/
-    	  finalStatus = "Pass";
+					finalStatus = "Fail";  
 			}	
 		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
@@ -155,14 +144,14 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		softAssert.assertAll();
 
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
 		} 
 		
 		@AfterMethod(alwaysRun = true)
-		public void setResultTestName(ITestResult result) {
-			
+		public void setResultTestName(ITestResult result) {		
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -170,10 +159,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
-				f.set(baseTestMethod, ValidateLocationByName.testCaseName);
-
-				
+				f.set(baseTestMethod, ValidateLocationByName.testCaseName);			
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}

@@ -74,10 +74,18 @@ spec:
         backend:
           serviceName: kernel-tokenidgenerator-service
           servicePort: 8097
+      - path: /v1/syncjob
+        backend:
+          serviceName: kernel-syncjob-service
+          servicePort: 8099
       - path: /v1/admin
         backend:
-          serviceName: kernel-admin-service
-          servicePort: 8099    
+          serviceName: admin-service
+          servicePort: 8098
+      - path: /admin-ui
+        backend:
+          serviceName: admin-ui
+          servicePort: 80    
       - path: /preregistration/v1/login
         backend:
           serviceName: pre-registration-login-service
@@ -146,10 +154,10 @@ spec:
         backend:
           serviceName: registration-processor-abis
           servicePort: 9098
-      - path: /registration-connector
+      - path: /registrationprocessor/v1/uploader
         backend:
-          serviceName: registration-processor-connector-stage
-          servicePort: 8091 
+          serviceName: registration-processor-packet-uploader-stage
+          servicePort: 8087
       - path: /manual-verification
         backend:
           serviceName: registration-processor-manual-verification-stage

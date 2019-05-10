@@ -28,5 +28,11 @@ public class DemographicMetadataDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6126886610955736452L;
 
-	private List<PreRegistrationViewDTO> basicDetails;
+	private List<DemographicViewDTO> basicDetails;
+
+	private String totalRecords;
+
+	private String noOfRecords;
+
+	private String pageIndex;
 }
