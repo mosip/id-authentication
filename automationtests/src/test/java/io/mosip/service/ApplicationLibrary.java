@@ -20,6 +20,10 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
+	public Response GetRequestNoParameter(String Resource_URI) {
+		return commonLibrary.GET_REQUEST_withoutParameters(ApplnURI + Resource_URI);
+
+	}
 	public Response get_RequestWithoutBody(String Resource_URI) {
 		return commonLibrary.get_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
