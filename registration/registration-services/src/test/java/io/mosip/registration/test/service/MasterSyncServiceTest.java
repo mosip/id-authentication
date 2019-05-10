@@ -56,8 +56,8 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
+import io.mosip.registration.service.operator.UserOnboardService;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -210,7 +210,7 @@ public class MasterSyncServiceTest {
 		responseDTO.setErrorResponseDTOs(errorResponses);
 
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
-		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG,
+		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO,
 				responseDto.getErrorResponseDTOs().get(0).getMessage());
 	}
 

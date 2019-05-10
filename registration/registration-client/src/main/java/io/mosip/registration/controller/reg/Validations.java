@@ -27,7 +27,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.entity.BlacklistedWords;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -147,8 +147,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for application
-	 * specific and secondary specific languages.
+	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for
+	 * application specific and secondary specific languages.
 	 *
 	 * @param pane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -171,8 +171,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method will be
-	 * called for each field.
+	 * Pass the node to check for the validation, specific validation method
+	 * will be called for each field.
 	 *
 	 * @param parentPane
 	 *            the {@link Pane} containing the UI Fields to be validated
@@ -242,7 +242,7 @@ public class Validations extends BaseController {
 
 			if (node.isDisabled() || (!isMandatory && inputText.isEmpty())) {
 				isInputValid = true;
-			} else if (isMandatory && inputText.isEmpty()) {
+			} else if (isMandatory && (inputText == null || inputText.isEmpty())) {
 				generateInvalidValueAlert(parentPane, id,
 						labelBundle.getString(label).concat(RegistrationConstants.SPACE)
 								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
@@ -283,8 +283,8 @@ public class Validations extends BaseController {
 			boolean showAlert, String errorMessage) {
 		boolean isInputValid = false;
 		if (blackListedWords != null && !id.contains(RegistrationConstants.ON_TYPE)) {
-			String bWords = String.join(", ", Stream.of(node.getText().split("\\s+")).collect(Collectors.toList())
-					.stream().filter(word -> blackListedWords.contains(word)).collect(Collectors.toList()));
+
+			String bWords = String.join(", ", Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(word -> blackListedWords.stream().anyMatch(bWord -> bWord.equalsIgnoreCase(word))).collect(Collectors.toList()));
 			if (bWords.length() > 0) {
 				generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage), showAlert);
 			} else {
@@ -324,19 +324,22 @@ public class Validations extends BaseController {
 				return true;
 
 			if (node.getValue() == null) {
-				generateAlert(parentPane, id, applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
-						.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
-				if (isPreviousValid) {
-					node.requestFocus();
-					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demographicCombobox");
-					});
-					node.getStyleClass().add("demographicComboboxFocused");
+				if (!(Arrays
+						.asList(new String[] { RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POI_DOCUMENT,
+								RegistrationConstants.POR_DOCUMENT, RegistrationConstants.DOB_DOCUMENT })
+						.contains(id))) {
+					generateAlert(parentPane, id,
+							applicationLabelBundle.getString(id).concat(RegistrationConstants.SPACE)
+									.concat(applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001)));
+					if (isPreviousValid) {
+						node.requestFocus();
+						node.getStyleClass().removeIf((s) -> {
+							return s.equals("demographicCombobox");
+						});
+						node.getStyleClass().add("demographicComboboxFocused");
+					}
 				}
-
 			} else {
-
-				;
 				if (Arrays
 						.asList(new String[] { RegistrationConstants.POA_DOCUMENT, RegistrationConstants.POI_DOCUMENT,
 								RegistrationConstants.POR_DOCUMENT, RegistrationConstants.DOB_DOCUMENT })
@@ -370,11 +373,14 @@ public class Validations extends BaseController {
 	 * @param field
 	 *            the {@link TextField} to be validated
 	 * @param isChild
-	 *            the flag to determine whether the individual or applicant is child
+	 *            the flag to determine whether the individual or applicant is
+	 *            child
 	 * @param uinValidator
-	 *            the instance of {@link UinValidator} required to validate the UIN
+	 *            the instance of {@link UinValidator} required to validate the
+	 *            UIN
 	 * @param ridValidator
-	 *            the instance of {@link RidValidator} required to validate the RID
+	 *            the instance of {@link RidValidator} required to validate the
+	 *            RID
 	 * @return <code>true</code> if UIN or RID is valid, else <code>false</code>
 	 */
 	public boolean validateUinOrRid(TextField uinId, TextField regId, boolean isChild,
@@ -485,7 +491,7 @@ public class Validations extends BaseController {
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
-				validation[1] = RegistrationConstants.FALSE;
+				validation[1] = RegistrationConstants.CNI_MANDATORY;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.PHONE_VALIDATION_REGEX);

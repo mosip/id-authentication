@@ -85,12 +85,24 @@ public class RestClientUtil {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
 		}
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request URL======>" + requestHTTPDTO.getUri());
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request Method======>" + requestHTTPDTO.getHttpMethod());
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request Entity======>" + requestHTTPDTO.getHttpEntity());
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request Class======>" + requestHTTPDTO.getClazz());
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
-
+		
 		if (responseEntity != null && responseEntity.hasBody()) {
 			responseMap = new LinkedHashMap<>();
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Response Body======>" + responseEntity.getBody());
 			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Response Header======>" + responseEntity.getHeaders());
 			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}
 

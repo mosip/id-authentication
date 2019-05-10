@@ -73,6 +73,7 @@ public class FingerprintFacadeTest {
 		map.put(RegistrationConstants.REGISTRATION_DATA,registrationDTO);
 		map.put(RegistrationConstants.USER_ONBOARD_DATA, useronboardbiometricDTO);
 		map.put(RegistrationConstants.ONBOARD_USER, false);
+		map.put(RegistrationConstants.IS_Child,false);
 		SessionContext.getInstance().setMapObject(map);
 		
 		Map<String,Object> appMap = new HashMap<>();
@@ -85,8 +86,8 @@ public class FingerprintFacadeTest {
 		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
-		FaceDetailsDTO obj = new FaceDetailsDTO();
-		biometricInfoDTO.setFaceDetailsDTO(obj);
+		biometricInfoDTO.setFace(new FaceDetailsDTO());
+		biometricInfoDTO.setExceptionFace(new FaceDetailsDTO());
 		return biometricInfoDTO;
 	}
 	

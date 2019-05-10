@@ -30,9 +30,9 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
+import io.mosip.registration.service.security.AESEncryptionService;
 
 /**
  * This class encrypts the Registration packet using RSA and AES algorithms.

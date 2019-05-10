@@ -3,12 +3,6 @@ package io.mosip.registration.device.fp;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonSyntaxException;
@@ -17,8 +11,6 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 /**
  * This will capture the fingerprint based on the device type
@@ -31,7 +23,6 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	protected String minutia = "";
 	protected byte isoTemplate[] = null;
 	protected String errorMessage = null;
-	protected WritableImage fingerPrintImage = null;
 	protected byte fingerDataInByte[] =null;
 	
 	/**
@@ -128,30 +119,5 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-
-	/* (non-Javadoc)
-	 * To display image in the screen.
-	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getFingerPrintImage()
-	 */
-	@Override
-	public WritableImage getFingerPrintImage() throws IOException{
-		WritableImage writableImage = null;
-		
-		if (null != fingerDataInByte) {
-			BufferedImage l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerDataInByte));
-
-			if (l_objBufferImg != null) {
-				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
-				PixelWriter pw = writableImage.getPixelWriter();
-				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
-					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
-						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
-					}
-				}
-			}
-		}
-		return writableImage;
-	}
-
 	
 }

@@ -110,6 +110,8 @@ public abstract class BaseJob extends QuartzJobBean {
 					/* Parent SyncJob */
 					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
+					removeCompletedJobInMap(currentJobID);
+					
 					/* Response of parentBaseJob */
 					ResponseDTO childJobResponseDTO = parentBaseJob
 							.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, childJob.getId());
@@ -231,7 +233,11 @@ public abstract class BaseJob extends QuartzJobBean {
 		}
 
 		/* Get Current JobId */
-		return jobManager.getJobId(context);
+		String currentJobId = jobManager.getJobId(context);
+		
+		removeCompletedJobInMap(currentJobId);
+			
+		return currentJobId;
 
 	}
 
