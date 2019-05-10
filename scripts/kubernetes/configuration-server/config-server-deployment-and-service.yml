@@ -21,7 +21,7 @@ spec:
         image: docker-registry.mosip.io:5000/kernel-config-server
         env:
         - name: git_url_env
-          value: git@github.com:mosip/mosip.git
+          value: git@github.com:mosip/mosip-configuration.git
         - name: git_config_folder_env
           value: config
         - name: encrypt_keyStore_location_env
