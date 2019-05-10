@@ -61,12 +61,13 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
 		KeyStore keyStore = null;
+		String centerMachineId=getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress());
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
-			 keyStore = policySyncDAO.getPublicKey(getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress()));
+			 keyStore = policySyncDAO.getPublicKey(centerMachineId);
  
 			if (keyStore != null) {
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
@@ -77,7 +78,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				} else {
 
 					try {
-						getPublicKey(responseDTO);
+						getPublicKey(responseDTO,centerMachineId);
 					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 								exception.getMessage());
@@ -88,7 +89,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				}
 			} else {
 				try {
-					getPublicKey(responseDTO);
+					getPublicKey(responseDTO,centerMachineId);
 				} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
@@ -101,7 +102,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		return responseDTO;
 	}
 
-	public synchronized void getPublicKey(ResponseDTO responseDTO)
+	public synchronized void getPublicKey(ResponseDTO responseDTO,String centerMachineId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
@@ -109,7 +110,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put(RegistrationConstants.TIME_STAMP,DateUtils.getUTCCurrentDateTimeString());
-		requestParams.put(RegistrationConstants.REF_ID, getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress()));
+		requestParams.put(RegistrationConstants.REF_ID, centerMachineId);
 		try {
 			@SuppressWarnings("unchecked")
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
@@ -128,7 +129,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
 				keyStore.setCreatedBy(getUserIdFromSession());
 				keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				keyStore.setRefId(getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress()));
+				keyStore.setRefId(centerMachineId);
 				policySyncDAO.updatePolicy(keyStore);
 				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,

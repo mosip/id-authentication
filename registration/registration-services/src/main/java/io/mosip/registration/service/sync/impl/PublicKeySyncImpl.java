@@ -121,7 +121,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
 		requestParamMap.put(RegistrationConstants.REF_ID, RegistrationConstants.KER);
-		requestParamMap.put(RegistrationConstants.TIME_STAMP, Instant.now().toString());
+		requestParamMap.put(RegistrationConstants.TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 
 		try {
 
