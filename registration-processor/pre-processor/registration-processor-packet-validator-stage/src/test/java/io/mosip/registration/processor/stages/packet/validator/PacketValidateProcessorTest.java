@@ -330,7 +330,7 @@ public class PacketValidateProcessorTest {
 		when(env.getProperty(VALIDATESCHEMA)).thenReturn("true");
 		when(env.getProperty(VALIDATEFILE)).thenReturn("true");
 		when(env.getProperty(VALIDATECHECKSUM)).thenReturn("true");
-		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("true");
+		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
 		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("true");
 		when(env.getProperty(VALIDATEMANDATORY)).thenReturn("false");
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);

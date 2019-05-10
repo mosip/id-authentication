@@ -1,7 +1,8 @@
+
 {
 	"id": "mosip.id.create",
-	"registrationId": "27847657360002520190205113333",
 	"request": {
+		"registrationId": "27847657360002520190205113333",
 		"identity": {
 			"IDSchemaVersion": 1.0,
 			"UIN": 6738521981,
@@ -12,6 +13,10 @@
 				},
 				{
 					"language": "fra",
+					"value": "Abd al Hakim"
+				},
+				{
+					"language": "eng",
 					"value": "Abd al Hakim"
 				}
 			],
@@ -25,6 +30,10 @@
 				{
 					"language": "fra",
 					"value": "mâle"
+				},
+				{
+					"language": "eng",
+					"value": "mâle"
 				}
 			],
 			"addressLine1": [
@@ -34,6 +43,10 @@
 				},
 				{
 					"language": "fra",
+					"value": "25 RUE PASTEUR"
+				},
+				{
+					"language": "eng",
 					"value": "25 RUE PASTEUR"
 				}
 			],
@@ -45,6 +58,10 @@
 				{
 					"language": "fra",
 					"value": "14391 CABOURG Street"
+				},
+				{
+					"language": "eng",
+					"value": "14391 CABOURG Street"
 				}
 			],
 			"addressLine3": [
@@ -54,6 +71,10 @@
 				},
 				{
 					"language": "fra",
+					"value": "MOROCCO"
+				},
+				{
+					"language": "eng",
 					"value": "MOROCCO"
 				}
 			],
@@ -65,6 +86,10 @@
 				{
 					"language": "fra",
 					"value": "SAUDI ARABIA"
+				},
+				{
+					"language": "eng",
+					"value": "SAUDI ARABIA"
 				}
 			],
 			"province": [
@@ -74,6 +99,10 @@
 				},
 				{
 					"language": "fra",
+					"value": "Fès-Meknès"
+				},
+				{
+					"language": "eng",
 					"value": "Fès-Meknès"
 				}
 			],
@@ -85,6 +114,10 @@
 				{
 					"language": "fra",
 					"value": "MOROCCO"
+				},
+				{
+					"language": "eng",
+					"value": "MOROCCO"
 				}
 			],
 			"localAdministrativeAuthority": [
@@ -95,10 +128,13 @@
 				{
 					"language": "fra",
 					"value": "salma"
+				},
+				{
+					"language": "eng",
+					"value": "salma"
 				}
 			],
-			"CNIENumber" : "6789545678909",
-			"parentOrGuardianRIDOrUIN": 212124324784912,
+			"CNIENumber": "6789545678909",
 			"parentOrGuardianName": [
 				{
 					"language": "ara",
@@ -106,6 +142,10 @@
 				},
 				{
 					"language": "fra",
+					"value": "salma"
+				},
+				{
+					"language": "eng",
 					"value": "salma"
 				}
 			],
@@ -124,6 +164,7 @@
 			}
 		]
 	},
-	"timestamp": "2018-02-05T06:12:25.288Z",
+	"requesttime": "2018-02-05T06:12:25.288Z",
 	"version": "1.0"
+
 }

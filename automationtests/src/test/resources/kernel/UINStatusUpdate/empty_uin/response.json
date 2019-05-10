@@ -1,8 +1,11 @@
 {
-   "timestamp": 1553511700495,
-   "status": 200,
+   "id": "string",
+   "version": "string",
+   "responsetime": "2019-04-30T07:09:02.074Z",
+   "metadata": null,
+   "response": null,
    "errors": [   {
       "errorCode": "KER-UIG-001",
-      "errorMessage": "UIN could not be found"
+      "message": "UIN could not be found"
    }]
 }

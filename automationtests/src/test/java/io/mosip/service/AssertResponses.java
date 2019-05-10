@@ -11,14 +11,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import io.mosip.regProc.tests.Sync;
 import io.restassured.response.Response;
 
 public class AssertResponses {
@@ -30,6 +28,7 @@ public class AssertResponses {
 	static JSONObject jsonObject = new JSONObject();
 	static JSONArray jsonArray = new JSONArray();
 	static SoftAssert softAssert=new SoftAssert();
+	@SuppressWarnings("serial")
 	public static boolean assertResponses(Response response, JSONObject object, List<String> outerKeys, List<String> innerKeys)
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
@@ -56,6 +55,7 @@ public class AssertResponses {
 
 	}
 
+	@SuppressWarnings("serial")
 	public static boolean assertArrayResponses(Response response, JSONArray objectArray, List<String> outerKeys, List<String> innerKeys)
 			throws JsonProcessingException, IOException, ParseException {
 		
@@ -142,6 +142,7 @@ public class AssertResponses {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 	private static void recursiveArray(JSONArray parsebleArray, List innerKeys) {
 		Iterator itr = innerKeys.iterator();
 		Iterator arrayItr = parsebleArray.iterator();

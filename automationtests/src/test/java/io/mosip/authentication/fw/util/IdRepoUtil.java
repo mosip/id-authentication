@@ -1,39 +1,26 @@
 package io.mosip.authentication.fw.util;
 
 import java.io.File;
-import java.io.FileOutputStream;  
-import java.io.OutputStream;
-import java.nio.file.Files;  
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Properties;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.fw.dto.VidDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
-import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
+import io.mosip.authentication.fw.precon.XmlPrecondtion;
 
 /**
  * Class to store all the UIN data or json using idrepo
  * 
- * @author Vignesh
+ * @author Athila
  *
  */
 public class IdRepoUtil extends IdaScriptsUtil{
 
-	private static FileUtil objFileUtil = new FileUtil();
-	private static JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
-	private static UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
-	private static Logger logger = Logger.getLogger(IdRepoUtil.class);
+	private static final Logger IDREPO_UTILITY_LOGGER = Logger.getLogger(IdRepoUtil.class);
 
 	/**
 	 * Get the uin data or json using idrepo api and save it in output file
@@ -41,11 +28,11 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * @param uinNumber
 	 * @return true or false
 	 */
-	public boolean retrieveIdRepo(String uinNumber) {
+	public static boolean retrieveIdRepo(String uinNumber) {
 		String retrievePath = RunConfig.getIdRepoRetrieveDataPath().replace("$uin$", uinNumber);
 		String url = RunConfig.getIdRepoEndPointUrl() + retrievePath;
-		if (!objFileUtil.checkFileExistForIdRepo(uinNumber + ".json")) {
-			if (objFileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponse(url, "type=all")))
+		if (!FileUtil.checkFileExistForIdRepo(uinNumber + ".json")) {
+			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponse(url, "type=all")))
 				return true;
 			else
 				return false;
@@ -60,24 +47,33 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * @param uinNumber
 	 * @return uin data or json
 	 */
-	public String retrieveDataFromIdRepo(String mapping, String uinNumber) {
+	public static String retrieveDataFromIdRepo(String mapping, String uinNumber) {
 		try {		
 			if (uinNumber.length() == 16) {
-				objUinVidNumberUtil.getVidPropertyValue(objUinVidNumberUtil.getVidPropertyPath());
+				RunConfigUtil.getVidPropertyValue(RunConfigUtil.getVidPropertyPath());
 				uinNumber = VidDto.getVid().get(uinNumber);
 			}
 			if (retrieveIdRepo(uinNumber)) {
-				String value = objJsonPrecondtion.getValueFromJson(
-						Paths.get(new File("./"+RunConfig.getSrcPath()
-								+ RunConfig.getStoreUINDataPath() + "/" + uinNumber + ".json").getAbsolutePath()).toString(),
-						new File("./"+RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
-								+ "/mapping.properties").getAbsolutePath(),
+				String value = XmlPrecondtion.getValueFromXmlUsingMapping(
+						Paths.get(new File("./" + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath() + "/"
+								+ uinNumber + ".json").getAbsolutePath()).toString(),
+						new File(
+								"./" + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath() + "/mapping.properties")
+										.getAbsolutePath(),
 						mapping);
 				if(mapping.contains("dateOfBirth") && mapping.contains("input"))
 				{
 					Date valuedate= new SimpleDateFormat("yyyy/MM/dd").parse(value);
 					SimpleDateFormat date= new SimpleDateFormat("dd/MM/yyyy");
 					value = date.format(valuedate);
+				}
+				if(mapping.contains("dateOfBirth") && mapping.contains("age"))
+				{
+					Date valuedate= new SimpleDateFormat("yyyy/MM/dd").parse(value);
+					SimpleDateFormat date= new SimpleDateFormat("dd");
+					SimpleDateFormat month= new SimpleDateFormat("MM");
+					SimpleDateFormat year= new SimpleDateFormat("yyyy");
+					value=calculateAge(Integer.parseInt(year.format(valuedate)),Integer.parseInt(month.format(valuedate)),Integer.parseInt(date.format(valuedate)));
 				}
 				if (value.contains("Null"))
 					return "$REMOVE$";
@@ -86,7 +82,7 @@ public class IdRepoUtil extends IdaScriptsUtil{
 			} else
 				return "No Record found for the UIN: " + uinNumber;
 		} catch (Exception e) {
-			logger.error("Exceptione in fetching the data from id repo" + e);
+			IDREPO_UTILITY_LOGGER.error("Exceptione in fetching the data from id repo" + e);
 			if (e.toString().contains("Null")) {
 				return "$REMOVE$";
 			}
@@ -99,9 +95,17 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * 
 	 * @return UIN Number
 	 */
-	public String generateUinNumber() {
-		return objJsonPrecondtion
-				.getValueFromJson(getResponse(RunConfig.getEndPointUrl() + RunConfig.getGenerateUINPath()), "uin");
+	public static String generateUinNumber() {
+		boolean flag = false;
+		String uin;
+		do {
+			uin = JsonPrecondtion.getValueFromJson(
+					getResponse(RunConfig.getEndPointUrl() + RunConfig.getGenerateUINPath()), "response.uin");
+			if (uin.startsWith("1") || uin.startsWith("2") || uin.startsWith("3") || uin.startsWith("4")) {
+				flag = true;
+			}
+		} while (flag == false);
+		return uin;
 	}
 	
 	/**
@@ -110,10 +114,24 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * @param UinNumber
 	 * @return create uin path
 	 */
-	public String getCreateUinPath(String UinNumber) {
+	public static String getCreateUinPath(String UinNumber) {
 		String url = RunConfig.getIdRepoEndPointUrl() + RunConfig.getIdRepoCreateUINRecordPath();
 		url = url.replace("$uin$", UinNumber);
 		return url;
+	}
+	
+	/**
+	 * The method will calculate age
+	 * 
+	 * @param year
+	 * @param month
+	 * @param date
+	 * @return string, calculated age
+	 */
+	private static String calculateAge(int year, int month, int date) {
+		LocalDate birthDate = LocalDate.of(year, month, date);
+		LocalDate currentDate = LocalDate.now();
+		return String.valueOf(Period.between(birthDate, currentDate).getYears());
 	}
 
 }

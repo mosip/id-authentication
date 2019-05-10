@@ -8,6 +8,7 @@
 export interface Applicant {
   applicationID: string;
   name: string;
+  appointmentDateTime: string;
   appointmentDate: string;
   appointmentTime: string;
   status: string;

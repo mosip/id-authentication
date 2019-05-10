@@ -81,7 +81,7 @@ public class NotificationServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 		requestMap.put("requesttime",date.toString());
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;

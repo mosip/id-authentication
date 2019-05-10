@@ -13,6 +13,7 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -42,60 +43,60 @@ import io.mosip.preregistration.documents.exception.PrimaryKeyValidationExceptio
  *
  */
 public class DocumentExceptionCatcher {
-	public void handle(Exception ex) {
+	public void handle(Exception ex,MainResponseDTO<?> response) {
 		if (ex instanceof DocumentFailedToUploadException) {
-			throw new DocumentFailedToUploadException(((DocumentFailedToUploadException) ex).getErrorCode(),((DocumentFailedToUploadException) ex).getErrorText());
+			throw new DocumentFailedToUploadException(((DocumentFailedToUploadException) ex).getErrorCode(),((DocumentFailedToUploadException) ex).getErrorText(),response);
 		} else if (ex instanceof IOException) {
 			// kernel exception
-			throw new DTOMappigException(((IOException) ex).getErrorCode(), ((IOException) ex).getErrorText(), ex.getCause());
+			throw new DTOMappigException(((IOException) ex).getErrorCode(), ((IOException) ex).getErrorText(),response);
 
 		} else if (ex instanceof JsonMappingException) {
-			throw new DTOMappigException(((JsonMappingException) ex).getErrorCode(), ((JsonMappingException) ex).getErrorText(), ex.getCause());
+			throw new DTOMappigException(((JsonMappingException) ex).getErrorCode(), ((JsonMappingException) ex).getErrorText(),response);
 			// kernel exception
 		} else if (ex instanceof JsonParseException) {
 			// kernel exception
-			throw new DTOMappigException(((JsonParseException) ex).getErrorCode(), ((JsonParseException) ex).getErrorText(), ex.getCause());
+			throw new DTOMappigException(((JsonParseException) ex).getErrorCode(), ((JsonParseException) ex).getErrorText(),response);
 		} else if (ex instanceof JSONException || ex instanceof ParseException) {
 			throw new ParsingException(ErrorCodes.PRG_PAM_DOC_015.toString(), ErrorMessages.JSON_EXCEPTION.getMessage(),
-					ex.getCause());
+					response);
 
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
-					((InvalidRequestParameterException) ex).getErrorText());
+					((InvalidRequestParameterException) ex).getErrorText(),response);
 		} else if (ex instanceof MandatoryFieldNotFoundException) {
-			throw new MandatoryFieldNotFoundException(((MandatoryFieldNotFoundException) ex).getErrorCode(),((MandatoryFieldNotFoundException) ex).getErrorText());
+			throw new MandatoryFieldNotFoundException(((MandatoryFieldNotFoundException) ex).getErrorCode(),((MandatoryFieldNotFoundException) ex).getErrorText(),response);
 		}  else if (ex instanceof DocumentNotValidException) {
-			throw new DocumentNotValidException(((DocumentNotValidException) ex).getErrorCode(),((DocumentNotValidException) ex).getErrorText());
+			throw new DocumentNotValidException(((DocumentNotValidException) ex).getErrorCode(),((DocumentNotValidException) ex).getErrorText(),response);
 		} else if (ex instanceof DocumentSizeExceedException) {
-			throw new DocumentSizeExceedException(((DocumentSizeExceedException) ex).getErrorCode(),((DocumentSizeExceedException) ex).getErrorText());
+			throw new DocumentSizeExceedException(((DocumentSizeExceedException) ex).getErrorCode(),((DocumentSizeExceedException) ex).getErrorText(),response);
 		} else if (ex instanceof VirusScannerException) {
-			throw new DocumentVirusScanException(((VirusScannerException) ex).getErrorCode(),((VirusScannerException) ex).getErrorText());
+			throw new DocumentVirusScanException(((VirusScannerException) ex).getErrorCode(),((VirusScannerException) ex).getErrorText(),response);
 		}else if (ex instanceof DocumentVirusScanException) {
-			throw new DocumentVirusScanException(((DocumentVirusScanException) ex).getErrorCode(),((DocumentVirusScanException) ex).getErrorText());
+			throw new DocumentVirusScanException(((DocumentVirusScanException) ex).getErrorCode(),((DocumentVirusScanException) ex).getErrorText(),response);
 		}	
 		else if (ex instanceof DocumentNotFoundException) {
-			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText());
+			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText(),response);
 		} else if (ex instanceof DocumentFailedToCopyException) {
-			throw new DocumentFailedToCopyException(((DocumentFailedToCopyException) ex).getErrorCode(),((DocumentFailedToCopyException) ex).getErrorText());
+			throw new DocumentFailedToCopyException(((DocumentFailedToCopyException) ex).getErrorCode(),((DocumentFailedToCopyException) ex).getErrorText(),response);
 		} else if (ex instanceof InvalidDocumentIdExcepion) {
-			throw new InvalidDocumentIdExcepion(((InvalidDocumentIdExcepion) ex).getErrorCode(),((InvalidDocumentIdExcepion) ex).getErrorText());
+			throw new InvalidDocumentIdExcepion(((InvalidDocumentIdExcepion) ex).getErrorCode(),((InvalidDocumentIdExcepion) ex).getErrorText(),response);
 		} else if (ex instanceof DemographicGetDetailsException) {
 			throw new DemographicGetDetailsException(((DemographicGetDetailsException) ex).getErrorCode(),
-					((DemographicGetDetailsException) ex).getErrorText());
+					((DemographicGetDetailsException) ex).getErrorText(),response);
 		}else if(ex instanceof FSServerException) {
 			throw new FSServerException(((FSServerException) ex).getErrorCode(),
-					((FSServerException) ex).getErrorText());
+					((FSServerException) ex).getErrorText(),response);
 		}else if(ex instanceof TableNotAccessibleException) {
-			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText());
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText(),response);
 		}else if(ex instanceof PSQLException) {
-			throw new PrimaryKeyValidationException(ErrorCodes.PRG_PAM_DOC_021.toString(),ErrorMessages.DOCUMENT_ALREADY_PRESENT.getMessage());
+			throw new PrimaryKeyValidationException(ErrorCodes.PRG_PAM_DOC_021.toString(),ErrorMessages.DOCUMENT_ALREADY_PRESENT.getMessage(),response);
 		}
 		else if(ex instanceof FSAdapterException) {
-			throw new FSAdapterException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText());
+			throw new FSServerException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText(),response);
 		}else if (ex instanceof EncryptionFailedException) {
-			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText());
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText(),response);
 		}else if (ex instanceof DecryptionFailedException) {
-			throw new EncryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText());
+			throw new EncryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText(),response);
 		}
 
 	}

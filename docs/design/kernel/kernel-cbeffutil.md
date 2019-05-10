@@ -56,4 +56,4 @@ There are many types of biometric information can be collected as part of the MO
 ## Implementation
 
 
-**kernel-cbeffutil** [README](../../kernel/kernel-cbeffutil-api/Readme.md)
+**kernel-cbeffutil** [README](../../../kernel/kernel-cbeffutil-api/Readme.md)

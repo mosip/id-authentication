@@ -1,6 +1,9 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * ReverseDataSyncRecordNotFoundException
@@ -8,54 +11,25 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author M1046129
  *
  */
+@Getter
+@Setter
 public class ReverseDataFailedToStoreException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor
-	 */
-	public ReverseDataFailedToStoreException() {
-		super();
-	}
-
-	/**
-	 * @param errorMessage
-	 *            pass the error message
-	 */
-	public ReverseDataFailedToStoreException(String errorMessage) {
-		super("", errorMessage);
-	}
+	private MainResponseDTO<?> mainResponseDto;
 
 	/**
 	 * @param errorCode
 	 *            pass the error code
 	 * @param errorMessage
 	 *            pass the error message
-	 */
-	public ReverseDataFailedToStoreException(String errorCode, String errorMessage) {
-		super(errorCode, errorMessage, null);
-	}
-
-	/**
-	 * @param errorMessage
-	 *            pass the error message
-	 * @param rootCause
+	 * @param response
 	 *            pass the cause
 	 */
-	public ReverseDataFailedToStoreException(String errorMessage, Throwable rootCause) {
-		super("", errorMessage, rootCause);
+	public ReverseDataFailedToStoreException(String errorMessage, MainResponseDTO<?> response) {
+		super(errorMessage);
+		this.mainResponseDto = response;
 	}
 
-	/**
-	 * @param errorCode
-	 *            pass the error code
-	 * @param errorMessage
-	 *            pass the error message
-	 * @param rootCause
-	 *            pass the cause
-	 */
-	public ReverseDataFailedToStoreException(String errorCode, String errorMessage, Throwable rootCause) {
-		super(errorCode, errorMessage, rootCause);
-	}
 }

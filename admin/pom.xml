@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.1</version>
 	</parent>
 
 
@@ -37,10 +37,12 @@
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
+		<swagger.core.version>2.0.7</swagger.core.version>
+		<swagger.annotations.version>1.5.20</swagger.annotations.version>
+		<springfox.version>2.9.2</springfox.version>
+
 		<vertx.version>3.6.2</vertx.version>
 		<vertx.health.check.version>3.7.0</vertx.health.check.version>
-		<swagger.version>2.9.2</swagger.version>
-		<swagger-annotations.version>2.0.7</swagger-annotations.version>
 
 		<!-- javax -->
 		<javax.interceptor.version>1.2</javax.interceptor.version>

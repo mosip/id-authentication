@@ -41,6 +41,11 @@ public enum AuditLogVariables {
 
 	REV,
 
-	BOOKING_SERVICE, BOOK
+	BOOKING_SERVICE, 
+	BOOK,
+	NOTIFICATION_SERVICE,
+	
+	NOTIFY
+	
 
 }

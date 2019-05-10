@@ -1,62 +1,26 @@
 # Pre-Registration-datasync-service:
 
-[Background & Design](pre-registration-individual.md)
+[Background & Design](https://github.com/mosip/mosip/blob/SPRINT11_PREREG_TEAM_BRANCH/docs/design/pre-registration/pre-registration-data-sync-service.md)
 
 This service enables Pre-Registration to a registration client , request to retrieve all pre-registration ids based on registration client id, appointment date and a user type.
 
-#### Api Documentation
+[Api Documentation](https://github.com/mosip/mosip/wiki/Pre-Registration-Services#datasync-service-external)
 
+### Default Port and Context Path
 ```
-mvn javadoc:javadoc
-
+server.port=9094
+server.servlet.context-path=/preregistration/v1
 ```
-#### POST Operation
-#### Path -  `/sync`
-#### Summary
+#### Url 
+```https://{dns-name}:9094/preregistration/v1/sync/swagger-ui.html```
 
+[Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
-This is used by registration client to retrieve all the pre-registration Ids by date range and registration center Id from the authorize token.
+The following are the Api name use in this service.
 
-**The inputs which have to be provided are:**
+1. POST /sync - This is used by registration client to retrieve all the pre-registration Ids by date range and registration center Id from the authorize token.
 
-1. id
-2. version	
-3. requestTime	
-4. request.from-date	
-5. request.to-date	
-
-#### Response
-Return transactionId, countOfPreRegIds, preRegistrationIds if request is successful, otherwise get error message.
-
-
-#### POST Operation
-#### Path -  `sync/consumedPreRegIds`
-#### Summary
-
-This is used by registration processor to fetch all processed pre-registration ids and store in 
+2. POST /sync/consumedPreRegIds - This is used by registration processor to fetch all processed pre-registration ids and store in 
 pre-registration database.
-
-#### Request body Parameters
-
-1. id
-2. version
-3. requestTime
-4. request
-5. request.preRegistrationIds
-
-#### Response
-Returns transactionId, countOfPreRegIds, preRegistrationIds as response if request is successful, else gets error message.
-
-#### GET Operation
-#### Path -  `sync/:preRegistrationId`
-#### Summary
-
-This request is used by registration client to retrieve particular pre-registration data based on a pre-registration id.
-
-#### Request path Parameters
-1. preRegistrationId
-
-#### Response
-
-This request returns registration-client-id, appointment-date, from-time-slot, to-time-slot,zip-filename, zip-bytes as response if its successful, else gets error message.
+3. GET /sync/{preRegistrationId} - This request is used by registration client to retrieve particular pre-registration data based on a pre-registration id.
 

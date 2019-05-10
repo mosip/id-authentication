@@ -34,9 +34,9 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 
 
 **Class Diagram**
-![pre-registration login service sendOTP ](_class_diagram/login-sendOtp.png)
+![pre-registration login service sendOTP ](_images/_class_diagram/login-sendOtp.png)
 **Sequence Diagram**
-![pre-registration login service sendOTP](_sequence_diagram/login-sendOtp.png)
+![pre-registration login service sendOTP](_images/_sequence_diagram/login-sendOtp.png)
 
 **Error Code** 
 
@@ -56,9 +56,9 @@ PRG_AUTH-001 |  Error   |   Failed to send the OTP.
 refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 
 **Class Diagram**
-![pre-registration login service - validateOTP](_class_diagram/login-validateOtp.png)
+![pre-registration login service - validateOTP](_images/_class_diagram/login-validateOtp.png)
 **Sequence Diagram**
-![pre-registration login service - validateOTP](_sequence_diagram/login-validateOtp.png)
+![pre-registration login service - validateOTP](_images/_sequence_diagram/login-validateOtp.png)
 
 **Error Code** 
 
@@ -79,9 +79,9 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 
 **Class Diagram**
-![pre-registration login service logout](_class_diagram/login-invalidateToken.png)
+![pre-registration login service logout](_images/_class_diagram/login-invalidateToken.png)
 **Sequence Diagram**
-![pre-registration login service logout](_sequence_diagram/login-invalidateToken.png)
+![pre-registration login service logout](_images/_sequence_diagram/login-invalidateToken.png)
 
 **Error Code**
 
@@ -105,11 +105,11 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 
 **Class Diagram**
 
-![pre-registration login service config](_class_diagram/login-config.png)
+![pre-registration login service config](_images/_class_diagram/login-config.png)
 
 **Sequence Diagram**
 
-![pre-registration login service config](_sequence_diagram/login-config.png)
+![pre-registration login service config](_images/_sequence_diagram/login-config.png)
 
 **Error Code**
   While invalidating AuthToken if there is any error then send the respective error code to the UI from API layer as Response object.

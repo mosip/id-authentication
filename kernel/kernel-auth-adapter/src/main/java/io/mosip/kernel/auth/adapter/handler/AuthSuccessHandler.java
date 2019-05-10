@@ -15,7 +15,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
              @Override
              public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                           Authentication authentication) throws IOException, ServletException {
-             System.out.println("success handler");
+             //System.out.println("success handler");
 
              }
 

@@ -55,7 +55,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Service
 public class NotificationServiceImpl implements NotificationService {
-	
+
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
 	/** The Constant NAME. */
@@ -90,10 +90,8 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_REQUIRED));
-
 		Map<String, Object> values = new HashMap<>();
-		
+
 		String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
 		String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
 		values.put(NAME, namePri);
@@ -109,16 +107,16 @@ public class NotificationServiceImpl implements NotificationService {
 
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
 		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
-		String changedDate = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
-		String changedTime = dateTimeConvertedToReqZone
-				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
+		String changedDate = dateTimeConvertedToReqZone.format(
+				DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
+		String changedTime = dateTimeConvertedToReqZone.format(
+				DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
 
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
 		String maskedUin = "";
 		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
-		if (ismaskRequired && charCount != null) {
+		if (charCount != null && !charCount.isEmpty()) {
 			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
 		}
 		values.put(UIN2, maskedUin);
@@ -173,7 +171,8 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
-			Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class);
+			Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
+					Integer.class);
 			int timeInMinutes = (timeInSeconds % 3600) / 60;
 			values.put("validTime", String.valueOf(timeInMinutes));
 			values.put(DATE, date);
@@ -187,9 +186,11 @@ public class NotificationServiceImpl implements NotificationService {
 			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
 			values.put(NAME + "_" + secLang, nameSec);
 
-			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE));
+			sendNotification(values, email, mobileNumber, SenderType.OTP,
+					env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE));
 		} catch (BaseCheckedException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "send OTP notification to : ", email,
+					"and " + mobileNumber);
 		}
 	}
 

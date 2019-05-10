@@ -78,11 +78,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	NO_SLOTS_AVAILABLE_FOR_THAT_DATE("No slots available for that date"),
-	/**
-	 * ErrorMessage for PRG_TRL_APP_001
-	 */
-	NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER("No time slots assigned to that reg center"),
+	NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER("No available slots found for specified registration center"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */

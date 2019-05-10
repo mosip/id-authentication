@@ -26,14 +26,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 
 /**
  * IdRepoServiceImplTest test class.
@@ -100,7 +100,7 @@ public class IdRepoManagerTest {
 				.thenReturn(restRequestDTO);
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("mosip.kernel.idrepo.status.registered", "Invalid");
+		environment.setProperty(IdRepoConstants.ACTIVE_STATUS.getValue(), "Invalid");
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("status", "invalid");
@@ -157,7 +157,7 @@ public class IdRepoManagerTest {
 		Map<String, Object> responseBody = new HashMap<>();
 		List<Map<String, Object>> valuelist = new ArrayList<>();
 		Map<String, Object> errorcode = new HashMap<>();
-		errorcode.put("errCode", IdRepoErrorConstants.INVALID_UIN.getErrorCode());
+		errorcode.put("errCode", IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 		valuelist.add(errorcode);
 		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(

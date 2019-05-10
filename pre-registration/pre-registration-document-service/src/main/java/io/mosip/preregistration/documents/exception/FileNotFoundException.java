@@ -5,7 +5,8 @@
 package io.mosip.preregistration.documents.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * This class defines the FileNotFoundException that occurs when requested
@@ -15,10 +16,14 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
  * @since 1.0.0
  * 
  */
+
+@Getter
 public class FileNotFoundException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	private MainResponseDTO<?> response;
 
 	/**
 	 * Default constructor
@@ -27,24 +32,6 @@ public class FileNotFoundException extends BaseUncheckedException {
 		super();
 	}
 
-	/**
-	 * @param message
-	 *            pass Error Message
-	 */
-	public FileNotFoundException(String message) {
-		super(ErrorCodes.PRG_PAM_DOC_005.toString(), message);
-	}
-
-	/**
-	 * @param message
-	 *            pass Error Message
-	 * @param cause
-	 *            pass Error cause
-	 */
-	public FileNotFoundException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_PAM_DOC_005.toString(), message, cause);
-
-	}
 
 	/**
 	 * @param errorCode
@@ -66,6 +53,20 @@ public class FileNotFoundException extends BaseUncheckedException {
 	 */
 	public FileNotFoundException(String errorCode, String message) {
 		super(errorCode, message);
+	}
+	
+	/**
+	 * 
+	 * @param errorCode
+	 *    	     pass Error code
+	 * @param message
+	 *           pass Error Message
+	 * @param response
+	 * 			 pass response
+	 */
+	public FileNotFoundException(String errorCode, String message,MainResponseDTO<?> response) {
+		super(errorCode, message);
+		this.response=response;
 	}
 
 }
