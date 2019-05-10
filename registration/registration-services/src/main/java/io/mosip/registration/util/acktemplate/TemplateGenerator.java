@@ -124,7 +124,7 @@ public class TemplateGenerator extends BaseService {
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
-			boolean isChild = moroccoIdentity.getParentOrGuardianName() != null;
+			boolean isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 
 			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
 				/* Set-up Registration Acknowledgement related content */
@@ -437,7 +437,7 @@ public class TemplateGenerator extends BaseService {
 		List<FingerprintDetailsDTO> capturedFingers;
 		List<IrisDetailsDTO> capturedIris;
 
-		if ((registration.getSelectionListDTO() == null && !isChild) || !registration.isUpdateUINChild()) {
+		if ((registration.getSelectionListDTO() == null && !isChild) || (registration.getSelectionListDTO() != null && !registration.isUpdateUINChild())) {
 			// get the total count of fingerprints captured and irises captured
 			capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO();
 			capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
