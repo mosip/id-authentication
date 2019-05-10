@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjob.model;
 
 import java.io.Serializable;
@@ -12,7 +16,8 @@ import lombok.ToString;
 /**
  * Response DTO
  * 
- * @author M1037717
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Getter

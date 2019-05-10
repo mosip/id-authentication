@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -39,6 +38,7 @@ import io.mosip.preregistration.batchjobservices.service.ConsumedStatusService;
 import io.mosip.preregistration.batchjobservices.test.BatchJobApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 
 @SpringBootTest(classes = { BatchJobApplicationTest.class })
 @RunWith(SpringRunner.class)
