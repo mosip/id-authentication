@@ -52,7 +52,6 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  *
  */
 @Service
-@Deprecated
 public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The reg proc logger. */
@@ -198,8 +197,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		identifyRequestDto.setTargetFPIR(targetFPIR);
 
 		// call Identify Api to get duplicate ids
-		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService.postApi(ApiName.BIODEDUPEPOTENTIAL,
-				"", "", identifyRequestDto, AbisIdentifyResponseDto.class);
+		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService
+				.postApi(ApiName.BIODEDUPEPOTENTIAL, "", "", identifyRequestDto, AbisIdentifyResponseDto.class);
 
 		if (responsedto != null) {
 
