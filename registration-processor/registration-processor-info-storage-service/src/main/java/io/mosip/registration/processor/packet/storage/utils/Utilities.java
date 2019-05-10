@@ -129,49 +129,42 @@ public class Utilities {
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public List<List<String>> getMInboundOutBoundAddressList() throws IOException {
-		String registrationProcessorAbis = Utilities.getJson(getRegistrationProcessorAbisJson(),
-				getGetRegProcessorIdentityJson());
+	public List<List<String>> getInboundOutBoundAddressList() throws IOException {
+		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
 		List<String> inBoundAddressList = new ArrayList<>();
 		List<String> outBountAddressList = new ArrayList<>();
 
 		List<List<String>> inboundOutBoundList = new ArrayList<>();
 		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
 		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
-		for (Object jsonObject : regProcessorAbisArray) {
-			if (jsonObject instanceof JSONObject) {
-				inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
-				outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
-				inboundOutBoundList.add(inBoundAddressList);
-				inboundOutBoundList.add(outBountAddressList);
-
-			}
+		for (Object object : regProcessorAbisArray) {
+			JSONObject jsonObject = new JSONObject((Map) object);
+			inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
+			outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
+			inboundOutBoundList.add(inBoundAddressList);
+			inboundOutBoundList.add(outBountAddressList);
 
 		}
 		return inboundOutBoundList;
 	}
 
 	public List<MosipQueue> getMosipQueuesForAbis() throws IOException {
-		String registrationProcessorAbis = Utilities.getJson(getRegistrationProcessorAbisJson(),
-				getGetRegProcessorIdentityJson());
+		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
 		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
 		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
 		List<MosipQueue> mosipQueueList = new ArrayList<>();
 
 		for (Object jsonObject : regProcessorAbisArray) {
-			if (jsonObject instanceof JSONObject) {
-				String userName = JsonUtil.getJSONValue((JSONObject) jsonObject, USERNAME);
-				String password = JsonUtil.getJSONValue((JSONObject) jsonObject, PASSWORD);
-				String brokerUrl = JsonUtil.getJSONValue((JSONObject) jsonObject, BROKERURL);
-				String typeOfQueue = JsonUtil.getJSONValue((JSONObject) jsonObject, TYPEOFQUEUE);
-				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
-						brokerUrl);
-				if (mosipQueue == null)
-					throw new QueueConnectionNotFound(
-							PlatformErrorMessages.RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL.getMessage());
-				mosipQueueList.add(mosipQueue);
-
-			}
+			JSONObject json = new JSONObject((Map) jsonObject);
+			String userName = JsonUtil.getJSONValue((JSONObject) json, USERNAME);
+			String password = JsonUtil.getJSONValue((JSONObject) json, PASSWORD);
+			String brokerUrl = JsonUtil.getJSONValue((JSONObject) json, BROKERURL);
+			String typeOfQueue = JsonUtil.getJSONValue((JSONObject) json, TYPEOFQUEUE);
+			MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password, brokerUrl);
+			if (mosipQueue == null)
+				throw new QueueConnectionNotFound(
+						PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());
+			mosipQueueList.add(mosipQueue);
 
 		}
 		return mosipQueueList;

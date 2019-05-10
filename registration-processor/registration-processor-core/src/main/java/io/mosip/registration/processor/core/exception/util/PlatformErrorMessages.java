@@ -135,7 +135,7 @@ public enum PlatformErrorMessages {
 	/** The rpr pis file not found in Packet Store. */
 	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
 			"File not found in Packet Store"),
-	RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "005",
+	RPR_PIS_ABIS_QUEUE_CONNECTION_NULL(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "005",
 			"Abis Queue Connection null "),
 	/** The rpr fac connection not available. */
 	// File adaptor Exception error code and message
@@ -248,6 +248,11 @@ public enum PlatformErrorMessages {
 
 	PACKET_BIO_DEDUPE_CBEFF_NOT_PRESENT(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "001",
 			"CBEFF not present for adult applicant type"),
+	
+	//stages - Abis Middleware
+	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001"," Abis ReferenceId not found for given registrationId"),
+	LATEST_TRANSACTION_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "002"," latest transactionId not found for given registrationId"),
+	IDENTIFY_REQUESTS_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "003"," no identify requests found for given registrationId"),
 
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message

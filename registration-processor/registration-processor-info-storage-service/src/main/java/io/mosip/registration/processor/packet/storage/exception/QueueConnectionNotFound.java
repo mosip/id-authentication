@@ -23,7 +23,7 @@ public class QueueConnectionNotFound extends BaseUncheckedException {
 	 *            the error message
 	 */
 	public QueueConnectionNotFound(String errorMessage) {
-		super(PlatformErrorMessages.RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL.getCode(), errorMessage);
+		super(PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getCode(), errorMessage);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class QueueConnectionNotFound extends BaseUncheckedException {
 	 *            the cause
 	 */
 	public QueueConnectionNotFound(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PIS_QUEUE_ABIS_QUEUE_CONNECTION_NULL.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getCode() + EMPTY_SPACE, message, cause);
 
 	}
 }

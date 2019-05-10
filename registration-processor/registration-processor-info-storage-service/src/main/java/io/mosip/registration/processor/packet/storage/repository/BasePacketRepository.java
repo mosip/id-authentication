@@ -197,6 +197,9 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	
 	@Query("SELECT abisreq.statusCode FROM AbisRequestEntity abisreq WHERE abisreq.reqBatchId =:reqBatchId")
 	public List<String> getBatchStatusbyBatchId(@Param("reqBatchId") String reqBatchId);
+
+	@Query("UPDATE  AbisRequestEntity abisReq SET  abisReq.statusCode = PROCESSED WHERE abisReq.id =:id")
+	public void updateAbisRequestStatusCode(@Param("id") String id);
 	/**
 	 * Gets the abis request I ds.
 	 *
