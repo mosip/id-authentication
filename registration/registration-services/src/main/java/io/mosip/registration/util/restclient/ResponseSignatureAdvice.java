@@ -89,7 +89,7 @@ public class ResponseSignatureAdvice {
 
 			if (null != requestDto && requestDto.getIsSignRequired()) {
 
-				KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.SIGNED_KEY);
+				KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.KER);
 
 				if (null != keyStore && null != keyStore.getPublicKey()) {
 					publicKey = new String(keyStore.getPublicKey());

@@ -67,7 +67,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching signed public key.....");
 
-			KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.SIGNED_KEY);
+			KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.KER);
 
 			if (null == keyStore) {
 
@@ -148,7 +148,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 					keyStore.setValidFromDtimes(Timestamp.valueOf(issuedAt));
 					keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
 					keyStore.setCreatedBy(getUserIdFromSession());
-					keyStore.setRefId(RegistrationConstants.SIGNED_KEY);
+					keyStore.setRefId(RegistrationConstants.KER);
 					keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					policySyncDAO.updatePolicy(keyStore);
 					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
