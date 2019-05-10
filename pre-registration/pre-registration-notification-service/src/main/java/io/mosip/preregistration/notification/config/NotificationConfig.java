@@ -99,8 +99,7 @@ public class NotificationConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.notification.controller"))
-				.paths(PathSelectors.ant("/*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

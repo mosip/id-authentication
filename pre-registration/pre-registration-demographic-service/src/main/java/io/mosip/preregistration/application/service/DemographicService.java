@@ -193,21 +193,6 @@ public class DemographicService {
 	@Value("${version}")
 	private String version;
 
-	@Value("${mosip.id.validation.identity.email}")
-	private String emailRegex;
-
-	@Value("${mosip.id.validation.identity.phone}")
-	private String phoneRegex;
-
-	@Value("${mosip.id.validation.identity.postalCode}")
-	private String postalRegex;
-
-	@Value("${mosip.id.validation.identity.dateOfBirth}")
-	private String dobRegex;
-
-	@Value("${mosip.id.validation.identity.CNIENumber}")
-	private String cnieRegex;
-
 	Map<String, String> idValidationFields = new HashMap<>();
 	/**
 	 * Reference for ${appointmentResourse.url} from property file
@@ -728,47 +713,7 @@ public class DemographicService {
 		}
 	}
 
-	// /**
-	// * This Method is used to retrieve demographic data by date
-	// *
-	// * @param fromDate
-	// * pass fromDate
-	// * @param toDate
-	// * pass toDate
-	// * @return response List of preRegIds
-	// *
-	// *
-	// */
-	// public MainListResponseDTO<String> getPreRegistrationByDate(LocalDate
-	// fromDate, LocalDate toDate) {
-	// log.info("sessionId", "idType", "id", "In getPreRegistrationByDate method of
-	// pre-registration service ");
-	// MainListResponseDTO<String> response = new MainListResponseDTO<>();
-	// response.setResponsetime(serviceUtil.getCurrentResponseTime());
-	// response.setId(dateId);
-	// response.setVersion(version);
-	// try {
-	// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-	//
-	// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
-	//
-	// List<DemographicEntity> details =
-	// demographicRepository.findBycreateDateTimeBetween(fromLocaldate,
-	// toLocaldate);
-	//
-	// response.setResponse(getPreRegistrationByDateEntityCheck(details));
-	//
-	// } catch (Exception ex) {
-	// log.error("sessionId", "idType", "id",
-	// "In getPreRegistrationByDate method of pre-registration service - " +
-	// ex.getMessage());
-	// //new DemographicExceptionCatcher().handle(ex,response);
-	// }
-	//
-	// response.setErrors(null);
-	// return response;
-	// }
-
+	
 	/**
 	 * This method will iterate the list of demographicEntity and add pre-ids to
 	 * list of string
@@ -982,16 +927,6 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
 		}
 		return mainResponseDTO;
-
-	}
-
-	public Map<String, String> idValidation() throws ParseException {
-		idValidationFields.put(RequestCodes.EMAIL.getCode(), emailRegex);
-		idValidationFields.put(RequestCodes.PHONE.getCode(), phoneRegex);
-		idValidationFields.put(RequestCodes.DOB.getCode(), dobRegex);
-		idValidationFields.put(RequestCodes.CNIE_NUMBER.getCode(), cnieRegex);
-		idValidationFields.put(RequestCodes.POSTAL_CODE.getCode(), postalRegex);
-		return idValidationFields;
 
 	}
 

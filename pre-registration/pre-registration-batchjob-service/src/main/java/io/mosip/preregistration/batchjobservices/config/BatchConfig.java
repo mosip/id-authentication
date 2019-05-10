@@ -40,7 +40,7 @@ public class BatchConfig {
 	 * Swagger Configuration
 	 */
 	@Bean
-	public Docket api() {
+	public Docket batchStatusBean() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
@@ -59,8 +59,7 @@ public class BatchConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-batchjob-Service").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.batchjobservices.controller"))
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
@@ -73,6 +72,7 @@ public class BatchConfig {
 		protocols.add(proto);
 		return protocols;
 	}
+
 
 
 }
