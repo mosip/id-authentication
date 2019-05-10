@@ -15,16 +15,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import org.springframework.context.annotation.Primary;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class CoreConfigBean {
-	
+
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
 			throws IOException {
@@ -52,17 +55,29 @@ public class CoreConfigBean {
 	}
 
 	@Bean
+	@Primary
 	public RegistrationProcessorIdentity getRegProcessorIdentityJson() {
 		return new RegistrationProcessorIdentity();
 	}
 
 	@Bean
-	MosipQueueManager<?, ?> getMosipQueueManager(){
+	MosipQueueManager<?, ?> getMosipQueueManager() {
 		return new MosipActiveMqImpl();
 	}
-	
+
 	@Bean
-	MosipQueueConnectionFactory<?> getMosipQueueConnectionFactory(){
+	MosipQueueConnectionFactory<?> getMosipQueueConnectionFactory() {
 		return new MosipQueueConnectionFactoryImpl();
 	}
+
+	@Bean
+	public TokenValidator getTokenValidator() {
+		return new TokenValidator();
+	}
+
+	@Bean
+	public MosipRouter getMosipRouter() {
+		return new MosipRouter();
+	}
+
 }

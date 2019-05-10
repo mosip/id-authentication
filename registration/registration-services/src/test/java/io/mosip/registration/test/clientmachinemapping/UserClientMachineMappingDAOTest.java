@@ -1,5 +1,8 @@
 package io.mosip.registration.test.clientmachinemapping;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.doNothing;
 
@@ -391,6 +394,14 @@ public class UserClientMachineMappingDAOTest {
 				Mockito.anyString())).thenReturn(new ArrayList<>());
 		
 		Assert.assertNotNull(machineMappingDAOImpl.getAllValidDevicesByCenterId("eng"));
+	}
+	
+	@Test
+	public void isExistsTest() {
+		
+		UserMachineMapping machineMapping=null;
+		Mockito.when(machineMappingRepository.findByUserMachineMappingIdUserID(RegistrationConstants.JOB_TRIGGER_POINT_USER)).thenReturn(machineMapping);
+		Assert.assertFalse(machineMappingDAOImpl.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER));
 	}
 
 }

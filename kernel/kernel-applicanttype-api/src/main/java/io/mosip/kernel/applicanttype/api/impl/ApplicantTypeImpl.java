@@ -63,9 +63,26 @@ public class ApplicantTypeImpl implements ApplicantType {
 				dob = (String) entry.getValue();
 			} else if (entry.getKey().equals(ATTR_GENDER_TYPE) && entry.getValue() instanceof String) {
 				genderType = (String) entry.getValue();
-			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE) && entry.getValue() != null
-					&& entry.getValue() instanceof Boolean) {
-				isBioExPresent = (boolean) entry.getValue();
+			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE) && entry.getValue() != null) {
+				// for defect id MOS-17562
+				if (entry.getValue() instanceof String) {
+					String str = (String) entry.getValue();
+					if (str.trim().equalsIgnoreCase("true")) {
+						isBioExPresent = true;
+					} else if (str.trim().equalsIgnoreCase("false")) {
+						isBioExPresent = false;
+					} else {
+						throw new InvalidApplicantArgumentException(
+								ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
+								ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
+					}
+				} else if (entry.getValue() instanceof Boolean) {
+					isBioExPresent = (boolean) entry.getValue();
+				} else {
+					throw new InvalidApplicantArgumentException(
+							ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
+							ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
+				}
 			}
 		}
 

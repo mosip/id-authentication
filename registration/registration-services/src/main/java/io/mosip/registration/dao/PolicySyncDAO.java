@@ -12,8 +12,28 @@ import io.mosip.registration.entity.KeyStore;
 public interface PolicySyncDAO {
 	
 
+	/**
+	 * Update policy.
+	 *
+	 * @param keyStore the key store
+	 */
 	void updatePolicy(KeyStore keyStore);
 
+	/**
+	 * Find by max expire time.
+	 *
+	 * @return the key store
+	 */
 	KeyStore findByMaxExpireTime();
+	
+	/**
+	 * Find public key.
+	 *
+	 * @param refId the ref id
+	 * @return the key store
+	 */
+	KeyStore getPublicKey(String refId);
+	
+	
 
 }

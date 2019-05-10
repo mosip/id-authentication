@@ -3,24 +3,40 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
+import io.mosip.kernel.auth.config.MosipEnvironment;
+import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.OTPErrorCode;
+import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.entities.otp.idrepo.ResponseDTO;
+import io.mosip.kernel.auth.exception.AuthManagerException;
+import io.mosip.kernel.auth.exception.AuthManagerServiceException;
+import io.mosip.kernel.auth.service.TokenGenerationService;
+import io.mosip.kernel.auth.service.UinService;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.constant.AuthConstant;
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.service.UinService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Ramadurai Pandian
+ * @author M1049825
  *
  */
 
@@ -32,6 +48,12 @@ public class UinServiceImpl implements UinService {
 
 	@Autowired
 	MosipEnvironment env;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	@Autowired
+	private TokenGenerationService tokenService;
 
 	/*
 	 * (non-Javadoc)
@@ -41,20 +63,67 @@ public class UinServiceImpl implements UinService {
 	 * .auth.entities.otp.OtpUser)
 	 */
 	@Override
-	public MosipUserDto getDetailsFromUin(OtpUser otpUser) throws Exception {
-		MosipUserDto mosipDto = new MosipUserDto();
-		mosipDto.setUserId(otpUser.getUserId());
+	public MosipUserDto getDetailsFromUin(String uin) throws Exception {
+		String token=null;
+		MosipUserDto mosipDto = null;
+		ResponseDTO idResponse = null;
+		
 		Map<String, String> uriParams = new HashMap<String, String>();
-		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), otpUser.getUserId());
-		ResponseEntity<String> response = restTemplate.getForEntity(
-				UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString(),
+		try {
+			token = tokenService.getUINBasedToken();
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
+		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), uin);
+		String url = UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString();
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
 				String.class);
-		String responseBody = response.getBody();
-		JSONObject json = new JSONObject(responseBody);
-		JSONObject res = (JSONObject) json.get("response");
-		JSONObject identity = (JSONObject) res.get("identity");
-		mosipDto.setMobile((String) identity.get("phone"));
-		mosipDto.setMail((String) identity.get("email"));
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+	        
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				idResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						ResponseDTO.class);
+				
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			}
+		}
+			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
+			if(res!=null)
+			{
+				mosipDto = new MosipUserDto();
+				mosipDto.setUserId(uin);
+				if(res.get("phone")!=null)
+				{
+					mosipDto.setMobile((String) res.get("phone"));
+				}
+				else
+				{
+					throw new AuthManagerException(OTPErrorCode.PHONENOTREGISTERED.getErrorCode(),OTPErrorCode.PHONENOTREGISTERED.getErrorMessage());
+				}
+				if(res.get("email")!=null)
+				{
+					mosipDto.setMail(res.get("email"));
+				}
+				else
+				{
+					throw new AuthManagerException(OTPErrorCode.EMAILNOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILNOTREGISTERED.getErrorMessage());
+				}
+				if((String) res.get("phone")==null && (String) res.get("email")!=null)
+				{
+					throw new AuthManagerException(OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorMessage());
+				}
+			}	
 		return mosipDto;
 	}
 

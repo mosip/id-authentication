@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,9 +33,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -50,23 +54,26 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchDevice.class);
-	private static final String jiraID = "MOS-8263";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchDevice";
-	private static final String requestJsonName = "fetchDeviceRequest";
-	private static final String outputJsonName = "fetchDeviceOutput";
-	private static final String service_lang_URI = "/masterdata/v1.0/devices/{languagecode}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/devices/{languagecode}/{deviceType}";
+	private final String jiraID = "MOS-8263";
+	private final String moduleName = "kernel";
+	private final String apiName = "FetchDevice";
+	private final String requestJsonName = "fetchDeviceRequest";
+	private final String outputJsonName = "fetchDeviceOutput";
+	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final String FetchDevice_lang_URI = props.get("FetchDevice_lang_URI").toString();
+	private final String FetchDevice_id_lang_URI = props.get("FetchDevice_id_lang_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -75,10 +82,11 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
+		cookie=auth.getAuthForRegistrationOfficer();
 
 	}
 
@@ -111,7 +119,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchDevice(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -144,9 +152,9 @@ public class FetchDevice extends BaseTestCase implements ITest {
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if (objectData.containsKey("deviceType"))
-					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchDevice_id_lang_URI, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchDevice_lang_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -170,10 +178,10 @@ public class FetchDevice extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("languagecode") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray devicesFromGet = (JSONArray) responseJson.get("devices");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + devicesFromGet.size());
@@ -211,6 +219,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
@@ -234,6 +243,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

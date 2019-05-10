@@ -31,6 +31,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
@@ -54,6 +55,7 @@ import io.mosip.registration.service.impl.CenterMachineReMapService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -79,7 +81,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -92,7 +93,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController extends BaseService {
+public class BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -100,6 +101,9 @@ public class BaseController extends BaseService {
 	protected AuditFactory auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
+	
+	@Autowired
+	protected ServiceDelegateUtil serviceDelegateUtil;
 
 	@Autowired
 	protected FXComponents fXComponents;
@@ -119,6 +123,8 @@ public class BaseController extends BaseService {
 	private IrisCaptureController irisCaptureController;
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
 
 	@Autowired
 	private TemplateService templateService;
@@ -293,12 +299,12 @@ public class BaseController extends BaseService {
 	 * 				alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
-		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
-			id = RegistrationConstants.DOB;
-			parentPane = (Pane) parentPane.getParent().getParent();
-		}
 		if (id.contains(RegistrationConstants.ONTYPE)) {
 			id = id.replaceAll( RegistrationConstants.UNDER_SCORE+RegistrationConstants.ONTYPE, RegistrationConstants.EMPTY);
+		}
+		if (id.matches(RegistrationConstants.DTAE_MONTH_YEAR_REGEX)) {
+			id = RegistrationConstants.DOB;
+			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane
 				.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
@@ -445,7 +451,6 @@ public class BaseController extends BaseService {
 	/**
 	 * Clear registration data.
 	 */
-	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
@@ -474,9 +479,7 @@ public class BaseController extends BaseService {
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
-		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
-				.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY,
-						(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
+		updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, (boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
 	}
 
 	/**
@@ -702,6 +705,7 @@ public class BaseController extends BaseService {
 				irisCaptureController.clearIrisData();
 				faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 				faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
+				guardianBiometricsController.clearCapturedBioData();
 			}
 		}
 	}
@@ -1027,7 +1031,7 @@ public class BaseController extends BaseService {
 		imageView.setLayoutY(8);
 		imageView.setFitHeight(25);
 		imageView.setFitWidth(25);
-		primaryStage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		fXComponents.getStage().addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (primaryStage.isShowing()) {
@@ -1041,8 +1045,8 @@ public class BaseController extends BaseService {
 		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 		scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.initModality(Modality.WINDOW_MODAL);
-		primaryStage.initOwner(fXComponents.getStage());
+		//primaryStage.initModality(Modality.WINDOW_MODAL);
+		//primaryStage.initOwner(fXComponents.getStage());
 		primaryStage.show();
 	}
 
@@ -1117,6 +1121,43 @@ public class BaseController extends BaseService {
 	 * @return the value from application context
 	 */
 	protected String getValueFromApplicationContext(String key) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching value from application Context");
+		
 		return (String) applicationContext.getApplicationMap().get(key);
 	}
+	
+	/**
+	 * Gets the quality score.
+	 *
+	 * @param qulaityScore the qulaity score
+	 * @return the quality score
+	 */
+	protected String getQualityScore(Double qulaityScore) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching Quality score while capturing Biometrics");
+		
+		return String.valueOf(Math.round(qulaityScore)).concat(RegistrationConstants.PERCENTAGE);
+	}
+	
+	/**
+	 * Updates the Page Flow
+	 *
+	 * @param pageId id of the page
+	 * @param val value to be set
+	 */
+	@SuppressWarnings("unchecked")
+	protected void updatePageFlow(String pageId, boolean val) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating page flow to naviagate next or previous");
+		
+		((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+				.get(RegistrationConstants.REGISTRATION_MAP)).get(pageId)
+						.put(RegistrationConstants.VISIBILITY, val);
+		
+	}
+
 }

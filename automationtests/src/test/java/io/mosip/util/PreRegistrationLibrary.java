@@ -242,8 +242,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	/**
 	 * Generate OTP
+<<<<<<< HEAD
 	 * 
 	 * @return
+=======
+	 * @return response
+>>>>>>> 0.11.0
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
@@ -1965,6 +1969,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response syncMasterData() {
 		Response syncMasterDataRes = null;
 		try {
+
 
 			//syncMasterDataRes = applnLib.get_RequestWithoutBody(preReg_SyncMasterDataURI);
 			syncMasterDataRes = applnLib.postRequestWithoutBody(preReg_SyncMasterDataURI);

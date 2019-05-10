@@ -6,11 +6,16 @@ package io.mosip.registration.processor.core.exception.util;
  * 
  */
 public enum PlatformSuccessMessages {
+	
+	//Packet Receiver Success messages.
+	
+	/** The rpr pkr packet receiver. */
+	RPR_PKR_PACKET_RECEIVER(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "000", "Packet received and uploaded to landing zone"),
 
 	// Packet Validator Success messages
 	/** The rpr pkr packet validate. */
 	RPR_PKR_PACKET_VALIDATE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "000", "Packet Validation Success"),
-
+	
 	// OSI validator Success messages
 	/** The rpr pkr osi validate. */
 	RPR_PKR_OSI_VALIDATE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "000", "OSI Validation Success"),

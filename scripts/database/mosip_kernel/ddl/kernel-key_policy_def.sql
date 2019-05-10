@@ -16,9 +16,9 @@ create table kernel.key_policy_def (
 	key_validity_duration smallint, 				-- Duration in days for key validity.
 	
 	is_active	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes 	timestamp,
 	is_deleted	boolean,
 	del_dtimes 	timestamp

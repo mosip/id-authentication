@@ -32,4 +32,6 @@ public final class StatusMessage {
 
 	public static final String MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND = "Master data validation failed due to API resource access exception";
 
+	public static final String MANDATORY_FIELD_MISSING = "Mandatory Field is missing from ID JSON for NEW registration";
+
 }

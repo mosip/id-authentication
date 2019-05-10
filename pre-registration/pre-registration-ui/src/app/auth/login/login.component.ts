@@ -58,14 +58,16 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.translate.use('fra');
+    localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
-    this.loadValidationMessages();
   }
 
   loadValidationMessages() {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.validationMessages = response['login'];
+      console.log(this.validationMessages);
     });
   }
 
@@ -99,17 +101,12 @@ export class LoginComponent implements OnInit {
         this.loadLanguagesWithConfig();
       },
       error => {
-        this.router.navigate(['error']);
+        this.showConfigErrorMessage();
       }
     );
   }
 
   loadLanguagesWithConfig() {
-    console.log(
-      'mosip.id.validation.identity.fullName.[*].value',
-      this.configService.getConfigByKey('mosip.id.validation.identity.fullName.[*].value')
-    );
-
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
@@ -132,6 +129,7 @@ export class LoginComponent implements OnInit {
     }
     this.translate.addLangs([this.primaryLangFromConfig, this.secondaryLangFromConfig]);
     this.showSpinner = false;
+    this.loadValidationMessages();
   }
 
   setLanguageDirection(primaryLang: string, secondaryLang: string) {
@@ -277,7 +275,6 @@ export class LoginComponent implements OnInit {
             this.showOtpMessage();
           }
         },
-
         error => {
           this.showOtpMessage();
           // clearInterval(this.timer);
@@ -296,6 +293,19 @@ export class LoginComponent implements OnInit {
       const message = {
         case: 'MESSAGE',
         message: response['message']['login']['msg3']
+      };
+      const dialogRef = this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: message
+      });
+    });
+  }
+
+  showConfigErrorMessage() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const message = {
+        case: 'MESSAGE',
+        message: response['error']['error']
       };
       const dialogRef = this.dialog.open(DialougComponent, {
         width: '350px',

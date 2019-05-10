@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,7 +33,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -49,24 +52,25 @@ public class FetchMachine extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchMachine.class);
-	private static final String jiraID = "MOS-8222";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchMachine";
-	private static final String requestJsonName = "FetchMachineRequest";
-	private static final String outputJsonName = "FetchMachineOutput";
-	private static final String service_URI = "/masterdata/v1.0/machines";
-	private static final String service_lang_URI = "/masterdata/v1.0/machines/{langcode}";
-	private static final String service_id_lang_URI = "/masterdata/v1.0/machines/{id}/{langcode}";
+	private final String jiraID = "MOS-8222";
+	private final String moduleName = "kernel";
+	private final String apiName = "FetchMachine";
+	private final String requestJsonName = "FetchMachineRequest";
+	private final String outputJsonName = "FetchMachineOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String FetchMachine_URI = props.get("FetchMachine_URI").toString();
+	private final String FetchMachine_lang_URI = props.get("FetchMachine_lang_URI").toString();
+	private final String FetchMachine_id_lang_URI = props.get("FetchMachine_id_lang_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	/**
 	 * method to set the test case name to the report
@@ -75,8 +79,8 @@ public class FetchMachine extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 
@@ -144,9 +148,9 @@ public class FetchMachine extends BaseTestCase implements ITest {
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if (objectData.containsKey("id"))
-					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchMachine_id_lang_URI, objectData);
 				else
-					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchMachine_lang_URI, objectData);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -158,7 +162,7 @@ public class FetchMachine extends BaseTestCase implements ITest {
 		// sending request to get request without param
 		if (response == null) {
 			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+			response = applicationLibrary.getRequestPathPara(FetchMachine_URI, objectData);
 			objectData = null;
 		}
 		int statusCode = response.statusCode();
@@ -176,10 +180,10 @@ public class FetchMachine extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("machines");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
@@ -219,6 +223,7 @@ public class FetchMachine extends BaseTestCase implements ITest {
 
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}

@@ -46,13 +46,35 @@ public class MosipEnvironment implements EnvironmentAware {
 	private String ldapRolesClass = "ldap.roles.class";
 
 	private String otpPrimaryLanguage = "auth.primary.language";
+	
+	private String otpSecondaryLanguage = "auth.secondary.language";
 
 	private String uinGetDetailsUrl = "idrepo.api.getuindetails";
 
 	private String authSlidingWindowExp = "auth.token.sliding.window.exp";
+	
+	private String authPrefix = "mosip.kernel.auth.";
+	
+	private String authAppId = ".app.id";
+	
+	private String authAppUserId = ".client.id";
+	
+	private String authSecretKey = ".secret.key";
 
 	public String getUinGetDetailsUrl() {
 		return environment.getProperty(uinGetDetailsUrl);
+	}
+	
+	public String getAppUserId(String appId) {
+		return environment.getProperty(authPrefix+appId+authAppUserId);
+	}
+	
+	public String getAppId(String appId) {
+		return environment.getProperty(authPrefix+appId+authAppId);
+	}
+	
+	public String getSecretKey(String appId) {
+		return environment.getProperty(authPrefix+appId+authSecretKey);
 	}
 
 	public Integer getAuthSlidingWindowExp() {
@@ -61,6 +83,10 @@ public class MosipEnvironment implements EnvironmentAware {
 
 	public String getPrimaryLanguage() {
 		return environment.getProperty(otpPrimaryLanguage);
+	}
+	
+	public String getSecondaryLanguage() {
+		return environment.getProperty(otpSecondaryLanguage);
 	}
 
 	@Override
@@ -175,4 +201,5 @@ public class MosipEnvironment implements EnvironmentAware {
 	public String getRolesSearchSuffix() {
 		return environment.getProperty(rolesSearchSuffix);
 	}
+
 }

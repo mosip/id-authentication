@@ -143,6 +143,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 		
+
 		System.out.println("Book App Status:"+bookAppointmentResponse.asString());
 		
 		switch (val) {
@@ -336,7 +337,9 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
+
 		authToken = preRegLib.getToken();
+
 	}
 
 	@Override

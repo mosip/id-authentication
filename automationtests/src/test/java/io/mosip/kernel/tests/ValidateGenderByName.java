@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -27,7 +28,9 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
@@ -40,44 +43,39 @@ import io.restassured.response.Response;
 public class ValidateGenderByName extends BaseTestCase implements ITest{
 
 	public ValidateGenderByName() {
-		// TODO Auto-generated constructor stub
+	
 		super();
 	}
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(ValidateGenderByName.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String validateGenderByName = "/masterdata//v1.0/gendertypes/validate/{gendername}";
-	
-	static String dest = "";
-	static String folderPath = "kernel/ValidateGenderByName";
-	static String outputFile = "ValidateGenderByNameOutput.json";
-	static String requestKeyFile = "ValidateGenderByNameInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
+	private boolean status = false;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private AssertKernel assertKernel = new AssertKernel();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String validateGenderByName = props.get("validateGenderByName");
+	private String folderPath = "kernel/ValidateGenderByName";
+	private String outputFile = "ValidateGenderByNameOutput.json";
+	private String requestKeyFile = "ValidateGenderByNameInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private String testParam="";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
+
+	// Getting test case names and also auth cookie based on roles
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		// testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateGenderByName")
-	public static Object[][] readData1(ITestContext context) throws Exception {
+	public Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -94,50 +92,44 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getAllConfiguration
+	 * validateGenderByName
 	 * Given input Json as per defined folders When GET request is sent to /masterdata//v1.0/gendertypes/validate/{gendername}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="ValidateGenderByName")
 	public void validateGenderByName(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
-		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest);
-		/*
-		 * Removing the unstable attributes from response	
-		 */
+		
+		//  Calling GET method with path parameters
+		 
+		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest,cookie);
+		
+		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
-		/*
-		 * Getting the response time in milliseconds	
-		 */
+		//  Getting the response time in milliseconds	
 		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
 	
-		/*
-		 * Comparing expected and actual response
-		 */
+		
+		// Comparing expected and actual response
+		 
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
-      if (status) {
-	            
-				/*if(response_time<=300)
+      if (status) {  
+				if(response_time<=300)
 					finalStatus = "Pass";
 				else
-					finalStatus = "Fail";*/
-    	  	finalStatus = "Pass";
+					finalStatus = "Fail";	
 			}	
 		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
 		
 		softAssert.assertAll();
@@ -152,14 +144,14 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 		softAssert.assertAll();
 
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
 		} 
 		
 		@AfterMethod(alwaysRun = true)
-		public void setResultTestName(ITestResult result) {
-			
+		public void setResultTestName(ITestResult result) {		
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -167,10 +159,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
-				f.set(baseTestMethod, ValidateGenderByName.testCaseName);
-
-				
+				f.set(baseTestMethod, ValidateGenderByName.testCaseName);		
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}

@@ -1,76 +1,43 @@
-## kernel-uingenerator-service
+## kernel-tokenidgenerator-service
 
-[Background & Design](../../docs/design/kernel/kernel-uingenerator.md)
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-statictoken.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#4-uin)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#static-token-generator)
 
 
 Default Port and Context Path
 
 ```
-server.port=8080
-server.servlet.path=/uingenerator
+server.port=8097
+server.servlet.path=/tokenidgenerator
 
 ```
 
 ** Properties to be added in parent Spring Application environment **
 
 ```
-#-----------------------------UIN Properties--------------------------------------
-#length of the uin
-mosip.kernel.uin.length=10
-#minimun threshold of uin
-mosip.kernel.uin.min-unused-threshold=100000
-#number of uins to generate
-mosip.kernel.uin.uins-to-generate=200000
-#restricted numbers for uin
-mosip.kernel.uin.restricted-numbers=786,666
-#sequence limit for uin filter
-#to disable validation assign zero or negative value
-mosip.kernel.uin.length.sequence-limit=3
-#repeating block limit for uin filter
-#to disable validation assign zero or negative value
-mosip.kernel.uin.length.repeating-block-limit=2
-#repeating limit for uin filter
-#to disable validation assign zero or negative value
-mosip.kernel.uin.length.repeating-limit=2
-#reverse group digit limit for uin filter
-mosip.kernel.uin.length.reverse-digits-limit=5
-#group digit limit for uin filter
-mosip.kernel.uin.length.digits-limit=5
-#should not start with
-mosip.kernel.uin.not-start-with=0,1
-#adjacent even digit limit for uin filter
-mosip.kernel.uin.length.conjugative-even-digits-limit=3
+#-----------------------------TOKENIFGENERATOR Properties--------------------------------------
+#uin salt
+mosip.kernel.tokenid.uin.salt=zHuDEAbmbxiUbUShgy6pwUhKh9DE0EZn9kQDKPPKbWscGajMwf
+#partnercode salt
+mosip.kernel.tokenid.partnercode.salt=yS8w5Wb6vhIKdf1msi4LYTJks7mqkbmITk2O63Iq8h0bkRlD0d
 
-
-
-#Database mappings uin
-uin_database_url=jdbc:postgresql://localhost:8888/mosip_kernel
-uin_database_username=dbusername
-uin_database_password=dbpwd
-hibernate.current_session_context_class=org.springframework.orm.hibernate5.SpringSessionContext
+#length of the token id
+mosip.kernel.tokenid.length=36
 
 ```
 
-
-
-
-** Database Properties **
-
-Schema : kernel
-
-Table : uin
 
 **Usage Sample:**
 
   *GET Request:*
   
+  
 ```
 OkHttpClient client = new OkHttpClient();
 
 Request request = new Request.Builder()
-  .url("http://localhost:8080/uingenerator/v1.0/uin")
+  .url("http://localhost:8097/v1/tokenidgenerator/7394829283/PC001")
   .get()
   .build();
 
@@ -84,36 +51,14 @@ Response response = client.newCall(request).execute();
   
 ```
 {
-    "uin": "6127460851"
-}
-```
-
-
- *PUT Request:*
-
-
-```
-OkHttpClient client = new OkHttpClient();
-
-MediaType mediaType = MediaType.parse("application/json");
-RequestBody body = RequestBody.create(mediaType, "{\"uin\" : \"8251728314\",\"status\" : \"ASSIGNED\ "}");
-Request request = new Request.Builder()
-  .url("http://localhost:8080/uingenerator/v1.0/uin")
-  .put(body)
-  .addHeader("content-type", "application/json")
-  .build();
-
-Response response = client.newCall(request).execute();
-```
-
-*Response:*
-  
-  HttpStatus: 200 OK
-  
-```
-{
- "uin":"8251728314",
- "status":"ASSIGNED"
+	"id": "mosip.kernel.tokenid.generate",
+	"version": "1.0",
+	"metadata": {},
+	"responsetime": "2019-04-04T05:03:18.287Z",
+	"response": {
+                  "tokenID": "268177021248100621690339355202974361"
+                },
+        "errors": []
 }
 ```
 

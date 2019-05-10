@@ -3,11 +3,6 @@
 -- table 		: app_authentication_method	-- List of application, process, role and their user authentication methods with sequence
 -- table alias  : appauthm	
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
   
 -- table section -------------------------------------------------
 create table reg.app_authentication_method (
@@ -21,9 +16,9 @@ create table reg.app_authentication_method (
 	lang_code  		character varying(3) not null ,     	-- master.language.code
 	
 	is_active 		boolean not null,
-	cr_by 			character varying (32) not null,
+	cr_by 			character varying (256) not null,
 	cr_dtimes		timestamp not null,
-	upd_by  		character varying (32),
+	upd_by  		character varying (256),
 	upd_dtimes 		timestamp,
 	is_deleted 		boolean,
 	del_dtimes 		timestamp
@@ -39,11 +34,4 @@ create table reg.app_authentication_method (
 create unique index uk_appauthm_id on reg.app_authentication_method (app_id, process_id, role_code, method_seq) 
 ;
 
--- indexes section -------------------------------------------------
--- create index idx_appauthm_<colX> on reg.app_authentication_method (colX )
--- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.app_authentication_method is 'Table to store all List of application, process, role and their user authentication methods with sequence'
--- ;
 

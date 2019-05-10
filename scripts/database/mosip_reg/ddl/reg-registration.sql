@@ -3,12 +3,6 @@
 -- table 		: registration	- registration client table. 
 -- table alias  : reg
 
--- schemas section -------------------------------------------------
-
--- create schema if Registration schema not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 
 create table reg.registration (
@@ -33,9 +27,9 @@ create table reg.registration (
 	client_status_comment 	character varying(256),
 	server_status_comment 	character varying(256),
 
-	reg_usr_id character varying (36) not null,			-- reg.user_detail.id
+	reg_usr_id character varying (256) not null,			-- reg.user_detail.id
 	regcntr_id character varying (10) not null,			-- reg.registration_center.id
-	approver_usr_id character varying (36) not null,	-- reg.user_detail.id
+	approver_usr_id character varying (256) not null,	-- reg.user_detail.id
 	
 	approver_role_code character varying (36),			-- master.role_list.code
 
@@ -50,9 +44,9 @@ create table reg.registration (
 	latest_regtrn_dtimes 	timestamp,	
 
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes 	timestamp
 	
 )
@@ -61,13 +55,3 @@ create table reg.registration (
 -- keys section -------------------------------------------------
  alter table reg.registration add constraint pk_reg_id primary key (id)
  ;
--- 
-
--- indexes section -------------------------------------------------
--- create index idx_regtrn_<colX> on reg.registration (colX )
--- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.registration is 'Registration / Enrolment table is to store id issuance registration/enrolment id and packet id details'
-;
-

@@ -82,14 +82,14 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 	/*
 	 * Given Fetch Appointment Details valid data when User Send GET request to
-	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
-	 * the user should be able to retrieve Pre-Registration appointment details
-	 *  by pre-Registration id.
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then the
+	 * user should be able to retrieve Pre-Registration appointment details by
+	 * pre-Registration id.
 	 * 
 	 * Given Invalid request when when User Send GET request to
-	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
-	 * the user should get Error response along with Error Code and Error
-	 * messages as per Specification
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then the
+	 * user should get Error response along with Error Code and Error messages as
+	 * per Specification
 	 * 
 	 */
 	@DataProvider(name = "FetchAppointmentDetails")
@@ -103,7 +103,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		default:
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-	
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,9 +131,9 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 			// Fetch Appointment Details
 			Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
-             
-			logger.info("fetchAppointmentDetailsResponse:"+fetchAppointmentDetailsResponse.asString());
-			
+
+			logger.info("fetchAppointmentDetailsResponse:" + fetchAppointmentDetailsResponse.asString());
+
 			outerKeys.add("responsetime");
 			innerKeys.add("registration_center_id");
 			innerKeys.add("appointment_date");
@@ -155,7 +155,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			} else {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
-		
+
 			preReg_URI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
 			System.out.println("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());

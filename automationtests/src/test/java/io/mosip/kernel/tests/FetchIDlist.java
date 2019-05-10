@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -29,6 +30,8 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
+
+import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -41,22 +44,23 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchIDlist.class);
-	private static final String jiraID = "MOS-8247";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "fetchIDlist";
-	private static final String requestJsonName = "fetchIDlistRequest";
-	private static final String outputJsonName = "fetchIDlistOutput";
-	private static final String service_URI = "/masterdata/v1.0/idtypes/{langcode}";
+	private final String jiraID = "MOS-8247";
+	private final String moduleName = "kernel";
+	private final String apiName = "fetchIDlist";
+	private final String requestJsonName = "fetchIDlistRequest";
+	private final String outputJsonName = "fetchIDlistOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String FetchIDlist_URI = props.get("FetchIDlist_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	/**
 	 * method to set the test case name to the report
@@ -65,8 +69,8 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 
@@ -127,7 +131,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.getRequestPathPara(service_URI,objectData);
+				response = applicationLibrary.getRequestPathPara(FetchIDlist_URI,objectData);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -135,6 +139,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

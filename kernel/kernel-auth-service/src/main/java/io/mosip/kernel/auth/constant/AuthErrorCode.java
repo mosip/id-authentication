@@ -17,6 +17,14 @@ public enum AuthErrorCode {
 	 */
 	FORBIDDEN("KER-ATH-403", "Forbidden"),
 	/**
+	 * Token expired
+	 */
+	TOKEN_EXPIRED("KER-ATH-402", "Token expired"),
+	/**
+	 * Invalid Token
+	 */
+	INVALID_TOKEN("KER-ATH-401", "Invalid Token"),
+	/**
 	 * FORBIDDEN
 	 */
 	CONNECT_EXCEPTION("KER-ATH-002", "Fail to connect to auth service"),
@@ -27,25 +35,34 @@ public enum AuthErrorCode {
 	/**
 	 * RESPONSE_PARSE_ERROR
 	 */
-	REQUEST_VALIDATION_ERROR("KER-ATH-002", "Error while validating the request"),
+	REQUEST_VALIDATION_ERROR("KER-ATH-004", "Error while validating the request"),
 	/**
 	 * USER VALIDATION ERROR
 	 */
 	USER_VALIDATION_ERROR("KER-ATH-003", "User Detail doesn't exist"),
-	
+
 	/**
 	 * PASSWORD VALIDATION ERROR
 	 */
-	PASSWORD_VALIDATION_ERROR("KER-ATH-004", "Incorrect Password"),
+	PASSWORD_VALIDATION_ERROR("KER-ATH-005", "Incorrect Password"),
+
+	/**
+	 * Empty Cookie error
+	 */
+	COOKIE_NOTPRESENT_ERROR("KER-ATH-006", "Cookies are empty"),
+	/**
+	 * Empty Cookie error
+	 */
+	TOKEN_NOTPRESENT_ERROR("KER-ATH-007", "Token is not present in cookies"),
+
+	/**
+	 * Empty Cookie error
+	 */
+	INVALID_DATASOURCE_ERROR("KER-ATH-008", "Invalid datasource and Please check the application id"),
+
+	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
 	
-	/**
-	 * Empty Cookie error
-	 */
-	COOKIE_NOTPRESENT_ERROR("KER-ATH-005", "Cookies are empty"),
-	/**
-	 * Empty Cookie error
-	 */
-	TOKEN_NOTPRESENT_ERROR("KER-ATH-005", "Token is not present in cookies");
+	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context");
 
 	/**
 	 * The error code
@@ -59,8 +76,10 @@ public enum AuthErrorCode {
 	/**
 	 * Constructor to set error code and message
 	 * 
-	 * @param errorCode    the error code
-	 * @param errorMessage the error message
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
 	 */
 	private AuthErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

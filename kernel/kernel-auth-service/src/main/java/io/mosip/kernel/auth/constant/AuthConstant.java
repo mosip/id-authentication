@@ -56,4 +56,12 @@ public class AuthConstant {
 	public static final String SUCCESS_STATUS = "success";
 	
 	public static final String COOKIE="Cookie";
+
+	public static final String FAILURE_STATUS = "failure";
+	
+	public static final String LDAP_INITAL_CONTEXT_FACTORY="com.sun.jndi.ldap.LdapCtxFactory";
+	
+	public static final String PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE="pwdAccountLockedTime";
+	
+	public static final String PWD_FAILURE_TIME_ATTRIBUTE="pwdFailureTime";
 }

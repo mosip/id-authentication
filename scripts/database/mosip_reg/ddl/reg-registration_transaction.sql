@@ -3,12 +3,6 @@
 -- table 		: registration_transaction	- Registration / Enrolment Packet and Transactions.
 -- table alias  : regtrn
 
--- schemas section -------------------------------------------------
-
--- create schema if Registration schema not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------
 create table reg.registration_transaction (
 
@@ -29,9 +23,9 @@ create table reg.registration_transaction (
 	status_comment 	character varying(1024),
 	
 	-- is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes	timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp
@@ -42,15 +36,3 @@ create table reg.registration_transaction (
 -- keys section -------------------------------------------------
  alter table reg.registration_transaction add constraint pk_regtrn_id primary key (id)
  ;
--- 
-
--- indexes section -------------------------------------------------
--- create index idx_regtrn_<colX> on reg.registration_transaction (colX )
--- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.registration_transaction is 'Registration / Enrolment Transaction table is to store ALL  registration/enrolment packet processing/process transaction details for ID issuance'
--- ;
-
---comment on column reg.registration_transaction.<columnname> is 'comment on a column'
---;

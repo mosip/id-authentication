@@ -3,13 +3,21 @@
   <parent>
     <artifactId>registration-parent</artifactId>
     <groupId>io.mosip.registration</groupId>
-    <version>0.10.3</version>
+    <version>0.11.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>registration-libs</artifactId>
   <name>registration-libs</name>
   <description>Maven project of MOSIP Registration library</description>
   <build>
+    <resources>
+      <resource>
+        <directory>/registration-libs/src/main/resources</directory>
+        <excludes>
+          <exclude>**/*.*</exclude>
+        </excludes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -32,6 +40,7 @@
                 <argument>${main.basedir}/registration-libs/src/main/resources/certificate/mosip_cer.cer</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/db/reg</argument>
                 <argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
               </arguments>
             </configuration>
           </execution>
@@ -47,6 +56,11 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>io.mosip.registration.cipher:ClientJarEncryption</exclude>
+                </excludes>
+              </artifactSet>
               <filters>
                 <filter>
                   <artifact>org.bouncycastle:*</artifact>
@@ -76,6 +90,9 @@
               <mainClass>io.mosip.registration.cipher.CilentJarDecryption</mainClass>
             </manifest>
           </archive>
+          <excludes>
+            <exclude>**/cipher/ClientJarEncryption</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

@@ -2,13 +2,14 @@ package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.simple.JSONObject;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -47,8 +48,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
@@ -58,12 +59,14 @@ import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
+import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -128,6 +131,9 @@ public class PacketValidateProcessor {
 	@Autowired
 	private Utilities utility;
 
+	@Autowired
+	ApplicantTypeDocument applicantTypeDocument;
+
 	/** The registration id. */
 	private String registrationId = "";
 
@@ -140,10 +146,6 @@ public class PacketValidateProcessor {
 	/** The flag check for reg_type. */
 	private boolean regTypeCheck;
 
-	JSONObject identityJson = null;
-
-	JSONObject demographicIdentity = null;
-
 	private static final String VALIDATESCHEMA = "registration.processor.validateSchema";
 
 	private static final String VALIDATEFILE = "registration.processor.validateFile";
@@ -153,6 +155,8 @@ public class PacketValidateProcessor {
 	private static final String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
 
 	private static final String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
+
+	private static final String VALIDATEMANDATORY = "registration-processor.validatemandotary";
 
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
@@ -188,7 +192,6 @@ public class PacketValidateProcessor {
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
-
 			if (isValid) {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -237,7 +240,6 @@ public class PacketValidateProcessor {
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
-			setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
@@ -288,6 +290,21 @@ public class PacketValidateProcessor {
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			isTransactionSuccessful = false;
 			description = PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage();
+			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
+							+ exc.getMessage() + ExceptionUtils.getStackTrace(exc));
+			object.setIsValid(Boolean.FALSE);
+			object.setInternalError(Boolean.TRUE);
+			object.setRid(registrationStatusDto.getRegistrationId());
+
+		} catch (ParsingException exc) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage());
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
+			isTransactionSuccessful = false;
+			description = PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage();
 			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
@@ -371,7 +388,8 @@ public class PacketValidateProcessor {
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
+			org.json.simple.parser.ParseException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -396,15 +414,28 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			if (!applicantDocumentValidation(identity, registrationStatusDto))
+			if (!applicantDocumentValidation(jsonString))
 				return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 
 		}
 
+		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
+				&& !mandatoryValidation(registrationStatusDto)) {
+			return false;
+		}
+
 		return true;
 
+	}
+
+	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
+			throws IOException, JSONException {
+		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
+			return true;
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
+		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 	}
 
 	private boolean schemaValidation(String jsonString)
@@ -443,22 +474,14 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException {
+	private boolean applicantDocumentValidation(String jsonString)
+			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		InputStream documentInfoStream = null;
-		List<Document> documentList = null;
-		documentInfoStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytes = null;
-		bytes = IOUtils.toByteArray(documentInfoStream);
-		documentList = documentUtility.getDocumentList(bytes);
 
-		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-				registrationStatusDto);
-		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(identity, documentList,
-				registrationId);
+		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(utility, env,
+				applicantTypeDocument);
+		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(registrationId, jsonString);
 
 		return isApplicantDocumentValidation;
 
@@ -508,6 +531,9 @@ public class PacketValidateProcessor {
 					isTransactionSuccessful = false;
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage();
 
+				} else {
+					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
+							+ " as parent registration id is not present";
 				}
 
 			}
@@ -551,10 +577,4 @@ public class PacketValidateProcessor {
 
 	}
 
-	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
-		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
-		registrationStatusDto.setApplicantType(applicantType);
-
-	}
 }

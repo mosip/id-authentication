@@ -3,12 +3,6 @@
 -- table 		: reg_center_device		- MOSIP Registration center and Device mapping
 -- table alias  : cntrdev
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.reg_center_device (
 
@@ -18,9 +12,9 @@ create table reg.reg_center_device (
 	lang_code 	character varying (3) not null ,		-- master.language.code	
 	
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes  timestamp,
 	is_deleted 	boolean,
 	del_dtimes  timestamp
@@ -31,7 +25,4 @@ create table reg.reg_center_device (
  alter table reg.reg_center_device add constraint pk_cntrdev_id primary key (regcntr_id, device_id)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_cntrdev_<colX> on reg.reg_center_device (colX )
--- ;
 

@@ -17,10 +17,13 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -79,7 +82,8 @@ public class DBDataStore implements IDataStore {
 		if (mosipUserDto != null && (Arrays.areEqual(password, test))) {
 			return mosipUserDto;
 		} else {
-			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
 		}
 	}
 
@@ -163,7 +167,7 @@ public class DBDataStore implements IDataStore {
 
 	private String createRole(String userId, OtpUser otpUser) {
 		jdbcTemplate.update(NEW_ROLE_OTP, new MapSqlParameterSource().addValue("role", AuthConstant.INDIVIDUAL)
-				.addValue("description", "Individual User").addValue("langCode", otpUser.getLangCode()));
+				.addValue("description", "Individual User").addValue("langCode", "eng"));
 		return AuthConstant.INDIVIDUAL;
 
 	}
@@ -171,7 +175,7 @@ public class DBDataStore implements IDataStore {
 	private String createUser(OtpUser otpUser) {
 		jdbcTemplate.update(NEW_USER_OTP,
 				new MapSqlParameterSource().addValue("userName", otpUser.getUserId())
-						.addValue("name", otpUser.getUserId()).addValue("langcode", otpUser.getLangCode())
+						.addValue("name", otpUser.getUserId()).addValue("langcode", "eng")
 						.addValue("email",
 								AuthConstant.EMAIL.equals(otpUser.getOtpChannel().get(0)) ? otpUser.getUserId() : "")
 						.addValue("phone",
@@ -213,6 +217,24 @@ public class DBDataStore implements IDataStore {
 
 	@Override
 	public MosipUserListDto getListOfUsersDetails(List<String> userDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MosipUserSaltList getAllUserDetailsWithSalt() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RIdDto getRidFromUserId(String userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

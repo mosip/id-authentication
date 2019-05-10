@@ -10,88 +10,97 @@ import { BookingModule } from '../booking.module';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { SharedService } from '../booking.service';
+import { BookingService } from '../booking.service';
 
 describe('CenterSelectionComponent', () => {
   let component: CenterSelectionComponent;
   let locationData = {
-    response: [{
-      "locationHierarchylevel": 2,
-      "locationHierarchyName": "city",
-      "isActive": true
-    }]
+    response: [
+      {
+        locationHierarchylevel: 2,
+        locationHierarchyName: 'city',
+        isActive: true
+      }
+    ]
   };
   let center = {
-    response: [{
-      "id": "10002",
-      "name": "Rural Municipal Mnasra",
-      "centerTypeCode": "REG",
-      "addressLine1": "Route De Moulay Bousselham",
-      "addressLine2": "Douar Sbih Menacera",
-      "addressLine3": "Morroco",
-      "latitude": "34.360207",
-      "longitude": "-6.550075",
-      "locationCode": "14053",
-      "holidayLocationCode": "KTA",
-      "contactPhone": "753476995",
-      "workingHours": "8:00:00",
-      "langCode": "eng",
-      "numberOfKiosks": 1,
-      "perKioskProcessTime": "00:15:00",
-      "centerStartTime": "09:00:00",
-      "centerEndTime": "17:00:00",
-      "timeZone": "(GTM+01:00) CENTRAL EUROPEAN TIME",
-      "contactPerson": "John Smith",
-      "lunchStartTime": "13:00:00",
-      "lunchEndTime": "14:00:00",
-      "isActive": true
-    }]
+    response: [
+      {
+        id: '10002',
+        name: 'Rural Municipal Mnasra',
+        centerTypeCode: 'REG',
+        addressLine1: 'Route De Moulay Bousselham',
+        addressLine2: 'Douar Sbih Menacera',
+        addressLine3: 'Morroco',
+        latitude: '34.360207',
+        longitude: '-6.550075',
+        locationCode: '14053',
+        holidayLocationCode: 'KTA',
+        contactPhone: '753476995',
+        workingHours: '8:00:00',
+        langCode: 'eng',
+        numberOfKiosks: 1,
+        perKioskProcessTime: '00:15:00',
+        centerStartTime: '09:00:00',
+        centerEndTime: '17:00:00',
+        timeZone: '(GTM+01:00) CENTRAL EUROPEAN TIME',
+        contactPerson: 'John Smith',
+        lunchStartTime: '13:00:00',
+        lunchEndTime: '14:00:00',
+        isActive: true
+      }
+    ]
   };
 
   let centers = {
     registrationCenters: [center]
-  }
+  };
 
+  let service: DataStorageService,
+    mockService = {
+      getLocationTypeData: jasmine.createSpy('getLocationTypeData').and.returnValue(of(locationData)),
+      recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of(center)),
+      getRegistrationCentersByName: jasmine.createSpy('getRegistrationCentersByName').and.returnValue(of(centers))
+    };
 
-  let service: DataStorageService, mockService = {
-    getLocationTypeData: jasmine.createSpy('getLocationTypeData').and.returnValue(of(locationData)),
-    recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of(center)),
-    getRegistrationCentersByName: jasmine.createSpy('getRegistrationCentersByName').and.returnValue(of(centers))
-  }
-
-  let userService: SharedService, mockUsers = {
-    getNameList: jasmine.createSpy('getNameList').and.returnValue(of([{fullName: 'Agn', preId: '1234'}])),
-    changeCoordinates: jasmine.createSpy('changeCoordinates').and.returnValue(of([11.111, 11.11])),
-    listOfCenters: jasmine.createSpy('listOfCenters').and.returnValue(of([{id: '1001', latitude: 11.111, longitude: 11.11}]))
-  }
+  let userService: BookingService,
+    mockUsers = {
+      getNameList: jasmine.createSpy('getNameList').and.returnValue(of([{ fullName: 'Agn', preId: '1234' }])),
+      changeCoordinates: jasmine.createSpy('changeCoordinates').and.returnValue(of([11.111, 11.11])),
+      listOfCenters: jasmine
+        .createSpy('listOfCenters')
+        .and.returnValue(of([{ id: '1001', latitude: 11.111, longitude: 11.11 }]))
+    };
   let fixture: ComponentFixture<CenterSelectionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ],
+      declarations: [],
       imports: [
         TranslateModule.forRoot({
           loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
           }
-      }),
-      HttpClientModule,
-      MaterialModule,
-      FormsModule,
-      BookingModule,
-      RouterTestingModule
-      ], providers: [
+        }),
+        HttpClientModule,
+        MaterialModule,
+        FormsModule,
+        BookingModule,
+        RouterTestingModule
+      ],
+      providers: [
         {
-          provide: DataStorageService, useValue: mockService
+          provide: DataStorageService,
+          useValue: mockService
         },
         {
-          provide: SharedService, useValue: mockUsers
+          provide: BookingService,
+          useValue: mockUsers
         }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -152,7 +161,7 @@ describe('CenterSelectionComponent', () => {
   });
 
   it('should test display results', () => {
-    const response = {}
+    const response = {};
     component.displayResults(response);
     fixture.detectChanges();
     expect(component.showTable).toBeTruthy();
@@ -172,5 +181,5 @@ describe('CenterSelectionComponent', () => {
     component.selectedRow(row);
     fixture.detectChanges();
     expect(component.enableNextButton).toBeTruthy();
-  })
+  });
 });

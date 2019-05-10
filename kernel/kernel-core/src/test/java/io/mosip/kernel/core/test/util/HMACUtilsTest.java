@@ -1,6 +1,8 @@
 package io.mosip.kernel.core.test.util;
 
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -28,6 +30,16 @@ public class HMACUtilsTest {
 	@Test
 	public void testDigestAsPlainText() {
 		assertNotNull(HMACUtils.digestAsPlainText("Bal Vikash Sharma".getBytes()));
+	}
+	
+	@Test
+	public void testGenerateRandomIV(){
+		assertThat(HMACUtils.generateSalt(),isA(byte[].class));
+	}
+	
+	@Test
+	public void testGenerateRandomIVInputBytes(){
+		assertThat(HMACUtils.generateSalt(16),isA(byte[].class));
 	}
 
 }

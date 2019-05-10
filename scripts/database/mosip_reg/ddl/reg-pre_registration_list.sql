@@ -3,12 +3,6 @@
 -- table 		: pre_registration_list - List of pre registration packets needs to be synched from pre registration module to registration module
 -- table alias  : preregl
 
--- schemas section -------------------------------------------------------
-
--- create schema if Registration Module schema not exists
-create schema if not exists reg
-;
- 
 -- table section ---------------------------------------------------------
 create table reg.pre_registration_list (
 
@@ -32,9 +26,9 @@ create table reg.pre_registration_list (
 	lang_code character varying(3) not null,		-- no fk.  data populate.
 
 	is_active boolean not null,
-	cr_by character varying (32) not null,
+	cr_by character varying (256) not null,
 	cr_dtimes timestamp not null,
-	upd_by  character varying (32),
+	upd_by  character varying (256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
@@ -46,10 +40,4 @@ create table reg.pre_registration_list (
  alter table reg.pre_registration_list add constraint pk_preregl_id primary key (id)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_preregl_<colX> on reg.pre_registration_list (colX )
--- ;
 
--- comments section ------------------------------------------------- 
--- comment on table reg.pre_registration_list is 'List of pre registration packets needs to be synched from pre registration module to registration module'
--- ;

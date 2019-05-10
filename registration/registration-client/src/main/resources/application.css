@@ -3,15 +3,28 @@
 	-fx-border-width:1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 	-fx-background-radius: 6.0,5.0;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 
 #doc_label{
 	-fx-font-size:10.0px;
 }
 
+.demoGraphicTextFieldFocused{
+	-fx-border-color: red;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+}
+
 .dividerTypeOne{
-	-fx-border-width : 0 0 1 0;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+	-fx-border-color : #C9C9C9;
+}
+
+.dividerTypeTwo{
+	-fx-border-width : 1 0 0 0;
 	-fx-border-color : #C9C9C9;
 }
 
@@ -31,7 +44,7 @@
  
 .scroll-pane {
     -fx-background-color: white;
-	-fx-border-width : 0 0 0 0;
+	-fx-border-width : 0.0 0.0 0.0 0.0;
     
 }
  .scroll-bar:horizontal {
@@ -48,7 +61,7 @@
  
 
 .toolTip{
-	-fx-font: normal bold 10 Langdon;
+	-fx-font: normal bold 10.0 Langdon;
 	-fx-base: #AE3522;
 	-fx-text-fill: red;
 	-fx-background-color : white;
@@ -75,7 +88,7 @@
 
 #thresholdBar{
 	-fx-border-color : red;
-	-fx-border-width : 0 1 0 0;
+	-fx-border-width : 0.0 1.0 0.0 0.0;
 }
 
 .progress-barGreen > .bar {
@@ -140,18 +153,18 @@
 }
 
 .ackTextField{
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 315px;
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 315.0px;
 	-fx-border-color: black;
-	-fx-background-insets: 0,0 0 0 0;
-  	-fx-border-width: 0 0 1 0;	
+	-fx-background-insets: 0.0,0.0 0.0 0.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
   	-fx-background-color: white;	
 }
 
 .previewButton {
 	-fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-background-radius: 0;
+    -fx-border-width: 0.0;
+    -fx-background-radius: 0.0;
     -fx-background-color: transparent;
     -fx-text-fill: black;
     -fx-font-family: Roboto;
@@ -219,8 +232,8 @@
 	-fx-background-color:#FF4081;
 	-fx-border-color:#FF4081;
 	-fx-text-fill: #FFFFFF;
-	-fx-font-size: 12px;
-	-fx-border-width: 1px;
+	-fx-font-size: 12.0px;
+	-fx-border-width: 1.0px;
 	-fx-border-radius: 4.0 4.0 4.0 4.0;
   	-fx-background-radius: 4.0 4.0 4.0 4.0;
   	-fx-text-alignment: center;
@@ -229,15 +242,15 @@
 	-fx-background-color:#FFFFFF;
 	-fx-border-color:#FF4081;
 	-fx-text-fill: #E43391;
-	-fx-font-size: 12px;
-	-fx-border-width: 1px;
+	-fx-font-size: 12.0px;
+	-fx-border-width: 1.0px;
 	-fx-border-radius: 4.0 4.0 4.0 4.0;
   	-fx-background-radius: 4.0 4.0 4.0 4.0;
   	-fx-text-alignment: center;
 }
 .consent{
 	-fx-background-color: #ffffff;
-	-fx-font-size: 12px;
+	-fx-font-size: 12.0px;
 }
 #mainBox{
 	-fx-border-width: 0.0;
@@ -456,47 +469,47 @@ Working on new Css by taleev
 }
 
 #header-section{
-		-fx-background-color : rgb(11, 106, 130,0.3);
-		-fx-pref-height: 30px;
-		-fx-pref-width: 1920px;
+		-fx-background-color : rgb(11.0, 106.0, 130.0,0.3);
+		-fx-pref-height: 30.0px;
+		-fx-pref-width: 1920.0px;
 	
 }
 #footer-section{
-		-fx-background-color : rgb(0, 0, 0, 0);
+		-fx-background-color : rgb(0.0, 0.0, 0.0, 0.0);
 		-fx-alignment: center;
 		
 }
 
 .loginTopPaneStyle{
-	-fx-pref-height: 10px;
-	-fx-pref-width: 10px;
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 10.0px;
 }
 
 .loginAnchorPaneStyle{
-	-fx-pref-height: 250px;
-	-fx-pref-width: 400px;
+	-fx-pref-height: 250.0px;
+	-fx-pref-width: 400.0px;
 	-fx-background-color: #FFFFFF;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #808080;
 
 }
 
 .loginAnchorPaneExtendedStyle{
-	-fx-pref-height: 300px;
-	-fx-pref-width: 400px;
+	-fx-pref-height: 300.0px;
+	-fx-pref-width: 400.0px;
 	-fx-background-color: #FFFFFF;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #808080;
 
 }
 
 
 .loginTextStyle{
-	-fx-pref-height: 35px;
-	-fx-pref-width: 312px;
-	-fx-border-width: 0 0 2 0;
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
+	-fx-border-width: 0.0 0.0 2.0 0.0;
     -fx-border-color: #FF4081;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.3) , 5, 0.0 , 0 , 1 );
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
 
 }
 
@@ -504,62 +517,62 @@ Working on new Css by taleev
 	-fx-font-size: 30.0px;
 }
 .loginSubmitStyle{
-	-fx-pref-height: 35px;
-	-fx-pref-width: 312px;
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
 	-fx-background-color:#FF4081
 }
 
 .loginOtpValidStyle{
-	-fx-pref-height: 35px;
-	-fx-pref-width: 312px;
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
 	-fx-alignment: center;
-	-fx-border-width: 2 2 2 2;
+	-fx-border-width: 2.0 2.0 2.0 2.0;
 	-fx-border-color: #FF4081
 }
 
 #RegistrationHeader{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 39px;
-	-fx-pref-width: 1290px;
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 1290.0px;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 #biometricExceptionHeader{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 39px;
-	-fx-pref-width: 1290px;
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 1290.0px;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 600px;	
-	-fx-pref-width: 1100px;	
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1100.0px;	
 }
 
 .paneAtDisplayAuthentication{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 600px;	
-	-fx-pref-width: 1000px;	
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
 	
 }
 
 .biometricEceptionLabel{
 	-fx-text-fill : #666666;
-	-fx-font-size : 20px;
+	-fx-font-size : 20.0px;
 }
 
 
 .paneAtDisplayFaceCapture{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 600px;	
-	-fx-pref-width: 1000px;	
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
 }
 
 .registrationFooter{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 40px;	
-	-fx-pref-width: 1290px;
+	-fx-pref-height: 40.0px;	
+	-fx-pref-width: 1290.0px;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
@@ -569,16 +582,16 @@ Working on new Css by taleev
 	-fx-text-fill : #E43391;	
 	-fx-font-weight : bold;
 	-fx-border-image-source: url(images/DemographicpageTracker.png);
-    -fx-border-image-insets: 10, 20;
-    -fx-border-image-width: 0 0 10 0;
-    -fx-border-image-slice: 10, 10;
+    -fx-border-image-insets: 10.0, 20.0;
+    -fx-border-image-width: 0.0 0.0 10.0 0.0;
+    -fx-border-image-slice: 10.0, 10.0;
 }
 
 .demoGraphicPaneContentButton{
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.1em;
 	 
 }
@@ -589,50 +602,41 @@ Working on new Css by taleev
 
 
 .documentContentButton{
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.2em;
 }
 
 .contiuneButton{
 	-fx-background-color:#FF4081;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
-	-fx-border-radius: 3,3,3,3;	
+	-fx-border-radius: 3.0,3.0,3.0,3.0;	
 	-fx-font-size: 1.2em;
 }
 
 .backButton{
 	-fx-background-color:#FFFFFF;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size: 1.2em;
-	-fx-border-radius: 3,3,3,3;	
+	-fx-border-radius: 3.0,3.0,3.0,3.0;	
 }
 
 .demoGraphicTextField{
 	-fx-border-color: #C9C9C9;
-  	-fx-border-width: 0 0 1 0;	
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
   	-fx-background-color: #FFFFFF;
 	-fx-prompt-text-fill: #000000;	
 	-fx-font-size: 1.2em;
 }
 
-.demoGraphicTextFieldTypeSecond{
-	-fx-border-color: #C9C9C9;
-	-fx-background-insets: 0,0 0 0 0;
-  	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: #FFFFFF;
-  	-fx-padding: 5 0 5 0;
-  	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 15px;  	
-}
 
 .demographicLangHeader{
-	-fx-font-size : 14px;
+	-fx-font-size : 14.0px;
 	-fx-text-fill : #2F3033;
 	-fx-font-weight: bold;
 }
@@ -642,23 +646,9 @@ Working on new Css by taleev
 	-fx-font-size: 1.2em;
 }
 
-.demoGraphicTextFieldTypThree{
-	-fx-border-color: #C9C9C9;
-  	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: #FFFFFF;
-  	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 1.2em;
-  	
-}
-.demographicScrollpane{
-		-fx-pref-height: 590px;	
-		-fx-pref-width: 1100px;
-	
-}
-
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
-		-fx-border-width: 0;
+		-fx-border-width: 0.0;
 		-fx-text-fill : black;
 		-fx-font-size: 1.3em;
 		
@@ -668,7 +658,7 @@ Working on new Css by taleev
 	-fx-background-color : white;
 	-fx-text-fill : black;
 	-fx-font-size: 1.3em;
-	-fx-border-width : 1;
+	-fx-border-width : 1.0;
 	-fx-border-color : black;
 	
 }
@@ -681,11 +671,20 @@ Working on new Css by taleev
 
 .demographicCombobox{
 	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #C9C9C9;
-	-fx-font-size: 14px;
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 190px;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 190.0px;
+}
+
+.demographicComboboxFocused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: red;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 190.0px;
 }
 
 .demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
@@ -694,13 +693,13 @@ Working on new Css by taleev
 }
 .documentCombobox{
 	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: black;
 	-fx-font-size: 1.2em;
 }
 
 #docPreviewImgViewPane{
-	-fx-border-width : 1;
+	-fx-border-width : 1.0;
 	-fx-border-color: #C9C9C9;
 		
 }
@@ -711,25 +710,34 @@ Working on new Css by taleev
 }
 
 .toggleButton{
-	-fx-pref-height: 15px;	
-	-fx-pref-width: 9px;
+	-fx-pref-height: 15.0px;	
+	-fx-pref-width: 9.0px;
 }
 
 .paneAtDisplayFinger{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 600px;	
-	-fx-pref-width: 1000px;	
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
 	
 }
 
 .fingerPrintPanes{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #F0F0F0;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
 }
 
 .fingerPrintPanes:focused{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	
+}
+
+#biometricPane{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
 	-fx-border-width : 5;
@@ -741,101 +749,101 @@ Working on new Css by taleev
 .fingerPrintPanesSelected{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }
 
 .IrisPanes{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }
 
 .IrisPanes:focused{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
-	-fx-border-width : 5 5 5 5;
+	-fx-border-width : 5.0 5.0 5.0 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	
 }
 
 .IrisPanesSelected{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }	
 
 .paneAtDisplayIris{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 600px;	
-	-fx-pref-width: 1000px;	
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
 }
 
 .PhotoCaptureWindow{
-	-fx-pref-height: 100px;	
-	-fx-pref-width: 200px;
+	-fx-pref-height: 100.0px;	
+	-fx-pref-width: 200.0px;
 	-fx-background-color : #C9C9C9;	
 }
 
 .photoCapturePanes{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #FFFFFF;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
 }
 
 .photoCapturePanes:focused{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	
 }
 
 .photoAlert{
 	-fx-text-fill : #FF4081;
-	-fx-font-size : 15;
+	-fx-font-size : 15.0;
 }
 
 .photoCapturePanesSelected{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
-	-fx-border-width : 5;
+	-fx-border-width : 5.0;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }
 
 
 .qualityBox{
-	-fx-pref-height: 200px;	
-	-fx-pref-width: 250px;	
+	-fx-pref-height: 200.0px;	
+	-fx-pref-width: 250.0px;	
 }
 
 .threshHoldLabel{
 	-fx-tex-fill : #000000;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 
 .qualityLabel{
 	-fx-tex-fill : #000000;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 
 .attemptsLabel{
 	-fx-tex-fill : #000000;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 
 .exceptionLabel{
 	-fx-tex-fill : #000000;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 
 .qualityBoxLabel{
@@ -845,19 +853,19 @@ Working on new Css by taleev
 
 .paneHeader{
 	-fx-text-fill: #E43391;
-	-fx-font-size : 22px;
+	-fx-font-size : 22.0px;
 }
 
 .authenticationBiometricSubPane{
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #C9C9C9;
-	-fx-pref-height: 444px;	
-	-fx-pref-width: 750px;
+	-fx-pref-height: 444.0px;	
+	-fx-pref-width: 750.0px;
 }
 
 .authenticationBiometricPane{
-	-fx-pref-height: 547px;	
-	-fx-pref-width: 686px;
+	-fx-pref-height: 547.0px;	
+	-fx-pref-width: 686.0px;
 }
 
 .operatorAuthenticationStyleTextTypeOne{
@@ -865,56 +873,56 @@ Working on new Css by taleev
 }
 
 .attempts{
-	-fx-pref-height: 39px; 
-	-fx-pref-width: 100px;
+	-fx-pref-height: 39.0px; 
+	-fx-pref-width: 100.0px;
 	-fx-text-fill: #000000;
 }
 
 .scanButton{
 	-fx-background-color:#FFFFFF;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
-	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
-	-fx-pref-width: 120px;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-pref-height: 2.0px;	
+	-fx-pref-width: 120.0px;
 	-fx-text-fill: #FF4081;
 	
 }
 
 
 .registrationHeaderBorder{
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #FF4081;
-	-fx-pref-height: 30px;	
-	-fx-pref-width: 940px;
+	-fx-pref-height: 30.0px;	
+	-fx-pref-width: 940.0px;
 	
 }
 
 .documentOnlypane{
-	-fx-pref-height: 450px;	
-	-fx-pref-width: 900px;
-    -fx-border-width: 0 0 1 0;
+	-fx-pref-height: 450.0px;	
+	-fx-pref-width: 900.0px;
+    -fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #C9C9C9;
 	
 }
 
 .uploadIds{
 	-fx-background-color : #F4F4F4;
-	-fx-pref-width : 1200px;
-	-fx-padding : 20 20 20 20;
+	-fx-pref-width : 1200.0px;
+	-fx-padding : 20.0 20.0 20.0 20.0;
 }
 
 #uploadPanes{
 	-fx-background-color : #FFFFFF;
-	-fx-padding : 5 5 5 5;
+	-fx-padding : 5.0 5.0 5.0 5.0;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
 
 #uploadPanesFirst{
 	-fx-background-color : #FFFFFF;
-	-fx-padding : 5 5 5 5;
+	-fx-padding : 5.0 5.0 5.0 5.0;
 	-fx-border-color : #E457A0;
-	-fx-border-width : 0 0 1 0;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
 
@@ -929,51 +937,51 @@ Working on new Css by taleev
 
 #reRegistrationHeader{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 35px;
-	-fx-pref-width: 1290px;	
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 1290.0px;	
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );	
 }
 .table-view {
     -fx-table-cell-border-color: #FFFFFF;
-    -fx-border-width : 0 0 0 0;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
 }
 .table-row-cell {
     -fx-background-color: #FFFFFF;
-    -fx-background-insets: 0, 0 0 1 0;
-	-fx-pref-height : 45;
-	-fx-padding: 10 10 10 10;
-	-fx-pref-width : 35;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
+	-fx-pref-height : 45.0;
+	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-pref-width : 35.0;
     -fx-text-fill: #000000;
-    -fx-border-width : 0 0 1 0;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #000000;
 }
 
 .table-row-cell:focused{
-	-fx-border-width : 0 0 1 0;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #FF4081;
-    -fx-pref-height : 45;
-	-fx-padding: 10 10 10 10;
-	-fx-pref-width : 35;
+    -fx-pref-height : 45.0;
+	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-pref-width : 35.0;
 }
 
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
 	-fx-text-fill: #000000;
     -fx-background-color: #FFFFFF;
-    -fx-border-width : 0 0 1 0;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
 }
 
 .table-view .column-header{
 	-fx-text-fill: #666666;
     -fx-background-color: #FFFFFF;
-    -fx-border-width : 0 0 1 0;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #E457A0;
-    -fx-padding : 0 0 0 15;	
+    -fx-padding : 0.0 0.0 0.0 15.0;	
 }
 
 .table-view .column-header .label{
 	    -fx-alignment: null;
 	    -fx-text-fill :#666666;
-	    -fx-font: 15px Roboto;
+	    -fx-font: 15.0px Roboto;
 }
 
 .table-view > .virtual-flow > .scroll-bar{
@@ -986,7 +994,7 @@ Working on new Css by taleev
 }
 
 .uploadStatusColumn{
-		-fx-pref-width: 1000px;
+		-fx-pref-width: 1000.0px;
 }
 
 .heading {
@@ -1003,23 +1011,23 @@ Working on new Css by taleev
 
 .rejectionPageHeader{
 	-fx-background-color : #FFFFFF;
-	-fx-pref-width : 400;
-	-fx-pref-height : 50px;
+	-fx-pref-width : 400.0;
+	-fx-pref-height : 50.0px;
 }
 
 .rejectionPageHeaderLabel{
 	-fx-text-fill : #000000;
 	-fx-font-family: Roboto;
-	-fx-font-size : 15px;
-	-fx-pref-heigth : 100;
-	 -fx-pref-width : 400;
+	-fx-font-size : 15.0px;
+	-fx-pref-heigth : 100.0;
+	 -fx-pref-width : 400.0;
 	
 }
 
 .rejectionPaneContent{
   -fx-background-color : #FFFFFF;
-  -fx-pref-heigth : 150;
-  -fx-pref-width : 400;
+  -fx-pref-heigth : 150.0;
+  -fx-pref-width : 400.0;
   
 }
 
@@ -1029,15 +1037,15 @@ Working on new Css by taleev
 
 .rejectionParentPane{
 	  -fx-background-color : #FFFFFF;
-	  -fx-border-width : 1 1 1 1;
+	  -fx-border-width : 1.0 1.0 1.0 1.0;
 	  -fx-border-color : black;
-	  -fx-pref-heigth : 100;
-	  -fx-pref-width : 400;	
+	  -fx-pref-heigth : 100.0;
+	  -fx-pref-width : 400.0;	
 }
 
 #rejectionAnchorPane .comboboxStyle{
 	-fx-background-color:#ffffff;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 	-fx-font-size: 14.0px;
 }
@@ -1061,15 +1069,15 @@ Working on new Css by taleev
 }
 
 .headerPageTracker{
-	-fx-border-width : 0 0 2 0;
+	-fx-border-width : 0.0 0.0 2.0 0.0;
 	-fx-border-color : #FF4081;
 }
 
 .bioTracker{
    -fx-border-image-source: url(images/DemographicpageTracker.png);
-    -fx-border-image-insets: 10, 20;
-    -fx-border-image-width: 0 0 10 0;
-    -fx-border-image-slice: 10, 10;
+    -fx-border-image-insets: 10.0, 20.0;
+    -fx-border-image-width: 0.0 0.0 10.0 0.0;
+    -fx-border-image-slice: 10.0, 10.0;
 	
 }
 
@@ -1078,17 +1086,17 @@ Working on new Css by taleev
 }
 
 .homeBox{
-	-fx-padding : 0 0 10 0;
+	-fx-padding : 0.0 0.0 10.0 0.0;
 }
 
 
 #docScanVboxHolder{
-	-fx-border-width : 0 1 0 0;
+	-fx-border-width : 0.0 1.0 0.0 0.0;
 	-fx-border-color : #C9C9C9;
 }
 
 #lowerBorder{
-	-fx-border-width : 1 0 0 0;
+	-fx-border-width : 1.0 0.0 0.0 0.0;
 	-fx-border-color : #C9C9C9;
 	
 }
@@ -1099,11 +1107,11 @@ Working on new Css by taleev
 }
 .homeButton{
 		-fx-background-color : #FFFFFF;
-		-fx-padding : 0 0 0 0;
+		-fx-padding : 0.0 0.0 0.0 0.0;
 }
 .mainHeader{
 		-fx-text-fill : #FD518C;
-		-fx-font-size : 20px;
+		-fx-font-size : 20.0px;
 }
 #uploadPacketHeader{
 	-fx-background-color:#FFFFFF;
@@ -1133,22 +1141,22 @@ Working on new Css by taleev
 }
 .uinUpdateLabelsTypeTwo{
 	-fx-text-fill : #666666;
-	-fx-font-size : 15px;
+	-fx-font-size : 15.0px;
 }
 .updateUinCheckBoxCommon .check-box > .box {
-    -fx-background-radius: 50;
-    -fx-border-radius: 50;
-    -fx-border-width: 1;
+    -fx-background-radius: 50.0;
+    -fx-border-radius: 50.0;
+    -fx-border-width: 1.0;
     -fx-border-color: #FF4081;
-    -fx-padding: 1;
+    -fx-padding: 1.0;
     -fx-background-color: #FFFFFF;
-	-fx-background-insets: 0 0 0 0;
+	-fx-background-insets: 0.0 0.0 0.0 0.0;
 }
 .updateUinCheckBox {
     -fx-background-color : #FFFFFF;
-    -fx-border-width : 1 1 1 1;
+    -fx-border-width : 1.0 1.0 1.0 1.0;
     -fx-border-color : #FD528C;
-    -fx-padding : 3 10 5 3;
+    -fx-padding : 3.0 10.0 5.0 3.0;
     -fx-text-fill : #FD518C;    
 }
 .updateUinCheckBoxCommon .check-box:selected > .box > .mark {
@@ -1156,9 +1164,9 @@ Working on new Css by taleev
 }
 .updateUinCheckBoxSelected{
 	-fx-background-color : #FF4081;
-    -fx-border-width : 1 1 1 1;
+    -fx-border-width : 1.0 1.0 1.0 1.0;
     -fx-border-color : #FD528C;
-    -fx-padding : 0 10 5 3;
+    -fx-padding : 0.0 10.0 5.0 3.0;
 	-fx-text-fill : #FFFFFF;	
 }
 .uinUpdateFooter{
@@ -1173,15 +1181,15 @@ Working on new Css by taleev
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 .approveButton {
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: #FFFFFF;
 	-fx-font-family: Roboto;
 }
 .rejectButton{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;		
@@ -1221,21 +1229,21 @@ Working on new Css by taleev
 	-fx-font-family: Roboto;
 }
 .ackBackButton{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;	
 }
 .ackPageButton {
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
 }
 .ackMenu{
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #E8E7E7;
 }
 /*Acknowledgement page design ends */
@@ -1273,8 +1281,8 @@ Working on new Css by taleev
 .context-menu {
   -fx-background-color: #FFFFFF;
   -fx-border-color: #C9C9C9;
-  -fx-padding: 0em 0em 0em 0em;
-  -fx-page-information-alignment: 10;
+  -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+  -fx-page-information-alignment: 10.0;
 }
 .menu-item .label {
     -fx-text-fill: #000000;
@@ -1282,7 +1290,7 @@ Working on new Css by taleev
      -fx-background-image: url(images/MenuItems.png);
      -fx-background-repeat: no-repeat;
      -fx-background-position: left;
-     -fx-background-size: 20px 20px;
+     -fx-background-size: 20.0px 20.0px;
      -fx-padding: 0.0em 0.0em 0.0em 2.0em;
 }
 .separator .line { 
@@ -1295,7 +1303,7 @@ Working on new Css by taleev
     -fx-background-image: url(images/MenuItemsFocus.png); 
     -fx-background-repeat: no-repeat;
     -fx-background-position: left;
-    -fx-background-size: 20px 20px;
+    -fx-background-size: 20.0px 20.0px;
     -fx-text-fill: white;    
 }
 .menu-item:focused {
@@ -1312,7 +1320,7 @@ Working on new Css by taleev
     -fx-background-image: url(images/logout.png);
     -fx-background-repeat: no-repeat;
     -fx-background-position: left;
-    -fx-background-size: 20px 20px;
+    -fx-background-size: 20.0px 20.0px;
     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
 }
 #logout:focused .label{
@@ -1321,7 +1329,7 @@ Working on new Css by taleev
      -fx-background-image: url(images/logoutFocus.png);
      -fx-background-repeat: no-repeat;
      -fx-background-position: left;
-     -fx-background-size: 20px 20px;
+     -fx-background-size: 20.0px 20.0px;
      -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
 }
 /* Header Page design Ends Here */
@@ -1518,10 +1526,10 @@ Working on new Css by taleev
 }
 .exceptionCombobox{
 	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-text-fill: #000000;
 	-fx-border-color: #C9C9C9;
-	-fx-font-size: 12px;
+	-fx-font-size: 12.0px;
 }
 .onboardExceptionDetails{
 	-fx-font-family: Roboto;
@@ -1548,7 +1556,7 @@ Working on new Css by taleev
 }
 .exceptionBackPane .table-view {
     -fx-table-cell-border-color: #FFFFFF;
-    -fx-border-width : 0 0 0 0;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
     -fx-background-color: white;
 }
 
@@ -1567,46 +1575,46 @@ Working on new Css by taleev
 .exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-button,
 .exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-button {
   -fx-background-color: null;
-  -fx-background-radius: 0;
-  -fx-background-insets: 0;
-  -fx-padding: 0;
+  -fx-background-radius: 0.0;
+  -fx-background-insets: 0.0;
+  -fx-padding: 0.0;
 }
 
 .exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-arrow,
 .exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-arrow {
   -fx-background-color: null;
-  -fx-background-radius: 0;
-  -fx-background-insets: 0;
-  -fx-padding: 0;
+  -fx-background-radius: 0.0;
+  -fx-background-insets: 0.0;
+  -fx-padding: 0.0;
   -fx-shape: null;
 }
 .exceptionBackPane .column-header-background { 
 	visibility: hidden; 
-	-fx-padding: -1em;
+	-fx-padding: -1.0em;
 }
 
 
 .exceptionBackPane .table-row-cell {
     -fx-background-color: white;
-    -fx-background-insets: 0, 0 0 1 0;	
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;	
 	-fx-padding: 0.0em;	
-    -fx-border-width : 0 0 0 0;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
     -fx-border-color : white;
-    -fx-pref-height : 20;
-    -fx-pref-width : 30;
+    -fx-pref-height : 20.0;
+    -fx-pref-width : 30.0;
 }
 
 .exceptionBackPane .table-row-cell:focused{
-	-fx-border-width : 0 0 0 0;
+	-fx-border-width : 0.0 0.0 0.0 0.0;
 	-fx-padding: 0.0em;	
-	-fx-pref-height : 20;
-    -fx-pref-width : 30;
+	-fx-pref-height : 20.0;
+    -fx-pref-width : 30.0;
 }
 
 .exceptionBackPane .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
 	-fx-text-fill: red;
     -fx-background-color: #FFFFFF;
-    -fx-border-width : 0 0 0 0;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
     -fx-padding: 0.0em;	
 }
 
@@ -1614,7 +1622,7 @@ Working on new Css by taleev
     -fx-background-color: #d1d1d1;
 }
 .fingerIrisSeparator{
-	-fx-border-width: 0 1 0 0;
+	-fx-border-width: 0.0 1.0 0.0 0.0;
 	-fx-border-color: #d1d1d1;
 }
 /*user onboard exception design ends */
@@ -1673,3 +1681,37 @@ Working on new Css by taleev
  .dialog-pane:header .header-panel {
   -fx-background-color: #FFFFFF;
 }
+
+.schedulerMsg{
+	-fx-font-size: 12.0px;	
+}
+.schedulerTimer{
+	-fx-text-fill:red;
+}
+.schedulerContinueBtn{
+	-fx-font-size: 14.0px;
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-cursor:hand;
+}
+.schedulerStage{
+	-fx-border-color: #0B6A82;
+	-fx-background-color:white;
+}
+.schedulerTitle{
+	-fx-font-size: 14.0px;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+	-fx-border-color: black;
+	
+	-fx-background-color:#175768;
+}
+.schedulerTitleMsg{
+	-fx-font-size: 14.0px;
+	-fx-text-fill:White;
+	-fx-font-weight: bold;
+	}
+

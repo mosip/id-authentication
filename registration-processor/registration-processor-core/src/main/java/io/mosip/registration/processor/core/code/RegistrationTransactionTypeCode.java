@@ -20,14 +20,16 @@ public enum RegistrationTransactionTypeCode {
 	/** The demographic verification. */
 	DEMOGRAPHIC_VERIFICATION,
 	/** The manual varification. */
-	MANUAL_VARIFICATION,
+	MANUAL_VERIFICATION,
 	/** The biographic verification. */
 	BIOGRAPHIC_VERIFICATION,
 	/** The uin generator. */
 	UIN_GENERATOR,
 	/** The notification. */
 	NOTIFICATION,
-	/** The print. */
-	PRINT,
+	/** The print service. */
+	PRINT_SERVICE,
+	/** The print postal service. */
+	PRINT_POSTAL_SERVICE
 
 }

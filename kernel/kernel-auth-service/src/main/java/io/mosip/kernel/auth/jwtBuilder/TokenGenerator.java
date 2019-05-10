@@ -32,6 +32,7 @@ public class TokenGenerator {
 		claims.put("mail", mosipUser.getMail());
 		claims.put("role", mosipUser.getRole());
 		claims.put("name", mosipUser.getName());
+		claims.put("rId", mosipUser.getRId());
 		return claims;
 	}
 
@@ -95,6 +96,7 @@ public class TokenGenerator {
 		claims.put("role", mosipUser.getRole());
 		claims.put("lang", mosipUser.getLangCode());
 		claims.put("name", mosipUser.getName());
+		claims.put("rId", mosipUser.getRId());
 		TimeToken token = getToken(claims);
 		// String refreshToken = buildRefreshToken(claims);
 		basicTokenDto.setAuthToken(token.getToken());
@@ -111,6 +113,7 @@ public class TokenGenerator {
 		claims.put("role", mosipUser.getRole());
 		claims.put("lang", mosipUser.getLangCode());
 		claims.put("name", mosipUser.getName());
+		claims.put("rId", mosipUser.getRId());
 		claims.put("isOtpRequired", true);
 		claims.put("isOtpVerified", otpVerified);
 		TimeToken token = getToken(claims);
@@ -180,7 +183,7 @@ public class TokenGenerator {
 		String secret = mosipEnvironment.getJwtSecret();
 
 		if (token == null || !token.startsWith(token_base)) {
-			throw new RuntimeException("Invalid Token");
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 
 		try {

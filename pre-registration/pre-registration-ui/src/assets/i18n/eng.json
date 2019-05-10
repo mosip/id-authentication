@@ -326,7 +326,7 @@
       "age_validation": "Age should be less than 150",
       "gender_validation": "Please select gender",
       "nationality_validation": "Please select nationality",
-      "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
+      "DOB_validation": "Enter Valid date of birth or age",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
       "year_required": "Enter 4 numeric digits for year",
@@ -338,16 +338,13 @@
       "postal_code_required": "Please enter valid postalCode",
       "mobile_required": "Please enter valid mobile number",
       "email_required": "Please enter valid email id",
-      "pin_required": "Please enter valid pin"
-    },
-    "error": {
-      "error": "Application can not be created. Please try after some time",
-      "button_ok": "OK"
+      "pin_required": "Please enter valid CNIE"
     }
   },
   "documents": {
     "title_document": "Upload Documents",
-    "text_filetype": "Allowed file type Pdf,Max size 1MB",
+    "text_filetype": "Allowed file type ",
+    "text_filesize": "allowed file size",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",
@@ -558,5 +555,9 @@
     "nearBy": "Registration centers based on your geo-location",
     "magnifying_glass": "Search based on selection of dropdown.",
     "preview_continue": "Upload all files to proceed"
+  },
+  "error": {
+    "error": "A technical error occurred and the operation cannot be completed. Any data provided may not be saved",
+    "button_ok": "OK"
   }
 }

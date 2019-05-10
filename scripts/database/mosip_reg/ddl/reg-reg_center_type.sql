@@ -3,12 +3,6 @@
 -- table 		: reg_center_type	- Registration centers types
 -- table alias  : cntrtyp
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for reg reference Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.reg_center_type (
 
@@ -20,9 +14,9 @@ create table reg.reg_center_type (
 	lang_code character varying (3) not null,	-- reg.language.code
 	
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes	timestamp not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes timestamp,
 	is_deleted 	boolean,
 	del_dtimes timestamp
@@ -34,10 +28,3 @@ create table reg.reg_center_type (
  alter table reg.reg_center_type add constraint pk_cntrtyp_id primary key (code, lang_code)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_cntrtyp_<colX> on reg.reg_center_type (colX )
--- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.reg_center_type is 'Table to store registration center type code'
--- ;

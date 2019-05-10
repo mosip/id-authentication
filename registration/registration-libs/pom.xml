@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.10.3</version>
+		<version>0.11.1</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -93,6 +92,15 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>/registration-libs/src/main/resources</directory>
+
+				<excludes>
+					<exclude>**/*.*</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -115,7 +123,7 @@
 								<argument>${main.basedir}/registration-libs/src/main/resources/certificate/mosip_cer.cer</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/db/reg</argument>
 								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
-
+								<argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -133,6 +141,11 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>io.mosip.registration.cipher:ClientJarEncryption</exclude>
+								</excludes>
+							</artifactSet>
 							<filters>
 								<filter>
 									<artifact>org.bouncycastle:*</artifact>
@@ -165,6 +178,9 @@
 							<mainClass>io.mosip.registration.cipher.CilentJarDecryption</mainClass>
 						</manifest>
 					</archive>
+					<excludes>
+						<exclude>**/cipher/ClientJarEncryption</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 

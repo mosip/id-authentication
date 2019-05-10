@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -29,9 +29,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.service.AssertKernel;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -44,53 +45,48 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 
 	public CentetMachineUserMappingToMasterData() 
 	{
-		// TODO Auto-generated constructor stub
 		super();
 		
 	}
-	/**
-	 *  Declaration of all variables
-	 */
+	
+    // Declaration of all variables 
 	private static Logger logger = Logger.getLogger(CentetMachineUserMappingToMasterData.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
 	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String CentetMachineUserMappingToMasterData_uri = "/masterdata/v1.0/registrationmachineusermappings";
-	static String dest = "";
-	static String folderPath = "kernel/CentetMachineUserMappingToMasterData";
-	static String outputFile = "CentetMachineUserMappingToMasterDataOutput.json";
-	static String requestKeyFile = "CentetMachineUserMappingToMasterDataInput.json";
-	private static AssertKernel assertKernel = new AssertKernel();
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String CentetMachineUserMappingToMasterData_uri = props.get("CentetMachineUserMappingToMasterData_uri").toString();
+	private String folderPath = "kernel/CentetMachineUserMappingToMasterData";
+	private String outputFile = "CentetMachineUserMappingToMasterDataOutput.json";
+	private String requestKeyFile = "CentetMachineUserMappingToMasterDataInput.json";
+	private AssertKernel assertKernel = new AssertKernel();
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
 
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	//Getting test case names and also auth cookie based on roles
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		// testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
+		 cookie = auth.getAuthForRegistrationProcessor();
 	}
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	
+	 // Data Providers to read the input json files from the folders
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
 		 switch (testParam) {
 		case "smoke":
-			return ReadFolder.readFolders("kernel/CentetMachineUserMappingToMasterData", "CentetMachineUserMappingToMasterDataOutput.json","CentetMachineUserMappingToMasterDataInput.json","smoke");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smoke");
 			
 		case "regression":	
-			return ReadFolder.readFolders("kernel/CentetMachineUserMappingToMasterData", "CentetMachineUserMappingToMasterDataOutput.json","CentetMachineUserMappingToMasterDataInput.json","regression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"regression");
 		default:
-			return ReadFolder.readFolders("kernel/CentetMachineUserMappingToMasterData", "createBiometricAuthenticationTypeOutput.json","CentetMachineUserMappingToMasterDataInput.json","smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smokeAndRegression");
 		}
 		
 	}
@@ -99,54 +95,34 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	 * @throws IOException
 	 * @throws ParseException
 	 * centetMachineUserMappingToMasterData
-	 * Given input Json as per defined folders When PUT request is sent to /masterdata/v1.0/registrationmachineusermappings
+	 * Given input Json as per defined folders When PUT request is sent to v1/masterdata/registrationmachineusermappings
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "CentetMachineUserMappingToMasterData",alwaysRun=true)
 	public void centetMachineUserMappingToMasterData(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
 	{
-		
-		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		/*
-		 * Calling the put method
-		 */
-		  Response response = applicationLibrary.putRequest(actualRequest, CentetMachineUserMappingToMasterData_uri);
-		/*
-		 *  Removing of unstable attributes from response
-		 */
+		//  Calling the put method 
+		  Response response = applicationLibrary.putRequest(actualRequest, CentetMachineUserMappingToMasterData_uri,cookie);
 		
+		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
-		/*
-		 * Comparing expected and actual response
-		 */
-	
+		listOfElementToRemove.add("responsetime");
+		
+		// Comparing expected and actual response
 		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
-      if (status) {
-    	  if(testParam.equals("smoke"))
-    	  {
-    		  
 	            
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
-    	  }
-				finalStatus = "Pass";
+	if(status)	{
+			finalStatus ="Pass";
+			}
 				
-      }
 		else {
 			finalStatus="Fail";
 			logger.error(response);
-			//softAssert.assertTrue(false);
+			softAssert.assertTrue(false);
 		}
 		
 		softAssert.assertAll();
@@ -161,25 +137,22 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
-		// TODO Auto-generated method stub
 		return this.testCaseName;
 	}
+	
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		
-try {
+		try {
 			Field method = TestResult.class.getDeclaredField("m_method");
 			method.setAccessible(true);
 			method.set(result, result.getMethod().clone());
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-
 			f.set(baseTestMethod, CentetMachineUserMappingToMasterData.testCaseName);
-
-			
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

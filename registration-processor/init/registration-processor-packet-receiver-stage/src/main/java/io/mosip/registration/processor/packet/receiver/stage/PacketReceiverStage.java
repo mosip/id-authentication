@@ -12,22 +12,22 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
+import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.vertx.ext.web.FileUpload;
-import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -64,13 +64,16 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** The packet receiver response builder. */
 	@Autowired
 	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
+
 	/**
 	 * The mosip event bus.
 	 */
 	private MosipEventBus mosipEventBus;
 
+	/** Mosip router for APIs */
 	@Autowired
-	private FileSystemAdapter fileSystemAdapter;
+	MosipRouter router;
+	File file = null;
 
 	/**
 	 * deploys this verticle.
@@ -88,11 +91,16 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Autowired
 	private Environment env;
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
 	@Override
 	public void start() {
-		Router router = this.postUrl(vertx);
+		router.setRoute(this.postUrl(vertx));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/**
@@ -101,56 +109,42 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param router
 	 *            the router
 	 */
-	private void routes(Router router) {
+	private void routes(MosipRouter router) {
 
-		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0").blockingHandler(ctx -> {
-			processURL(ctx);
-		}, false).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),
-					APPLICATION_JSON);
-		});
+		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0");
 
-		router.get("/packetreceiver/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(context -> {
-			this.setResponse(context, context.failure().getMessage());
-		});
+		router.handler(this::processURL, this::processPacket, this::failure);
+
+		router.get("/packetreceiver/health");
+		router.handler(this::health);
+	};
+
+	/**
+	 * This is for failure handler
+	 *
+	 * @param routingContext
+	 */
+	private void failure(RoutingContext routingContext) {
+		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
 	}
 
 	/**
-	 * contains process logic for the context passed.
+	 * This is for health check up
 	 *
-	 * @param ctx
-	 *            the ctx
+	 * @param routingContext
 	 */
-	public void processURL(RoutingContext ctx) {
-		FileUpload fileUpload = ctx.fileUploads().iterator().next();
-		File file = null;
+	private void health(RoutingContext routingContext) {
+		this.setResponse(routingContext, "Server is up and running");
+	}
+
+	private void processPacket(RoutingContext ctx) {
+
 		try {
-			listObj.add(env.getProperty(MODULE_ID));
-			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
-					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
-			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
-			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
-			MessageDTO messageDTO = packetReceiverService.storePacket(file, this.getClass().getSimpleName());
-			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			listObj.add(env.getProperty(APPLICATION_VERSION));
+
+			MessageDTO messageDTO = packetReceiverService.processPacket(file);
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx,
-						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), listObj),
-						APPLICATION_JSON);
 				this.sendMessage(messageDTO);
-			} else {
-				this.setResponse(ctx,
-						PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-								RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString(), listObj),
-						APPLICATION_JSON);
 			}
-		} catch (IOException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnexpectedException(e.getMessage());
 		} finally {
 			if (file != null) {
 				if (file.exists()) {
@@ -158,6 +152,39 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 				}
 			}
 		}
+
+	}
+
+	/**
+	 * contains process logic for the context passed.
+	 *
+	 * @param ctx
+	 *            the ctx
+	 * @throws PacketReceiverAppException
+	 */
+	public void processURL(RoutingContext ctx) throws PacketReceiverAppException {
+		FileUpload fileUpload = ctx.fileUploads().iterator().next();
+
+		try {
+			listObj.add(env.getProperty(MODULE_ID));
+			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
+					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
+			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
+			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
+			MessageDTO messageDTO = packetReceiverService.validatePacket(file, this.getClass().getSimpleName());
+			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			listObj.add(env.getProperty(APPLICATION_VERSION));
+			if (messageDTO.getIsValid()) {
+				this.setResponse(ctx, PacketReceiverResponseBuilder.buildPacketReceiverResponse(
+						StatusMessage.PACKET_RECEIVED.toString(), listObj), APPLICATION_JSON);
+
+			}
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new UnexpectedException(e.getMessage());
+		}
+		ctx.next();
 	}
 
 	/**

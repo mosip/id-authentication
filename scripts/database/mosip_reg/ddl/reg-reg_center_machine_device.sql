@@ -3,11 +3,6 @@
 -- table 		: reg_center_machine_device	- MOSIP Registration center, machine and device mapping
 -- table alias  : cntrmdev	
 
--- schemas section -------------------------------------------------
- 
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------
 create table reg.reg_center_machine_device (
@@ -19,9 +14,9 @@ create table reg.reg_center_machine_device (
 	lang_code 	character varying (3) not null ,  -- master.language.code
 
 	is_active 	boolean not null,
-	cr_by 		character varying (32) not null,
+	cr_by 		character varying (256) not null,
 	cr_dtimes 	timestamp  not null,
-	upd_by  	character varying (32),
+	upd_by  	character varying (256),
 	upd_dtimes  timestamp,
 	is_deleted 	boolean,
 	del_dtimes	timestamp
@@ -32,7 +27,3 @@ create table reg.reg_center_machine_device (
 -- keys section -------------------------------------------------
  alter table reg.reg_center_machine_device add constraint pk_cntrmdev_cntr_id primary key (regcntr_id, machine_id, device_id)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_cntrmdev_<colX> on reg.reg_center_machine_device (colX )
--- ;

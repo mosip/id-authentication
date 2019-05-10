@@ -200,7 +200,7 @@ describe('DataStorageService', () => {
 
   it('getLocationMetadataHirearchy', () => {
     let response = null;
-    service.getLocationMetadataHirearchy('country').subscribe(value => {
+    service.getLocationMetadataHirearchy().subscribe(value => {
       response = value;
     });
     expect(response.country).toBe('morroco');

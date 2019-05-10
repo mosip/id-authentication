@@ -6,9 +6,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -245,8 +242,8 @@ public class SyncDataController {
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+			@ApiParam("Timestamp as metadata") @RequestParam(value="timeStamp",required=false) String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam(value="referenceId",required=false) String referenceId) {
 
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,

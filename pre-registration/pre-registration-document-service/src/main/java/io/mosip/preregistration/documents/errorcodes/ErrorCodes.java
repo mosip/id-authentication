@@ -105,7 +105,8 @@ public enum ErrorCodes {
 	/**
 	 * ErrorCode for INVALID_DOCUMENT_ID
 	 */
-	PRG_PAM_DOC_022
+	PRG_PAM_DOC_022,
+	PRG_PAM_REQ_023
 	;
 
 }

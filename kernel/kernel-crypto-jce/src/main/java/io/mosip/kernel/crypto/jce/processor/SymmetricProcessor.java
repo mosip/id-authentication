@@ -17,7 +17,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
@@ -50,12 +49,12 @@ public class SymmetricProcessor {
 	 * @param mode   if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 
 		if (mode == Cipher.ENCRYPT_MODE) {
-			return encrypt(method, key, data, mode);
+			return encrypt(method, key, data, mode, randomIV);
 		} else {
-			return decrypt(method, key, data, mode);
+			return decrypt(method, key, data, mode, randomIV);
 		}
 
 	}
@@ -70,16 +69,23 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
-		byte[] randomIV = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
-			randomIV = generateIV(cipher.getBlockSize());
-			cipher.init(mode, key, new IvParameterSpec(randomIV), random);
-			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+			if (randomIV == null) {
+				randomIV = generateIV(cipher.getBlockSize());
+				cipher.init(mode, key, new IvParameterSpec(randomIV), random);
+				output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+				byte[] processData = process(data, cipher);
+				System.arraycopy(processData, 0, output, 0, processData.length);
+				System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
+			} else {
+				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
+				output = process(data, cipher);
+			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
@@ -89,9 +95,6 @@ public class SymmetricProcessor {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
 		}
-		byte[] processData = process(data, cipher);
-		System.arraycopy(processData, 0, output, 0, processData.length);
-		System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
 		return output;
 	}
 
@@ -126,14 +129,21 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	@SuppressWarnings("findsecbugs:STATIC_IV")
-	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode, byte[] randomIV) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
+		final byte[] output;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
-			cipher.init(mode, key,
-					new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
-					random);
+			if (randomIV == null) {
+				cipher.init(mode, key,
+						new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
+						generateSecureRandom());
+			output=process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
+			} else {
+				cipher.init(mode, key, new IvParameterSpec(randomIV), generateSecureRandom());
+				output=process(data, cipher);
+			}
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
 			throw new NoSuchAlgorithmException(
@@ -147,7 +157,7 @@ public class SymmetricProcessor {
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage(), e);
 		}
-		return process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
+		return output;
 	}
 
 	/**
@@ -157,9 +167,18 @@ public class SymmetricProcessor {
 	 * @return generated IV
 	 */
 	private static byte[] generateIV(int blockSize) {
-		random = new SecureRandom();
+		random = generateSecureRandom();
 		byte[] byteIV = new byte[blockSize];
 		random.nextBytes(byteIV);
 		return byteIV;
+	}
+
+	/**
+	 * Generate a Secure Random with default random seed.
+	 * 
+	 * @return {@link SecureRandom}
+	 */
+	private static SecureRandom generateSecureRandom() {
+		return new SecureRandom();
 	}
 }

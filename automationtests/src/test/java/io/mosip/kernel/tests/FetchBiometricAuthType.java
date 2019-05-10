@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,9 +33,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -45,22 +50,25 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchBiometricAuthType.class);
-	private static final String jiraID = "MOS-8245";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "fetchBiometricAuthType";
-	private static final String requestJsonName = "fetchBiometricAuthTypeRequest";
-	private static final String outputJsonName = "fetchBiometricAuthTypeOutput";
-	private static final String service_URI = "/masterdata/v1.0/biometrictypes/{langcode}";
+	private final String jiraID = "MOS-8245";
+	private final String moduleName = "kernel";
+	private final String apiName = "fetchBiometricAuthType";
+	private final String requestJsonName = "fetchBiometricAuthTypeRequest";
+	private final String outputJsonName = "fetchBiometricAuthTypeOutput";
+	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final String FetchBiometricAuthType_URI = props.get("FetchBiometricAuthType_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -69,10 +77,11 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 
 	}
 
@@ -105,7 +114,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchBiometricAuthType(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -131,7 +140,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+				response = applicationLibrary.getRequestPathPara(FetchBiometricAuthType_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -147,10 +156,14 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 
 			String query = "select count(*) from master.biometric_type where lang_code = '" + objectData.get("langcode") + "'";
 			
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
 
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
+
+			
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+
 			// fetching json array of objects from response
 			JSONArray dataFromGet = (JSONArray) responseJson.get("biometrictypes");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
@@ -181,7 +194,10 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		else {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("responsetime");
+
 			listOfElementToRemove.add("timestamp");
+
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
@@ -204,6 +220,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

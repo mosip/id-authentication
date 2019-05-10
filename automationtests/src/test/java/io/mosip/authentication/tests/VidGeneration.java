@@ -1,16 +1,12 @@
+
 package io.mosip.authentication.tests;
 
-import java.io.File;
-import java.lang.reflect.Field; 
+import java.io.File; 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
-import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -26,7 +22,6 @@ import org.testng.internal.TestResult;
 import com.google.common.base.Verify;
 
 import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
@@ -37,26 +32,58 @@ import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 
-public class VidGeneration extends IdaScriptsUtil implements ITest{
-	
-	private static Logger logger = Logger.getLogger(VidGeneration.class);
-	private DataProviderClass objDataProvider = new DataProviderClass();
-	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
-	private ReportUtil objReportUtil = new ReportUtil();
-	private RunConfig objRunConfig = new RunConfig();
-	private FileUtil objFileUtil = new FileUtil();
-	protected static String testCaseName = "";
-	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	private String TESTDATA_PATH="ida/TestData/VIDGeneration/";
-	private String TESTDATA_FILENAME="testdata.ida.VIDGeneration.mapping.yml";
+/**
+ * The test class to perform VID generation execution
+ * 
+ * @author Athila
+ *
+ */
+public class VidGeneration extends IdaScriptsUtil implements ITest {
 
-	@Parameters({"testType"})
+	private static final Logger logger = Logger.getLogger(VidGeneration.class);
+	protected static String testCaseName = "";
+	private String TESTDATA_PATH;
+	private String TESTDATA_FILENAME;
+	private String testType;
+	private int invocationCount = 0;
+
+	/**
+	 * Set Test Type - Smoke, Regression or Integration
+	 * 
+	 * @param testType
+	 */
+	@Parameters({ "testType" })
 	@BeforeClass
-	public void setConfigurations(String testType) {
-		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
-		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
+	public void setTestType(String testType) {
+		this.testType = testType;
 	}
-	
+
+	/**
+	 * Method set Test data path and its filename
+	 * 
+	 * @param index
+	 */
+	public void setTestDataPathsAndFileNames(int index) {
+		this.TESTDATA_PATH = getTestDataPath(this.getClass().getSimpleName().toString(), index);
+		this.TESTDATA_FILENAME = getTestDataFileName(this.getClass().getSimpleName().toString(), index);
+	}
+
+	/**
+	 * Method set configuration
+	 * 
+	 * @param testType
+	 */
+	public void setConfigurations(String testType) {
+		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
+	}
+
+	/**
+	 * The method set test case name
+	 * 
+	 * @param method
+	 * @param testData
+	 */
 	@BeforeMethod
 	public void testData(Method method, Object[] testData) {
 		String testCase = "";
@@ -75,19 +102,35 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 		}
 		this.testCaseName = String.format(testCase);
 	}
-	
+
+	/**
+	 * Data provider class provides test case list
+	 * 
+	 * @return object of data provider
+	 */
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
-		return objDataProvider.getDataProvider(
-				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
+		invocationCount++;
+		setTestDataPathsAndFileNames(invocationCount);
+		setConfigurations(this.testType);
+		return DataProviderClass.getDataProvider(
+				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
 				RunConfig.getScenarioPath(), RunConfig.getTestType());
 	}
-	
+
+	/**
+	 * Set current testcaseName
+	 */
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-	} 
-	
+	}
+
+	/**
+	 * The method ser current test name to result
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -101,9 +144,17 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-	} 
+	}
+
+	/**
+	 * Test method for VID generation execution
+	 * 
+	 * @param objTestParameters
+	 * @param testScenario
+	 * @param testcaseName
+	 */
 	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void vidGenerateTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -120,13 +171,13 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 		String url = RunConfig.getEndPointUrl() + RunConfig.getVidGenPath();
 		url = url.replace("$uin$", uin);
 		String response = getResponse(url);
-		File outputFile = objFileUtil.getFilePath(testCaseName, "output-1-expected");
-		objFileUtil.createAndWriteFile("output-1-actual.json", response);
-		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
-				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
-				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
-		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid));
+		File outputFile = FileUtil.getFilePath(testCaseName, "output-1-expected");
+		FileUtil.createAndWriteFile("output-1-actual.json", response);
+		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
+				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
+				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
+		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
+		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid));
 	}
 }
 

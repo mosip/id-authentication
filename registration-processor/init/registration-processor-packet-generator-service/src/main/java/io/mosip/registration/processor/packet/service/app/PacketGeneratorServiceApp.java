@@ -16,7 +16,7 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.kernel.jsonvalidator.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+		"io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.kernel.jsonvalidator.*,io.mosip.registration.processor.core.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 				RestConfigBean.class,PacketStorageBeanConfig.class }))
 
 public class PacketGeneratorServiceApp {

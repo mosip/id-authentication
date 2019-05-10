@@ -66,6 +66,14 @@ public class EncryptorTest {
 	public void testAESSymmetricEncrypt() throws java.security.NoSuchAlgorithmException {
 		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data), isA(byte[].class));
 	}
+	
+	@Test
+	public void testAESSymmetricSaltEncrypt() throws java.security.NoSuchAlgorithmException {
+		SecureRandom random = new SecureRandom();
+		byte[] keyBytes = new byte[16];
+		random.nextBytes(keyBytes);
+		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data,keyBytes), isA(byte[].class));
+	}
 
 	@Test(expected = InvalidKeyException.class)
 	public void testRSAPKS1AsymmetricInvalidKey() {

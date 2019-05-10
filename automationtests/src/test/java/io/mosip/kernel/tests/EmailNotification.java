@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -30,9 +30,9 @@ import com.google.common.base.Verify;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.MachineSpecificationDto;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
@@ -48,22 +48,25 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(EmailNotification.class);
-	private static final String jiraID = "MOS-973";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "EmailNotification";
-	private static final String requestJsonName = "EmailNotificationRequest";
-	private static final String outputJsonName = "EmailNotificationOutput";
-	private static final String service_URI = "/emailnotifier/v1.0/email/send";
+	private final String jiraID = "MOS-973";
+	private final String moduleName = "kernel";
+	private final String apiName = "EmailNotification";
+	private final String requestJsonName = "EmailNotificationRequest";
+	private final String outputJsonName = "EmailNotificationOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String EmailNotification_URI = props.get("EmailNotification_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -72,11 +75,11 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
-
+		cookie=auth.getAuthForIDA();
 	}
 
 	/**
@@ -136,7 +139,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				response = applicationLibrary.postRequestFormData(objectData, service_URI);
+				response = applicationLibrary.postRequestFormData(objectData, EmailNotification_URI,cookie);
 
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
@@ -145,7 +148,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		if (status) {
@@ -172,6 +175,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

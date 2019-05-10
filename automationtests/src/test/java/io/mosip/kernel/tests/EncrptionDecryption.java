@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -31,8 +33,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -49,23 +53,28 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(EncrptionDecryption.class);
-	private static final String jiraID = "MOS-9284";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "EncrptionDecryption";
-	private static final String requestJsonName = "encryptdecryptRequest";
-	private static final String outputJsonName = "encryptdecryptOutput";
-	private static final String encrypt_URI = "/cryptomanager/v1.0/encrypt";
-	private static final String decrypt_URI = "/cryptomanager/v1.0/decrypt";
+	private final String jiraID = "MOS-9284";
+	private final String moduleName = "kernel";
+	private final String apiName = "EncrptionDecryption";
+	private final String requestJsonName = "encryptdecryptRequest";
+	private final String outputJsonName = "encryptdecryptOutput";
+	
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	
+	private final String encrypt_URI = props.get("encrypt_URI").toString();
+	private final String decrypt_URI = props.get("decrypt_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -74,10 +83,11 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 
 	}
 
@@ -137,6 +147,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
 		String requestData = null;
+		JSONObject request =null;
 		String encDecCase="default";
 		for (int k = 0; k < listofFiles.length; k++) {
 
@@ -145,14 +156,16 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 				if(objectData.containsKey("case"))
 					encDecCase = objectData.get("case").toString();
 				objectData.remove("case");
-				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				requestData = objectData.get("data").toString();
-				String encoded = Base64.getEncoder().encodeToString(objectData.get("data").toString().getBytes());
-				objectData.put("data", encoded);
-
+				requestData = ((JSONObject)objectData.get("request")).get("data").toString();
+				String encoded = Base64.getEncoder().encodeToString(requestData.getBytes());
+				request = (JSONObject)objectData.get("request");
+				request.put("data", encoded);
+				objectData.put("request", request);
+				
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI);
+				
+				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -162,32 +175,41 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		int statusCode = response.statusCode();
 		logger.info("Encryption Status Code is : " + statusCode);
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		
-		JSONObject responseJson = (JSONObject)new JSONParser().parse(response.asString());
+		JSONObject responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
 		
-		if (responseJson.containsKey("data")) {
+		if (responseJson!=null) {
 
-			
-			objectData.put("data", (response.jsonPath().get("data")).toString());
-			
+			request = ((JSONObject)objectData.get("request"));
+			request.put("data", ((HashMap<String, String>)response.jsonPath().get("response")).get("data"));
+			objectData.put("request", request);
 
 			switch(encDecCase) {
-			
 			case "diffRefToDecrypt":
-				objectData.put("referenceId", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("referenceId", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffAppIdToDecrypt":
-				objectData.put("applicationId", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("applicationId", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffDataToDecrypt":
-				objectData.put("data", "diffFromEncrypt");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("data", "diffFromEncrypt");
+				objectData.put("request", request);
 				break;
 			case "diffTimeStampBefToDecrypt":
-				objectData.put("timeStamp", "2018-12-09T06:12:52.994Z");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("timeStamp", "2018-12-09T06:12:52.994Z");
+				objectData.put("request", request);
 				break;
 			case "diffTimeStampAfToDecrypt":
-				objectData.put("timeStamp", "2018-12-11T06:12:52.994Z");
+				request = ((JSONObject)objectData.get("request"));
+				request.put("timeStamp", "2018-12-11T06:12:52.994Z");
+				objectData.put("request", request);
 				break;
 				
 			}
@@ -198,11 +220,11 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
 
-			responseJson = (JSONObject)new JSONParser().parse(response.asString());
-			if (responseJson.containsKey("data")) {
+			responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
+			if (responseJson!=null) {
 
 				String responseData = new String(
-						Base64.getDecoder().decode(response.jsonPath().get("data").toString().getBytes()));
+						Base64.getDecoder().decode(((HashMap<String, String>)response.jsonPath().get("response")).get("data").toString().getBytes()));
 				
 				status = requestData.equals(responseData);
 
@@ -237,6 +259,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

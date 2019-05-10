@@ -1,17 +1,19 @@
 package io.mosip.dbaccess;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
-import com.fasterxml.classmate.AnnotationConfiguration;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.dbentity.UinEntity;
 import io.mosip.service.BaseTestCase;
 
 
@@ -21,12 +23,117 @@ import io.mosip.service.BaseTestCase;
  * @author Arunakumar.Rati
  *
  */
+@SuppressWarnings("deprecation")
 public class KernelMasterDataR {
 	public static SessionFactory factory;
 	static Session session;
+	public static Session session1;
+	public static List<Object> objs = null;
 	private static Logger logger = Logger.getLogger(KernelMasterDataR.class);
 	
-	@SuppressWarnings("deprecation")
+	public static String env=System.getProperty("env.user");
+	
+	
+	@BeforeClass
+	public static Session dbCheck()
+	{
+		switch(env) 
+		{
+		case "dev": 
+			factory = new Configuration().configure("kerneldev.cfg.xml")
+					.addAnnotatedClass(UinEntity.class).buildSessionFactory();
+		break;
+		
+		case "qa":
+				factory = new Configuration().configure("kernelqa.cfg.xml")
+			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
+		
+		break;
+		}
+		session1 = factory.getCurrentSession();
+		session1.beginTransaction();
+		logger.info("----------------session has began----------------");
+		return session1;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<String> getData(String queryString)
+	{
+	  int size;
+		Query query = session1.createSQLQuery(queryString); 
+		
+	
+		List<String> objs = (List<String>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+			// commit the transaction
+		//session1.getTransaction().commit();
+						
+		return objs;
+			
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<String[]> getArrayData(String queryString)
+	{
+	  int size;
+		Query query = session1.createSQLQuery(queryString); 
+		
+	
+		List<String[]> objs = (List<String[]>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+			// commit the transaction
+		//session1.getTransaction().commit();
+						
+		return objs;
+			
+	}
+	@SuppressWarnings("unchecked")
+	private static boolean validateDatainDB(Session session, String queryString)
+	{
+		int size;
+		 objs = session.createSQLQuery(queryString).list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+	
+			// commit the transaction
+					session.getTransaction().commit();
+		
+		if(size==1)
+			return true;
+		else
+			return false;
+	
+	}
+	
+	
+
+	@SuppressWarnings("rawtypes")
+	public static List<String> getDataFromDB(Class dtoClass,String query)
+	{
+		List<String> data=null;
+
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("masterdatadev.cfg.xml")
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure("masterdataqa.cfg.xml")
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		data=getDbData(session, query);
+		//logger.info("flag is : " +flag);
+		return data;
+		
+		
+	}
+	
+
+
 	public static boolean kernelMasterData_dbconnectivityCheck()
 	{
 		boolean flag=false;
@@ -50,7 +157,6 @@ public class KernelMasterDataR {
 		logger.info("Session value is :" +session);
 		
 			flag=session != null;
-		//	Assert.assertTrue(flag);
 			logger.info("Flag is : " +flag);
 			if(flag)
 			{
@@ -62,222 +168,131 @@ public class KernelMasterDataR {
 			else
 			return flag;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		
 		logger.info("Connection exception Received");
 		return flag;
 		}
 	}
 		
 	
-	@SuppressWarnings("deprecation")
-	public static boolean validateDB(String queryStr, Class dtoClass)
-	{
-		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-			factory = new Configuration().configure("masterdatadev.cfg.xml")
-		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-						factory = new Configuration().configure("masterdatainteg.cfg.xml")
-					.addAnnotatedClass(dtoClass).buildSessionFactory();	
-				}
-		session = factory.getCurrentSession();
-		session.beginTransaction();
-		flag=validateDBdata(session, queryStr);
-		logger.info("flag is : " +flag);
-		return flag;
-		
-
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static boolean validateDBdata(Session session, String queryStr)
-	{
-		int size;
-				
-		String queryString=queryStr;
-		
-		Query query = session.createSQLQuery(queryString);
-	
-		List<Object> objs = (List<Object>) query.list();
-		size=objs.size();
-		logger.info("Size is : " +size);
-		
-		// commit the transaction
-		session.getTransaction().commit();
-			
-			factory.close();
-		
-		if(size==1)
-			return true;
-		else
-			return false;
-	
-	}
-		@SuppressWarnings("deprecation")
+		@SuppressWarnings("rawtypes")
 		public static boolean masterDataDBConnection(Class dtoClass,String query)
 		{
 			boolean flag=false;
 
+
 			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
 				factory = new Configuration().configure("masterdatadev.cfg.xml")
-			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					else
-					{
-						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterdatainteg.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					}
-			session = factory.getCurrentSession();
-			session.beginTransaction();
-			flag=validateMasterDatainDB(session, query);
-			logger.info("flag is : " +flag);
-			return flag;
-			
-			//session.close();
-		}
-		
-		
-
-		@SuppressWarnings("unchecked")
-		private static boolean validateMasterDatainDB(Session session, String queryString)
-		{
-			int size;
-			Query query = session.createSQLQuery(queryString); 
-			//query.setParameter("otp_value", otp);
-		
-			List<Object> objs = (List<Object>) query.list();
-			size=objs.size();
-			logger.info("Size is : " +size);
-			Object[] TestData = null;
-			// reading data retrieved from query
-			for (Object obj : objs) {
-				TestData = (Object[]) obj;
-				Object status_code =  TestData[3];
-				logger.info("Status is : " +status_code);
-				
-				// commit the transaction
-						session.getTransaction().commit();
-							
-							factory.close();
-
-			//Query q=session.createQuery(" from otp_transaction where ID='917248' ");
-		}
-			
-			if(size==1)
-				return true;
-			else
-				return false;
-		
-		}
-		
-		@SuppressWarnings("deprecation")
-		public static boolean masterDataDBConnection1(Class dtoClass,String queryString,String columnName,String value)
-		{
-			boolean flag=false;
-			
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-				factory = new Configuration().configure("masterdatadev.cfg.xml")
-			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					else
-					{
-						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterdataqa.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					}
-			session = factory.getCurrentSession();
-			Transaction txn=session.beginTransaction();
-			//txn.begin();
-			flag=validateMasterDatainDB1(queryString,columnName, value);
-			logger.info("flag is : " +flag);
-					
-			session.close();
-			return flag;
-			
-//			Transaction tx=session.beginTransaction();  
-//			Query q=session.createQuery(queryString);  
-//			q.setParameter("m","POI");  
-//			q.setParameter("n","CIN");  
-//			  
-//			int status=q.executeUpdate();  
-//		 
-//			tx.commit();  
-//			return flag;
-		}
-		@SuppressWarnings({ "unused", "deprecation" })
-		public
-		static boolean validateMasterDatainDB1(String queryString,String columnName,String value)
-		{
-			
-			Query query = session.createQuery(queryString); 
-		   // query.setParameter(columnName, value);
-		    int result = query.executeUpdate();
-			logger.info("update completed");
-			session.getTransaction().commit();
-		    return true;
-			
-		}
-		
-		
-		@SuppressWarnings({ "unused", "deprecation" })
-		public
-		static boolean validateMasterDatainDB1(String queryString)
-		{
-			Query query = session.createQuery(queryString); 
-		   // query.setParameter(columnName, value);
-		    int result = query.executeUpdate();
-			logger.info("update completed");
-			session.getTransaction().commit();
-		    return true;
-			
-		} 
-		
-
-		@SuppressWarnings("deprecation")
-		public static List<String> getDataFromDB(Class dtoClass,String query)
-		{
-			List<String> flag=null;
-
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-				factory = new Configuration().configure("kerneldev.cfg.xml")
 			.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("kernelqa.cfg.xml")
+							factory = new Configuration().configure("masterdataqa.cfg.xml")
 						.addAnnotatedClass(dtoClass).buildSessionFactory();	
+
 					}
 			session = factory.getCurrentSession();
 			session.beginTransaction();
-			flag=getData(session, query);
-			//logger.info("flag is : " +flag);
+			flag=validateDatainDB(session, query);
+			session.close();
+			factory.close();
+			logger.info("flag is : " +flag);
 			return flag;
 			
-			//session.close();
+		
 		}
 		
+		public static boolean validateKernelDB(String queryStr)
+		{
+			boolean flag=false;
 		
+			try {
+				if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("kerneldev.cfg.xml").buildSessionFactory();
+				else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+					factory = new Configuration().configure("kernelqa.cfg.xml").buildSessionFactory();
+				session = factory.getCurrentSession();
+				session.beginTransaction();
+			} catch (HibernateException e) {
+				logger.info("Exception recived in DB Connection");
+				e.printStackTrace();
+				return false;
+			}
+			
+			
+			flag=validateDatainDB(session, queryStr);
+				session.close();
+				factory.close();
+			logger.info("obtained objects count from DB is : " +flag);
+			return flag;
+			
 
-		@SuppressWarnings("unchecked")
-		private static List<String> getData(Session session, String queryString)
+		}
+
+		
+		
+		/**
+		 * @param queryStr containing query to obtain data count in table
+		 * @return count obtained from db
+		 */
+		public static long validateDBCount(String queryStr)
+		{
+			long flag=0;
+			
+			try {
+				if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+					factory = new Configuration().configure("masterdatadev.cfg.xml").buildSessionFactory();
+				else 
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure("masterdataqa.cfg.xml").buildSessionFactory();
+				
+				session = factory.getCurrentSession();
+				session.beginTransaction();
+			} catch (HibernateException e) {
+				logger.info("Exception recived in DB Connection");
+				e.printStackTrace();
+				return 0;
+			}
+			
+			
+			flag=((BigInteger)session.createSQLQuery(queryStr).getSingleResult()).longValue();
+			
+			// commit the transaction
+					session.getTransaction().commit();
+					session.close();
+					factory.close();
+			logger.info("obtained objects count from DB is : " +flag);
+			return flag;
+			
+	}
+		
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public static List<String> getDbData(Session session1,String queryString)
 		{
 		  int size;
-			Query query = session.createSQLQuery(queryString); 
+			Query query = session1.createSQLQuery(queryString); 
 			
 		
 			List<String> objs = (List<String>) query.list();
 			size=objs.size();
 			logger.info("Size is : " +size);
 				// commit the transaction
-						session.getTransaction().commit();
+			//session1.getTransaction().commit();
 							
-							factory.close();
-
-		
 			return objs;
 				
 		}
+
+@AfterClass(alwaysRun=true)
+public void closingSession()
+{
+	
+	session1.getTransaction().commit();
+	factory.close();
+	session1.close();
+	
+	
+}
 
 }

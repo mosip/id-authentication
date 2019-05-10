@@ -36,7 +36,7 @@
                      <children>
                         <GridPane styleClass="subMainComponent" GridPane.columnIndex="1">
                            <children>
-                              <GridPane alignment="CENTER" GridPane.rowIndex="1" styleClass="dividerTypeOne">
+                              <GridPane alignment="CENTER" styleClass="dividerTypeOne" GridPane.rowIndex="1">
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>
@@ -79,7 +79,7 @@
                                     <GridPane GridPane.rowIndex="1">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
                                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
                                       </columnConstraints>
@@ -103,7 +103,7 @@
                                     </GridPane>
                                     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                       <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
                                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
                                       </columnConstraints>
@@ -114,7 +114,7 @@
                                           <Label styleClass="qualityBoxLabel" text="%exceptionimage" GridPane.columnIndex="1" />
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.rowIndex="2">
+                                    <GridPane visible="false" GridPane.rowIndex="2">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
@@ -182,7 +182,7 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
@@ -416,13 +416,13 @@
                               				</ImageView>
                                     		<Label layoutX="38.0" layoutY="-2.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="38.0" layoutY="50.0" styleClass="completedPage" text="%fingerPrintTracker" />
-                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="currentPage" text="%irisTracker" />
-                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="pendingPage" text="%photoTracker" />
-		                                    <Label layoutX="51.0" layoutY="90.0" styleClass="subPageCurrent" text="%leftHandTracker" />
+                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="completedPage" text="%irisTracker" />
+                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="currentPage" text="%photoTracker" />
+		                                    <Label layoutX="51.0" layoutY="90.0" styleClass="subPageCompleted" text="%leftHandTracker" />
 		                                    <Label layoutX="51.0" layoutY="130.0" styleClass="subPageCompleted" text="%rightHandTracker" />
 		                                    <Label layoutX="51.0" layoutY="170.0" styleClass="subPageCompleted" text="%thumbTracker" />
-		                                    <Label layoutX="51.0" layoutY="256.0" styleClass="subPageCurrent" text="%leftIrisTracker" />
-		                                    <Label layoutX="51.0" layoutY="296.0" styleClass="subPageUncompleted" text="%rightIrisTracker" />
+		                                    <Label layoutX="51.0" layoutY="256.0" styleClass="subPageCompleted" text="%leftIrisTracker" />
+		                                    <Label layoutX="51.0" layoutY="296.0" styleClass="subPageCompleted" text="%rightIrisTracker" />
 		                                    <Label layoutX="51.0" layoutY="383.0" styleClass="subPageUncompleted" text="%exceptionPhotoTracker" />
                                 		 </children>
                              		 </AnchorPane>
@@ -436,14 +436,14 @@
                               				</ImageView>
                                     		<Label layoutX="38.0" layoutY="-2.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="38.0" layoutY="50.0" styleClass="completedPage" text="%fingerPrintTracker" />
-                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="currentPage" text="%irisTracker" />
-                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="pendingPage" text="%photoTracker" />
+                                    		<Label layoutX="38.0" layoutY="216.0" styleClass="completedPage" text="%irisTracker" />
+                                    		<Label layoutX="38.0" layoutY="343.0" styleClass="currentPage" text="%photoTracker" />
                                     		<Label layoutX="52.0" layoutY="90.0" styleClass="subPageCompleted" text="%leftHandTracker" />
                                     		<Label layoutX="51.0" layoutY="130.0" styleClass="subPageCompleted" text="%rightHandTracker" />
                                     		<Label layoutX="51.0" layoutY="170.0" styleClass="subPageCompleted" text="%thumbTracker" />
                                     		<Label layoutX="51.0" layoutY="256.0" styleClass="subPageCompleted" text="%leftIrisTracker" />
-                                    		<Label layoutX="51.0" layoutY="296.0" styleClass="subPageCurrent" text="%rightIrisTracker" />
-                                    		<Label layoutX="51.0" layoutY="383.0" styleClass="subPageUncompleted" text="%exceptionPhotoTracker" />
+                                    		<Label layoutX="51.0" layoutY="296.0" styleClass="subPageCompleted" text="%rightIrisTracker" />
+                                    		<Label layoutX="51.0" layoutY="383.0" styleClass="subPageCurrent" text="%exceptionPhotoTracker" />
                                 		 </children>
                              		 </AnchorPane>                                
                                 </children>
@@ -595,7 +595,7 @@
          <children>
             <GridPane GridPane.columnIndex="1">
                <children>
-                  <GridPane fx:id="backButton" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                  <GridPane fx:id="backButton" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Button fx:id="biometricPrevBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                            <graphic>
@@ -614,7 +614,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                   </GridPane>
-                  <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Button fx:id="saveBiometricDetailsBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                            <graphic>
@@ -635,9 +635,11 @@
                   </GridPane>
                </children>
                <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints percentHeight="10.0" />

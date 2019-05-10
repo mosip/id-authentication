@@ -1,10 +1,13 @@
 {
-    "timestamp": 1550038009595,
-    "status": 200,
+    "id": "string",
+    "version": "string",
+    "responsetime": "2019-04-17T09:20:02.950Z",
+    "metadata": null,
+    "response": null,
     "errors": [
         {
             "errorCode": "KER-CRY-004",
-            "errorMessage": "data should not be null or empty"
+            "message": "request.data should not be null or empty"
         }
     ]
 }

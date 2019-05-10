@@ -1,26 +1,15 @@
 package io.mosip.kernel.auth.adapter.config;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 
-import javax.net.ssl.SSLContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -28,17 +17,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auth.adapter.filter.AuthFilter;
-import io.mosip.kernel.auth.adapter.filter.ClientInterceptor;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
@@ -81,26 +66,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-    public AuthFilter authFilter() {
-          RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
-          AuthFilter filter = new AuthFilter(requestMatcher);
-           filter.setAuthenticationManager(authenticationManager());
-          filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
-        return filter;
-    }
-	
-	@Bean
-	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-		restTemplate.setInterceptors(Collections.singletonList(new ClientInterceptor()));
-		return restTemplate;
+	public AuthFilter authFilter() {
+		RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
+		AuthFilter filter = new AuthFilter(requestMatcher);
+		filter.setAuthenticationManager(authenticationManager());
+		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+		return filter;
 	}
 
 	@Override
@@ -113,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new CorsFilter(), AuthFilter.class);
 		http.headers().cacheControl();
 	}
+
 }
 
 class AuthEntryPoint implements AuthenticationEntryPoint {
@@ -122,7 +94,5 @@ class AuthEntryPoint implements AuthenticationEntryPoint {
 			AuthenticationException e) throws IOException {
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
 	}
-
-	
 
 }

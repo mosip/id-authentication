@@ -5,9 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -26,59 +25,53 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbentity.UinEntity;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import com.google.common.base.Verify;
+
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
+/**
+ * @author M9010714
+ *
+ */
 public class UINStatusCheck extends BaseTestCase implements ITest{
 
 	public UINStatusCheck() {
-		// TODO Auto-generated constructor stub
+		
 		super();
 	}
-	
-	
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(UINStatusCheck.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
+	private SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String uingenerator = "/uingenerator/v1.0/uin";
-	static String dest = "";
-	static String folderPath = "kernel/UINStatusCheck";
-	static String outputFile = "UINStatusCheckOutput.json";
-	static String requestKeyFile = "UINStatusCheckInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String uingenerator =props.get("uingenerator");
+	private String folderPath = "kernel/UINStatusCheck";
+	private String outputFile = "UINStatusCheckOutput.json";
+	private String requestKeyFile = "UINStatusCheckInput.json";
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
+	public KernelDataBaseAccess dbConnection=new KernelDataBaseAccess();
 		
+	// Getting test case names and also auth cookie based on roles
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINStatusCheck")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
-		 testParam = context.getCurrentXmlTest().getParameter("testType");
+	public Object[][] readData1(ITestContext context) throws Exception {
 		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -94,53 +87,47 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * checkUINStatusCheck
 	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin send
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="UINStatusCheck",invocationCount=1)
-	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void checkUINStatusCheck(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
-		/*
-		 * Calling the GET method with no parameters
-		 */
+		//Getting all UIN from Database whose status is UNUSED
 		String query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
-		List<String>list=KernelMasterDataR.getDataFromDB(UinEntity.class, query);
+
+		List<String>list=dbConnection.getDbData( query);
 		
-		int total=list.size();
-		
-		
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
-		
-		String uin_number=res.getBody().jsonPath().get("uin");
-		
+		// Calling the GET method with no parameters 
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		//Getting the UIN from response
+		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
+		//Getting the status of the UIN 
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
-		
-		List<String> status_list = KernelMasterDataR.getDataFromDB(UinEntity.class, query1);
+		List<String> status_list = dbConnection.getDbData( query1);
 		String status=status_list.get(0);
+		//Checking the UIN's status is Unused before calling the get method and and Issued after calling the Get method
 		for(String uin:list)
 		{
 			if(uin.equals(uin_number))
 			{
-				finalStatus="pass";
+				finalStatus="Pass";
+				
 			
 				if(status.equals("ISSUED"))
 				{
-					finalStatus="pass";
+					finalStatus="Pass";
 				}
 				else {
-					finalStatus="fail";
+					finalStatus="Fail";
 				}
 			}else {
-				finalStatus="fail";
+				finalStatus="Fail";
 			}
 		}
-		
 		
 		softAssert.assertAll();
 		object.put("status", finalStatus);
@@ -150,8 +137,11 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 		
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
@@ -167,10 +157,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
-				f.set(baseTestMethod, UINStatusCheck.testCaseName);
-
-				
+				f.set(baseTestMethod, UINStatusCheck.testCaseName);	
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
@@ -181,7 +168,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 			String configPath = "src/test/resources/kernel/UINStatusCheck/UINStatusCheckOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to UINStatusCheckOutput.json file.......................!!");
+				logger.info("Successfully updated Results to UINStatusCheckOutput.json file.......................!!");				
 			}
 		}
 
