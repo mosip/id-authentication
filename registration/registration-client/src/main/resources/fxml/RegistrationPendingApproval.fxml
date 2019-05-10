@@ -49,7 +49,7 @@
                      <children>
                         <TableView fx:id="table" GridPane.rowIndex="1">
                            <columns>
-                              <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*60/100}" text="%registrationid" />
+                              <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*60/100}" text="%registrationid" styleClass="tableId" />
                               <TableColumn fx:id="acknowledgementFormPath" editable="false" text="%registrtionid" visible="false" />
                               <TableColumn fx:id="statusComment" editable="false" prefWidth="${tableContainer.width*40/100}" styleClass="pendingApprovalStatus" text="%status" />
                            </columns>
