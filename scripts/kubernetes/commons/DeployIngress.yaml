@@ -81,7 +81,11 @@ spec:
       - path: /v1/admin
         backend:
           serviceName: admin-service
-          servicePort: 8098    
+          servicePort: 8098
+      - path: /admin-ui
+        backend:
+          serviceName: admin-ui
+          servicePort: 80    
       - path: /preregistration/v1/login
         backend:
           serviceName: pre-registration-login-service

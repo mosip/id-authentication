@@ -62,12 +62,6 @@
 				"residenceStatus": {
 					"$ref": "#/definitions/simpleType"
 				},
-				"CNIENumber": {
-					"type": "string"
-				},
-				"localAdministrativeAuthority": {
-					"$ref": "#/definitions/simpleType"
-				},
 				"parentOrGuardianName": {
 					"$ref": "#/definitions/simpleType"
 				},

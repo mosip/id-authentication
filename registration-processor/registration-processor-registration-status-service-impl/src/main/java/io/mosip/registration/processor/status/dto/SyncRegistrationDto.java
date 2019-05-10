@@ -2,11 +2,15 @@
  * 
  */
 package io.mosip.registration.processor.status.dto;
-	
+
 import java.io.Serializable;
+import java.math.BigInteger;
+
+import org.json.simple.JSONArray;
 
 import io.swagger.annotations.ApiModelProperty;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SyncRegistrationDto.
  *
@@ -22,16 +26,22 @@ public class SyncRegistrationDto implements Serializable {
 	private String registrationId;
 
 	/** The sync type dto. */
-	private String syncType = SyncTypeDto.NEW.getValue();
+	private String registrationType = SyncTypeDto.NEW.getValue();
 
-	/** The parent registration id. */
-	private String parentRegistrationId;
+	/** The lang code. */
+	private String packetHashValue;
 
-	/** The sync status dto. */
-	private SyncStatusDto syncStatus;
+	/** The lang code. */
+	private BigInteger packetSize;
+
+	/** The status code. */
+	private String supervisorStatus;
 
 	/** The status comment. */
-	private String statusComment;
+	private String supervisorComment;
+
+	/** The optional values. */
+	private JSONArray optionalValues;
 
 	/** The lang code. */
 	private String langCode;
@@ -58,8 +68,6 @@ public class SyncRegistrationDto implements Serializable {
 	 *            the registration id
 	 * @param syncTypeDto
 	 *            the sync type dto
-	 * @param parentRegistrationId
-	 *            the parent registration id
 	 * @param syncStatusDto
 	 *            the sync status dto
 	 * @param statusComment
@@ -67,14 +75,11 @@ public class SyncRegistrationDto implements Serializable {
 	 * @param langCode
 	 *            the lang code
 	 */
-	public SyncRegistrationDto(String registrationId, String syncTypeDto, String parentRegistrationId,
-			SyncStatusDto syncStatusDto, String statusComment, String langCode) {
+	public SyncRegistrationDto(String registrationId, String syncTypeDto, SyncStatusDto syncStatusDto,
+			String statusComment, String langCode) {
 		super();
 		this.registrationId = registrationId;
-		this.syncType = syncTypeDto;
-		this.parentRegistrationId = parentRegistrationId;
-		this.syncStatus = syncStatusDto;
-		this.statusComment = statusComment;
+		this.registrationType = syncTypeDto;
 		this.langCode = langCode;
 	}
 
@@ -95,44 +100,6 @@ public class SyncRegistrationDto implements Serializable {
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
-	}
-
-	/**
-	 * Gets the parent registration id.
-	 *
-	 * @return the parent registration id
-	 */
-	public String getParentRegistrationId() {
-		return parentRegistrationId;
-	}
-
-	/**
-	 * Sets the parent registration id.
-	 *
-	 * @param parentRegistrationId
-	 *            the new parent registration id
-	 */
-	public void setParentRegistrationId(String parentRegistrationId) {
-		this.parentRegistrationId = parentRegistrationId;
-	}
-
-	/**
-	 * Gets the status comment.
-	 *
-	 * @return the status comment
-	 */
-	public String getStatusComment() {
-		return statusComment;
-	}
-
-	/**
-	 * Sets the status comment.
-	 *
-	 * @param statusComment
-	 *            the new status comment
-	 */
-	public void setStatusComment(String statusComment) {
-		this.statusComment = statusComment;
 	}
 
 	/**
@@ -178,36 +145,115 @@ public class SyncRegistrationDto implements Serializable {
 	 *
 	 * @return the sync type dto
 	 */
-	public String getSyncType() {
-		return syncType;
+	public String getRegistrationType() {
+		return registrationType;
 	}
 
 	/**
 	 * Sets the sync type dto.
 	 *
-	 * @param syncTypeDto the new sync type
+	 * @param syncTypeDto
+	 *            the new sync type
 	 */
 	public void setSyncType(String syncTypeDto) {
-		this.syncType = syncTypeDto;
+		this.registrationType = syncTypeDto;
 	}
 
 	/**
-	 * Gets the sync status dto.
+	 * 
+	 * 
+	 * /** Gets the packet size.
 	 *
-	 * @return the sync status dto
+	 * @return the packet size
 	 */
-	public SyncStatusDto getSyncStatus() {
-		return syncStatus;
+	public BigInteger getPacketSize() {
+		return packetSize;
 	}
 
 	/**
-	 * Sets the sync status dto.
+	 * Sets the packet size.
 	 *
-	 * @param syncStatusDto
-	 *            the new sync status dto
+	 * @param packetSize
+	 *            the new packet size
 	 */
-	public void setSyncStatus(SyncStatusDto syncStatusDto) {
-		this.syncStatus = syncStatusDto;
+	public void setPacketSize(BigInteger packetSize) {
+		this.packetSize = packetSize;
+	}
+
+	/**
+	 * Gets the packet hash value.
+	 *
+	 * @return the packet hash value
+	 */
+	public String getPacketHashValue() {
+		return packetHashValue;
+	}
+
+	/**
+	 * Sets the packet hash value.
+	 *
+	 * @param packetHashValue
+	 *            the new packet hash value
+	 */
+	public void setPacketHashValue(String packetHashValue) {
+		this.packetHashValue = packetHashValue;
+	}
+
+	/**
+	 * Gets the supervisor status.
+	 *
+	 * @return the supervisor status
+	 */
+	public String getSupervisorStatus() {
+		return supervisorStatus;
+	}
+
+	/**
+	 * Sets the supervisor status.
+	 *
+	 * @param supervisorStatus
+	 *            the new supervisor status
+	 */
+	public void setSupervisorStatus(String supervisorStatus) {
+		this.supervisorStatus = supervisorStatus;
+	}
+
+	/**
+	 * Gets the supervisor comment.
+	 *
+	 * @return the supervisor comment
+	 */
+	public String getSupervisorComment() {
+		return supervisorComment;
+	}
+
+	/**
+	 * Sets the supervisor comment.
+	 *
+	 * @param supervisorComment
+	 *            the new supervisor comment
+	 */
+	public void setSupervisorComment(String supervisorComment) {
+		this.supervisorComment = supervisorComment;
+	}
+
+	/**
+	 * Gets the optional values.
+	 *
+	 * @return the optional values
+	 */
+	public JSONArray getOptionalValues() {
+		return optionalValues;
+	}
+
+	/**
+	 * Sets the optional values.
+	 *
+	 * @param optionalValues
+	 *            the new optional values
+	 */
+	public void setOptionalValues(JSONArray optionalValues) {
+		this.optionalValues = optionalValues;
 	}
 
 	/**

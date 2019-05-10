@@ -47,6 +47,7 @@ import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
+import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
@@ -110,7 +111,7 @@ public class RegistrationSyncControllerTest {
 	SignatureUtil signatureUtil;
 	@Mock
 	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
@@ -141,23 +142,24 @@ public class RegistrationSyncControllerTest {
 		registrationSyncRequestDTO.setRequest(list);
 		registrationSyncRequestDTO.setId("mosip.registration.sync");
 		registrationSyncRequestDTO.setVersion("1.0");
-		registrationSyncRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		arrayToJson=gson.toJson(registrationSyncRequestDTO);
-		SyncResponseDto syncResponseDto = new SyncResponseDto();
+		registrationSyncRequestDTO
+				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		arrayToJson = registrationSyncRequestDTO.toString();
+		// arrayToJson = gson.toJson(registrationSyncRequestDTO);
+		SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
 		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		syncResponseDto.setRegistrationId("1001");
-		syncResponseDto.setParentRegistrationId("12334");
-		syncResponseDto.setMessage("Registartion Id's are successfully synched in Sync table");
+
 		syncResponseDto.setStatus("SUCCESS");
 		syncResponseFailureDto.setRegistrationId("1001");
-		syncResponseFailureDto.setParentRegistrationId("12334");
+
 		syncResponseFailureDto.setMessage("Registartion Id's are successfully synched in Sync table");
 		syncResponseFailureDto.setStatus("FAILURE");
 		syncResponseFailureDto.setErrorCode("Test");
 		syncResponseDtoList = new ArrayList<>();
 		syncResponseDtoList.add(syncResponseDto);
 		syncResponseDtoList.add(syncResponseFailureDto);
-		
+
 
 		signatureResponse=Mockito.mock(SignatureResponse.class);
 		when(signatureUtil.signResponse(Mockito.any(String.class))).thenReturn(signatureResponse);
@@ -176,10 +178,16 @@ public class RegistrationSyncControllerTest {
 	@Test
 	@Ignore
 	public void syncRegistrationControllerSuccessTest() throws Exception {
+		Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(registrationSyncRequestDTO);
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
-		
-		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
-				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
+		Mockito.when(registrationSyncRequestValidator.validate(ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(Boolean.TRUE);
+
+		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
+				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(arrayToJson.getBytes()).header("Center-Machine-RefId", "10011_10011")
+				.header("timestamp", "2019-05-07T05:13:55.704Z")).andExpect(status().isOk());
 	}
 
 	/**
@@ -193,8 +201,10 @@ public class RegistrationSyncControllerTest {
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
-		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
-				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+		this.mockMvc
+				.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
+						.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isBadRequest());
 	}
 
 }

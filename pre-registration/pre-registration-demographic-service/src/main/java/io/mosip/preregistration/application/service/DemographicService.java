@@ -292,7 +292,7 @@ public class DemographicService {
 						"Pre ID generation end time : " + DateUtils.getUTCCurrentDateTimeString());
 				DemographicEntity demographicEntity = demographicRepository
 						.save(serviceUtil.prepareDemographicEntityForCreate(demographicRequest,
-								StatusCodes.PENDING_APPOINTMENT.getCode(), "test@gmail.com", preId));
+								StatusCodes.PENDING_APPOINTMENT.getCode(), authUserDetails().getUserId(), preId));
 				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity);
 
 				mainResponseDTO.setResponse(res);
@@ -361,7 +361,7 @@ public class DemographicService {
 					if (!serviceUtil.isNull(demographicEntity)) {
 						demographicEntity = demographicRepository.update(
 								serviceUtil.prepareDemographicEntityForUpdate(demographicEntity, demographicRequest,
-										demographicEntity.getStatusCode(), "test@gmail.com", preRegistrationId));
+										demographicEntity.getStatusCode(), authUserDetails().getUserId(), preRegistrationId));
 					} else {
 						throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.getCode(),
 								ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
