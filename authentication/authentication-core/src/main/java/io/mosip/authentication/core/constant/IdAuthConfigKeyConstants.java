@@ -30,7 +30,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_VID_VALIDITY_HOURS = "mosip.vid.validity.hours";
 	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
-	public static final String EKYC_TTL_HOURS = "ekyc.ttl.days";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String DOB_REQ_DATE_PATTERN = "dob.req.date.pattern";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
@@ -38,6 +37,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
 	public static final String OTP_CONTENT_TEMPLATE = "mosip.otp.mail.content.template";
+	public static final String OTP_CONTEXT = "ida.otp.context";
 	public static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";
 	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "mosip.auth.mail.subject.template";
@@ -71,4 +71,5 @@ public final class IdAuthConfigKeyConstants {
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
 	public static final String USERID_RID = null;
+	
 }
