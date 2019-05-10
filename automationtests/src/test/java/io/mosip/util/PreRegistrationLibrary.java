@@ -464,11 +464,44 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return  configParamObject;
 	}
-	/*public boolean validateConfigProperty()
+	public boolean validateConfigProperty()
 	{
-		
+		JSONObject configParamObject=new JSONObject();
+		String applicationURL = commonLibrary.fetch_IDRepo().get("applicationURL");
+		String preRegistrationPropertyURL = commonLibrary.fetch_IDRepo().get("preRegistrationPropertyURL");
+		String applicationProperty = commonLibrary.fetch_IDRepo().get("applicationProperty");
+		String preRegistrationProperty = commonLibrary.fetch_IDRepo().get("preRegistrationProperty");
+		configParamObject=readConfigProperty(applicationURL, applicationProperty, configParamObject);
+		configParamObject=readConfigProperty(preRegistrationPropertyURL, preRegistrationProperty, configParamObject);
+		JSONObject expectedResponseBody = createRequest("PreRegistrationConfigData/PreRegistrationConfigData_smoke");
+		JSONObject expectedObj = (JSONObject) expectedResponseBody;
+		JSONObject actualObj = (JSONObject) configParamObject;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode requestJson = mapper.readTree(expectedObj.toString());
+			JsonNode responseJson = mapper.readTree(actualObj.toString());
+			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
+
+			logger.error("======" + diffJson + "==========");
+			if (diffJson.toString().equals("[]")) {
+				logger.info("equal");
+				return true;
+			}
+
+			for (int i = 0; i < diffJson.size(); i++) {
+				JsonNode operation = diffJson.get(i);
+				if (!operation.get("op").toString().equals("\"move\"")) {
+					logger.error("change in configparameter kindly check then run your script");
+					return false;
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.info("equal");
+		return true;
 	}
-*/
 	/**
 	 * Converting byte zip array into zip and saving into preregdocs folder
 	 * 
@@ -1691,7 +1724,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public JSONObject createRequest(String testSuite) {
 		JSONObject createPregRequest = null;
-		// testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		/**
 		 * Reading request body from configpath
 		 */

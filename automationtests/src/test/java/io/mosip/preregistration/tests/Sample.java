@@ -76,10 +76,23 @@ public class Sample extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void updateDemographicDetailsOfExpiredAppointment() {
-		lib.syncAvailability();
-	}
+	public void getAuditDataForReBooking() {
+	/*	List preRegistrationId = new ArrayList();
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		preRegistrationId.add(preID);
+		lib.reverseDataSync(preRegistrationId);
+*/
+	//	ApplicationLibrary api=new ApplicationLibrary();
+		//.get_RequestSync("https://tf-proxy.southeastasia.cloudapp.azure.com/preregistration/v1/appointment/availability/sync");
+			}
 
 	@Override
 	public String getTestName() {

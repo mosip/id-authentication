@@ -70,9 +70,6 @@ public class Audit extends BaseTestCase implements ITest {
 		initialize();
 		authToken = lib.getToken();
 	}
-	/**
-	 * Batch job service for expired application
-	 */
 	@Test
 	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -85,13 +82,12 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<Object> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
-		Assert.assertEquals(true, auditDatas.equals(expectedRequest));
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
 	}
 	@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
@@ -101,7 +97,8 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<Object> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		Assert.assertEquals(true, auditDatas.equals(expectedRequest));
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
 	}
 	@Test
 	public void getAuditDataForDemographicUpdate() {
@@ -117,7 +114,8 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<Object> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		Assert.assertEquals(true, auditDatas.equals(expectedRequest));
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
 	}
 	@Test
 	public void getAuditDataForDemographicFetchAllApplication() {
@@ -130,16 +128,100 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<Object> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		System.out.println("====================="+auditDatas.toString());
-		if(auditDatas.equals(expectedRequest))
-			logger.info("both object are equal");
-		else
-		{
-			logger.info("expected is==="+expectedRequest.toString());
-			logger.info("but found is === "+auditDatas.toString());
-			Assert.fail();
-		}
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
 	}
+	@Test
+	public void getAuditDataForDemographicException() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createRequest = lib.createRequest(testSuite);
+		createRequest.put("version", "2.0");
+		System.out.println(createRequest.toString());
+		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicException");
+		expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		System.out.println(auditDatas.toString());
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
+	}
+	@Test
+	public void getAuditDataForGetAvailbleSlot() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		Response fetchCenterResponse = lib.FetchCentre();
+		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditFetchAvailibilityCenter");
+		expectedRequest.put("session_user_id", userId);
+		expectedRequest.put("ref_id", regCenterId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");
+	}
+	@Test
+	public void getAuditDataForBooking() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response fetchCenterResponse = lib.FetchCentre();
+		lib.BookAppointment(fetchCenterResponse, preID);
+		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditForBooking");
+		expectedRequest.put("session_user_id", userId);
+		expectedRequest.put("ref_id", regCenterId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 2);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result, "object are not equal");
+	}
+	@Test
+	public void getAuditDataForCancelBooking() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response fetchCenterResponse = lib.FetchCentre();
+		lib.BookAppointment(fetchCenterResponse, preID);
+		lib.CancelBookingAppointment(preID);
+		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditForCancelAppointment");
+		expectedRequest.put("session_user_id", userId);
+		expectedRequest.put("ref_id", regCenterId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 3);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result, "object are not equal");
+	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getAuditDataForReBooking() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response fetchCenterResponse = lib.FetchCentre();
+		lib.BookAppointment(fetchCenterResponse, preID);
+		fetchCenterResponse = lib.FetchCentre();
+		lib.BookAppointment(fetchCenterResponse, preID);
+		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditForReBooking");
+		expectedRequest.put("session_user_id", userId);
+		expectedRequest.put("ref_id", regCenterId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 4);
+		System.out.println("actual result"+auditDatas.toString());
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result, "object are not equal");
+	}
+
+
 	
 	@Override
 	public String getTestName() {
