@@ -62,7 +62,13 @@ public enum AuthErrorCode {
 
 	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
 	
-	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context");
+	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context"),
+	
+	PASSWORD_POLICY_EXCEPTION("KER-ATH-011","Password that is entered does not meet the password policy"),
+	
+	OLD_PASSWORD_NOT_MATCH("KER-ATH-012","Old password entered is incorrect");
+	
+	
 
 	/**
 	 * The error code

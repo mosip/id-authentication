@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -45,6 +46,22 @@ public class ApiExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
+	@ExceptionHandler(AccountServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> accountServiceException(HttpServletRequest httpServletRequest,
+			final AccountServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(AccountManagementServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> accountManagementServiceException(
+			HttpServletRequest httpServletRequest, final AccountManagementServiceException exception)
+			throws IOException {
+
+		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
+	}
+
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
@@ -61,14 +78,23 @@ public class ApiExceptionHandler {
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
-	
+
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultServiceErrorHandler(HttpServletRequest request,
 			Exception e) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
-		ServiceError error = new ServiceError(AccountManagementErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
+		ServiceError error = new ServiceError(AccountManagementErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+				e.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private ResponseEntity<ResponseWrapper<ServiceError>> getServiceErrorResponseEntity(BaseUncheckedException e,
+			HttpStatus httpStatus, HttpServletRequest httpServletRequest) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, httpStatus);
 	}
 
 }

@@ -16,7 +16,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
-import io.mosip.admin.accountmgmt.dto.UnBlockResponseDto;
+import io.mosip.admin.accountmgmt.dto.PasswordDto;
+import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
@@ -45,9 +46,15 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Value("${mosip.admin.accountmgmt.user-name-url}")
 	private String userNameUrl;
-	
+
 	@Value("${mosip.admin.accountmgmt.unblock-url}")
 	private String unBlockUrl;
+
+	@Value("${mosip.admin.accountmgmt.change-passoword-url}")
+	private String changePassword;
+
+	@Value("${mosip.admin.accountmgmt.reset-password-url}")
+	private String resetPassword;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -70,6 +77,67 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return userNameDto;
 	}
 
+	
+
+	@Override
+	public StatusResponseDto unBlockUserName(String userId) {
+		String response = null;
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
+		response = callAuthManagerService(urlBuilder.toString());
+		StatusResponseDto unBlockResponseDto = getSuccessResponse(response);
+		return unBlockResponseDto;
+	}
+
+	private StatusResponseDto getSuccessResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		StatusResponseDto unBlockResponseDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AccountServiceException(validationErrorsList);
+		}
+		ResponseWrapper<StatusResponseDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody,
+					new TypeReference<ResponseWrapper<StatusResponseDto>>() {
+					});
+			unBlockResponseDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
+					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		return unBlockResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto changePassword(PasswordDto passwordDto) {
+		String response = null;
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(changePassword + "registrationclient/");
+		response = callAuthManagerService(urlBuilder.toString());
+
+		return getSuccessResponse(response);
+	}
+
+	@Override
+	public StatusResponseDto resetPassword(PasswordDto passwordDto) {
+		String response = null;
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(resetPassword + "registrationclient/");
+		response = callAuthManagerService(urlBuilder.toString());
+		return getSuccessResponse(response);
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(mobile);
+		String response = callAuthManagerService(urlBuilder.toString());
+		return getUserDetailFromResponse(response);
+	}
+	
 	private String callAuthManagerService(String url) {
 		String response = null;
 		try {
@@ -119,36 +187,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 		return userNameDto;
 	}
-
-	@Override
-	public UnBlockResponseDto unBlockUserName(String userId) {
-		String response=null;
-		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
-		response = callAuthManagerService(urlBuilder.toString());
-		UnBlockResponseDto unBlockResponseDto=getSuccessResponse(response);
-		return unBlockResponseDto;
-	}
 	
-	private UnBlockResponseDto getSuccessResponse(String responseBody) {
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		UnBlockResponseDto unBlockResponseDto = null;
-		if (!validationErrorsList.isEmpty()) {
-			throw new AccountServiceException(validationErrorsList);
-		}
-		ResponseWrapper<UnBlockResponseDto> responseObject = null;
-		try {
-
-			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<UnBlockResponseDto>>() {
-			});
-			unBlockResponseDto = responseObject.getResponse();
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
-					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
-		}
-
-		return unBlockResponseDto;
-	}
+	
+	
 
 }
