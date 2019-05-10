@@ -108,6 +108,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	InternalRegistrationStatusDto registrationStatusDto;
 	List<AbisRequestDto> abisInsertRequestList;
 	List<AbisRequestDto> abisIdentifyRequestList;
+	String registrationId;
 
 	public void deployVerticle() throws RegistrationProcessorCheckedException {
 		try {
@@ -124,7 +125,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 						try {
 							consumerListener(message, abisInBoundaddress, queue);
 						} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
-
+							registrationStatusDto.setRegistrationId(registrationId);
 							registrationStatusDto.setLatestTransactionStatusCode(
 									RegistrationTransactionStatusCode.REPROCESS.toString());
 							registrationStatusDto
@@ -139,11 +140,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				mosipQueueManager.consume(queue, abisOutboundAddresses.get(i), listener);
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
-		
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("80655732150002920190122164907");
 		process(dto);
@@ -155,8 +156,9 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
-		String registrationId = object.getRid();
+		registrationId = object.getRid();
 		String exceptionMesaage = "";
+		registrationStatusDto.setRegistrationId(registrationId);
 
 		List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);
 		if (abisRefList == null || abisRefList != null && abisRefList.isEmpty()) {

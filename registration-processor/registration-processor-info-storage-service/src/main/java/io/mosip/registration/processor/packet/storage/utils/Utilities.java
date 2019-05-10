@@ -30,6 +30,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
@@ -87,11 +88,13 @@ public class Utilities {
 	@Value("${registration.processor.demographic.identity}")
 	private String getRegProcessorDemographicIdentity;
 
-	/*@Value("${registration.processor.document.category}")
-	private String getRegProcessorDocumentCategory;
-
-	@Value("${registration.processor.applicant.type}")
-	private String getRegProcessorApplicantType;*/
+	/*
+	 * @Value("${registration.processor.document.category}") private String
+	 * getRegProcessorDocumentCategory;
+	 * 
+	 * @Value("${registration.processor.applicant.type}") private String
+	 * getRegProcessorApplicantType;
+	 */
 
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
@@ -100,21 +103,20 @@ public class Utilities {
 	private long elapseTime;
 
 	@Value("${registration.processor.abis.json}")
-	private String registrationProcessorAbisJson  ;
-	
+	private String registrationProcessorAbisJson;
+
 	@Autowired
 	private PacketInfoDao packetInfoDao;
-	
+
 	@Autowired
 	private RegistrationStatusDao registrationStatusDao;
-	
+
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	private static final String REG_TYPE_NEW = "New";
 	private static final String REG_TYPE_UPDATE = "Update";
 	private static final String IDENTIFY = "IDENTIFY";
-
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
 	private static final String OUTBOUNDQUEUENAME = "outboundQueueName";
@@ -129,43 +131,60 @@ public class Utilities {
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public List<List<String>> getInboundOutBoundAddressList() throws IOException {
+	public List<List<String>> getInboundOutBoundAddressList() throws RegistrationProcessorCheckedException {
 		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
 		List<String> inBoundAddressList = new ArrayList<>();
 		List<String> outBountAddressList = new ArrayList<>();
 
 		List<List<String>> inboundOutBoundList = new ArrayList<>();
-		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
-		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
-		for (Object object : regProcessorAbisArray) {
-			JSONObject jsonObject = new JSONObject((Map) object);
-			inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
-			outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
-			inboundOutBoundList.add(inBoundAddressList);
-			inboundOutBoundList.add(outBountAddressList);
+		try {
+			JSONObject regProcessorAbisJson;
 
+			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
+
+			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+			for (Object object : regProcessorAbisArray) {
+				JSONObject jsonObject = new JSONObject((Map) object);
+				inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
+				outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
+				inboundOutBoundList.add(inBoundAddressList);
+				inboundOutBoundList.add(outBountAddressList);
+
+			}
+		} catch (IOException e) {
+			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
 		return inboundOutBoundList;
 	}
 
-	public List<MosipQueue> getMosipQueuesForAbis() throws IOException {
+	public List<MosipQueue> getMosipQueuesForAbis() throws RegistrationProcessorCheckedException {
 		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
-		JSONObject regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
-		JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
 		List<MosipQueue> mosipQueueList = new ArrayList<>();
 
-		for (Object jsonObject : regProcessorAbisArray) {
-			JSONObject json = new JSONObject((Map) jsonObject);
-			String userName = JsonUtil.getJSONValue((JSONObject) json, USERNAME);
-			String password = JsonUtil.getJSONValue((JSONObject) json, PASSWORD);
-			String brokerUrl = JsonUtil.getJSONValue((JSONObject) json, BROKERURL);
-			String typeOfQueue = JsonUtil.getJSONValue((JSONObject) json, TYPEOFQUEUE);
-			MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password, brokerUrl);
-			if (mosipQueue == null)
-				throw new QueueConnectionNotFound(
-						PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());
-			mosipQueueList.add(mosipQueue);
+		JSONObject regProcessorAbisJson;
+		try {
+			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
 
+			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+
+			for (Object jsonObject : regProcessorAbisArray) {
+				JSONObject json = new JSONObject((Map) jsonObject);
+				String userName = JsonUtil.getJSONValue((JSONObject) json, USERNAME);
+				String password = JsonUtil.getJSONValue((JSONObject) json, PASSWORD);
+				String brokerUrl = JsonUtil.getJSONValue((JSONObject) json, BROKERURL);
+				String typeOfQueue = JsonUtil.getJSONValue((JSONObject) json, TYPEOFQUEUE);
+				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
+						brokerUrl);
+				if (mosipQueue == null)
+					throw new QueueConnectionNotFound(
+							PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());
+				mosipQueueList.add(mosipQueue);
+
+			}
+		} catch (IOException e) {
+			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
 		return mosipQueueList;
 
@@ -272,12 +291,13 @@ public class Utilities {
 		}
 		return NEW_PACKET;
 	}
-	
+
 	public String getLatestTransactionId(String registrationId) {
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
 	}
+
 	public List<String> getMatchedRegistrationIds(InternalRegistrationStatusDto registrationStatusDto, String status)
 			throws ApisResourceAccessException, IOException {
 
@@ -287,10 +307,11 @@ public class Utilities {
 		List<String> filteredRIds = new ArrayList<>();
 		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
 
-		List<String> regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
+		List<String> regBioRefIds = packetInfoDao
+				.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			List<AbisResponseDto> abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0), latestTransactionId,
-					IDENTIFY);
+			List<AbisResponseDto> abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0),
+					latestTransactionId, IDENTIFY);
 			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
 				abisResponseDetDtoList.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
 			}
