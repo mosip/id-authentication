@@ -57,8 +57,7 @@ this.service.registerUser(this.requestDTO).subscribe(data=>{
 
 dateFormatter(date:Date){
   const pipe = new DatePipe('en-US');
-  let formattedDate = pipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSS');
-  formattedDate = formattedDate + 'Z';
+  let formattedDate = pipe.transform(date, 'yyyy-MM-dd');
   return formattedDate;
 }
   cancel(){

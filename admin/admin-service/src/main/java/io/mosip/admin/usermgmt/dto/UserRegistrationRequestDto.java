@@ -26,7 +26,7 @@ public class UserRegistrationRequestDto {
 	@NotBlank
 	private String emailID;
 	@NotNull
-	private LocalDateTime dateOfBirth;
+	private LocalDate dateOfBirth;
 	@NotBlank
 	private String gender;
 	@NotBlank
