@@ -28,9 +28,7 @@ import io.mosip.registration.config.RegistrationUpdate;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
 import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
-
 import javafx.application.Application;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -42,6 +40,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Decryption the Client Jar with Symmetric Key
@@ -133,7 +132,7 @@ public class ClientJarDecryption extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage stage) throws Exception {
 		System.out.println("before Decryption");
 		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
@@ -224,7 +223,7 @@ public class ClientJarDecryption extends Application {
 							decryptedRegServiceBytes);
 
 					String libPath = new File("lib").getAbsolutePath();
-					String cmd = "java -Dspring.profiles.active=qa -Dfile.encoding=UTF-8 -Dmosip.dbpath="
+					String cmd = "java -Dspring.profiles.active="+properties.getProperty("mosip.env")+" -Dfile.encoding=UTF-8 -Dmosip.dbpath="
 								+ properties.getProperty("mosip.dbpath") + " -Dmosip.dbkey="
 								+ new String(getValue(MOSIP_REGISTRATION_DB_KEY, properties)) + " -cp " + tempPath
 								+ "/*;" + libPath + "/* io.mosip.registration.controller.Initialization";
@@ -264,7 +263,8 @@ public class ClientJarDecryption extends Application {
 		StackPane stackPane = new StackPane();
 		stackPane.setAlignment(Pos.CENTER);
 		stackPane.getChildren().add(progressBar);
-		Scene scene = new Scene(stackPane, 400, 500);
+		Scene scene = new Scene(stackPane, 200, 100);
+		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
 	}
 

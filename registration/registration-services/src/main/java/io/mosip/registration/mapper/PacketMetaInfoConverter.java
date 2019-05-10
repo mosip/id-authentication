@@ -1,15 +1,11 @@
 package io.mosip.registration.mapper;
 
-import java.beans.PropertyDescriptor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -76,12 +72,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
+			boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+					|| source.isUpdateUINChild();
 			identity.setExceptionPhotograph(buildExceptionPhotograph(
-					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child) || source.isUpdateUINChild()
+					isIntroducerFace
 							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getNumOfRetries()
 							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getNumOfRetries(),
-					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child) || source.isUpdateUINChild()
-							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace()
+					isIntroducerFace ? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace()
 							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace(),
 					source));
 
@@ -176,40 +173,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					runtimeException.getMessage(), runtimeException);
 		}
 		return packetMetaInfo;
-	}
-
-	/**
-	 * Adding uin updated fieldsto identity object.
-	 *
-	 * @param uinUpdateFields  the uin update fields
-	 * @param pd               the pd
-	 * @param beanWrapperValue the bean wrapper value
-	 */
-	private void addingUinUpdatedFieldstoIdentityObject(List<String> uinUpdateFields, PropertyDescriptor pd,
-			Object beanWrapperValue) {
-		if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue) {
-			if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_NAME)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_NAME_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_AGE)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_AGE_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_FOREIGNER)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_FOREIGNER_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_GENDER)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_GENDER_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_ADDRESS)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_ADDRESS_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_PHONE)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_PHONE_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_EMAIL)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_EMAIL_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_PARENT_DETAILS)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_PARENT_DETAILS_LBL);
-			} else if (pd.getName().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIOMETRICS)) {
-				uinUpdateFields.add(RegistrationConstants.UIN_UPDATE_BIOMETRICS_LBL);
-			}
-		}
 	}
 
 	private Photograph buildPhotograph(int numRetry, String photographName) {

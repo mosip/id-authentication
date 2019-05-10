@@ -54,10 +54,10 @@ public class RSAEncryptionServiceImpl extends BaseService implements RSAEncrypti
 		try {
 			LOGGER.info(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
-
+		String centerMachineId=	getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress());
 			// encrypt AES Session Key using RSA public key
 			PublicKey publicKey = PublicKeyGenerationUtil
-					.generatePublicKey(policySyncDAO.getPublicKey(getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress())).getPublicKey());
+					.generatePublicKey(policySyncDAO.getPublicKey(centerMachineId).getPublicKey());
 
 			return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {
