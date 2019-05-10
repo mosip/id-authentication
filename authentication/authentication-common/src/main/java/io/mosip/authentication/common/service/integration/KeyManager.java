@@ -2,22 +2,10 @@ package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +33,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
  * The Class KeyManager is used to decipher the request
@@ -60,18 +47,9 @@ public class KeyManager {
 	/** The Constant ERROR_CODE. */
 	private static final String ERROR_CODE = "errorCode";
 
-	/** The Constant AESPADDING. */
-	private static final String AESPADDING = "AES/CBC/PKCS5Padding";
-
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
-
 	
-	/** The secure random. */
-	private static  SecureRandom secureRandom;
-
-
-
 	/** The app id. */
 	@Value("${" +IdAuthConfigKeyConstants.APPLICATION_ID+ "}")
 	private String appId;
@@ -79,10 +57,11 @@ public class KeyManager {
 	/** The partner id. */
 	@Value("${" +IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID+ "}")
 	private String partnerId;
-
 	
+	/** The key splitter. */
 	@Value("${" +IdAuthConfigKeyConstants.KEY_SPLITTER+ "}")
 	private String keySplitter;
+	
 	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
@@ -90,10 +69,6 @@ public class KeyManager {
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-
-	/** The key generator. */
-	@Autowired
-	private KeyGenerator keyGenerator;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -144,6 +119,14 @@ public class KeyManager {
 		return request;
 	}
 
+	/**
+	 * Kernel decrypt.
+	 *
+	 * @param encryptedRequest the encrypted request
+	 * @param encryptedSessionKey the encrypted session key
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
 	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException {
@@ -211,38 +194,13 @@ public class KeyManager {
 		}
 	}
 	
-	
 	/**
-	 * symmetricDecrypt method used to decrypt the session key present.
+	 * This method is used to encrypt the KYC identity response
 	 *
-	 * @param secretKey the secret key
-	 * @param encryptedDataByteArr the encrypted data byte arr
-	 * @return the byte[]
+	 * @param responseBody the response body
+	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public byte[] symmetricDecrypt(SecretKey secretKey, byte[] encryptedDataByteArr) throws IdAuthenticationAppException  {
-		  Cipher cipher=null;
-		try {
-			cipher = Cipher.getInstance(AESPADDING);
-			 cipher.init(Cipher.DECRYPT_MODE, secretKey,
-						new IvParameterSpec(Arrays.copyOfRange(encryptedDataByteArr, encryptedDataByteArr.length - cipher.getBlockSize(), encryptedDataByteArr.length)),secureRandom);
-			 return cipher.doFinal(Arrays.copyOf(encryptedDataByteArr, encryptedDataByteArr.length - cipher.getBlockSize()));
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
-		}
-		 
-		}
-
-	/**
-	 * getSymmetricKey method used to generate a 
-	 * symmetric key
-	 *
-	 * @return the symmetric key
-	 */
-	public SecretKey getSymmetricKey() {
-		return keyGenerator.getSymmetricKey();
-	}
-	
 	@SuppressWarnings("unchecked")
 	public String encryptData(Map<String, Object> responseBody) throws IdAuthenticationAppException {
 		Optional<String> identity = Optional.ofNullable(responseBody.get("identity"))
