@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
@@ -43,52 +44,58 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to Fetch Appointment Details related Positive and Negative test cases
+ * Test Class to Fetch Appointment Details related Positive and Negative test
+ * cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
 
 public class FetchAppointmentDetails extends BaseTestCase implements ITest {
-//implement,IInvokedMethodListener
+	// implement,IInvokedMethodListener
 	public FetchAppointmentDetails() {
 
 	}
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
-	protected static String testCaseName = "";
+
 	private static Logger logger = Logger.getLogger(FetchAppointmentDetails.class);
+	static String testCaseName = "";
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	static String testParam=null;
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	String testParam = null;
 	boolean status_val = false;
-	private static String preReg_URI ;
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	
-	
-	static String dest = "";
-	static String folderPath = "preReg/FetchAppointmentDetails";
-	static String outputFile = "FetchAppointmentDetailsOutput.json";
-	static String requestKeyFile = "FetchAppointmentDetailsRequest.json";
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	/**
-	 * Reading data from file
-	 * @param context
-	 * @return
-	 * @throws Exception
+	String preReg_URI;
+	CommonLibrary commonLibrary = new CommonLibrary();
+	String dest = "";
+	String folderPath = "preReg/FetchAppointmentDetails";
+	String outputFile = "FetchAppointmentDetailsOutput.json";
+	String requestKeyFile = "FetchAppointmentDetailsRequest.json";
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	Object[][] readFolder = null;
+
+	/*
+	 * Given Fetch Appointment Details valid data when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the user should be able to retrieve Pre-Registration appointment details
+	 *  by pre-Registration id.
+	 * 
+	 * Given Invalid request when when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the user should get Error response along with Error Code and Error
+	 * messages as per Specification
+	 * 
 	 */
 	@DataProvider(name = "FetchAppointmentDetails")
-	public static Object[][] readData(ITestContext context) throws Exception {
-
-		//testParam="smoke";
-		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+	public Object[][] readData(ITestContext context) throws Exception {
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -96,78 +103,67 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		default:
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
+	
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "FetchAppointmentDetails")
 	public void fetchAppointmentDetails(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-        JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
-		
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+
 		String testCase = object.get("testCaseName").toString();
-		/*String val = testCaseName.contains("PendingAppointment")
-				?(testCaseName="cond1"):testCaseName.contains("FetchAppointmentDetailsByPassingInvalidStatusCode")
-				?(testCaseName="cond2"):(testCaseName="cond3");*/
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
+
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		
-		if(testCase.contains("smoke"))
-		{	
-		
-		
-		//Fetch availability[or]center details
-		Response fetchCenter = preRegLib.FetchCentre();
-		
-		//Book An Appointment for the available data
-		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-		
-		
-		//Fetch Appointment Details
-		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
-		
-		
-		outerKeys.add("responsetime");
-		innerKeys.add("registration_center_id");
-		innerKeys.add("appointment_date");
-		innerKeys.add("time_slot_from");
-		innerKeys.add("time_slot_to");
-		
-		status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys, innerKeys);
-		
-		}
-		
-		else
-		{	
-		
-			if(testCase.contains("FetchAppointmentDetailsByPassingInvalidStatusCode"))
-			{	
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+
+		if (testCase.contains("smoke")) {
+
+			// Fetch availability[or]center details
+			Response fetchCenter = preRegLib.FetchCentre();
+
+			// Book An Appointment for the available data
+			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+
+			// Fetch Appointment Details
+			Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
+             
+			logger.info("fetchAppointmentDetailsResponse:"+fetchAppointmentDetailsResponse.asString());
 			
-			  String statusCode=actualRequest.get("statusCode").toString();
-			  preRegLib.updateStatusCode(statusCode, preId);
-			  
-			}
-			else
-			{
+			outerKeys.add("responsetime");
+			innerKeys.add("registration_center_id");
+			innerKeys.add("appointment_date");
+			innerKeys.add("time_slot_from");
+			innerKeys.add("time_slot_to");
+
+			status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys,
+					innerKeys);
+
+		}
+
+		else {
+
+			if (testCase.contains("FetchAppointmentDetailsByPassingInvalidStatusCode")) {
+
+				String statusCode = actualRequest.get("statusCode").toString();
+				preRegLib.updateStatusCode(statusCode, preId);
+
+			} else {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
-			System.out.println("PreId:"+preId);
+		
 			preReg_URI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
-			System.out.println("Status Code::"+testCase+"Fetch App Det:"+Actualresponse.asString());
+			System.out.println("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
-		
 		}
-		
-		
+
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -183,24 +179,21 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			setFinalStatus = true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-	
-		
+
 	}
 
-	
-	
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
+
 		testCaseName = object.get("testCaseName").toString();
-		
-		 /**
-         * Fetch Appointment Details Resource URI            
-         */
-        
-        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
-        authToken=preRegLib.getToken();
+
+		/**
+		 * Fetch Appointment Details Resource URI
+		 */
+
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+		authToken = preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -221,22 +214,21 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath =  "src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source =  "src/test/resources/" + folderPath + "/";
-		
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-				preIds.add(preId);
+		String source = "src/test/resources/" + folderPath + "/";
+
+		// Add generated PreRegistrationId to list to be Deleted from DB
+		// AfterSuite
+		preIds.add(preId);
 	}
 
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }

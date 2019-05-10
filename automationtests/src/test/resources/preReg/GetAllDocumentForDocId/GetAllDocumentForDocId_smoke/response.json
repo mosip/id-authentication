@@ -1,20 +1,9 @@
 {
-"id":"mosip.pre-registration.document.fetch.metadata",
-"version":"1.0",
-"errors":null,
-"responsetime":"2019-04-12T05:29:42.455Z",
-"response":
-[
-{
-"docName":"AadhaarCard_POI.pdf",
-"documentId":"f916e709-5ce3-11e9-8f3d-7b59343c07e0",
-"docCatCode":"POI","docTypCode":"identity",
-"multipartFile":"JVBERi0xLjUNCiW1tbW1DQoxIDAgb2JqqV2pnL5lvuW+Fb6VvlW+1b41vrW+db
-F5AXSf+QY9/e7a+dpbbnuagTVQL5
-MDAwMDEzIDY1NTM1IGYNCjAwMDAwMDAwMTQgNjU1MzUgZg0KMDAwMDAwMDAxNSA2NTUzNSBmDQ
-owMDAwMDAwMDE2IDY1NTM1IGYNCjAwMDAwMDAwMTcgNjU1MzUgZg0KMDAwMDAwMDAxOCA2NTUz
-NSBmDQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAwNTQ5MDEgMDAwMDAgbg0KMDAwMDA1NDkyOCAwMDA
-GFydHhyZWYNCjIyODQ1OQ0KJSVFT0Y="
-}
-]
+   "id": "mosip.pre-registration.document.fetch.content",
+   "version" : "1.0",
+   "responsetime": "2019-01-16T17:31:04.021Z",
+   "response":{
+      "multipartFile": "ByteArray"
+    },
+   "errors": null
 }

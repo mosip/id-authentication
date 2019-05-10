@@ -87,7 +87,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	@DataProvider(name = "DeleteAllDocumentsByPreRegID")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -105,31 +105,31 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		System.out.println("Dele Doc:" + testCaseName);
 
 		if (testCaseName.contains("smoke")) {
 
 			// Creating the Pre-Registration Application
 			Response createApplicationResponse = preRegLib.CreatePreReg();
 
-			preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 			// Get PreId from Document upload response
-			preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 			// Delete All Document by Pre-Registration Id
 			Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
 
+			System.out.println("Dele Doc:" + delAllDocByPreId.asString());
 			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
 			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
 
-			preReg_URI = preReg_URI + preRegistrationId;
-			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preReg_URI);
+		String	preRegURI = preReg_URI + preRegistrationId;
+			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 

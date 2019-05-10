@@ -85,7 +85,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	public static Object[][] readData1(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -120,7 +120,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
@@ -135,13 +135,13 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
 
-		switch ("RetrivePreIdByRegCenterIdByPassingInvalidFromDate") {
+		switch (val) {
 
 		case "RetrivePreIdByRegCenterId_smoke":
 
 			// Retrieve all pre-registration ids by registration center id
 			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
-
+            System.out.println("REEEEE::"+retrivePreIDFromRegCenId.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("registration_center_id");
 			innerKeys.add("pre_registration_ids");

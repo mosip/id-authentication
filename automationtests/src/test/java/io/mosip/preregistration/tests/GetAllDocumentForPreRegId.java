@@ -37,6 +37,7 @@ import com.google.common.base.Verify;
 import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.AssertKernel;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -96,7 +97,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -112,31 +113,33 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		AssertKernel assertions = new AssertKernel();
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
 		//Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId=createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 		
+		System.out.println("My PreId:"+preId);
 		//Document Upload for created application
-		//Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
 		
 		
 		//Get PreId from Document upload response
-		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 		
 		
 		if(testCaseName.contains("smoke"))
 		{
 			//Get All Document For PreID
-			Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
-			System.out.println("getAllDocResDoc::"+docUploadResponse.asString());
-			outerKeys.add("responsetime");
-			innerKeys.add("documentId");
-			innerKeys.add("multipartFile");
-			
+		   Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
+		   getAllDocRes.jsonPath().get("response.documentsMetaData[0].documentId").toString();
+		   outerKeys.add("responsetime");
+			innerKeys.add("documentsMetaData");
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docName").toString(), "AadhaarCard_POI.pdf");
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docCatCode").toString(), "POA");
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docTypCode").toString(), "address");
 			
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		}

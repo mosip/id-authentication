@@ -51,44 +51,49 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	 * Declaration of all variables
 	 **/
 
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(CancelAnBookedAppointment.class);
+	static String testCaseName = "";
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	static String dest = "";
-	static String folderPath = "preReg/CancelAnBookedAppointment";
-	static String outputFile = "CancelAnBookedOutput.json";
-	static String requestKeyFile = "CancelAnBookedAppointmentRequest.json";
-	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	String dest = "";
+	String folderPath = "preReg/CancelAnBookedAppointment";
+	String outputFile = "CancelAnBookedOutput.json";
+	String requestKeyFile = "CancelAnBookedAppointmentRequest.json";
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	CommonLibrary commonLibrary = new CommonLibrary();
+	String preReg_URI;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	Object[][] readFolder = null;
+	String testParam = null;
 
 	/* implement,IInvokedMethodListener */
 	public CancelAnBookedAppointment() {
 
 	}
 
-	/**
-	 * Data Providers to read the input json files from the folders
+	/*
+	 * Given Cancel Booking Appointment valid data when User Send PUT request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the appointment details for the specified pre-registration id, if
+	 * appointment data exists update the availability for the slot by
+	 * increasing the value and delete the record from the table and update the
+	 * demographic record status "Pending_Appointment".
 	 * 
-	 * @param context
-	 * @return input request file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws ParseException
+	 * Given Invalid request when when User Send PUT request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the user should get Error response along with Error Code and Error
+	 * messages as per Specification
+	 * 
 	 */
 
 	@DataProvider(name = "CancelAnBookedAppointment")
-	public static Object[][] readData(ITestContext context) throws Exception {
-
+	public Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch ("smoke") {
 		case "smoke":
@@ -113,9 +118,8 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
-		System.out.println("PreId::"+preId);
-		
-		if (testCaseName.contains("smoke")) {
+		if (testCaseName.contains("smoke"))
+		{
 			Response fetchCenter = null;
 
 			/* Fetch availability[or]center details */
@@ -124,15 +128,16 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			/* Book An Appointment for the available data */
 			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 
+			
+			/*Cancel an Re-booked Appointment*/
 			if (testCaseName.contains("CancelAnReBookedAppointment")) {
 				fetchCenter = preRegLib.FetchCentre();
 				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
 			}
 
-			System.out.println("PreId22222222::"+preId);
-			// Cancel Booked Appointment Details
+			/*Cancel Booked Appointment Details*/
 			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
-
+			logger.info("CancelBookingApp"+CancelBookingApp.asString());
 			List<? extends Object> val = preRegLib.preregFetchPreregDetails(preId);
 
 			Object[] TestData = null;
@@ -142,9 +147,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 				statusCode = TestData[1].toString();
 
 			}
-
-			System.out.println("Cancel Book App:" + CancelBookingApp.asString());
-
+           logger.info("Status code:"+statusCode);
 			// removing the keys for assertion
 			outerKeys.add("responsetime");
 			innerKeys.add("transactionId");
@@ -166,7 +169,6 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 			preRegURI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.putRequest_WithoutBody(preRegURI);
-			System.out.println("Cancel Book App:" + Actualresponse.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("transactionId");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
@@ -199,7 +201,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	 */
 
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();

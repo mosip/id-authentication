@@ -77,7 +77,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	String testParam = null;
 	boolean status_val = false;
 	JSONParser parser = new JSONParser();
-	Object[][] readFolder = null;
+	
 
 	/* implement,IInvokedMethodListener */
 	public BookingAppointment() {
@@ -85,35 +85,31 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	}
 
 	/*
-	 * Given Booking Appointment valid request when I Send POST request to
+	 * Given Booking Appointment valid request when User Send POST request to
 	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
 	 * should get success response with elements defined as per specifications
-	 * Given Invalid request when I send POST request to
+	 * 
+	 * Given Invalid request when User send POST request to
 	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
 	 * should get Error response along with Error Code and Error messages as per
 	 * Specification
-	 * 
 	 */
-
 	@DataProvider(name = "bookAppointment")
-	public Object[][] readData(ITestContext context) {
-		testParam = context.getCurrentXmlTest().getParameter("testType");
-		try {
-			switch ("smoke") {
-			case "smoke":
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-
-			case "regression":
-
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-			default:
-				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-			}
-		} catch (IOException | ParseException e) {
-			logger.error("Exception occurred in Booking Appointment class in readData method" + e);
+	public  Object[][] readData(ITestContext context) throws Exception {
+		
+		
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch ("smoke") {
+		case "smoke":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+		default:
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-		return readFolder;
 	}
+
+	
 
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "bookAppointment")
@@ -146,8 +142,9 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-		System.out.println("Book App Res:" + bookAppointmentResponse.asString());
-
+		
+		System.out.println("Book App Status:"+bookAppointmentResponse.asString());
+		
 		switch (val) {
 
 		case "BookingAppointment_smoke":
@@ -159,10 +156,15 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			break;
 
 		case "ReBookingAppointment_smoke":
-			fetchCenter = preRegLib.FetchCentre();
-			Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
-			System.out.println("Rebook app::" + rebookAppointmentRes.asString());
-			break;
+			try {
+				fetchCenter = preRegLib.FetchCentre();
+				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
+				System.out.println("Book App Statusr:"+rebookAppointmentRes.asString());
+				break;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
 			String preRegBookingAppointmentURI = preReg_URI + preId;

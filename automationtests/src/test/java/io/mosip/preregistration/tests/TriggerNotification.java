@@ -90,7 +90,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		  testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("regression") {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -125,7 +125,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			System.out.println("triggerNotifyResponse:"+triggerNotifyResponse.asString());
 			
 			
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(triggerNotifyResponse, Expectedresponse, outerKeys, innerKeys);
 			
 			
