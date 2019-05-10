@@ -228,7 +228,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 					.getRegistrationStatus(regId);
 
 			JSONObject jsonObject = utilities.retrieveUIN(regId);
-			String uin=JsonUtil.getJSONValue(jsonObject, UIN);
+			Integer value=JsonUtil.getJSONValue(jsonObject, UIN);
+			String uin= Integer.toString(value);
+			
 			
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
@@ -297,7 +299,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
-
 		return object;
 	}
 

@@ -203,9 +203,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 			NotificationTemplateType type=null;
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
 			if(status.equals("UIN_GENERATOR_PROCESSED")) {
-				if(registrationStatusDto.getRegistrationType().equals("NEW"))
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase("NEW"))
 					type=NotificationTemplateType.UIN_CREATED;
-				if(registrationStatusDto.getRegistrationType().equals("UPDATE"))
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase("UPDATE"))
 					type=NotificationTemplateType.UIN_UPDATE;
 			}
 			else {

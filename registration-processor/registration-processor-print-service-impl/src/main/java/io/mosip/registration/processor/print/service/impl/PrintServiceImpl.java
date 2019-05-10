@@ -187,7 +187,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = idValue;
 			} else if (idType.toString().equalsIgnoreCase(RID)) {
 				JSONObject jsonObject = utilities.retrieveUIN(idValue);
-				uin=JsonUtil.getJSONValue(jsonObject, UIN);
+				Integer value=JsonUtil.getJSONValue(jsonObject, UIN);
+				uin= Integer.toString(value);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), null,
