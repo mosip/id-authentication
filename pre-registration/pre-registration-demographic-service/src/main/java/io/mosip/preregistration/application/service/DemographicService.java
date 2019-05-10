@@ -37,9 +37,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 //import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -120,7 +120,7 @@ public class DemographicService {
 	 * Autowired reference for {@link #JsonValidatorImpl}
 	 */
 	@Autowired
-	private JsonValidatorImpl jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -281,10 +281,9 @@ public class DemographicService {
 				DemographicRequestDTO demographicRequest = request.getRequest();
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateJson(demographicRequest.getDemographicDetails().toJSONString());
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails().toJSONString());
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
-				serviceUtil.validation(idValidation(), demographicRequest.getDemographicDetails());
 				log.info("sessionId", "idType", "id",
 						"Pre ID generation start time : " + DateUtils.getUTCCurrentDateTimeString());
 				String preId = pridGenerator.generateId();
@@ -352,10 +351,9 @@ public class DemographicService {
 					DemographicRequestDTO demographicRequest = request.getRequest();
 					log.info("sessionId", "idType", "id",
 							"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-					jsonValidator.validateJson(demographicRequest.getDemographicDetails().toJSONString());
+					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails().toJSONString());
 					log.info("sessionId", "idType", "id",
 							"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
-					serviceUtil.validation(idValidation(), demographicRequest.getDemographicDetails());
 					DemographicEntity demographicEntity = demographicRepository
 							.findBypreRegistrationId(preRegistrationId);
 					if (!serviceUtil.isNull(demographicEntity)) {
@@ -986,16 +984,6 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
 		}
 		return mainResponseDTO;
-
-	}
-
-	public Map<String, String> idValidation() throws ParseException {
-		idValidationFields.put(RequestCodes.EMAIL.getCode(), emailRegex);
-		idValidationFields.put(RequestCodes.PHONE.getCode(), phoneRegex);
-		idValidationFields.put(RequestCodes.DOB.getCode(), dobRegex);
-		idValidationFields.put(RequestCodes.CNIE_NUMBER.getCode(), cnieRegex);
-		idValidationFields.put(RequestCodes.POSTAL_CODE.getCode(), postalRegex);
-		return idValidationFields;
 
 	}
 

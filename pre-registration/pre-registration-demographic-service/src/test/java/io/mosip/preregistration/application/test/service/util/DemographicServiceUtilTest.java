@@ -96,24 +96,6 @@ public class DemographicServiceUtilTest {
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
-	// @Test(expected = DateParseException.class)
-	// public void dateSetterEncodingTest2() throws Exception{
-	// Map<String, String> dateMap = new HashMap<>();
-	// dateMap.put(RequestCodes.FROM_DATE.getCode(),"2018-10-10");
-	// String format = "yyyy-MM-dd HH:mm:ss";
-	// demographicServiceUtil.dateSetter(dateMap, format);
-	// }
-
-	// @Test
-	// public void dateSetterEncodingSuccess() {
-	// Map<String, String> dateMap = new HashMap<>();
-	// Map<String, LocalDateTime> response = new HashMap<>();
-	// dateMap.put(RequestCodes.FROM_DATE.getCode(), "2018-10-10 12:12:12");
-	// dateMap.put(RequestCodes.TO_DATE.getCode(),"");
-	// String format = "yyyy-MM-dd HH:mm:ss";
-	// response=demographicServiceUtil.dateSetter(dateMap, format);
-	// assertEquals("2018-10-10T12:12:12",response.get(RequestCodes.FROM_DATE.getCode()).toString());
-	// }
 
 	@Test(expected = DateParseException.class)
 	public void getDateFromStringFailureTest() throws Exception {

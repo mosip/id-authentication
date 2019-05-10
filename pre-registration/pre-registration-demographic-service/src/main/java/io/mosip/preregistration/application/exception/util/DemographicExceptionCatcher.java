@@ -7,6 +7,9 @@ package io.mosip.preregistration.application.exception.util;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
@@ -141,6 +144,15 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof SchemaValidationException) {
 			throw new SchemaValidationException(((SchemaValidationException) ex).getErrorCode(),
 					((SchemaValidationException) ex).getErrorText(),mainResponsedto);
+		}else if (ex instanceof IdObjectValidationProcessingException) {
+			throw new SchemaValidationException(((IdObjectValidationProcessingException) ex).getErrorCode(),
+					((IdObjectValidationProcessingException) ex).getErrorText(),mainResponsedto);
+		}else if (ex instanceof IdObjectIOException) {
+			throw new SchemaValidationException(((IdObjectIOException) ex).getErrorCode(),
+					((IdObjectIOException) ex).getErrorText(),mainResponsedto);
+		}else if (ex instanceof IdObjectSchemaIOException) {
+			throw new SchemaValidationException(((IdObjectSchemaIOException) ex).getErrorCode(),
+					((IdObjectSchemaIOException) ex).getErrorText(),mainResponsedto);
 		}
 	}
 
