@@ -1,8 +1,11 @@
 {
-   "timestamp": 1553512530909,
-   "status": 404,
+   "id": "string",
+   "version": "string",
+   "responsetime": "2019-04-30T07:10:16.917Z",
+   "metadata": null,
+   "response": null,
    "errors": [   {
       "errorCode": "KER-UIG-004",
-      "errorMessage": "Given UIN is not in ISSUED status"
+      "message": "Given UIN is not in ISSUED status"
    }]
 }

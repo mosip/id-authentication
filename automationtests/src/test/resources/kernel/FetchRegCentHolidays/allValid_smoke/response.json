@@ -1,4 +1,9 @@
 {
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-19T11:17:38.322Z",
+  "metadata": null,
+  "response": {
     "registrationCenter": {
         "id": "10001",
         "name": "Center A Ben Mansour",
@@ -181,4 +186,6 @@
             "isActive": true
         }
     ]
+},
+  "errors": null
 }

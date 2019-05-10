@@ -1,10 +1,14 @@
+
 {
-	"idvId": "739041980174",
-	"idvIdType": "D",
-	"ver": "$version$",
-	"muaCode": "7404012868",
-	"tspID": "TSP00001",
 	"id": "mosip.identity.otp",
-	"reqTime": "2019-01-30T16:16:35.035+05:30",
-	"txnID": "7404012868"
+	"version": "1.0",
+	"transactionID": "txn12345",
+	"requestTime": "2019-02-15T07:22:57.086+05:30",
+	"individualId": "9830872690593682",
+	"individualIdType": "UIN",
+	"otpChannel": [
+		"EMAIL",
+		"PHONE"
+	]
+
 }

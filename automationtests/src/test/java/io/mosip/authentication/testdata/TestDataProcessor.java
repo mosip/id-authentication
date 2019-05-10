@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.testdata;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.util.RunConfig;
-import io.mosip.authentication.tests.BioIrisAuthentication;
+import io.mosip.authentication.tests.BiometricAuthentication;
 import io.mosip.testDataDTO.YamlDTO;
 
 /**
@@ -24,9 +25,7 @@ import io.mosip.testDataDTO.YamlDTO;
  */
 public class TestDataProcessor {
 	
-	private TestDataUtil objTestDataUtil = new TestDataUtil();	
-	private TestDataConfig objTestDataConfig = new TestDataConfig();
-	private static Logger logger = Logger.getLogger(TestDataProcessor.class);
+	private static final Logger TESTDATAPROC_LOGGER = Logger.getLogger(TestDataProcessor.class);
 
 	/**
 	 * To initiate test data processor with following argument
@@ -35,15 +34,15 @@ public class TestDataProcessor {
 	 * @param testDataPath
 	 * @param moduleName
 	 */
-	public void initateTestDataProcess(String testDataFileName,String testDataPath, String moduleName) {
+	public static void initateTestDataProcess(String testDataFileName, String testDataPath, String moduleName) {
 		try {
-			objTestDataConfig.setConfig(moduleName, testDataPath);
-			File testDataFilePath = new File("./"+TestDataConfig.getSrcPath()
-					+ TestDataConfig.getTestDataPath() + testDataFileName);
-			objTestDataUtil.loadTestData(testDataFilePath);
-			objTestDataUtil.createTestData();
+			TestDataConfig.setConfig(moduleName, testDataPath);
+			File testDataFilePath = new File(
+					"./" + TestDataConfig.getSrcPath() + TestDataConfig.getTestDataPath() + testDataFileName);
+			TestDataUtil.loadTestData(testDataFilePath);
+			TestDataUtil.createTestData();
 		} catch (Exception e1) {
-			logger.error("Exception Occured in test data processor: " + e1.getMessage());
+			TESTDATAPROC_LOGGER.error("Exception Occured in test data processor: " + e1.getMessage());
 		}
 	}
 	
@@ -59,7 +58,7 @@ public class TestDataProcessor {
 	 * @return testdata
 	 */
 	@SuppressWarnings("unchecked")
-	public String getYamlData(String modulename, String apiname, String testData, String dataParam) {
+	public static String getYamlData(String modulename, String apiname, String testData, String dataParam) {
 		Yaml yaml = new Yaml();
 		String testdata = null;
 		InputStream inputStream;
@@ -67,12 +66,12 @@ public class TestDataProcessor {
 			inputStream = new FileInputStream(
 					"src/test/resources/" + modulename + "/" + apiname + "/" + testData + ".yaml");
 			YamlDTO obj = new YamlDTO();
-			//obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
-			//List<Object> list = obj.getYamlObject().get(dataParam);
+			obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
+			List<Object> list = obj.getYamlObject().get(dataParam);
 			Random random = new Random();
-			//testdata = (String) list.get(random.nextInt(list.size())).toString();
+			testdata = (String) list.get(random.nextInt(list.size())).toString();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			TESTDATAPROC_LOGGER.error("File is not available :" + e.getMessage());
 		}
 		return testdata;
 	}

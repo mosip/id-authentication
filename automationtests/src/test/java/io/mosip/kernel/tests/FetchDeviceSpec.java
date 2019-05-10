@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -33,6 +34,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -51,23 +54,24 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(FetchDeviceSpec.class);
-	private static final String jiraID = "MOS-8264";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchDeviceSpec";
-	private static final String requestJsonName = "FetchDeviceSpecRequest";
-	private static final String outputJsonName = "FetchDeviceSpecOutput";
-	private static final String service_lang_URI = "/v1/masterdata/devicespecifications/{langcode}";
-	private static final String service_id_lang_URI = "/v1/masterdata/devicespecifications/{langcode}/{devicetypecode}";
+	private final String jiraID = "MOS-8264";
+	private final String moduleName = "kernel";
+	private final String apiName = "FetchDeviceSpec";
+	private final String requestJsonName = "FetchDeviceSpecRequest";
+	private final String outputJsonName = "FetchDeviceSpecOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String FetchDeviceSpec_lang_URI = props.get("FetchDeviceSpec_lang_URI").toString();
+	private final String FetchDeviceSpec_id_lang_URI = props.get("FetchDeviceSpec_id_lang_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	/**
 	 * method to set the test case name to the report
@@ -76,8 +80,8 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 
@@ -146,9 +150,9 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if(objectData.containsKey("devicetypecode"))
-					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_id_lang_URI, objectData);
 					else
-					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_lang_URI, objectData);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -172,7 +176,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");

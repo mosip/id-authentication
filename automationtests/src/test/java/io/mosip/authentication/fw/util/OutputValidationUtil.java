@@ -1,5 +1,7 @@
+
 package io.mosip.authentication.fw.util;
 
+import java.io.File;
 import java.nio.file.Files; 
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -27,30 +29,44 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
  */
 public class OutputValidationUtil extends IdaScriptsUtil{
 
-	private static Logger logger = Logger.getLogger(OutputValidationUtil.class);
-	private static FileUtil objFileUtil = new FileUtil();
-	private JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
-	private static ReportUtil objReportUtil = new ReportUtil();
-	private UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
+	private static final Logger OUTPUTVALIDATION_LOGGER = Logger.getLogger(OutputValidationUtil.class);
 	
-	public Map<String, List<OutputValidationDto>> doOutputValidation(String actualOutputFile, String expOutputFile) {
+	/**
+	 * The method will perform output validation by comparing expected and actual value
+	 * 
+	 * @param actualOutputFile
+	 * @param expOutputFile
+	 * @return map of ouptut validation report
+	 */
+	public static Map<String, List<OutputValidationDto>> doOutputValidation(String actualOutputFile,
+			String expOutputFile) {
 		try {
-			objJsonPrecondtion = new JsonPrecondtion(new String(Files.readAllBytes(Paths.get(actualOutputFile))));
-			Map<String, String> actual = objJsonPrecondtion.getJsonFieldValue(actualOutputFile,
+			JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion(
+					new String(Files.readAllBytes(Paths.get(actualOutputFile))));
+			Map<String, String> actual = JsonPrecondtion.getJsonFieldValue(actualOutputFile,
 					objJsonPrecondtion.getPathList(actualOutputFile));
 			objJsonPrecondtion = new JsonPrecondtion(new String(Files.readAllBytes(Paths.get(expOutputFile))));
-			Map<String, String> exp = objJsonPrecondtion.getJsonFieldValue(expOutputFile,
+			Map<String, String> exp = JsonPrecondtion.getJsonFieldValue(expOutputFile,
 					objJsonPrecondtion.getPathList(expOutputFile));
-			actualOutputFile=actualOutputFile.substring(actualOutputFile.lastIndexOf("/")+1,actualOutputFile.length());
-			expOutputFile=expOutputFile.substring(expOutputFile.lastIndexOf("/")+1, expOutputFile.length());
-			return compareActuExpValue(actual,exp,actualOutputFile+ " vs "+expOutputFile);
+			actualOutputFile = actualOutputFile.substring(actualOutputFile.lastIndexOf("/") + 1,
+					actualOutputFile.length());
+			expOutputFile = expOutputFile.substring(expOutputFile.lastIndexOf("/") + 1, expOutputFile.length());
+			return compareActuExpValue(actual, exp, actualOutputFile + " vs " + expOutputFile);
 		} catch (Exception e) {
-			logger.error("Exceptione occured " + e.getMessage());
+			OUTPUTVALIDATION_LOGGER.error("Exceptione occured " + e.getMessage());
 			return null;
 		}
 	}
 	
-	public Map<String, List<OutputValidationDto>> compareActuExpValue(Map<String, String> actual,
+	/**
+	 * The method will compare expected and actual value
+	 * 
+	 * @param actual
+	 * @param exp
+	 * @param actVsExp
+	 * @return map
+	 */
+	public static Map<String, List<OutputValidationDto>> compareActuExpValue(Map<String, String> actual,
 			Map<String, String> exp, String actVsExp) {
 		Map<String, List<OutputValidationDto>> objMap = new HashMap<String, List<OutputValidationDto>>();
 		List<OutputValidationDto> objList = new ArrayList<OutputValidationDto>();
@@ -58,7 +74,7 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 			OutputValidationDto objOpDto = new OutputValidationDto();
 			if (!exp.containsKey(actualEntry.getKey())) {
 				objOpDto.setFieldName(actualEntry.getKey());
-				objOpDto.setFiedlHierarchy(actualEntry.getKey());
+				objOpDto.setFieldHierarchy(actualEntry.getKey());
 				objOpDto.setActualValue(actualEntry.getValue());
 				objOpDto.setExpValue("NOT VERIFIED");
 				objOpDto.setStatus("WARNING");
@@ -72,54 +88,67 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				if (!expEntry.getValue().equals("$IGNORE$") && !expEntry.getValue().contains("$DECODE$")) {
 					if (expEntry.getValue().equals(actual.get(expEntry.getKey()))) {
 						objOpDto.setFieldName(expEntry.getKey());
-						objOpDto.setFiedlHierarchy(expEntry.getKey());
+						objOpDto.setFieldHierarchy(expEntry.getKey());
 						objOpDto.setActualValue(actual.get(expEntry.getKey()));
 						objOpDto.setExpValue(expEntry.getValue());
 						objOpDto.setStatus("PASS");
 					} else if (expEntry.getValue().equals("$TIMESTAMP$")) {
 						if (validateTimestamp(actual.get(expEntry.getKey()))) {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("PASS");
 						} else {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("FAIL");
 						}
-					}else if (expEntry.getValue().equals("$TIMESTAMPZ$")) {
+					} else if (expEntry.getValue().equals("$TIMESTAMPZ$")) {
 						if (validateTimestampZ(actual.get(expEntry.getKey()))) {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("PASS");
 						} else {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("FAIL");
 						}
-					}else if (expEntry.getValue().contains("TOKENID:") && expEntry.getValue().contains(".")) {
+					} else if (expEntry.getValue().contains("TOKENID:") && expEntry.getValue().contains(".")) {
 						String key = expEntry.getValue().replace("TOKENID:", "");
-						String[] keys= key.split(Pattern.quote("."));
-						String tokenid=objUinVidNumberUtil.getTokenId(keys[0], keys[1]);
-						if(tokenid.equals(actual.get(expEntry.getKey()))) {
+						String[] keys = key.split(Pattern.quote("."));
+						String tokenid = RunConfigUtil.getTokenId(keys[0], keys[1]);
+						if (!tokenid.contains("TOKENID")) {
+							if (tokenid.equals(actual.get(expEntry.getKey()))) {
+								objOpDto.setFieldName(expEntry.getKey());
+								objOpDto.setFieldHierarchy(expEntry.getKey());
+								objOpDto.setActualValue(actual.get(expEntry.getKey()));
+								objOpDto.setExpValue(expEntry.getValue());
+								objOpDto.setStatus("PASS");
+							} else {
+								objOpDto.setFieldName(expEntry.getKey());
+								objOpDto.setFieldHierarchy(expEntry.getKey());
+								objOpDto.setActualValue(actual.get(expEntry.getKey()));
+								objOpDto.setExpValue(expEntry.getValue());
+								objOpDto.setStatus("FAIL");
+							}
+						} else if (tokenid.contains("TOKENID")) {
+							tokenid = tokenid.replace("TOKENID:", "");
+							String[] values = tokenid.split(Pattern.quote("."));
+							String id = values[0];
+							String pid = values[1];
+							performTokenIdOper(id, pid, actual.get(expEntry.getKey()));
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("PASS");
-						} else {
-							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
-							objOpDto.setActualValue(actual.get(expEntry.getKey()));
-							objOpDto.setExpValue(expEntry.getValue());
-							objOpDto.setStatus("FAIL");
 						}
 					} else if (expEntry.getValue().contains("$REGEXP")) {
 						String extractRegex = expEntry.getValue().replace("$", "");
@@ -127,20 +156,20 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 						String regex = array[1];
 						if (validateRegularExpression(actual.get(expEntry.getKey()), regex)) {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("PASS");
 						} else {
 							objOpDto.setFieldName(expEntry.getKey());
-							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
 							objOpDto.setExpValue(expEntry.getValue());
 							objOpDto.setStatus("FAIL");
 						}
 					} else {
 						objOpDto.setFieldName(expEntry.getKey());
-						objOpDto.setFiedlHierarchy(expEntry.getKey());
+						objOpDto.setFieldHierarchy(expEntry.getKey());
 						objOpDto.setActualValue(actual.get(expEntry.getKey()));
 						objOpDto.setExpValue(expEntry.getValue());
 						objOpDto.setStatus("FAIL");
@@ -151,28 +180,35 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 					String content = actual.get(expEntry.getKey());
 					String expKeyword = keyword.substring(keyword.lastIndexOf("->") + 2, keyword.length());
 					String actKeyword = expKeyword.replace("expected", "actual");
-					objFileUtil.createAndWriteFile(actKeyword, getDecodedData(content));
+					FileUtil.createAndWriteFile(actKeyword, getDecodedData(content));
 					Map<String, List<OutputValidationDto>> ouputValid = doOutputValidation(
-							objFileUtil.getFilePath(getTestFolder(), actKeyword).toString(),
-							objFileUtil.getFilePath(getTestFolder(), expKeyword).toString());
-					Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
+							FileUtil.getFilePath(getTestFolder(), actKeyword).toString(),
+							FileUtil.getFilePath(getTestFolder(), expKeyword).toString());
+					Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
 					Verify.verify(publishOutputResult(ouputValid));
 				}
-			} else if(!expEntry.getValue().equals("$IGNORE$")) {
+			} else if (!expEntry.getValue().equals("$IGNORE$")) {
 				objOpDto.setFieldName(expEntry.getKey());
-				objOpDto.setFiedlHierarchy(expEntry.getKey());
+				objOpDto.setFieldHierarchy(expEntry.getKey());
 				objOpDto.setActualValue("NOT AVAILABLE");
 				objOpDto.setExpValue(expEntry.getValue());
 				objOpDto.setStatus("FAIL");
 				objList.add(objOpDto);
-				logger.error("The expected json path " + expEntry.getKey() + " is not available in actual json");
+				OUTPUTVALIDATION_LOGGER
+						.error("The expected json path " + expEntry.getKey() + " is not available in actual json");
 			}
 		}
 		objMap.put(actVsExp, objList);
 		return objMap;
 	}
 	
-	public boolean validateTimestamp(String timestamp) {
+	/**
+	 * The method will validate timestamp
+	 * 
+	 * @param timestamp
+	 * @return true or false
+	 */
+	public static boolean validateTimestamp(String timestamp) {
 		try {
 			Date date = new Date();
 			long time = date.getTime();
@@ -208,12 +244,18 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			OUTPUTVALIDATION_LOGGER.error(e.getMessage());
 			return false;
 		}
 	}
 	
-	public boolean validateTimestampZ(String timestamp) {
+	/**
+	 * The methold will validate timestamp with Z format
+	 * 
+	 * @param timestamp 
+	 * @return true or false
+	 */
+	public static boolean validateTimestampZ(String timestamp) {
 		try {
 			Date date = new Date();
 			long time = date.getTime();
@@ -247,48 +289,84 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			OUTPUTVALIDATION_LOGGER.error(e.getMessage());
 			return false;
 		}
 	}
 	
-	public boolean validateRegularExpression(String actValue, String regex) {
+	/**
+	 * The method will validate regular expression
+	 * 
+	 * @param actValue
+	 * @param regex
+	 * @return true or false
+	 */
+	public static boolean validateRegularExpression(String actValue, String regex) {
 		if (Pattern.matches(regex, actValue))
 			return true;
 		else
 			return false;
 	}
 	
-	public boolean publishOutputResult(Map<String, List<OutputValidationDto>> outputresult) {
+	/**
+	 * The method will publish report
+	 * 
+	 * @param outputresult
+	 * @return true or false
+	 */
+	public static boolean publishOutputResult(Map<String, List<OutputValidationDto>> outputresult) {
 		boolean outputStatus = true;
-		logger.info(
+		OUTPUTVALIDATION_LOGGER.info(
 				"*******************************************Output validation*******************************************");
 		for (Entry<String, List<OutputValidationDto>> entry : outputresult.entrySet()) {
-			logger.info("* OutputValidaiton For : " + entry.getKey());
+			OUTPUTVALIDATION_LOGGER.info("* OutputValidaiton For : " + entry.getKey());
 			for (OutputValidationDto dto : entry.getValue()) {
-				logger.info("*");
+				OUTPUTVALIDATION_LOGGER.info("*");
 				if (dto.getStatus().equals("PASS")) {
-					logger.info("* JsonField Path :" + dto.getFieldName());
-					logger.info("* Expected Value :" + dto.getExpValue());
-					logger.info("* Actual value :" + dto.getActualValue());
-					logger.info("* Status :" + dto.getStatus());
+					OUTPUTVALIDATION_LOGGER.info("* JsonField Path :" + dto.getFieldName());
+					OUTPUTVALIDATION_LOGGER.info("* Expected Value :" + dto.getExpValue());
+					OUTPUTVALIDATION_LOGGER.info("* Actual value :" + dto.getActualValue());
+					OUTPUTVALIDATION_LOGGER.info("* Status :" + dto.getStatus());
 				}else if (dto.getStatus().equals("WARNING")) {
-					logger.info("* JsonField Path :" + dto.getFieldName());
-					logger.info("* Expected Value :" + dto.getExpValue());
-					logger.info("* Actual value :" + dto.getActualValue());
-					logger.info("* Status :" + dto.getStatus());
+					OUTPUTVALIDATION_LOGGER.info("* JsonField Path :" + dto.getFieldName());
+					OUTPUTVALIDATION_LOGGER.info("* Expected Value :" + dto.getExpValue());
+					OUTPUTVALIDATION_LOGGER.info("* Actual value :" + dto.getActualValue());
+					OUTPUTVALIDATION_LOGGER.info("* Status :" + dto.getStatus());
 				}else if (dto.getStatus().equals("FAIL")) {
-					logger.error("* JsonField Path :" + dto.getFieldName());
-					logger.error("* Expected Value :" + dto.getExpValue());
-					logger.error("* Actual value :" + dto.getActualValue());
-					logger.error("* Status :" + dto.getStatus());
+					OUTPUTVALIDATION_LOGGER.error("* JsonField Path :" + dto.getFieldName());
+					OUTPUTVALIDATION_LOGGER.error("* Expected Value :" + dto.getExpValue());
+					OUTPUTVALIDATION_LOGGER.error("* Actual value :" + dto.getActualValue());
+					OUTPUTVALIDATION_LOGGER.error("* Status :" + dto.getStatus());
 					outputStatus = false;
 				}
 			}
 		}
-		logger.info(
+		OUTPUTVALIDATION_LOGGER.info(
 				"*******************************************************************************************************");
 		return outputStatus;
+	}
+	
+	/**
+	 * The method will perform token id operation for uin
+	 * 
+	 * @param uin
+	 * @param tspId
+	 * @param tokenId
+	 */
+	public static void performTokenIdOper(String uin, String tspId, String tokenId) {
+		File file = new File(
+				new File("./" + RunConfig.getSrcPath() + RunConfigUtil.getTokenIdPropertyPath()).getAbsolutePath());
+		if (file.exists()) {
+			if (!getPropertyFromFilePath(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
+				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+				map.put(uin + "." + tspId, tokenId);
+				generateMappingDic(file.getAbsolutePath(), map);
+			}
+		} else {
+			Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+			map.put(uin + "." + tspId, tokenId);
+			generateMappingDic(file.getAbsolutePath(), map);
+		}
 	}
 }
 
