@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -127,7 +127,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		{	
 		
 		Response fetchCenter = preRegLib.FetchCentre();
-		
+		System.out.println("Fetch Book App:"+fetchCenter.asString());
 		outerKeys.add("responsetime");
 		innerKeys.add("regCenterId");
 		innerKeys.add("centerDetails");

@@ -117,19 +117,16 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
-				
+		Response syncMsterData=preRegLib.syncMasterData();
+		System.out.println("Get All Doc Res:"+syncMsterData.asString());
 		
-		
-		Response getAllDocRes=preRegLib.syncMasterData();
-		System.out.println("Get All Doc Res:"+getAllDocRes.asString());
+		/*String stVal = preRegLib.preRegAdminToken();
+		System.out.println("stval:"+stVal);*/
 		
 		outerKeys.add("responsetime");
 		innerKeys.add("documentId");
 		innerKeys.add("multipartFile");
-		status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
-		
-	
-		
+		status = AssertResponses.assertResponses(syncMsterData, Expectedresponse, outerKeys, innerKeys);
 		
 		
 		if (status) {
@@ -161,8 +158,9 @@ public class SyncMasterData extends BaseTestCase implements ITest {
          * Get All Document by Document Id Resource URI           
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
-		 authToken=preRegLib.getToken();
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
+        authToken=preRegLib.preRegAdminToken();
+		 //authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)

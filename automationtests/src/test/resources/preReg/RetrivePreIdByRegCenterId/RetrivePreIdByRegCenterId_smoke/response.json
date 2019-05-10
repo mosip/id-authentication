@@ -1,0 +1,12 @@
+{
+   "id": "mosip.pre-registration.appointment.ids",
+   "version" : "1.0",
+   "responsetime": "2019-01-16T17:31:04.021Z",
+   "response": {
+        "preRegistrationIds": [
+                       "94625367217037",
+                       "43526512857302"
+         ]
+    },
+    "errors":null
+}

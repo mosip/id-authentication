@@ -140,7 +140,6 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		Response getAllDocRes=preRegLib.getAllDocumentForDocId(preId, docId);
 		System.out.println("Get All Doc Res:"+getAllDocRes.asString());
 		outerKeys.add("responsetime");
-		innerKeys.add("documentId");
 		innerKeys.add("multipartFile");
 		status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		

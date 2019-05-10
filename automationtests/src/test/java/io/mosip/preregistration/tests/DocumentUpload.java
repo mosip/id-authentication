@@ -144,7 +144,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
-			//innerKeys.add("docId");
+			innerKeys.add("documentId");
 			preRegLib.compareValues(preId, preRegIdCreateAPI);
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -160,7 +160,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					//Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
-					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, "", file, parm);
+					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
 
 					System.out.println("Actual response::" + Actualresponse.asString());
 				} else {

@@ -1,14 +1,1 @@
-{
-   "id": "mosip.pre-registration.document.copy",
-   "version": "1.0",
-   "errors": null,
-   "responsetime": "2019-04-13T12:35:22.812Z",
-   "response": [   {
-      "preRegistrationId": "35967213496392",
-      "docId": "fc36d037-5de7-11e9-81df-eb054c1aea5e",
-      "docName": "AadhaarCard_POI.pdf",
-      "docCatCode": "POA",
-      "docTypCode": "address",
-      "docFileFormat": "pdf"
-   }]
-}
+{"id":"mosip.pre-registration.document.copy","version":"1.0","responsetime":"2019-05-08T10:28:15.905Z","response":{"preRegistrationId":"49356058752048","documentId":"fd54cd7b-717b-11e9-aa08-2d7340455578","docName":"AadhaarCard_POI.pdf","docCatCode":"POA","docTypCode":"address","docFileFormat":"pdf"},"errors":null}

@@ -787,8 +787,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response documentUploadParm(Response responseCreate, String PreRegistrationId) {
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 		JSONObject parm = getRequest(testSuite);
-		//parm.put("preRegistrationId", PreRegistrationId);
-		parm.put("preRegistrationId", "ABCD");
+		parm.put("preRegistrationId", PreRegistrationId);
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
@@ -929,9 +928,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response getAllDocumentForPreId(String preId) {
-		HashMap<String, String> parm = new HashMap<>();
-		parm.put("preRegistrationId", preId);
-		response = applnLib.getRequestPathParam(preReg_FetchAllDocumentURI, parm);
+		
+		String preReg_FetchAllDocumentURL = preReg_FetchAllDocumentURI + preId;
+		response = applnLib.getRequestWithoutParm(preReg_FetchAllDocumentURL);
 		return response;
 	}
 
@@ -1922,9 +1921,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 	
 	
-	
-	
-	
 
 	/*
 	 * Generic method for sync master data
@@ -1934,7 +1930,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		Response syncMasterDataRes = null;
 		try {
 
-			syncMasterDataRes = applnLib.get_RequestWithoutBody(preReg_SyncMasterDataURI);
+			//syncMasterDataRes = applnLib.get_RequestWithoutBody(preReg_SyncMasterDataURI);
+			syncMasterDataRes = applnLib.postRequestWithoutBody(preReg_SyncMasterDataURI);
 		} catch (Exception e) {
 			logger.info(e);
 		}

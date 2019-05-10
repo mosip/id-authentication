@@ -130,36 +130,10 @@ public class QRCode extends BaseTestCase implements ITest {
 		}
 		else
 		{
-			
+			Response qrCodeResponse=applicationLibrary.authPostRequest(actualRequest, preReg_URI);
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(qrCodeResponse, Expectedresponse, outerKeys, innerKeys);
 		}
-		/*else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId"))
-		{
-			docId= actualRequest.get("documentId").toString();
-			
-			
-			 parm.put("preRegistrationId", preId);
-			 
-			 preReg_URI=preReg_URI+docId;
-			 
-			 Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
-			 outerKeys.add("responsetime");
-			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
-			 
-		}
-		else if(testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId"))
-		{
-			 preId= actualRequest.get("preRegistrationId").toString();
-			 parm.put("preRegistrationId", preId);
-			 
-			 preReg_URI=preReg_URI+docId;
-			 
-			 Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
-			 outerKeys.add("responsetime");
-			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
-			 
-			
-		}
-		*/
 		
 		
 		if (status) {
@@ -192,7 +166,7 @@ public class QRCode extends BaseTestCase implements ITest {
          */
         
         preReg_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
-		 authToken=preRegLib.getToken();
+		authToken=preRegLib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)

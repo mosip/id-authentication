@@ -373,7 +373,7 @@ public class prereg_dbread {
 		List<?> flag;
 		
 		//factory = new Configuration().configure("preregqa.cfg.xml")
-		factory = new Configuration().configure("prereg.cfg.xml")
+		factory = new Configuration().configure("preregdev.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -388,7 +388,7 @@ public class prereg_dbread {
 		int flag;
 		
 		//factory = new Configuration().configure("preregqa.cfg.xml")
-		factory = new Configuration().configure("prereg.cfg.xml")
+		factory = new Configuration().configure("preregdev.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		/*factory = new Configuration().configure("prereg.cfg.xml")
 				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
