@@ -7,15 +7,17 @@ package io.mosip.preregistration.application.exception.util;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -160,6 +162,15 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof PreIdInvalidForUserIdException) {
 			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);
+		}else if (ex instanceof UnidentifiedJsonException) {
+			throw new SchemaValidationException(((UnidentifiedJsonException) ex).getErrorCode(),
+					((UnidentifiedJsonException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NullJsonNodeException) {
+			throw new SchemaValidationException(((NullJsonNodeException) ex).getErrorCode(),
+					((NullJsonNodeException) ex).getErrorText(), mainResponsedto);
+		}else if (ex instanceof ConfigServerConnectionException) {
+			throw new SchemaValidationException(((ConfigServerConnectionException) ex).getErrorCode(),
+					((ConfigServerConnectionException) ex).getErrorText(), mainResponsedto);
 		}
 	}
 

@@ -266,7 +266,7 @@ public class DemographicService {
 				DemographicRequestDTO demographicRequest = request.getRequest();
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails().toJSONString());
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
@@ -335,7 +335,7 @@ public class DemographicService {
 					DemographicRequestDTO demographicRequest = request.getRequest();
 					log.info("sessionId", "idType", "id",
 							"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails().toJSONString());
+					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
 					log.info("sessionId", "idType", "id",
 							"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 					DemographicEntity demographicEntity = demographicRepository
