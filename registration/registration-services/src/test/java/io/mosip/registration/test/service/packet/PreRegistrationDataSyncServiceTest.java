@@ -18,6 +18,7 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,6 +108,13 @@ public class PreRegistrationDataSyncServiceTest {
 		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "5");
+		
+		//Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		
+		preRegistrationDataSyncServiceImpl.setBaseGlobalMap(applicationMap);
+
 	}
 
 	@AfterClass
