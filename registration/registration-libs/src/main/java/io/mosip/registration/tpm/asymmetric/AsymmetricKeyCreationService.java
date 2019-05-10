@@ -1,10 +1,5 @@
 package io.mosip.registration.tpm.asymmetric;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 import tss.Tpm;
@@ -27,7 +22,6 @@ import tss.tpm.TPM_RH;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-@Service
 public class AsymmetricKeyCreationService {
 
 	/**
@@ -39,7 +33,6 @@ public class AsymmetricKeyCreationService {
 	 */
 	public TPM_HANDLE createPersistentKey(Tpm tpm) {
 		try {
-			LocalDateTime localDateTime = LocalDateTime.now();
 			// This policy is a "standard" policy that is used with vendor-provided
 			// EKs
 			byte[] standardEKPolicy = new byte[] { (byte) 0x83, 0x71, (byte) 0x97, 0x67, 0x44, (byte) 0x84, (byte) 0xb3,
@@ -64,8 +57,6 @@ public class AsymmetricKeyCreationService {
 			// Create the Primary Key in TPM under primary handle
 			CreatePrimaryResponse rsaSrk = tpm.CreatePrimary(hierarchy, sens, tpmtPublic, new byte[0],
 					new TPMS_PCR_SELECTION[0]);
-
-			long secondsTaken = localDateTime.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
 			return rsaSrk.handle;
 		} catch (RuntimeException runtimeException) {
