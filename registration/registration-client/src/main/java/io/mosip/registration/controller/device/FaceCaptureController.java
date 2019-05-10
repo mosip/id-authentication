@@ -477,7 +477,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 			hasLowBiometrics = validateBiometrics(hasBiometricException);
-			
+
 			/* if there is no missing biometric, check for low quality of biometrics */
 			if (hasMissingBiometrics || hasLowBiometrics) {
 				hasBiometricException = true;
@@ -526,12 +526,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 */
 	private boolean validateBiometrics(boolean hasBiometricException) {
 		RegistrationDTO registration = getRegistrationDTOFromSession();
-		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getFingerprintDetailsDTO();
+		List<FingerprintDetailsDTO> capturedFingers;
+		List<IrisDetailsDTO> capturedIrises;
+
+		if (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			capturedFingers = registration.getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO();
+			capturedIrises = registration.getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
+		} else {
+			capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO();
+			capturedIrises = registration.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
+		}
 		hasBiometricException = markReasonForFingerprintException(capturedFingers, hasBiometricException);
 
-		List<IrisDetailsDTO> capturedIrises = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getIrisDetailsDTO();
 		hasBiometricException = markReasonForIrisException(capturedIrises, hasBiometricException);
 		return hasBiometricException;
 	}
@@ -591,12 +598,17 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * force-captured
 	 */
 	private void markReasonForException(String biometricType, String missingBiometric) {
-		List<BiometricExceptionDTO> exceptionBiometrics;
-		if (getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-				.getBiometricExceptionDTO() != null) {
-			exceptionBiometrics = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+		List<BiometricExceptionDTO> capturedExceptions;
+		if (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			capturedExceptions = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
-			Iterator<BiometricExceptionDTO> iterator = exceptionBiometrics.iterator();
+		} else {
+			capturedExceptions = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO();
+		}
+		if (capturedExceptions != null) {
+			Iterator<BiometricExceptionDTO> iterator = capturedExceptions.iterator();
 			while (iterator.hasNext()) {
 				BiometricExceptionDTO biometricExceptionDTO = iterator.next();
 				if (biometricExceptionDTO.getReason().equalsIgnoreCase(RegistrationConstants.LOW_QUALITY_BIOMETRICS)) {
@@ -604,7 +616,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				}
 			}
 		} else {
-			exceptionBiometrics = new ArrayList<>();
+			capturedExceptions = new ArrayList<>();
 		}
 
 		BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
@@ -614,10 +626,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 		biometricExceptionDTO.setExceptionType(RegistrationConstants.TEMPORARY_EXCEPTION);
 		biometricExceptionDTO.setIndividualType(RegistrationConstants.INDIVIDUAL);
 
-		exceptionBiometrics.add(biometricExceptionDTO);
+		capturedExceptions.add(biometricExceptionDTO);
 
-		getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-				.setBiometricExceptionDTO(exceptionBiometrics);
+		if (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.setBiometricExceptionDTO(capturedExceptions);
+		} else {
+			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.setBiometricExceptionDTO(capturedExceptions);
+		}
 	}
 
 	/**
