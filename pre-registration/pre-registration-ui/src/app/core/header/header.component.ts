@@ -12,11 +12,13 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public authService: AuthService, 
-              private translate: TranslateService, 
-              private router: Router,
-              private dataService: DataStorageService,
-              private dialog: MatDialog) {
+  constructor(
+    public authService: AuthService,
+    private translate: TranslateService,
+    private router: Router,
+    private dataService: DataStorageService,
+    private dialog: MatDialog
+  ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
 
@@ -37,24 +39,26 @@ export class HeaderComponent implements OnInit {
     this.router.navigate([homeURL]);
   }
 
- async doLogout() {
-   await this.showMessage();
+  async doLogout() {
+    await this.showMessage();
   }
 
   showMessage() {
-      this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-        const secondaryLanguagelabels = response['login']['logout_msg'];
-        localStorage.removeItem('loggedOutLang');
-        localStorage.removeItem('loggedOut');
-        const data = {
-          case: 'MESSAGE',
-          message: secondaryLanguagelabels
-        };
-        this.dialog.open(DialougComponent, {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const secondaryLanguagelabels = response['login']['logout_msg'];
+      localStorage.removeItem('loggedOutLang');
+      localStorage.removeItem('loggedOut');
+      const data = {
+        case: 'MESSAGE',
+        message: secondaryLanguagelabels
+      };
+      this.dialog
+        .open(DialougComponent, {
           width: '350px',
           data: data
-        }).afterClosed().subscribe(() => this.authService.onLogout());
-      });
+        })
+        .afterClosed()
+        .subscribe(() => this.authService.onLogout());
+    });
   }
-
 }

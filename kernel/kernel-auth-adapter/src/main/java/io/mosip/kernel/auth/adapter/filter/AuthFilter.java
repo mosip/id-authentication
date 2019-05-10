@@ -45,7 +45,8 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
 				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/",
-				"**/authenticate/**", "/**/actuator/**","/**/authmanager/**", "/sendOtp", "/validateOtp", "/invalidateToken", "/config" };
+				"**/authenticate/**", "/**/actuator/**", "/**/authmanager/**", "/**/admin/**", "/sendOtp",
+				"/validateOtp", "/invalidateToken", "/config" };
 
 	}
 
@@ -78,7 +79,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
 					token = cookie.getValue();
-					System.out.println("Cookie name with Auth header:" + cookie.getName()+":");
+					System.out.println("Cookie name with Auth header:" + cookie.getName() + ":");
 					System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}

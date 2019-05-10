@@ -388,6 +388,7 @@ public class RegistrationConstants {
 	public static final String AUTH_REQUIRED = "service.authrequired";
 	public static final String SIGN_REQUIRED = "service.signrequired";
 	public static final String AUTH_TYPE = "BASIC";
+	public static final String REQUEST_SIGN_REQUIRED = "service.requestsignrequired";
 
 	// OTP Related Details
 	public static final String OTP_GENERATOR_SERVICE_NAME = "otp_generator";

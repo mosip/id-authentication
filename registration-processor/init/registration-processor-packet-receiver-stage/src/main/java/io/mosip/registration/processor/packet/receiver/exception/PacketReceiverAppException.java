@@ -1,13 +1,14 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * The Class PacketReceiverAppException.
+ * 
  * @author Rishabh Keshari
  */
-public class PacketReceiverAppException extends BaseCheckedException {
+public class PacketReceiverAppException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;
@@ -34,8 +35,10 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param errorCode the error code
-	 * @param errorMessage the error message
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
 	 */
 	public PacketReceiverAppException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
@@ -44,21 +47,28 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param errorCode the error code
-	 * @param errorMessage the error message
-	 * @param rootCause the root cause
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
+	 * @param rootCause
+	 *            the root cause
 	 */
 	public PacketReceiverAppException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
-	
+
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param errorCode the error code
-	 * @param errorMessage the error message
-	 * @param rootCause the root cause
-	 * @param id the id
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
+	 * @param rootCause
+	 *            the root cause
+	 * @param id
+	 *            the id
 	 */
 	public PacketReceiverAppException(String errorCode, String errorMessage, Throwable rootCause, String id) {
 		super(errorCode, errorMessage, rootCause);
@@ -68,7 +78,8 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param exceptionConstant the exception constant
+	 * @param exceptionConstant
+	 *            the exception constant
 	 */
 	public PacketReceiverAppException(PlatformErrorMessages exceptionConstant) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage());
@@ -77,8 +88,10 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
+	 * @param exceptionConstant
+	 *            the exception constant
+	 * @param rootCause
+	 *            the root cause
 	 */
 	public PacketReceiverAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
@@ -87,8 +100,10 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param exceptionConstant the exception constant
-	 * @param id the id
+	 * @param exceptionConstant
+	 *            the exception constant
+	 * @param id
+	 *            the id
 	 */
 	public PacketReceiverAppException(PlatformErrorMessages exceptionConstant, String id) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage());
@@ -98,9 +113,12 @@ public class PacketReceiverAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
-	 * @param id the id
+	 * @param exceptionConstant
+	 *            the exception constant
+	 * @param rootCause
+	 *            the root cause
+	 * @param id
+	 *            the id
 	 */
 	public PacketReceiverAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause, String id) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);

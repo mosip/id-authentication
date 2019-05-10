@@ -36,6 +36,9 @@ public enum EventName {
 	SYNC,
 
 	/** The Reverse Data sync. */
-	REVERSESYNC
+	REVERSESYNC,
+	
+	/** Triggering notification . */
+	NOTIFICATION
 
 }

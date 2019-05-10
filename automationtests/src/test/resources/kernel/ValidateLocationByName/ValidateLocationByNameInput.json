@@ -4,5 +4,6 @@
 	"invalid_localAuthority":"string",
 	"invalid_province":"String",
 	"invalid_Region":"string",
-	"invalid_responseTime":"string"
+	"invalid_responseTime":"string",
+	"response_time":"string"
 }

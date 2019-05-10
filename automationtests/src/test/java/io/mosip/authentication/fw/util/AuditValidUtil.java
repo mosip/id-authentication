@@ -13,7 +13,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.testng.Reporter;
 
-import io.mosip.authentication.fw.dbUtil.DbConnection;
+
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.testdata.Precondtion;

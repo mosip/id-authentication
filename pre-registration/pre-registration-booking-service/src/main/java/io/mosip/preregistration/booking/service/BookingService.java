@@ -25,9 +25,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
+import io.mosip.preregistration.booking.dto.MultiBookingRequest;
 import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
@@ -47,7 +49,6 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
-import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
@@ -62,7 +63,6 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  * @author Kishan Rathore
  * @author Jagadishwari
  * @author Ravi C. Balaji
- * @author Sanober Noor
  * @since 1.0.0
  *
  */
@@ -96,17 +96,50 @@ public class BookingService {
 	@Autowired
 	private BookingDAO bookingDAO;
 
+	@Autowired
+	private BookingLock bookingLock;
+
 	@Value("${version}")
 	String versionUrl;
 
 	@Value("${id}")
 	String idUrl;
 
+	@Value("${mosip.preregistration.booking.availability.sync.id}")
+	String idUrlSync;
+
+	@Value("${mosip.preregistration.booking.book.id}")
+	String idUrlBookAppointment;
+
+	@Value("${mosip.preregistration.booking.fetch.booking.id}")
+	String idUrlFetch;
+
+	@Value("${mosip.preregistration.booking.cancel.id}")
+	String idUrlCancel;
+
+	@Value("${mosip.preregistration.booking.delete.id}")
+	String idUrlDelete;
+
+	@Value("${mosip.preregistration.booking.fetch.availability.id}")
+	String idUrlAvailability;
+
+	@Value("${mosip.preregistration.booking.fetchPreidByDate.id}")
+	String idUrlBookingByDate;
+
+	@Value("${mosip.preregistration.booking.availability.increase.id}")
+	String idUrlIncreaseAvailability;
+
+	@Value("${mosip.preregistration.booking.availability.check.id}")
+	String idUrlCheckSlotAvailability;
+
+	@Value("${mosip.preregistration.booking.delete.old.id}")
+	String idUrlDeleteOld;
+
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
 	@PostConstruct
 	public void setupBookingService() {
-		requiredRequestMap.put("id", idUrl);
+		// requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("version", versionUrl);
 
 	}
@@ -128,37 +161,39 @@ public class BookingService {
 	public MainResponseDTO<String> addAvailability() {
 		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
+		response.setId(idUrlSync);
+		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 		try {
 			LocalDate endDate = LocalDate.now().plusDays(syncDays);
+			List<LocalDate> insertedDate=bookingDAO.findDateDistinct(LocalDate.now());
 			List<RegistrationCenterDto> regCenter = serviceUtil.callRegCenterDateRestService();
 			for (RegistrationCenterDto regDto : regCenter) {
 				List<String> holidaylist = serviceUtil.callGetHolidayListRestService(regDto);
-				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
-						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
-					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+				for (LocalDate sDate = LocalDate.now(); ((sDate.isBefore(endDate)
+						|| sDate.isEqual(endDate))&&!insertedDate.contains(sDate)); sDate = sDate.plusDays(1)) {
+						serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
 				}
 
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In addAvailability method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
+			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
 						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
+						authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"addAvailability failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
+						authUserDetails().getUsername(), null);
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
 		return response;
 
@@ -173,6 +208,8 @@ public class BookingService {
 	public MainResponseDTO<AvailabilityDto> getAvailability(String regID) {
 		log.info("sessionId", "idType", "id", "In getAvailability method of Booking Service");
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
+		response.setId(idUrlAvailability);
+		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 
 		LocalDate endDate = LocalDate.now().plusDays(displayDays + availabilityOffset);
@@ -194,21 +231,19 @@ public class BookingService {
 			isSaveSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In getAvailability method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.SYSTEM.toString(),
 						"  Availability retrieved successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
+						authUserDetails().getUserId(), authUserDetails().getUsername(), regID);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Availability failed to get", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
+						authUserDetails().getUsername(), regID);
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		response.setResponse(availability);
 		return response;
 	}
@@ -225,15 +260,27 @@ public class BookingService {
 	 * @return
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainResponseDTO<BookingStatusDTO> bookAppointment(MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs,
+	public MainResponseDTO<BookingStatusDTO> bookAppointment(MainRequestDTO<BookingRequestDTO> bookingRequestDTOs,
 			String preRegistrationId) {
+		bookingLock.setDate(bookingRequestDTOs.getRequest().getRegDate());
+		bookingLock.setRegistrationCenter(bookingRequestDTOs.getRequest().getRegDate());
+		bookingLock.setTimeslot(bookingRequestDTOs.getRequest().getSlotFromTime());
 		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
 		MainResponseDTO<BookingStatusDTO> responseDTO = new MainResponseDTO<>();
+		responseDTO.setId(idUrlBookAppointment);
+		responseDTO.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
-		BookingStatusDTO response = new BookingStatusDTO();
-		try {
-			if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs),requiredRequestMap)) {
-				for (BookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
+
+		requiredRequestMap.put("id", idUrlBookAppointment);
+
+		synchronized (bookingLock) {
+
+			log.info("Sync block :", preRegistrationId, " Start", "");
+
+			BookingStatusDTO response = new BookingStatusDTO();
+			try {
+				if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs), requiredRequestMap)) {
+					BookingRequestDTO bookingRequestDTO = bookingRequestDTOs.getRequest();
 
 					/* Getting Status From Demographic */
 					String preRegStatusCode = serviceUtil.callGetStatusRestService(preRegistrationId);
@@ -291,29 +338,31 @@ public class BookingService {
 					}
 
 				}
+				isSaveSuccess = true;
+			} catch (Exception ex) {
+				log.error("sessionId", "idType", "id",
+						"In bookAppointment method of Booking Service- " + ex.getMessage());
+				new BookingExceptionCatcher().handle(ex, responseDTO);
+			} finally {
+				if (isSaveSuccess) {
+					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
+							EventType.SYSTEM.toString(), "  Appointment booked successfully    ",
+							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername(), bookingRequestDTOs.getRequest().getRegistrationCenterId());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Appointment failed to book",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername(), bookingRequestDTOs.getRequest().getRegistrationCenterId());
+				}
 			}
-			isSaveSuccess = true;
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		} finally {
-			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
-						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Appointment failed to book", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
-			}
+			responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+			responseDTO.setResponse(response);
+			log.info("Sync block :", preRegistrationId, " End", "");
+			return responseDTO;
 		}
-		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setId(idUrl);
-		responseDTO.setVersion(versionUrl);
-		responseDTO.setResponse(response);
-		return responseDTO;
 	}
-	
+
 	/**
 	 * This method will book the multiple appointments.
 	 * 
@@ -326,102 +375,120 @@ public class BookingService {
 	 * @return
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainResponseDTO<List<BookingStatusDTO>> bookMultiAppointment(
-			MainListRequestDTO<MultiBookingRequestDTO> bookingRequestDTOs) {
+	public MainResponseDTO<BookingStatus> bookMultiAppointment(
+			MainRequestDTO<MultiBookingRequest> bookingRequestDTOs) {
+
 		log.info("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service");
-		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
-		boolean isSaveSuccess = false;
-		List<BookingStatusDTO> respList = new ArrayList<>();
-		try {
-			if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs),requiredRequestMap)) {
-				for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
-					/* Getting Status From Demographic */
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(bookingRequestDTO.getPreRegistrationId());
 
-					//Taking one booking request from multiple
-					BookingRequestDTO bookingRequest=new BookingRequestDTO();
-					bookingRequest.setRegDate(bookingRequestDTO.getRegDate());
-					bookingRequest.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
-					bookingRequest.setSlotFromTime(bookingRequestDTO.getSlotFromTime());
-					bookingRequest.setSlotToTime(bookingRequestDTO.getSlotToTime());
+		bookingLock.setDate(bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegDate());
+		bookingLock.setRegistrationCenter(bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegDate());
+		bookingLock.setTimeslot(bookingRequestDTOs.getRequest().getBookingRequest().get(0).getSlotFromTime());
 
-					if (serviceUtil.mandatoryParameterCheck(bookingRequestDTO.getPreRegistrationId(),
-							bookingRequest)) {
+		synchronized (bookingLock) {
+			log.info("Sync block :", bookingRequestDTOs.getRequest().getBookingRequest().get(0).getPreRegistrationId(), " Start", "");
+			MainResponseDTO<BookingStatus> responseDTO = new MainResponseDTO<>();
+			BookingStatus response=new BookingStatus();
+			responseDTO.setId(idUrlBookAppointment);
+			responseDTO.setVersion(versionUrl);
 
-						/* Checking the availability of slots */
-						checkSlotAvailability(bookingRequest);
+			requiredRequestMap.put("id", idUrlBookAppointment);
 
-						if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
-							
-							
+			boolean isSaveSuccess = false;
+			List<BookingStatusDTO> respList = new ArrayList<>();
+			try {
+				if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs), requiredRequestMap)) {
+					for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest().getBookingRequest()) {
+						/* Getting Status From Demographic */
+						String preRegStatusCode = serviceUtil
+								.callGetStatusRestService(bookingRequestDTO.getPreRegistrationId());
 
-							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+						// Taking one booking request from multiple
+						BookingRequestDTO bookingRequest = new BookingRequestDTO();
+						bookingRequest.setRegDate(bookingRequestDTO.getRegDate());
+						bookingRequest.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
+						bookingRequest.setSlotFromTime(bookingRequestDTO.getSlotFromTime());
+						bookingRequest.setSlotToTime(bookingRequestDTO.getSlotToTime());
 
-						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+						if (serviceUtil.mandatoryParameterCheck(bookingRequestDTO.getPreRegistrationId(),
+								bookingRequest)) {
 
-							/* Concatenating Booking date and slot from time */
-							RegistrationBookingEntity bookingEntity = bookingDAO
-									.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
-							BookingRequestDTO oldBooking = new BookingRequestDTO();
-							oldBooking.setRegDate(bookingEntity.getRegDate().toString());
-							oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
-							oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
-							oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
+							/* Checking the availability of slots */
+							checkSlotAvailability(bookingRequest);
 
-							String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
+							if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 
-							log.info("sessionId", "idType", "id",
-									"In bookMultiAppointment method of Booking Service for booking Date Time- "
-											+ bookedDateTime);
-							/* Time span check for re-book */
-							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
 
-							/* Deleting old booking */
-							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+							} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 
-							/* Increase availability */
-							increaseAvailability(oldBooking);
+								/* Concatenating Booking date and slot from time */
+								RegistrationBookingEntity bookingEntity = bookingDAO
+										.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
+								BookingRequestDTO oldBooking = new BookingRequestDTO();
+								oldBooking.setRegDate(bookingEntity.getRegDate().toString());
+								oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+								oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
+								oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
 
-							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+								String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
+								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+								LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
-						} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+								log.info("sessionId", "idType", "id",
+										"In bookMultiAppointment method of Booking Service for booking Date Time- "
+												+ bookedDateTime);
+								/* Time span check for re-book */
+								serviceUtil.timeSpanCheckForRebook(bookedDateTime);
 
-							/* Deleting old booking */
-							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
-							
-							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+								/* Deleting old booking */
+								deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+
+								/* Increase availability */
+								increaseAvailability(oldBooking);
+
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+
+							} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+
+								/* Deleting old booking */
+								deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+							}
+
 						}
 
 					}
-
+				}
+				isSaveSuccess = true;
+			} catch (Exception ex) {
+				log.error("sessionId", "idType", "id",
+						"In bookMultiAppointment method of Booking Service- " + ex.getMessage());
+				new BookingExceptionCatcher().handle(ex, responseDTO);
+			} finally {
+				if (isSaveSuccess) {
+					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
+							EventType.SYSTEM.toString(), "  Appointment booked successfully    ",
+							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername(),
+							bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegistrationCenterId());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Appointment failed to book",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername(),
+							bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegistrationCenterId());
 				}
 			}
-			isSaveSuccess = true;
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In bookMultiAppointment method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		} finally {
-			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
-						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Appointment failed to book", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
-			}
+			responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+			response.setBookingStatusResponse(respList);
+			responseDTO.setResponse(response);
+			log.info("Sync block :", bookingRequestDTOs.getRequest().getBookingRequest().get(0).getPreRegistrationId(), " End", "");
+			return responseDTO;
 		}
-		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setId(idUrl);
-		responseDTO.setVersion(versionUrl);
-		responseDTO.setResponse(respList);
-		return responseDTO;
 	}
 
 	/**
@@ -434,6 +501,8 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In getAppointmentDetails method of Booking Service");
 		BookingRegistrationDTO bookingRegistrationDTO = new BookingRegistrationDTO();
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
+		responseDto.setId(idUrlFetch);
+		responseDto.setVersion(versionUrl);
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
 			/* Checking Status From Demographic */
@@ -447,14 +516,12 @@ public class BookingService {
 			responseDto.setResponse(bookingRegistrationDTO);
 
 			responseDto.setErrors(null);
-			responseDto.setId(idUrl);
-			responseDto.setVersion(versionUrl);
 			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetails method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, responseDto);
 		}
 
 		return responseDto;
@@ -470,10 +537,12 @@ public class BookingService {
 	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
-
+		responseDto.setId(idUrlCancel);
+		responseDto.setVersion(versionUrl);
 		responseDto.setResponse(cancelBooking(preRegistrationId));
 
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+
 		return responseDto;
 	}
 
@@ -488,35 +557,40 @@ public class BookingService {
 	public BookingStatusDTO book(String preRegistrationId, BookingRequestDTO bookingRequestDTO) {
 		log.info("sessionId", "idType", "id", "In book method of Booking Service");
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
+		MainResponseDTO<?> response = new MainResponseDTO<>();
+		response.setId(idUrlBookAppointment);
+		response.setVersion(versionUrl);
 		try {
-			BookingLock bookingLock = new BookingLock(bookingRequestDTO.getRegistrationCenterId(),
-					bookingRequestDTO.getRegDate(), bookingRequestDTO.getSlotFromTime());
 			AvailibityEntity availableEntity;
 
-			synchronized (bookingLock) {
-				availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-						LocalTime.parse(bookingRequestDTO.getSlotFromTime()),
-						LocalTime.parse(bookingRequestDTO.getSlotToTime()),
-						LocalDate.parse(bookingRequestDTO.getRegDate()), bookingRequestDTO.getRegistrationCenterId());
-				if (serviceUtil.isKiosksAvailable(availableEntity)) {
-					/* Updating booking */
-					bookingDAO.saveRegistrationEntityForBooking(
-							serviceUtil.bookingEntitySetter(preRegistrationId, bookingRequestDTO));
-					/* Reduce Availability */
-					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
-					bookingDAO.updateAvailibityEntity(availableEntity);
-					/* Updating demographic */
-					serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
-					bookingStatusDTO.setPreRegistrationId(preRegistrationId);
-					bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-					bookingStatusDTO.setBookingMessage("Appointment booked successfully");
-					
-				}
+			availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+					LocalTime.parse(bookingRequestDTO.getSlotFromTime()),
+					LocalTime.parse(bookingRequestDTO.getSlotToTime()), LocalDate.parse(bookingRequestDTO.getRegDate()),
+					bookingRequestDTO.getRegistrationCenterId());
+			log.info("In Availablity of book method", "available slots before update :" + availableEntity.getAvailableKiosks(),
+					" for Reg center" + availableEntity.getRegcntrId(),
+					" and Date and Time " + availableEntity.getRegDate() + " " + availableEntity.getFromTime());
+			if (serviceUtil.isKiosksAvailable(availableEntity)) {
+				/* Updating booking */
+				bookingDAO.saveRegistrationEntityForBooking(
+						serviceUtil.bookingEntitySetter(preRegistrationId, bookingRequestDTO));
+				/* Reduce Availability */
+				availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
+				AvailibityEntity availableUpdate=bookingDAO.updateAvailibityEntity(availableEntity);
+				
+				log.info("In Availablity of book method", "available slots after upadate :" + availableUpdate.getAvailableKiosks(),
+						" for Reg center" + availableUpdate.getRegcntrId(),
+						" and Date and Time " + availableUpdate.getRegDate() + " " + availableUpdate.getFromTime());
+				
+				/* Updating demographic */
+				serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
+				bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 			}
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In book method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 
 		return bookingStatusDTO;
@@ -531,18 +605,21 @@ public class BookingService {
 	public CancelBookingResponseDTO cancelBooking(String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In cancelBooking method of Booking Service");
 		CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
+		MainResponseDTO<?> response = new MainResponseDTO<>();
+		response.setId(idUrlCancel);
+		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 		AvailibityEntity availableEntity;
+		RegistrationBookingEntity bookingEntity;
 		try {
-			if (serviceUtil.mandatoryParameterCheckforCancel( preRegistrationId)) {
+			if (serviceUtil.mandatoryParameterCheckforCancel(preRegistrationId)) {
 				if (serviceUtil.callGetStatusForCancelRestService(preRegistrationId)) {
 					/* Getting Booking details */
-					RegistrationBookingEntity bookingEntity = bookingDAO.findByPreRegistrationId(preRegistrationId);
-					
+					bookingEntity = bookingDAO.findByPreRegistrationId(preRegistrationId);
+
 					availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-							bookingEntity.getSlotFromTime(),
-							bookingEntity.getSlotToTime(),
-							bookingEntity.getRegDate(), bookingEntity.getRegistrationCenterId());
+							bookingEntity.getSlotFromTime(), bookingEntity.getSlotToTime(), bookingEntity.getRegDate(),
+							bookingEntity.getRegistrationCenterId());
 					/* Getting Status From Demographic */
 					serviceUtil.callGetStatusRestService(preRegistrationId);
 
@@ -572,16 +649,17 @@ public class BookingService {
 			isSaveSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In cancelBooking method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
+
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.SYSTEM.toString(),
 						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
+						authUserDetails().getUsername(), null);
 			}
 		}
 		return cancelBookingResponseDTO;
@@ -600,6 +678,8 @@ public class BookingService {
 	public MainResponseDTO<DeleteBookingDTO> deleteBooking(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteIndividual method of pre-registration service ");
 		MainResponseDTO<DeleteBookingDTO> response = new MainResponseDTO<>();
+		response.setId(idUrlDelete);
+		response.setVersion(versionUrl);
 		DeleteBookingDTO deleteDto = new DeleteBookingDTO();
 		Map<String, String> requestParamMap = new HashMap<>();
 		AvailibityEntity availableEntity;
@@ -607,42 +687,46 @@ public class BookingService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				RegistrationBookingEntity registrationEntityList = bookingDAO.findByPreRegistrationId(preregId);
-				
-					bookingDAO.deleteByPreRegistrationId(preregId);
-					availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-							LocalTime.parse(registrationEntityList.getSlotFromTime().toString()),
-							LocalTime.parse(registrationEntityList.getSlotToTime().toString()),
-							LocalDate.parse(registrationEntityList.getRegDate().toString()), registrationEntityList.getRegistrationCenterId());
-					/* No. of Availability. update */
-					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 
-					/* Updating slot in DB*/
-					bookingDAO.updateAvailibityEntity(availableEntity);
-					
-					deleteDto.setPreRegistrationId(registrationEntityList.getBookingPK().getPreregistrationId());
-					deleteDto.setDeletedBy(registrationEntityList.getCrBy());
-					deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
+				bookingDAO.deleteByPreRegistrationId(preregId);
+				availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+						LocalTime.parse(registrationEntityList.getSlotFromTime().toString()),
+						LocalTime.parse(registrationEntityList.getSlotToTime().toString()),
+						LocalDate.parse(registrationEntityList.getRegDate().toString()),
+						registrationEntityList.getRegistrationCenterId());
+				/* No. of Availability. update */
+				availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 
-				
+				/* Updating slot in DB */
+				bookingDAO.updateAvailibityEntity(availableEntity);
+
+				deleteDto.setPreRegistrationId(registrationEntityList.getBookingPK().getPreregistrationId());
+				deleteDto.setDeletedBy(registrationEntityList.getCrBy());
+				deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
+
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteBooking method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		response.setResponse(deleteDto);
 		return response;
 	}
 
 	public void checkSlotAvailability(BookingRequestDTO bookingRequestDTO) {
+		MainResponseDTO<?> response = new MainResponseDTO<>();
+		response.setId(idUrlCheckSlotAvailability);
+		response.setVersion(versionUrl);
 		try {
 			AvailibityEntity entity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 					LocalTime.parse(bookingRequestDTO.getSlotFromTime()),
 					LocalTime.parse(bookingRequestDTO.getSlotToTime()), LocalDate.parse(bookingRequestDTO.getRegDate()),
 					bookingRequestDTO.getRegistrationCenterId());
+			log.info("In Availablity", "available slots :" + entity.getAvailableKiosks(),
+					" for Reg center" + entity.getRegcntrId(),
+					" and Date and Time " + entity.getRegDate() + " " + entity.getFromTime());
 
 			log.info("sessionId", "idType", "id", "In checkSlotAvailability method of Booking Service");
 			if (entity.getAvailableKiosks() < 1) {
@@ -652,12 +736,15 @@ public class BookingService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In checkSlotAvailability method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 
 	}
 
 	public boolean deleteOldBooking(String preId) {
+		MainResponseDTO<?> response = new MainResponseDTO<>();
+		response.setId(idUrlDeleteOld);
+		response.setVersion(versionUrl);
 		try {
 			int count = bookingDAO.deleteByPreRegistrationId(preId);
 			if (count > 0) {
@@ -667,13 +754,16 @@ public class BookingService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In deleteOldBooking method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 		return false;
 
 	}
 
 	public boolean increaseAvailability(BookingRequestDTO oldBooking) {
+		MainResponseDTO<?> response = new MainResponseDTO<>();
+		response.setId(idUrlIncreaseAvailability);
+		response.setVersion(versionUrl);
 		try {
 			AvailibityEntity availableEntity;
 			availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
@@ -686,7 +776,7 @@ public class BookingService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In increaseAvailability method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 		return true;
 
@@ -702,7 +792,7 @@ public class BookingService {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName) {
+			String userId, String userName, String ref_id) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -713,6 +803,7 @@ public class BookingService {
 		auditRequestDto.setSessionUserName(userName);
 		auditRequestDto.setModuleId(AuditLogVariables.BOOK.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.BOOKING_SERVICE.toString());
+		auditRequestDto.setId(ref_id);
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
@@ -729,6 +820,8 @@ public class BookingService {
 			String toDateStr, String regCenterId) {
 		log.info("sessionId", "idType", "id", "In getBookedPreRegistrationByDate method of booking service ");
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response = new MainResponseDTO<>();
+		response.setId(idUrlBookingByDate);
+		response.setVersion(versionUrl);
 		try {
 
 			if (toDateStr == null || toDateStr.isEmpty()) {
@@ -740,11 +833,10 @@ public class BookingService {
 			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
 			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
 
-			LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-			LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
+			// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
+			// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
 
-			List<String> details = bookingDAO.findByBookingDateBetweenAndRegCenterId(fromLocaldate, toLocaldate,
-					regCenterId);
+			List<String> details = bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, regCenterId);
 			PreRegIdsByRegCenterIdResponseDTO responseDTO = new PreRegIdsByRegCenterIdResponseDTO();
 			responseDTO.setPreRegistrationIds(details);
 			responseDTO.setRegistrationCenterId(regCenterId);
@@ -755,7 +847,7 @@ public class BookingService {
 		Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
+			new BookingExceptionCatcher().handle(ex, response);
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(idUrl);
@@ -772,16 +864,7 @@ public class BookingService {
 	 *            pass requestDTO
 	 * @return a map for request input validation
 	 */
-	public Map<String, String> prepareRequestParamMap(MainListRequestDTO<?> requestDTO) {
-		Map<String, String> inputValidation = new HashMap<>();
-		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
-		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
-		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
-		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
-		return inputValidation;
-	}
-	
+
 	public Map<String, String> prepareRequestParamMap(MainRequestDTO<?> requestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
