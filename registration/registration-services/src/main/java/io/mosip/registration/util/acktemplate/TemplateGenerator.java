@@ -952,8 +952,8 @@ public class TemplateGenerator extends BaseService {
 		qrCodeString.append(applicationLanguageProperties.getString("registrationid")).append(" : ").append("\n")
 				.append(registration.getRegistrationId());
 		try {
-			byte[] qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
-
+			byte[] qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V4);
+			
 			String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
 			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
 					RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
