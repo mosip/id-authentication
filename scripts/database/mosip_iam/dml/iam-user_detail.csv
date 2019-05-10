@@ -1,4 +1,4 @@
-﻿id,uin,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes
+﻿id,reg_id,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes
 110001,5402120055,Hortense Dauenhauer,hortense.dauenhauer@xyz.com,975366148,ACT,eng,PWD,TRUE,superadmin,now()
 110002,7314004469,Leonia Bermeo,leonia.bermeo@xyz.com,795281431,ACT,eng,PWD,TRUE,superadmin,now()
 110003,7896109326,Bong Bragan,bong.bragan@xyz.com,739704695,ACT,eng,PWD,TRUE,superadmin,now()

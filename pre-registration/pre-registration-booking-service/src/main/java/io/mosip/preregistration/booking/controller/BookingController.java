@@ -27,8 +27,10 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.MultiBookingRequest;
 import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
@@ -133,11 +135,11 @@ public class BookingController {
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
-	public ResponseEntity<MainResponseDTO<List<BookingStatusDTO>>> bookMultiAppoinment(
-			@RequestBody(required = true) MainRequestDTO<List<MultiBookingRequestDTO>> bookingDTO) {
+	public ResponseEntity<MainResponseDTO<BookingStatus>> bookMultiAppoinment(
+			@RequestBody(required = true) MainRequestDTO<MultiBookingRequest> bookingRequest) {
 		log.info("sessionId", "idType", "id",
-				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookMultiAppointment(bookingDTO));
+				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingRequest);
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookMultiAppointment(bookingRequest));
 	}
 
 	/**

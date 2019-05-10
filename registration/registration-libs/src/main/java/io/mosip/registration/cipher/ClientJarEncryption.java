@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileUtils;
 
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
@@ -59,6 +60,11 @@ public class ClientJarEncryption {
 	private static final String MOSIP_CER = "cer";
 	private static final String MOSIP_CER_PARAM = "mosip.cerpath= ";
 	private static final String MOSIP_CER_PATH = "/cer/";
+
+	// For TPM
+	private static final String MOSIP_CLIENT_DB_KEY = "mosip.registration.db.key = ";
+	private static final String MOSIP_CLIENT_APP_KEY = "mosip.registration.app.key = ";
+	private static final String MOSIP_CLIENT_DB_PASSWORD = "mosip12345";
 
 	/**
 	 * Encrypt the bytes
@@ -131,7 +137,10 @@ public class ClientJarEncryption {
 
 					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
 							+ "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM
-							+ MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName()).getBytes();
+							+ MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName() + "\n"
+							+ MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
+									.concat(Base64.getEncoder().encodeToString(MOSIP_CLIENT_DB_PASSWORD.getBytes())))
+											.getBytes();
 
 					fileNameByBytes.put(propertiesFile, propertiesBytes);
 
@@ -172,14 +181,10 @@ public class ClientJarEncryption {
 
 					File rxtxJarFolder = new File(args[8]);
 					
-					//lib files
-					LinkedList<File> jars = new LinkedList<>( Arrays.asList(listOfJars.listFiles()));
-					
-					//rxtx files
-					jars.addAll(Arrays.asList(rxtxJarFolder.listFiles()));
+					FileUtils.copyDirectory(rxtxJarFolder, listOfJars);
 					
 					// Adding lib files into map
-					for (File files : jars) {
+					for (File files : listOfJars.listFiles()) {
 
 						if (files.getName().contains(REGISTRATION)) {
 

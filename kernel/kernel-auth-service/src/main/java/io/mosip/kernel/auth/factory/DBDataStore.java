@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -81,7 +82,8 @@ public class DBDataStore implements IDataStore {
 		if (mosipUserDto != null && (Arrays.areEqual(password, test))) {
 			return mosipUserDto;
 		} else {
-			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
 		}
 	}
 
@@ -227,6 +229,12 @@ public class DBDataStore implements IDataStore {
 
 	@Override
 	public RIdDto getRidFromUserId(String userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

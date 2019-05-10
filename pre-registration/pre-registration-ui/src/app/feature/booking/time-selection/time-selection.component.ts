@@ -40,6 +40,7 @@ export class TimeSelectionComponent implements OnInit {
   registrationCenterLunchTime = [];
   secondaryLang = localStorage.getItem('secondaryLangCode');
   secondaryLanguagelabels: any;
+  errorlabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
   disableContinueButton = false;
@@ -73,6 +74,7 @@ export class TimeSelectionComponent implements OnInit {
 
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.secondaryLanguagelabels = response['timeSelection'].booking;
+      this.errorlabels = response['error'];
     });
   }
 
@@ -185,7 +187,8 @@ export class TimeSelectionComponent implements OnInit {
         }
       },
       error => {
-        console.log(error);
+        //console.log(error);
+        this.displayMessage('Error', this.errorlabels.error);
       }
     );
   }
@@ -254,27 +257,43 @@ export class TimeSelectionComponent implements OnInit {
               this.router.navigateByUrl(url);
             });
         } else {
-          this.showError();
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       error => {
-        console.log(error);
-        this.showError();
+        //console.log(error);
+        this.displayMessage('Error', this.errorlabels.error);
       }
     );
   }
 
-  showError() {
+  // showError() {
+  //   this.disableContinueButton = false;
+  //   const data = {
+  //     case: 'MESSAGE',
+  //     title: this.secondaryLanguagelabels.title_failure,
+  //     message: this.secondaryLanguagelabels.msg_failure
+  //   };
+  //   const dialogRef = this.dialog.open(DialougComponent, {
+  //     width: '350px',
+  //     data: data
+  //   });
+  // }
+  displayMessage(title: string, message: string) {
     this.disableContinueButton = false;
-    const data = {
+    const messageObj = {
       case: 'MESSAGE',
-      title: this.secondaryLanguagelabels.title_failure,
-      message: this.secondaryLanguagelabels.msg_failure
+      title: title,
+      message: message
     };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
     const dialogRef = this.dialog.open(DialougComponent, {
-      width: '350px',
+      width: width,
       data: data
     });
+    return dialogRef;
   }
 
   navigateDashboard() {

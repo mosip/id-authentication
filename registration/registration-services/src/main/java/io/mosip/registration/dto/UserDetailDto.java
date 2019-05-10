@@ -22,6 +22,21 @@ public class UserDetailDto extends MasterSyncBaseDto {
 	private String name;
 	private List<String> roles;
 	private Boolean isActive;
+	private String salt;
+
+	/**
+	 * @return the salt
+	 */
+	public String getSalt() {
+		return salt;
+	}
+
+	/**
+	 * @param salt the salt to set
+	 */
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 
 	/**
 	 * @return the isActive

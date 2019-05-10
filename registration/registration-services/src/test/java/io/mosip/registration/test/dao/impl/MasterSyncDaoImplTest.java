@@ -151,7 +151,7 @@ import io.mosip.registration.repositories.TemplateTypeRepository;
 import io.mosip.registration.repositories.TitleRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 import io.mosip.registration.repositories.ValidDocumentRepository;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.mastersync.MetaDataUtils;
 
 /**

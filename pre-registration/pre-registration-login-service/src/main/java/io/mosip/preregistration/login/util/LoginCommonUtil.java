@@ -129,13 +129,10 @@ public class LoginCommonUtil {
 	 * @param langCode
 	 * @return List<String>
 	 */
-	public  List<String> validateUserIdAndLangCode(String userId,String langCode) {
+	public  List<String> validateUserId(String userId) {
 		log.info("sessionId", "idType", "id", "In validateUserIdandLangCode method of Login Common Util");
 		List<String> list=new ArrayList<>();
-		if(langCode == null || langCode.isEmpty()) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_009.getCode(),ErrorMessages.INVALID_REQUEST_LANGCODE.getMessage(),null);
-		}
-		else if(userId == null || userId.isEmpty()) {
+		 if(userId == null || userId.isEmpty()) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 		}
 		if(ValidationUtil.phoneValidator(userId)) {

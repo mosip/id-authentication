@@ -47,9 +47,9 @@ public class PacketNotAvailableExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
+		Mockito.when(packetHandlerService.validatePacket(file, stageName)).thenThrow(ex);
 		try {
-			packetHandlerService.storePacket(file, stageName);
+			packetHandlerService.validatePacket(file, stageName);
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",

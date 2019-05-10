@@ -12,7 +12,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.service.PolicySyncService;
+import io.mosip.registration.service.sync.PolicySyncService;
 
 /**
  * This is a job to sync the packet status

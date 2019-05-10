@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -33,8 +34,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -50,24 +54,27 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchApplication.class);
-	private static final String jiraID = "MOS-8888";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchApplication";
-	private static final String requestJsonName = "FetchApplicationRequest";
-	private static final String outputJsonName = "FetchApplicationOutput";
-	private static final String service_URI = "/v1/masterdata/applicationtypes";
-	private static final String service_lang_URI = "/v1/masterdata/applicationtypes/{langcode}";
-	private static final String service_id_lang_URI = "/v1/masterdata/applicationtypes/{code}/{langcode}";
+	private final String jiraID = "MOS-8888";
+	private final String moduleName = "kernel";
+	private final String apiName = "FetchApplication";
+	private final String requestJsonName = "FetchApplicationRequest";
+	private final String outputJsonName = "FetchApplicationOutput";
+	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final String FetchApplication_URI = props.get("FetchApplication_URI").toString();
+	private final String FetchApplication_lang_URI = props.get("FetchApplication_lang_URI").toString();
+	private final String FetchApplication_id_lang_URI = props.get("FetchApplication_id_lang_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -76,10 +83,11 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
+		cookie=auth.getAuthForIndividual();
 
 	}
 
@@ -112,7 +120,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchApplication(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -145,9 +153,9 @@ public class FetchApplication extends BaseTestCase implements ITest {
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if (objectData.containsKey("code"))
-					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchApplication_URI, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchApplication_lang_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -159,7 +167,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 		// sending request to get request without param
 		if (response == null) {
 			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+			response = applicationLibrary.getRequestPathPara(FetchApplication_URI, objectData,cookie);
 			objectData = null;
 		}
 		int statusCode = response.statusCode();
@@ -177,7 +185,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
@@ -236,6 +244,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

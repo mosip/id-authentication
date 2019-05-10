@@ -21,6 +21,7 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
+import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 
 /**
@@ -51,7 +52,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   // YEAR_PATTERN = appConstants.YEAR_PATTERN;
   // MONTH_PATTERN = appConstants.MONTH_PATTERN;
   // DATE_PATTERN = appConstants.DATE_PATTERN;
-
+  files: FilesModel;
   agePattern: string;
   MOBILE_PATTERN: string;
   MOBILE_LENGTH: string;
@@ -926,7 +927,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    */
   private onAddition(response: any, request: ResponseModel) {
     this.preRegId = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
-    this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
+    this.regService.addUser(new UserModel(this.preRegId, request, this.files, this.codeValue));
     this.bookingService.addNameList({
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
       fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,

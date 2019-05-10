@@ -28,6 +28,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 
 /**
@@ -52,9 +53,6 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 	@Value("${DOCUMENT_SCANNER_TIMEOUT}")
 	protected long scannerTimeout;
 
-	@Value("${DOCUMENT_SCANNER_IMGTYPE}")
-	protected String scannerImgType;
-
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerService.class);
 
 	/**
@@ -69,7 +67,7 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 		byte[] imageInByte;
 
 		ByteArrayOutputStream imagebyteArray = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, scannerImgType, imagebyteArray);
+		ImageIO.write(bufferedImage, RegistrationConstants.SCANNER_IMG_TYPE, imagebyteArray);
 		imagebyteArray.flush();
 		imageInByte = imagebyteArray.toByteArray();
 		imagebyteArray.close();

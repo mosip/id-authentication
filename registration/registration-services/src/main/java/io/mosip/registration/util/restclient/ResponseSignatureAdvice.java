@@ -4,12 +4,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,15 +18,13 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -50,10 +46,6 @@ public class ResponseSignatureAdvice {
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(ResponseSignatureAdvice.class);
 
-	/** The rest template. */
-	@Autowired
-	RestTemplate restTemplate;
-
 	/** The decryptor. */
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
@@ -61,6 +53,10 @@ public class ResponseSignatureAdvice {
 	/** The key generator. */
 	@Autowired
 	KeyGenerator keyGenerator;
+
+	/** The SignatureUtil. */
+	@Autowired
+	SignatureUtil signatureUtil;
 
 	/** The policy sync DAO. */
 	@Autowired
@@ -93,7 +89,7 @@ public class ResponseSignatureAdvice {
 
 			if (null != requestDto && requestDto.getIsSignRequired()) {
 
-				KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.SIGNED_KEY);
+				KeyStore keyStore = policySyncDAO.getPublicKey(RegistrationConstants.KER);
 
 				if (null != keyStore && null != keyStore.getPublicKey()) {
 					publicKey = new String(keyStore.getPublicKey());
@@ -115,22 +111,15 @@ public class ResponseSignatureAdvice {
 				LinkedHashMap<String, Object> responseBodyMap = (LinkedHashMap<String, Object>) restClientResponse
 						.get(RegistrationConstants.REST_RESPONSE_BODY);
 
-				byte[] syncDataBytearray = HMACUtils
-						.generateHash(new ObjectMapper().writeValueAsString(responseBodyMap).getBytes());
-
 				LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 						"Getting public key");
-
-				PublicKey key = KeyFactory.getInstance("RSA")
-						.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
 
 				Map<String, Object> responseMap = (Map<String, Object>) restClientResponse
 						.get(RegistrationConstants.REST_RESPONSE_HEADERS);
 
-				byte[] decodedEncryptedData = CryptoUtil.decodeBase64(responseMap.get("response-signature").toString());
-				byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
-
-				if (new String(hashedEncodedData).equals(CryptoUtil.encodeBase64(syncDataBytearray))) {
+				if (signatureUtil.validateWithPublicKey(
+						responseMap.get("response-signature").toString().replace("[", "").replace("]", ""),
+						new ObjectMapper().writeValueAsString(responseBodyMap), publicKey)) {
 					LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 							"response signature is valid...");
 					return restClientResponse;
