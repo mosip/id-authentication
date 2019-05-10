@@ -104,7 +104,9 @@ export class DialougComponent implements OnInit {
      await this.firstPopUp();
       // this if for first time user, if he does not provide consent he will be logged out.
 
-    } else if (localStorage.getItem('newApplicant') === 'false') {
+    } else
+    // if (localStorage.getItem('newApplicant') === 'false')
+     {
       console.log('user redirection else', localStorage.getItem('newApplicant'));
       this.regService.currentMessage.subscribe(
         message => (this.message = message)
@@ -114,10 +116,8 @@ export class DialougComponent implements OnInit {
 
       if (this.checkCondition === 'false') {
       await this.thirdPopUp();
-
       } else {
       await  this.secondPopUp();
-
       }
     }
   }

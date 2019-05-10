@@ -134,8 +134,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equals(RegistrationType.ACTIVATED.toString())
-				|| registrationType.equals(RegistrationType.DEACTIVATED.toString()))) {
+		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {
 

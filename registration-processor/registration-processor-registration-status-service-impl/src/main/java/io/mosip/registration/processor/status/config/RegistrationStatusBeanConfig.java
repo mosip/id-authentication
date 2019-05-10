@@ -15,6 +15,7 @@ import io.mosip.registration.processor.rest.client.service.impl.RegistrationProc
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
+import io.mosip.registration.processor.status.decryptor.Decryptor;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -51,7 +52,7 @@ public class RegistrationStatusBeanConfig {
 	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
 		return new RegistrationProcessorRestClientServiceImpl();
 	}
-	
+
 	@Bean
 	public SyncRegistrationDao getSyncRegistrationDao() {
 		return new SyncRegistrationDao();
@@ -64,46 +65,51 @@ public class RegistrationStatusBeanConfig {
 
 	@Bean
 	public RegistrationStatusDao getRegistrationStatusDao() {
-		return new RegistrationStatusDao();	
+		return new RegistrationStatusDao();
 	}
 
 	@Bean
 	public TransactionService<TransactionDto> getTransactionService() {
 		return new TransactionServiceImpl();
 	}
-	
+
 	@Bean
 	public RestApiClient getRestApiClient() {
 		return new RestApiClient();
 	}
 
 	@Bean
-	public SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> getSyncRegistrationService(){
+	public SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> getSyncRegistrationService() {
 		return new SyncRegistrationServiceImpl();
 	}
-	
+
 	@Bean
 	public InternalRegistrationStatusDto internalRegistrationStatusDto() {
 		return new InternalRegistrationStatusDto();
 	}
-	
+
 	@Bean
 	public RegistrationStatusEntity registrationStatusEntity() {
 		return new RegistrationStatusEntity();
 	}
-	
+
 	@Bean
 	public BaseRegistrationEntity baseRegistrationStatusEntity() {
 		return new RegistrationStatusEntity();
 	}
-	
+
 	@Bean
 	public BaseRegistrationEntity baseSyncRegistrationEntity() {
 		return new SyncRegistrationEntity();
 	}
-	
+
 	@Bean
 	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
 		return new RegistrationStatusMapUtil();
+	}
+
+	@Bean
+	public Decryptor getDecryptor() {
+		return new Decryptor();
 	}
 }

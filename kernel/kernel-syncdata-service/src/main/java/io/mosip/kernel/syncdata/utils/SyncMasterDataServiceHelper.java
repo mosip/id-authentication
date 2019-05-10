@@ -274,7 +274,7 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private ScreenDetailRepository screenDetailRepository;
 
-	@Value("${mosip.kernel.syncdata.admin-base-url}")
+	@Value("${mosip.kernel.syncdata.syncjob-base-url}")
 	private String baseUri;
 
 	/**

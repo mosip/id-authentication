@@ -1,36 +1,22 @@
 # Pre-Registration-translitration-service:
 
-[Background & Design](pre-registration-individual.md)
+[Background & Design](https://github.com/mosip/mosip/blob/SPRINT11_PREREG_TEAM_BRANCH/docs/design/pre-registration/pre-registration-transliteration-service.md)
 
 This service is used by Pre-Registration portal to transliterate given value from one language to another language. In this API transliteration is using IDB ICU4J library , so accuracy will be less.
 
+[Api Documentation](https://github.com/mosip/mosip/wiki/Pre-Registration-Services#transliteration-service-public)
 
-
-#### Api Documentation
-
+### Default Port and Context Path
 ```
-mvn javadoc:javadoc
-
+server.port=9098
+server.servlet.context-path=/preregistration/v1
 ```
+#### Url 
+```https://{dns-name}:9098/preregistration/v1/transliteration/swagger-ui.html```
 
-#### POST Operation
-#### Path - `transliteration/transliterate`
-#### Summary
+[Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
-This request is used to transliterate from_Field_value to to_field_value based on given valid from_lang_code to to_lang_code.
+The following are the Api name use in this service.
 
-
-
-#### Request part Parameters
-
-1. id
-2. version
-3. requestTime
-4. request
-5. request.from_field_lang	
-6. request.from_field_value		
-7. request.to_field_lang		
-
-#### Response
-
-This request returns from_field_lang, from_field_value, to_field_lang, to_field_value on success else gives a error message.
+1. POST /transliteration/transliterate
+This request is used to transliterate one value to another based on given valid language code.

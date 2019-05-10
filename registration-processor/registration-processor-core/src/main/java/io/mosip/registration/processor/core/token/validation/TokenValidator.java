@@ -85,37 +85,37 @@ public class TokenValidator {
 	public boolean validateAccess(String url, String role) {
 		if (url.contains("receiver")) {
 			for (String assignedRole : APIAuthorityList.PACKETRECEIVER.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("sync")) {
 			for (String assignedRole : APIAuthorityList.PACKETSYNC.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("status")) {
 			for (String assignedRole : APIAuthorityList.REGISTRATIONSTATUS.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("manual")) {
 			for (String assignedRole : APIAuthorityList.MANUALVERIFICTION.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("print")) {
 			for (String assignedRole : APIAuthorityList.PRINTSTAGE.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("connector")) {
 			for (String assignedRole : APIAuthorityList.CONNECTORSTAGE.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		} else if (url.contains("uin-card")) {
 			for (String assignedRole : APIAuthorityList.PRINTUINCARD.getList()) {
-				if (role.compareToIgnoreCase(assignedRole) == 0)
+				if (role.contains(assignedRole))
 					return true;
 			}
 		}

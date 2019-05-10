@@ -1,3 +1,4 @@
 {
-	"regid":"string"
+	"regid":"string",
+	"response_time":"string"
 }

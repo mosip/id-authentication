@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -33,36 +34,59 @@ import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.authentication.fw.util.UinVidNumberUtil;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
 
-public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
-	
-	private static Logger logger = Logger.getLogger(UpdateUinRecord.class);
-	private DataProviderClass objDataProvider = new DataProviderClass();
-	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
-	private ReportUtil objReportUtil = new ReportUtil();
-	private RunConfig objRunConfig = new RunConfig();
-	private FileUtil objFileUtil = new FileUtil();
-	protected static String testCaseName = "";
-	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	private IdRepoUtil objIdRepoUtil = new IdRepoUtil();
-	private Map<String,String> storeUinData = new HashMap<String,String>();
-	private static UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
-	
-	private String TESTDATA_PATH="ida/TestData/UINData/UpdateTestData/";
-	private String TESTDATA_FILENAME="testdata.ida.UINData.UpdateTestData.mapping.yml";
+public class UpdateUinRecord extends IdaScriptsUtil implements ITest {
 
-	@Parameters({"testType"})
+	private static Logger logger = Logger.getLogger(UpdateUinRecord.class);
+	protected static String testCaseName = "";
+	private Map<String, String> storeUinData = new HashMap<String, String>();
+	private String TESTDATA_PATH;
+	private String TESTDATA_FILENAME;
+	private String testType;
+	private int invocationCount = 0;
+
+	/**
+	 * Set Test Type - Smoke, Regression or Integration
+	 * 
+	 * @param testType
+	 */
+	@Parameters({ "testType" })
 	@BeforeClass
-	public void setConfigurations(String testType) {
-		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
-		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");
+	public void setTestType(String testType) {
+		this.testType = testType;
 	}
-	
+
+	/**
+	 * Method set Test data path and its filename
+	 * 
+	 * @param index
+	 */
+	public void setTestDataPathsAndFileNames(int index) {
+		this.TESTDATA_PATH = getTestDataPath(this.getClass().getSimpleName().toString(), index);
+		this.TESTDATA_FILENAME = getTestDataFileName(this.getClass().getSimpleName().toString(), index);
+	}
+
+	/**
+	 * Method set configuration
+	 * 
+	 * @param testType
+	 */
+	public void setConfigurations(String testType) {
+		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
+	}
+
+	/**
+	 * The method set test case name
+	 * 
+	 * @param method
+	 * @param testData
+	 */
 	@BeforeMethod
 	public void testData(Method method, Object[] testData) {
 		String testCase = "";
@@ -79,25 +103,39 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 				testCase = testParams.getTestCaseName();
 			}
 		}
-		this.testCaseName = String.format(testCase);
+		this.testCaseName = String.format("Update UIN");
+		invocationCount++;
+		setTestDataPathsAndFileNames(invocationCount);
+		setConfigurations(this.testType);
 	}
 
+	/**
+	 * The test update the generated UIN test data in property file
+	 */
 	@Test
 	public void updateUINTestData() {
-		Object[][] object = objDataProvider.getDataProvider(
-				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
+		Object[][] object = DataProviderClass.getDataProvider(
+				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
 				RunConfig.getScenarioPath(), RunConfig.getTestType());
 		for (int i = 1; i < object.length; i++) {
-			idaUpdateUINData(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
+			updateUinRecordTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
 					object[i][2].toString());
 		}
 	}
-	
+
+	/**
+	 * Set current testcaseName
+	 */
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-	} 
-	
+	}
+
+	/**
+	 * The method ser current test name to result
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -111,9 +149,16 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-	} 
+	}
 
-	public void idaUpdateUINData(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	/**
+	 * The method update the UIN record available in property file
+	 * 
+	 * @param objTestParameters
+	 * @param testScenario
+	 * @param testcaseName
+	 */
+	public void updateUinRecordTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -122,32 +167,35 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
 		Map<String, String> tempMap = new HashMap<String, String>();
-		String uin = objUinVidNumberUtil.getRandomUINKey();
+		String uin = RunConfigUtil.getRandomUINKey();
 		logger.info("************* IdRepo UIN Update request ******************");
 		Reporter.log("<b><u>UIN create request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "update"), true);
-		logger.info("******Post request Json to EndPointUrl: " + objIdRepoUtil.getCreateUinPath(uin) + " *******");
+		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath(uin) + " *******");
 		wait(10000);
-		Assert.assertEquals(postAndGenOutFileForUinUpdate(testCaseName.listFiles(), objIdRepoUtil.getCreateUinPath(uin),
-				"update", "output-1-actual-res", 0), true);
-		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
-				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
-				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
-		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		if (objOpValiUtil.publishOutputResult(ouputValid)) {
+		Assert.assertEquals(postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(),
+				IdRepoUtil.getCreateUinPath(uin), "update", "output-1-actual-res", 0), true);
+		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
+				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
+				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
+		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
+		if (OutputValidationUtil.publishOutputResult(ouputValid)) {
 			Assert.assertEquals(true, true);
 			storeUinData.put(uin, testcaseName);
 		} else
 			Assert.assertEquals(true, false);
 	}
-	
+
+	/**
+	 * The method store or modify updated UIN in property file
+	 * 
+	 */
 	@AfterClass
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Updated UIN: " + UinDto.getUinData());
-		updateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath(),
-				UinDto.getUinData());
+		updateMappingDic(new File("./" + RunConfig.getSrcPath() + "ida/" + RunConfig.getTestDataFolderName()
+				+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
-
 }
 

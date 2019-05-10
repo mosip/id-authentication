@@ -1,37 +1,23 @@
 # Pre-Registration-notification-service:
 
-[Background & Design](pre-registration-individual.md)
+[Background & Design](https://github.com/mosip/mosip/blob/SPRINT11_PREREG_TEAM_BRANCH/docs/design/pre-registration/pre-registration-notification-service.md)
 
 This service is used by Pre-Registration portal to trigger notification via SMS or Email and get QRCode.
 
-#### Api Documentation
+[Api Documentation](https://github.com/mosip/mosip/wiki/Pre-Registration-Services#notification-service-public)
 
+
+### Default Port and Context Path
 ```
-mvn javadoc:javadoc
-
+server.port=9099
+server.servlet.context-path=/preregistration/v1
 ```
+#### Url 
+```https://{dns-name}:9099/preregistration/v1/notification/swagger-ui.html```
 
-#### POST Operation
-#### Path - `notification/notify`
-#### Summary
+[Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
+The following are the Api name use in this service.
+
+1. POST notification/notify - 
 This request is used to notify the pre-registration acknowledgement via Email and SMS.
-
-#### Request part Parameters
-
-1. id
-2. version
-3. requestTime
-4. request
-5. request.name	
-6. request.preRegistrationId	
-7. request.appointmentDate	
-8. request.appointmentTime	
-9. request.mobNum	
-10. request.emailID	
-11. request.multipart file	
-12. request.LangCode	
-
-#### Response
-
-On success it retuns a message saying 'Email and sms request successfully submitted' else gives appropriate error message.

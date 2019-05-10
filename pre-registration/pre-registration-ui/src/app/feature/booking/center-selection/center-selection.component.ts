@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -31,6 +32,7 @@ export class CenterSelectionComponent implements OnInit {
   showMessage = false;
   enableNextButton = false;
   bookingDataList = [];
+  errorlabels: any;
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
@@ -58,6 +60,7 @@ export class CenterSelectionComponent implements OnInit {
     //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['response']['locations'];
+      this.errorlabels = response['error'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
@@ -127,6 +130,7 @@ export class CenterSelectionComponent implements OnInit {
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
     }
@@ -164,6 +168,7 @@ export class CenterSelectionComponent implements OnInit {
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
       });
@@ -231,4 +236,20 @@ export class CenterSelectionComponent implements OnInit {
       this.dispatchCenterCoordinatesList();
     }
   }
+  displayMessageError(title: string, message: string) {
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
+
 }

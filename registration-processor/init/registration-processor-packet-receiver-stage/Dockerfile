@@ -22,7 +22,7 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/logs
+VOLUME /home/logs /home/ftp1/LANDING_ZONE
 
 COPY ./target/registration-processor-packet-receiver-stage-*.jar registration-processor-packet-receiver-stage.jar
 
