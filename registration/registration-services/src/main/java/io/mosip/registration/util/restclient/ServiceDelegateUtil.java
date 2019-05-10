@@ -115,6 +115,8 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setIsSignRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestHTTPDTO.setTriggerPoint(triggerPoint);
+			requestHTTPDTO.setRequestSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.REQUEST_SIGN_REQUIRED)));
 
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
@@ -177,6 +179,8 @@ public class ServiceDelegateUtil {
 			requestDto.setIsSignRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestDto.setTriggerPoint(triggerPoint);
+			requestDto.setRequestSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.REQUEST_SIGN_REQUIRED)));
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
@@ -416,6 +420,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
+			requestHTTPDTO.setRequestSignRequired(false);
 			
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
@@ -501,6 +506,7 @@ public class ServiceDelegateUtil {
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 				if (isTokenValid) {
+					@SuppressWarnings("unchecked")
 					Map<String, Object> responseBody = (Map<String, Object>) responseMap
 							.get(RegistrationConstants.REST_RESPONSE_BODY);
 					if (responseBody != null && responseBody.get("errors") != null) {
@@ -581,6 +587,7 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setIsSignRequired(false);
+		requestHTTPDTO.setRequestSignRequired(false);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);
