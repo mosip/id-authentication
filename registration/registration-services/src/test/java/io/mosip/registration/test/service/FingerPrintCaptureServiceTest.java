@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.fp.FingerPrintCaptureService;
+import io.mosip.registration.device.fp.impl.FingerPrintCaptureServiceImpl;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.security.AuthenticationService;
@@ -35,7 +35,7 @@ public class FingerPrintCaptureServiceTest {
 	private FingerprintValidatorImpl fingerprintValidator;
 
 	@InjectMocks
-	private FingerPrintCaptureService fingerPrintCaptureServiceImpl;
+	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
 
 	@BeforeClass
 	public static void initialize() {
