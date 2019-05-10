@@ -6,11 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -23,7 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileUtils;
 
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
@@ -46,10 +42,14 @@ public class ClientJarEncryption {
 	private static final String MOSIP_JAR = ".jar";
 	private static final String MOSIP_LOG_PARAM = "mosip.logpath= ";
 	private static final String MOSIP_DB_PARAM = "mosip.dbpath= ";
+	private static final String MOSIP_ENV_PARAM = "mosip.env= ";
+	private static final String MOSIP_CLIENT_URL = "mosip.client.url=";
+	private static final String MOSIP_XML_FILE_URL = "mosip.xml.file.url=";
 	private static final String MOSIP_PACKET_STORE_PARAM = "mosip.packetstorepath= ";
 	private static final String MOSIP_PACKET_STORE_PATH = "../PacketStore";
 	private static final String MOSIP_LOG_PATH = "../logs";
 	private static final String MOSIP_DB_PATH = "db/reg";
+	private static final String MOSIP_ENV_VAL = "qa";
 	private static final String MOSIP_REG_LIBS = "registration-libs-";
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
@@ -60,6 +60,8 @@ public class ClientJarEncryption {
 	private static final String MOSIP_CER = "cer";
 	private static final String MOSIP_CER_PARAM = "mosip.cerpath= ";
 	private static final String MOSIP_CER_PATH = "/cer/";
+	private static final String MOSIP_CLIENT_URL_VAL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
+	private static final String MOSIP_XML_FILE_URL_VAL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
 	// For TPM
 	private static final String MOSIP_CLIENT_DB_KEY = "mosip.registration.db.key = ";
@@ -136,8 +138,10 @@ public class ClientJarEncryption {
 					}
 
 					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
-							+ "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM
-							+ MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName() + "\n"
+							+ "\n" + MOSIP_ENV_PARAM + MOSIP_ENV_VAL + "\n" + MOSIP_CLIENT_URL + MOSIP_CLIENT_URL_VAL
+							+ "\n" + MOSIP_XML_FILE_URL + MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM
+							+ MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM + MOSIP_CER_PATH + SLASH
+							+ mosipCertificateFile.getName() + "\n"
 							+ MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
 									.concat(Base64.getEncoder().encodeToString(MOSIP_CLIENT_DB_PASSWORD.getBytes())))
 											.getBytes();
@@ -153,7 +157,8 @@ public class ClientJarEncryption {
 					String shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] + MOSIP_ZIP;
 					Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
 					readDirectoryToByteArray(null, regFolder, shadedZipFileBytes);
-					File shadedJar = args[1] != null && new File(args[1]).exists() ? new File(args[1]) : new File(args[7]);
+					File shadedJar = args[1] != null && new File(args[1]).exists() ? new File(args[1])
+							: new File(args[7]);
 					shadedZipFileBytes.put(shadedJar.getName(), FileUtils.readFileToByteArray(shadedJar));
 					aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
 
@@ -180,9 +185,9 @@ public class ClientJarEncryption {
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
 					File rxtxJarFolder = new File(args[8]);
-					
+
 					FileUtils.copyDirectory(rxtxJarFolder, listOfJars);
-					
+
 					// Adding lib files into map
 					for (File files : listOfJars.listFiles()) {
 
@@ -226,9 +231,11 @@ public class ClientJarEncryption {
 
 					writeManifest(fileOutputStream, manifest);
 
-					//Removed manifest file from zip content
-//					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
-//							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
+					// Removed manifest file from zip content
+					// fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT,
+					// FileUtils.readFileToByteArray(
+					// new File(file.getParent() + SLASH + MANIFEST_FILE_NAME +
+					// MANIFEST_FILE_FORMAT)));
 
 					aes.writeFileToZip(fileNameByBytes, zipFilename);
 

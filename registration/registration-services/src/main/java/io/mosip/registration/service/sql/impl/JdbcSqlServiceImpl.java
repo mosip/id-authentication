@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -50,7 +52,6 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		clearScheduler();
-		
 
 		try (Connection connection = getConnection()) {
 			// Get JDBC Connection
@@ -70,7 +71,7 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	}
 
 	private void clearScheduler() {
-		if (jobConfigurationService.isSchedulerRunning()) {
+		if (jobConfigurationService != null && jobConfigurationService.isSchedulerRunning()) {
 			jobConfigurationService.stopScheduler();
 
 			boolean isCompleted = false;
@@ -79,7 +80,6 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				isCompleted = isRunningJobsCompleted();
 			}
 		}
-
 	}
 
 	private boolean isRunningJobsCompleted() {
@@ -92,9 +92,22 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	}
 
 	private Connection getConnection() {
-
+		Connection con = null;
 		// Get Connection
-		return DataSourceUtils.getConnection((DataSource) applicationContext.getBean("dataSource"));
+		if (applicationContext != null) {
+			con = DataSourceUtils.getConnection((DataSource) applicationContext.getBean("dataSource"));
+		} else {
+
+			try {
+				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				con = DriverManager.getConnection("jdbc:derby:reg;bootPassword=mosip12345");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return con;
 
 	}
 
@@ -116,17 +129,22 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				}
 
 				List<String> statments = java.util.Arrays.asList(sb.toString().split(";"));
-
-				try (Statement stmt = derbyRegConnection.createStatement()) {
+				PreparedStatement prepStmt = null;
+				try {
 
 					for (String stat : statments) {
 						if (!stat.trim().equals("")) {
-
-							stmt.executeUpdate(stat);
-
+							prepStmt= derbyRegConnection.prepareStatement(stat);
+							prepStmt.executeUpdate();
 						}
 					}
 
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				} finally {
+					if(prepStmt != null) {
+						prepStmt.close();
+					}
 				}
 			}
 		}
@@ -168,8 +186,24 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 			}
 		} else {
 			// Update global param with current version
-			globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, version);
+			if (globalParamService != null) {
+				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, version);
+			}
 		}
+
+		try (Connection connection = getConnection()) {
+			// Get JDBC Connection
+			this.derbyRegConnection = connection;
+
+			if (derbyRegConnection != null) {
+				try(Statement stmt = derbyRegConnection.createStatement()){
+					stmt.executeUpdate("update reg.global_param set VAL='"+version+"' where code='mosip.reg.db.current.version'");
+				}
+			}
+		} catch(SQLException sqlException) {
+			sqlException.printStackTrace();
+		}
+	
 	}
 
 }
