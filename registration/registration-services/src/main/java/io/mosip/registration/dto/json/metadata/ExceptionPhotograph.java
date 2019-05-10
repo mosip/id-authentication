@@ -10,7 +10,9 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class ExceptionPhotograph extends Photograph{
+public class ExceptionPhotograph {
 	
 	private String individualType;
+	private String photoName;
+	private int numRetry;
 }

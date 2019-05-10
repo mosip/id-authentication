@@ -3,6 +3,7 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -51,10 +52,11 @@ import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.impl.SyncStatusValidatorServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ApplicationContext.class })
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
 public class SyncStatusValidatorServiceTest {
 
 	@Rule
@@ -71,6 +73,8 @@ public class SyncStatusValidatorServiceTest {
 	private SyncJobConfigDAO jobConfigDAO;
 	@Mock
 	private GPSFacade gpsFacade;
+	@Mock
+	private GlobalParamService globalParamService;
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
 	@Mock
@@ -165,16 +169,16 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-//		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
-//		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-//		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-//		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-//		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
-//		assertEquals("OPT_TO_REG_OUTSIDE_LOCATION", errorResponseDTOs.get(3).getMessage());
-//		assertEquals("REG-REC‌-007", errorResponseDTOs.get(4).getCode());
-//		assertEquals("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK", errorResponseDTOs.get(4).getMessage());
+		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
+		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
+		assertEquals("OPT_TO_REG_OUTSIDE_LOCATION", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-REC‌-007", errorResponseDTOs.get(4).getCode());
+		assertEquals("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK", errorResponseDTOs.get(4).getMessage());
 
 	}
 
@@ -241,7 +245,7 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertFalse(errorResponseDTOs.isEmpty());
+		assertTrue(errorResponseDTOs.isEmpty());
 
 	}
 
@@ -310,14 +314,14 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-//		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
-//		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-//		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-//		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-//		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
-//		assertEquals("OPT_TO_REG_WEAK_GPS", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
+		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
+		assertEquals("OPT_TO_REG_WEAK_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -388,14 +392,14 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-//		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
-//		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-//		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-//		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-//		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-//		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
+		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
+		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -467,14 +471,14 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-//		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
-//		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-//		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-//		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-//		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-//		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
+		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
+		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -545,14 +549,14 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-//		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
-//		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-//		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-//		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-//		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-//		assertEquals("REG-ICS‌-007", errorResponseDTOs.get(3).getCode());
-//		assertEquals(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
+		assertEquals("REG-ICS‌-007", errorResponseDTOs.get(3).getCode());
+		assertEquals(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -623,8 +627,8 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-008", errorResponseDTOs.get(0).getCode());
+		assertEquals("REG_PKT_APPRVL_CNT_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 
@@ -692,8 +696,8 @@ public class SyncStatusValidatorServiceTest {
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG-ICS‌-009", errorResponseDTOs.get(0).getCode());
+		assertEquals("REG_PKT_APPRVL_TIME_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 

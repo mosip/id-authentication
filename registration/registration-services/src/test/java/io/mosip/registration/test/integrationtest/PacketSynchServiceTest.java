@@ -56,8 +56,8 @@ import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
-import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import javafx.beans.property.BooleanProperty;
@@ -225,7 +225,7 @@ String actualmsg=null;
 		// }
 
 		try {
-			response = PsyncService.syncPacketsToServer(dtoList, "System");
+			response = PsyncService.syncPacketsToServer("System", "System");
 			//System.out.println(response.getErrorResponseDTOs().get(0));
 			// Map<String,String>m2=(Map<String, String>) m1.get("error");
 			// String actualmsg=(String) m1.get("response");
@@ -256,7 +256,7 @@ String actualmsg=null;
 		// Implemented dynamic test data creation
 		dtoList = syncdatatoserver_Testdata();
 		try {
-			response = PsyncService.syncPacketsToServer(dtoList, "System");
+			response = PsyncService.syncPacketsToServer("System", "System");
 			Map<String, Object> m1 = response.getSuccessResponseDTO().getOtherAttributes();
 			System.out.println(m1.size());
 			boolean status = false;

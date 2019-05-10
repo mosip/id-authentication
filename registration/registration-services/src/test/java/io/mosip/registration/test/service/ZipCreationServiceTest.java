@@ -18,6 +18,8 @@ import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -51,7 +53,7 @@ public class ZipCreationServiceTest {
 		filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, "packet_osi_hash".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, "applicant_bio_cbeff".getBytes());
-		filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, "introducer_bio_cbeff".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, "introducer_bio_cbeff".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, "officer_bio_cbeff".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, "supervisor_bio_cbeff".getBytes());
 	}
@@ -110,6 +112,12 @@ public class ZipCreationServiceTest {
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
+		faceDetailsDTO.setFace("photo".getBytes());
+		biometricInfoDTO.setExceptionFace(faceDetailsDTO);
+		biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
+		biometricDTO.setIntroducerBiometricDTO(biometricInfoDTO);
 		registrationDTO.setBiometricDTO(biometricDTO);
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
@@ -117,7 +125,7 @@ public class ZipCreationServiceTest {
 		
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		
-		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
+		//zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
 	}
 
 }
