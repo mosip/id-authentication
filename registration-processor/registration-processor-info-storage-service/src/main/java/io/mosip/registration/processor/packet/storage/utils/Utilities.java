@@ -35,7 +35,6 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -114,7 +113,7 @@ public class Utilities {
 	
 	private static final String REG_TYPE_NEW = "New";
 	private static final String REG_TYPE_UPDATE = "Update";
-	private static final String IDENTIFY = "identify";
+	private static final String IDENTIFY = "IDENTIFY";
 
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
@@ -291,18 +290,13 @@ public class Utilities {
 
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		Map<String, String> filteredRegMap = new LinkedHashMap<>();
-		List<String> regBioRefIds = new ArrayList<>();
 		List<String> machedRefIds = new ArrayList<>();
-		
-		List<String> matchedRegistrationIds = new ArrayList<>();
 		List<String> filteredRIds = new ArrayList<>();
-		List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
-		List<AbisResponseDto> abisResponseDtoList = new ArrayList<>();
 		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
 
-		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
+		List<String> regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0), latestTransactionId,
+			List<AbisResponseDto> abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0), latestTransactionId,
 					IDENTIFY);
 			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
 				abisResponseDetDtoList.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
@@ -311,7 +305,7 @@ public class Utilities {
 				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
-				matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+				List<String> matchedRegistrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
 
 				for (String machedRegId : matchedRegistrationIds) {
 					List<String> pathSegments = new ArrayList<>();
@@ -330,18 +324,14 @@ public class Utilities {
 						Number packetUin = getUIn(registrationStatusDto.getRegistrationId());
 						if (matchedUin != null && packetUin != matchedUin) {
 							filteredRegMap.put(matchedUin.toString(), machedRegId);
-
 						}
 					}
-
 					if (status.equalsIgnoreCase(REG_TYPE_NEW) && matchedUin != null) {
-
 						filteredRegMap.put(matchedUin.toString(), machedRegId);
-
 					}
 
 					if (!filteredRegMap.isEmpty()) {
-						filteredRIds = new ArrayList<String>(filteredRegMap.values());
+						filteredRIds = new ArrayList<>(filteredRegMap.values());
 					}
 
 				}
