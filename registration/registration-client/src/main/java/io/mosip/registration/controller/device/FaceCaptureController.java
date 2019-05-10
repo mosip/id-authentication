@@ -184,8 +184,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
-		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE, Components.REG_BIOMETRICS, SessionContext.userId(),
-				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(
+				RegistrationConstants.APPLICANT_IMAGE.equals(imageType) ? AuditEvent.REG_BIO_FACE_CAPTURE
+						: AuditEvent.REG_BIO_EXCEP_FACE_CAPTURE,
+				Components.REG_BIOMETRICS, SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");

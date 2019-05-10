@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.Tpm;
 import tss.tpm.TPMS_NULL_ASYM_SCHEME;
@@ -33,11 +34,11 @@ public class AsymmetricEncryptionService {
 	 * @return returns the TPM encrypted data
 	 */
 	public byte[] encryptUsingTPM(Tpm tpm, byte[] dataToEncrypt) {
-		LOGGER.info(Constants.TPM_ASYM_ENCRYPTION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Encrypting the data by asymmetric algorithm using TPM");
+		LOGGER.info(LoggerConstants.TPM_ASYM_ENCRYPTION, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Encrypting the data by asymmetric algorithm using TPM");
 
 		return tpm.RSA_Encrypt(asymmetricKeyCreationService.createPersistentKey(tpm), dataToEncrypt,
-				new TPMS_NULL_ASYM_SCHEME(), Constants.NULL_VECTOR);
+				new TPMS_NULL_ASYM_SCHEME(), RegistrationConstants.NULL_VECTOR);
 	}
 
 }

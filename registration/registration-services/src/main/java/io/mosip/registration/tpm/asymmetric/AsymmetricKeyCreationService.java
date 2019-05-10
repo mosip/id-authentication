@@ -9,7 +9,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.Tpm;
 import tss.tpm.CreatePrimaryResponse;
@@ -45,8 +46,8 @@ public class AsymmetricKeyCreationService {
 	 */
 	public TPM_HANDLE createPersistentKey(Tpm tpm) {
 		try {
-			LOGGER.info(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-					"Completed reading the data from file");
+			LOGGER.info(LoggerConstants.TPM_ASYM_KEY_CREATION, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Completed reading the data from file");
 
 			LocalDateTime localDateTime = LocalDateTime.now();
 			// This policy is a "standard" policy that is used with vendor-provided
@@ -65,24 +66,27 @@ public class AsymmetricKeyCreationService {
 					new TPM2B_PUBLIC_KEY_RSA());
 
 			// Create TPMS Sensitive Create object
-			TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(Constants.NULL_VECTOR, Constants.NULL_VECTOR);
+			TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(RegistrationConstants.NULL_VECTOR,
+					RegistrationConstants.NULL_VECTOR);
 
 			// Create Hierarchy for Storing Key
 			TPM_HANDLE hierarchy = TPM_HANDLE.from(TPM_RH.ENDORSEMENT);
 
 			// Create the Primary Key in TPM under primary handle
-			CreatePrimaryResponse rsaSrk = tpm.CreatePrimary(hierarchy, sens, tpmtPublic, Constants.NULL_VECTOR,
-					new TPMS_PCR_SELECTION[0]);
+			CreatePrimaryResponse rsaSrk = tpm.CreatePrimary(hierarchy, sens, tpmtPublic,
+					RegistrationConstants.NULL_VECTOR, new TPMS_PCR_SELECTION[0]);
 
 			long secondsTaken = localDateTime.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
-			LOGGER.info(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+			LOGGER.info(LoggerConstants.TPM_ASYM_KEY_CREATION, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					String.format("Completed Asymmetric Key Creation using tpm. Time taken is %s",
 							String.valueOf(secondsTaken)));
 
 			return rsaSrk.handle;
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(Constants.TPM_ASYM_KEY_CREATION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.TPM_ASYM_KEY_CREATION, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					String.format("Exception while getting Asymmetric Key Creation using tpm --> %s",
 							ExceptionUtils.getStackTrace(runtimeException)));
 

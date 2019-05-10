@@ -5,7 +5,8 @@ import java.io.IOException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.Tpm;
 import tss.TpmFactory;
@@ -31,18 +32,18 @@ public class TPMInitialization {
 	 * @return the instance of {@link Tpm}
 	 */
 	public static Tpm getTPMInstance() {
-		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-				"Getting the instance of Platform TPM");
+		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Getting the instance of Platform TPM");
 
 		if (tpm == null) {
-			LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-					"Instantiating the instance of Platform TPM");
+			LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID,
+					RegistrationConstants.APPLICATION_NAME, "Instantiating the instance of Platform TPM");
 
 			tpm = TpmFactory.platformTpm();
 		}
 
-		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-				"Completed getting the instance of Platform TPM");
+		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Completed getting the instance of Platform TPM");
 		return tpm;
 	}
 
@@ -53,7 +54,7 @@ public class TPMInitialization {
 	 *             exception while closing the {@link Tpm}
 	 */
 	public static void closeTPMInstance() throws IOException {
-		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Closing the instance of Platform TPM");
 
 		try {
@@ -61,13 +62,13 @@ public class TPMInitialization {
 				tpm.close();
 			}
 		} catch (IOException ioException) {
-			LOGGER.error(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 					String.format("Exception while closing the instance of Platform TPM --> %s",
 							ExceptionUtils.getStackTrace(ioException)));
 
 			throw ioException;
 		}
-		LOGGER.info(Constants.LOG_TPM_INITIALIZATION, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Completed closing the instance of Platform TPM");
 	}
 

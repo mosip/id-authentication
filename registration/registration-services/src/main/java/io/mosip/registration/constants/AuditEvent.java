@@ -73,6 +73,7 @@ public enum AuditEvent {
 	REG_BIO_IRIS_NEXT("REG-EVT-049", USER_EVENT.getCode(), "REG_BIO_IRIS_NEXT", "Click of Next after capturing irises"),
 	REG_BIO_IRIS_BACK("REG-EVT-050", USER_EVENT.getCode(), "REG_BIO_IRIS_BACK", "Click of Back from iris capture screen"),
 	REG_BIO_FACE_CAPTURE("REG-EVT-051", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE", "Photo: Face capture"),
+	REG_BIO_EXCEP_FACE_CAPTURE("REG-EVT-144", USER_EVENT.getCode(), "REG_BIO_EXCEPION_FACE_CAPTURE", "Photo: Exception face capture"),
 	REG_BIO_FACE_CAPTURE_NEXT("REG-EVT-052", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE_NEXT", "Click of Next after capturing face photo"),
 	REG_BIO_FACE_CAPTURE_BACK("REG-EVT-053", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE_BACK", "Click of Back from face photo capture screen"),
 

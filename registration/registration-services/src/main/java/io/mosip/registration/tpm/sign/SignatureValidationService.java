@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.tpm.TPMS_SIGNATURE_RSASSA;
 import tss.tpm.TPMT_PUBLIC;
@@ -38,27 +39,28 @@ public class SignatureValidationService {
 		boolean isSignatureValid = false;
 
 		try {
-			LOGGER.info(Constants.TPM_SIGN_VALIDATE_BY_KEY, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-					"Validating the signed data using Public Part");
+			LOGGER.info(LoggerConstants.TPM_SIGN_VALIDATE_BY_KEY, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating the signed data using Public Part");
 
 			TPMT_PUBLIC tpmtPublic = TPMT_PUBLIC.fromTpm(publicPart);
 
 			// Create Signature from signed data and algorithm
 			TPMU_SIGNATURE signature = new TPMS_SIGNATURE_RSASSA(TPM_ALG_ID.SHA256, signedData);
 
-			LOGGER.info(Constants.TPM_SIGN_VALIDATE_BY_KEY, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-					"Completed validating the signed data using Public Part");
+			LOGGER.info(LoggerConstants.TPM_SIGN_VALIDATE_BY_KEY, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Completed validating the signed data using Public Part");
 
 			// Validate the Signature using Public Template
 			isSignatureValid = tpmtPublic.validateSignature(actualData, signature);
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(Constants.TPM_SIGN_VALIDATE_BY_KEY, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.TPM_SIGN_VALIDATE_BY_KEY, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					String.format("Error while validating the signed data using Public Part --> %s",
 							ExceptionUtils.getStackTrace(runtimeException)));
 		}
 
-		LOGGER.info(Constants.TPM_SIGN_VALIDATE_BY_KEY, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Completed validating the signed data using Public Part");
+		LOGGER.info(LoggerConstants.TPM_SIGN_VALIDATE_BY_KEY, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Completed validating the signed data using Public Part");
 
 		return isSignatureValid;
 	}

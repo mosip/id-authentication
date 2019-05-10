@@ -7,7 +7,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.Tpm;
 import tss.tpm.CreatePrimaryResponse;
@@ -42,8 +43,8 @@ public class SignatureService {
 	 */
 	public byte[] signData(Tpm tpm, byte[] dataToSign) {
 		try {
-			LOGGER.info(Constants.TPM_SIGN_DATA, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-					"Signing data using TPM");
+			LOGGER.info(LoggerConstants.TPM_SIGN_DATA, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Signing data using TPM");
 
 			CreatePrimaryResponse signingKey = signKeyCreationService.getKey(tpm);
 
@@ -53,12 +54,13 @@ public class SignatureService {
 
 			tpm.FlushContext(signingKey.handle);
 
-			LOGGER.info(Constants.TPM_SIGN_DATA, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-					"Completed Signing data using TPM");
+			LOGGER.info(LoggerConstants.TPM_SIGN_DATA, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Completed Signing data using TPM");
 
 			return ((TPMS_SIGNATURE_RSASSA) signedData).sig;
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(Constants.TPM_SIGN_DATA, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.TPM_SIGN_DATA, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					String.format("Exception while getting Signing data using TPM --> %s",
 							ExceptionUtils.getStackTrace(runtimeException)));
 
