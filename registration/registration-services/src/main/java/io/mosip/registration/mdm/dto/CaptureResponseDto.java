@@ -15,9 +15,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MosipBioCaptureResponseDto {
+public class CaptureResponseDto {
 
 	@JsonProperty("biometrics")
-	List<MosipBioCaptureResponse> mosipBioDeviceDataResponses;
+	List<CaptureResponseBioDto> mosipBioDeviceDataResponses;
 
 }
