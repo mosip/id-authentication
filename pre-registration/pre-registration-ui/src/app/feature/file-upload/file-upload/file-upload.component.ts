@@ -325,7 +325,7 @@ export class FileUploadComponent implements OnInit {
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      if (response['error'] == null) {
+      if (response['errors'] == null) {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
@@ -351,7 +351,7 @@ export class FileUploadComponent implements OnInit {
    */
   async getDocumentCategories(applicantcode) {
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      if (res['error'] == null) {
+      if (res['errors'] == null) {
         // console.log('document Categories', res);
 
         this.LOD = res['response'].documentCategories;
@@ -414,7 +414,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFileByIndex(i: number) {
-    this.viewFile(this.users[0].files[0].documentsMetaData[i]);
+    this.viewFile(this.users[0].files.documentsMetaData[i]);
   }
 
   setByteArray(fileByteArray) {
@@ -429,7 +429,8 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
-    // console.log('file', file);
+    console.log('file', fileMeta);
+    // console.log('file any', test);
     this.start = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
@@ -438,7 +439,9 @@ export class FileUploadComponent implements OnInit {
         if (!res['errors']) {
           this.setByteArray(res['response'].document);
         } else {
-          this.displayMessage('Error', this.errorlabels.error);
+          console.log('ELSE ');
+
+          // this.displayMessage('Error', this.errorlabels.error);
           this.start = false;
         }
       },
@@ -450,8 +453,8 @@ export class FileUploadComponent implements OnInit {
         this.fileName = fileMeta.docName;
         // this.fileByteArray = file;
         let i = 0;
-        for (let x of this.users[0].files[0].documentsMetaData) {
-          if (this.fileName === x.doc_name) {
+        for (let x of this.users[0].files.documentsMetaData) {
+          if (this.fileName === x.docName) {
             i++;
             break;
           }
@@ -734,12 +737,14 @@ export class FileUploadComponent implements OnInit {
   removePOADocument() {
     this.userFiles = new FilesModel();
     let i = 0;
-    for (let file of this.users[0].files[0].documentsMetaData) {
-      if (file.docCatCode == 'POA') {
-        // this.users[0].files[0][i] = this.userFiles;
-        this.users[0].files[0].documentsMetaData.splice(i, 1);
+    if (this.users[0].files.documentsMetaData) {
+      for (let file of this.users[0].files.documentsMetaData) {
+        if (file.docCatCode == 'POA') {
+          // this.users[0].files[0][i] = this.userFiles;
+          this.users[0].files.documentsMetaData.splice(i, 1);
+        }
+        i++;
       }
-      i++;
     }
   }
 

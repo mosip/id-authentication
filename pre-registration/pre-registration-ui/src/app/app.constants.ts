@@ -48,6 +48,7 @@ export const APPEND_URL = {
   getApplicantType: 'getApplicantType',
   post_document: 'documents/',
   document: 'documents/preregistration/',
+  document_id: 'documents/',
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
