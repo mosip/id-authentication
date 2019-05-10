@@ -177,29 +177,69 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *
 	 * @param bioRefId
 	 *            the bio ref id
-	 * @param requestType
-	 *            the request type
+	 * @param refRegtrnId
+	 *            the ref regtrn id
 	 * @return the insert or identify request
 	 */
 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId")
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId);
-	
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
+			@Param("refRegtrnId") String refRegtrnId);
+
+	/**
+	 * Gets the abis request by request id.
+	 *
+	 * @param id
+	 *            the id
+	 * @return the abis request by request id
+	 */
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
-	public List<AbisRequestEntity>getAbisRequestByRequestId(@Param("id") String id);
+	public List<AbisRequestEntity> getAbisRequestByRequestId(@Param("id") String id);
 
-	
+	/**
+	 * Gets the insert or identify request.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param refRegtrnId
+	 *            the ref regtrn id
+	 * @param requestType
+	 *            the request type
+	 * @return the insert or identify request
+	 */
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType =:requestType")
-	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId, @Param("refRegtrnId") String refRegtrnId,@Param("requestType") String requestType);
+	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
+			@Param("refRegtrnId") String refRegtrnId, @Param("requestType") String requestType);
 
+	/**
+	 * Gets the batch id by request id.
+	 *
+	 * @param id
+	 *            the id
+	 * @return the batch id by request id
+	 */
 	@Query("SELECT abisreq.reqBatchId FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
-	public List<String>getBatchIdByRequestId(@Param("id") String id);
-	
+	public List<String> getBatchIdByRequestId(@Param("id") String id);
+
+	/**
+	 * Gets the batch statusby batch id.
+	 *
+	 * @param reqBatchId
+	 *            the req batch id
+	 * @return the batch statusby batch id
+	 */
 	@Query("SELECT abisreq.statusCode FROM AbisRequestEntity abisreq WHERE abisreq.reqBatchId =:reqBatchId")
 	public List<String> getBatchStatusbyBatchId(@Param("reqBatchId") String reqBatchId);
 
+	/**
+	 * Update abis request status code.
+	 *
+	 * @param id
+	 *            the id
+	 */
 	@Query("UPDATE  AbisRequestEntity abisReq SET  abisReq.statusCode = PROCESSED WHERE abisReq.id =:id")
 	public void updateAbisRequestStatusCode(@Param("id") String id);
+
 	/**
 	 * Gets the abis request I ds.
 	 *
@@ -275,7 +315,14 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT bioRef.bioRefId FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
 	public List<String> getBioRefIdByRegIds(@Param("regId") String regId);
-	
+
+	/**
+	 * Gets the bio ref id by reg id.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the bio ref id by reg id
+	 */
 	@Query("SELECT bioRef FROM RegBioRefEntity bioRef WHERE bioRef.id.regId =:regId")
 	public List<RegBioRefEntity> getBioRefIdByRegId(@Param("regId") String regId);
 
@@ -288,11 +335,27 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT regDemo FROM RegDemoDedupeListEntity regDemo WHERE regDemo.id.regtrnId =:regtrnId")
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(@Param("regtrnId") String regtrnId);
-	
+
+	/**
+	 * Gets the abis ref matched ref id by rid.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the abis ref matched ref id by rid
+	 */
 	@Query("SELECT regBioRef.bioRefId FROM RegBioRefEntity regBioRef WHERE regBioRef.id.regId =:regId")
 	public List<String> getAbisRefMatchedRefIdByRid(@Param("regId") String regId);
-	
-	
 
-
+	/**
+	 * Gets the abis requests by bio ref id.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param insert
+	 *            the insert
+	 * @return the abis requests by bio ref id
+	 */
+	@Query("SELECT abisReq FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:insert")
+	public List<AbisRequestEntity> getAbisRequestsByBioRefId(@Param("bioRefId") String bioRefId,
+			@Param("insert") String insert);
 }

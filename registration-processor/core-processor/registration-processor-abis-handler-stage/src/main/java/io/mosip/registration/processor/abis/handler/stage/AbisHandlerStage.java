@@ -43,31 +43,31 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 	/** The Constant MOSIP_ABIS_INSERT. */
 	public static final String MOSIP_ABIS_INSERT = "mosip.abis.insert";
-	
+
 	/** The Constant VERSION. */
 	public static final String VERSION = "1.0";
-	
+
 	/** The Constant TIMESTAMP. */
 	public static final String TIMESTAMP = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
-	
+
 	/** The Constant ENG. */
 	public static final String ENG = "eng";
-	
+
 	/** The Constant USER. */
 	public static final String USER = "MOSIP";
-	
+
 	/** The Constant INSERT. */
 	public static final String INSERT = "INSERT";
-	
+
 	/** The Constant IDENTIFY. */
 	public static final String IDENTIFY = "IDENTIFY";
-	
+
 	/** The Constant MOSIP_ABIS_IDENTIFY. */
 	public static final String MOSIP_ABIS_IDENTIFY = "mosip.abis.identify";
-	
+
 	/** The Constant DEMOGRAPHIC_VERIFICATION. */
 	public static final String DEMOGRAPHIC_VERIFICATION = "DEMOGRAPHIC_VERIFICATION";
-	
+
 	/** The Constant BIOGRAPHIC_VERIFICATION. */
 	public static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
 
@@ -114,8 +114,12 @@ public class AbisHandlerStage extends MosipVerticleManager {
 				MessageBusAddress.ABIS_HANDLER_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
@@ -129,9 +133,9 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			String transactionId = registrationStatusDto.getLatestRegistrationTransactionId();
 
 			Boolean isIdentifyRequestPresent = packetInfoManager.getIdentifyByTransactionId(transactionId, IDENTIFY);
-			List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
 
 			if (!isIdentifyRequestPresent) {
+				List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
 				List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
 				if (bioRefDtos.isEmpty()) {
 					bioRefId = getUUID();
@@ -141,6 +145,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				} else {
 					bioRefId = bioRefDtos.get(0).getBioRefId();
+					createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
 					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
 					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				}
@@ -179,10 +184,14 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/**
 	 * Creates the identify request.
 	 *
-	 * @param abisApplicationDtoList the abis application dto list
-	 * @param transactionId the transaction id
-	 * @param bioRefId the bio ref id
-	 * @param transactionTypeCode the transaction type code
+	 * @param abisApplicationDtoList
+	 *            the abis application dto list
+	 * @param transactionId
+	 *            the transaction id
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param transactionTypeCode
+	 *            the transaction type code
 	 */
 	private void createIdentifyRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String transactionTypeCode) {
@@ -213,9 +222,12 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/**
 	 * Gets the identify request bytes.
 	 *
-	 * @param transactionId the transaction id
-	 * @param bioRefId the bio ref id
-	 * @param transactionTypeCode the transaction type code
+	 * @param transactionId
+	 *            the transaction id
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param transactionTypeCode
+	 *            the transaction type code
 	 * @return the identify request bytes
 	 */
 	private byte[] getIdentifyRequestBytes(String transactionId, String bioRefId, String transactionTypeCode) {
@@ -267,8 +279,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/**
 	 * Insert in bio ref.
 	 *
-	 * @param regId the reg id
-	 * @param bioRefId the bio ref id
+	 * @param regId
+	 *            the reg id
+	 * @param bioRefId
+	 *            the bio ref id
 	 */
 	private void insertInBioRef(String regId, String bioRefId) {
 		RegBioRefDto regBioRefDto = new RegBioRefDto();
@@ -287,15 +301,20 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/**
 	 * Creates the insert request.
 	 *
-	 * @param abisApplicationDtoList the abis application dto list
-	 * @param transactionId the transaction id
-	 * @param bioRefId the bio ref id
-	 * @param regId the reg id
+	 * @param abisApplicationDtoList
+	 *            the abis application dto list
+	 * @param transactionId
+	 *            the transaction id
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param regId
+	 *            the reg id
 	 */
 	private void createInsertRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String regId) {
 		byte[] abisInsertRequestBytes = getInsertRequestBytes(regId);
 		String batchId = getUUID();
+		List<AbisRequestDto> abisRequestDtoList = packetInfoManager.getAbisRequestsByBioRefId(bioRefId);
 		for (AbisApplicationDto applicationDto : abisApplicationDtoList) {
 			AbisRequestDto abisRequestDto = new AbisRequestDto();
 			abisRequestDto.setId(getUUID());
@@ -314,14 +333,25 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setUpdDtimes(LocalDateTime.now());
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
 			abisRequestDto.setRequestDtimes(LocalDateTime.now());
-			packetInfoManager.saveAbisRequest(abisRequestDto);
+			if (!abisRequestDtoList.isEmpty()) {
+				for (AbisRequestDto dto : abisRequestDtoList) {
+					if ((dto.getAbisAppCode().equals(applicationDto.getCode()) && (!dto.getStatusCode()
+							.equalsIgnoreCase(RegistrationTransactionStatusCode.PROCESSED.toString())))) {
+						packetInfoManager.saveAbisRequest(abisRequestDto);
+					}
+				}
+			} else {
+				packetInfoManager.saveAbisRequest(abisRequestDto);
+			}
+
 		}
 	}
 
 	/**
 	 * Gets the insert request bytes.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the insert request bytes
 	 */
 	private byte[] getInsertRequestBytes(String regId) {

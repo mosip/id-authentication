@@ -103,6 +103,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<AbisApplicationEntity, String> regAbisApplicationRepository;
 
+	/** The reg demo dedupe list repository. */
 	@Autowired
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
 
@@ -569,20 +570,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		boolean isTransactionSuccessful = false;
 
 		try {
-			String regId = "";
+			String regisId = "";
 
 			if (regAbisRefDto != null) {
-				regId = regAbisRefDto.getReg_id();
+				regisId = regAbisRefDto.getReg_id();
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-						regId, "PacketInfoManagerImpl::saveAbisRef()::entry");
+						regisId, "PacketInfoManagerImpl::saveAbisRef()::entry");
 				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
 				regAbisRefRepository.save(regAbisRefEntity);
 				isTransactionSuccessful = true;
 				description = "ABIS data saved successfully";
-
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regisId,
+					"PacketInfoManagerImpl::saveAbisRef()::exit");
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving ABIS data" + "::" + e.getMessage();
+			description = "DataAccessLayerException while saving the ABIS data" + "::" + e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -599,8 +601,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-				"PacketInfoManagerImpl::saveAbisRef()::exit");
 	}
 
 	/*
@@ -616,6 +616,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchStatusbyBatchId(java.lang.String)
+	 */
 	@Override
 	public List<String> getBatchStatusbyBatchId(String batchId){
 		return packetInfoDao.getBatchStatusbyBatchId(batchId);
@@ -637,10 +640,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchIdByRequestId(java.lang.String)
+	 */
 	@Override
 	public String getBatchIdByRequestId(String abisRequestId) {
 		return packetInfoDao.getBatchIdByRequestId(abisRequestId);
 	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getInsertOrIdentifyRequest(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType) {
 		List<AbisRequestEntity> abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
 		return  PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntities);
@@ -742,6 +752,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertDemoDedupeEntityListToDto(regDemoDedupeListEntityList);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveDemoDedupePotentialData(io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto)
+	 */
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
 
@@ -781,30 +794,53 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				regId, "PacketInfoManagerImpl::saveDemoDedupePotentialData()::exit");
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseRecords(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
 		return packetInfoDao.getAbisResponseRecords(latestTransactionId, requestType);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseRecords(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String requestType) {
 		return packetInfoDao.getAbisResponseRecords(abisRefId,latestTransactionId,requestType);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseDetRecords(io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto)
+	 */
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto) {
 		return packetInfoDao.getAbisResponseDetailedRecords(abisResponseDto);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseIDs(java.lang.String)
+	 */
 	@Override
 	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId) {
 		return PacketInfoMapper.convertAbisResponseEntityListToDto(packetInfoDao.getAbisResponseIDs(abisRequestId));
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseDetails(java.lang.String)
+	 */
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId) {
 		return PacketInfoMapper.convertAbisResponseDetEntityListToDto(packetInfoDao.getAbisResponseDetails(abisResponseId));
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestsByBioRefId(java.lang.String)
+	 */
+	@Override
+	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId){
+		List<AbisRequestEntity> abisRequestEntityList = packetInfoDao.getAbisRequestsByBioRefId(bioRefId);
+		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntityList);
+	}
+
 }
