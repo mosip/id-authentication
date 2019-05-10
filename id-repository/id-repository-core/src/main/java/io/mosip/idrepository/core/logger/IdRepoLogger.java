@@ -11,15 +11,19 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  *
  */
 public final class IdRepoLogger {
-	
-	private static ThreadLocal<String> id = new ThreadLocal<>();
 
-	public static String getId() {
-		return id.get();
+	private static String uin;
+	
+	private static String rid;
+	 
+	private static String vid;
+
+	public static String getVid() {
+		return vid;
 	}
 
-	public static void setId(String id) {
-		IdRepoLogger.id.set(id);
+	public static void setVid(String vid) {
+		IdRepoLogger.vid = vid;
 	}
 
 	private static RollingFileAppender mosipRollingFileAppender;
@@ -37,7 +41,26 @@ public final class IdRepoLogger {
 		mosipRollingFileAppender.setTotalCap("10mb");
 	}
 
+	public static String getUin() {
+		return uin;
+	}
+
+	public static void setUin(String uin) {
+		IdRepoLogger.uin = uin;
+	}
+
+	/**
+	 * Instantiates a new id repo logger.
+	 */
 	private IdRepoLogger() {
+	}
+
+	public static String getRid() {
+		return rid;
+	}
+
+	public static void setRid(String rid) {
+		IdRepoLogger.rid = rid;
 	}
 
 	/**

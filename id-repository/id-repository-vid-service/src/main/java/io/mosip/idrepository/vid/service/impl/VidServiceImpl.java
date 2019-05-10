@@ -58,9 +58,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		if (vidObject != null) {
 			checkExpiry(vidObject.getExpiryDTimes());
 			checkStatus(vidObject.getStatusCode());
-			String uin = vidRepo.retrieveUinByVid(vid);
-
-			return buildResponse(uin, null, id.get("read"));
+			return buildResponse(vidObject.getUin(), null, id.get("read"));
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
 					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
@@ -77,21 +75,19 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	public VidResponseDTO updateVid(String vid, VidRequestDTO request) throws IdRepoAppException {
 		Vid vidObject = retrieveVidEntity(vid);
 		String vidStatus = request.getRequest().getVidStatus();
-		String vidStatusFromDb =null;
 		ResponseDto response = new ResponseDto();
 		if (Objects.isNull(vidObject)) {
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
 					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
 		}
 		if (vidObject.getStatusCode().equals(env.getProperty(IdRepoConstants.MOSIP_IDREPO_VID_STATUS.getValue()))) {
-			vidStatusFromDb = vidObject.getStatusCode();
 			response.setVidStatus(vidStatus);
 			vidObject.setStatusCode(vidStatus);
 			vidRepo.save(vidObject);
 			return buildResponse(null, vidStatus, id.get("update"));
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), vidStatusFromDb));
+					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), vidObject.getStatusCode()));
 		}
 	}
 
