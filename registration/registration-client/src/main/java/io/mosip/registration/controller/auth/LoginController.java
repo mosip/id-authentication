@@ -252,8 +252,9 @@ public class LoginController extends BaseController implements Initializable {
 
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (newValue.length() > Integer
-						.parseInt(getValueFromApplicationContext(RegistrationConstants.PWORD_LENGTH))) {
+				String passwordLength = getValueFromApplicationContext(RegistrationConstants.PWORD_LENGTH);
+				if (passwordLength != null && passwordLength.matches("\\d+")
+						&& (newValue.length() > Integer.parseInt(passwordLength))) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});

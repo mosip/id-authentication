@@ -321,6 +321,7 @@ public class ServiceDelegateUtil {
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}
+			httpHeaders.add("Cache-Control", "no-cache,max-age=0");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
