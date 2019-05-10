@@ -302,14 +302,10 @@ public class Utilities {
 
 		regBioRefIds = packetInfoDao.getAbisRefMatchedRefIdByRid(registrationStatusDto.getRegistrationId());
 		if (!regBioRefIds.isEmpty()) {
-			abisRequestDtoList = packetInfoManager.getInsertOrIdentifyRequest(regBioRefIds.get(0), latestTransactionId,
+			abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0), latestTransactionId,
 					IDENTIFY);
-			for (AbisRequestDto abisRequestDto : abisRequestDtoList) {
-				abisResponseDtoList.addAll(packetInfoManager.getAbisResponseIDs(abisRequestDto.getId()));
-			}
 			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
-				abisResponseDetDtoList
-						.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
+				abisResponseDetDtoList.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
 			}
 			if (!abisResponseDetDtoList.isEmpty()) {
 				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {

@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -44,6 +45,7 @@ import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
@@ -784,6 +786,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
 		return packetInfoDao.getAbisResponseRecords(latestTransactionId, requestType);
+	}
+	
+	@Override
+	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String requestType) {
+		return packetInfoDao.getAbisResponseRecords(abisRefId,latestTransactionId,requestType);
 	}
 
 	@Override

@@ -194,6 +194,8 @@ public interface PacketInfoManager<T, /** D, M, */
 
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
 	
+	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String identify);
+	
 	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId);
 	
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
