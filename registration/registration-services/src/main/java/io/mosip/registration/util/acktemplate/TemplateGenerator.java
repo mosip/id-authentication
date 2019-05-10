@@ -957,7 +957,7 @@ public class TemplateGenerator extends BaseService {
 			String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
 			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
 					RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
-		} catch (IOException | QrcodeGenerationException exception) {
+		} catch (IOException | QrcodeGenerationException exception) { 
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
