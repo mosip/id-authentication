@@ -60,15 +60,8 @@ public class KeyManager {
 	/** The Constant ERROR_CODE. */
 	private static final String ERROR_CODE = "errorCode";
 
-	/** The Constant SECRET_KEY. */
-	private static final String SECRET_KEY = "secretKey";
-
 	/** The Constant AESPADDING. */
 	private static final String AESPADDING = "AES/CBC/PKCS5Padding";
-
-	/** The Constant SYMMETRIC_ALGORITHM_NAME. */
-	private static final String SYMMETRIC_ALGORITHM_NAME = "AES";
-
 
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
@@ -151,6 +144,7 @@ public class KeyManager {
 		return request;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException {
 		String decryptedRequest=null;
@@ -267,7 +261,8 @@ public class KeyManager {
 				response = restHelper.requestSync(restRequestDTO);
 				return (String)((Map<String,Object>) response.get("response")).get("data");
 			} catch (IDDataValidationException | RestServiceException e) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 			}
 		}
 		return null;
