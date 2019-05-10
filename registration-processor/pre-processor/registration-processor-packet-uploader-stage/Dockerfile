@@ -22,7 +22,7 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/ftp1/VIRUS_SCAN/encrypted /home/ftp1/ARCHIVE_PACKET_LOCATION  /home/ftp1/VIRUS_SCAN/decrypted /home/ftp1/VIRUS_SCAN/unpacked
+VOLUME /home/logs /home/ftp1/LANDING_ZONE /home/ftp1/ARCHIVE_PACKET_LOCATION
 
 COPY ./target/registration-processor-packet-uploader-stage-*.jar registration-processor-packet-uploader-stage.jar
 
