@@ -19,5 +19,6 @@
 	"MLE_NFR_CHL_False":"string",
 	"MLE_NFR_CHL_True":"string",
 	"Future_date_as_DOB":"string",
-	"invalid_DOB_lessThanAYear":"string"
+	"invalid_DOB_lessThanAYear":"string",
+	"response_time":"string"
 }

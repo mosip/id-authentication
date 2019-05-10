@@ -7,14 +7,14 @@
   						smoke
   						regression
   						smokeAndRegression -->
- 
+		
   		  <test name="AuditLog">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
 				<class name="io.mosip.kernel.tests.AuditLog" />
 			</classes>
 		</test> 
-		
+		 
 		 <test name="CentetMachineUserMappingToMasterData">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
@@ -315,6 +315,12 @@
 			</classes>
 
 		</test>  
+		<test name="RIDGenerator">
+			<parameter name="testType" value="smokeandregression" />
+			<classes>
+				<class name="io.mosip.kernel.tests.RIDGenerator" />
+			</classes>
+		</test>
 		
 
 </suite> <!-- Suite -->

@@ -1,0 +1,50 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T12:53:50.412Z",
+  "metadata": null,
+  "response": {
+    "templates": [
+      {
+        "id": "1101",
+        "name": "Template for authorization content",
+        "description": "Template for authorization content",
+        "fileFormatCode": "txt",
+        "model": null,
+        "fileText": "Dear $name\nYour Authentication of UIN $uin using $authType on $date at $time Hrs $status at a device deployed by MOSIP Services",
+        "moduleId": "10004",
+        "moduleName": "ID Authentication",
+        "templateTypeCode": "auth-email-content",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "id": "1101",
+        "name": "قالب لمحتوى التخويل",
+        "description": "قالب لمحتوى التخويل",
+        "fileFormatCode": "txt",
+        "model": null,
+        "fileText": "عزيزي $name ،\nتقوم مصادقة UIN باستخدام $authType بتعيينها على $time Hours $status على جهاز تم نشره بواسطة \"خدمات MOSIP\".",
+        "moduleId": "10004",
+        "moduleName": "مصادقة الهوية",
+        "templateTypeCode": "auth-email-content",
+        "langCode": "ara",
+        "isActive": true
+      },
+      {
+        "id": "1101",
+        "name": "Modèle de contenu dautorisation",
+        "description": "Modèle de contenu dautorisation",
+        "fileFormatCode": "txt",
+        "model": null,
+        "fileText": "Cher $name,\nVotre authentification UIN $uin utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par \"MOSIP Services\"",
+        "moduleId": "10004",
+        "moduleName": "Authentification ID",
+        "templateTypeCode": "auth-email-content",
+        "langCode": "fra",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": []
+}

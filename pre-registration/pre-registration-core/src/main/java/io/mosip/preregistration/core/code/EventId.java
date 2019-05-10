@@ -38,6 +38,9 @@ public enum EventId {
 	PRE_409,
 	
 	/** Id for authentication event . */
-	PRE_410
+	PRE_410,
+	
+	/** Id for trigger notification event . */
+	PRE_411
 
 }

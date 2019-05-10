@@ -258,6 +258,7 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_OPERATORAUTHENTICATIONPANE = "operatorAuthenticationPane";
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
+	public static final String PUBLIC_KEY_REF_ID = "packet-encryption-key"; 
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";

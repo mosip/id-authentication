@@ -1,9 +1,9 @@
 {
 	"empty_uin":"string",
 	"empty_status":"UNASSIGNED",
-	"UnusedToAssigned":"string",
+	"IssuedToAssigned":"string",
 	"AssignedToIssued":"string",
 	"AssignedToUnused":"string",
-	"IssuedToAssigned":"string"
+	"UnusedToAssigned":"string"
 	
 }

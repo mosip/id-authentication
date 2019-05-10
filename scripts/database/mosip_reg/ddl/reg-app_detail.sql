@@ -3,11 +3,6 @@
 -- table 		: app_detail	- MOSIP Application details
 -- table alias  : appdtl	
  
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
 
 -- table section -------------------------------------------------
 create table reg.app_detail (

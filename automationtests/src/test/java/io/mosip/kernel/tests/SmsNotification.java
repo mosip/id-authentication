@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -7,6 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,9 +32,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.MachineSpecificationDto;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -46,22 +51,25 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(SmsNotification.class);
-	private static final String jiraID = "MOS-961";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "SmsNotification";
-	private static final String requestJsonName = "SmsNotificationRequest";
-	private static final String outputJsonName = "SmsNotificationOutput";
-	private static final String service_URI = "/v1/smsnotifier/sms/send";
+	private final String jiraID = "MOS-961";
+	private final String moduleName = "kernel";
+	private final String apiName = "SmsNotification";
+	private final String requestJsonName = "SmsNotificationRequest";
+	private final String outputJsonName = "SmsNotificationOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String SmsNotification_URI = props.get("SmsNotification_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie;
 
 	/**
 	 * method to set the test case name to the report
@@ -71,10 +79,10 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
-
+		cookie=auth.getAuthForIndividual();
 	}
 
 	/**
@@ -111,7 +119,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	public void validatingTestCases(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-
+		
 		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -135,7 +143,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), service_URI);
+				response = applicationLibrary.postRequest(objectData.toJSONString(), SmsNotification_URI,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -145,7 +153,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("responsetime");
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
 		if (status) {
@@ -157,7 +165,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.masterDataDBConnection( MachineSpecificationDto.class,queryStr);
+				boolean valid = new KernelDataBaseAccess().validateDataInDb(queryStr);
 				if (valid) {
 					finalStatus = "Pass";
 				} else {
@@ -185,6 +193,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

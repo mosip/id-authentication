@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"status": "N",
 	"err": [
@@ -10,3 +11,20 @@
 	"resTime": "2019-01-25T12:52:13.427+05:30",
 	"ver": "$version$"
 }
+=======
+{
+	"response": {
+		"authStatus": false
+	},
+	"errors": [
+		{
+			"errorCode": "IDA-MLC-002",
+			"errorMessage": "Invalid UIN"
+		}
+	],
+	"responseTime": "2019-03-21T16:28:48.422+05:30",
+	"version": "$version$",
+	"transactionID": "2381861355",
+	"id": "mosip.identity.auth"
+}
+>>>>>>> QA_IDA

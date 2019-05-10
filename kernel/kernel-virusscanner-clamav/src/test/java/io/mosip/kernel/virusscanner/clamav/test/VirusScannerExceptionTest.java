@@ -38,7 +38,7 @@ public class VirusScannerExceptionTest {
 	ClamavClient clamavClient;
 
 	@InjectMocks
-	private VirusScanner<Boolean, String> virusScannerService = new VirusScannerImpl() {
+	private VirusScanner<Boolean, InputStream> virusScannerService = new VirusScannerImpl() {
 		@Override
 		public void createConnection() {
 			this.clamavClient = clamavClient;

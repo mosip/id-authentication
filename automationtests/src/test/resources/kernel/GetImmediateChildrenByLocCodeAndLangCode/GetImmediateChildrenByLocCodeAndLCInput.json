@@ -6,5 +6,6 @@
   "invalid_provinace":"string",
   "invalid_region":"string",
   "invalid_city":"string",
-  "invalid_localAuthority":"string"
+  "invalid_localAuthority":"string",
+  "response_time":"string"
 }
