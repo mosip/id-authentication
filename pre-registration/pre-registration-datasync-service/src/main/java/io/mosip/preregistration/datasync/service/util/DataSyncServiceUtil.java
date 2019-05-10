@@ -154,7 +154,6 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 		String regId = dataSyncRequest.getRegistrationCenterId();
 		String fromDate = dataSyncRequest.getFromDate();
-		String toDate = dataSyncRequest.getToDate();
 		String format = "dd-MM-yyyy";
 
 		if (isNull(regId)) {
