@@ -2,12 +2,6 @@
 -- schema 		: reg  - reg  schema
 -- table 		: machine_spec  - reg machine_spec list
 -- table alias  : mspec	
- 
--- schemas section -----------------------------------------------------------------
-
--- create schema if regschema not exists
-create schema if not exists reg
-;
 
 -- table section --------------------------------------------------------------------
 
@@ -39,7 +33,3 @@ create schema if not exists reg
 -- keys section ---------------------------------------------------------------------------
 alter table reg.machine_spec add constraint pk_mspec_code primary key (id, lang_code)
  ;
-
--- indexes section ------------------------------------------------------------------------
--- create index idx_mspec_<col> on reg.machine_spec (col)
--- ;

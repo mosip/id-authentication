@@ -6,6 +6,7 @@ package io.mosip.preregistration.generateqrcode.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * This class defines the IllegalParamException
@@ -14,6 +15,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
  * @since 1.0.0
  *
  */
+@Getter
 public class IllegalParamException extends BaseUncheckedException{
 
 	/** The Constant serialVersionUID. */
@@ -56,3 +58,4 @@ public class IllegalParamException extends BaseUncheckedException{
 	}
 
 }
+

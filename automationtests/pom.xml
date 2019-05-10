@@ -9,12 +9,20 @@
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
 			<artifactId>zjsonpatch</artifactId>
 			<version>0.4.7</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
+			<version>0.9.0</version>
+		</dependency> 
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -34,6 +42,7 @@
 			<artifactId>rest-assured</artifactId>
 			<version>3.0.7</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
@@ -136,9 +145,18 @@
 			<version>1.8.2</version>
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
+		<!-- <dependency> 
+		    <groupId>io.mosip</groupId> 
+			<artifactId>testing</artifactId> 
+			<version>demoApp</version>
+		</dependency> -->
 
-		<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>testing</artifactId> 
-			<version>demoApp</version> </dependency> -->
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-demo</artifactId>
+			<version>0.10.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -178,8 +196,16 @@
 			<artifactId>icu4j</artifactId>
 			<version>63.1</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -194,6 +220,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -210,6 +237,7 @@
 				
 			</plugins>
 		</pluginManagement>
+
 
 	</build>
 

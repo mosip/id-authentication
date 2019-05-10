@@ -1,25 +1,15 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-04-11T07:37:02.799Z",
+  "responsetime": "2019-05-06T06:10:43.745Z",
   "metadata": null,
   "response": {
-    "lastSyncTime": "2019-04-11T07:37:01.767Z",
+    "lastSyncTime": "2019-05-06T06:10:43.730Z",
     "roles": [
       {
-        "roleId": "REGISTRATION_ADMIN",
-        "roleName": "REGISTRATION_ADMIN",
-        "roleDescription": "Registration administrator"
-      },
-      {
-        "roleId": "MISP",
-        "roleName": "MISP",
-        "roleDescription": "Trusted Service Provider"
-      },
-      {
-        "roleId": "AUTH",
-        "roleName": "AUTH",
-        "roleDescription": "Auth User role"
+        "roleId": "ID_AUTHENTICATION",
+        "roleName": "ID_AUTHENTICATION",
+        "roleDescription": "IDA"
       },
       {
         "roleId": "REGISTRATION_PROCESSOR",
@@ -27,24 +17,14 @@
         "roleDescription": "REG PROC"
       },
       {
-        "roleId": "TEST",
-        "roleName": "TEST",
-        "roleDescription": "test"
-      },
-      {
         "roleId": "REGISTRATION_SUPERVISOR",
         "roleName": "REGISTRATION_SUPERVISOR",
         "roleDescription": "Registration supervisor"
       },
       {
-        "roleId": "SUPERADMIN",
-        "roleName": "SUPERADMIN",
-        "roleDescription": "Super administrator"
-      },
-      {
-        "roleId": "ID_AUTHENTICATION",
-        "roleName": "ID_AUTHENTICATION",
-        "roleDescription": "IDA"
+        "roleId": "REGISTRATION_OFFICER",
+        "roleName": "REGISTRATION_OFFICER",
+        "roleDescription": "Registration officer"
       },
       {
         "roleId": "PRE_REGISTRATION_ADMIN",
@@ -52,9 +32,29 @@
         "roleDescription": "preregistration admin"
       },
       {
-        "roleId": "REGISTRATION_OFFICER",
-        "roleName": "REGISTRATION_OFFICER",
-        "roleDescription": "Registration officer"
+        "roleId": "REGISTRATION_ADMIN",
+        "roleName": "REGISTRATION_ADMIN",
+        "roleDescription": "Registration administrator"
+      },
+      {
+        "roleId": "AUTH",
+        "roleName": "AUTH",
+        "roleDescription": "Auth User role"
+      },
+      {
+        "roleId": "SUPERADMIN",
+        "roleName": "SUPERADMIN",
+        "roleDescription": "Super administrator"
+      },
+      {
+        "roleId": "TEST",
+        "roleName": "TEST",
+        "roleDescription": "test"
+      },
+      {
+        "roleId": "MISP",
+        "roleName": "MISP",
+        "roleDescription": "Trusted Service Provider"
       }
     ]
   },

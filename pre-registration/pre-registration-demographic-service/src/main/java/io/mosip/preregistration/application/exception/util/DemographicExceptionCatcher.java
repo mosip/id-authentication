@@ -92,9 +92,12 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DocumentFailedToDeleteException) {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),
 					((DocumentFailedToDeleteException) ex).getErrorText(),mainResponsedto);
-		} else if (ex instanceof IllegalArgumentException) {
-			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.getCode(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage(),mainResponsedto);
+		}  else if (ex instanceof IllegalArgumentException) {
+			// throw new
+			// SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+			// ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage(),mainResponsedto);
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_015.getCode(),
+					ErrorMessages.PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO.getMessage(), mainResponsedto);
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
 			throw new SystemUnsupportedEncodingException(((SystemUnsupportedEncodingException) ex).getErrorCode(),
 					((SystemUnsupportedEncodingException) ex).getErrorText(),mainResponsedto);

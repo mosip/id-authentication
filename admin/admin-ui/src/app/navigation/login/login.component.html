@@ -1,3 +1,28 @@
-<p>
-  login works!
-</p>
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-title>
+      <div class="login-title-one"><span>WELCOME TO</span></div>
+      <div class="image-icon">
+        <img src="../../../assets/logo-final.png" class="mosip-icon" />
+      </div>
+      <div class="login-title-two"><span>MOSIP ADMIN</span></div>
+    </mat-card-title>
+    <mat-card-content>
+      <form class="login-form">
+        <div class="login-form-input">
+          <mat-form-field class="input-full-width">
+            <input matInput placeholder="USER NAME" />
+          </mat-form-field>
+        </div>
+      </form>
+      <div class="forgot-username-link">
+        <a>Forgot User Name</a>
+      </div>
+      <div class="button-container">
+        <button mat-raised-button class="proceed-button" (click)="onSubmit()">
+          Proceed
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

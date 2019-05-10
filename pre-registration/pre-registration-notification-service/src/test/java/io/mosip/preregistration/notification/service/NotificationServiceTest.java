@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,15 +40,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
@@ -91,6 +100,9 @@ public class NotificationServiceTest {
  	JSONParser parser = new JSONParser();
  	private JSONObject jsonTestObject;
  	private JSONObject jsonObject;
+ 	AuditRequestDto auditRequestDto = new AuditRequestDto();
+	@MockBean
+	private AuditLogUtil auditLogUtil;
  	
 	@Before
 	public void beforeSet() throws ParseException, FileNotFoundException, java.io.IOException, org.json.simple.parser.ParseException {
@@ -129,6 +141,24 @@ public class NotificationServiceTest {
 
 		notificationResponseDTO.setMessage("Notification send successfully");
 		notificationResponseDTO.setStatus("True");
+		
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
+		auditRequestDto.setApplicationId(AuditLogVariables.MOSIP_1.toString());
+		auditRequestDto.setApplicationName(AuditLogVariables.PREREGISTRATION.toString());
+		auditRequestDto.setCreatedBy(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setHostIp(auditLogUtil.getServerIp());
+		auditRequestDto.setHostName(auditLogUtil.getServerName());
+		auditRequestDto.setId(AuditLogVariables.NO_ID.toString());
+		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
+		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
+		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
+		Authentication authentication = Mockito.mock(Authentication.class);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
+
 	}
 
 	/**

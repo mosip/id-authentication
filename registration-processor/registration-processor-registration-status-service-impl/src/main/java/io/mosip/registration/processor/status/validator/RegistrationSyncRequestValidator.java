@@ -1,31 +1,35 @@
 package io.mosip.registration.processor.status.validator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.dto.SyncResponseFailDto;
+import io.mosip.registration.processor.status.exception.RegStatusValidationException;
 
 /**
  * The Class RegistrationStatusRequestValidator.
+ * 
  * @author Rishabh Keshari
  */
 @Component
-public class RegistrationSyncRequestValidator implements Validator {
+public class RegistrationSyncRequestValidator {
 
 	/** The Constant VER. */
 	private static final String VER = "version";
@@ -56,56 +60,28 @@ public class RegistrationSyncRequestValidator implements Validator {
 	private Environment env;
 
 	/** The id. */
-//	@Resource
-	private Map<String, String> id=new HashMap<>();
+	// @Resource
+	private Map<String, String> id = new HashMap<>();
 
-	/** The clazz type. */
-	private boolean clazzType=false;
-	
+	RegistrationSyncRequestDTO request;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
-	@Override
-	public boolean supports(Class<?> clazz) {
-		
-		
-		if(clazz.isAssignableFrom(RegistrationStatusRequestDTO.class)) {
-			id.put("status", "mosip.registration.status");
-			clazzType=true;
-			return clazz.isAssignableFrom(RegistrationStatusRequestDTO.class);
-		}else {
-			id.put("sync", "mosip.registration.sync");
-			return clazz.isAssignableFrom(RegistrationSyncRequestDTO.class);
-		}
-		
-	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
-	 */
-	@Override
-	public void validate(@NonNull Object target, Errors errors) {
-		if(clazzType) {
-		RegistrationStatusRequestDTO request = (RegistrationStatusRequestDTO) target;
-		
-		validateReqTime(request.getRequesttime(), errors);
-
-		if (!errors.hasErrors()) {
-			validateId(request.getId(), errors);
-			validateVersion(request.getVersion(), errors);
+	public boolean validate(Object target, String serviceId, List<SyncResponseDto> synchResponseList) {
+		boolean isValid = false;
+		id.put("sync", serviceId);
+		request = (RegistrationSyncRequestDTO) target;
+		if (validateReqTime(request.getRequesttime(), synchResponseList)
+				&& validateId(request.getId(), synchResponseList)
+				&& validateVersion(request.getVersion(), synchResponseList)) {
+			isValid = true;
 		}
-		}else {
-			RegistrationSyncRequestDTO request = (RegistrationSyncRequestDTO) target;
-			validateReqTime(request.getRequesttime(), errors);
-
-			if (!errors.hasErrors()) {
-				validateId(request.getId(), errors);
-				validateVersion(request.getVersion(), errors);
-			}
-			
-		}
+		return isValid;
 	}
 
 	/**
@@ -115,14 +91,32 @@ public class RegistrationSyncRequestValidator implements Validator {
 	 *            the id
 	 * @param errors
 	 *            the errors
+	 * @throws RegStatusValidationException
 	 */
-	private void validateId(String id, Errors errors) {
+	private boolean validateId(String id, List<SyncResponseDto> syncResponseList) {
 		if (Objects.isNull(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
+
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(
 					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD));
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
+
 		} else if (!this.id.containsValue(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(
 					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD));
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
+
+		} else {
+			return true;
 		}
 	}
 
@@ -133,18 +127,35 @@ public class RegistrationSyncRequestValidator implements Validator {
 	 *            the ver
 	 * @param errors
 	 *            the errors
+	 * @throws RegStatusValidationException
 	 */
-	private void validateVersion(String ver, Errors errors) {
+	private boolean validateVersion(String ver, List<SyncResponseDto> syncResponseList) {
 		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), VER));
+
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto
+					.setMessage(String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), VER));
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
+
 		} else if ((!verPattern.matcher(ver).matches())) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), VER));
+
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto
+					.setMessage(String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), VER));
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
+		} else {
+			return true;
 		}
 	}
 
-	
 	/**
 	 * Validate req time.
 	 *
@@ -152,11 +163,18 @@ public class RegistrationSyncRequestValidator implements Validator {
 	 *            the timestamp
 	 * @param errors
 	 *            the errors
+	 * @throws RegStatusValidationException
 	 */
-	private void validateReqTime(String timestamp, Errors errors) {
+	private boolean validateReqTime(String timestamp, List<SyncResponseDto> syncResponseList) {
 		if (Objects.isNull(timestamp)) {
-			errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
+			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+			syncResponseFailureDto.setMessage(
 					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP));
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode());
+			syncResponseList.add(syncResponseFailureDto);
+			return false;
 		} else {
 			try {
 				if (Objects.nonNull(env.getProperty(DATETIME_PATTERN))) {
@@ -164,20 +182,38 @@ public class RegistrationSyncRequestValidator implements Validator {
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
 					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
-						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-								String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(),
-										TIMESTAMP));
+
+						SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+						syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+						syncResponseFailureDto.setMessage(String
+								.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
+						syncResponseFailureDto
+								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode());
+						syncResponseList.add(syncResponseFailureDto);
+						return false;
+					} else {
+						return true;
 					}
 
+				} else {
+					return false;
 				}
 			} catch (IllegalArgumentException e) {
 				regProcLogger.error(REGISTRATION_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
+
+				SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
+
+				syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+				syncResponseFailureDto.setMessage(
 						String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
+				syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode());
+				syncResponseList.add(syncResponseFailureDto);
+				return false;
+
 			}
 		}
 	}
-
 
 }

@@ -315,5 +315,21 @@ public class BookingDAO {
 		}
 		return listOfPreIds;
 	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of date
+	 */
+	public List<LocalDate> findDateDistinct(LocalDate regDate) {
+		List<LocalDate> localDatList = new ArrayList<>();
+		try {
+			localDatList = bookingAvailabilityRepository.findAvaialableDate(regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
 
 }

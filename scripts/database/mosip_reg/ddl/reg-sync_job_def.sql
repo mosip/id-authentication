@@ -3,12 +3,6 @@
 -- table 		: sync_job_def  		- Job defination for sync process between client and server
 -- table alias  : syncjob
 
--- schema section -----------------------------------------------------------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------------------
 
 create table reg.sync_job_def (
@@ -41,8 +35,3 @@ alter table reg.sync_job_def add constraint pk_syncjob_id primary key (id)
 -- indexes section -----------------------------------------------------------------------
 create unique index idx_syncjob_name on reg.sync_job_def (name)
 ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.sync_job_def is 'Registration sync_job_def table which hold all sync job details'
-;
-

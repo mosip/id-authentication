@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
-	
+
 /**
  * The Class SyncRegistrationDao.
  *
@@ -88,11 +88,10 @@ public class SyncRegistrationDao {
 		String alias = SyncRegistrationEntity.class.getName().toLowerCase().substring(0, 1);
 
 		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
-				+ ".registrationId=:registrationId" + EMPTY_STRING + AND + EMPTY_STRING + alias + ISACTIVE_COLON
-				+ ISACTIVE + EMPTY_STRING + AND + EMPTY_STRING + alias + ISDELETED_COLON + ISDELETED;
+				+ ".registrationId=:registrationId" + EMPTY_STRING + AND + EMPTY_STRING + alias + ISDELETED_COLON
+				+ ISDELETED;
 
 		params.put("registrationId", registrationId);
-		params.put(ISACTIVE, Boolean.TRUE);
 		params.put(ISDELETED, Boolean.FALSE);
 
 		List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationRepository.createQuerySelect(queryStr,

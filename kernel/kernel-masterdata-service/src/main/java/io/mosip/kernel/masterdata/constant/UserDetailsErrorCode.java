@@ -6,10 +6,10 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum UserDetailsErrorCode {
-	INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("",
-			"INVALID_EFFECTIVE_DATE_TIME_FORMATE"), USER_HISTORY_FETCH_EXCEPTION("",
-					"USER_HISTORY_FETCH_EXCEPTION"), USER_HISTORY_NOT_FOUND_EXCEPTION("",
-							"USER_HISTORY_NOT_FOUND_EXCEPTION");
+	INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-USR-002",
+			"Invalid Date Format"), USER_HISTORY_FETCH_EXCEPTION("KER-USR-001",
+					"Error occurred while retrieving User History"), USER_HISTORY_NOT_FOUND_EXCEPTION("KER-USR-003",
+							"User History not found");
 
 	private final String errorCode;
 	private final String errorMessage;

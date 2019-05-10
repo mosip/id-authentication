@@ -27,7 +27,7 @@ import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.jsonvalidator.impl.IdObjectSchemaValidator;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 
 /**
  * @author Manoj SP
