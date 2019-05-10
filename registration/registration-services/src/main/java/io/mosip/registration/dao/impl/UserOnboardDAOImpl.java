@@ -144,7 +144,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			});
 
-			biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
+			biometricDTO.getOperatorBiometricDTO().getFace();
 
 			UserBiometric bioMetrics = new UserBiometric();
 			UserBiometricId biometricId = new UserBiometricId();
@@ -152,10 +152,10 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			biometricId.setBioAttributeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 			biometricId.setBioTypeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 			biometricId.setUsrId(SessionContext.userContext().getUserId());
-			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace());
-			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getNumOfRetries());
+			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFace().getFace());
+			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFace().getNumOfRetries());
 			bioMetrics.setUserBiometricId(biometricId);
-			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
+			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFace().getQualityScore();
 			bioMetrics.setQualityScore(qualitySocre.intValue());
 			bioMetrics.setCrBy(SessionContext.userContext().getUserId());
 			bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));

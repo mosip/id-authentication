@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.authentication.fw.client.RestClient;
 import io.mosip.authentication.idrepo.fw.util.PropertyFileLoader;
 import io.mosip.authentication.idrepo.fw.util.RidGenerator;
 import io.mosip.authentication.idrepo.fw.util.TestDataGenerator;

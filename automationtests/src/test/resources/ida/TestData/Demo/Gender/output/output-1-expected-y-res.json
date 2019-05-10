@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "status": "Y",
   "err": [],
@@ -11,4 +12,14 @@
     "usageData": "0x01000000001000000"
   },
   "ver": "$version$"
+=======
+{
+  "responseTime": "2019-03-21T15:42:12.467+05:30",
+  "transactionID": "1013645414",
+  "version": "$version$",
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": true
+  } 
+>>>>>>> QA_IDA
 }

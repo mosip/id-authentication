@@ -1,7 +1,8 @@
+
 package io.mosip.authentication.tests;
 
 import java.io.File;
-import java.lang.reflect.Field; 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,52 +25,108 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 
-public class CreateVID extends IdaScriptsUtil implements ITest{
-	
-	private static Logger logger = Logger.getLogger(CreateVID.class);
-	private RunConfig objRunConfig = new RunConfig();
-	protected static String testCaseName = "";
-	private JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
-	private String TESTDATA_PATH="ida/TestData/UINData";
-	private String TESTDATA_FILENAME="dummy.dummy";
+/**
+ * Test to generate VID for UIN
+ * 
+ * @author Athila
+ *
+ */
+public class CreateVID extends IdaScriptsUtil implements ITest {
 
-	@Parameters({"testType"})
+	private static final Logger logger = Logger.getLogger(CreateVID.class);
+	protected static String testCaseName = "";
+	private String TESTDATA_PATH;
+	private String TESTDATA_FILENAME;
+	private String testType;
+	private int invocationCount = 0;
+
+	/**
+	 * Set Test Type - Smoke, Regression or Integration
+	 * 
+	 * @param testType
+	 */
+	@Parameters({ "testType" })
 	@BeforeClass
-	public void setConfigurations(String testType) {
-		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+	public void setTestType(String testType) {
+		this.testType = testType;
 	}
-		
+
+	/**
+	 * Method set Test data path and its filename
+	 * 
+	 * @param index
+	 */
+	public void setTestDataPathsAndFileNames(int index) {
+		this.TESTDATA_PATH = getTestDataPath(this.getClass().getSimpleName().toString(), index);
+		this.TESTDATA_FILENAME = getTestDataFileName(this.getClass().getSimpleName().toString(), index);
+	}
+
+	/**
+	 * Method set configuration
+	 * 
+	 * @param testType
+	 */
+	public void setConfigurations(String testType) {
+		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+	}
+
+	/**
+	 * Test method for VID generation
+	 * 
+	 * @param objTestParameters
+	 * @param testScenario
+	 * @param testcaseName
+	 */
 	@Test
 	public void generateVidForUin() {
-		Properties prop = getProperty(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath());
+		Properties prop = getPropertyFromFilePath(new File("./" + RunConfig.getSrcPath() + "ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
 		for (String str : prop.stringPropertyNames()) {
 			uinMap.put(str, prop.getProperty(str));
 		}
 		for (Entry<String, String> entry : uinMap.entrySet()) {
-			if (!(entry.getValue().contains("NoVID") || entry.getValue().contains("novid"))) {
+			if (!(entry.getValue().contains("NoVID") || entry.getValue().contains("Deactivated")
+					|| entry.getValue().contains("novid"))) {
 				String url = RunConfig.getEndPointUrl() + RunConfig.getVidGenPath();
 				url = url.replace("$uin$", entry.getKey());
 				String vidJson = getResponse(url);
-				String vid = objJsonPrecondtion.getValueFromJson(vidJson, "vid");
+				String vid = JsonPrecondtion.getValueFromJson(vidJson, "response.vid");
 				vidMap.put(vid, entry.getKey());
 			}
 		}
-		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/vid.properties").getAbsolutePath(),
-				vidMap);
+		generateMappingDic(new File("./" + RunConfig.getSrcPath() + "ida/" + RunConfig.getTestDataFolderName()
+				+ "/RunConfig/vid.properties").getAbsolutePath(), vidMap);
 	}
-	
+
+	/**
+	 * The method set test case name
+	 * 
+	 * @param method
+	 * @param testData
+	 */
 	@BeforeMethod
 	public void testData(Method method, Object[] testData) {
 		this.testCaseName = String.format("CreateVID");
+		invocationCount++;
+		setTestDataPathsAndFileNames(invocationCount);
+		setConfigurations(this.testType);
 	}
-	
+
+	/**
+	 * Set current testcaseName
+	 */
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-	} 
-	
+	}
+
+	/**
+	 * The method ser current test name to result
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -84,6 +141,5 @@ public class CreateVID extends IdaScriptsUtil implements ITest{
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
-
 }
 

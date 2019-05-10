@@ -6,16 +6,22 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +35,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
+import io.mosip.registration.controller.vo.RegistrationApprovalVO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -37,10 +44,10 @@ import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,15 +56,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -89,21 +97,21 @@ public class RegistrationApprovalController extends BaseController implements In
 	/** Table to display the created packets. */
 
 	@FXML
-	private TableView<RegistrationApprovalDTO> table;
+	private TableView<RegistrationApprovalVO> table;
 
 	/** Registration Id column in the table. */
 
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> id;
+	private TableColumn<RegistrationApprovalVO, String> id;
 
 	/** status comment column in the table. */
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> statusComment;
+	private TableColumn<RegistrationApprovalVO, String> statusComment;
 
 	/** Acknowledgement form column in the table. */
 
 	@FXML
-	private TableColumn<RegistrationApprovalDTO, String> acknowledgementFormPath;
+	private TableColumn<RegistrationApprovalVO, String> acknowledgementFormPath;
 
 	/** Button for approval. */
 
@@ -148,6 +156,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private Stage primaryStage;
 
+	@FXML
+	private TextField filterField;
+
+	private ObservableList<RegistrationApprovalVO> observableList;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -164,7 +177,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private void tableCellColorChangeListener() {
 		statusComment.setCellFactory(column -> {
-			return new TableCell<RegistrationApprovalDTO, String>() {
+			return new TableCell<RegistrationApprovalVO, String>() {
 				@Override
 				public void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
@@ -193,13 +206,14 @@ public class RegistrationApprovalController extends BaseController implements In
 		imageAnchorPane.setVisible(false);
 
 		id.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalDTO, String>(RegistrationConstants.EOD_PROCESS_ID));
-		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
-		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>(
+		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH));
 
 		populateTable();
+
 		table.getSelectionModel().selectFirst();
 
 		if (table.getSelectionModel().getSelectedItem() != null) {
@@ -267,15 +281,19 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
-
+		List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
+		
+		
+		
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
-
-			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
-			table.setItems(oList);
+			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO(approvalDTO.getId(), approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)) );
+			
+			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+			observableList = FXCollections.observableArrayList(registrationApprovalVO);			
+			wrapListAndAddFiltering(observableList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
@@ -285,11 +303,45 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 
+	protected void wrapListAndAddFiltering(ObservableList<RegistrationApprovalVO> oList) {
+		FilteredList<RegistrationApprovalVO> filteredData = new FilteredList<>(oList, p -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes.
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(reg -> {
+				// If filter text is empty, display all ID's.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				// Compare every ID with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+				if (reg.getId().contains(lowerCaseFilter)) {
+					// Filter matches first name.
+					table.getSelectionModel().selectFirst();
+					return true;
+				}
+				return false; // Does not match.
+			});
+			table.getSelectionModel().selectFirst();
+			if (table.getSelectionModel().getSelectedItem() != null) {
+				viewAck();
+			}
+		});
+		// 3. Wrap the FilteredList in a SortedList.
+		SortedList<RegistrationApprovalVO> sortedList = new SortedList<>(filteredData);
+
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedList.comparatorProperty().bind(table.comparatorProperty());
+		table.setItems(sortedList);
+	}
+
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -313,7 +365,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			Map<String, String> map = new WeakHashMap<>();
 			map.put(RegistrationConstants.REGISTRATIONID,
-					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
+					observableList.get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -321,11 +373,12 @@ public class RegistrationApprovalController extends BaseController implements In
 			authenticateBtn.setDisable(false);
 
 			int rowNum = table.getSelectionModel().getFocusedIndex();
-			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
+			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);
-			table.getItems().set(rowNum, approvalDTO);
+			observableList.set(rowNum, approvalDTO);
+			wrapListAndAddFiltering(observableList);
 			table.requestFocus();
 			table.getFocusModel().focus(rowNum);
 
@@ -335,8 +388,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
-							primarystage, approvalmapList, table,
+					rejectionController.initData(observableList.get(table.getSelectionModel().getFocusedIndex()),
+							primarystage, approvalmapList, observableList, table,
 							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
@@ -367,10 +420,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
@@ -460,4 +516,40 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		new Thread(upload).start();
 	}
+	
+	/**
+	 * Export data.
+	 */
+	public void exportData(){
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+				"Exporting Registration status details has been started");
+		
+			Stage stage = new Stage();
+			DirectoryChooser destinationSelector = new DirectoryChooser();
+			destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
+			Path currentRelativePath = Paths.get("");
+			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
+			destinationSelector.setInitialDirectory(defaultDirectory);
+			File destinationPath = destinationSelector.showDialog(stage);
+			if (destinationPath != null) {
+
+				String fileData = table.getItems().stream().map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE).concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE).concat(approvaldto.getStatusComment()))
+								.collect(Collectors.joining("\n"));
+				
+						try (Writer writer = new BufferedWriter(new FileWriter(destinationPath+"/"+RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))){
+							writer.write(fileData);
+							
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_SUCCESS);
+						
+						} catch (IOException ioException) {
+							LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));						
+
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_FAILURE);
+
+						}	
+			}
+			LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"Exporting Registration status details has been ended");
+	}	
 }

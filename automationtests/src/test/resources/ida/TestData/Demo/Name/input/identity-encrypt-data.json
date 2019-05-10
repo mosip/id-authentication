@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"identityRequest": {
 		"identity": {
@@ -11,3 +12,19 @@
 	},
 	"tspID": "TSP00001"
 }
+=======
+{
+	"identityRequest": {
+		"demographics": {
+			"name": [
+				{
+					"language": "fra",
+					"value": "Mohamed Zhaeer"
+				}
+			]
+		},
+		"timestamp": "2019-03-16T10:01:57.086+05:30",
+		"transactionID": "1234567890"
+	}
+}
+>>>>>>> QA_IDA
