@@ -48,7 +48,8 @@ import io.vertx.core.logging.SLF4JLogDelegateFactory;
  *
  */
 @SpringBootApplication
-@PropertySource({ "classpath:application-${spring.profiles.active}.properties", "classpath:bootstrap.properties" })
+@PropertySource({ "classpath:bootstrap.properties" })
+@PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 public class UinGeneratorVertxApplication {
 
 	/**
