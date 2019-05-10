@@ -62,6 +62,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	@Override
 	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl, int instanceNumber) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
+		System.out.println("+++++++++++Eventbus port+++++++++++ "+eventBusPort);
 		MosipEventBus mosipEventBus = null;
 		Config config;
 		try {
