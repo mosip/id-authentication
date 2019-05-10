@@ -77,7 +77,7 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 			impl.retrieveUinByVid("12345678");
 	}
@@ -90,7 +90,7 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "ACTIVATED", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 			try {
 				impl.retrieveUinByVid("12345678");
@@ -107,7 +107,7 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "Blocked", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 			try {
 				impl.retrieveUinByVid("12345678");
@@ -118,7 +118,7 @@ public class VidServiceImplTest {
 	
 	@Test
 	public void testRetrieveUinByVid_Invalid_NoRecordsFound() {
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(null);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 			try {
 				impl.retrieveUinByVid("12345678");
@@ -135,7 +135,7 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		
 		VidRequestDTO req=new VidRequestDTO();
@@ -153,7 +153,7 @@ public class VidServiceImplTest {
 	
 	@Test
 	public void testUpdateVid_Invalid(){
-		Mockito.when(vidRepo.retrieveVid(Mockito.anyString())).thenReturn(null);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		
 		VidRequestDTO req=new VidRequestDTO();

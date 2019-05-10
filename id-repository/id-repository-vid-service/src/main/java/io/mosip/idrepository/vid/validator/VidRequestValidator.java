@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.vid.dto.RequestDto;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.util.DateUtils;
@@ -49,9 +50,6 @@ public class VidRequestValidator implements Validator {
 
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "vidStatus";
-
-	/** The Constant verPattern. */
-	private static final Pattern verPattern = Pattern.compile(IdRepoConstants.VERSION_PATTERN.getValue());
 
 	/** The Environment */
 	@Autowired
@@ -91,6 +89,7 @@ public class VidRequestValidator implements Validator {
 		validateReqTime(request.getRequestTime(), errors);
 		if (!errors.hasErrors()) {
 			validateVersion(request.getVersion(), errors);
+			validateRequest(request.getRequest(), errors);
 		}
 		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(UPDATE))) {
@@ -99,8 +98,18 @@ public class VidRequestValidator implements Validator {
 				errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), ID));
 			}
+		} else if (!errors.hasErrors()) {
+			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), ID));
 		}
 
+	}
+
+	private void validateRequest(RequestDto request, Errors errors) {
+		if (Objects.isNull(request)) {
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST));
+		}
 	}
 
 	/**
@@ -110,7 +119,10 @@ public class VidRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void validateStatus(String vidStatus, Errors errors) {
-		if (Objects.nonNull(vidStatus) && !allowedStatus.contains(vidStatus)) {
+		if (Objects.isNull(vidStatus)) {
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), STATUS_FIELD));
+		} else if (!allowedStatus.contains(vidStatus)) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), STATUS_FIELD));
 		}
@@ -145,7 +157,8 @@ public class VidRequestValidator implements Validator {
 		if (Objects.isNull(ver)) {
 			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), VER));
-		} else if ((!verPattern.matcher(ver).matches())) {
+		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
+				.matches())) {
 			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), VER));
 		}
@@ -157,7 +170,7 @@ public class VidRequestValidator implements Validator {
 	 * @param vid
 	 * @throws IdRepoAppException
 	 */
-	public void validateId(String vid) throws IdRepoAppException {
+	public void validateId(String vid) {
 		vidValidator.validateId(vid);
 	}
 }

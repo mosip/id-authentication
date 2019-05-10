@@ -14,14 +14,13 @@ import io.mosip.idrepository.vid.entity.Vid;
  */
 public interface VidRepo extends JpaRepository<Vid, String> {
 	/**
-	 * The Query to retrieve Vid Object.
+	 * This Method is used to retrieve Vid Object.
 	 * 
 	 * @param vid
 	 * @return Vid Object
 	 */
-	@Query("select v from Vid v where vid = :vid")
-	public Vid retrieveVid(@Param("vid") String vid);
-
+	Vid findByVid(String vid);
+	
 	/**
 	 * The Query to retrieve Uin by passing vid as parameter.
 	 * 

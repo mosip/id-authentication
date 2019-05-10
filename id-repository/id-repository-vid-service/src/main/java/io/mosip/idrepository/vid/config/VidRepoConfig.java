@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import io.mosip.idrepository.core.constant.IdRepoConstants;
+
 /**
  * 
  * @author Prem Kumar
@@ -21,7 +23,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRepoConfig {
-	
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -79,10 +81,10 @@ public class VidRepoConfig {
 	 */
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty("mosip.idrepo.db.vid.url"));
-		dataSource.setUsername(env.getProperty("mosip.idrepo.db.vid.username"));
-		dataSource.setPassword(env.getProperty("mosip.idrepo.db.vid.password"));
-		dataSource.setDriverClassName(env.getProperty("mosip.idrepo.db.vid.driverClassName"));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_URL.getValue()));
+		dataSource.setUsername(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_USERNAME.getValue()));
+		dataSource.setPassword(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_PASSWORD.getValue()));
+		dataSource.setDriverClassName(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_DRIVER_CLASS_NAME.getValue()));
 		return dataSource;
 	}
 }

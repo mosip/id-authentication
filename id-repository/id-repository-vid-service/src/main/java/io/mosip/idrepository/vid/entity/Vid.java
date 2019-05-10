@@ -26,7 +26,10 @@ public class Vid {
 
 	/** The vid value */
 	private String vid;
-
+	
+	public Vid() {
+		
+	}
 	public Vid(String id, String vid, String uinHash, String uin, String vidTypeCode, LocalDateTime generatedDTimes,
 			LocalDateTime expiryDTimes, String statusCode, String createdBy, LocalDateTime createdDTimes,
 			String updatedBy, LocalDateTime updatedDTimes, boolean isDeleted, LocalDateTime deletedDTimes) {

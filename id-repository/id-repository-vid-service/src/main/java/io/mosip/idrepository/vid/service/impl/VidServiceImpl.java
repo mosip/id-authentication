@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -33,6 +32,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO> {
 
+	private static final String EXPIRED = "Expired";
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -58,12 +59,39 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 			checkExpiry(vidObject.getExpiryDTimes());
 			checkStatus(vidObject.getStatusCode());
 			String uin = vidRepo.retrieveUinByVid(vid);
-			ResponseDto response = new ResponseDto();
-			response.setUin(uin);
-			return buildResponse(response, id.get("read"));
+
+			return buildResponse(uin, null, id.get("read"));
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
 					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.idrepository.core.spi.VidService#updateVid(java.lang.String,
+	 * java.lang.Object)
+	 */
+	@Override
+	public VidResponseDTO updateVid(String vid, VidRequestDTO request) throws IdRepoAppException {
+		Vid vidObject = retrieveVidEntity(vid);
+		String vidStatus = request.getRequest().getVidStatus();
+		String vidStatusFromDb =null;
+		ResponseDto response = new ResponseDto();
+		if (Objects.isNull(vidObject)) {
+			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
+					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
+		}
+		if (vidObject.getStatusCode().equals(env.getProperty(IdRepoConstants.MOSIP_IDREPO_VID_STATUS.getValue()))) {
+			vidStatusFromDb = vidObject.getStatusCode();
+			response.setVidStatus(vidStatus);
+			vidObject.setStatusCode(vidStatus);
+			vidRepo.save(vidObject);
+			return buildResponse(null, vidStatus, id.get("update"));
+		} else {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), vidStatusFromDb));
 		}
 	}
 
@@ -74,7 +102,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	 * @return The Vid Object
 	 */
 	private Vid retrieveVidEntity(String vid) {
-		return vidRepo.retrieveVid(vid);
+		return vidRepo.findByVid(vid);
 	}
 
 	/**
@@ -89,7 +117,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime();
 		if (!DateUtils.after(expiryDTimes, currentTime)) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "Expired"));
+					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), EXPIRED));
 		}
 	}
 
@@ -113,41 +141,17 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	 * @param id
 	 * @return The Vid Response
 	 */
-	private VidResponseDTO buildResponse(ResponseDto response, String id) {
+	private VidResponseDTO buildResponse(String uin, String vidStatus, String id) {
 		VidResponseDTO responseDto = new VidResponseDTO();
 		responseDto.setId(id);
 		responseDto.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
 		responseDto.setResponseTime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+		ResponseDto response = new ResponseDto();
+		response.setUin(uin);
+		response.setVidStatus(vidStatus);
 		responseDto.setResponse(response);
 		return responseDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.idrepository.core.spi.VidService#updateVid(java.lang.String,
-	 * java.lang.Object)
-	 */
-	@Override
-	public VidResponseDTO updateVid(String vid, VidRequestDTO request) throws IdRepoAppException {
-		Vid vidObject = retrieveVidEntity(vid);
-		String vidStatus = Optional.ofNullable(request.getRequest()).get().getVidStatus();
-		ResponseDto response = new ResponseDto();
-		if (!Objects.nonNull(vidObject)) {
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
-					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
-		}
-		if (vidObject.getStatusCode().equals(env.getProperty(IdRepoConstants.MOSIP_IDREPO_VID_STATUS.getValue()))) {
-
-			response.setVidStatus(vidStatus);
-			vidObject.setStatusCode(vidStatus);
-			vidRepo.save(vidObject);
-			return buildResponse(response, id.get("update"));
-		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
-					IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage());
-		}
 	}
 
 }
