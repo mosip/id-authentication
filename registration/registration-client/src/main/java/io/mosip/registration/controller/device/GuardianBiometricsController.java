@@ -29,6 +29,8 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -132,7 +134,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/** The iris facade. */
 	@Autowired
 	private IrisFacade irisFacade;
-
+	
 	private static final Map<String, String[]> bioMap = createMap();
 
 	private static Map<String, String[]> createMap() {
@@ -191,6 +193,18 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of Guardian Biometric screen ended");
+				
+		biometricTypecombo.valueProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String previousValue, String currentValue) {
+				
+				if(previousValue!=null && !previousValue.equalsIgnoreCase(currentValue)) {
+					continueBtn.setDisable(true);
+				}
+				
+			}
+		});
 	}
 
 	/**
