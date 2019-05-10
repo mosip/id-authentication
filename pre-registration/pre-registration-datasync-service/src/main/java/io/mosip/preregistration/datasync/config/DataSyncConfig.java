@@ -63,7 +63,7 @@ public class DataSyncConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Datasync").select()
-				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 
 		if (swaggerBaseUrlSet) {

@@ -75,7 +75,7 @@ public class DemographicConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
@@ -95,7 +95,7 @@ public class DemographicConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
-				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

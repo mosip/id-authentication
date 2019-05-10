@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -44,7 +43,7 @@ public class LoginConfig {
 					hostWithPort = host;
 				} else {
 					hostWithPort = host + ":" + port;
-				} 
+				}
 				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
 				System.err.println("SwaggerUrlException: " + e);
@@ -52,15 +51,14 @@ public class LoginConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.login.controller"))
-				.paths(PathSelectors.ant("/*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
 		return docket;
 	}
-	
+
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

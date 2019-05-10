@@ -226,8 +226,12 @@ export class TimeSelectionComponent implements OnInit {
       this.disableContinueButton = false;
       return;
     }
-    const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
+    const obj = {
+      bookingRequest: this.bookingDataList
+    };
+    const request = new RequestModel(appConstants.IDS.booking, obj);
     console.log('request being sent from time selection', request);
+
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);

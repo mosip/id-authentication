@@ -26,7 +26,9 @@ import io.mosip.preregistration.booking.exception.CancelAppointmentFailedExcepti
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
+import io.mosip.preregistration.booking.repository.DemographicRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -50,6 +52,10 @@ public class BookingDAO {
 	@Autowired
 	@Qualifier("registrationBookingRepository")
 	private RegistrationBookingRepository registrationBookingRepository;
+	
+	@Autowired
+	@Qualifier("demographicRepository")
+	private DemographicRepository demographicRepository;
 
 	/**
 	 * @param Registration
@@ -330,6 +336,36 @@ public class BookingDAO {
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return localDatList;
+	}
+	
+	/**
+	 * 
+	 * This method will update the booking status in applicant table.
+	 * 
+	 * @param preRegId
+	 * @param status
+	 * @return
+	 */
+	public DemographicEntity updateDemographicStatus(String preRegId, String status) {
+		DemographicEntity demographicEntity = null;
+
+		try {
+			demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+
+			if (demographicEntity == null) {
+				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.getCode(),
+						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
+		}
+		
+		demographicEntity.setStatusCode(status);
+		demographicRepository.save(demographicEntity);
+		return demographicEntity;
+
+
 	}
 
 }
