@@ -23,6 +23,7 @@ import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.datasync.exception.DataSyncRecordNotFoundException;
 import io.mosip.preregistration.datasync.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.datasync.exception.DocumentGetDetailsException;
+import io.mosip.preregistration.datasync.exception.ParseResponseException;
 import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
@@ -151,6 +152,11 @@ public class DataSyncExceptionHandler {
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(ParseResponseException.class)
+	public ResponseEntity<MainResponseDTO<?>> parseResponseException(final ParseResponseException e){
+		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
 	public String getCurrentResponseTime() {
