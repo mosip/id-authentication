@@ -1,4 +1,4 @@
-package io.mosip.kernel.responsesignature.constant;
+package io.mosip.kernel.cryptosignature.constant;
 
 public enum SigningDataErrorCode {
 

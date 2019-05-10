@@ -1,4 +1,4 @@
-package io.mosip.kernel.responsesignature.config;
+package io.mosip.kernel.cryptosignature.config;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;

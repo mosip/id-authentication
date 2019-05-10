@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.util.FileUtils;
@@ -48,8 +47,6 @@ import io.vertx.core.logging.SLF4JLogDelegateFactory;
  *
  */
 @SpringBootApplication
-@PropertySource({ "classpath:bootstrap.properties" })
-@PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 public class UinGeneratorVertxApplication {
 
 	/**

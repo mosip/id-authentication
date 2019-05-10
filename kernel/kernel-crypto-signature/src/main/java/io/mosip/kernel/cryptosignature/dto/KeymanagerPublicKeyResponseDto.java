@@ -4,7 +4,7 @@
  * 
  * 
  */
-package io.mosip.kernel.responsesignature.dto;
+package io.mosip.kernel.cryptosignature.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

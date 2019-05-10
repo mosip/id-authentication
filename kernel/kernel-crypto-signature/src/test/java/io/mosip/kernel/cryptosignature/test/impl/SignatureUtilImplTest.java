@@ -1,4 +1,4 @@
-package io.mosip.kernel.responsesignature.test.impl;
+package io.mosip.kernel.cryptosignature.test.impl;
 
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -47,9 +47,9 @@ import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.cryptosignature.dto.CryptoManagerRequestDto;
+import io.mosip.kernel.cryptosignature.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.responsesignature.dto.CryptoManagerRequestDto;
-import io.mosip.kernel.responsesignature.dto.KeymanagerPublicKeyResponseDto;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
