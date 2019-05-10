@@ -253,8 +253,9 @@ public enum PlatformErrorMessages {
 	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001"," Abis ReferenceId not found for given registrationId"),
 	LATEST_TRANSACTION_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "002"," latest transactionId not found for given registrationId"),
 	IDENTIFY_REQUESTS_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "003"," no identify requests found for given registrationId"),
-
-	/** The packet bio dedupe failed. */
+    ABIS_QUEUE_JSON_VALIDATION_FAILED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "004"," value not found for given key in abis json"),
+	UNKNOWN_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "005"," unknown exception occured"),
+    /** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
 

@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
@@ -145,8 +146,8 @@ public class Utilities {
 			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
 			for (Object object : regProcessorAbisArray) {
 				JSONObject jsonObject = new JSONObject((Map) object);
-				inBoundAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, INBOUNDQUEUENAME));
-				outBountAddressList.add(JsonUtil.getJSONValue((JSONObject) jsonObject, OUTBOUNDQUEUENAME));
+				inBoundAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, INBOUNDQUEUENAME));
+				outBountAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, OUTBOUNDQUEUENAME));
 				inboundOutBoundList.add(inBoundAddressList);
 				inboundOutBoundList.add(outBountAddressList);
 
@@ -170,10 +171,10 @@ public class Utilities {
 
 			for (Object jsonObject : regProcessorAbisArray) {
 				JSONObject json = new JSONObject((Map) jsonObject);
-				String userName = JsonUtil.getJSONValue((JSONObject) json, USERNAME);
-				String password = JsonUtil.getJSONValue((JSONObject) json, PASSWORD);
-				String brokerUrl = JsonUtil.getJSONValue((JSONObject) json, BROKERURL);
-				String typeOfQueue = JsonUtil.getJSONValue((JSONObject) json, TYPEOFQUEUE);
+				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
+				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
+				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
+				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
 				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
 						brokerUrl);
 				if (mosipQueue == null)
@@ -188,6 +189,15 @@ public class Utilities {
 		}
 		return mosipQueueList;
 
+	}
+
+	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
+		String value = JsonUtil.getJSONValue(jsonObject, key);
+		if (value == null)
+			throw new RegistrationProcessorUnCheckedException(
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
+		return value;
 	}
 
 	public int getApplicantAge(String registrationId)
