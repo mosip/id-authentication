@@ -20,6 +20,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -39,6 +40,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
+	PreregistrationDAO dao = new PreregistrationDAO();
 
 	Configuration config = Configuration.builder().jsonProvider(new JacksonJsonNodeJsonProvider())
 			.mappingProvider(new JacksonMappingProvider()).build();
@@ -89,7 +91,9 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String pre_registration_id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentUploadResponse = lib.documentUpload(createPregResponse);
 		Response fetchCentreResponse = lib.FetchCentre();
-		lib.BookExpiredAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
+		lib.BookAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
+		dao.setDate(pre_registration_id);
+		lib.expiredStatus();
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
@@ -126,11 +130,12 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		String DOB = "25-09-1993";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createRequestResponse.jsonPath().get("response.pre_RegistrationId").toString();
+		String pre_registration_id = createRequestResponse.jsonPath().get("response.preRegistrationId").toString();
 		lib.discardApplication(pre_registration_id);
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
+		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(), "No data found for the requested pre-registration id");
 	}
 @Test
 	public void updateDemographicDetailsWithInvalidPreRegistrationId() {

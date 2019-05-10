@@ -439,11 +439,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 *            which you want to read from config server
 	 * @return
 	 */
-	public HashMap<String, String> readConfigProperty(String url, String configParameter) {
+	public JSONObject readConfigProperty(String url, String configParams,JSONObject configParamObject) {
 		List<String> reqParams = new ArrayList<>();
-		Map<String, String> configParamMap = new HashMap<>();
-		uiConfigParams = commonLibrary.fetch_IDRepo().get(configParameter);
-		String[] uiParams = uiConfigParams.split(",");
+		JSONObject not=new JSONObject();
+		String[] uiParams = configParams.split(",");
 		for (int i = 0; i < uiParams.length; i++) {
 			reqParams.add(uiParams[i]);
 		}
@@ -458,13 +457,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		for (Entry<Object, Object> e : p.entrySet()) {
 			if (reqParams.contains(String.valueOf(e.getKey()))) {
-				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
+				String key = String.valueOf(e.getKey());
+				String value = e.getValue().toString();
+				configParamObject.put(key, value);
 			}
-
 		}
-		return (HashMap<String, String>) configParamMap;
+		return  configParamObject;
 	}
-
+	/*public boolean validateConfigProperty()
+	{
+		
+	}
+*/
 	/**
 	 * Converting byte zip array into zip and saving into preregdocs folder
 	 * 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.FileNotFoundException;
@@ -63,47 +64,23 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
-	PreregistrationDAO dao=new PreregistrationDAO();
+	PreregistrationDAO dao = new PreregistrationDAO();
+	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
 		authToken = lib.getToken();
 	}
+
 	/**
 	 * Batch job service for expired application
 	 */
-	/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createRequest = lib.createRequest(testSuite);
-		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		lib.fetchAllPreRegistrationCreatedByUser();
-		String userId = lib.userId;
-		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicUpdate");
-		expectedRequest.put("session_user_id", userId);
-		List<Object> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		System.out.println("====================="+auditDatas.toString());*/
-		/*if(auditDatas.equals(expectedRequest))
-			logger.info("both object are equal");
-		else
-		{
-			logger.info("expected is==="+expectedRequest.toString());
-			logger.info("but found is === "+auditDatas.toString());
-			Assert.fail();
-		}*/
 	@Test
-	public void getAuditDataForDemographicCreate() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		lib.CreatePreReg(createPregRequest);
-		String userId = lib.userId;
-		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
-		//expectedRequest.put("session_user_id", userId);
-		List<Object> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 0);
-		lib.jsonComparison(expectedRequest, auditDatas);
+	public void updateDemographicDetailsOfExpiredAppointment() {
+		lib.syncAvailability();
 	}
-		
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

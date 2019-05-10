@@ -119,6 +119,27 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
 		Assert.assertEquals(true, auditDatas.equals(expectedRequest));
 	}
+	@Test
+	public void getAuditDataForDemographicFetchAllApplication() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createRequest = lib.createRequest(testSuite);
+		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		lib.fetchAllPreRegistrationCreatedByUser();
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
+		expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		System.out.println("====================="+auditDatas.toString());
+		if(auditDatas.equals(expectedRequest))
+			logger.info("both object are equal");
+		else
+		{
+			logger.info("expected is==="+expectedRequest.toString());
+			logger.info("but found is === "+auditDatas.toString());
+			Assert.fail();
+		}
+	}
 	
 	@Override
 	public String getTestName() {
