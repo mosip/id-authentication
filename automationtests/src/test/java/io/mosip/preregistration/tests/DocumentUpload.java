@@ -116,7 +116,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "documentUpload")
-	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
+	public void documentUpload(String testSuite, Integer i, JSONObject object) throws Exception {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -127,7 +127,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		 System.out.println("Create:"+createApplicationResponse.asString());
 		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
        
 		if (testCaseName.contains("smoke")) {
@@ -136,8 +135,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			// preRegLib.documentUpload(createApplicationResponse);
 
 			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preRegIdCreateAPI);
-
-			System.out.println("Doc Upload:" + docUploadResponse.asString());
 
 			// PreId of Uploaded document
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
@@ -159,21 +156,18 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
-					//Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
 
-					System.out.println("Actual response::" + Actualresponse.asString());
+					
 				} else {
 					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 					JSONObject parm = preRegLib.getRequest(testSuite);
 					parm.put("preRegistrationId", preRegIdCreateAPI);
-					//actualRequest.put("requesttime", preRegLib.getCurrentDate());
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
-					System.out.println("Testcase name:"+testCaseName+"Actual responseeee::" + Actualresponse.asString());
-				}
+					}
 
 			} catch (Exception e) {
 				logger.info(e);
@@ -256,7 +250,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		System.out.println("Test Case name:" + testCaseName);
 		/**
 		 * Document Upload Resource URI
 		 */
