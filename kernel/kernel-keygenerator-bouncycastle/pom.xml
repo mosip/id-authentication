@@ -12,24 +12,18 @@
 	<packaging>jar</packaging>
 	<name>kernel-keygenerator-bouncycastle</name>
 	<properties>
-    <sonar.skip>true</sonar.skip>
-  </properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-			<scope>compile</scope>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>${bouncycastle.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
@@ -42,11 +36,6 @@
 			<artifactId>powermock-api-mockito</artifactId>
 			<version>${powermock.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 </project>
