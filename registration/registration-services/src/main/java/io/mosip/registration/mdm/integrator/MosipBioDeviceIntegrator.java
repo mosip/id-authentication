@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
 
@@ -88,13 +88,13 @@ public class MosipBioDeviceIntegrator {
 			throws RegBaseCheckedException {
 		ObjectMapper mapper = new ObjectMapper();
 		String value = "";
-		MosipBioCaptureResponseDto mosipBioCaptureResponseDto=null;
+		CaptureResponseDto mosipBioCaptureResponseDto=null;
 
 		Map<String, Object> mosipBioCaptureResponseMap = (HashMap<String, Object>) mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName, request, responseType);
 
 		try {
 			value = mapper.writeValueAsString(mosipBioCaptureResponseMap);
-			mosipBioCaptureResponseDto = mapper.readValue(value, MosipBioCaptureResponseDto.class);
+			mosipBioCaptureResponseDto = mapper.readValue(value, CaptureResponseDto.class);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -105,17 +105,17 @@ public class MosipBioDeviceIntegrator {
 
 	}
 
-	public MosipBioCaptureResponseDto getFrame() {
+	public CaptureResponseDto getFrame() {
 		return null;
 
 	}
 
-	public MosipBioCaptureResponseDto forceCapture() {
+	public CaptureResponseDto forceCapture() {
 		return null;
 
 	}
 
-	public MosipBioCaptureResponseDto responseParsing() {
+	public CaptureResponseDto responseParsing() {
 		return null;
 
 	}

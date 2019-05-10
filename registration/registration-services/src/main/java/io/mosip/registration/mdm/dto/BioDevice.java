@@ -42,11 +42,11 @@ public class BioDevice {
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
 
 		/* build the request object for capture */
-		MosipBioCaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder
+		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder
 				.buildMosipBioCaptureRequestDto(this);
 
 		return mosipBioDeviceIntegrator.capture(url, MosipBioDeviceConstants.CAPTURE_SERVICENAME,
-				mosipBioCaptureRequestDto, MosipBioCaptureResponseDto.class);
+				mosipBioCaptureRequestDto, CaptureResponseDto.class);
 
 	}
 

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
-import io.mosip.registration.mdm.dto.MosipBioCaptureRequestDto;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponse;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
+import io.mosip.registration.mdm.dto.CaptureRequestDto;
+import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.MosipBioRequest;
 
 /**
@@ -20,9 +20,9 @@ import io.mosip.registration.mdm.dto.MosipBioRequest;
  */
 public class MdmRequestResponseBuilder {
 
-	public static MosipBioCaptureRequestDto buildMosipBioCaptureRequestDto(BioDevice bioDevice) {
+	public static CaptureRequestDto buildMosipBioCaptureRequestDto(BioDevice bioDevice) {
 
-		MosipBioCaptureRequestDto bioCaptureRequestDto = new MosipBioCaptureRequestDto();
+		CaptureRequestDto bioCaptureRequestDto = new CaptureRequestDto();
 
 		bioCaptureRequestDto.setEnv("");
 		bioCaptureRequestDto.setTimeout(1000);
@@ -46,14 +46,14 @@ public class MdmRequestResponseBuilder {
 
 	}
 
-	public static Map<String, byte[]> parseBioCaptureResponse(MosipBioCaptureResponseDto mosipBioCaptureResponseDto) {
+	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
 
 		Map<String, byte[]> responseBioData = new HashMap<>();
 
 		if (null != mosipBioCaptureResponseDto && MosioBioDeviceHelperUtil
 				.isListNotEmpty(mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses())) {
 
-			for (MosipBioCaptureResponse mosipBioCaptureResponse : mosipBioCaptureResponseDto
+			for (CaptureResponseBioDto mosipBioCaptureResponse : mosipBioCaptureResponseDto
 					.getMosipBioDeviceDataResponses()) {
 				// TODO - have to clarify how the array of bio data response handled
 				// TODO- clarify how the sengmented values handled

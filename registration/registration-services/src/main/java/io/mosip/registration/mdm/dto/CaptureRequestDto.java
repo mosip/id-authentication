@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MosipBioCaptureRequestDto {
+public class CaptureRequestDto {
 
 	private String env;
 	private String mosipProcess;
