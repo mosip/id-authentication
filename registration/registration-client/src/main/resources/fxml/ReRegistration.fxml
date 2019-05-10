@@ -112,7 +112,7 @@
                            <children>
                               <TableView fx:id="table" styleClass="approvalTable" GridPane.rowIndex="1">
                                  <columns>
-                                    <TableColumn fx:id="id" prefWidth="${tableContainer.width}" text="%registrationid" />
+                                    <TableColumn fx:id="id" prefWidth="${tableContainer.width}" text="%registrationid" styleClass="tableId" />
                                     <TableColumn fx:id="acknowledgementFormPath" prefWidth="${tableContainer.width*40/100}" text="%registrtionid" visible="false" />
                                  </columns>
                               </TableView>
