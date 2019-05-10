@@ -40,7 +40,7 @@ public class BatchConfig {
 	 * Swagger Configuration
 	 */
 	@Bean
-	public Docket batchStatusBean() {
+	public Docket api() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {

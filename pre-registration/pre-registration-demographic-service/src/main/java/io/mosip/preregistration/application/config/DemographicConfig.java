@@ -75,7 +75,7 @@ public class DemographicConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
