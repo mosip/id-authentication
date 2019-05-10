@@ -17,6 +17,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.security.RSAEncryptionService;
 import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
 
@@ -33,7 +34,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
  *
  */
 @Service
-public class RSAEncryptionServiceImpl implements RSAEncryptionService {
+public class RSAEncryptionServiceImpl extends BaseService implements RSAEncryptionService {
 
 	static final Logger LOGGER = AppConfig.getLogger(RSAEncryptionServiceImpl.class);
 	@Autowired
@@ -56,7 +57,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 
 			// encrypt AES Session Key using RSA public key
 			PublicKey publicKey = PublicKeyGenerationUtil
-					.generatePublicKey(policySyncDAO.findByMaxExpireTime().getPublicKey());
+					.generatePublicKey(policySyncDAO.getPublicKey(getCenterId(getStationId(getMacAddress()))+"_"+getStationId(getMacAddress())).getPublicKey());
 
 			return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {

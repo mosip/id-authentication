@@ -19,6 +19,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
@@ -131,7 +132,8 @@ public class ResponseSignatureAdvice {
 				}
 			}
 
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IOException regBaseCheckedException) {
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JsonProcessingException
+				| RuntimeException regBaseCheckedException) {
 			LOGGER.error(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 					ExceptionUtils.getStackTrace(regBaseCheckedException));
 			throw new RegBaseCheckedException("Exception in response signature", regBaseCheckedException.getMessage());
