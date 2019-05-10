@@ -1367,5 +1367,8 @@ public class RegistrationConstants {
 	public static final String PUBLIC_KEY_REF_ID = "packet-encryption-key";
 	public static final String USER_DETAIL_SALT_SERVICE_NAME = "user_salt_details";
 	public static final String SERVICES_VERSION_KEY = "mosip.reg.services.current.version";
+
+	// TPM
+	public static final byte[] NULL_VECTOR = new byte[0];
 	
 }

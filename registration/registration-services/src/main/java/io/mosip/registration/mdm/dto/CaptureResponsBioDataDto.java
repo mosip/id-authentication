@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CaptureResponseData {
+public class CaptureResponsBioDataDto {
 
 	private String deviceCode;
 	private String deviceProviderID;

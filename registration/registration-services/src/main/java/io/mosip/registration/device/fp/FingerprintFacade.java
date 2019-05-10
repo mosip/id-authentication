@@ -238,7 +238,7 @@ public class FingerprintFacade {
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.getBiometricExceptionDTO();
 			} else if (((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
-					.isUpdateUINChild()) {
+					.isUpdateUINChild() ||  (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getIntroducerBiometricDTO()
 								.getBiometricExceptionDTO();

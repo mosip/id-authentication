@@ -4,9 +4,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
 import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
-import io.mosip.registration.tpm.constants.Constants;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
 import io.mosip.registration.tpm.sign.SignKeyCreationService;
 import io.mosip.registration.tpm.sign.SignatureService;
@@ -42,8 +43,8 @@ public class TPMService {
 	 * @return the data signed by the TPM
 	 */
 	public byte[] signData(byte[] dataToSign) {
-		LOGGER.info(Constants.TPM_SERVICE_SIGN, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Signing the data by using TPM");
+		LOGGER.info(LoggerConstants.TPM_SERVICE_SIGN, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Signing the data by using TPM");
 
 		return dataSignService.signData(TPMInitialization.getTPMInstance(), dataToSign);
 	}
@@ -60,8 +61,8 @@ public class TPMService {
 	 * @return the response of the signed data validation against actual data
 	 */
 	public boolean validateSignatureUsingPublicPart(byte[] signedData, byte[] actualData, byte[] publicPart) {
-		LOGGER.info(Constants.TPM_SERVICE_VALIDATE_SIGN_BY_PUBLIC_PART, Constants.APPLICATION_NAME,
-				Constants.APPLICATION_ID, "Validating the signature using Public Part");
+		LOGGER.info(LoggerConstants.TPM_SERVICE_VALIDATE_SIGN_BY_PUBLIC_PART, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating the signature using Public Part");
 
 		return signatureValidation.validateSignatureUsingPublicPart(signedData, actualData, publicPart);
 	}
@@ -74,8 +75,8 @@ public class TPMService {
 	 * @return the encrypted data in bytes
 	 */
 	public byte[] asymmetricEncrypt(byte[] dataToEncrypt) {
-		LOGGER.info(Constants.TPM_SERVICE_ASYMMETRIC_ENCRYPTION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Encrypting the data by asymmetric algorithm using TPM");
+		LOGGER.info(LoggerConstants.TPM_SERVICE_ASYMMETRIC_ENCRYPTION, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Encrypting the data by asymmetric algorithm using TPM");
 
 		return asymmetricEncryptionService.encryptUsingTPM(TPMInitialization.getTPMInstance(), dataToEncrypt);
 	}
@@ -88,8 +89,8 @@ public class TPMService {
 	 * @return the decrypted data
 	 */
 	public byte[] asymmetricDecrypt(byte[] encryptedData) {
-		LOGGER.info(Constants.TPM_SERVICE_ASYMMETRIC_DECRYPTION, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Decrypting the data by asymmetric algorithm using TPM");
+		LOGGER.info(LoggerConstants.TPM_SERVICE_ASYMMETRIC_DECRYPTION, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Decrypting the data by asymmetric algorithm using TPM");
 
 		return asymmetricDecryptionService.decryptUsingTPM(TPMInitialization.getTPMInstance(), encryptedData);
 	}
@@ -100,8 +101,8 @@ public class TPMService {
 	 * @return the public part of the signing key
 	 */
 	public byte[] getSigningPublicPart() {
-		LOGGER.info(Constants.TPM_SERVICE_GET_SIGN_PUBLIC, Constants.APPLICATION_NAME, Constants.APPLICATION_ID,
-				"Decrypting the data by asymmetric algorithm using TPM");
+		LOGGER.info(LoggerConstants.TPM_SERVICE_GET_SIGN_PUBLIC, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Decrypting the data by asymmetric algorithm using TPM");
 
 		return signKeyCreationService.getKey(TPMInitialization.getTPMInstance()).outPublic.toTpm();
 	}

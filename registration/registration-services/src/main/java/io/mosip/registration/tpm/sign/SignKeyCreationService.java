@@ -4,7 +4,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.tpm.constants.Constants;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 
 import tss.Tpm;
 import tss.tpm.CreatePrimaryResponse;
@@ -39,8 +40,8 @@ public class SignKeyCreationService {
 	 * @return the TPM key for signing the data
 	 */
 	public CreatePrimaryResponse getKey(Tpm tpm) {
-		LOGGER.info(Constants.LOG_PUBLIC_KEY, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
-				"Creating the Key from Platform TPM for Signing data");
+		LOGGER.info(LoggerConstants.LOG_PUBLIC_KEY, RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Creating the Key from Platform TPM for Signing data");
 
 		TPMT_PUBLIC signingKeyPublicPart = new TPMT_PUBLIC(TPM_ALG_ID.SHA1,
 				new TPMA_OBJECT(TPMA_OBJECT.fixedTPM, TPMA_OBJECT.fixedParent, TPMA_OBJECT.sign,
@@ -51,13 +52,15 @@ public class SignKeyCreationService {
 
 		TPM_HANDLE parentHandleForSigningKey = TPM_HANDLE.from(TPM_RH.ENDORSEMENT);
 
-		TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(Constants.NULL_VECTOR, Constants.NULL_VECTOR);
+		TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(RegistrationConstants.NULL_VECTOR,
+				RegistrationConstants.NULL_VECTOR);
 
-		LOGGER.info(Constants.LOG_PUBLIC_KEY, Constants.APPLICATION_ID, Constants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.LOG_PUBLIC_KEY, RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME,
 				"Completed creating the Key from Platform TPM for Signing data");
 
-		return tpm.CreatePrimary(parentHandleForSigningKey, sens, signingKeyPublicPart, Constants.NULL_VECTOR,
-				new TPMS_PCR_SELECTION[0]);
+		return tpm.CreatePrimary(parentHandleForSigningKey, sens, signingKeyPublicPart,
+				RegistrationConstants.NULL_VECTOR, new TPMS_PCR_SELECTION[0]);
 	}
 
 }

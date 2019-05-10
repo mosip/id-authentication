@@ -146,7 +146,7 @@ public class RegistrationController extends BaseController {
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
 		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 		registrationDTO.setSelectionListDTO(selectionListDTO);
-		registrationDTO.setNameNotUpdated(!selectionListDTO.isName());		
+		registrationDTO.setNameNotUpdated(!selectionListDTO.isName());
 	}
 
 	protected void initializeLostUIN() {
@@ -268,7 +268,9 @@ public class RegistrationController extends BaseController {
 						BiometricInfoDTO biometricDTO = getFaceDetailsDTO();
 						FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
-						if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+						if (getRegistrationDTOFromSession().isUpdateUINChild()
+								&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+										.equals(RegistrationConstants.ENABLE)) {
 							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
 									.setFace(photoInBytes);
 						} else {
