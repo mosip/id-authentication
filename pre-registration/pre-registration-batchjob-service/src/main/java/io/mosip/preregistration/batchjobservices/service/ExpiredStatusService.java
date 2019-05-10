@@ -55,6 +55,8 @@ public class ExpiredStatusService {
 
 		LocalDate currentDate = LocalDate.now();
 		MainResponseDTO<String> response = new MainResponseDTO<>();
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
 		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
 		try {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
@@ -73,11 +75,9 @@ public class ExpiredStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
 		response.setResponsetime(getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		response.setResponse("Registration appointment status updated to expired successfully");
 		return response;
 	}

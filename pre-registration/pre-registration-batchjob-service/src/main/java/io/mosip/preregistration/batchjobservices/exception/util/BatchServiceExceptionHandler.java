@@ -40,53 +40,18 @@ public class BatchServiceExceptionHandler {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 	
-	@Value("${ver}")
-	String versionUrl;
-
-	@Value("${id}")
-	String idUrl;
 	
 	@ExceptionHandler(NoPreIdAvailableException.class)
-	public ResponseEntity<MainResponseDTO<?>> databaseerror(final NoPreIdAvailableException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
-		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
-		
-		return new ResponseEntity<>(errorRes,HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> databaseerror(final NoPreIdAvailableException e) {
+		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 	@ExceptionHandler(TableNotAccessibleException.class)
-	public ResponseEntity<MainResponseDTO<?>> databaseerror(final TableNotAccessibleException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
-		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
-		
-		return new ResponseEntity<>(errorRes,HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> databaseerror(final TableNotAccessibleException e) {
+		return GenericUtil.errorResponse(e,e.getMainResposneDTO());
 	}
 	@ExceptionHandler(NoValidPreIdFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> noValidPreIdFoundException(final NoValidPreIdFoundException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setId(idUrl);
-		errorRes.setVersion(versionUrl);
-		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
-		
-		return new ResponseEntity<>(errorRes,HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> noValidPreIdFoundException(final NoValidPreIdFoundException e) {
+		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)
