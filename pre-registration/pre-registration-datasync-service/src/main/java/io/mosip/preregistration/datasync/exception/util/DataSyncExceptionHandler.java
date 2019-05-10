@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -144,7 +144,7 @@ public class DataSyncExceptionHandler {
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e,WebRequest request){
+	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e){
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
