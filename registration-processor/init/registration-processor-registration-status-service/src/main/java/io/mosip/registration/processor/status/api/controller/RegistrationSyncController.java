@@ -76,7 +76,6 @@ public class RegistrationSyncController {
 	@Autowired
 	SignatureUtil signatureUtil;
 
-
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
@@ -110,10 +109,11 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseDtoList)).getData());
-            return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseDtoList));
-        } catch (JsonProcessingException e) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(RESPONSE_SIGNATURE,
+					signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseList)).getData());
+			return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
+		} catch (JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}
 	}
