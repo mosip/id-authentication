@@ -1,3 +1,5 @@
+import Utils from "../../app.util";
+
 export interface UserRegistrationRequestModel {
     userName: string;
     firstName: string;
@@ -7,4 +9,5 @@ export interface UserRegistrationRequestModel {
     dateOfBirth: any;
     gender: string;
     role: string;
+    ridValidationUrl:string;
 }
