@@ -149,15 +149,20 @@ public class ConsumedStatusServiceTest {
 	    		.thenReturn(preRegList); 
 		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId()))
 				.thenReturn(demographicEntity);
-		BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+		//BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+		demographicEntityConsumed.setPreRegistrationId(preregId);
 		demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 		Mockito.when(demographicConsumedRepository.save(demographicEntityConsumed)).thenReturn(demographicEntityConsumed);
 		Mockito.when(documentRespository.findBypreregId(preregId))
 		.thenReturn(documentEntity);
-		BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+		//BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+		documentEntityConsumed.setPreregId(preregId);
 		Mockito.when(documentConsumedRepository.save(documentEntityConsumed)).thenReturn(documentEntityConsumed);
 		Mockito.when(regAppointmentRepository.getPreRegId(preregId)).thenReturn(bookingEntity);
-		BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+		//BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+		RegistrationBookingPKConsumed bkc=new RegistrationBookingPKConsumed();
+		bkc.setPreregistrationId(preregId);
+		bookingEntityConsumed.setBookingPK(bkc);
 		Mockito.when(appointmentConsumedRepository.save(bookingEntityConsumed)).thenReturn(bookingEntityConsumed);
 
 		response = service.demographicConsumedStatus();
