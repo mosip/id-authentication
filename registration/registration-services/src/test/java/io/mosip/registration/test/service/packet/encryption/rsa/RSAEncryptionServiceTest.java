@@ -21,14 +21,21 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.dao.UserOnboardDAO;
+import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.KeyStore;
+import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.MachineMasterRepository;
+import io.mosip.registration.repositories.PolicySyncRepository;
 import io.mosip.registration.service.security.impl.RSAEncryptionServiceImpl;
 
 @RunWith(PowerMockRunner.class)
@@ -39,10 +46,19 @@ public class RSAEncryptionServiceTest {
 	private RSAEncryptionServiceImpl rsaEncryptionServiceImpl;
 	@Mock
 	private PolicySyncDAO policySyncDAO;
+	@Mock
+	private UserOnboardDAO userOnboardDAO;
+	@Mock
+	private CenterMachineRepository centerMachineRepository;
+
+	@Mock
+	private MachineMasterRepository machineMasterRepository;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	@Mock
+	PolicySyncRepository policySyncRepository;
 	
 	@Before
 	public void init() throws Exception {
@@ -61,8 +77,11 @@ public class RSAEncryptionServiceTest {
 		keyStore.setPublicKey(key);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
-
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 
@@ -85,7 +104,11 @@ public class RSAEncryptionServiceTest {
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
+		
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 		
@@ -107,7 +130,11 @@ public class RSAEncryptionServiceTest {
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
+		
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
 	}
