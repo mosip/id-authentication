@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.webcam.impl.WebcamSarxosServiceImpl;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -53,16 +53,16 @@ public class PhotoCaptureFacade extends WebcamSarxosServiceImpl {
 	 * @throws RegBaseCheckedException
 	 * 				throws exception if there is any error in reading stubbed images
 	 */
-	public void captureStubApplicantPhoto(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto)
+	public void captureStubApplicantPhoto(BiometricInfoDTO biometricInfoDTO, boolean isExceptionPhoto)
 			throws RegBaseCheckedException {
-		applicantDocumentDTO.setPhoto(getImageBytes("/applicantPhoto.jpg"));
-		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
-		applicantDocumentDTO.setQualityScore(89.0);
-		applicantDocumentDTO.setNumRetry(1);
-		applicantDocumentDTO.setHasExceptionPhoto(isExceptionPhoto);
+		biometricInfoDTO.getFace().setFace((getImageBytes("/applicantPhoto.jpg")));
+		biometricInfoDTO.getFace().setPhotographName("ApplicantPhoto.jpg");
+		biometricInfoDTO.getFace().setQualityScore(89.0);
+		biometricInfoDTO.getFace().setNumOfRetries(1);
+		biometricInfoDTO.setHasExceptionPhoto(isExceptionPhoto);
 		if (isExceptionPhoto) {
-			applicantDocumentDTO.setExceptionPhoto(getImageBytes("/applicantPhoto.jpg"));
-			applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto.jpg");
+			biometricInfoDTO.getExceptionFace().setFace(getImageBytes("/applicantPhoto.jpg"));
+			biometricInfoDTO.getExceptionFace().setPhotographName("ExceptionPhoto.jpg");
 		}
 	}
 

@@ -149,11 +149,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		try {
-			/*
-			 * Master Data Sync restartableJobList.add("MDS_J00001");
-			 * 
-			 * Policy Sync restartableJobList.add("POS_J00008");
-			 */
+
 			/* Registration Client Config Sync */
 			restartableJobList.add("SCD_J00011");
 
@@ -192,14 +188,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
-				
-				
-				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
-				// Will be launch post successful LOGIN
-				/*
-				 * Start Scheduler startScheduler();
-				 */
+				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
 			}
 
@@ -233,7 +223,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/* Check Whether Scheduler is running or not */
-		if (isSchedulerRunning) {
+		if (isSchedulerRunning()) {
 			return setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STARTED, null);
 		} else {
 			try {
@@ -268,7 +258,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		syncActiveJobMap.forEach((jobId, syncJob) -> {
 			try {
 				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName() != null
-						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning
+						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning()
 						&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
 					// Get Job instance through application context
@@ -300,7 +290,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			}
 
-			if (isSchedulerRunning) {
+			if (isSchedulerRunning()) {
 				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE, null);
 			}
 
@@ -350,16 +340,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
 
 			}
-		} catch (SchedulerException schedulerException) {
+		} catch (RuntimeException | SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
-			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
-
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
 		}
@@ -393,24 +377,28 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		try {
 
-			// Get currently executing jobs from scheduler factory
-			List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
-					.getCurrentlyExecutingJobs();
+			if (schedulerFactoryBean != null && isSchedulerRunning()) {
+				// Get currently executing jobs from scheduler factory
+				List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
+						.getCurrentlyExecutingJobs();
 
-			if (isNull(executingJobList) || isEmpty(executingJobList)) {
-				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
+				if (isNull(executingJobList) || isEmpty(executingJobList)) {
+					setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
+				} else {
+					List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
+
+						SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
+
+						return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
+								Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).toString());
+
+					}).collect(Collectors.toList());
+
+					setResponseDTO(dataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_RUNNING);
+
+				}
 			} else {
-				List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
-
-					SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
-
-					return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
-							Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).toString());
-
-				}).collect(Collectors.toList());
-
-				setResponseDTO(dataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_RUNNING);
-
+				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
 			}
 
 		} catch (SchedulerException schedulerException) {
@@ -448,6 +436,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			if (syncJobDef != null && syncJobDef.getApiName() != null) {
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
+
+				BaseJob.removeCompletedJobInMap(jobId);
 
 				// Job Invocation
 				responseDTO = baseJob.executeJob(triggerPoint, jobId);
@@ -710,6 +700,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public ResponseDTO executeAllJobs() {
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		BaseJob.clearCompletedJobMap();
+
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
@@ -794,6 +786,16 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		schFactoryBean.setQuartzProperties(quartzProperties);
 		schFactoryBean.afterPropertiesSet();
 		return schFactoryBean;
+	}
+
+	@Override
+	public boolean isSchedulerRunning() {
+		return isSchedulerRunning;
+	}
+
+	@Override
+	public Map<String, SyncJobDef> getActiveSyncJobMap() {
+		return syncActiveJobMap;
 	}
 
 }

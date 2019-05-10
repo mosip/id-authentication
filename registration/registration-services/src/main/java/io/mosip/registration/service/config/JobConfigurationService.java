@@ -1,5 +1,7 @@
 package io.mosip.registration.service.config;
 
+import java.util.Map;
+
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -84,5 +86,18 @@ public interface JobConfigurationService {
 	 * @return response
 	 */
 	ResponseDTO getRestartTime();
+	
+	/**
+	 * Find whether scheduler running or not
+	 * @return is scheduler running
+	 */
+	boolean isSchedulerRunning();
+	
+	/**
+	 * Active Sync Job Map
+	 * @return active sync map
+	 */
+	Map<String, SyncJobDef> getActiveSyncJobMap();
+	
 
 }
