@@ -154,7 +154,7 @@ public abstract class BaseIDAFilter implements Filter {
 			}
 
 			requestWrapper.resetInputStream();
-			consumeRequest(requestWrapper);
+			consumeRequest(requestWrapper, requestBody);
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
 			response.getWriter().write(responseAsString);
@@ -293,15 +293,15 @@ public abstract class BaseIDAFilter implements Filter {
 	 * decipher
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
+	 * @param requestBody 
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper)
+	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
 			byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
 			logDataSize(new String(requestAsByte), IdAuthCommonConstants.REQUEST);
 			requestWrapper.resetInputStream();
-			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			validateRequest(requestWrapper, requestBody);
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
