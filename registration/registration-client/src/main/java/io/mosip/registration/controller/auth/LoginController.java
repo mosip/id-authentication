@@ -82,10 +82,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -226,8 +223,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	private boolean hasUpdate;
 
-	@Autowired
-	private SyncStatusValidatorService statusValidatorService;
 
 	@Autowired
 	private HeaderController headerController;
@@ -298,23 +293,10 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.show();
 
 			if (hasUpdate) {
-				Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-						RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE,
-						RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
-
-				if (statusValidatorService.isToBeForceUpdate()) {
-
-					Button cancelButton = (Button) updateAlert.getDialogPane().lookupButton(ButtonType.CANCEL);
-					cancelButton.setDisable(true);
-				}
-				updateAlert.showAndWait();
-
-				/* Get Option from user */
-				ButtonType result = updateAlert.getResult();
-				if (result == ButtonType.OK) {
-
-					headerController.executeUpdateTask(loginRoot, progressIndicator);
-				}
+				
+				//Update Application
+					headerController.update(loginRoot, progressIndicator,RegistrationUIConstants.UPDATE_LATER);
+				
 			}
 			if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
