@@ -1,8 +1,10 @@
 package io.mosip.admin.usermgmt.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +25,8 @@ public class UserRegistrationRequestDto {
 	private String contactNo;
 	@NotBlank
 	private String emailID;
-	@NotBlank
-	private LocalDate dateOfBirth;
+	@NotNull
+	private LocalDateTime dateOfBirth;
 	@NotBlank
 	private String gender;
 	@NotBlank
