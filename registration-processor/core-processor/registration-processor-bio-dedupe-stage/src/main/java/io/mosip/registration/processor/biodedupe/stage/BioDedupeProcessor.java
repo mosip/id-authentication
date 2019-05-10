@@ -36,14 +36,13 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
-import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
@@ -59,7 +58,23 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class BioDedupeProcessor {
 
 	@Autowired
-	private RegistrationStatusDao registrationStatusDao;
+	Utilities utilities;
+
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	@Autowired
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
+	/** The core audit request builder. */
+	@Autowired
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	@Autowired
+	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	@Autowired
+	private Utilities utility;
 
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private long elapseTime;
@@ -70,15 +85,6 @@ public class BioDedupeProcessor {
 	@Value("${registration.processor.identityjson}")
 	private String getRegProcessorIdentityJson;
 
-	@Autowired
-	Utilities utilities;
-
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-
-	@Autowired
-	private PacketInfoDao packetInfoDao;
-
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
@@ -88,34 +94,13 @@ public class BioDedupeProcessor {
 
 	private static final String NEW_PACKET = "New-packet";
 
-	private static final String REG_TYPE_NEW = "New";
+	private String description = "";
 
-	private static final String REG_TYPE_UPDATE = "Update";
-
-	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
-
+	private String code = "";
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
 
-	/** The registration status service. */
-	@Autowired
-	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-
-	/** The core audit request builder. */
-	@Autowired
-	private AuditLogRequestBuilder auditLogRequestBuilder;
-
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
-
-	@Autowired
-	private RegistrationProcessorRestClientService<Object> restClientService;
-
-	@Autowired
-	private Utilities utility;
-
-	String description = "";
-
-	private String code = "";
 
 	List<String> machedRefIds = new ArrayList<>();
 
@@ -131,20 +116,22 @@ public class BioDedupeProcessor {
 		try {
 
 			String registrationType = registrationStatusDto.getRegistrationType();
-			if (registrationType.equalsIgnoreCase(REG_TYPE_NEW)) {
-				String packetStatus = utilities.getElapseStatus(registrationStatusDto, BIOGRAPHIC_VERIFICATION);
+			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString())) {
+				String packetStatus = utilities.getElapseStatus(registrationStatusDto,
+						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
-					newPacketProcessing(registrationStatusDto, object);
+					newPacketInsertion(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
-					newPacketHandlerProcessing(registrationStatusDto, object);
+					newPacketHandlerIdentification(registrationStatusDto, object);
 				}
 
-			} else if (registrationType.equalsIgnoreCase(REG_TYPE_UPDATE)) {
-				String packetStatus = utilities.getElapseStatus(registrationStatusDto, BIOGRAPHIC_VERIFICATION);
+			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
+				String packetStatus = utilities.getElapseStatus(registrationStatusDto,
+						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
 				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
-					updatePacketProcessing(registrationStatusDto, object);
+					updatePacketInsertion(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
-					updatePacketHandlerProcessing(registrationStatusDto, object);
+					updatePacketHandlerIdentification(registrationStatusDto, object);
 				}
 
 			}
@@ -244,6 +231,99 @@ public class BioDedupeProcessor {
 		return object;
 	}
 
+	private void newPacketInsertion(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
+			throws ApisResourceAccessException, IOException, ParseException {
+		if (checkCBEFF(registrationStatusDto.getRegistrationId())) {
+
+			registrationStatusDto
+					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"Cbeff is present in the packet, destination stage is abis_handler");
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"Cbeff is absent in the packet for child, destination stage is UIN");
+		}
+	}
+
+	private void updatePacketInsertion(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
+			throws IOException {
+
+		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
+				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+
+		if (regProcessorIdentityJson.getIdentity().getIndividualBiometrics() != null) {
+
+			registrationStatusDto
+					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"Update packet individual biometric not null, destination stage is abis_handler");
+		}
+		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+		object.setIsValid(Boolean.TRUE);
+
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationStatusDto.getRegistrationId(),
+				"Update packet individual biometric null, destination stage is UIN");
+
+	}
+
+	private void newPacketHandlerIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
+			throws ApisResourceAccessException, IOException {
+
+		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto,
+				SyncTypeDto.NEW.toString());
+		if (matchedRegIds.isEmpty()) {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
+
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			object.setIsValid(Boolean.FALSE);
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
+					DedupeSourceName.BIO);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"ABIS response Details not null, destination stage is Manual_verification");
+
+		}
+	}
+
+	private void updatePacketHandlerIdentification(InternalRegistrationStatusDto registrationStatusDto,
+			MessageDTO object) throws ApisResourceAccessException, IOException {
+		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto,
+				SyncTypeDto.UPDATE.toString());
+		if (matchedRegIds.isEmpty()) {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
+
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			object.setIsValid(Boolean.FALSE);
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
+					DedupeSourceName.BIO);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"ABIS response Details not null, destination stage is Manual_verification");
+
+		}
+	}
+
 	private Boolean checkCBEFF(String registrationId) throws ApisResourceAccessException, IOException, ParseException {
 
 		List<String> pathSegments = new ArrayList<>();
@@ -272,97 +352,6 @@ public class BioDedupeProcessor {
 
 		}
 
-	}
-
-	private void newPacketProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException, ParseException {
-		if (checkCBEFF(registrationStatusDto.getRegistrationId())) {
-
-			registrationStatusDto
-					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"Cbeff is present in the packet, destination stage is abis_handler");
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"Cbeff is absent in the packet for child, destination stage is UIN");
-		}
-	}
-
-	private void updatePacketProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws IOException {
-
-		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
-				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
-
-		if (regProcessorIdentityJson.getIdentity().getIndividualBiometrics() != null) {
-
-			registrationStatusDto
-					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"Update packet individual biometric not null, destination stage is abis_handler");
-		}
-		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-		object.setIsValid(Boolean.TRUE);
-
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationStatusDto.getRegistrationId(),
-				"Update packet individual biometric null, destination stage is UIN");
-
-	}
-
-	private void newPacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException {
-
-		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto, REG_TYPE_NEW);
-		if (matchedRegIds.isEmpty()) {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
-
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-			object.setIsValid(Boolean.FALSE);
-			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-					DedupeSourceName.BIO);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"ABIS response Details not null, destination stage is Manual_verification");
-
-		}
-	}
-
-	private void updatePacketHandlerProcessing(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException {
-		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto, REG_TYPE_UPDATE);
-		if (matchedRegIds.isEmpty()) {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
-
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-			object.setIsValid(Boolean.FALSE);
-			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-					DedupeSourceName.BIO);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"ABIS response Details not null, destination stage is Manual_verification");
-
-		}
 	}
 
 }
