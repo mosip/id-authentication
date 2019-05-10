@@ -40,7 +40,7 @@ import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.ScreenAuthorizationRepository;
 import io.mosip.registration.repositories.UserDetailRepository;
-import io.mosip.registration.service.impl.LoginServiceImpl;
+import io.mosip.registration.service.login.impl.LoginServiceImpl;
 
 public class LoginServiceTest {
 

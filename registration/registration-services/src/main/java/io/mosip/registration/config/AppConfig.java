@@ -13,6 +13,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.auditmanager.config.AuditConfig;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
@@ -36,7 +38,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
 		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
-		"io.mosip.kernel.cbeffutil","io.mosip.kernel.core.pdfgenerator.spi","io.mosip.kernel.pdfgenerator.itext.impl" })
+		"io.mosip.kernel.cbeffutil","io.mosip.kernel.core.pdfgenerator.spi","io.mosip.kernel.pdfgenerator.itext.impl","io.mosip.kernel.responsesignature"})
 @PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 public class AppConfig {
 
@@ -66,6 +68,11 @@ public class AppConfig {
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	public ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
 	}
 
 	@Bean

@@ -148,7 +148,7 @@ public class SchedulerUtil extends BaseController {
 			isShowing = true;
 			closeStage();
 			GridPane root = new GridPane();
-			Scene scene = new Scene(root, 340, 120);
+			Scene scene = new Scene(root, 420, 120);
 			Label titleLbl = new Label();
 			Label timerLabel = new Label();
 			Label initialContent = new Label();

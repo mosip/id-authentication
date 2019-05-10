@@ -25,7 +25,7 @@ import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.impl.UserMachineMappingServiceImpl;
+import io.mosip.registration.service.operator.impl.UserMachineMappingServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 

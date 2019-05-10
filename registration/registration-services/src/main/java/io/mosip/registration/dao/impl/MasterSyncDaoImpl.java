@@ -920,4 +920,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				langCode);
 	}
 
+	
+	public List<SyncJobDef> getSyncJobs(){
+		return syncJobDefRepository.findAllByIsActiveTrue();
+	}
 }

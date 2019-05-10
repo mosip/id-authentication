@@ -30,9 +30,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
+import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 import static org.mockito.Mockito.doNothing;

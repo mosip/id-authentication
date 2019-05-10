@@ -15,11 +15,10 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -131,9 +130,9 @@ public class WebCameraController extends BaseController implements Initializable
 		stage.close();
 	}
 
-	public void captureStubApplicantPhoto(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto)
+	public void captureStubApplicantPhoto(BiometricInfoDTO biometricInfoDTO, boolean isExceptionPhoto)
 			throws RegBaseCheckedException {
-		photoCaptureFacade.captureStubApplicantPhoto(applicantDocumentDTO, isExceptionPhoto);
+		photoCaptureFacade.captureStubApplicantPhoto(biometricInfoDTO, isExceptionPhoto);
 	}
 
 }

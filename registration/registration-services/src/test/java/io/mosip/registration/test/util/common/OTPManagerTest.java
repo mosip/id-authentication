@@ -29,7 +29,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;

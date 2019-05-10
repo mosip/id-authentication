@@ -29,7 +29,7 @@ import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
+import io.mosip.registration.service.security.impl.RSAEncryptionServiceImpl;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
@@ -94,8 +94,7 @@ public class RSAEncryptionServiceTest {
 
 	@Test(expected = RegBaseCheckedException.class)
 	public void invalidAlgorithmTest() throws Exception {
-		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
-				.getBytes();
+		byte[] key = "feee3c3x33r3".getBytes();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setPublicKey(key);
 		byte[] decodedbytes = "e".getBytes();

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.sync.PolicySyncService;
 
 public class PolicySyncServiceTest extends BaseIntegrationTest {
 
