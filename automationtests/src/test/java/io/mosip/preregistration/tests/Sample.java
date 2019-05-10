@@ -78,22 +78,20 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void getAuditDataForReBooking() {
-	/*	List preRegistrationId = new ArrayList();
+	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		preRegistrationId.add(preID);
-		lib.reverseDataSync(preRegistrationId);
-*/
-	//	ApplicationLibrary api=new ApplicationLibrary();
-		//.get_RequestSync("https://tf-proxy.southeastasia.cloudapp.azure.com/preregistration/v1/appointment/availability/sync");
-			}
-
+		lib.CreatePreReg(createPregRequest);
+		/*String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
+		expectedRequest.put("session_user_id", userId);
+		List<Object> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+		Assert.assertTrue(result,"object are not equal");*/
+	}
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
