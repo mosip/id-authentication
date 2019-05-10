@@ -77,9 +77,6 @@ public class BioDedupeProcessor {
 	@Autowired
 	private ABISHandlerUtil abisHandlerUtil;
 
-	@Value("${registration.processor.reprocess.elapse.time}")
-	private long elapseTime;
-
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
 
@@ -236,6 +233,7 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+			object.setIsValid(Boolean.TRUE);
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -258,7 +256,7 @@ public class BioDedupeProcessor {
 				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 
 		if (regProcessorIdentityJson.getIdentity().getIndividualBiometrics() != null) {
-
+			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
