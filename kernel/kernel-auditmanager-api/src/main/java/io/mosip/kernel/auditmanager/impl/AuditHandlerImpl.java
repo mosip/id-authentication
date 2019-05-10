@@ -1,6 +1,5 @@
 package io.mosip.kernel.auditmanager.impl;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +8,7 @@ import io.mosip.kernel.auditmanager.repository.AuditRepository;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.util.AuditUtils;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 
 /**
  * Implementation of {@link AuditHandler} with function to write
@@ -32,7 +32,7 @@ public class AuditHandlerImpl implements AuditHandler<AuditRequestDto> {
 	 * Field for {@link ModelMapper} for performing object mapping
 	 */
 	@Autowired
-	private ModelMapper modelMapper;
+	private DataMapper<AuditRequestDto, Audit> dataMapper;
 
 	/*
 	 * (non-Javadoc)
@@ -43,11 +43,10 @@ public class AuditHandlerImpl implements AuditHandler<AuditRequestDto> {
 	 */
 	@Override
 	public boolean addAudit(AuditRequestDto auditRequest) {
-
 		AuditUtils.validateAuditRequest(auditRequest);
-
-		Audit event = modelMapper.map(auditRequest, Audit.class);
-		auditRepository.create(event);
+		Audit audit = new Audit();
+		dataMapper.map(auditRequest, audit);
+		auditRepository.create(audit);
 		return true;
 	}
 
