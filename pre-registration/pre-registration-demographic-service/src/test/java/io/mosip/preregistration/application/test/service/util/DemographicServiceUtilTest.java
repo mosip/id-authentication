@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
@@ -44,6 +45,9 @@ public class DemographicServiceUtilTest {
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
 
+	@MockBean
+	private IdObjectValidator jsonValidator;
+	
 	private DemographicRequestDTO saveDemographicRequest = null;
 	private DemographicRequestDTO updateDemographicRequest = null;
 	private DemographicEntity demographicEntity = null;
