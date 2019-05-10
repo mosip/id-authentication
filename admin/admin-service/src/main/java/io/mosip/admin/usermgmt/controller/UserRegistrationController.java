@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
@@ -31,7 +32,8 @@ import io.swagger.annotations.ApiParam;
  * @since 1.0.0
  */
 @CrossOrigin
-@RestController("/usermgmt")
+@RestController
+@RequestMapping("/usermgmt")
 @Api(value = "Operation related to User registration", tags = { "user_registration" })
 public class UserRegistrationController {
 

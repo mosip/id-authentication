@@ -10,6 +10,6 @@ export class UserregistrationService {
   }
 
   registerUser(requestDTO:any){
-    return this.http.post('http://localhost:8098/v1/admin/register',requestDTO);
+    return this.http.post('http://localhost:8098/v1/admin/usermgmt/register',requestDTO);
   }
 }
