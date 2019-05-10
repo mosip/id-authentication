@@ -7,6 +7,7 @@ package io.mosip.preregistration.batchjobservices.exception.util;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.batchjobservices.exception.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.exception.NoValidPreIdFoundException;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
@@ -24,18 +25,18 @@ public class BatchServiceExceptionCatcher {
 	 * @param ex
 	 *            pass the exception
 	 */
-	public void handle(Exception ex) {
+	public void handle(Exception ex,MainResponseDTO<?> response) {
 		 if (ex instanceof NoPreIdAvailableException) {
 			throw new NoPreIdAvailableException(((NoPreIdAvailableException) ex).getErrorCode(),
-					((NoPreIdAvailableException) ex).getErrorText());
+					((NoPreIdAvailableException) ex).getErrorText(),response);
 		}
 		else if (ex instanceof DataAccessLayerException) {
 			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
-					((DataAccessLayerException) ex).getErrorText());
+					((DataAccessLayerException) ex).getErrorText(),response);
 		}
 		else if (ex instanceof NoValidPreIdFoundException) {
 			throw new NoValidPreIdFoundException(((NoValidPreIdFoundException) ex).getErrorCode(),
-					((NoValidPreIdFoundException) ex).getErrorText());
+					((NoValidPreIdFoundException) ex).getErrorText(),response);
 		}
 	}
 
