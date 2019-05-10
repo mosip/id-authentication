@@ -83,17 +83,15 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText
-	 *            - string which contains the data of template that is used to
-	 *            generate acknowledgement
-	 * @param registration
-	 *            - RegistrationDTO to display required fields on the template
-	 * @param templateManagerBuilder
-	 *            - The Builder which generates template by mapping values to
-	 *            respective place-holders in template
-	 * @param templateType
-	 *            - The type of template that is required (like
-	 *            email/sms/acknowledgement)
+	 * @param templateText           - string which contains the data of template
+	 *                               that is used to generate acknowledgement
+	 * @param registration           - RegistrationDTO to display required fields on
+	 *                               the template
+	 * @param templateManagerBuilder - The Builder which generates template by
+	 *                               mapping values to respective place-holders in
+	 *                               template
+	 * @param templateType           - The type of template that is required (like
+	 *                               email/sms/acknowledgement)
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -255,7 +253,8 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
 					localProperties.getString("individualphoto"));
 			byte[] applicantImageBytes;
-			if (registration.isUpdateUINChild()) {
+			if (registration.isUpdateUINChild() && !SessionContext.map()
+					.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN).equals(RegistrationConstants.ENABLE)) {
 				applicantImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace();
 			} else {
 				applicantImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getFace().getFace();
@@ -560,9 +559,11 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
 				localProperties.getString("fullName"));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName() : moroccoIdentity.getFullName(), platformLanguageCode));
+				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
+						: moroccoIdentity.getFullName(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
-				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName() : moroccoIdentity.getFullName(), localLanguageCode));
+				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
+						: moroccoIdentity.getFullName(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("gender"));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL, localProperties.getString("gender"));
@@ -1134,14 +1135,13 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText
-	 *            - string which contains the data of template that is used to
-	 *            generate notification
-	 * @param registration
-	 *            - RegistrationDTO to display required fields on the template
-	 * @param templateManagerBuilder
-	 *            - The Builder which generates template by mapping values to
-	 *            respective place-holders in template
+	 * @param templateText           - string which contains the data of template
+	 *                               that is used to generate notification
+	 * @param registration           - RegistrationDTO to display required fields on
+	 *                               the template
+	 * @param templateManagerBuilder - The Builder which generates template by
+	 *                               mapping values to respective place-holders in
+	 *                               template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -1156,7 +1156,8 @@ public class TemplateGenerator extends BaseService {
 					.getIdentity();
 
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
-					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName() : moroccoIdentity.getFullName(), applicationLanguageCode));
+					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
+							: moroccoIdentity.getFullName(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_RID, getValue(registration.getRegistrationId()));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
@@ -1164,7 +1165,8 @@ public class TemplateGenerator extends BaseService {
 
 			values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
 			values.put(RegistrationConstants.TEMPLATE_FULL_NAME,
-					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName() : moroccoIdentity.getFullName(), applicationLanguageCode));
+					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
+							: moroccoIdentity.getFullName(), applicationLanguageCode));
 			String dob = getValue(moroccoIdentity.getDateOfBirth());
 
 			if (dob == null || dob == "") {
@@ -1224,8 +1226,7 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param enrolment
-	 *            - EnrolmentDTO to get the biometric details
+	 * @param enrolment - EnrolmentDTO to get the biometric details
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
