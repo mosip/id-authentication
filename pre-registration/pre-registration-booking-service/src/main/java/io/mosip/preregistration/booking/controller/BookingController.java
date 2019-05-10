@@ -4,8 +4,6 @@
  */
 package io.mosip.preregistration.booking.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -31,7 +29,6 @@ import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.MultiBookingRequest;
-import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
@@ -71,10 +68,11 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	//@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
+			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<MainResponseDTO<String>> saveAvailability() {
 		log.info("sessionId", "idType", "id",
 				"In saveAvailability method of Booking controller for synching master data to get availability ");
@@ -90,7 +88,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@GetMapping(path = "/appointment/availability/{registrationCenterId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Availablity details fetched successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Availablity details fetched successfully"),
+			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<MainResponseDTO<AvailabilityDto>> getAvailability(
 			@PathVariable("registrationCenterId") String registrationCenterId) {
 		log.info("sessionId", "idType", "id",
@@ -110,7 +109,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/appointment/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
+			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingStatusDTO>> bookAppoinment(
 			@PathVariable("preRegistrationId") String preRegistrationId,
 			@RequestBody(required = true) MainRequestDTO<BookingRequestDTO> bookingDTO) {
@@ -130,7 +130,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
+			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingStatus>> bookMultiAppoinment(
 			@RequestBody(required = true) MainRequestDTO<MultiBookingRequest> bookingRequest) {
 		log.info("sessionId", "idType", "id",
@@ -150,7 +151,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/appointment/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch Appointment details")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
+			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> getAppointments(
 			@PathVariable("preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
@@ -171,7 +173,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PutMapping(path = "/appointment/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Cancel an booked appointment")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully"),
+			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
 	public ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> cancelBook(
 			@PathVariable("preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
@@ -190,7 +193,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@DeleteMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard Booking")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
+			@ApiResponse(code = 400, message = "Unable to delete booking") })
 	public ResponseEntity<MainResponseDTO<DeleteBookingDTO>> discardIndividual(
 			@RequestParam(value = "preRegistrationId") String preId) {
 		log.info("sessionId", "idType", "id", "In Booking controller for deletion of booking with preId " + preId);
@@ -210,7 +214,8 @@ public class BookingController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/appointment/preRegistrationId/{registrationCenterId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion ids By Booked Date Time And Registration center id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Booked data successfully retrieved") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Booked data successfully retrieved"),
+			@ApiResponse(code = 400, message = "Unable to get the Booked data") })
 	public ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> getBookedDataByDate(
 			@RequestParam(value = "from_date", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") String fromDate,
 			@RequestParam(value = "to_date") @DateTimeFormat(pattern = "yyyy-MM-dd") String toDate,
