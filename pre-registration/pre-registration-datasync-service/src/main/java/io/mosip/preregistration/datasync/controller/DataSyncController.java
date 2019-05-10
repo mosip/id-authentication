@@ -55,8 +55,7 @@ public class DataSyncController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@ResponseFilter
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
-			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully") })
 	@ApiOperation(value = "Fetch all PreRegistrationIds")
 	public ResponseEntity<MainResponseDTO<PreRegistrationIdsDTO>> retrieveAllPreRegids(
 			@RequestBody(required = true) MainRequestDTO<DataSyncRequestDTO> dataSyncDto) {
@@ -73,8 +72,7 @@ public class DataSyncController {
 	@ResponseFilter
 	@GetMapping(path = "/sync/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched"),
-			@ApiResponse(code = 400, message = "Unable to fetch the records") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched") })
 	public ResponseEntity<MainResponseDTO<PreRegArchiveDTO>> retrievePreRegistrations(
 			@PathVariable(required = true, value = "preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
@@ -90,8 +88,7 @@ public class DataSyncController {
 	@ResponseFilter
 	@PostMapping(path = "/sync/consumedPreRegIds", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),
-			@ApiResponse(code = 400, message = "Unable to save the records") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved") })
 	public ResponseEntity<MainResponseDTO<ReverseDatasyncReponseDTO>> storeConsumedPreRegistrationsIds(
 			@NotNull @RequestBody(required = true) MainRequestDTO<ReverseDataSyncRequestDTO> consumedData) {
 		log.info("sessionId", "idType", "id",

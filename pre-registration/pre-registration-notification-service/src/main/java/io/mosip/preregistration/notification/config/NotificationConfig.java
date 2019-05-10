@@ -79,7 +79,7 @@ public class NotificationConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket notificationApiBean() {
+	public Docket api() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {

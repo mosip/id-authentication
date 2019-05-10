@@ -76,7 +76,8 @@ public class ConsumedStatusService {
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
 		List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
@@ -124,7 +125,7 @@ public class ConsumedStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
 		response.setResponsetime(getCurrentResponseTime());
 		response.setId(idUrl);

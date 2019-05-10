@@ -11,6 +11,7 @@ import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
 import io.mosip.preregistration.datasync.exception.DataSyncRecordNotFoundException;
 import io.mosip.preregistration.datasync.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.datasync.exception.DocumentGetDetailsException;
+import io.mosip.preregistration.datasync.exception.ParseResponseException;
 import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
@@ -58,6 +59,10 @@ public class DataSyncExceptionCatcher {
 		} else if (ex instanceof RecordNotFoundForDateRange) {
 			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorCode(),
 					((RecordNotFoundForDateRange) ex).getErrorText(), mainResponsedto);
+		}
+		else if (ex instanceof ParseResponseException) {
+			throw new ParseResponseException(((ParseResponseException) ex).getErrorCode(), 
+					((ParseResponseException) ex).getErrorText(), mainResponsedto);
 		}
 	}
 }

@@ -69,7 +69,7 @@ public class GenerateQRcodeConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket qrcodeApiBean() {
+	public Docket api() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
