@@ -161,7 +161,7 @@ public class RegistrationSyncControllerTest {
 		Mockito.when(registrationSyncRequestValidator.validate(ArgumentMatchers.any(), ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(Boolean.TRUE);
 
-		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
+		this.mockMvc.perform(post("/sync").accept(MediaType.APPLICATION_JSON_VALUE)
 				.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(arrayToJson.getBytes()).header("Center-Machine-RefId", "10011_10011")
 				.header("timestamp", "2019-05-07T05:13:55.704Z")).andExpect(status().isOk());
@@ -178,7 +178,7 @@ public class RegistrationSyncControllerTest {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
 		this.mockMvc
-				.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
+				.perform(post("/sync").accept(MediaType.APPLICATION_JSON_VALUE)
 						.cookie(new Cookie("Authorization", arrayToJson)).contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isBadRequest());
 	}

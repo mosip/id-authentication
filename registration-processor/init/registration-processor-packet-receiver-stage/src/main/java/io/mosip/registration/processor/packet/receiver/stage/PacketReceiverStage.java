@@ -49,6 +49,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** server context Path. */
+	@Value("${server.servlet.path}")
+	private String contextPath;
+
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String MODULE_ID = "mosip.registration.processor.packet.id";
@@ -136,6 +140,28 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private void health(RoutingContext routingContext) {
 		this.setResponse(routingContext, "Server is up and running");
 	}
+	/**
+	 * This is for health check up
+	 *
+	 * @param routingContext
+	 */
+
+//	private void routes(Router router) {
+//
+//		router.post(contextPath+"/registrationpackets").blockingHandler(ctx -> {
+//			processURL(ctx);
+//		}, false).failureHandler(failureHandler -> {
+//			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),
+//					APPLICATION_JSON);
+//		});
+//
+//		router.get(contextPath+"/health").handler(ctx -> {
+//			this.setResponse(ctx, "Server is up and running");
+//		}).failureHandler(context -> {
+//			this.setResponse(context, context.failure().getMessage());
+//		});
+
+//	}
 
 	private void processPacket(RoutingContext ctx) {
 

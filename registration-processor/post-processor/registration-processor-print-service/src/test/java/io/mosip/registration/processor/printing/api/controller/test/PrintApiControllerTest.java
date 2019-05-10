@@ -111,14 +111,19 @@ public class PrintApiControllerTest {
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
 
-		this.mockMvc.perform(post("/registration-processor/print/v1.0").cookie(new Cookie("Authorization", json))
-				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+		this.mockMvc.perform(post("/uincard")
+				.cookie(new Cookie("Authorization", json))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	@Ignore
 	public void testPdfFailure() throws Exception {
-		this.mockMvc.perform(post("/registration-processor/print/v1.0").cookie(new Cookie("Authorization", json))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
+		this.mockMvc.perform(post("/uincard")
+				.cookie(new Cookie("Authorization", json))
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isBadRequest());
 	}
 }

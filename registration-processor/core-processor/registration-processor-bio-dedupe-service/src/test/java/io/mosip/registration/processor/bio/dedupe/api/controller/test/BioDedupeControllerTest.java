@@ -42,7 +42,6 @@ import io.mosip.registration.processor.core.token.validation.TokenValidator;
 @ContextConfiguration(classes = BioDedupeConfigTest.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class BioDedupeControllerTest {
-
 	@InjectMocks
 	private BioDedupeController bioDedupeController = new BioDedupeController();
 
@@ -74,8 +73,9 @@ public class BioDedupeControllerTest {
 	public void getFileSuccessTest() throws Exception {
 
 		this.mockMvc
-				.perform(MockMvcRequestBuilders.get("/v0.1/registration-processor/bio-dedupe/1234")
+				.perform(MockMvcRequestBuilders.get("/biometricfile/1234")
 						.cookie(new Cookie("Authorization", "token")).param("regId", regId).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}

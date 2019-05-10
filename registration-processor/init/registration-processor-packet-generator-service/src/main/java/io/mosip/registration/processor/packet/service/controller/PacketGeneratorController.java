@@ -45,7 +45,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "PacketGenerator")
 public class PacketGeneratorController {
 
@@ -88,7 +87,7 @@ public class PacketGeneratorController {
 	 * @throws RegBaseCheckedException
 	 * @throws IOException
 	 */
-	@PostMapping(path = "/packetgenerator/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/registrationpacket", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),

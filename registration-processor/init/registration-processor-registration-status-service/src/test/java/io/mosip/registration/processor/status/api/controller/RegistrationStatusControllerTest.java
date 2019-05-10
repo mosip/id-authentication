@@ -152,12 +152,13 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchSuccessTest() throws Exception {
-		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
-				"mosip.registration.status");
-		this.mockMvc
-				.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
-						.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+
+        doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),"mosip.registration.status");
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/search")
+                .cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+
 	}
 
 	/**
@@ -167,19 +168,21 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchFailureTest() throws Exception {
-		this.mockMvc
-				.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
-						.accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/search").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
 	}
 
 	@Test
 	public void searchRegstatusException() throws Exception {
 
-		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
-				.validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
-				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
+
+		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/search").cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
+
 	}
 
 }

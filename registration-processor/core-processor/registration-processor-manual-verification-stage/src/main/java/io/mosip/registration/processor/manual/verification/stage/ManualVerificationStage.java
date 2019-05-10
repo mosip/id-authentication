@@ -85,6 +85,11 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 	
+
+	@Value("${server.servlet.path}")
+	private String contextPath;
+	
+
 	private static final String APPLICATION_JSON = "application/json";
 
 	/**
@@ -101,17 +106,21 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
+
 	private void routes(MosipRouter router) {
-		router.post("/manual-verification/applicantBiometric/v1.0");
+		router.post(contextPath+"/applicantBiometric");
 		router.handler(this::processBiometric, handlerObj -> {
+
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
 
-		router.post("/manual-verification/applicantDemographic/v1.0");
+
+		router.post(contextPath+"/applicantDemographic");
 		router.handler(this::processDemographic, handlerObj -> {
+
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
@@ -119,8 +128,10 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 		});
 
-		router.post("/manual-verification/assignment/v1.0");
+
+		router.post(contextPath+"/assignment");
 		router.handler(this::processAssignment, handlerObj -> {
+
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
@@ -128,24 +139,33 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 		});
 
-		router.post("/manual-verification/decision/v1.0");
+
+		router.post(contextPath+"/decision");
 		router.handler(this::processDecision, handlerObj -> {
+
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
-		
-		router.post("/manual-verification/packetInfo/v1.0");
+
+
+		router.post(contextPath+"/packetInfo");
 		router.handler(this::processPacketInfo, handlerObj -> {
+
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),
 					APPLICATION_JSON);
 		});
 
-		router.get("/manual-verification/health");
-		router.handler(this::health);
+
+		router.get(contextPath+"/health").handler(ctx -> {
+			this.setResponse(ctx, "Server is up and running");
+		}).failureHandler(handlerObj -> {
+			this.setResponse(handlerObj, handlerObj.failure().getMessage());
+		});
+
 
 	}
 	/**
