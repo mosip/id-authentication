@@ -193,21 +193,6 @@ public class DemographicService {
 	@Value("${version}")
 	private String version;
 
-	@Value("${mosip.id.validation.identity.email}")
-	private String emailRegex;
-
-	@Value("${mosip.id.validation.identity.phone}")
-	private String phoneRegex;
-
-	@Value("${mosip.id.validation.identity.postalCode}")
-	private String postalRegex;
-
-	@Value("${mosip.id.validation.identity.dateOfBirth}")
-	private String dobRegex;
-
-	@Value("${mosip.id.validation.identity.CNIENumber}")
-	private String cnieRegex;
-
 	Map<String, String> idValidationFields = new HashMap<>();
 	/**
 	 * Reference for ${appointmentResourse.url} from property file
