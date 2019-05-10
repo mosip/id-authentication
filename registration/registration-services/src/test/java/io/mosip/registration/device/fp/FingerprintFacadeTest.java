@@ -73,6 +73,7 @@ public class FingerprintFacadeTest {
 		map.put(RegistrationConstants.REGISTRATION_DATA,registrationDTO);
 		map.put(RegistrationConstants.USER_ONBOARD_DATA, useronboardbiometricDTO);
 		map.put(RegistrationConstants.ONBOARD_USER, false);
+		map.put(RegistrationConstants.IS_Child,false);
 		SessionContext.getInstance().setMapObject(map);
 		
 		Map<String,Object> appMap = new HashMap<>();

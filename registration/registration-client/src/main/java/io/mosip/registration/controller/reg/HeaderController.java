@@ -36,6 +36,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -110,7 +111,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	MasterSyncService masterSyncService;
-	
+
 	@Autowired
 	MasterSyncDao masterSyncDao;
 
@@ -130,6 +131,9 @@ public class HeaderController extends BaseController {
 	private ServiceDelegateUtil serviceDelegateUtil;
 
 	ProgressIndicator progressIndicator;
+
+	@Autowired
+	private SyncStatusValidatorService statusValidatorService;
 
 	/**
 	 * Mapping Registration Officer details
@@ -406,17 +410,9 @@ public class HeaderController extends BaseController {
 		// Check for updates
 		if (hasUpdate()) {
 
-			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-					RegistrationUIConstants.UPDATE_LATER, RegistrationUIConstants.CONFIRM_UPDATE,
-					RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
+					RegistrationUIConstants.UPDATE_LATER);
 
-			updateAlert.showAndWait();
-
-			/* Get Option from user */
-			ButtonType result = updateAlert.getResult();
-			if (result == ButtonType.OK) {
-				executeUpdateTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
-			}
 		}
 
 	}
@@ -463,7 +459,7 @@ public class HeaderController extends BaseController {
 		progressIndicator = packetHandlerController.getProgressIndicator();
 		GridPane gridPane = homeController.getMainBox();
 		List<SyncJobDef> syncJobs = masterSyncDao.getSyncJobs();
-		double totalJobs  =  syncJobs.size();
+		double totalJobs = syncJobs.size();
 		gridPane.setDisable(true);
 		progressIndicator.setVisible(true);
 		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
@@ -486,13 +482,13 @@ public class HeaderController extends BaseController {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
-						double success=1;
-						if(responseDto.getErrorResponseDTOs()==null || responseDto.getErrorResponseDTOs().size()==0) {
+						double success = 1;
+						if (responseDto.getErrorResponseDTOs() == null
+								|| responseDto.getErrorResponseDTOs().size() == 0) {
 							packetHandlerController.syncProgressBar.setProgress(1);
-						}
-						else {
+						} else {
 							success = totalJobs - responseDto.getErrorResponseDTOs().size();
-							packetHandlerController.syncProgressBar.setProgress(success/totalJobs);
+							packetHandlerController.syncProgressBar.setProgress(success / totalJobs);
 						}
 						return responseDto;
 					}
@@ -551,6 +547,8 @@ public class HeaderController extends BaseController {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
+						progressIndicator.setVisible(true);
+						pane.setDisable(true);
 						return update();
 
 					}
@@ -564,19 +562,55 @@ public class HeaderController extends BaseController {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
+				pane.setDisable(false);
+				progressIndicator.setVisible(false);
+
 				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
+					// generateAlert(RegistrationConstants.ERROR,
+					// RegistrationUIConstants.UNABLE_TO_UPDATE);
+					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE);
 				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
 
 					restartApplication();
 				}
-				pane.setDisable(false);
-				progressIndicator.setVisible(false);
+
 			}
 
 		});
+
+	}
+
+	public void update(Pane pane, ProgressIndicator progressIndicator, String context) {
+
+		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
+				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+
+		pane.setDisable(true);
+		updateAlert.showAndWait();
+
+		/* Get Option from user */
+		ButtonType result = updateAlert.getResult();
+		if (result == ButtonType.OK) {
+
+			executeUpdateTask(pane, progressIndicator);
+		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
+			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
+					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
+
+			alert.showAndWait();
+			
+			/* Get Option from user */
+			ButtonType alertResult = alert.getResult();
+
+			if (alertResult == ButtonType.OK) {
+
+				executeUpdateTask(pane, progressIndicator);
+			}
+		} else {
+			pane.setDisable(false);
+		}
 
 	}
 }

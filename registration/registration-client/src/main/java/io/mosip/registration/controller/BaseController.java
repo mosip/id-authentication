@@ -1130,8 +1130,10 @@ public class BaseController {
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
 		okButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(confirmButtonText));
 
-		Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
-		cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
+		if(alertType == Alert.AlertType.CONFIRMATION) {
+			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
+		}
 
 		return alert;
 	}
