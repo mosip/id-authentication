@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -75,6 +76,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	MosipRouter router;
 	File file = null;
 
+	@Autowired
+	SignatureUtil signatureUtil;
+
 	/**
 	 * deploys this verticle.
 	 */
@@ -90,6 +94,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	private Environment env;
+
+	private String digitallySignedResponse="";
+
+	private String responseData="";
 
 	/*
 	 * (non-Javadoc)
@@ -125,7 +133,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param routingContext
 	 */
 	private void failure(RoutingContext routingContext) {
-		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
+		String exceptionError=globalExceptionHandler.handler(routingContext.failure());
+		digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
+		this.setResponse(routingContext, exceptionError, APPLICATION_JSON, digitallySignedResponse);
 	}
 
 	/**
@@ -175,9 +185,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx, PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-						StatusMessage.PACKET_RECEIVED.toString(), listObj), APPLICATION_JSON);
-
+				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
+				digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
+				this.setResponse(ctx, responseData, APPLICATION_JSON, digitallySignedResponse);
+				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
