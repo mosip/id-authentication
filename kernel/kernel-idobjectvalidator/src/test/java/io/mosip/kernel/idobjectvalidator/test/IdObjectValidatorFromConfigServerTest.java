@@ -1,4 +1,4 @@
-package io.mosip.kernel.jsonvalidator.test;
+package io.mosip.kernel.idobjectvalidator.test;
 
 import static org.junit.Assert.assertEquals;
 
