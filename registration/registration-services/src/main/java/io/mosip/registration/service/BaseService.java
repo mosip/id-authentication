@@ -3,6 +3,9 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -335,11 +338,19 @@ public class BaseService {
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
 		
-		byte[] packetHash = HMACUtils.generateHash(registration.getAckFilename()
-				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)
-				.getBytes());
-		statusDTO.setPacketHash(new String(packetHash));
-		statusDTO.setPacketSize(BigInteger.valueOf(packetHash.length));
+		try (FileInputStream fis = new FileInputStream(new File(registration.getAckFilename()
+				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
+			byte[] byteArray = new byte[(int) fis.available()];
+			fis.read(byteArray);
+			byte[] packetHash = HMACUtils.generateHash(byteArray);
+			statusDTO.setPacketHash(HMACUtils.digestAsPlainText(packetHash));
+			statusDTO.setPacketSize(BigInteger.valueOf(byteArray.length));		
+			
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} 
+		
 		
 		return statusDTO;
 	}
