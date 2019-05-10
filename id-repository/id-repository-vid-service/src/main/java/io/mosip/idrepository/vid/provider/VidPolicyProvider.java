@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,9 +45,10 @@ public class VidPolicyProvider {
 	
 	@PostConstruct
 	public void policyDetails() throws IOException, URISyntaxException {
-		FileReader jsonFile = new FileReader(
-				new File(new URL(env.getProperty("mosip.idrepo.vid.policy-file-location")).toURI()));
-		JsonNode policyJson = mapper.readValue(jsonFile, JsonNode.class);
+//		FileReader jsonFile = new FileReader(
+//				new File(new URL(env.getProperty("mosip.idrepo.vid.policy-file-location")).toURI()));
+		JsonNode policyJson = mapper.readValue(
+				ResourceUtils.getFile(env.getProperty("mosip.idrepo.vid.policy-file-location")), JsonNode.class);
 		List<String> vidType = JsonPath.compile("vidPolicies.*.vidType").read(policyJson.toString(), READ_LIST_OPTIONS);
 		List<Object> vidPolicy = JsonPath.compile("vidPolicies.*.vidPolicy").read(policyJson.toString(),
 				READ_LIST_OPTIONS);
