@@ -21,7 +21,7 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
-COPY ./target/id-repository-identity-service-*.jar id-repository-vid-service.jar
+COPY ./target/id-repository-vid-service-*.jar id-repository-vid-service.jar
 
 EXPOSE 8091
 
