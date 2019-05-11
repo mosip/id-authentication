@@ -33,6 +33,11 @@ import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
+/**
+ * This class used to send/receive HTTP requests and return the response.
+ * 
+ * @author Sanjay Murali
+ */
 @Component
 @NoArgsConstructor
 public class RestHelperImpl implements RestHelper{
@@ -190,6 +195,7 @@ public class RestHelperImpl implements RestHelper{
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T requestSync(RestRequestDTO request)
 			throws RestServiceException {
@@ -246,7 +252,7 @@ public class RestHelperImpl implements RestHelper{
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
-		return () -> sendRequest.block();
+		return sendRequest::block;
 	}
 
 

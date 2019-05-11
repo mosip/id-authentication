@@ -5,8 +5,6 @@ package io.mosip.authentication.kyc.service.controller;
 
 import static org.junit.Assert.assertFalse;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

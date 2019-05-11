@@ -67,7 +67,7 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles("test")
-public class RestHelperTest {
+public class RestHelperImplTest {
 
 	/** The rest helper. */
 	@InjectMocks
