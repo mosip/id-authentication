@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.velocity.exception.ParseErrorException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +102,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(otpServiceImpl, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(otpManager, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);

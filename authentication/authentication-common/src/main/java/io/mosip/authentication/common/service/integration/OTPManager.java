@@ -1,8 +1,14 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +30,7 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -43,6 +50,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class OTPManager {
+	
+
+	/** The Constant NAME. */
+	private static final String NAME = "name";
+	/** The Constant TIME. */
+	private static final String TIME = "time";
+	/** The Constant DATE. */
+	private static final String DATE = "date";
+	
 
 	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
@@ -79,11 +95,14 @@ public class OTPManager {
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
-	private List<ServiceError> errors;
-
 	/**
 	 * Generate OTP with information of {@link MediaType } and OTP generation
 	 * time-out
+	 * @param namePri 
+	 * @param nameSec 
+	 * @param priLang 
+	 * @param secLang 
+	 * @param idInfo 
 	 *
 	 * @param otpKey the otp key
 	 * @return String(otp)
@@ -91,7 +110,7 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean generateOTP(OtpRequestDTO otpRequestDTO, String uin) throws IdAuthenticationBusinessException {
+	public boolean generateOTP(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang, String secLang) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
@@ -102,6 +121,8 @@ public class OTPManager {
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
 			otpGeneratorRequestDto.setUserId(uin);
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, namePri, nameSec, priLang, secLang);
+			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
 			otpGeneratorRequestDto.setOtpChannel(otpRequestDTO.getOtpChannel());
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
@@ -157,6 +178,63 @@ public class OTPManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return isOtpGenerated;
+	}
+	
+	/*
+	 * Send Otp Notification
+	 * 
+	 */
+	public Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri, String nameSec, String priLang, String secLang) {
+
+		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
+				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		String date = dateAndTime.getKey();
+		String time = dateAndTime.getValue();
+
+		String maskedUin = null;
+		Map<String, Object> values = new HashMap<>();
+		String charCount = environment.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
+		if (charCount != null) {
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
+		}
+		values.put("uin", maskedUin);
+		Integer timeInSeconds = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
+				Integer.class);
+		int timeInMinutes = (timeInSeconds % 3600) / 60;
+		values.put("validTime", String.valueOf(timeInMinutes));
+		values.put(DATE, date);
+		values.put(TIME, time);
+
+		values.put(NAME, namePri);
+		values.put(NAME + "_" + priLang, namePri);
+		values.put(NAME + "_" + secLang, nameSec);
+		return values;
+	}
+	
+	/**
+	 * Gets the date and time.
+	 *
+	 * @param requestTime the request time
+	 * @param pattern     the pattern
+	 * @return the date and time
+	 */
+	private static Entry<String, String> getDateAndTime(String requestTime, String pattern) {
+
+		String[] dateAndTime = new String[2];
+
+		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(pattern);
+
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(requestTime, isoPattern);
+		ZoneId zone = zonedDateTime2.getZone();
+		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
+		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
+		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+		dateAndTime[0] = date;
+		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		dateAndTime[1] = time;
+
+		return new SimpleEntry<>(date, time);
+
 	}
 
 	/**

@@ -24,12 +24,14 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.MaskedResponseDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -63,6 +65,9 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+	
+	@Autowired
+	private IdInfoFetcher idInfoFetcher;
 
 	/** The otp manager. */
 	@Autowired
@@ -93,7 +98,15 @@ public class OTPServiceImpl implements OTPService {
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin"));
 			String transactionId = otpRequestDto.getTransactionID();
-			boolean isOtpGenerated = otpManager.generateOTP(otpRequestDto, uin);
+			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+			
+			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+			String namePri = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+			String nameSec = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
+
+
+			boolean isOtpGenerated = otpManager.generateOTP(otpRequestDto, uin, namePri, nameSec, priLang, secLang);
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
 				otpResponseDTO.setErrors(Collections.emptyList());
@@ -101,7 +114,6 @@ public class OTPServiceImpl implements OTPService {
 				String responseTime = formatDate(new Date(),
 						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
-				Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 				String email = getEmail(idInfo);
 				String phoneNumber = getPhoneNumber(idInfo);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();

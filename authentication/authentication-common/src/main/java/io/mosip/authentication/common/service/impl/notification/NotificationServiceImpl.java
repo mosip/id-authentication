@@ -309,30 +309,5 @@ public class NotificationServiceImpl implements NotificationService {
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
 
-	/**
-	 * Gets the date and time.
-	 *
-	 * @param requestTime the request time
-	 * @param pattern     the pattern
-	 * @return the date and time
-	 */
-	private static Entry<String, String> getDateAndTime(String requestTime, String pattern) {
-
-		String[] dateAndTime = new String[2];
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(pattern);
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(requestTime, isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
-		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
-		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		dateAndTime[0] = date;
-		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-		dateAndTime[1] = time;
-
-		return new SimpleEntry<>(date, time);
-
-	}
 
 }
