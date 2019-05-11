@@ -16,10 +16,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.device.fp.impl.FingerPrintCaptureServiceImpl;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.service.AuthenticationService;
-import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 

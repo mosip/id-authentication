@@ -1,5 +1,7 @@
 /*package io.mosip.registration.processor.packet.receiver.stage;
 
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -28,6 +30,8 @@ import io.vertx.ext.web.Session;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -50,6 +54,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -74,28 +79,32 @@ public class PacketReceiverStageTest {
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 
 	public RoutingContext ctx;
-	
+
 	@Mock
 	private Environment env;
 
 	public FileUpload fileUpload;
 	@Mock
 	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
+	@Mock
+	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
+	@Mock
+	SignatureUtil signatureUtil;
 
 	@InjectMocks
 	PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
-	
+
 		@Override
-		public void setResponse(RoutingContext ctx, Object object,String jsonType) {
+		public void setResponse(RoutingContext ctx, Object object,String jsonType,String digSignature) {
 			jsonData = object.toString();
 			PacketReceiverResponseDTO packetReceiverResponseDTO =gson.fromJson(jsonData, PacketReceiverResponseDTO.class);
 			registrationStatusCode=packetReceiverResponseDTO.getResponse().getStatus();
 		}
-		
+
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
-		
+
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
 			return null;
@@ -113,6 +122,10 @@ public class PacketReceiverStageTest {
 		ctx = setContext();
 		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		PacketReceiverApplication.main(null);
+		signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
+		when(signatureUtil.signResponse(anyString())).thenReturn(signatureResponse);
+		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
+
 
 	}
 	public String getDataAsJson(String Status) {
@@ -122,8 +135,8 @@ public class PacketReceiverStageTest {
 		obj.put("responsetime", "2019-02-04T13:46:39.919+0000");
 		JsonObject obj1= new JsonObject();
 		obj1.put("status", Status);
-			obj.put("response",obj1);
-			obj1=null;
+		obj.put("response",obj1);
+		obj1=null;
 		obj.put("errors",obj1);
 		return obj.toString();
 	}
@@ -132,23 +145,23 @@ public class PacketReceiverStageTest {
 	public void testAllProcess() throws Exception {
 		testProcessURLSuccess();
 		healthCheckTest();
-		testDeployVerticle();
+		//testDeployVerticle();
 		testSendMessage();
 	}
-	
+
 	public void testProcessURLSuccess() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
-		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
+		when(packetReceiverService.storePacket(any(File.class),any(String.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
 		assertEquals(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), registrationStatusCode);
 	}
-	
+
 	@Test
 	public void testProcessURLFail() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.FALSE);
-		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
+		when(packetReceiverService.storePacket(any(File.class),any(String.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
 		assertEquals(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.name(), registrationStatusCode);
 	}
@@ -181,17 +194,17 @@ public class PacketReceiverStageTest {
 	public void testDeployVerticle() {
 		packetReceiverStage.deployVerticle();
 	}
-	
+
 	public void testSendMessage() {
 		packetReceiverStage.sendMessage(null);
 	}
-	
+
 	@After
 	public void destroy() throws IOException {
 		if(file.exists())
 			FileUtils.forceDelete(file);
 	}
-	
+
 
 	private FileUpload setFileUpload() {
 		return new FileUpload() {

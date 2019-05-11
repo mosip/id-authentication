@@ -4,6 +4,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.audit.impl.AuditServiceImpl;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 @RunWith(PowerMockRunner.class)
@@ -52,11 +54,23 @@ public class AuditServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
+	@Mock
+	private GlobalParamService globalParamService;
+	@Mock
+	io.mosip.registration.context.ApplicationContext context;
+
 	@Before
 	public void intiate() {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		when(ApplicationContext.map()).thenReturn(applicationMap);
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn("45");
+		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.AUDIT_LOG_DELETION_CONFIGURED_DAYS, "5");
+		
+		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		
+		auditServiceImpl.setBaseGlobalMap(applicationMap);
 
 	}
 
@@ -88,7 +102,7 @@ public class AuditServiceTest {
 		
 	}
 	
-	@Ignore
+	
 	@Test
 	public void auditLogsDeletionFailureTest() {
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn(null);

@@ -35,14 +35,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
-import io.mosip.kernel.core.exception.ErrorResponse;
-import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
@@ -239,7 +233,6 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilderString = uriBuilder.build().encode().toUriString();
-			// uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilderString);
 			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString,
 					HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
