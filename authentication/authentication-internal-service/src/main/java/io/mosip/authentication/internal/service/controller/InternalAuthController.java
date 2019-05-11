@@ -119,58 +119,63 @@ public class InternalAuthController {
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e1);
 		} finally {
-			AuthTypeDTO requestedAuthType = authRequestDTO.getRequestedAuth();
-			boolean isStatus = authResponseDTO != null && authResponseDTO.getResponse() != null
-					? authResponseDTO.getResponse().isAuthStatus()
-					: false;
-			String uin = authRequestDTO.getIndividualId();
-			String idType = authRequestDTO.getIndividualIdType();
-			IdType actualidType = null;
-			actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
-			if (requestedAuthType.isOtp()) {
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-						"OTP Authentication status : " + isStatus);
-				auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
-						auditHelper.getUinorVid(authRequestDTO), actualidType, AuditModules.OTP_AUTH.getDesc());
-				AutnTxn authTxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH,
-						DEFAULT_PARTNER_ID, isStatus);
-				idAuthService.saveAutnTxn(authTxn);
-			}
-			if (requestedAuthType.isPin()) {
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-						"Pin Authentication  status :" + isStatus);
-				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
-						auditHelper.getUinorVid(authRequestDTO),
-						authRequestDTO.getIndividualIdType().equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN
-								: IdType.VID,
-						AuditModules.PIN_AUTH.getDesc());
-				AutnTxn authtxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.STATIC_PIN_AUTH,
-						DEFAULT_PARTNER_ID, isStatus);
-				idAuthService.saveAutnTxn(authtxn);
-			}
-			if (requestedAuthType.isDemo()) {
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-						"Demographic Authentication status : " + isStatus);
-				auditHelper.audit(AuditModules.DEMO_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
-						auditHelper.getUinorVid(authRequestDTO), actualidType, AuditModules.DEMO_AUTH.getDesc());
-				AutnTxn authtxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.DEMO_AUTH,
-						DEFAULT_PARTNER_ID, isStatus);
-				idAuthService.saveAutnTxn(authtxn);
-			}
-			if (requestedAuthType.isBio()) {
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-						"Bio Authentication status :" + isStatus);
-				saveAndAuditBioAuthTxn(authRequestDTO, true, auditHelper.getUinorVid(authRequestDTO), actualidType,
-						isStatus, DEFAULT_PARTNER_ID);
-			}
+			auditResponse(authRequestDTO, authResponseDTO);
 
 		}
 
 		return authResponseDTO;
+	}
+
+	private void auditResponse(AuthRequestDTO authRequestDTO, AuthResponseDTO authResponseDTO)
+			throws IdAuthenticationBusinessException {
+		AuthTypeDTO requestedAuthType = authRequestDTO.getRequestedAuth();
+		boolean isStatus = authResponseDTO != null && authResponseDTO.getResponse() != null
+				? authResponseDTO.getResponse().isAuthStatus()
+				: false;
+		String uin = authRequestDTO.getIndividualId();
+		String idType = authRequestDTO.getIndividualIdType();
+		IdType actualidType = null;
+		actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+		if (requestedAuthType.isOtp()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+					"OTP Authentication status : " + isStatus);
+			auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
+					auditHelper.getUinorVid(authRequestDTO), actualidType, AuditModules.OTP_AUTH.getDesc());
+			AutnTxn authTxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH,
+					DEFAULT_PARTNER_ID, isStatus);
+			idAuthService.saveAutnTxn(authTxn);
+		}
+		if (requestedAuthType.isPin()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+					"Pin Authentication  status :" + isStatus);
+			auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
+					auditHelper.getUinorVid(authRequestDTO),
+					authRequestDTO.getIndividualIdType().equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN
+							: IdType.VID,
+					AuditModules.PIN_AUTH.getDesc());
+			AutnTxn authtxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.STATIC_PIN_AUTH,
+					DEFAULT_PARTNER_ID, isStatus);
+			idAuthService.saveAutnTxn(authtxn);
+		}
+		if (requestedAuthType.isDemo()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+					"Demographic Authentication status : " + isStatus);
+			auditHelper.audit(AuditModules.DEMO_AUTH, AuditEvents.INTERNAL_REQUEST_RESPONSE,
+					auditHelper.getUinorVid(authRequestDTO), actualidType, AuditModules.DEMO_AUTH.getDesc());
+			AutnTxn authtxn = auditHelper.createAuthTxn(authRequestDTO, uin, RequestType.DEMO_AUTH,
+					DEFAULT_PARTNER_ID, isStatus);
+			idAuthService.saveAutnTxn(authtxn);
+		}
+		if (requestedAuthType.isBio()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+					"Bio Authentication status :" + isStatus);
+			saveAndAuditBioAuthTxn(authRequestDTO, auditHelper.getUinorVid(authRequestDTO), actualidType,
+					isStatus, DEFAULT_PARTNER_ID);
+		}
 	}
 
 	/**
@@ -182,7 +187,7 @@ public class InternalAuthController {
 	 * @param isStatus
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth, String uin, IdType idType,
+	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String uin, IdType idType,
 			boolean isStatus, String staticTokenId) throws IdAuthenticationBusinessException {
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType())
