@@ -583,7 +583,7 @@ public class BookingService {
 						" and Date and Time " + availableUpdate.getRegDate() + " " + availableUpdate.getFromTime());
 				
 				/* Updating demographic */
-				serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
+				bookingDAO.updateDemographicStatus(preRegistrationId, StatusCodes.BOOKED.getCode());
 				bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 			}

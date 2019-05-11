@@ -15,7 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.application.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 
 /**
  * This repository interface is used to define the JPA methods for Demographic

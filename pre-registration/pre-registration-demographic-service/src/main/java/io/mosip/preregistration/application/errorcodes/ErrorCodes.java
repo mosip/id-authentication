@@ -80,7 +80,10 @@ public enum ErrorCodes {
 	PRG_PAM_APP_015("PRG_PAM_APP_015"),
 
 	/* ErrorCode for PAGE_NOT_FOUND */
-	PRG_PAM_APP_016("PRG_PAM_APP_016");
+	PRG_PAM_APP_016("PRG_PAM_APP_016"),
+
+	/* ErrorCode for INVALID_PREID_FOR_USER */
+	PRG_PAM_APP_017("PRG_PAM_APP_017");
 
 	private ErrorCodes(String code) {
 		this.code = code;
