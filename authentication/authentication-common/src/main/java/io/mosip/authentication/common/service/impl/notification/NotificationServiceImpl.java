@@ -150,50 +150,6 @@ public class NotificationServiceImpl implements NotificationService {
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
 	}
 
-	/*
-	 * Send Otp Notification
-	 * 
-	 */
-	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
-			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
-
-		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
-				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-		String date = dateAndTime.getKey();
-		String time = dateAndTime.getValue();
-
-		String maskedUin = null;
-		Map<String, Object> values = new HashMap<>();
-		try {
-			String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
-			if (charCount != null) {
-				maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
-			}
-			values.put("uin", maskedUin);
-			values.put("otp", otp);
-			Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
-					Integer.class);
-			int timeInMinutes = (timeInSeconds % 3600) / 60;
-			values.put("validTime", String.valueOf(timeInMinutes));
-			values.put(DATE, date);
-			values.put(TIME, time);
-
-			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
-			String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
-			values.put(NAME, namePri);
-			values.put(NAME + "_" + priLang, namePri);
-			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
-			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
-			values.put(NAME + "_" + secLang, nameSec);
-
-			sendNotification(values, email, mobileNumber, SenderType.OTP,
-					env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE));
-		} catch (BaseCheckedException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "send OTP notification to : ", email,
-					"and " + mobileNumber);
-		}
-	}
-
 	/**
 	 * Method to Send Notification to the Individual via SMS / E-Mail
 	 * 

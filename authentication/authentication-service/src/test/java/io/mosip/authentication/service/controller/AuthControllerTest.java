@@ -1,5 +1,11 @@
 package io.mosip.authentication.service.controller;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +27,9 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -29,7 +37,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 
 /**
  * This code tests the AuthController
@@ -60,6 +73,12 @@ public class AuthControllerTest {
 
 	@InjectMocks
 	private AuthController authController;
+
+	@Mock
+	AuditHelper auditHelper;
+
+	@Mock
+	IdServiceImpl idServiceImpl;
 
 	@Mock
 	WebDataBinder binder;
@@ -111,6 +130,90 @@ public class AuthControllerTest {
 		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456")).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
 
+	}
+
+	@Test
+	public void TestValidOtpRequest()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authRequestDTO = getRequestDto();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+	}
+
+	@Test
+	public void TestValidDemoRequest()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authRequestDTO = getRequestDto();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+	}
+
+	@Test
+	public void TestValidPinRequest()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authRequestDTO = getRequestDto();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setPin(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+	}
+
+	@Test
+	public void TestValidBioFingerPrintRequest()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authRequestDTO = getRequestDto();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setBio(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		List<BioIdentityInfoDTO> bioIdentityList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO dataDTO = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		dataDTO.setBioType("FMR");
+		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setDeviceProviderID("provider001");
+		dataDTO.setBioValue(value);
+		bioIdentityInfoDTO.setData(dataDTO);
+		bioIdentityList.add(bioIdentityInfoDTO);
+
+		BioIdentityInfoDTO IrisDto = new BioIdentityInfoDTO();
+		DataDTO irisdata = new DataDTO();
+		irisdata.setBioType("IIR");
+		irisdata.setBioSubType("LEFT");
+		irisdata.setDeviceProviderID("provider001");
+		irisdata.setBioValue(value);
+		IrisDto.setData(irisdata);
+		bioIdentityList.add(IrisDto);
+
+		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
+		DataDTO facedata = new DataDTO();
+		facedata.setBioType("FID");
+		facedata.setBioSubType("FACE");
+		facedata.setDeviceProviderID("provider001");
+		facedata.setBioValue(value);
+		faceDto.setData(facedata);
+		bioIdentityList.add(faceDto);
+
+		request.setBiometrics(bioIdentityList);
+		authRequestDTO.setRequest(request);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+	}
+
+	private AuthRequestDTO getRequestDto() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.otp");
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+		return authRequestDTO;
 	}
 
 	/*
