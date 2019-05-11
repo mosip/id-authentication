@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.helper;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -43,7 +41,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 public class AuditHelperTest {
 
 	@Mock
-	RestHelper restHelper;
+	RestHelperImpl restHelper;
 
 	@InjectMocks
 	AuditHelper auditHelper;

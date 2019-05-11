@@ -464,11 +464,16 @@ public abstract class BaseIDAFilter implements Filter {
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.REQ_TIME))
 				&& isDate((String) requestBody.get(IdAuthCommonConstants.REQ_TIME))) {
 			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(IdAuthCommonConstants.REQ_TIME)).getZone();
+			
+			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME) :
+				DateUtils.getUTCCurrentDateTimeString();
+			responseBody.remove("requesttime");// Handled for forbidden error scenario
+			responseBody.remove("metadata");// Handled for forbidden error scenario
 			responseBody
-					.replace(RES_TIME,
+					.put(RES_TIME,
 							DateUtils
 									.formatDate(
-											DateUtils.parseToDate((String) responseBody.get(RES_TIME),
+											DateUtils.parseToDate(responseTime,
 													env.getProperty(
 															IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 													TimeZone.getTimeZone(zone)),
