@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,6 +42,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ConfigurationProperties("mosip.idrepo.vid")
+@ActiveProfiles("test")
 public class VidRequestValidatorTest {
 
 	@InjectMocks
