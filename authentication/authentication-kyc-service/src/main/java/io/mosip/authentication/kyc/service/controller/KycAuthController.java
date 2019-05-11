@@ -72,7 +72,6 @@ public class KycAuthController {
 	/** The Constant AUTH_FACADE. */
 	private static final String AUTH_FACADE = "AuthFacade";
 
-
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
@@ -138,9 +137,7 @@ public class KycAuthController {
 			if (kycAuthRequestDTO != null) {
 				IdType actualidType = null;
 				String idType = kycAuthRequestDTO.getIndividualIdType();
-				actualidType = idType != null && !idType.isEmpty() && idType.equalsIgnoreCase(IdType.UIN.getType())
-						? IdType.UIN
-						: IdType.VID;
+				actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
 				String uin = kycAuthRequestDTO.getIndividualId();
 				Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE,
 						Boolean.class);

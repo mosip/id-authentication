@@ -46,6 +46,7 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -755,6 +756,34 @@ public class AuthFacadeImplTest {
 				.thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
 				IdType.UIN, "247334310780728918141754192454591343", "123456");
+
+	}
+
+	@Test
+	public void TestInvalidOTPviaAuth() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		List<AuthStatusInfo> authStatusList = new ArrayList<>();
+		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
+				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+
+	}
+
+	@Test
+	public void TestInvalidOTPviaAuthwithActionMessage() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		List<AuthStatusInfo> authStatusList = new ArrayList<>();
+		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN));
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
+				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 
 	}
 

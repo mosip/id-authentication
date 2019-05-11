@@ -35,6 +35,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -42,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
@@ -98,10 +100,21 @@ public class InternalAuthControllerTest {
 	@Test(expected = IdAuthenticationAppException.class)
 	public void showAuthenticateTspValidator()
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
-
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
+		AuthTypeDTO request = new AuthTypeDTO();
+		authReqestsDTO.setRequestedAuth(request);
+		authReqestsDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
+		List<AuthError> errors = new ArrayList<>();
+		authResponseDTO.setErrors(errors);
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		authResponseDTO.setErrors(new ArrayList<>());
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
 		authController.authenticate(authReqestsDTO, error);
 	}
 
@@ -109,8 +122,19 @@ public class InternalAuthControllerTest {
 	public void auhtenticationTspSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, "")).thenReturn(new AuthResponseDTO());
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		authReqestDTO.setRequestedAuth(requestedAuth);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		List<AuthError> errors = new ArrayList<>();
+		authResponseDTO.setErrors(errors);
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
+
 		authController.authenticate(authReqestDTO, error);
 	}
 
@@ -118,8 +142,19 @@ public class InternalAuthControllerTest {
 	public void auhtenticationTspvalid()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
-				.thenReturn(new AuthResponseDTO());
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		authReqestDTO.setRequestedAuth(requestedAuth);
+		List<AuthError> errors = new ArrayList<>();
+		authResponseDTO.setErrors(errors);
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
+//		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
+//				.thenReturn(new AuthResponseDTO());
 		authController.authenticate(authReqestDTO, error);
 	}
 
@@ -127,6 +162,9 @@ public class InternalAuthControllerTest {
 	public void TestAuthIdException()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		authReqestDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		authController.authenticate(authReqestDTO, error);
@@ -136,6 +174,9 @@ public class InternalAuthControllerTest {
 	public void TestAuthIdException2()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		authReqestDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error);
@@ -148,6 +189,14 @@ public class InternalAuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		List<AuthError> errors = new ArrayList<>();
+		authResponseDTO.setErrors(errors);
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
 
@@ -158,9 +207,16 @@ public class InternalAuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setDemo(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		authResponseDTO.setErrors(new ArrayList<>());
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
-	
+
 	@Test
 	public void TestValidPinRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
@@ -168,6 +224,13 @@ public class InternalAuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setPin(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		authResponseDTO.setErrors(new ArrayList<>());
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
 
@@ -210,6 +273,14 @@ public class InternalAuthControllerTest {
 
 		request.setBiometrics(bioIdentityList);
 		authRequestDTO.setRequest(request);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		authResponseDTO.setResponse(response);
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+				.thenReturn(authResponseDTO);
+		List<AuthError> errors = new ArrayList<>();
+		authResponseDTO.setErrors(errors);
 		authController.authenticate(authRequestDTO, error);
 	}
 

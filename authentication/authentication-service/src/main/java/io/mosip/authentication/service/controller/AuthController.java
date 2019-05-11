@@ -123,59 +123,53 @@ public class AuthController {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} finally {
 			AuthTypeDTO requestedAuthType = authrequestdto.getRequestedAuth();
-			if (requestedAuthType != null) {
-				boolean isStatus = authResponsedto != null && authResponsedto.getResponse() != null
-						&& authResponsedto.getResponse().isAuthStatus();
-				String uin = authrequestdto.getIndividualId();
-				Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE,
-						Boolean.class);
-				String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
-				String idType = authrequestdto.getIndividualIdType();
-				IdType actualidType = null;
-				if (idType != null && !idType.isEmpty()) {
-					actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
-					if (requestedAuthType.isOtp()) {
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-								env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-								"OTP Authentication status : " + isStatus);
-						auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-								auditHelper.getUinorVid(authrequestdto), actualidType, AuditModules.OTP_AUTH.getDesc());
-						AutnTxn authTxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.OTP_AUTH,
-								staticTokenId, isStatus);
-						idAuthService.saveAutnTxn(authTxn);
-					}
-					if (requestedAuthType.isPin()) {
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-								env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-								"Pin Authentication  status :" + isStatus);
-						auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-								auditHelper.getUinorVid(authrequestdto),
-								authrequestdto.getIndividualIdType().equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN
-										: IdType.VID,
-								AuditModules.PIN_AUTH.getDesc());
-						AutnTxn authtxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.STATIC_PIN_AUTH,
-								staticTokenId, isStatus);
-						idAuthService.saveAutnTxn(authtxn);
-					}
-					if (requestedAuthType.isDemo()) {
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-								env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-								"Demographic Authentication status : " + isStatus);
-						auditHelper.audit(AuditModules.DEMO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-								auditHelper.getUinorVid(authrequestdto), actualidType,
-								AuditModules.DEMO_AUTH.getDesc());
-						AutnTxn authtxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.DEMO_AUTH,
-								staticTokenId, isStatus);
-						idAuthService.saveAutnTxn(authtxn);
-					}
-					if (requestedAuthType.isBio()) {
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
-								env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
-								"BioMetric Authentication status :" + statusInfo);
-						saveAndAuditBioAuthTxn(authrequestdto, true, auditHelper.getUinorVid(authrequestdto),
-								actualidType, isStatus, staticTokenId);
-					}
-				}
+			boolean isStatus = authResponsedto != null && authResponsedto.getResponse() != null
+					&& authResponsedto.getResponse().isAuthStatus();
+			String uin = authrequestdto.getIndividualId();
+			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
+			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
+			String idType = authrequestdto.getIndividualIdType();
+			IdType actualidType = null;
+			actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+			if (requestedAuthType.isOtp()) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+						"OTP Authentication status : " + isStatus);
+				auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						auditHelper.getUinorVid(authrequestdto), actualidType, AuditModules.OTP_AUTH.getDesc());
+				AutnTxn authTxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.OTP_AUTH, staticTokenId,
+						isStatus);
+				idAuthService.saveAutnTxn(authTxn);
+			}
+			if (requestedAuthType.isPin()) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+						"Pin Authentication  status :" + isStatus);
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						auditHelper.getUinorVid(authrequestdto),
+						authrequestdto.getIndividualIdType().equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN
+								: IdType.VID,
+						AuditModules.PIN_AUTH.getDesc());
+				AutnTxn authtxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.STATIC_PIN_AUTH,
+						staticTokenId, isStatus);
+				idAuthService.saveAutnTxn(authtxn);
+			}
+			if (requestedAuthType.isDemo()) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+						"Demographic Authentication status : " + isStatus);
+				auditHelper.audit(AuditModules.DEMO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						auditHelper.getUinorVid(authrequestdto), actualidType, AuditModules.DEMO_AUTH.getDesc());
+				AutnTxn authtxn = auditHelper.createAuthTxn(authrequestdto, uin, RequestType.DEMO_AUTH, staticTokenId,
+						isStatus);
+				idAuthService.saveAutnTxn(authtxn);
+			}
+			if (requestedAuthType.isBio()) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+						env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,
+						"BioMetric Authentication status :" + statusInfo);
+				saveAndAuditBioAuthTxn(authrequestdto, true, auditHelper.getUinorVid(authrequestdto), actualidType,
+						isStatus, staticTokenId);
 			}
 
 		}

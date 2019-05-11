@@ -107,6 +107,13 @@ public class AuthControllerTest {
 	public void showRequestValidator()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		requestedAuth.setBio(false);
+		requestedAuth.setDemo(true);
+		requestedAuth.setPin(true);
+		authReqDTO.setRequestedAuth(requestedAuth);
+		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
@@ -117,6 +124,13 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
+		authReqDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		requestedAuth.setBio(false);
+		requestedAuth.setDemo(true);
+		requestedAuth.setPin(true);
+		authReqDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
@@ -127,6 +141,13 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		requestedAuth.setBio(false);
+		requestedAuth.setDemo(true);
+		requestedAuth.setPin(true);
+		authReqDTO.setRequestedAuth(requestedAuth);
+		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456")).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
 
