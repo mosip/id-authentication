@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,8 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.integration.IdTemplateManager;
-import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.dto.MailRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -37,8 +36,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 
+@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = OTPManagerTest.class)
+//@SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class NotificationManagerTest {
 

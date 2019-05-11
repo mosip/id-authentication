@@ -124,6 +124,7 @@ public class KycControllerTest {
 	public void showProcessKycValidator()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
@@ -139,6 +140,7 @@ public class KycControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setVersion("1.1");
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
@@ -176,7 +178,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -215,6 +216,7 @@ public class KycControllerTest {
 	public void processKycFailure()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -250,7 +252,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		kycResponseDTO.setStaticToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 

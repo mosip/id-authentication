@@ -37,23 +37,18 @@ public class IdRepoManager {
 	private static final String ERRORS = "errors";
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
-	
+
 	private static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
 
-
-
 	private static final String REG_ID = "rid";
-
-
 
 	/**
 	 * The Constant Id Repo Errors
 	 */
 	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
-			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-	
-	
-	
+			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+			IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+
 	/**
 	 * The Rest Helper
 	 */
@@ -83,7 +78,7 @@ public class IdRepoManager {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
-		RestRequestDTO buildRequest = new RestRequestDTO();
+		RestRequestDTO buildRequest;
 		Map<String, Object> response = null;
 
 		try {
@@ -98,8 +93,8 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue())
-					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(IdAuthCommonConstants.STATUS))) {
+			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
+					(String) ((Map<String, Object>) response.get("response")).get(IdAuthCommonConstants.STATUS))) {
 				response.put("uin", uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
@@ -115,7 +110,7 @@ public class IdRepoManager {
 							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
 									&& ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
-					}  else {
+					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
 					}
@@ -127,80 +122,79 @@ public class IdRepoManager {
 		}
 		return response;
 	}
-	
-	public String  getRIDByUID(String idvId) throws IdAuthenticationBusinessException {
-		RestRequestDTO buildRequest =null;
+
+	public String getRIDByUID(String idvId) throws IdAuthenticationBusinessException {
+		RestRequestDTO buildRequest = null;
 		String rid = null;
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("appId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			params.put("rid",idvId);
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.USERID_RID, null,
-						Map.class);
-			
+			params.put("rid", idvId);
+			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.USERID_RID, null, Map.class);
+
 			buildRequest.setPathVariables(params);
-			Map<String,Object> ridMap = restHelper.requestSync(buildRequest);
-			rid=(String)((Map<String,Object>)ridMap.get("response")).get("rid");
+			Map<String, Object> ridMap = restHelper.requestSync(buildRequest);
+			rid = (String) ((Map<String, Object>) ridMap.get("response")).get("rid");
 		} catch (RestServiceException e) {
 			Optional<Object> responseBody = e.getResponseBody();
-		if (responseBody.isPresent()) {
-			Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
-			if (idrepoMap.containsKey(ERRORS)) {
-				List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
-				if (!idRepoerrorList.isEmpty()
-						&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
-								&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String)map.get(ERROR_CODE)))) {
-					throw new IdAuthenticationBusinessException(USER_ID_NOTEXIST_ERRORCODE,USER_ID_NOTEXIST_ERRORMSG);
-				}
-				else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
-							e);
+			if (responseBody.isPresent()) {
+				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+				if (idrepoMap.containsKey(ERRORS)) {
+					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
+					if (!idRepoerrorList.isEmpty()
+							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+									&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
+						throw new IdAuthenticationBusinessException(USER_ID_NOTEXIST_ERRORCODE,
+								USER_ID_NOTEXIST_ERRORMSG);
+					} else {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
+								e);
+					}
 				}
 			}
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);} 
-		
+
 		catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return rid;
 	}
-	
-	public Map<String, Object>  getUINByRID(String regID) throws IdAuthenticationBusinessException {
-		RestRequestDTO buildRequest =null;
-		Map<String,Object> uinMap=null;
+
+	public Map<String, Object> getUINByRID(String regID) throws IdAuthenticationBusinessException {
+		RestRequestDTO buildRequest = null;
+		Map<String, Object> uinMap = null;
 		try {
 			Map<String, String> params = new HashMap<>();
-			params.put("rid",regID);
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN, null,
-						Map.class);
+			params.put("rid", regID);
+			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN, null, Map.class);
 			buildRequest.setPathVariables(params);
-			 uinMap = restHelper.requestSync(buildRequest);
+			uinMap = restHelper.requestSync(buildRequest);
 		} catch (RestServiceException e) {
 			Optional<Object> responseBody = e.getResponseBody();
-		if (responseBody.isPresent()) {
-			Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
-			if (idrepoMap.containsKey(ERRORS)) {
-				List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
-				
-				if (!idRepoerrorList.isEmpty()
-						&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
-								&& IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode().equalsIgnoreCase((String)map.get(ERROR_CODE)))) {
-					throw new IdAuthenticationBusinessException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),String.format
-							(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							REG_ID));
-				}
-				else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
-							e);
+			if (responseBody.isPresent()) {
+				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+				if (idrepoMap.containsKey(ERRORS)) {
+					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
+
+					if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream()
+							.anyMatch(map -> map.containsKey(ERROR_CODE) && IdRepoErrorConstants.INVALID_INPUT_PARAMETER
+									.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
+						throw new IdAuthenticationBusinessException(
+								IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+										REG_ID));
+					} else {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
+								e);
+					}
 				}
 			}
-		}
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);} catch (IDDataValidationException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return uinMap;
 	}
-	
 
 }

@@ -1,5 +1,6 @@
 package io.mosip.authentication.otp.service.impl;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.velocity.exception.ParseErrorException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,12 +33,14 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.OtpErrorConstants;
+import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -45,6 +48,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
@@ -68,13 +72,7 @@ public class OTPServiceImplTest {
 	IdTemplateManager idTemplateService;
 
 	@InjectMocks
-	private IdInfoHelper idInfoHelper;
-
-	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
-
-	@Mock
-	NotificationServiceImpl notificationService;
 
 	@InjectMocks
 	private OTPServiceImpl otpServiceImpl;
@@ -94,21 +92,22 @@ public class OTPServiceImplTest {
 	@Mock
 	private RestHelper restHelper;
 
+	@InjectMocks
+	private IdInfoHelper idInfoHelper;
+
 	@Autowired
 	Environment env;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
-		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(otpServiceImpl, "otpManager", otpManager);
-		ReflectionTestUtils.setField(notificationService, "env", env);
-		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateService);
+		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(otpManager, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
-		ReflectionTestUtils.setField(otpServiceImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
 	}
 
@@ -131,22 +130,6 @@ public class OTPServiceImplTest {
 		map.put("otp", "123456");
 		map.put("status", "success");
 		map.put("messaage", "otp_generated");
-		response.setResponse(map);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
-		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestOtpisNull() throws RestServiceException, IdAuthenticationBusinessException {
-		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
-		RestRequestDTO value = getRestDto();
-		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setOtp(null);
-		ResponseWrapper<Map> response = new ResponseWrapper<>();
-		Map<String, Object> map = new HashMap<>();
-		map.put("otp", null);
 		response.setResponse(map);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
@@ -186,11 +169,15 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
-		ResponseWrapper<Map> response = new ResponseWrapper<>();
-		Map<String, Object> map = new HashMap<>();
-		map.put("otp", "123456");
-		response.setResponse(map);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+		ResponseWrapper<OtpGeneratorResponseDto> response = new ResponseWrapper<>();
+		List<ServiceError> errors = new ArrayList<>();
+		ServiceError serviceError = new ServiceError();
+		serviceError.setErrorCode(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode());
+		serviceError.setMessage(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorMessage());
+		errors.add(serviceError);
+		response.setErrors(errors);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 
@@ -245,14 +232,23 @@ public class OTPServiceImplTest {
 
 	}
 
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestParseException() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(otpServiceImpl, "createAuthTxn", "426789089018", IdType.UIN.getType(),
+					"426789089018", "test", "1234567890", "true", "comment", RequestType.DEMO_AUTH);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+
+	}
+
 	private RestRequestDTO getRestDto() {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		restRequestDTO.setHttpMethod(HttpMethod.POST);
 		restRequestDTO.setUri("http://localhost:8083/otpmanager/otps");
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("test");
 		restRequestDTO.setRequestBody(otpGeneratorRequestDto);
-		restRequestDTO.setResponseType(OtpGeneratorResponseDto.class);
 		restRequestDTO.setTimeout(23);
 		return restRequestDTO;
 	}
@@ -263,7 +259,7 @@ public class OTPServiceImplTest {
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("1234567890");
 		ArrayList<String> channelList = new ArrayList<String>();
-		channelList.add("PHONE");
+		channelList.add("MOBILE");
 		channelList.add("EMAIL");
 		otpRequestDto.setOtpChannel(channelList);
 		otpRequestDto.setIndividualId("2345678901234");
