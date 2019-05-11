@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateqrcode.controller;
+/*package io.mosip.preregistration.generateqrcode.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,18 +34,18 @@ import io.mosip.preregistration.generateqrcode.service.util.GenerateQRcodeServic
 public class GenerateQRcodeControllerTest {
 
 
-	/**
+	*//**
 	 * Autowired reference for {@link #MockMvc}
-	 */
+	 *//*
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
 	private ObjectMapper mapper;
 
-	/**
+	*//**
 	 * /** Creating Mock Bean for NotificationService
-	 */
+	 *//*
 	@MockBean
 	private GenerateQRcodeService service;
 
@@ -74,10 +74,10 @@ public class GenerateQRcodeControllerTest {
 		
 	}
 	
-	/**
+	*//**
 	 * This test method is for success qrCodeGeneration 
 	 * @throws Exception
-	 */
+	 *//*
 	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void qrCodeGenerationTest() throws Exception {
@@ -92,3 +92,4 @@ public class GenerateQRcodeControllerTest {
 
 	}
 }
+*/
