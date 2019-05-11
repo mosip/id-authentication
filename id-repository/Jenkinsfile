@@ -12,7 +12,7 @@ node {
  def registryCredentials = env.REGISTRY_CREDENTIALS
  def gitUrl = env.GIT_URL
  def gitCredentials = env.GIT_CREDENTIALS
- k8DevContext = 'dev-k8-cluster'
+ def k8DevContext = 'mosip-dev-cluster'
  updatedServices = []
  updatedDockerImages = []
  
