@@ -142,7 +142,7 @@ spec:
         backend:
           serviceName: id-repository-identity-service
           servicePort: 8090
-       - path: /idrepository/v1/ 
+      - path: /idrepository/v1/ 
         backend:
           serviceName: id-repository-vid-service
           servicePort: 8091 
