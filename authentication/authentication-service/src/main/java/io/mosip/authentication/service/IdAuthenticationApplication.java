@@ -14,7 +14,7 @@ import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
@@ -40,8 +40,6 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -51,7 +49,7 @@ import org.springframework.context.annotation.FilterType;
 @SpringBootApplication
 @Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
 		PDFGeneratorImpl.class, DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class,
-		RestHelper.class, RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class,
+		RestHelperImpl.class, RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class,
 		IdRepoManager.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class,
 		BiometricProviderFactory.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class,

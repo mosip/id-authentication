@@ -36,7 +36,7 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
@@ -134,7 +134,7 @@ public class AuthFacadeImplTest {
 	private RestRequestFactory restRequestFactory;
 
 	@InjectMocks
-	private RestHelper restHelper;
+	private RestHelperImpl restHelper;
 
 	@InjectMocks
 	private OTPManager otpManager;
