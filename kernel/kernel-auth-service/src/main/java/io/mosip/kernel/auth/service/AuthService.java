@@ -35,9 +35,9 @@ public interface AuthService extends AuthZService, AuthNService {
 
 	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception;
 
-	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception;
+	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception;
 
-	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception;
+	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception;
 	
 	public UserNameDto getUserNameBasedOnMobileNumber(String appId,String mobileNumber) throws Exception;
 

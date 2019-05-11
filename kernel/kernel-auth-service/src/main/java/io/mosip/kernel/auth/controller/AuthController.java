@@ -346,7 +346,7 @@ public class AuthController {
 	 * @throws Exception
 	 */
 	@ResponseFilter
-	@GetMapping(value = "rid/{appid}/{userid}")
+	@GetMapping(value = "/rid/{appid}/{userid}")
 	public ResponseWrapper<RIdDto> getRId(@PathVariable("appid") String appId, @PathVariable("userid") String userId)
 			throws Exception {
 		ResponseWrapper<RIdDto> responseWrapper = new ResponseWrapper<>();
@@ -367,7 +367,7 @@ public class AuthController {
 	 *             - exception is thrown if
 	 */
 	@ResponseFilter
-	@GetMapping(value = "unblock/{appid}/{userid}")
+	@GetMapping(value = "/unblock/{appid}/{userid}")
 	public ResponseWrapper<AuthZResponseDto> getUserName(@PathVariable("appid") String appId,
 			@PathVariable("userid") String userId) throws Exception {
 		AuthZResponseDto authZResponseDto = authService.unBlockUser(userId, appId);
@@ -377,27 +377,27 @@ public class AuthController {
 	}
 
 	@ResponseFilter
-	@PostMapping(value = "changepassword")
-	public ResponseWrapper<AuthZResponseDto> changePassword(@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
+	@PostMapping(value = "/changepassword/{appid}")
+	public ResponseWrapper<AuthZResponseDto> changePassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
 			throws Exception {
-		AuthZResponseDto mosipUserDto = authService.changePassword(passwordDto.getRequest());
+		AuthZResponseDto mosipUserDto = authService.changePassword(appId,passwordDto.getRequest());
 		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;
 	}
 
 	@ResponseFilter
-	@PostMapping(value = "resetpassword")
-	public ResponseWrapper<AuthZResponseDto> resetPassword(@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
+	@PostMapping(value = "/resetpassword/{appid}")
+	public ResponseWrapper<AuthZResponseDto> resetPassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
 			throws Exception {
-		AuthZResponseDto mosipUserDto = authService.resetPassword(passwordDto.getRequest());
+		AuthZResponseDto mosipUserDto = authService.resetPassword(appId,passwordDto.getRequest());
 		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;
 	}
 
 	@ResponseFilter
-	@GetMapping(value = "username/{appid}/{mobilenumber}")
+	@GetMapping(value = "/username/{appid}/{mobilenumber}")
 	public ResponseWrapper<UserNameDto> getUsernameBasedOnMobileNumber(@PathVariable("mobilenumber") String mobile,
 			@PathVariable("appid") String appId) throws Exception {
 		UserNameDto userNameDto = authService.getUserNameBasedOnMobileNumber(appId, mobile);

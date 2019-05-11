@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,7 @@ import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 
@@ -71,22 +77,19 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(userId);
-		response = callAuthManagerService(urlBuilder.toString());
-		UserNameDto userNameDto = getUserDetailFromResponse(response);
+		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
+		return getUserDetailFromResponse(response);
 
-		return userNameDto;
 	}
-
-	
 
 	@Override
 	public StatusResponseDto unBlockUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
-		response = callAuthManagerService(urlBuilder.toString());
-		StatusResponseDto unBlockResponseDto = getSuccessResponse(response);
-		return unBlockResponseDto;
+		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
+		return getSuccessResponse(response);
+
 	}
 
 	private StatusResponseDto getSuccessResponse(String responseBody) {
@@ -113,35 +116,39 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Override
 	public StatusResponseDto changePassword(PasswordDto passwordDto) {
-		String response = null;
+
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(changePassword + "registrationclient/");
-		response = callAuthManagerService(urlBuilder.toString());
+		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getHttpRequest(passwordDto);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, passwordHttpEntity);
 
 		return getSuccessResponse(response);
 	}
 
 	@Override
 	public StatusResponseDto resetPassword(PasswordDto passwordDto) {
-		String response = null;
+
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(resetPassword + "registrationclient/");
-		response = callAuthManagerService(urlBuilder.toString());
+		urlBuilder.append(authManagerBaseUrl).append(resetPassword + "registrationclient");
+		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getHttpRequest(passwordDto);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, passwordHttpEntity);
 		return getSuccessResponse(response);
 	}
 
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(mobile);
-		String response = callAuthManagerService(urlBuilder.toString());
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient").append(mobile);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}
-	
-	private String callAuthManagerService(String url) {
+
+	private String callAuthManagerService(String url, HttpMethod httpMethod,
+			HttpEntity<RequestWrapper<?>> requestEntity) {
 		String response = null;
 		try {
-			response = restTemplate.getForObject(url, String.class);
+			ResponseEntity<String> responeEntity = restTemplate.exchange(url, httpMethod, requestEntity, String.class);
+			response = responeEntity.getBody();
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -187,8 +194,16 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 		return userNameDto;
 	}
-	
-	
-	
+
+	private HttpEntity<RequestWrapper<?>> getHttpRequest(PasswordDto passwordDto) {
+		RequestWrapper<PasswordDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId("ADMIN_REQUEST");
+		requestWrapper.setVersion("V1.0");
+		requestWrapper.setRequest(passwordDto);
+		HttpHeaders syncDataRequestHeaders = new HttpHeaders();
+		syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
+
+	}
 
 }

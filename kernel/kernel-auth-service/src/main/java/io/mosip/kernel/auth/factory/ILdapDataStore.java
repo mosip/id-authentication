@@ -92,7 +92,7 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
+		LdapConnection connection = new LdapNetworkConnection("localhost",
 				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
@@ -101,7 +101,8 @@ public class ILdapDataStore implements IDataStore {
 		@SuppressWarnings("rawtypes")
 		Hashtable env = new Hashtable();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		//env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		LdapContext context = new InitialLdapContext(env, null);
@@ -427,12 +428,12 @@ public class ILdapDataStore implements IDataStore {
 			Dn userdn = createUserDn(passwordDto.getUserId());
 			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
 			Objects.requireNonNull(mosipUserDto);
-			String ldapPassword = getPassword(mosipUserDto.getUserId());
-			System.out.println(ldapPassword);
+			//String ldapPassword = getPassword(mosipUserDto.getUserId());
+			//System.out.println(ldapPassword);
 			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
 					passwordDto.getNewPassword());
-			validatePassword(passwordDto.getOldPassword(), mosipUserDto.getUserPassword(), passwordDto.getUserId(),
-					ldapContext);
+			/*validatePassword(passwordDto.getOldPassword(), mosipUserDto.getUserPassword(), passwordDto.getUserId(),
+					ldapContext);*/
 			if (!isNotMatching && !passwordDto.getOldPassword().equals(passwordDto.getNewPassword())) {
 				byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
 						LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));

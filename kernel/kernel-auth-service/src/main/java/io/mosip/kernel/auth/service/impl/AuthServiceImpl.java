@@ -377,13 +377,13 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception {
-		return userStoreFactory.getDataStoreBasedOnApp("registrationclient").changePassword(passwordDto);
+	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).changePassword(passwordDto);
 	}
 
 	@Override
-	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
-		return userStoreFactory.getDataStoreBasedOnApp("registrationclient").resetPassword(passwordDto);
+	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).resetPassword(passwordDto);
 	}
 
 	@Override

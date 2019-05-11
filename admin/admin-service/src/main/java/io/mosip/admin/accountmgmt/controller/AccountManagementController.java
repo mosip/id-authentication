@@ -14,6 +14,7 @@ import io.mosip.admin.accountmgmt.dto.PasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.swagger.annotations.Api;
@@ -42,9 +43,12 @@ public class AccountManagementController {
 	 *            the otp channel
 	 * @return the string
 	 */
+	@ResponseFilter
 	@PostMapping("/changepassword")
-	public ResponseWrapper<StatusResponseDto> changePassword(@RequestBody @Valid PasswordDto passwordDto) {
-		return null;
+	public ResponseWrapper<StatusResponseDto> changePassword(@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto) {
+		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.changePassword(passwordDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -56,8 +60,10 @@ public class AccountManagementController {
 	 *            the otp channel
 	 */
 	@PostMapping("/resetPassword")
-	public void resetPassword(@RequestBody PasswordDto passwordDto, String otpChannel) {
-		
+	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<PasswordDto> passwordDto) {
+		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.resetPassword(passwordDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
