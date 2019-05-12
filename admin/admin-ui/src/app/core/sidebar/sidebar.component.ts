@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import * as appConstants from "../../app.constants";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-sidebar",
@@ -12,7 +13,7 @@ export class SidebarComponent implements OnInit {
   selectedItem = 0;
   menuItems = [];
 
-  constructor() {}
+  constructor(private router:Router) {}
 
   ngOnInit() {
     this.menuItems = appConstants.menuItems;
@@ -34,8 +35,15 @@ export class SidebarComponent implements OnInit {
   }
   changeSelection(index: number) {
     this.selectedItem = index;
+    if(this.selectedItem == 1){
+      this.router.navigateByUrl('admin/assetmgmt/assetmanagement');
+    }
+    if(this.selectedItem==0){
+      this.router.navigateByUrl('admin/dashboard');
+    }
+
   }
   getDisplay() {
-    if (window.innerWidth > 700) return "block";
+    if (window.innerWidth > 770) return "block";
   }
 }

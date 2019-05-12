@@ -12,7 +12,7 @@ export class ParentComponent implements OnInit {
   ngOnInit() {
   }
   getWidth(){
-    if(window.innerWidth <= 700)
+    if(window.innerWidth <= 770)
     return '12%';
   }
 }

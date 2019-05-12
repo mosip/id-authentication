@@ -53,12 +53,12 @@
         display: block !important;
     }
 } */
-@media(min-width:700px){
+@media(min-width:770px){
     .toggle{
         display:none;
     }
 }
-@media(max-width:700px){
+@media(max-width:770px){
     #toggle-forward{
         display:none;
     }

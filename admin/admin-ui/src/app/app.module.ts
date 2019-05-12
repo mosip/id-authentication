@@ -10,6 +10,7 @@ import { NavigationModule } from './navigation/navigation.module';
 import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
+import { AssetmgmtModule } from './feature/assetmgmt/assetmgmt.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    UsermgmtModule
+    UsermgmtModule,
+    AssetmgmtModule
   ],
   providers: [],
   bootstrap: [AppComponent]

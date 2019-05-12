@@ -1,25 +1,43 @@
 <div class="auth-container">
   <mat-card class="auth-card">
     <mat-card-content>
-      <form class="auth-form">
+      <form class="auth-form" [formGroup]="authenticationForm">
         <mat-form-field class="input-full-width">
-          <input matInput placeholder="PASSWORD" />
+          <input matInput placeholder="PASSWORD" formControlName="password" />
         </mat-form-field>
+        <div
+          class="validation"
+          *ngIf="
+            authenticationForm.controls['password'].invalid &&
+            authenticationForm.controls['password'].touched
+          "
+        >
+          Password is required
+        </div>
         <div class="forgot-password-link">
           <a>Forgot Password</a>
         </div>
         <mat-form-field class="input-full-width">
-          <input matInput placeholder="ENTER OTP" />
+          <input matInput placeholder="ENTER OTP" formControlName="otp" />
         </mat-form-field>
+        <div
+          class="validation"
+          *ngIf="
+            authenticationForm.controls['otp'].invalid &&
+            authenticationForm.controls['otp'].touched
+          "
+        >
+          OTP must be entered
+        </div>
+        <div class="valid-timer">
+          <span class="valid-text">Valid :</span><span id="timer">02:00</span>
+        </div>
+        <div class="button-container">
+          <button mat-raised-button class="login-button" (click)="onSubmit()" [disabled]="authenticationForm.invalid">
+            Login
+          </button>
+        </div>
       </form>
-      <div class="valid-timer">
-       <span class="valid-text">Valid :</span><span id="timer">02:00</span>
-      </div>
-      <div class="button-container">
-        <button mat-raised-button class="login-button" (click)="onSubmit()">
-          Login
-        </button>
-      </div>
     </mat-card-content>
   </mat-card>
 </div>

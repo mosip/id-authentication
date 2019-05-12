@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-authentication',
@@ -12,12 +13,17 @@ export class AuthenticationComponent implements OnInit {
   seconds: number;
   counter: number;
   interval: any;
-  constructor(private router: Router) {
+  authenticationForm: FormGroup;
+  constructor(private router: Router,private formBuilder:FormBuilder) {
     
    }
 
   ngOnInit(): void {
     this.startCountdown(120);
+    this.authenticationForm = this.formBuilder.group({
+      'password':['',Validators.compose([Validators.required])],
+      'otp':['',Validators.compose([Validators.required])]
+    })
   }
   ngOnDestroy(): void {
     clearInterval(this.interval);   
