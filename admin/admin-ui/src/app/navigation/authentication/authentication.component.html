@@ -15,7 +15,9 @@
           Password is required
         </div>
         <div class="forgot-password-link">
+        <div class="forgot-password-link" (click)="onForgotPassword()">
           <a>Forgot Password</a>
+        </div>
         </div>
         <mat-form-field class="input-full-width">
           <input matInput placeholder="ENTER OTP" formControlName="otp" />

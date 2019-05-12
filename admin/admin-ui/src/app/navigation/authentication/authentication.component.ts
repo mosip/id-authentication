@@ -47,4 +47,7 @@ export class AuthenticationComponent implements OnInit {
    onSubmit() {
    this.router.navigateByUrl('admin/dashboard');
    }
+   onForgotPassword() {
+    this.router.navigateByUrl('forgotpassword');
+    }
 }

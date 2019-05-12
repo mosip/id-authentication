@@ -12,6 +12,8 @@ import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
 import { AssetmgmtModule } from './feature/assetmgmt/assetmgmt.module';
 
+import { UserregistrationService } from './shared/services/userregistration.service';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent
@@ -25,9 +27,10 @@ import { AssetmgmtModule } from './feature/assetmgmt/assetmgmt.module';
     BrowserAnimationsModule,
     MaterialModule,
     UsermgmtModule,
-    AssetmgmtModule
+    AssetmgmtModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [UserregistrationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
