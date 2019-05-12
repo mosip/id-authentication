@@ -38,7 +38,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
+import io.mosip.kernel.syncdata.service.SyncJobDefService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -55,7 +55,7 @@ public class SyncDataServiceTest {
 	RestTemplate restTemplate;
 
 	@MockBean
-	private RegistrationCenterUserService registrationCenterUserService;
+	private SyncJobDefService registrationCenterUserService;
 
 	@MockBean
 	MachineRepository machineRespository;
