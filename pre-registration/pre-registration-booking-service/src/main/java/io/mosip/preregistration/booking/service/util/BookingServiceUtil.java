@@ -35,14 +35,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
-import io.mosip.kernel.core.exception.ErrorResponse;
-import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
@@ -156,11 +150,12 @@ public class BookingServiceUtil {
 				throw new MasterDataNotAvailableException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity.getBody().getErrors().get(0).getMessage());
 			}
+			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
 			if (regCenter == null || regCenter.isEmpty()) {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 			}
-			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
+			
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
@@ -239,7 +234,6 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilderString = uriBuilder.build().encode().toUriString();
-			// uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilderString);
 			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString,
 					HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {

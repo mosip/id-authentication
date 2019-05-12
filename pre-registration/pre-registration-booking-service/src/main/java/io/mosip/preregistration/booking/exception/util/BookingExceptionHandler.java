@@ -52,7 +52,6 @@ import io.mosip.preregistration.core.util.GenericUtil;
  * 
  * @author Kishan Rathore
  * @author Jagadishwari
- * @author Ravi C. Balaji
  * @since 1.0.0
  *
  */

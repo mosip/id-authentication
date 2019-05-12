@@ -15,7 +15,7 @@ public final class IdRepoLogger {
 	private static String uin;
 	
 	private static String rid;
-	
+	 
 	private static String vid;
 
 	public static String getVid() {
