@@ -98,8 +98,8 @@ public class ILdapDataStore implements IDataStore {
 	}
 
 	private LdapContext getContext() throws NamingException {
-		@SuppressWarnings("rawtypes")
-		Hashtable env = new Hashtable();
+		
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		//env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
@@ -428,8 +428,8 @@ public class ILdapDataStore implements IDataStore {
 			Dn userdn = createUserDn(passwordDto.getUserId());
 			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
 			Objects.requireNonNull(mosipUserDto);
-			//String ldapPassword = getPassword(mosipUserDto.getUserId());
-			//System.out.println(ldapPassword);
+			String ldapPassword = getPassword(mosipUserDto.getUserId());
+			System.out.println(ldapPassword);
 			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
 					passwordDto.getNewPassword());
 			/*validatePassword(passwordDto.getOldPassword(), mosipUserDto.getUserPassword(), passwordDto.getUserId(),
@@ -578,7 +578,7 @@ public class ILdapDataStore implements IDataStore {
 
 	public String getPassword(String userid) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
-		Dn searchBase = new Dn("uid=" + userid + "ou=people,c=morocco");
+		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson))";
 		EntryCursor peoplesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 		Entry detail = peoplesData.get();
