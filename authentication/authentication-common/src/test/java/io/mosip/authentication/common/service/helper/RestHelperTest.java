@@ -76,7 +76,7 @@ public class RestHelperTest {
 
 	/** The rest helper. */
 	@InjectMocks
-	RestHelper restHelper;
+	RestHelperImpl restHelper;
 
 	/** The environment. */
 	@Autowired

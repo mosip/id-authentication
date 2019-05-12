@@ -49,11 +49,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.mosip.idrepository</groupId>
 			<artifactId>id-repository-core</artifactId>
 			<version>${project.version}</version>

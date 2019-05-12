@@ -131,7 +131,7 @@ export class DashBoardComponent implements OnInit {
         console.log('applicants', applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
-          applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
+          applicants[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] ===
             appConstants.ERROR_CODES.noApplicantEnrolled
         ) {
           localStorage.setItem('newApplicant', 'true');
@@ -448,7 +448,11 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      error => console.log('response from modify data', error),
+      error => {
+        console.log('response from modify data', error);
+        this.disableModifyDataButton = false;
+        this.onError();
+      },
       () => {
         this.addtoNameList(user);
         console.log(this.bookingService.getNameList());

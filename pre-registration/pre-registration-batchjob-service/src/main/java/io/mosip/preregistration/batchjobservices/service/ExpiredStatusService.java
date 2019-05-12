@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -55,6 +55,8 @@ public class ExpiredStatusService {
 
 		LocalDate currentDate = LocalDate.now();
 		MainResponseDTO<String> response = new MainResponseDTO<>();
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
 		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
 		try {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
@@ -73,11 +75,9 @@ public class ExpiredStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
 		response.setResponsetime(getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		response.setResponse("Registration appointment status updated to expired successfully");
 		return response;
 	}

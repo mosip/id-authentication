@@ -1,18 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.mosip.idrepository</groupId>
-    <artifactId>id-repository-parent</artifactId>
-    <version>0.11.1</version>
-  </parent>
-  <artifactId>id-repository-vid-service</artifactId>
-  <name>vid-service</name>
-  <description>Virtual ID Service</description>
-  <dependencies>
-  	<dependency>
-  		<groupId>io.mosip.idrepository</groupId>
-  		<artifactId>id-repository-core</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.mosip.idrepository</groupId>
+		<artifactId>id-repository-parent</artifactId>
+		<version>0.11.1</version>
+	</parent>
+	<artifactId>id-repository-vid-service</artifactId>
+	<name>vid-service</name>
+	<description>Virtual ID Service</description>
+	<dependencies>
+		<dependency>
+			<groupId>io.mosip.idrepository</groupId>
+			<artifactId>id-repository-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-vid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>

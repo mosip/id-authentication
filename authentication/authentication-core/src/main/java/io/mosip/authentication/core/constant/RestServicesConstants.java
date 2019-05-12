@@ -39,6 +39,10 @@ public enum RestServicesConstants {
 	
 	TITLE_SERVICE("id-masterdata-title-service"),
 	
+	USERID_RID("userid-rid"),
+	
+	RID_UIN("rid-uin"),
+	
 	TOKEN_ID_GENERATOR("token-id-generator");
 
 	/** The service name. */

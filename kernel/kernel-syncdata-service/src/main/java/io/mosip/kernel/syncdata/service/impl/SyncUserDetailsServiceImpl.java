@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,10 +24,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.syncdata.constant.RegistrationCenterUserErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
@@ -34,10 +37,12 @@ import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.UserDetailRequestDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
-import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 
@@ -61,10 +66,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Autowired
 	ObjectMapper objectMapper;
 
-	/** The registration center user service. */
-	@Autowired
-	RegistrationCenterUserService registrationCenterUserService;
-
 	/** The auth user details base uri. */
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri:https://dev.mosip.io/authmanager/v1.0}")
 	private String authUserDetailsBaseUri;
@@ -81,6 +82,9 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
+	@Autowired
+	RegistrationCenterUserRepository registrationCenterUserRepo;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,8 +98,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 		SyncUserDetailDto syncUserDetailDto = null;
 		ResponseEntity<String> response = null;
-		RegistrationCenterUserResponseDto registrationCenterResponseDto = registrationCenterUserService
-				.getUsersBasedOnRegistrationCenterId(regId);
+		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regId);
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
 				.getRegistrationCenterUsers();
 		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
@@ -141,7 +144,8 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	/**
 	 * Gets the http request.
 	 *
-	 * @param userIds the user ids
+	 * @param userIds
+	 *            the user ids
 	 * @return {@link HttpEntity}
 	 */
 	private HttpEntity<RequestWrapper<?>> getHttpRequest(List<String> userIds) {
@@ -160,7 +164,8 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	/**
 	 * Gets the user detail from response.
 	 *
-	 * @param responseBody the response body
+	 * @param responseBody
+	 *            the response body
 	 * @return {@link UserDetailResponseDto}
 	 */
 	private UserDetailResponseDto getUserDetailFromResponse(String responseBody) {
@@ -184,6 +189,29 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		}
 
 		return userDetailResponseDto;
+	}
+
+	public RegistrationCenterUserResponseDto getUsersBasedOnRegistrationCenterId(String regCenterId) {
+		List<RegistrationCenterUser> registrationCenterUsers = null;
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = null;
+		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+		try {
+			registrationCenterUsers = registrationCenterUserRepo.findByRegistrationCenterUserByRegCenterId(regCenterId);
+		} catch (DataAccessException | DataAccessLayerException ex) {
+			throw new SyncDataServiceException(
+					RegistrationCenterUserErrorCode.REGISTRATION_USER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_USER_FETCH_EXCEPTION.getErrorMessage());
+		}
+
+		if (registrationCenterUsers.isEmpty()) {
+			throw new DataNotFoundException(
+					RegistrationCenterUserErrorCode.REGISTRATION_USER_DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_USER_DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+
+		registrationCenterUserDtos = MapperUtils.mapAll(registrationCenterUsers, RegistrationCenterUserDto.class);
+		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+		return registrationCenterUserResponseDto;
 	}
 
 }
