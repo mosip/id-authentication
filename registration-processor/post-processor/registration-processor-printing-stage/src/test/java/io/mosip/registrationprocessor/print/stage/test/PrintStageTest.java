@@ -65,6 +65,7 @@ import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.PrintStageApplication;
@@ -140,6 +141,9 @@ public class PrintStageTest {
 	
 	@Mock
 	public Utilities utilities;
+	
+	@Mock
+	public JsonUtil jsonUtil;
 
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
@@ -175,8 +179,8 @@ public class PrintStageTest {
 		System.setProperty("registration.processor.queue.address", "test");
 		System.setProperty("mosip.kernel.xsdstorage-uri", "http://104.211.212.28:51000");
 		System.setProperty("mosip.kernel.xsdfile", "mosip-cbeff.xsd");
-		Map<String, String> map1 = new HashMap<>();
-		map1.put("UIN", "4238135072");
+		Map<String, Integer> map1 = new HashMap<>();
+		map1.put("UIN", 423072);
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utilities.retrieveUIN(any())).thenReturn(jsonObject);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -275,8 +279,6 @@ public class PrintStageTest {
 	public void testPrintStageSuccess() {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
-		List<String> uinList = new ArrayList<>();
-		uinList.add("3051738163");
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getIsValid());
