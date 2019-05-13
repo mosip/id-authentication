@@ -92,6 +92,20 @@ public class ILdapDataStore implements IDataStore {
 				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
+	
+	private LdapContext getContext() throws NamingException {
+
+		Hashtable<String, String> env = new Hashtable<String, String>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		// env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		LdapContext context = new InitialLdapContext(env, null);
+		LdapControl ldapControl = new LdapControl();
+		context.setRequestControls(ldapControl.getControls());
+		return context;
+	}
 
 	@Override
 	public MosipUserDto authenticateUser(LoginUser loginUser) throws Exception {
@@ -366,18 +380,10 @@ public class ILdapDataStore implements IDataStore {
 	@Override
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
 
-		Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
-		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
-		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		LdapContext context = null;
 		AuthZResponseDto authZResponseDto = null;
 		try {
-			context = new InitialLdapContext(env, null);
-			LdapControl ldapControl = new LdapControl();
-			context.setRequestControls(ldapControl.getControls());
-
+			context = getContext();
 			ModificationItem[] modItems = new ModificationItem[2];
 			modItems[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
 					new BasicAttribute(AuthConstant.PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE));
@@ -399,6 +405,192 @@ public class ILdapDataStore implements IDataStore {
 		}
 		return authZResponseDto;
 	}
+
+	@Override
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws NamingException {
+		LdapContext ldapContext = null;
+		AuthZResponseDto authZResponseDto = null;
+		LdapConnection ldapConnection = null;
+		try {
+			ldapContext = getContext();
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+
+		}
+
+		try {
+			ldapConnection = createAnonymousConnection();
+			Dn userdn = createUserDn(passwordDto.getUserId());
+			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
+			Objects.requireNonNull(mosipUserDto);
+			String ldapPassword = getPassword(mosipUserDto.getUserId(), ldapContext);
+			Objects.requireNonNull(ldapPassword);
+			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
+					passwordDto.getNewPassword());
+
+			validateOldPassword(passwordDto.getOldPassword(), ldapPassword);
+
+			if (!isNotMatching && !passwordDto.getOldPassword().equals(passwordDto.getNewPassword())) {
+				byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
+						LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
+
+				ModificationItem[] modItems = new ModificationItem[1];
+				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+						new BasicAttribute("userPassword", newUserPassword));
+				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
+				mosipUserDto.setUserPassword(new String(newUserPassword));
+				authZResponseDto = new AuthZResponseDto();
+				authZResponseDto.setMessage("Successfully changed");
+				authZResponseDto.setStatus("Success");
+			} else {
+				throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
+						AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			ldapContext.close();
+			try {
+				ldapConnection.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return authZResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#resetPassword(io.mosip.kernel.auth.
+	 * entities.PasswordDto)
+	 */
+	@Override
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
+		LdapContext ldapContext = null;
+		AuthZResponseDto authZResponseDto = null;
+		ldapContext = getContext();
+		LdapConnection ldapConnection;
+		ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(passwordDto.getUserId());
+		MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
+		Objects.requireNonNull(mosipUserDto);
+		boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
+				passwordDto.getNewPassword());
+		if (!isNotMatching) {
+			byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
+					LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
+
+			ModificationItem[] modItems = new ModificationItem[1];
+			modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("userPassword", newUserPassword));
+			ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
+			mosipUserDto.setUserPassword(new String(newUserPassword));
+			authZResponseDto = new AuthZResponseDto();
+			authZResponseDto.setMessage("Successfully the password has been reset");
+			authZResponseDto.setStatus("Success");
+			ldapContext.close();
+			ldapConnection.close();
+
+		} else {
+			ldapContext.close();
+			ldapConnection.close();
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
+					AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+		}
+		return authZResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#getUserNameBasedOnMobileNumber(java.
+	 * lang.String)
+	 */
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
+		Dn searchBase = new Dn("ou=people,c=morocco");
+		UserNameDto userNameDto = new UserNameDto();
+		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
+				+ mobileNumber + "))";
+		LdapContext context = getContext();
+		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		if (!searchResult.hasMore()) {
+			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
+		}
+		while (searchResult.hasMore()) {
+			Attributes attributes = searchResult.next().getAttributes();
+			Attribute uid = attributes.get("uid");
+			userNameDto.setUserName((String) uid.get());
+		}
+		context.close();
+		return userNameDto;
+	}
+
+	/**
+	 * @param userid
+	 * @param ldapContext
+	 * @return
+	 * @throws Exception
+	 */
+	private String getPassword(String userid, LdapContext ldapContext) throws Exception {
+		String encryptedPassword = null;
+		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> searchResult = ldapContext.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+		while (searchResult.hasMore()) {
+			SearchResult result = searchResult.next();
+			byte[] encryptedPasswordBytes = (byte[]) result.getAttributes().get("userPassword").get();
+			encryptedPassword = new String(encryptedPasswordBytes);
+
+		}
+		return encryptedPassword;
+	}
+
+	/**
+	 * TBD
+	 * 
+	 * @param oldPassword
+	 * @param hashedPassword
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	private void validateOldPassword(String oldPassword, String hashedPassword) {
+
+		boolean password = PasswordUtil.compareCredentials(oldPassword.getBytes(), hashedPassword.getBytes());
+		if (!password) {
+			throw new AuthManagerException(AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorCode(),
+					AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorMessage());
+		}
+	}
+
+	/**
+	 * Check password matches with either userid or email id. At most 3 letters can
+	 * match with the password.
+	 * 
+	 * @param userId
+	 *            - user id
+	 * @param email
+	 *            - email
+	 * @param password
+	 *            - password
+	 * @return {@link boolean}
+	 */
+	private boolean isNotAMatchWithUserOrEmail(String userId, String email, String password) {
+
+		return (password.contains(userId) || password.contains(email));
+	}
+
+}
 
 	@Override
 	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto){

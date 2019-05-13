@@ -392,6 +392,24 @@ public class AuthServiceImpl implements AuthService {
 	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).unBlockAccount(userId);
 	}
+	
+	@Override
+	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).changePassword(passwordDto);
+	}
+
+	@Override
+	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).resetPassword(passwordDto);
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String appId, String mobileNumber) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp("registrationclient")
+				.getUserNameBasedOnMobileNumber(mobileNumber);
+
+	}
+	
 
 	@Override
 	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
