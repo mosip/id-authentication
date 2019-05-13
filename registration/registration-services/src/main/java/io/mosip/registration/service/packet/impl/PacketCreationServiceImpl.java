@@ -44,7 +44,7 @@ import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -95,7 +95,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private JsonValidator jsonValidator;
 	private static SecureRandom random = new SecureRandom(String.valueOf(5000).getBytes());
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
 	@Autowired

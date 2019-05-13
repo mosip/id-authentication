@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -74,7 +74,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/*
 	 * (non-Javadoc)

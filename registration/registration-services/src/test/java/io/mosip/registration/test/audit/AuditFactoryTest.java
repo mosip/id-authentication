@@ -1,8 +1,14 @@
 package io.mosip.registration.test.audit;
 
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -20,14 +26,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-
-import static org.mockito.Mockito.when;
+import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.entity.AuditLogControl;
+import io.mosip.registration.entity.Registration;
+import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.packet.RegPacketStatusService;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ InetAddress.class, ApplicationContext.class, SessionContext.class })
@@ -38,7 +48,24 @@ public class AuditFactoryTest {
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 	@InjectMocks
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
+
+	@Mock
+	private RegistrationDAO registrationDAO;
+
+	@Mock
+	private RegPacketStatusService regPacketStatusService;
+
+	@Mock
+	private AuditLogControlDAO auditLogControlDAO;
+
+	@Mock
+	Map<String, Object> applicationMap;
+
+	@Mock
+	private GlobalParamService globalParamService;
+	@Mock
+	io.mosip.registration.context.ApplicationContext context;
 
 	@Before
 	public void initialize() throws Exception {
@@ -70,6 +97,67 @@ public class AuditFactoryTest {
 		when(auditHandler.addAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
 
 		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "id", "ref");
+	}
+	
+	
+
+	@Before
+	public void intiate() {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn("45");
+		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.AUDIT_LOG_DELETION_CONFIGURED_DAYS, "5");
+		
+		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		
+		auditFactory.setBaseGlobalMap(applicationMap);
+
+	}
+
+	@Test
+	public void deleteAuditLogsSuccessTest() {
+		
+	
+		List<AuditLogControl> list = new LinkedList<>();
+		AuditLogControl auditLogControl = new AuditLogControl();
+		auditLogControl.setRegistrationId("REG123456");
+		list.add(auditLogControl);
+		
+		List<Registration> registrations = new LinkedList<>();
+		Registration registration = new Registration();
+		registration.setId("REG123456");
+		registrations.add(registration);
+		
+		
+		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenReturn(list);
+		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(registrations);
+		
+		Mockito.doNothing().when(regPacketStatusService).deleteRegistrations(registrations);
+		
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_SUCESS_MSG, auditFactory.deleteAuditLogs().getSuccessResponseDTO().getMessage());
+		list.clear();
+		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenReturn(list);
+		
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_EMPTY_MSG, auditFactory.deleteAuditLogs().getSuccessResponseDTO().getMessage());
+		
+	}
+	
+	
+	@Test
+	public void auditLogsDeletionFailureTest() {
+		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn(null);
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditFactory.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
+		
+	}
+	
+	@Test
+	public void auditLogsDeletionExceptionTest() {
+		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenThrow(RuntimeException.class);
+		
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditFactory.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
+		
 	}
 
 }

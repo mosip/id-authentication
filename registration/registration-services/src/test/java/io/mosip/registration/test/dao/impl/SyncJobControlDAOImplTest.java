@@ -19,7 +19,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.dao.impl.SyncJobControlDAOImpl;
@@ -43,7 +43,7 @@ public class SyncJobControlDAOImplTest {
 	@Mock
 	private SyncJobInfo syncJobnfo;
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 
 	private static final List<String> REG_STATUS_CODES = Arrays.asList(RegistrationClientStatusCode.CREATED.getCode(),
 			RegistrationClientStatusCode.REJECTED.getCode(), RegistrationClientStatusCode.APPROVED.getCode(),

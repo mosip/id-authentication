@@ -5,6 +5,7 @@ import org.springframework.data.auditing.AuditingHandler;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.dto.ResponseDTO;
 
 /**
  * The wrapper interface to log the audits
@@ -12,7 +13,7 @@ import io.mosip.registration.constants.Components;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public interface AuditFactory {
+public interface AuditManagerService {
 
 	/**
 	 * Audits the events across Registration-Client Module.
@@ -37,5 +38,12 @@ public interface AuditFactory {
 	 */
 	void audit(AuditEvent auditEventEnum, Components appModuleEnum, String refId,
 			String refIdType);
+	
+	/**
+	 * Delete Audit Logs
+	 * 
+	 * @return response of deletion
+	 */
+	ResponseDTO deleteAuditLogs();
 
 }
