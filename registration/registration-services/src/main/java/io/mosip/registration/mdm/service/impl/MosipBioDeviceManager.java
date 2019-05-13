@@ -251,7 +251,16 @@ public class MosipBioDeviceManager {
 
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
 				deviceDiscoveryResponsetDtos = mosipBioDeviceIntegrator.getDeviceDiscovery(url, deviceType, null);
+
+				auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND, RegistrationConstants.APPLICATION_NAME,
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 				break;
+			}else {
+				LOGGER.debug(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+						"this" +url +" is unavailable");
+				auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE, RegistrationConstants.APPLICATION_NAME,
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			}
 
 		}
