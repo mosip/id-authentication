@@ -268,6 +268,10 @@ public class ILdapDataStore implements IDataStore {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}
 
+	private Dn createRoleDn(String role) throws Exception {
+		return new Dn("cn=" + role + ",ou=roles,c=morocco");
+	}
+
 	@Override
 	public RolesListDto getAllRoles() {
 		RolesListDto rolesListDto = new RolesListDto();
@@ -403,10 +407,10 @@ public class ILdapDataStore implements IDataStore {
 	@Override
 	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
 		LdapConnection connection = null;
-		Dn dn = null;
+		Dn userDn = null;
 		try {
 			connection = createAnonymousConnection();
-			dn = createUserDn(userCreationRequestDto.getUserName());
+			userDn = createUserDn(userCreationRequestDto.getUserName());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -417,8 +421,8 @@ public class ILdapDataStore implements IDataStore {
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
-			if (connection.exists(dn)) {
-				// throw already exist exception
+			if (connection.exists(userDn)) {
+				// throw user already exist exception
 			} else {
 				DirContext context = null;
 
@@ -431,7 +435,7 @@ public class ILdapDataStore implements IDataStore {
 				attributes.add(new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
 				attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
 				attributes.add(new BasicAttribute("genderCode", userCreationRequestDto.getGender()));
-				 
+
 				Attribute oc = new BasicAttribute("objectClass");
 				oc.add("inetOrgPerson");
 				oc.add("organizationalPerson");
@@ -439,14 +443,29 @@ public class ILdapDataStore implements IDataStore {
 				oc.add("top");
 				oc.add("userDetails");
 				attributes.add(oc);
-				
+
 				context = new InitialDirContext(env);
 				BasicAttributes entry = new BasicAttributes();
 				attributes.parallelStream().forEach(entry::put);
-				context.createSubcontext(dn.getName(), entry);
+				context.createSubcontext(userDn.getName(), entry);
+				Dn roleOccupant;
+				try {
+					roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+
+					
+					 ModificationItem[] mods = new ModificationItem[1];
+					 mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					          new BasicAttribute("roleOccupant", userDn.getName()));
+					 context.modifyAttributes(roleOccupant.getName(), mods);
+					 
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 		} catch (NamingException | LdapException e) {
+			// exception handling ritesh
 			System.out.println(e.getMessage());
 		}
 		return null;
