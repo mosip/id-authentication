@@ -374,18 +374,17 @@ public class AuthController {
 		return responseWrapper;
 	}
 	
+	
 	/**
-	 * Fetch username based on the user id.
-	 * @param appId - application id
-	 * @param userId - user id
-	 * @return {@link UserNameDto}
-	 * @throws Exception - exception is thrown if
+	 * @param userCreationRequestDto
+	 * @return
+	 * @throws Exception
 	 */
 	@ResponseFilter
 	@PostMapping(value="/user")
-	public ResponseWrapper<UserCreationResponseDto> createAccount(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) throws Exception{
+	public ResponseWrapper<UserCreationResponseDto> createAccount(@RequestBody @Valid RequestWrapper<UserCreationRequestDto> userCreationRequestDto) throws Exception{
 		ResponseWrapper<UserCreationResponseDto> responseWrapper= new ResponseWrapper<>();
-		responseWrapper.setResponse(authService.createAccount(userCreationRequestDto));
+		responseWrapper.setResponse(authService.createAccount(userCreationRequestDto.getRequest()));
 		return responseWrapper;
 	}
 	
