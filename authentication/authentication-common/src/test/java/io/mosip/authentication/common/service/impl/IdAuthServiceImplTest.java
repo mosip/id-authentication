@@ -141,7 +141,7 @@ public class IdAuthServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testProcessIdType_IdTypeIsV() throws IdAuthenticationBusinessException {
-		String idvIdType = "V";
+		String idvIdType = "VID";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");

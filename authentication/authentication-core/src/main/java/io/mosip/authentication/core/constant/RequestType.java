@@ -7,7 +7,7 @@ package io.mosip.authentication.core.constant;
  */
 public enum RequestType {
 
-	OTP_REQUEST("OTP-REQUEST", "OTP Request"), OTP_AUTH("OTP-AUTH","OTP Authentication"), DEMO_AUTH("DEMO-AUTH","Demo Authentication"),FINGER_AUTH("FINGERPRINT-AUTH","Finger Authentication"), IRIS_AUTH("IRIS-AUTH","Iris  Authentication"), FACE_AUTH("FACE-AUTH","Face Authentication"),STATIC_PIN_AUTH("STATIC-PIN-AUTH","Pin Authentication"),STATICPIN_STORE_REQUEST("STATIC-PIN-STORAGE","Static Pin Store Request");
+	OTP_REQUEST("OTP-REQUEST", "OTP Request"), OTP_AUTH("OTP-AUTH","OTP Authentication"), DEMO_AUTH("DEMO-AUTH","Demo Authentication"),FINGER_AUTH("FINGERPRINT-AUTH","Finger Authentication"), IRIS_AUTH("IRIS-AUTH","Iris  Authentication"), FACE_AUTH("FACE-AUTH","Face Authentication"),STATIC_PIN_AUTH("STATIC-PIN-AUTH","Pin Authentication"),STATICPIN_STORE_REQUEST("STATIC-PIN-STORAGE","Static Pin Store Request"),KYC_AUTH_REQUEST("KYC-AUTH","KYC Authentication Request");
 
 	String type;
 	String message;

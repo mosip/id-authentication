@@ -20,6 +20,7 @@ import io.mosip.preregistration.application.exception.DocumentFailedToDeleteExce
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -64,7 +65,7 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(TableNotAccessibleException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final TableNotAccessibleException e) {
-		return GenericUtil.errorResponse(e,e.getMainResposneDTO());
+		return GenericUtil.errorResponse(e, e.getMainResposneDTO());
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class DemographicExceptionHandler {
 	public ResponseEntity<MainResponseDTO<?>> InvalidDateFormatException(final InvalidDateFormatException e) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setId(e.getMainResponseDTO().getId());
 		errorRes.setVersion(e.getMainResponseDTO().getVersion());
@@ -317,9 +318,15 @@ public class DemographicExceptionHandler {
 		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
+	@ExceptionHandler(PreIdInvalidForUserIdException.class)
+	public ResponseEntity<MainResponseDTO<?>> invalidUserException(final PreIdInvalidForUserIdException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
+	}
+
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),
+				ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);

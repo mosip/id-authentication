@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -35,7 +36,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
-
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
  * the authenticating partner done for request as AUTH and KYC
@@ -78,8 +78,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant EXPIRY_DT. */
 	private static final String EXPIRY_DT = "expiryDt";
 
+
 	/** The Constant KYC. */
 	private static final String KYC = null;
+
+	private static final String SESSION_KEY = "requestSessionKey";
 
 	/*
 	 * (non-Javadoc)
@@ -91,16 +94,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			requestBody.replace(IdAuthCommonConstants.REQUEST,
-					decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-			requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
+			
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
-				if (null != request.get(SECRET_KEY)) {
-					SecretKey secretKey = (SecretKey) request.get(SECRET_KEY);
-					byte[] reqHMAC = keyManager.symmetricDecrypt(secretKey, (byte[]) requestBody.get(REQUEST_HMAC));
-					request.remove(SECRET_KEY);
-					validateRequestHMAC(new String(reqHMAC, StandardCharsets.UTF_8),
+				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+			Map<String, Object> request = keyManager.requestData(requestBody, mapper);
+				if (null != requestBody.get(REQUEST_HMAC)) {
+					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
+					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
+					String reqHMAC = keyManager.kernelDecrypt((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey);
+					validateRequestHMAC(reqHMAC,
 							mapper.writeValueAsString(request));
 
 				}
@@ -222,8 +224,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		Boolean mispPartnerMappingJson = env
-				.getProperty(IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
+		Boolean mispPartnerMappingJson = env.getProperty(
+				IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
 		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
@@ -322,15 +324,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException, IOException {
 
-		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
-				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
-				.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
+		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
+				.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
+				.orElse(Collections.emptyList());
 		List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<BioIdentityInfoDTO>>() {
 				});
 
-		boolean noBioType = listBioInfo.stream()
-				.anyMatch(s -> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
+		boolean noBioType= listBioInfo.stream().anyMatch(s-> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
 		if (noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -338,8 +339,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		List<String> bioTypeList = listBioInfo.stream()
-				.filter(s -> Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
-				.map(s -> s.getData().getBioType()).collect(Collectors.toList());
+				.filter(s ->  Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
+				.map(s -> s.getData().getBioType())
+				.collect(Collectors.toList());
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
@@ -385,9 +387,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
 					AuthTypeDTO.class);
-			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
-					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
-					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
+			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
+					.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
+					.orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
@@ -444,7 +446,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
+						.filter(id -> id.equals(
+							env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
 						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));

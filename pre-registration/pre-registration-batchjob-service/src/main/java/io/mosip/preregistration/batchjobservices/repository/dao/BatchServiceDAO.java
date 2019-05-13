@@ -16,7 +16,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -31,6 +30,7 @@ import io.mosip.preregistration.batchjobservices.repository.DocumentRespository;
 import io.mosip.preregistration.batchjobservices.repository.ProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentConsumedRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 

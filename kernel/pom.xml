@@ -101,7 +101,6 @@
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<datamapper.orika>1.5.2</datamapper.orika>
-		<modelmapper.version>2.1.1</modelmapper.version>
 		<bouncycastle.version>1.60</bouncycastle.version>
 		<icu4j.version>63.1</icu4j.version>
 		<seventeam-otp.version>1.0.0</seventeam-otp.version>

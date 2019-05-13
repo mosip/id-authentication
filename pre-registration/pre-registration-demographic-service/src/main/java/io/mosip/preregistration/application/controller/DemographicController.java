@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +74,7 @@ public class DemographicController {
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
-	 @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create form data")
@@ -95,7 +94,7 @@ public class DemographicController {
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
-	 @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PutMapping(path = "/applications/{preRegistrationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update form data")
@@ -103,10 +102,11 @@ public class DemographicController {
 	public ResponseEntity<MainResponseDTO<DemographicUpdateResponseDTO>> update(
 			@PathVariable("preRegistrationId") String preRegistrationId,
 			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for Update preregistration with json object" + jsonObject);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.updatePreRegistration(jsonObject, preRegistrationId));
+				.body(preRegistrationService.updatePreRegistration(jsonObject, preRegistrationId, userId));
 	}
 
 	/**
@@ -117,17 +117,19 @@ public class DemographicController {
 	 * @return the application data for a pre-id
 	 */
 
-    @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 	@GetMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved") })
 	public ResponseEntity<MainResponseDTO<DemographicResponseDTO>> getApplication(
 			@PathVariable("preRegistrationId") String preRegistraionId) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all demographic data with preregistartionId"
 						+ preRegistraionId);
-		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegistraionId));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.getDemographicData(preRegistraionId, userId));
 	}
 
 	/**
@@ -140,7 +142,7 @@ public class DemographicController {
 	 * @return the updation status of application for a pre-id
 	 */
 
-    @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PutMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
@@ -149,11 +151,12 @@ public class DemographicController {
 	public ResponseEntity<MainResponseDTO<String>> updateApplicationStatus(
 			@PathVariable("preRegistrationId") String preRegId,
 			@RequestParam(value = "statusCode", required = true) String status) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all demographic data with preRegId " + preRegId
 						+ " and status " + status);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.updatePreRegistrationStatus(preRegId, status));
+				.body(preRegistrationService.updatePreRegistrationStatus(preRegId, status, userId));
 	}
 
 	/**
@@ -172,7 +175,7 @@ public class DemographicController {
 			@RequestParam(value = "pageIndex", required = false) String pageIdx) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
-				"In pre-registration controller for fetching all applications with userId " + userId
+				"In pre-registration controller for fetching all applications with userId " + "test@gmail.com"
 						+ " Header " + res.getHeader("Authorization"));
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getAllApplicationDetails(userId, pageIdx));
@@ -194,9 +197,10 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully") })
 	public ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> getApplicationStatus(
 			@PathVariable("preRegistrationId") String preId) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all applicationStatus with preId " + preId);
-		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getApplicationStatus(preId));
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getApplicationStatus(preId, userId));
 	}
 
 	/**
@@ -214,10 +218,11 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully") })
 	public ResponseEntity<MainResponseDTO<DeletePreRegistartionDTO>> discardIndividual(
 			@PathVariable("preRegistrationId") String preId) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for deletion of individual with preId " + preId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId));
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId, userId));
 	}
 
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")

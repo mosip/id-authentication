@@ -8,11 +8,11 @@ package io.mosip.idrepository.core.constant;
 public enum RestServicesConstants {
 
 	/** The audit manager service. */
-	AUDIT_MANAGER_SERVICE("mosip.idrepo.audit"),
+	AUDIT_MANAGER_SERVICE("mosip.idrepo.identity.audit"),
 
-	CRYPTO_MANAGER_ENCRYPT("mosip.idrepo.encryptor"),
+	CRYPTO_MANAGER_ENCRYPT("mosip.idrepo.identity.encryptor"),
 
-	CRYPTO_MANAGER_DECRYPT("mosip.idrepo.decryptor");
+	CRYPTO_MANAGER_DECRYPT("mosip.idrepo.identity.decryptor");
 
 	/** The service name. */
 	private final String serviceName;
