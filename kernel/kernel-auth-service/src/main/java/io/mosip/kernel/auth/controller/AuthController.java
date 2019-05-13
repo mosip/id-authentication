@@ -376,6 +376,13 @@ public class AuthController {
 		return responseWrapper;
 	}
 
+	/**
+	 * This API will change the password of the particular user
+	 * @param appId - applicationId
+	 * @param passwordDto - {@link PasswordDto}
+	 * @return {@link AuthZResponseDto}
+	 * @throws Exception
+	 */
 	@ResponseFilter
 	@PostMapping(value = "/changepassword/{appid}")
 	public ResponseWrapper<AuthZResponseDto> changePassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
@@ -386,6 +393,13 @@ public class AuthController {
 		return responseWrapper;
 	}
 
+	/**
+	 * This API will reset the password of the particular user
+	 * @param appId - applicationId
+	 * @param passwordDto -{@link PasswordDto}
+	 * @return {@link AuthZResponseDto}
+	 * @throws Exception
+	 */
 	@ResponseFilter
 	@PostMapping(value = "/resetpassword/{appid}")
 	public ResponseWrapper<AuthZResponseDto> resetPassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
@@ -396,6 +410,13 @@ public class AuthController {
 		return responseWrapper;
 	}
 
+	/**
+	 * 
+	 * @param mobile - mobile number 
+	 * @param appId -  applicationId
+	 * @return {@link UserNameDto}
+	 * @throws Exception
+	 */
 	@ResponseFilter
 	@GetMapping(value = "/username/{appid}/{mobilenumber}")
 	public ResponseWrapper<UserNameDto> getUsernameBasedOnMobileNumber(@PathVariable("mobilenumber") String mobile,

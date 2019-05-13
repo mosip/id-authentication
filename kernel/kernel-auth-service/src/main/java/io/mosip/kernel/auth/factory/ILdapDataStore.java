@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.auth.factory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -89,7 +90,8 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection("localhost", Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
+				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
 
@@ -97,8 +99,8 @@ public class ILdapDataStore implements IDataStore {
 
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
-		// env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
-		env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		// env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		LdapContext context = new InitialLdapContext(env, null);
@@ -263,7 +265,7 @@ public class ILdapDataStore implements IDataStore {
 			rolesData.close();
 			return roles;
 		} catch (Exception err) {
-			err.printStackTrace();
+
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
 					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
@@ -411,6 +413,7 @@ public class ILdapDataStore implements IDataStore {
 	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws NamingException {
 		LdapContext ldapContext = null;
 		AuthZResponseDto authZResponseDto = null;
+		LdapConnection ldapConnection = null;
 		try {
 			ldapContext = getContext();
 		} catch (NamingException e) {
@@ -418,7 +421,7 @@ public class ILdapDataStore implements IDataStore {
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
 
 		}
-		LdapConnection ldapConnection;
+
 		try {
 			ldapConnection = createAnonymousConnection();
 			Dn userdn = createUserDn(passwordDto.getUserId());
@@ -452,6 +455,11 @@ public class ILdapDataStore implements IDataStore {
 			throw new RuntimeException(e.getMessage());
 		} finally {
 			ldapContext.close();
+			try {
+				ldapConnection.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return authZResponseDto;
@@ -489,8 +497,11 @@ public class ILdapDataStore implements IDataStore {
 			authZResponseDto.setMessage("Successfully the password has been reset");
 			authZResponseDto.setStatus("Success");
 			ldapContext.close();
+			ldapConnection.close();
 
 		} else {
+			ldapContext.close();
+			ldapConnection.close();
 			throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
 					AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
 		}
@@ -511,7 +522,6 @@ public class ILdapDataStore implements IDataStore {
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
 				+ mobileNumber + "))";
 		LdapContext context = getContext();
-
 		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
 				new SearchControls());
 		if (!searchResult.hasMore()) {
@@ -522,7 +532,7 @@ public class ILdapDataStore implements IDataStore {
 			Attribute uid = attributes.get("uid");
 			userNameDto.setUserName((String) uid.get());
 		}
-
+		context.close();
 		return userNameDto;
 	}
 
