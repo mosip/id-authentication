@@ -137,21 +137,26 @@ public class ABISHandlerUtil {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(machedRegId);
 		Number uin = null;
 
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response = (ResponseWrapper<IdResponseDTO>) restClientService
-				.getApi(ApiName.IDREPOSITORY, pathSegments, TYPE, ALL, ResponseWrapper.class);
-		Gson gsonObj = new Gson();
-		String jsonString = gsonObj.toJson(response.getResponse());
-		JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-		JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
-				utilities.getGetRegProcessorDemographicIdentity());
-		uin = JsonUtil.getJSONValue(demographicIdentity, UIN);
+		ResponseWrapper<IdResponseDTO> response;
 
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, TYPE,
+				ALL, ResponseWrapper.class);
+
+		if (response.getResponse() != null) {
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(response.getResponse());
+			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
+					utilities.getGetRegProcessorDemographicIdentity());
+			uin = JsonUtil.getJSONValue(demographicIdentity, UIN);
+		}
 		return uin;
 	}
 }
