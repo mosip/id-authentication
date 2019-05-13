@@ -25,7 +25,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -58,7 +58,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/**
 	 * serviceDelegateUtil which processes the HTTPRequestDTO requests

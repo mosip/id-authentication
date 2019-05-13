@@ -108,7 +108,7 @@ public class LoggerConstants {
 	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = SYNC + "Registration_Deletion_Job";
 	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = SYNC + "Sync_Config_Data Job";
 	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = SYNC + "GLOBAL_PARAMS_SERVICE";
-	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_SERVICE";
+	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_MANAGER_SERVICE";
 	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
 	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
 	public static final String REG_PACKET_SYNC_STATUS_JOB = SYNC + "Packet_Sync Status_Job";

@@ -28,7 +28,7 @@ import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.gps.impl.GPSBU343Connector;
@@ -54,7 +54,7 @@ public class GPSBU343ConnectorTest {
 	private StringBuilder deviceData;
 
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 	
 	@Mock
 	private Logger logger;
