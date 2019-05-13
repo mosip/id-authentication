@@ -49,7 +49,7 @@ import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -405,22 +405,17 @@ public class ILdapDataStore implements IDataStore {
 	}
 
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
+	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		LdapConnection connection = null;
 		Dn userDn = null;
-		try {
-			connection = createAnonymousConnection();
-			userDn = createUserDn(userCreationRequestDto.getUserName());
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
 		Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
+			connection = createAnonymousConnection();
+			userDn = createUserDn(userCreationRequestDto.getUserName());
 			if (connection.exists(userDn)) {
 				// throw user already exist exception
 			} else {
@@ -449,22 +444,16 @@ public class ILdapDataStore implements IDataStore {
 				attributes.parallelStream().forEach(entry::put);
 				context.createSubcontext(userDn.getName(), entry);
 				Dn roleOccupant;
-				try {
-					roleOccupant = createRoleDn(userCreationRequestDto.getRole());
 
-					
-					 ModificationItem[] mods = new ModificationItem[1];
-					 mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
-					          new BasicAttribute("roleOccupant", userDn.getName()));
-					 context.modifyAttributes(roleOccupant.getName(), mods);
-					 
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+
+				ModificationItem[] mods = new ModificationItem[1];
+				mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+						new BasicAttribute("roleOccupant", userDn.getName()));
+				context.modifyAttributes(roleOccupant.getName(), mods);
 
 			}
-		} catch (NamingException | LdapException e) {
+		} catch (Exception e) {
 			// exception handling ritesh
 			System.out.println(e.getMessage());
 		}

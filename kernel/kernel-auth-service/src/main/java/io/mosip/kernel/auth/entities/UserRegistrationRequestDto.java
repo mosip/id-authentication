@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationRequestDto {
+public class UserRegistrationRequestDto {
 	@NotBlank
 	private String userName;
 	@NotBlank

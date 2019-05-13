@@ -11,7 +11,7 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.service.AuthNDataService;
@@ -32,7 +32,7 @@ public interface IDataStore extends AuthNDataService {
 	
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception;
 	
-	UserCreationResponseDto createAccount(UserCreationRequestDto userId) ;
+	UserCreationResponseDto registerUser(UserRegistrationRequestDto userId) ;
 	
 
 }
