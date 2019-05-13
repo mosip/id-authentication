@@ -176,7 +176,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @return the file name
 	 */
 	private String getFileName(String fileName) {
-		return fileName + extension;
+		return fileName + getExtension();
 	}
 
 	/*
@@ -490,6 +490,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 		}
 		return status;
+	}
+
+	public String getExtension() {
+		return extension;
 	}
 
 }
