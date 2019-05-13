@@ -255,8 +255,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		if (Objects.nonNull(uin)) {
 			return retrieveIdentityByUin(uin, type);
 		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), RID));
+			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
 	}
 
