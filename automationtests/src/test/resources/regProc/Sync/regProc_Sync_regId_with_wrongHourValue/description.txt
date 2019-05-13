@@ -1,0 +1,1 @@
+Sync request with an invalid registration id having wrong hour value in it.

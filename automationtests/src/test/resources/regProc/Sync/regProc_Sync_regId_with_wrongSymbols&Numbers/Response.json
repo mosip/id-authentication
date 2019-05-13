@@ -1,0 +1,14 @@
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-11T06:07:19.543Z",
+  "errors": [
+    {
+      "registrationId": "2091610011000912019021213$%^",
+      "status": "FAILURE",
+      "message": "RegistrationId Length Must Be 29",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-009"
+    }
+  ]
+}

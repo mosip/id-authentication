@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+{
+  "timestamp": 1549879363096,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "IdType size must be between 1 and 64"
+    }
+  ]
+=======
 {
     "id": "string",
     "version": "string",
@@ -10,4 +21,5 @@
             "message": "Request.idType size must be between 1 and 64"
         }
     ]
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }

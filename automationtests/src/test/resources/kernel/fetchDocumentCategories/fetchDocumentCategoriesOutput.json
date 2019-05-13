@@ -1,1 +1,5 @@
+<<<<<<< HEAD
+[]
+=======
 [{"Jira ID":"MOS-8268","langcode":"valid","code":"invalid","Test case Name":"invalid_code_notpresent","status":"Pass"},{"Jira ID":"MOS-8268","langcode":"invalid","code":"valid","Test case Name":"invalid_langcode","status":"Pass"},{"Jira ID":"MOS-8268","langcode":"valid","code":"valid","Test case Name":"valid_smoke_langcode","status":"Fail"},{"Jira ID":"MOS-8268","langcode":"valid","code":"valid","Test case Name":"valid_smoke_langcodeandCode","status":"Pass"}]
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429

@@ -1225,7 +1225,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			e.printStackTrace();
 		}
 		try {
-			response = applnLib.postModifiedGETRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
+			response = applnLib.postModifiedGetRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -1658,7 +1658,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response expiredStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
+
+			response = applnLib.putRequestWithoutBody(preReg_ExpiredURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1676,7 +1678,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response consumedStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
+
+			response = applnLib.putRequestWithoutBody(preReg_ConsumedURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1884,8 +1888,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		request.remove(langCodeKey);
 		
-		response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
-
+		//response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
+					
 		return response;
 	}
 	

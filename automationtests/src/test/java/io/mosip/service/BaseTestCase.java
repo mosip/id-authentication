@@ -18,9 +18,18 @@ import java.util.Properties;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
 import io.mosip.dbaccess.KernelMasterDataR;
@@ -38,6 +47,9 @@ public class BaseTestCase extends KernelMasterDataR {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();
+	public ExtentHtmlReporter htmlReporter;
+	public ExtentReports extent;
+	public ExtentTest test;
 		
 	/**
 	 * Method that will take care of framework setup
@@ -82,8 +94,8 @@ public class BaseTestCase extends KernelMasterDataR {
 			prop = new Properties();
 			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
 			prop.load(inputStream);
+			
 			logger.info("Setting test configs/TestEnvironment from " +  "src/config/test.properties");
-		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
 			ApplnURI=System.getProperty("env.endpoint");
@@ -118,7 +130,17 @@ public class BaseTestCase extends KernelMasterDataR {
 			pil.PreRegistrationResourceIntialize();
 
 			//authToken=pil.getToken();
+			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
+			extent=new ExtentReports();
+			extent.attachReporter(htmlReporter);
+			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
+			htmlReporter.config().setReportName("Mosip Automation Report");
+			htmlReporter.config().setTheme(Theme.STANDARD);
+
+
+			//authToken=pil.getToken();
 			
+
 		} // End suiteSetup
 
 		/**
@@ -155,8 +177,25 @@ public class BaseTestCase extends KernelMasterDataR {
 			logger.info("\n\n");
 			logger.info("Rest Assured framework has been reset because all tests have been executed.");
 			logger.info("TESTING COMPLETE: SHUTTING DOWN FRAMEWORK!!");
+			extent.flush();
 		} // end testTearDown
 		
+		@AfterMethod
+		public void getResult(ITestResult result) {
+			if(result.getStatus()==ITestResult.FAILURE) {
+				test.fail(MarkupHelper.createLabel(result.getName()+"  Test Case Failed", ExtentColor.RED));
+				test.fail(result.getThrowable());
+			}
+			else if(result.getStatus()==ITestResult.SUCCESS) {
+				test.pass(MarkupHelper.createLabel(result.getName()+"  Test Case Passed", ExtentColor.GREEN));
+				//test.pass(result.getThrowable());
+				
+			}
+			else if(result.getStatus() == ITestResult.SKIP) {
+				test.skip(MarkupHelper.createLabel(result.getName()+"  Test Case Skipped", ExtentColor.YELLOW));
+				test.skip(result.getThrowable());
+			}
+		}
 
 		public void reportMove(String currentModule)
 		{

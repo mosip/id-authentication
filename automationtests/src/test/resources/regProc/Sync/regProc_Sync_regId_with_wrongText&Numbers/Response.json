@@ -1,0 +1,14 @@
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-04-11T06:06:26.117Z",
+  "errors": [
+    {
+      "registrationId": "20916100110009120190212131abc",
+      "status": "FAILURE",
+      "message": "RegistrationId Must Be Numeric Only",
+      "parentRegistrationId": null,
+      "errorcode": "RPR-RGS-008"
+    }
+  ]
+}

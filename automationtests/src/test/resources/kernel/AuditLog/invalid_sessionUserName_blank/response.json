@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+{
+  "timestamp": 1549879479985,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "SessionUserName size must be between 1 and 128"
+    }
+  ]
+=======
 {
     "id": "string",
     "version": "string",
@@ -10,4 +21,5 @@
             "message": "Request.sessionUserName size must be between 1 and 128"
         }
     ]
+>>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }

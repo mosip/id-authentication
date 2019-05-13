@@ -1,0 +1,1 @@
+Sync request with an empty sync type in the request body.
