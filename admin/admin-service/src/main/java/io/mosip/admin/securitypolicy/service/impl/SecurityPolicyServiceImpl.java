@@ -24,18 +24,35 @@ import io.mosip.admin.securitypolicy.exception.SecurityPolicyException;
 import io.mosip.admin.securitypolicy.service.SecurityPolicyService;
 import io.mosip.kernel.core.exception.ServiceError;
 
+/**
+ * Security Policy service implementation.
+ * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ * 
+ */
+
 @Service
 public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 
+	/**
+	 * field of policy properties
+	 */
 	@Autowired
 	private PolicyProperties policyProps;
 
 	@Autowired
 	private RestTemplate restTemplate;
 
+	/**
+	 * field of auth-service url for fetching user roles
+	 */
 	@Value("${mosip.admin.security.policy.userrole-auth-url}")
 	private String userRoleAuthServiceUrl;
 
+	/**
+	 * field of application id
+	 */
 	@Value("${mosip.admin.app-id}")
 	private String appId;
 
@@ -55,11 +72,13 @@ public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 		UserRoleResponseDto responseWrapper = null;
 
 		try {
-			responseWrapper = restTemplate.getForObject(userRoleAuthServiceUrl, UserRoleResponseDto.class, appId, username);
+			responseWrapper = restTemplate.getForObject(userRoleAuthServiceUrl, UserRoleResponseDto.class, appId,
+					username);
 		} catch (RestClientException e) {
-			throw new SecurityPolicyException(SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorCode(), SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorMessage(), e);
+			throw new SecurityPolicyException(SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorCode(),
+					SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorMessage(), e);
 		}
-		if(responseWrapper.getErrors()!=null && !responseWrapper.getErrors().isEmpty()) {
+		if (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty()) {
 			ServiceError error = responseWrapper.getErrors().get(0);
 			throw new SecurityPolicyException(error.getErrorCode(), error.getMessage());
 		}
@@ -80,15 +99,12 @@ public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 				}
 			}
 		} else {
-			throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorCode(), SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorMessage() + roles);
+			throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorCode(),
+					SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorMessage() + roles);
 		}
 		securityPolicyDto = new AuthFactorsDto();
 		securityPolicyDto.setAuthTypes(authTypes);
 		return securityPolicyDto;
-	}
-	
-	public ObjectMapper mapper() {
-		return null;
 	}
 
 }

@@ -17,7 +17,13 @@ import org.springframework.core.env.Environment;
 import io.mosip.admin.securitypolicy.constant.SecurityPolicyErrorConstant;
 import io.mosip.admin.securitypolicy.exception.SecurityPolicyException;
 import lombok.Getter;
-
+/**
+ * containing security policy configurations
+ * 
+ * @author Abhishek Kumar
+ * @since 1.0.0
+ *
+ */
 @Configuration
 @Getter
 public class PolicyProperties {

@@ -11,7 +11,7 @@ import io.mosip.admin.securitypolicy.dto.AuthFactorsDto;
 public interface SecurityPolicyService {
 
 	/**
-	 * method to get the security policy for the user
+	 * method to get the available authentication factors available for the user
 	 * 
 	 * @param username
 	 *            name of the user

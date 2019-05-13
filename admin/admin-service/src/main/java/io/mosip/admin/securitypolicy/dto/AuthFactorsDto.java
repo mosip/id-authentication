@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Data;
 
 /**
- * Auth factor dto
+ * Auth factor dto, contains the authentication mode for the user.
  * 
  * @author Abhishek Kumar
  * @since 1.0.0
