@@ -76,9 +76,11 @@ public class ABISHandlerUtil {
 				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
-
-				uniqueRIDs = getUniqueRegIds(packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds),
-						registrationId, status);
+				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,"PROCESSING");
+				List<String> processedRegIds =packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,"PROCESSED");
+				uniqueRIDs = getUniqueRegIds(processedRegIds,registrationId, status);
+				uniqueRIDs.addAll(processingRegIds);
 			}
 		}
 

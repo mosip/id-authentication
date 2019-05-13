@@ -21,6 +21,8 @@ import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.status.entity.BaseRegistrationEntity;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
 /**
  * The Class PacketInfoDao.
@@ -51,6 +53,9 @@ public class PacketInfoDao {
 	/** The reg bio ref repository. */
 	@Autowired
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
+	
+	@Autowired
+	private RegistrationRepositary<BaseRegistrationEntity,String> registrationRepositary;
 
 	/** The mached ref ids. */
 	List<String> machedRefIds = new ArrayList<>();
@@ -503,5 +508,9 @@ public class PacketInfoDao {
 	 */
 	public List<AbisRequestEntity> getAbisRequestsByBioRefId(String bioRefId) {
 		return abisRequestRepository.getAbisRequestsByBioRefId(bioRefId, "INSERT");
+	}
+	
+	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds,String statusCode) {
+		return registrationRepositary.getProcessedOrProcessingRegIds(matchedRegIds, statusCode);
 	}
 }
