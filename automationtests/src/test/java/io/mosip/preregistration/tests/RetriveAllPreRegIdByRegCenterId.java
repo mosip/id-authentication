@@ -57,32 +57,40 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	/**
 	 * Declaration of all variables
 	 **/
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(RetriveAllPreRegIdByRegCenterId.class);
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(RetriveAllPreRegIdByRegCenterId.class);
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	static String dest = "";
-	static String folderPath = "preReg/RetrivePreIdByRegCenterId";
-	static String outputFile = "RetrivePreIdByRegCenterIdOutput.json";
-	static String requestKeyFile = "RetrivePreIdByRegCenterIdRequest.json";
-	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI;
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	String dest = "";
+	String folderPath = "preReg/RetrivePreIdByRegCenterId";
+	String outputFile = "RetrivePreIdByRegCenterIdOutput.json";
+	String requestKeyFile = "RetrivePreIdByRegCenterIdRequest.json";
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	CommonLibrary commonLibrary = new CommonLibrary();
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	String preReg_URI;
 
 	// implement,IInvokedMethodListener
 	public RetriveAllPreRegIdByRegCenterId() {
 
 	}
 
+	/**
+	 * This method is used for reading the test data based on the test case name
+	 * passed
+	 * 
+	 * @param context
+	 * @return object[][]
+	 * @throws Exception
+	 */
 	@DataProvider(name = "RetrivePreIdByRegCenterId")
-	public static Object[][] readData1(ITestContext context) throws Exception {
+	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch ("smoke") {
@@ -95,6 +103,17 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		}
 	}
 
+	
+	/*
+	 * Given Document Upload valid request when I Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/:registrationCenterId
+	 * Then I should get success
+	 * response with elements defined as per specifications Given Invalid
+	 * request when I send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/:registrationCenterId
+	 * Then I should get Error
+	 * response along with Error Code and Error messages as per Specification
+	 */
 	@Test(dataProvider = "RetrivePreIdByRegCenterId")
 	public void retrivePreRegistrationByRegistrationCenterId(String testSuite, Integer i, JSONObject object)
 			throws Exception {
@@ -130,7 +149,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId);
 		String fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
-		System.out.println("Fetch App Res::" + fetchAppStr);
+		logger.info("Fetch App Res::" + fetchAppStr);
 
 		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
@@ -141,10 +160,13 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			// Retrieve all pre-registration ids by registration center id
 			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
-            System.out.println("REEEEE::"+retrivePreIDFromRegCenId.asString());
+			logger.info("REEEEE::" + retrivePreIDFromRegCenId.asString());
+			
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("registration_center_id");
 			innerKeys.add("pre_registration_ids");
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -161,11 +183,12 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			Actualresponse = applicationLibrary
 					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
 
-			System.out.println("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
+			logger.info("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("resTime");
 			innerKeys.add("registartion_center_id");
 			innerKeys.add("pre_registration_ids");
-
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -182,11 +205,12 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			Actualresponse = applicationLibrary
 					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
 
-			System.out.println("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
+			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("resTime");
 			innerKeys.add("registartion_center_id");
 			innerKeys.add("pre_registration_ids");
-
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -218,16 +242,28 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 	}
 
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
-
+		//Retrive All PreRegId by Registration Center Id Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -243,6 +279,9 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {

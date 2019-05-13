@@ -45,7 +45,8 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Fetch Availability Data Of RegistrationCenters related Positive and Negative test cases
+ * Test Class to perform Fetch Availability Data Of RegistrationCenters related
+ * Positive and Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
@@ -53,50 +54,44 @@ import io.restassured.response.Response;
 
 public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase implements ITest {
 
-	
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(FetchAvailabilityDataOfRegistrationCenters.class);
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(FetchAvailabilityDataOfRegistrationCenters.class);
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	
-	static String dest = "";
-	static String folderPath = "preReg/FetchAvailabilityDataOfRegCenters";
-	static String outputFile = "FetchAvailabilityDataOfRegCentersOutput.json";
-	static String requestKeyFile = "FetchAvailabilityDataOfRegcentersRequest.json";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI ;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+    String dest = "";
+	String folderPath = "preReg/FetchAvailabilityDataOfRegCenters";
+	String outputFile = "FetchAvailabilityDataOfRegCentersOutput.json";
+	String requestKeyFile = "FetchAvailabilityDataOfRegcentersRequest.json";
+	CommonLibrary commonLibrary = new CommonLibrary();
+	String preReg_URI;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 
-	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	
-	
-	//implement,IInvokedMethodListener
-		public FetchAvailabilityDataOfRegistrationCenters() {
+	// implement,IInvokedMethodListener
+	public FetchAvailabilityDataOfRegistrationCenters() {
 
-		}
-	
-		/**
-		 * Data Providers to read the input json files from the folders
-		 * @param context
-		 * @return input request file
-		 * @throws JsonParseException
-		 * @throws JsonMappingException
-		 * @throws IOException
-		 * @throws ParseException
-		 */
+	}
+
+	/**
+	 * This method is used for reading the test data based on the test case name
+	 * passed
+	 * 
+	 * @param context
+	 * @return object[][]
+	 * @throws Exception
+	 */
 	@DataProvider(name = "fetchRegCenterDetails")
-	public static Object[][] readData(ITestContext context) throws Exception {
-		
-		
+	public Object[][] readData(ITestContext context) throws Exception {
+
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch ("smoke") {
 		case "smoke":
@@ -107,73 +102,92 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
 	}
-	
-	/**
-	 * Script for fetching registration center details
-	 * @param testSuite
-	 * @param object
-	 * @throws Exception
+
+	/*
+	 * Given Fetch Availability Details valid data when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/:registrationCenterId
+	 *  Then the user should be able to retrieve Pre-Registration appointment details
+	 *  by pre-Registration id.
+	 * 
+	 * Given Invalid request when when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/:registrationCenterId Then
+	 * the user should get Error response along with Error Code and Error
+	 * messages as per Specification
+	 * 
 	 */
 	@Test(dataProvider = "fetchRegCenterDetails")
 	public void FetchAvailabilityDataOfRegistrationCenters(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
-		
-		if(testCaseName.contains("smoke"))
-		{	
-		
-		Response fetchCenter = preRegLib.FetchCentre();
-		System.out.println("Fetch Book App:"+fetchCenter.asString());
-		outerKeys.add("responsetime");
-		innerKeys.add("regCenterId");
-		innerKeys.add("centerDetails");
-		status = AssertResponses.assertResponses(fetchCenter, Expectedresponse, outerKeys, innerKeys);
-		
+
+		if (testCaseName.contains("smoke")) {
+
+			Response fetchCenter = preRegLib.FetchCentre();
+			logger.info("Fetch Book App:" + fetchCenter.asString());
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("responsetime");
+			innerKeys.add("regCenterId");
+			innerKeys.add("centerDetails");
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(fetchCenter, Expectedresponse, outerKeys, innerKeys);
+
 		}
-		
-		else
-		{
+
+		else {
 			String regCenterid = actualRequest.get("registrationCenterId").toString();
 			String preRegURI = preReg_URI + regCenterid;
 			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURI);
-			System.out.println("Test Casse Name:"+testCaseName);
-			System.out.println("Fetch Book App:"+Actualresponse.asString());
+			logger.info("Fetch Book App:" + Actualresponse.asString());
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}
-		
+
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+
+		boolean setFinalStatus = false;
+
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
+
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-		
-		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
-		
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
 	}
 
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
+
 		testCaseName = object.get("testCaseName").toString();
+		//Fetch Availability data by registration center Id Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
-		authToken=preRegLib.getToken();
+		
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		authToken = preRegLib.getToken();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -189,23 +203,24 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath = "src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source =  "src/test/resources/" + folderPath + "/";
-	
+		String source = "src/test/resources/" + folderPath + "/";
+
 	}
 
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }
