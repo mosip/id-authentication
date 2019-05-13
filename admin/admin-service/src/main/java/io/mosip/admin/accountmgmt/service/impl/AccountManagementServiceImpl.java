@@ -116,7 +116,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Override
 	public StatusResponseDto changePassword(PasswordDto passwordDto) {
-
+		passwordDto.setHashAlgo("SSHA-256");
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(changePassword + "registrationclient/");
 		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getHttpRequest(passwordDto);
@@ -127,7 +127,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Override
 	public StatusResponseDto resetPassword(PasswordDto passwordDto) {
-
+		passwordDto.setHashAlgo("SSHA-256");
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(resetPassword + "registrationclient");
 		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getHttpRequest(passwordDto);
@@ -168,7 +168,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 			}
 			throw new AccountManagementServiceException(
 					AccountManagementErrorCode.REST_SERVICE_EXCEPTION.getErrorCode(),
-					AccountManagementErrorCode.REST_SERVICE_EXCEPTION.getErrorMessage(), ex);
+					AccountManagementErrorCode.REST_SERVICE_EXCEPTION.getErrorMessage()+""+ex.getResponseBodyAsString());
 		}
 
 		return response;

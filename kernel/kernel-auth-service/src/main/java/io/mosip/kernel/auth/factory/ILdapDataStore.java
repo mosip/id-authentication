@@ -3,8 +3,6 @@
  */
 package io.mosip.kernel.auth.factory;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,7 +23,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
@@ -92,16 +89,15 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection("localhost",
-				Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection("localhost", Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
 
 	private LdapContext getContext() throws NamingException {
-		
+
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
-		//env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		// env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
@@ -428,12 +424,13 @@ public class ILdapDataStore implements IDataStore {
 			Dn userdn = createUserDn(passwordDto.getUserId());
 			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
 			Objects.requireNonNull(mosipUserDto);
-			String ldapPassword = getPassword(mosipUserDto.getUserId());
-			System.out.println(ldapPassword);
+			String ldapPassword = getPassword(mosipUserDto.getUserId(), ldapContext);
+			Objects.requireNonNull(ldapPassword);
 			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
 					passwordDto.getNewPassword());
-			/*validatePassword(passwordDto.getOldPassword(), mosipUserDto.getUserPassword(), passwordDto.getUserId(),
-					ldapContext);*/
+
+			validateOldPassword(passwordDto.getOldPassword(), ldapPassword);
+
 			if (!isNotMatching && !passwordDto.getOldPassword().equals(passwordDto.getNewPassword())) {
 				byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
 						LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
@@ -460,6 +457,13 @@ public class ILdapDataStore implements IDataStore {
 		return authZResponseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#resetPassword(io.mosip.kernel.auth.
+	 * entities.PasswordDto)
+	 */
 	@Override
 	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
 		LdapContext ldapContext = null;
@@ -493,6 +497,75 @@ public class ILdapDataStore implements IDataStore {
 		return authZResponseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#getUserNameBasedOnMobileNumber(java.
+	 * lang.String)
+	 */
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
+		Dn searchBase = new Dn("ou=people,c=morocco");
+		UserNameDto userNameDto = new UserNameDto();
+		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
+				+ mobileNumber + "))";
+		LdapContext context = getContext();
+
+		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		if (!searchResult.hasMore()) {
+			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
+		}
+		while (searchResult.hasMore()) {
+			Attributes attributes = searchResult.next().getAttributes();
+			Attribute uid = attributes.get("uid");
+			userNameDto.setUserName((String) uid.get());
+		}
+
+		return userNameDto;
+	}
+
+	/**
+	 * @param userid
+	 * @param ldapContext
+	 * @return
+	 * @throws Exception
+	 */
+	private String getPassword(String userid, LdapContext ldapContext) throws Exception {
+		String encryptedPassword = null;
+		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> searchResult = ldapContext.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+		while (searchResult.hasMore()) {
+			SearchResult result = searchResult.next();
+			byte[] encryptedPasswordBytes = (byte[]) result.getAttributes().get("userPassword").get();
+			encryptedPassword = new String(encryptedPasswordBytes);
+
+		}
+		return encryptedPassword;
+	}
+
+	/**
+	 * TBD
+	 * 
+	 * @param oldPassword
+	 * @param hashedPassword
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	private void validateOldPassword(String oldPassword, String hashedPassword) {
+
+		boolean password = PasswordUtil.compareCredentials(oldPassword.getBytes(), hashedPassword.getBytes());
+		if (!password) {
+			throw new AuthManagerException(AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorCode(),
+					AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorMessage());
+		}
+	}
+
 	/**
 	 * Check password matches with either userid or email id. At most 3 letters can
 	 * match with the password.
@@ -508,103 +581,6 @@ public class ILdapDataStore implements IDataStore {
 	private boolean isNotAMatchWithUserOrEmail(String userId, String email, String password) {
 
 		return (password.contains(userId) || password.contains(email));
-	}
-
-	/**
-	 * TBD
-	 * 
-	 * @param oldPassword
-	 * @param hashedPassword
-	 * @param userId
-	 * @return
-	 * @throws Exception
-	 */
-	private void validatePassword(String oldPassword, String hashedPassword, String userId, LdapContext ctx)
-			throws Exception {
-		MosipUserSaltList mosipUserSaltList = getAllUserDetailsWithSalt();
-		/*
-		 * List<UserDetailsSalt> userDetailsSalts =
-		 * mosipUserSaltList.getMosipUserSaltList();
-		 * 
-		 * Optional<UserDetailsSalt> userDetailSaltObj = userDetailsSalts.stream()
-		 * .filter(userDetailsalt ->
-		 * userDetailsalt.getUserId().equals(userId)).findFirst();
-		 */
-		NamingEnumeration<SearchResult> searchResult = ctx.search("", "(objectclass=person)", new SearchControls());
-		while (searchResult.hasMore()) {
-			SearchResult searchResult1 = (SearchResult) searchResult.next();
-			Attributes attributes = searchResult1.getAttributes();
-			System.out.println(attributes.get("userPassword"));
-		}
-		boolean password = PasswordUtil.compareCredentials(oldPassword.getBytes(), hashedPassword.getBytes());
-		if (!password) {
-			throw new AuthManagerException(AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorCode(),
-					AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorMessage());
-		}
-		System.out.println(password);
-
-	}
-
-	/**
-	 * Compute the hashed password given an algorithm, the credentials and an
-	 * optional salt.
-	 *
-	 * @param algorithm
-	 *            the algorithm to use
-	 * @param password
-	 *            the credentials
-	 * @param salt
-	 *            the optional salt
-	 * @return the digested credentials
-	 */
-	private static String digest(LdapSecurityConstants algorithm, byte[] password, byte[] salt) {
-		MessageDigest digest;
-
-		try {
-			digest = MessageDigest.getInstance(algorithm.getAlgorithm());
-		} catch (NoSuchAlgorithmException e1) {
-			return null;
-		}
-
-		if (salt != null) {
-			digest.update(password);
-			digest.update(salt);
-
-			return DatatypeConverter.printHexBinary(digest.digest());
-		} else {
-			return DatatypeConverter.printHexBinary(digest.digest(password));
-		}
-	}
-
-	public String getPassword(String userid) throws Exception {
-		LdapConnection connection = createAnonymousConnection();
-		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
-		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson))";
-		EntryCursor peoplesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
-		Entry detail = peoplesData.get();
-		return peoplesData.get().get("userPassword").get().toString();
-
-	}
-
-	@Override
-	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
-		Dn searchBase = new Dn("ou=people,c=morocco");
-		UserNameDto userNameDto = new UserNameDto();
-		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
-				+ mobileNumber + "))";
-		LdapContext context = getContext();
-		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
-				new SearchControls());
-		if(!searchResult.hasMore()) {
-			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND","Mobile is registered/not present");
-		}
-		while (searchResult.hasMore()) {
-			Attributes attributes = searchResult.next().getAttributes();
-			Attribute uid = attributes.get("uid");
-			userNameDto.setUserName((String) uid.get());
-		}
-
-		return userNameDto;
 	}
 
 }
