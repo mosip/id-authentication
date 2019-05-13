@@ -62,7 +62,7 @@ public class PacketUploaderConfig {
 	 * @return the decryptor
 	 */
 	@Bean
-	public Decryptor decryptor() {
+	public Decryptor packetUploaderDecryptor() {
 		return new Decryptor();
 	}
 }

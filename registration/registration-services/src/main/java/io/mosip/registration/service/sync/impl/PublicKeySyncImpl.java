@@ -175,7 +175,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			} else {
 				LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"Unable to sync user salt data as there is no internet connection");
-				getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException reException) {

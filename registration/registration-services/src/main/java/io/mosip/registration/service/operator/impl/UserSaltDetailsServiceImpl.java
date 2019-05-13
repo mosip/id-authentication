@@ -89,18 +89,18 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 				} else {
 					LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							"user details is either empty or table have no data");
-					getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+					setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 				}
 			} else {
 				LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-				getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(regBaseCheckedException));
 
-			getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+			setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 		}
 		return responseDTO;
 
@@ -153,7 +153,7 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 			} else {
 				LOGGER.error(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"Unable to sync user salt data as there is no internet connection");
-				getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException socketTimeoutException) {
 			LOGGER.error(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,

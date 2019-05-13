@@ -136,7 +136,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 	/** The decryptor. */
 	@Autowired
-	private Decryptor decryptor;
+	private Decryptor packetUploaderDecryptor;
 
 	/** The max retry count. */
 	@Value("${registration.processor.uploader.max.retry.count}")
@@ -201,7 +201,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 					if (scanFile(new ByteArrayInputStream(encryptedByteArray))) {
 
-						decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
+						decryptedData = packetUploaderDecryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
 						decryptedByteArray = IOUtils.toByteArray(decryptedData);
 						if (scanFile(new ByteArrayInputStream(decryptedByteArray))) {
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;

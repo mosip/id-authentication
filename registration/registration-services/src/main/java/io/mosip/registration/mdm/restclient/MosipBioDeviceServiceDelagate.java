@@ -111,6 +111,9 @@ public class MosipBioDeviceServiceDelagate {
 	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
 			Class<?> responseType, String url) {
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
+				"Preparing request");
+
 		requestHTTPDTO.setHttpMethod(
 				HttpMethod.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.HTTPMETHOD)));
 		requestHTTPDTO.setHttpHeaders(new HttpHeaders());
@@ -134,6 +137,8 @@ public class MosipBioDeviceServiceDelagate {
 	 * @param requestHTTPDTO
 	 */
 	private void setTimeout(RequestHTTPDTO requestHTTPDTO) {
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
+				"Setting the timeout");
 		// Timeout in milli second
 		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 		requestFactory.setReadTimeout(readTimeout);
