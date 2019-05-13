@@ -43,7 +43,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDt
  */
 @RefreshScope
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationStatusController {
 
@@ -83,7 +82,7 @@ public class RegistrationStatusController {
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@GetMapping(path = "/registrationstatus/v1.0", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/search", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })

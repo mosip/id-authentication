@@ -76,6 +76,9 @@ public class FileManagerTest {
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
 
+	@Value("${registration.processor.packet.ext}")
+	private String extention;
+
 	@Mock
 	private ChannelSftp sftp = new ChannelSftp();
 
