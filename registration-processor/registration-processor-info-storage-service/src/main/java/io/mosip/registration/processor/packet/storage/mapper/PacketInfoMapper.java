@@ -372,7 +372,7 @@ public class PacketInfoMapper {
 		abisResDto.setLangCode(entity.getLangCode());
 		abisResDto.setRespDtimes(entity.getRespDtimes());
 		abisResDto.setRespText(entity.getRespText());
-		abisResDto.setStatusCode(entity.getLangCode());
+		abisResDto.setStatusCode(entity.getStatusCode());
 		abisResDto.setStatusComment(entity.getStatusComment());
 		abisResDto.setUpdBy(entity.getUpdBy());
 		abisResDto.setUpdDtimes(entity.getUpdDtimes());
@@ -409,7 +409,7 @@ public class PacketInfoMapper {
 		entity.setLangCode(abisResDto.getLangCode());
 		entity.setRespDtimes(abisResDto.getRespDtimes());
 		entity.setRespText(abisResDto.getRespText());
-		entity.setStatusCode(abisResDto.getLangCode());
+		entity.setStatusCode(abisResDto.getStatusCode());
 		entity.setStatusComment(abisResDto.getStatusComment());
 		entity.setUpdBy(abisResDto.getUpdBy());
 		entity.setUpdDtimes(abisResDto.getUpdDtimes());
