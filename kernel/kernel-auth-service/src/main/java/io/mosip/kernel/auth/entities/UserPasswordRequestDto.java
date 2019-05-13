@@ -1,6 +1,6 @@
 package io.mosip.kernel.auth.entities;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationResponseDto {
-
+public class UserPasswordRequestDto {
+	@NotBlank
 	private String userName;
+	@NotBlank
+	private String rid;
+	@NotBlank
+	private String password;
+
 }

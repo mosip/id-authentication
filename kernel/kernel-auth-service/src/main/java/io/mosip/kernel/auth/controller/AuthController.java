@@ -386,5 +386,20 @@ public class AuthController {
 		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
 	}
+	
+	/**
+	 * Create a user account in Data Store
+	 * 
+	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
+	 * @return {@link UserCreationResponseDto}
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/user/addpassword")
+	public ResponseWrapper<UserCreationResponseDto> addPassword(
+			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
+		ResponseWrapper<UserCreationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
+		return responseWrapper;
+	}
 
 }

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.naming.Context;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
@@ -22,9 +24,8 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
@@ -33,6 +34,7 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
@@ -48,11 +50,10 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
@@ -264,11 +265,11 @@ public class ILdapDataStore implements IDataStore {
 		return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
 	}
 
-	private Dn createUserDn(String userName) throws Exception {
+	private Dn createUserDn(String userName) throws LdapInvalidDnException  {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}
 
-	private Dn createRoleDn(String role) throws Exception {
+	private Dn createRoleDn(String role) throws LdapInvalidDnException  {
 		return new Dn("cn=" + role + ",ou=roles,c=morocco");
 	}
 
@@ -404,60 +405,68 @@ public class ILdapDataStore implements IDataStore {
 		return authZResponseDto;
 	}
 
+	@Transactional
 	@Override
 	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
-		LdapConnection connection = null;
 		Dn userDn = null;
+		DirContext context = null;
 		Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
-			connection = createAnonymousConnection();
 			userDn = createUserDn(userCreationRequestDto.getUserName());
-			if (connection.exists(userDn)) {
-				// throw user already exist exception
-			} else {
-				DirContext context = null;
+			List<Attribute> attributes = new ArrayList<>();
+			attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));
+			attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
+			attributes.add(new BasicAttribute("dob", userCreationRequestDto.getDateOfBirth().toString()));
+			attributes.add(new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
+			attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
+			attributes.add(new BasicAttribute("genderCode", userCreationRequestDto.getGender()));
+			Attribute oc = new BasicAttribute("objectClass");
+			oc.add("inetOrgPerson");
+			oc.add("organizationalPerson");
+			oc.add("person");
+			oc.add("top");
+			oc.add("userDetails");
+			attributes.add(oc);
+			context = new InitialDirContext(env);
+			BasicAttributes entry = new BasicAttributes();
+			attributes.parallelStream().forEach(entry::put);
+			context.createSubcontext(userDn.getName(), entry);
+			Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+			ModificationItem[] mods = new ModificationItem[1];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute("roleOccupant", userDn.getName()));
+			context.modifyAttributes(roleOccupant.getName(), mods);
 
-				List<Attribute> attributes = new ArrayList<>();
-				attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));
-				attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));
-				attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));
-				attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
-				attributes.add(new BasicAttribute("dob", userCreationRequestDto.getDateOfBirth().toString()));
-				attributes.add(new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
-				attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
-				attributes.add(new BasicAttribute("genderCode", userCreationRequestDto.getGender()));
-
-				Attribute oc = new BasicAttribute("objectClass");
-				oc.add("inetOrgPerson");
-				oc.add("organizationalPerson");
-				oc.add("person");
-				oc.add("top");
-				oc.add("userDetails");
-				attributes.add(oc);
-
-				context = new InitialDirContext(env);
-				BasicAttributes entry = new BasicAttributes();
-				attributes.parallelStream().forEach(entry::put);
-				context.createSubcontext(userDn.getName(), entry);
-				Dn roleOccupant;
-
-				roleOccupant = createRoleDn(userCreationRequestDto.getRole());
-
-				ModificationItem[] mods = new ModificationItem[1];
-				mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
-						new BasicAttribute("roleOccupant", userDn.getName()));
-				context.modifyAttributes(roleOccupant.getName(), mods);
-
-			}
-		} catch (Exception e) {
-			// exception handling ritesh
-			System.out.println(e.getMessage());
+		} catch (NameAlreadyBoundException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
+					AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
+		} catch (NameNotFoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
-		return new UserCreationResponseDto("SUCCESS");
+		return new UserCreationResponseDto(userCreationRequestDto.getUserName());
 
+	}
+
+	private void rollbackUser(Dn userDn, DirContext context) {
+		try {
+			context.destroySubcontext(userDn.getName());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
+					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
+		}
 	}
 }

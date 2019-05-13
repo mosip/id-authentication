@@ -1,7 +1,5 @@
 package io.mosip.kernel.auth.entities;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationResponseDto {
+public class UserPasswordResponseDto {
 
-	private String userName;
+	private String result;
 }
