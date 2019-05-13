@@ -382,7 +382,7 @@ public class AuthController {
 	 * @throws Exception - exception is thrown if
 	 */
 	@ResponseFilter
-	@PostMapping(value="unblock/{appid}/{userid}")
+	@PostMapping(value="/user")
 	public ResponseWrapper<UserCreationResponseDto> createAccount(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) throws Exception{
 		ResponseWrapper<UserCreationResponseDto> responseWrapper= new ResponseWrapper<>();
 		responseWrapper.setResponse(authService.createAccount(userCreationRequestDto));
