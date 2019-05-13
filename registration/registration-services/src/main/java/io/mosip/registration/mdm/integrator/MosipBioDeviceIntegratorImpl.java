@@ -23,43 +23,24 @@ import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
  *
  */
 @Service
-public class MosipBioDeviceIntegrator {
+public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 	@Autowired
 	protected MosipBioDeviceServiceDelagate mosipBioDeviceServiceDelagate;
 
-	/**
-	 * Gets the device info details from the MDM service
-	 * 
-	 * @param url
-	 *            - device info MDM service url
-	 * @param serviceName
-	 *            - MDM service name
-	 * @param responseType
-	 *            - response format
-	 * @return Object - Device info
-	 * @throws RegBaseCheckedException
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceInfo(java.lang.String, java.lang.String, java.lang.Class)
 	 */
+	@Override
 	public Object getDeviceInfo(String url, String serviceName, Class<?> responseType) throws RegBaseCheckedException {
 		return mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName, null, responseType);
 
 	}
 
-	/**
-	 * discovers the device for the given device type
-	 * 
-	 * @param url
-	 *            - device info MDM service url
-	 * @param serviceName
-	 *            - MDM service name
-	 * @param deviceType
-	 *            - type of bio device
-	 * @param responseType
-	 *            - response format
-	 * 
-	 * @return List - list of device details
-	 * @throws RegBaseCheckedException
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceDiscovery(java.lang.String, java.lang.String, java.lang.String, java.lang.Class)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String serviceName, String deviceType,
 			Class<?> responseType) throws RegBaseCheckedException {
@@ -69,20 +50,10 @@ public class MosipBioDeviceIntegrator {
 
 	}
 
-	/**
-	 * Captures the biometric details from the Bio device through MDM service
-	 * 
-	 * @param url
-	 *            - device info MDM service url
-	 * @param serviceName
-	 *            - MDM service name
-	 * @param request
-	 *            - request for capture biometric
-	 * @param responseType
-	 *            - response format
-	 * @return Map<String, byte[]> - the captured biometric details
-	 * @throws RegBaseCheckedException
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#capture(java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Map<String, byte[]> capture(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
@@ -105,16 +76,28 @@ public class MosipBioDeviceIntegrator {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getFrame()
+	 */
+	@Override
 	public CaptureResponseDto getFrame() {
 		return null;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#forceCapture()
+	 */
+	@Override
 	public CaptureResponseDto forceCapture() {
 		return null;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#responseParsing()
+	 */
+	@Override
 	public CaptureResponseDto responseParsing() {
 		return null;
 
