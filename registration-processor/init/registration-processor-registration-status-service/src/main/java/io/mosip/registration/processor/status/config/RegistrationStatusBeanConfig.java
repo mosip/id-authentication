@@ -32,6 +32,7 @@ import io.mosip.registration.processor.rest.client.service.impl.RegistrationProc
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
+import io.mosip.registration.processor.status.decryptor.Decryptor;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -149,5 +150,9 @@ public class RegistrationStatusBeanConfig {
 	@Bean
 	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
 		return new RegistrationStatusMapUtil();
+	}
+	@Bean
+	public Decryptor decryptor() {
+		return new Decryptor();
 	}
 }
