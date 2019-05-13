@@ -35,9 +35,6 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
-	@Value("${server.servlet.path}")
-	private String contextPath;
-
 	/**
 	 * The mosip event bus.
 	 */
