@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.SessionContext;
@@ -42,7 +42,7 @@ public class RegistrationApprovalServiceTest {
 	@Mock
 	private RegistrationApprovalDTO registrationApprovalDTO;
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 	@Mock
 	RegistrationDAO registrationDAO;
 

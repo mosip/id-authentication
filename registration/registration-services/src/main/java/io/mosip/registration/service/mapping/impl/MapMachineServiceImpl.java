@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -58,7 +58,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 	 * instance of {@code instance of AuditFactory}
 	 */
 	@Autowired
-	AuditFactory auditFactory;
+	AuditManagerService auditFactory;
 
 	/**
 	 * LOGGER for logging

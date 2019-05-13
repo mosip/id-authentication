@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MosipBioRequest {
+public class CaptureRequestDeviceDetailDto {
 
 	private String type;
 	private int count;
