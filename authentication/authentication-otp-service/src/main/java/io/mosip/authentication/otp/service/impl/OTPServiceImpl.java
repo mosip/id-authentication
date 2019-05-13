@@ -106,7 +106,7 @@ public class OTPServiceImpl implements OTPService {
 			String nameSec = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
 
 
-			boolean isOtpGenerated = otpManager.generateOTP(otpRequestDto, uin, namePri, nameSec, priLang, secLang);
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, namePri, nameSec, priLang, secLang);
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
 				otpResponseDTO.setErrors(Collections.emptyList());

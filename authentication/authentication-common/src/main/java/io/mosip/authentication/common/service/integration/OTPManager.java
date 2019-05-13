@@ -110,7 +110,7 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean generateOTP(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang, String secLang) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang, String secLang) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
@@ -184,7 +184,7 @@ public class OTPManager {
 	 * Send Otp Notification
 	 * 
 	 */
-	public Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri, String nameSec, String priLang, String secLang) {
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri, String nameSec, String priLang, String secLang) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
