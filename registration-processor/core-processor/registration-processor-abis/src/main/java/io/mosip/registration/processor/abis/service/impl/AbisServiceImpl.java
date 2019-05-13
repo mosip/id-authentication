@@ -154,7 +154,7 @@ public class AbisServiceImpl implements AbisService {
 		if(referenceId != null) {
 			regId = packetInfoManager.getRidByReferenceId(referenceId);
 			List<String> pathSegments = new ArrayList<>();
-			if(regId != null && regId.isEmpty()) {
+			if(regId != null && !(regId.isEmpty())) {
 				pathSegments.add(regId.get(0));
 
 				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);

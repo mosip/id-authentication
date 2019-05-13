@@ -92,15 +92,16 @@ public class AbisMessageQueueImpl {
 	 * Run abis queue.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RegistrationProcessorCheckedException 
 	 */
-	public void runAbisQueue() throws IOException {
+	public void runAbisQueue() throws RegistrationProcessorCheckedException {
 
 		List<String> abisInboundAddresses;
 		List<String> abisOutboundAddresses;
 
 		List<List<String>> inboundOutBoundAddressList;
 		List<MosipQueue> mosipQueseList;
-		try {
+		
 			inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
 			mosipQueseList = utilities.getMosipQueuesForAbis();
 			if (mosipQueseList != null) {
@@ -123,10 +124,7 @@ public class AbisMessageQueueImpl {
 			} else {
 				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
 			}
-		} catch (RegistrationProcessorCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		
 	}

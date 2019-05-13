@@ -14,7 +14,12 @@ public enum APIAuthorityList {
 	
 	CONNECTORSTAGE(new String[] {"REGISTRATION_PROCESSOR"}),
 
+	BIO(new String[] {"REGISTRATION_PROCESSOR"}),
+	
+	ABIS(new String[] {"REGISTRATION_PROCESSOR"}),
+	
 	PRINTUINCARD(new String[] { "REGISTRATION_ADMIN"});
+	
 	
 	private final String[] list;
 

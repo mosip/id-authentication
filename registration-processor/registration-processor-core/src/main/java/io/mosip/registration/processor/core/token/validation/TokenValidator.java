@@ -41,6 +41,7 @@ public class TokenValidator {
 	Environment env;
 
 	public void validate(String token, String url) {
+		
 		if (token == null)
 			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
 		try {	
@@ -115,6 +116,16 @@ public class TokenValidator {
 			}
 		} else if (url.contains("uin-card")) {
 			for (String assignedRole : APIAuthorityList.PRINTUINCARD.getList()) {
+				if (role.compareToIgnoreCase(assignedRole) == 0)
+					return true;
+			}
+		}else if (url.contains("abis")) {
+			for (String assignedRole : APIAuthorityList.ABIS.getList()) {
+				if (role.compareToIgnoreCase(assignedRole) == 0)
+					return true;
+			}
+		}else if (url.contains("bio")) {
+			for (String assignedRole : APIAuthorityList.BIO.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
