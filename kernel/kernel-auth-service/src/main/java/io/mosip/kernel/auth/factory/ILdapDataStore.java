@@ -49,7 +49,7 @@ import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -405,7 +405,7 @@ public class ILdapDataStore implements IDataStore {
 	}
 
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
+	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		LdapConnection connection = null;
 		Dn userDn = null;
 		Hashtable<String, String> env = new Hashtable<>();
