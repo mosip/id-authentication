@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import io.mosip.admin.securitypolicy.constant.SecurityPolicyErrorConstant;
 import io.mosip.admin.securitypolicy.exception.SecurityPolicyException;
 import lombok.Getter;
 
@@ -83,7 +84,7 @@ public class PolicyProperties {
 					}
 				}
 				if (!flag) {
-					throw new SecurityPolicyException("XX3", "No auth type found:" + auth);
+					throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorCode(), SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorMessage() + auth);
 				}
 
 			}

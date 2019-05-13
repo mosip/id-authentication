@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.securitypolicy.config.PolicyProperties;
+import io.mosip.admin.securitypolicy.constant.SecurityPolicyErrorConstant;
 import io.mosip.admin.securitypolicy.dto.AuthFactorsDto;
 import io.mosip.admin.securitypolicy.dto.UserRoleDto;
 import io.mosip.admin.securitypolicy.dto.UserRoleResponseDto;
@@ -38,9 +39,6 @@ public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 	@Value("${mosip.admin.app-id}")
 	private String appId;
 
-	@Autowired
-	private ObjectMapper mapper;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -59,7 +57,7 @@ public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 		try {
 			responseWrapper = restTemplate.getForObject(userRoleAuthServiceUrl, UserRoleResponseDto.class, appId, username);
 		} catch (RestClientException e) {
-			throw new SecurityPolicyException("XX1", "XX", e);
+			throw new SecurityPolicyException(SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorCode(), SecurityPolicyErrorConstant.ERROR_FETCHING_USER_ROLE.errorMessage(), e);
 		}
 		if(responseWrapper.getErrors()!=null && !responseWrapper.getErrors().isEmpty()) {
 			ServiceError error = responseWrapper.getErrors().get(0);
@@ -82,7 +80,7 @@ public class SecurityPolicyServiceImpl implements SecurityPolicyService {
 				}
 			}
 		} else {
-			throw new SecurityPolicyException("XX1", "No Policy Found for the role :" + roles);
+			throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorCode(), SecurityPolicyErrorConstant.NO_POLICY_FOUND.errorMessage() + roles);
 		}
 		securityPolicyDto = new AuthFactorsDto();
 		securityPolicyDto.setAuthTypes(authTypes);

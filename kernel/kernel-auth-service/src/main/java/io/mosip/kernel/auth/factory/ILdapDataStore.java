@@ -68,7 +68,8 @@ public class ILdapDataStore implements IDataStore {
 	private LdapConnection createAnonymousConnection() throws Exception {
 		// LdapNetworkConnection network = new
 		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
-		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(), Integer.valueOf(dataBaseConfig.getPort()));
+		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
+				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
 
@@ -323,31 +324,35 @@ public class ILdapDataStore implements IDataStore {
 		mosipUserSaltList.setMosipUserSaltList(mosipUserDtos);
 		return mosipUserSaltList;
 	}
-    
+
 	@Override
 	public RIdDto getRidFromUserId(String userId) throws Exception {
-		RIdDto ridDto= null;
+		RIdDto ridDto = null;
 		LdapConnection ldapConnection = createAnonymousConnection();
 		Dn userdn = createUserDn(userId);
 		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
-        if(data==null) {
-        	throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
-        }
-        if(data.getRId()!=null) {
-        	ridDto= new RIdDto();
-        	ridDto.setRId(data.getRId());
-        }
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		if (data.getRId() != null) {
+			ridDto = new RIdDto();
+			ridDto.setRId(data.getRId());
+		}
+		ldapConnection.close();
 		return ridDto;
 	}
-	
+
 	@Override
 	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
 		LdapConnection ldapConnection = createAnonymousConnection();
 		Dn userdn = createUserDn(username);
 		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
-        if(data==null) {
-        	throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(), AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
-        }
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		ldapConnection.close();
 		return data;
 	}
 }
