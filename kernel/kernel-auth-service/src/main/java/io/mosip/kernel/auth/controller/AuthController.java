@@ -32,6 +32,8 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
+import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -371,5 +373,21 @@ public class AuthController {
 		responseWrapper.setResponse(authZResponseDto);
 		return responseWrapper;
 	}
+	
+	/**
+	 * Fetch username based on the user id.
+	 * @param appId - application id
+	 * @param userId - user id
+	 * @return {@link UserNameDto}
+	 * @throws Exception - exception is thrown if
+	 */
+	@ResponseFilter
+	@PostMapping(value="unblock/{appid}/{userid}")
+	public ResponseWrapper<UserCreationResponseDto> createAccount(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) throws Exception{
+		ResponseWrapper<UserCreationResponseDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.createAccount(userCreationRequestDto));
+		return responseWrapper;
+	}
+	
 
 }

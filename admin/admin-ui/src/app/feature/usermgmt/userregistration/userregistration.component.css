@@ -2,21 +2,18 @@
  margin-top: 3rem;
  display: flex;
  justify-content: center;
- align-items: center
 }
 
 .login-form{
-  display: flex;
-  flex-flow: column wrap;
   align-items: center;
 }
 .input-full-width{
-  width: 100%;
- flex: 1;
+  width: 18em;
+  padding:30px;
 }
 .input-full{
-  width: 100%;
- flex: 1;
+  width: 18em;
+  padding: 30px;
 }
 
 .button-container {
@@ -53,7 +50,9 @@
     margin-top:3em;
   }
   .title-word{
-    margin-left:6em;
+    margin-left:2em;
+    font-size: 1em;
+    font-weight: bold;
   }
   input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
