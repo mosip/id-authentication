@@ -5,10 +5,11 @@ import java.io.IOException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.abis.messagequeue.AbisMessageQueueImpl;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 
 public class RestAbisApplication {
 	
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws  RegistrationProcessorCheckedException
     {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan("io.mosip.registration.processor.abis.config","io.mosip.registration.processor.stages.config",
