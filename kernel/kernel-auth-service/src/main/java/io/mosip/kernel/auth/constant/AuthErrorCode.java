@@ -75,7 +75,18 @@ public enum AuthErrorCode {
 
 	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
 	
-	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context");
+	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context"),
+	
+	USER_ALREADY_EXIST("KER-ATH-011","Username already exist in datastore"),
+	
+	ROLE_NOT_FOUND("KER-ATH-012","Exception occured while creating a user "),
+	
+	USER_CREATE_EXCEPTION("KER-ATH-013","Exception occured while creating a user "),
+	
+	ROLLBACK_USER_EXCEPTION("KER-ATH-014","Exception occured while rolling back user"),
+	
+	INVALID_DN("KER-ATH-015","Exception occured while creating DN")
+	;
 
 	/**
 	 * The error code
