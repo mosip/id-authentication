@@ -15,8 +15,8 @@ node {
  updatedDockerImagesForDmz = []
  updatedServicesForPrivateZone = []
  updatedDockerImagesForPrivateZone= []
- k8DevContextForPrivateZone = 'dev-k8-cluster'
-
+ //k8DevContextForPrivateZone = 'dev-k8-cluster'
+def k8DevContext = 'mosip-dev-cluster'
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
   dir(branch) {
