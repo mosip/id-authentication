@@ -40,6 +40,7 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
+import io.mosip.kernel.auth.constant.LdapConstants;
 import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LdapControl;
@@ -218,14 +219,18 @@ public class ILdapDataStore implements IDataStore {
 				mosipUserDto
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
+				if(userLookup.get("userPassword")!=null) {
 				PasswordDetails password = PasswordUtil
 						.splitCredentials(userLookup.get("userPassword").get().getBytes());
 				mosipUserDto.setUserPassword(
 						userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
 								: null);
+				}
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
+				if(userLookup.get("rid")!=null) {
 				mosipUserDto.setRId(userLookup.get("rid").get().toString());
+				}
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
@@ -234,7 +239,6 @@ public class ILdapDataStore implements IDataStore {
 					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
-
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");
@@ -405,7 +409,6 @@ public class ILdapDataStore implements IDataStore {
 		return authZResponseDto;
 	}
 
-	@Transactional
 	@Override
 	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
@@ -418,20 +421,20 @@ public class ILdapDataStore implements IDataStore {
 		try {
 			userDn = createUserDn(userCreationRequestDto.getUserName());
 			List<Attribute> attributes = new ArrayList<>();
-			attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));
-			attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));
-			attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));
-			attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
-			attributes.add(new BasicAttribute("dob", userCreationRequestDto.getDateOfBirth().toString()));
-			attributes.add(new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
-			attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
-			attributes.add(new BasicAttribute("genderCode", userCreationRequestDto.getGender()));
-			Attribute oc = new BasicAttribute("objectClass");
-			oc.add("inetOrgPerson");
-			oc.add("organizationalPerson");
-			oc.add("person");
-			oc.add("top");
-			oc.add("userDetails");
+			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.SN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.MAIL, userCreationRequestDto.getEmailID()));
+			attributes.add(new BasicAttribute(LdapConstants.MOBILE, userCreationRequestDto.getContactNo()));
+			attributes.add(new BasicAttribute(LdapConstants.DOB, userCreationRequestDto.getDateOfBirth().toString()));
+			attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
+			attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
+			attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
+			Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
+			oc.add(LdapConstants.INET_ORG_PERSON);
+			oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
+			oc.add(LdapConstants.PERSON);
+			oc.add(LdapConstants.TOP);
+			oc.add(LdapConstants.USER_DETAILS);
 			attributes.add(oc);
 			context = new InitialDirContext(env);
 			BasicAttributes entry = new BasicAttributes();
@@ -440,7 +443,7 @@ public class ILdapDataStore implements IDataStore {
 			Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
 			ModificationItem[] mods = new ModificationItem[1];
 			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
-					new BasicAttribute("roleOccupant", userDn.getName()));
+					new BasicAttribute(LdapConstants.ROLE_OCCUPANT, userDn.getName()));
 			context.modifyAttributes(roleOccupant.getName(), mods);
 
 		} catch (NameAlreadyBoundException exception) {
