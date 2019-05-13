@@ -468,7 +468,7 @@ public class ILdapDataStore implements IDataStore {
 			// exception handling ritesh
 			System.out.println(e.getMessage());
 		}
-		return null;
+		return new UserCreationResponseDto("SUCCESS");
 
 	}
 }
