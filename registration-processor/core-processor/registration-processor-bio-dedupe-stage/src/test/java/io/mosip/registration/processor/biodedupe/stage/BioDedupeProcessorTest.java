@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -99,6 +99,9 @@ public class BioDedupeProcessorTest {
 
 	@InjectMocks
 	private BioDedupeProcessor bioDedupeProcessor;
+
+	@Mock
+	private FileSystemAdapter adapter;
 
 	private String stageName = "BioDedupeStage";
 
@@ -215,30 +218,21 @@ public class BioDedupeProcessorTest {
 
 	////////////////////
 	@Test
-	public void testeHandlerIdentifyManualStage() throws Exception {
+	public void testUpdateIdentifyToHandler() throws Exception {
 
 		InputStream inputStream = new FileInputStream("src/test/resources/ID.json");
-		byte[] bytes = IOUtils.toByteArray(inputStream);
-		String jsonString = new String(bytes);
-
-		// String str = regProcessorIdentityJson.toString();
 		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(jsonString);
+		Mockito.when(utilities.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+
+		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("Update");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
-		// PowerMockito.mockStatic(Utilities.class);
-		// Mockito.when(utilities.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-
-		// ObjectMapper mockObjectMapper = Mockito.mock(ObjectMapper.class);
-		// Mockito.when(mockObjectMapper.readValue(anyString(),
-		// Mockito.any(Class.class)))
-		// .thenReturn(regProcessorIdentityJson);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertFalse(messageDto.getIsValid());
+		assertEquals(messageDto.getMessageBusAddress().getAddress(), "abis-handler-bus-in");
 	}
 
 	@Test
