@@ -98,7 +98,8 @@ public class DaoConfig extends HibernateDaoConfig {
 				" spring profile loading with environment spring-" + profile + "loaded");
 		
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		Resource[] resources = new ClassPathResource[] {new ClassPathResource("spring-" + profile + ".properties") };
+		Resource[] resources = new ClassPathResource[] {new ClassPathResource("spring.properties"), 
+				new ClassPathResource("spring-" + profile + ".properties") };
 		ppc.setLocations(resources);
 
 		Properties properties = new Properties();
