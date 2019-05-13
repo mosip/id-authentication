@@ -53,9 +53,13 @@ this.requestDTO=new RequestModel("id","v1",this.requestObject,null);
 console.log(this.requestDTO);
 this.service.registerUser(this.requestDTO).subscribe(data=>{
   console.log(data);
+  alert("Detail submitted successfully");
+this.router.navigateByUrl('admin/dashboard');
 },error=>{
   console.log(error);
+  alert("error occur");
 });
+
 }
 
 dateFormatter(date:Date){

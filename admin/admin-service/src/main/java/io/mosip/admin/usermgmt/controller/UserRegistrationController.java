@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
@@ -47,9 +48,19 @@ public class UserRegistrationController {
 	@PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserRegistrationResponseDto> register(
 			@ApiParam("Basic User Details") @RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userRegistrationRequestDto) {
-       ResponseWrapper<UserRegistrationResponseDto> responseWrapper= new ResponseWrapper<>();
-       responseWrapper.setResponse(userRegistrationService.register(userRegistrationRequestDto.getRequest()));
+		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userRegistrationService.register(userRegistrationRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
+	@ResponseFilter
+	@PostMapping(value = "/rid")
+	public ResponseWrapper<UserRegistrationResponseDto> ridVerification(@ApiParam("Rid and username details")
+			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
+		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
+		UserRegistrationResponseDto response=new UserRegistrationResponseDto();
+		response.setStatus("SUCCESS");
+		responseWrapper.setResponse(response);
+		return responseWrapper;
+	}
 }
