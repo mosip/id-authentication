@@ -99,6 +99,8 @@ public class BioDedupeProcessor {
 
 	private String description = "";
 	public static final String FILE_SEPARATOR = "\\";
+
+	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 	private String code = "";
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
@@ -267,7 +269,7 @@ public class BioDedupeProcessor {
 
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
-		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, "individualBiometrics");
+		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUAL_BIOMETRICS);
 		if (json != null) {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto
@@ -277,14 +279,14 @@ public class BioDedupeProcessor {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					"Update packet individual biometric not null, destination stage is abis_handler");
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			object.setIsValid(Boolean.TRUE);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"Update packet individual biometric null, destination stage is UIN");
 		}
-		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-		object.setIsValid(Boolean.TRUE);
-
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationStatusDto.getRegistrationId(),
-				"Update packet individual biometric null, destination stage is UIN");
-
 	}
 
 	private void newPacketHandlerIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)

@@ -55,6 +55,10 @@ public class ABISHandlerUtil {
 
 	private static final String POST_API_PROCESS = "POST_API_PROCESS";
 
+	private static final String PROCESSING = "PROCESSING";
+
+	private static final String PROCESSED = "PROCESSED";
+
 	public List<String> getUniqueRegIds(String registrationId, String status)
 			throws ApisResourceAccessException, IOException {
 
@@ -77,9 +81,9 @@ public class ABISHandlerUtil {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
 				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,"PROCESSING");
-				List<String> processedRegIds =packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,"PROCESSED");
-				uniqueRIDs = getUniqueRegIds(processedRegIds,registrationId, status);
+				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, PROCESSING);
+				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, PROCESSED);
+				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, status);
 				uniqueRIDs.addAll(processingRegIds);
 			}
 		}
