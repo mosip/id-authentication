@@ -217,14 +217,18 @@ public class ILdapDataStore implements IDataStore {
 				mosipUserDto
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
+				if(userLookup.get("userPassword")!=null) {
 				PasswordDetails password = PasswordUtil
 						.splitCredentials(userLookup.get("userPassword").get().getBytes());
 				mosipUserDto.setUserPassword(
 						userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
 								: null);
+				}
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
+				if(userLookup.get("rid")!=null) {
 				mosipUserDto.setRId(userLookup.get("rid").get().toString());
+				}
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
@@ -233,7 +237,6 @@ public class ILdapDataStore implements IDataStore {
 					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
-
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");

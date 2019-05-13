@@ -31,6 +31,8 @@ public class UserRegistrationRequestDto {
 	private String gender;
 	@NotBlank
 	private String role;
+	@NotBlank
+	private String appId;
 	@NotNull
 	private String ridValidationUrl;
 }
