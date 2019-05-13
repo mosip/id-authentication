@@ -147,6 +147,8 @@ public class MosipBioDeviceManager {
 							case MosipBioDeviceConstants.VALUE_FACE:
 
 								deviceRegistry.put(MosipBioDeviceConstants.VALUE_FACE, bioDevice);
+								LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+										bioDevice+" device type is being added in the device registery");
 								break;
 							case MosipBioDeviceConstants.VALUE_IRIS:
 
@@ -165,10 +167,16 @@ public class MosipBioDeviceManager {
 							default:
 								break;
 							}
+						}else {
+							LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+									"Device response is invalid for device running at port number" +port  );
 						}
 					}
 
 				}
+			}else {
+				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+						"No device is running at port number "+port);
 			}
 		}
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
