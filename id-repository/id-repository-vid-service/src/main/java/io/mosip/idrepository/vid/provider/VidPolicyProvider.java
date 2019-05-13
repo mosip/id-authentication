@@ -48,7 +48,7 @@ public class VidPolicyProvider {
 //		FileReader jsonFile = new FileReader(
 //				new File(new URL(env.getProperty("mosip.idrepo.vid.policy-file-location")).toURI()));
 		JsonNode policyJson = mapper.readValue(
-				ResourceUtils.getFile(env.getProperty("mosip.idrepo.vid.policy-file-location")), JsonNode.class);
+				this.getClass().getClassLoader().getResource("vid_policy.json"), JsonNode.class);
 		List<String> vidType = JsonPath.compile("vidPolicies.*.vidType").read(policyJson.toString(), READ_LIST_OPTIONS);
 		List<Object> vidPolicy = JsonPath.compile("vidPolicies.*.vidPolicy").read(policyJson.toString(),
 				READ_LIST_OPTIONS);

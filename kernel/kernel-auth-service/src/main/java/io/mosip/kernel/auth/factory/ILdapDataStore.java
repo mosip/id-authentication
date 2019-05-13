@@ -12,14 +12,19 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
+import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
@@ -43,6 +48,9 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
+import io.mosip.kernel.auth.entities.User;
+import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -357,8 +365,8 @@ public class ILdapDataStore implements IDataStore {
 	@SuppressWarnings("unchecked")
 	@Override
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
-		@SuppressWarnings("rawtypes")
-		Hashtable env = new Hashtable();
+
+		Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
@@ -391,4 +399,55 @@ public class ILdapDataStore implements IDataStore {
 		}
 		return authZResponseDto;
 	}
+
+	@Override
+	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto){
+		LdapConnection connection = null;
+		Dn dn = null;
+		try {
+			connection = createAnonymousConnection();
+			dn=createUserDn(userCreationRequestDto.getUserName());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		Hashtable<String,String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		try {
+		if(connection.exists(dn)) {
+			//throw already exist exception
+		}else {
+	  DirContext  context = null;	
+	
+	  List<Attribute> attributes= new ArrayList<>();
+       attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));  
+       attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));  
+       attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));  
+       attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
+       attributes.add(new BasicAttribute("dateOfBirth", userCreationRequestDto.getDateOfBirth()));
+       attributes.add( new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
+       attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
+       attributes.add( new BasicAttribute("gender", userCreationRequestDto.getGender()));
+        
+        Attribute oc = new BasicAttribute("objectClass");  
+        oc.add("top");  
+        oc.add("person");  
+        oc.add("organizationalPerson");  
+        oc.add("inetOrgPerson");  
+        oc.add("userDetails"); 
+        attributes.add(oc);
+
+	context = new InitialDirContext(env);
+	BasicAttributes entry = new BasicAttributes();  
+    attributes.parallelStream().forEach(entry::put); 
+    context.createSubcontext(dn.getName(), entry);  
+	
+}}catch (NamingException|LdapException e) {
+	System.out.println(e.getMessage());
 }
+        return null;
+	
+	}}

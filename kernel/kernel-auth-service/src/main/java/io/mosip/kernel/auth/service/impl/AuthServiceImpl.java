@@ -26,6 +26,9 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
+import io.mosip.kernel.auth.entities.User;
+import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -388,6 +391,11 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).unBlockAccount(userId);
+	}
+
+	@Override
+	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
+		return userStoreFactory.getDataStoreBasedOnApp(userCreationRequestDto.getAppId()).createAccount(userCreationRequestDto);
 	}
 
 }
