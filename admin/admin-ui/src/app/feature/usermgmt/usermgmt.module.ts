@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UsermgmtRoutingModule } from './usermgmt-routing.module';
 import { UserregistrationComponent } from './userregistration/userregistration.component';
 import { MaterialModule } from '../../material.module';
+import { RidverificationComponent } from './ridverification/ridverification.component';
 
 @NgModule({
   imports: [
@@ -12,6 +13,6 @@ import { MaterialModule } from '../../material.module';
     MaterialModule,
     ReactiveFormsModule
   ],
-  declarations: [UserregistrationComponent]
+  declarations: [UserregistrationComponent, RidverificationComponent]
 })
 export class UsermgmtModule { }
