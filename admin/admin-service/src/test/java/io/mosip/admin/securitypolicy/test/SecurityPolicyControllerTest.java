@@ -6,6 +6,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +27,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.securitypolicy.dto.UserRoleDto;
 import io.mosip.admin.securitypolicy.dto.UserRoleResponseDto;
+import io.mosip.kernel.core.exception.ServiceError;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class SecurityPolicyController {
+public class SecurityPolicyControllerTest {
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -108,20 +111,16 @@ public class SecurityPolicyController {
 	}
 	
 	@Test
-	public void testGetAuthFactorRestClientException() throws Exception {
-
+	public void testGetAuthFactorClientError() throws Exception {
+		
 		String user = "zonalAdmin";
 
 		UserRoleResponseDto response = new UserRoleResponseDto();
-		UserRoleDto userRole = new UserRoleDto();
-		userRole.setRole("ADMIN");
-		userRole.setUserId(user);
-		response.setResponse(userRole);
+		response.setErrors(Arrays.asList(new ServiceError("XXX","Error Occured")));
 
 		mockServer.expect(requestToUriTemplate(authmanagerUserRoleUrl, appId, user)).andExpect(method(HttpMethod.GET))
 				.andRespond(withStatus(HttpStatus.OK).contentType(MediaType.APPLICATION_XML)
 						.body(mapper.writeValueAsString(response)));
-
 		mockMvc.perform(get(url, user)).andExpect(status().isOk());
 	}
 }
