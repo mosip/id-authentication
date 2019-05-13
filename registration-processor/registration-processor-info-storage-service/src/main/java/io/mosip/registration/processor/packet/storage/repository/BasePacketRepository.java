@@ -193,7 +193,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            the id
 	 * @return the abis request by request id
 	 */
-	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.id.id =:id")
 	public List<AbisRequestEntity> getAbisRequestByRequestId(@Param("id") String id);
 
 	/**
@@ -237,7 +237,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @param id
 	 *            the id
 	 */
-	@Query("UPDATE  AbisRequestEntity abisReq SET  abisReq.statusCode = PROCESSED WHERE abisReq.id =:id")
+	@Query("UPDATE  AbisRequestEntity abisReq SET  abisReq.statusCode = 'PROCESSED' WHERE abisReq.id.id =:id")
+	@Modifying
 	public void updateAbisRequestStatusCode(@Param("id") String id);
 
 	/**

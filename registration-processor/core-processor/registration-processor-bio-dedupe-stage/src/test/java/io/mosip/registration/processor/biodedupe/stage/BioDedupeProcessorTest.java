@@ -277,6 +277,7 @@ public class BioDedupeProcessorTest {
 		 * Mockito.when(packetInfoDao.getAbisRefRegIdsByMatchedRefIds(any())).thenReturn
 		 * (matchedRidList);
 		 */
+
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertTrue(messageDto.getIsValid());
@@ -292,6 +293,7 @@ public class BioDedupeProcessorTest {
 		List<String> matchedRidList = new ArrayList<>();
 		matchedRidList.add("27847657360002520190320095010");
 		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRidList);
+
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}

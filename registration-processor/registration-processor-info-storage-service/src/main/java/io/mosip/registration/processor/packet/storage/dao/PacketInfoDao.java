@@ -36,10 +36,6 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
-	/** The abis request repositary. */
-	@Autowired
-	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepositary;
-
 	/** The abis request repository. */
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepository;
@@ -273,7 +269,7 @@ public class PacketInfoDao {
 	 * @return the insert or identify request
 	 */
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId) {
-		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
+		return abisRequestRepository.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 
 	}
 
@@ -285,7 +281,7 @@ public class PacketInfoDao {
 	 * @return the abis request by request id
 	 */
 	public List<AbisRequestEntity> getAbisRequestByRequestId(String abisRequestId) {
-		return abisRequestRepositary.getAbisRequestByRequestId(abisRequestId);
+		return abisRequestRepository.getAbisRequestByRequestId(abisRequestId);
 	}
 
 	/**
@@ -296,7 +292,7 @@ public class PacketInfoDao {
 	 * @return the batch id by request id
 	 */
 	public String getBatchIdByRequestId(String requestId) {
-		List<String> batchreqId = abisRequestRepositary.getBatchIdByRequestId(requestId);
+		List<String> batchreqId = abisRequestRepository.getBatchIdByRequestId(requestId);
 		if (batchreqId != null && !batchreqId.isEmpty()) {
 			return batchreqId.get(0);
 		}
@@ -312,7 +308,7 @@ public class PacketInfoDao {
 	 * @return the batch statusby batch id
 	 */
 	public List<String> getBatchStatusbyBatchId(String batchId) {
-		return abisRequestRepositary.getBatchStatusbyBatchId(batchId);
+		return abisRequestRepository.getBatchStatusbyBatchId(batchId);
 
 	}
 
@@ -328,7 +324,7 @@ public class PacketInfoDao {
 	 * @return the insert or identify request
 	 */
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType) {
-		return abisRequestRepositary.getInsertOrIdentifyRequest(bioRefId, refRegtrnId, requestType);
+		return abisRequestRepository.getInsertOrIdentifyRequest(bioRefId, refRegtrnId, requestType);
 
 	}
 
@@ -342,7 +338,7 @@ public class PacketInfoDao {
 	 * @return the identify by transaction id
 	 */
 	public List<AbisRequestEntity> getIdentifyByTransactionId(String transactionId, String identify) {
-		return abisRequestRepositary.getIdentifyByTransactionId(transactionId, identify);
+		return abisRequestRepository.getIdentifyByTransactionId(transactionId, identify);
 	}
 
 	/**
@@ -353,7 +349,7 @@ public class PacketInfoDao {
 	 * @return the bio ref id by reg id
 	 */
 	public List<RegBioRefEntity> getBioRefIdByRegId(String regId) {
-		return abisRequestRepositary.getBioRefIdByRegId(regId);
+		return abisRequestRepository.getBioRefIdByRegId(regId);
 	}
 
 	/**
@@ -364,7 +360,7 @@ public class PacketInfoDao {
 	 * @return the bio ref id by reg ids
 	 */
 	public List<String> getBioRefIdByRegIds(String regId) {
-		return abisRequestRepositary.getBioRefIdByRegIds(regId);
+		return abisRequestRepository.getBioRefIdByRegIds(regId);
 	}
 
 	/**
@@ -375,7 +371,7 @@ public class PacketInfoDao {
 	 * @return the demo list by transaction id
 	 */
 	public List<RegDemoDedupeListEntity> getDemoListByTransactionId(String transactionId) {
-		return abisRequestRepositary.getDemoListByTransactionId(transactionId);
+		return abisRequestRepository.getDemoListByTransactionId(transactionId);
 	}
 
 	/**
@@ -506,6 +502,6 @@ public class PacketInfoDao {
 	 * @return the abis requests by bio ref id
 	 */
 	public List<AbisRequestEntity> getAbisRequestsByBioRefId(String bioRefId) {
-		return abisRequestRepositary.getAbisRequestsByBioRefId(bioRefId, "INSERT");
+		return abisRequestRepository.getAbisRequestsByBioRefId(bioRefId, "INSERT");
 	}
 }
