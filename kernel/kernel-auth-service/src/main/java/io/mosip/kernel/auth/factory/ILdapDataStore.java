@@ -401,53 +401,55 @@ public class ILdapDataStore implements IDataStore {
 	}
 
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto){
+	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
 		LdapConnection connection = null;
 		Dn dn = null;
 		try {
 			connection = createAnonymousConnection();
-			dn=createUserDn(userCreationRequestDto.getUserName());
+			dn = createUserDn(userCreationRequestDto.getUserName());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
-		Hashtable<String,String> env = new Hashtable<>();
+
+		Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
-		if(connection.exists(dn)) {
-			//throw already exist exception
-		}else {
-	  DirContext  context = null;	
-	
-	  List<Attribute> attributes= new ArrayList<>();
-       attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));  
-       attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));  
-       attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));  
-       attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
-       attributes.add(new BasicAttribute("dateOfBirth", userCreationRequestDto.getDateOfBirth()));
-       attributes.add( new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
-       attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
-       attributes.add( new BasicAttribute("gender", userCreationRequestDto.getGender()));
-        
-        Attribute oc = new BasicAttribute("objectClass");  
-        oc.add("top");  
-        oc.add("person");  
-        oc.add("organizationalPerson");  
-        oc.add("inetOrgPerson");  
-        oc.add("userDetails"); 
-        attributes.add(oc);
+			if (connection.exists(dn)) {
+				// throw already exist exception
+			} else {
+				DirContext context = null;
 
-	context = new InitialDirContext(env);
-	BasicAttributes entry = new BasicAttributes();  
-    attributes.parallelStream().forEach(entry::put); 
-    context.createSubcontext(dn.getName(), entry);  
-	
-}}catch (NamingException|LdapException e) {
-	System.out.println(e.getMessage());
+				List<Attribute> attributes = new ArrayList<>();
+				attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));
+				attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));
+				attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));
+				attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
+				attributes.add(new BasicAttribute("dob", userCreationRequestDto.getDateOfBirth().toString()));
+				attributes.add(new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
+				attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
+				attributes.add(new BasicAttribute("genderCode", userCreationRequestDto.getGender()));
+				 
+				Attribute oc = new BasicAttribute("objectClass");
+				oc.add("inetOrgPerson");
+				oc.add("organizationalPerson");
+				oc.add("person");
+				oc.add("top");
+				oc.add("userDetails");
+				attributes.add(oc);
+				
+				context = new InitialDirContext(env);
+				BasicAttributes entry = new BasicAttributes();
+				attributes.parallelStream().forEach(entry::put);
+				context.createSubcontext(dn.getName(), entry);
+
+			}
+		} catch (NamingException | LdapException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+
+	}
 }
-        return null;
-	
-	}}
