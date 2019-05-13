@@ -115,7 +115,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 			Registration registration = registrationRepository.getOne(registrationID);
-			registration.setStatusCode(clientStatusCode);
+			//registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
 			registration.setClientStatusCode(clientStatusCode);
 			registration.setClientStatusTimestamp(timestamp);

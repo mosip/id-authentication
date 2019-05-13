@@ -84,7 +84,7 @@ public class PacketReceiverConfig {
 	 * @return the decryptor
 	 */
 	@Bean
-	public Decryptor decryptor() {
+	public Decryptor packetReceiverDecryptor() {
 		return new Decryptor();
 	}
 }

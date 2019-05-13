@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.DeviceTypes;
@@ -70,7 +70,7 @@ public class UserClientMachineMappingDAOTest {
 	@Mock
 	private UserDetailRepository userDetailRepository;
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 	@Mock
 	private DeviceTypeRepository deviceTypeRepository;
 	@Mock

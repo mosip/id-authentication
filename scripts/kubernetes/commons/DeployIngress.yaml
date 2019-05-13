@@ -150,7 +150,7 @@ spec:
         backend:
           serviceName: pre-registration-ui
           servicePort: 80
-      - path: /bio-dedupe
+      - path: /registrationprocessor/v1/bio-dedupe
         backend:
           serviceName: registration-processor-bio-dedupe-service
           servicePort: 9097
@@ -162,7 +162,7 @@ spec:
         backend:
           serviceName: registration-processor-packet-uploader-stage
           servicePort: 8087
-      - path: /manual-verification
+      - path: /registrationprocessor/v1/manualverification
         backend:
           serviceName: registration-processor-manual-verification-stage
           servicePort: 8084
@@ -170,11 +170,11 @@ spec:
         backend:
           serviceName: registration-processor-external-integration-service
           servicePort: 8201
-      - path: /print
+      - path: /registrationprocessor/v1/print
         backend:
           serviceName: registration-processor-print-service
           servicePort: 9099
-      - path: /print-stage
+      - path: /registrationprocessor/v1/print-stage
         backend:
           serviceName: registration-processor-printing-stage
           servicePort: 8099
