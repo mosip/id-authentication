@@ -37,6 +37,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -74,10 +75,7 @@ public class BioDedupeProcessor {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	@Autowired
-	private Utilities utility;
-
-	@Value("${registration.processor.reprocess.elapse.time}")
-	private long elapseTime;
+	private ABISHandlerUtil abisHandlerUtil;
 
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
@@ -88,11 +86,9 @@ public class BioDedupeProcessor {
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
-	private static final String RE_PROCESSING = "re-processing";
+	private static final String NEW = "NEW";
 
-	private static final String HANDLER = "handler";
-
-	private static final String NEW_PACKET = "New-packet";
+	private static final String POST_API_PROCESS = "POST_API_PROCESS";
 
 	private String description = "";
 
@@ -117,20 +113,20 @@ public class BioDedupeProcessor {
 
 			String registrationType = registrationStatusDto.getRegistrationType();
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString())) {
-				String packetStatus = utilities.getElapseStatus(registrationStatusDto,
+				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
 						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
-				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
+				if (packetStatus.equalsIgnoreCase(NEW)) {
 					newPacketInsertion(registrationStatusDto, object);
-				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
+				} else if (packetStatus.equalsIgnoreCase(POST_API_PROCESS)) {
 					newPacketHandlerIdentification(registrationStatusDto, object);
 				}
 
 			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
-				String packetStatus = utilities.getElapseStatus(registrationStatusDto,
+				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
 						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
-				if (packetStatus.equalsIgnoreCase(NEW_PACKET) || packetStatus.equalsIgnoreCase(RE_PROCESSING)) {
+				if (packetStatus.equalsIgnoreCase(NEW)) {
 					updatePacketInsertion(registrationStatusDto, object);
-				} else if (packetStatus.equalsIgnoreCase(HANDLER)) {
+				} else if (packetStatus.equalsIgnoreCase(POST_API_PROCESS)) {
 					updatePacketHandlerIdentification(registrationStatusDto, object);
 				}
 
@@ -237,6 +233,7 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+			object.setIsValid(Boolean.TRUE);
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -259,7 +256,7 @@ public class BioDedupeProcessor {
 				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 
 		if (regProcessorIdentityJson.getIdentity().getIndividualBiometrics() != null) {
-
+			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
@@ -280,7 +277,7 @@ public class BioDedupeProcessor {
 	private void newPacketHandlerIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
 			throws ApisResourceAccessException, IOException {
 
-		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto,
+		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				SyncTypeDto.NEW.toString());
 		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -303,7 +300,7 @@ public class BioDedupeProcessor {
 
 	private void updatePacketHandlerIdentification(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object) throws ApisResourceAccessException, IOException {
-		List<String> matchedRegIds = utility.getMatchedRegistrationIds(registrationStatusDto,
+		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				SyncTypeDto.UPDATE.toString());
 		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());

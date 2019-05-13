@@ -31,4 +31,5 @@ public class BioDedupeBeanConfig {
 	public PacketInfoDao getPacketInfoDao() {
 		return new PacketInfoDao();
 	}
+
 }
