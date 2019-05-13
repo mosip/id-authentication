@@ -117,7 +117,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The decryptor. */
 	@Autowired
-	private Decryptor decryptor;
+	private Decryptor packetReceiverDecryptor;
 
 	/** The storage flag. */
 	private Boolean storageFlag = false;
@@ -448,7 +448,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {
-				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
+				InputStream decryptedData = packetReceiverDecryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
 						registrationId);
 				scanningFlag = scanFile(decryptedData);
 			}

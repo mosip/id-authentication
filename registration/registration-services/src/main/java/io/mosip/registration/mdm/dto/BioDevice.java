@@ -4,7 +4,7 @@ import java.util.Map;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
-import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegrator;
+import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
 import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,15 +35,14 @@ public class BioDevice {
 	private String firmWare;
 	private String deviceExpiry;
 
-	private MosipBioDeviceIntegrator mosipBioDeviceIntegrator;
+	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
 	public Map<String, byte[]> capture() throws RegBaseCheckedException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
 
 		/* build the request object for capture */
-		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder
-				.buildMosipBioCaptureRequestDto(this);
+		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this);
 
 		return mosipBioDeviceIntegrator.capture(url, MosipBioDeviceConstants.CAPTURE_SERVICENAME,
 				mosipBioCaptureRequestDto, CaptureResponseDto.class);

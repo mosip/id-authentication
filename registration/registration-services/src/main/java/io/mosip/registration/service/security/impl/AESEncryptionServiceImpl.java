@@ -19,7 +19,7 @@ import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -54,7 +54,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;

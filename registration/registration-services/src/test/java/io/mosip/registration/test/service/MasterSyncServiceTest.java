@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -95,7 +95,7 @@ public class MasterSyncServiceTest {
 	 */
 
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	@BeforeClass
 	public static void beforeClass() throws URISyntaxException {

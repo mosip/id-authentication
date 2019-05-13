@@ -147,7 +147,7 @@ public class RegistrationStatusBeanConfig {
 	}
 
 	@Bean
-	public Decryptor getDecryptor() {
+	public Decryptor decryptor() {
 		return new Decryptor();
 	}
 }

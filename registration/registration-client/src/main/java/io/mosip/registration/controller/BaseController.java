@@ -24,7 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -101,7 +101,7 @@ public class BaseController {
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
 	@Autowired
-	protected AuditFactory auditFactory;
+	protected AuditManagerService auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
 
