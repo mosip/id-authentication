@@ -1,37 +1,46 @@
 package io.mosip.registration.processor.abis.handler.stage;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.abis.handler.exception.AbisHandlerException;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.code.*;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.abis.*;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.processor.abis.handler.exception.AbisHandlerException;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestGalleryDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.ReferenceIdDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class AbisHandlerStage.
@@ -195,17 +204,20 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	private void createIdentifyRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String transactionTypeCode) {
-		byte[] abisIdentifyRequestBytes = getIdentifyRequestBytes(transactionId, bioRefId, transactionTypeCode);
 		String batchId = getUUID();
 		for (AbisApplicationDto applicationDto : abisApplicationDtoList) {
 			AbisRequestDto abisRequestDto = new AbisRequestDto();
-			abisRequestDto.setId(getUUID());
+			String id = getUUID();
+			abisRequestDto.setId(id);
 			abisRequestDto.setAbisAppCode(applicationDto.getCode());
 			abisRequestDto.setBioRefId(bioRefId);
 			abisRequestDto.setRequestType(IDENTIFY);
 			abisRequestDto.setReqBatchId(batchId);
 			abisRequestDto.setRefRegtrnId(transactionId);
+			
+			byte[] abisIdentifyRequestBytes = getIdentifyRequestBytes(transactionId, bioRefId, transactionTypeCode, id);
 			abisRequestDto.setReqText(abisIdentifyRequestBytes);
+			
 			abisRequestDto.setStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
@@ -228,14 +240,15 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *            the bio ref id
 	 * @param transactionTypeCode
 	 *            the transaction type code
+	 * @param id
 	 * @return the identify request bytes
 	 */
-	private byte[] getIdentifyRequestBytes(String transactionId, String bioRefId, String transactionTypeCode) {
+	private byte[] getIdentifyRequestBytes(String transactionId, String bioRefId, String transactionTypeCode,
+			String id) {
 		AbisIdentifyRequestDto abisIdentifyRequestDto = new AbisIdentifyRequestDto();
 		abisIdentifyRequestDto.setId(MOSIP_ABIS_IDENTIFY);
 		abisIdentifyRequestDto.setVer(VERSION);
-		abisIdentifyRequestDto.setRequestId(getUUID());
-
+		abisIdentifyRequestDto.setRequestId(id);
 		abisIdentifyRequestDto.setReferenceId(bioRefId);
 		abisIdentifyRequestDto.setTimestamp(TIMESTAMP);
 		abisIdentifyRequestDto.setMaxResults(maxResults);
@@ -263,17 +276,14 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisIdentifyRequestDto.setGallery(galleryDto);
 		}
 
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(abisIdentifyRequestDto);
-			oos.flush();
-		} catch (IOException e) {
+			String jsonString = JsonUtils.javaObjectToJsonString(abisIdentifyRequestDto);
+			return jsonString.getBytes();
+		} catch (JsonProcessingException e) {
 			description = "Internal Error occured in Abis Handler identify request";
 			regProcLogger.error("Internal Error occured in Abis Handler in identify", "", "", "");
 			throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 		}
-		return bos.toByteArray();
 	}
 
 	/**
@@ -312,18 +322,21 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	private void createInsertRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String regId) {
-		byte[] abisInsertRequestBytes = getInsertRequestBytes(regId);
 		String batchId = getUUID();
 		List<AbisRequestDto> abisRequestDtoList = packetInfoManager.getAbisRequestsByBioRefId(bioRefId);
 		for (AbisApplicationDto applicationDto : abisApplicationDtoList) {
 			AbisRequestDto abisRequestDto = new AbisRequestDto();
-			abisRequestDto.setId(getUUID());
+			String id = getUUID();
+			abisRequestDto.setId(id);
 			abisRequestDto.setAbisAppCode(applicationDto.getCode());
 			abisRequestDto.setBioRefId(bioRefId);
 			abisRequestDto.setRequestType(INSERT);
 			abisRequestDto.setReqBatchId(batchId);
 			abisRequestDto.setRefRegtrnId(transactionId);
+
+			byte[] abisInsertRequestBytes = getInsertRequestBytes(regId, id, bioRefId);
 			abisRequestDto.setReqText(abisInsertRequestBytes);
+
 			abisRequestDto.setStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
@@ -352,27 +365,26 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *
 	 * @param regId
 	 *            the reg id
+	 * @param id
+	 * @param bioRefId
 	 * @return the insert request bytes
 	 */
-	private byte[] getInsertRequestBytes(String regId) {
+	private byte[] getInsertRequestBytes(String regId, String id, String bioRefId) {
 		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(MOSIP_ABIS_INSERT);
-		abisInsertRequestDto.setReferenceId(getUUID());
-		abisInsertRequestDto.setReferenceURL(url + regId);
-		abisInsertRequestDto.setRequestId(getUUID());
+		abisInsertRequestDto.setReferenceId(bioRefId);
+		abisInsertRequestDto.setReferenceURL(url + "/" + regId);
+		abisInsertRequestDto.setRequestId(id);
 		abisInsertRequestDto.setTimestamp(TIMESTAMP);
 		abisInsertRequestDto.setVer(VERSION);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(abisInsertRequestDto);
-			oos.flush();
-		} catch (IOException e) {
-			description = "Internal Error occured in Abis Handler in insert request";
-			regProcLogger.error("Internal Error occured in Abis Handler in insert", "", "", "");
+			String jsonString = JsonUtils.javaObjectToJsonString(abisInsertRequestDto);
+			return jsonString.getBytes();
+		} catch (JsonProcessingException e) {
+			description = "Internal Error occured in Abis Handler identify request";
+			regProcLogger.error("Internal Error occured in Abis Handler in identify", "", "", "");
 			throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 		}
-		return bos.toByteArray();
 	}
 
 	/**

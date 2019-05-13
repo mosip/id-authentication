@@ -4,6 +4,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import io.mosip.registration.processor.abis.handler.stage.AbisHandlerStage;
 
+/**
+ * The Class AbisHandlerApplication.
+ * 
+ * @author M1048358 Alok Ranjan
+ */
 public class AbisHandlerApplication {
 
     public static void main(String[] args){
