@@ -99,26 +99,26 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 								"User Detail Sync Fail......");
-						responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+						setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 
 					}
 
 				} else {
 
 					LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "User Detail Sync Fail......");
-					responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+					setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 				}
 
 			} catch (RegBaseCheckedException | IOException exRegBaseCheckedException) {
 				LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 						exRegBaseCheckedException.getMessage()
 								+ ExceptionUtils.getStackTrace(exRegBaseCheckedException));
-				responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 		} else {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to sync user detail data as there is no internet connection");
-			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+			setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 		}
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
