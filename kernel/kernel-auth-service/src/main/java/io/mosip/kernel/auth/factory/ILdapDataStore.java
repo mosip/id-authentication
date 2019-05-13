@@ -34,7 +34,6 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
