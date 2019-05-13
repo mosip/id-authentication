@@ -6,9 +6,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +33,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -49,7 +54,6 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.vertx.core.Vertx;
 
 /**
  * The Class BioDedupeStageTest.
@@ -79,9 +83,6 @@ public class BioDedupeProcessorTest {
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
-
-	/** The vertx. */
-	private Vertx vertx;
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
@@ -117,7 +118,8 @@ public class BioDedupeProcessorTest {
 
 	private static final String POST_API_PROCESS = "POST_API_PROCESS";
 
-	private RegistrationProcessorIdentity regProcessorIdentityJson = new RegistrationProcessorIdentity();
+	@Mock
+	RegistrationProcessorIdentity regProcessorIdentityJson = new RegistrationProcessorIdentity();
 
 	@Mock
 	ObjectMapper mapIdentityJsonStringToObject;
@@ -138,8 +140,8 @@ public class BioDedupeProcessorTest {
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
-		dto.setRid("reg1234");
 
+		dto.setRid("reg1234");
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("new");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -148,8 +150,18 @@ public class BioDedupeProcessorTest {
 				.thenReturn("1233445566".getBytes("UTF-16"));
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 
-		entity.setLatestRegistrationTransactionId("t123");
-		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
+		Identity identity = new Identity();
+		regProcessorIdentityJson.setIdentity(identity);
+		/*
+		 * PowerMockito.mockStatic(Utilities.class);
+		 * 
+		 * Mockito.when(utilities.getGetRegProcessorDemographicIdentity()).thenReturn(
+		 * "identity");
+		 * 
+		 * Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(),
+		 * Mockito.any(Class.class))) .thenReturn(regProcessorIdentityJson);
+		 */
+
 	}
 
 	/**
@@ -201,56 +213,87 @@ public class BioDedupeProcessorTest {
 
 	}
 
+	////////////////////
 	@Test
 	public void testeHandlerIdentifyManualStage() throws Exception {
 
+		InputStream inputStream = new FileInputStream("src/test/resources/ID.json");
+		byte[] bytes = IOUtils.toByteArray(inputStream);
+		String jsonString = new String(bytes);
+
+		// String str = regProcessorIdentityJson.toString();
 		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn("");
+		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(jsonString);
 
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("Update");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		// PowerMockito.mockStatic(Utilities.class);
+		// Mockito.when(utilities.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+
+		// ObjectMapper mockObjectMapper = Mockito.mock(ObjectMapper.class);
+		// Mockito.when(mockObjectMapper.readValue(anyString(),
+		// Mockito.any(Class.class)))
+		// .thenReturn(regProcessorIdentityJson);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());
 	}
 
 	@Test
-	public void testBioDeDupUpdatePacketHandlerProcessingSuccess() {
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("Handler");
-		AbisResponseDetEntity abisDet = new AbisResponseDetEntity();
-		abisDet.setCrBy("mosip");
+	public void testBioDeDupUpdatePacketHandlerProcessingSuccess() throws ApisResourceAccessException, IOException {
 
-		AbisResponseEntity abis = new AbisResponseEntity();
-		abis.setStatusCode("status");
+		registrationStatusDto.setRegistrationId("reg1234");
+		registrationStatusDto.setRegistrationType("UPDATE");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
 
-		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
-
-		abisResponseDetEntities.add(abisDet);
-		// Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(),
-		// any())).thenReturn(abisResponseDetEntities);
+		List<String> matchedRidList = new ArrayList<>();
+		// matchedRidList.add("27847657360002520190320095010");
+		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRidList);
+		/*
+		 * AbisResponseDetDto abisDet = new AbisResponseDetDto();
+		 * abisDet.setCrBy("mosip");
+		 * abisDet.setMatchedBioRefId("83f01b16-168e-4904-be73-cbf0b717efb0");
+		 * 
+		 * AbisResponseDto abis = new AbisResponseDto(); abis.setStatusCode("status");
+		 * 
+		 * List<AbisResponseDetDto> abisResponseDetDtos = new ArrayList<>();
+		 * abisResponseDetDtos.add(abisDet);
+		 * 
+		 * List<AbisResponseDto> abisResponseDtos = new ArrayList<>();
+		 * 
+		 * List<String> regBioRefIds = new ArrayList<>(); regBioRefIds.add("89");
+		 * 
+		 * List<String> matchedRidList = new ArrayList<>();
+		 * matchedRidList.add("27847657360002520190320095010");
+		 * 
+		 * Mockito.when(packetInfoDao.getAbisRefMatchedRefIdByRid(any())).thenReturn(
+		 * regBioRefIds); Mockito.when(packetInfoManager.getAbisResponseRecords(any(),
+		 * any(),any())).thenReturn(abisResponseDtos);
+		 * Mockito.when(packetInfoManager.getAbisResponseDetails(any())).thenReturn(
+		 * abisResponseDetDtos);
+		 * Mockito.when(packetInfoDao.getAbisRefRegIdsByMatchedRefIds(any())).thenReturn
+		 * (matchedRidList);
+		 */
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
-		assertTrue(messageDto.getMessageBusAddress().getAddress().equalsIgnoreCase("uin-generator-bus-in"));
+		assertTrue(messageDto.getIsValid());
 	}
 
 	@Test
-	public void testBioDeDupUpdatePacketHandlerProcessingFailure() {
+	public void testBioDeDupUpdatePacketHandlerProcessingFailure() throws ApisResourceAccessException, IOException {
+		registrationStatusDto.setRegistrationId("reg1234");
+		registrationStatusDto.setRegistrationType("UPDATE");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
-		AbisResponseDetEntity abisDet = new AbisResponseDetEntity();
-		abisDet.setCrBy("mosip");
 
-		AbisResponseEntity abis = new AbisResponseEntity();
-		abis.setStatusCode("status");
-
-		List<AbisResponseDetEntity> abisResponseDetEntities = new ArrayList<>();
-
-		abisResponseDetEntities.add(abisDet);
-		// Mockito.when(bioDedupDao.getAbisResponseDetailRecords(any(),
-		// any())).thenReturn(abisResponseDetEntities);
+		List<String> matchedRidList = new ArrayList<>();
+		matchedRidList.add("27847657360002520190320095010");
+		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRidList);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
-
-		assertTrue(messageDto.getInternalError());
+		assertFalse(messageDto.getIsValid());
 	}
 
 	@Test
