@@ -15,8 +15,7 @@ node {
  updatedDockerImagesForDmz = []
  updatedServicesForPrivateZone = []
  updatedDockerImagesForPrivateZone= []
- //k8DevContextForPrivateZone = 'dev-k8-cluster'
-def k8DevContext = 'mosip-dev-cluster'
+ k8DevContextForPrivateZone = 'mosip-dev-cluster'
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
   dir(branch) {
@@ -236,7 +235,7 @@ stage('----------- Publish build info -------------') {
     /*
      Removing all untagged images
      */
-    sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
+    sh "docker rmi \$(docker images | awk '/<none>/ {print \}') || true"
 
   }
 
