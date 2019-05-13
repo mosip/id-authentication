@@ -157,8 +157,8 @@ public class MessageDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MessageDTO [reg_type=" + reg_type + ", rid=" + rid + ", isValid=" + isValid + ", internalError="
-				+ internalError + ", messageBusAddress=" + messageBusAddress + ", retryCount=" + retryCount + "]";
+		return "MessageDTO{" + "reg_type='" + reg_type + '\'' + ", rid='" + rid + '\'' + ", isValid=" + isValid
+				+ ", internalError=" + internalError + ", messageBusAddress=" + messageBusAddress.getAddress()
+				+ ", retryCount=" + retryCount + '}';
 	}
-
 }
