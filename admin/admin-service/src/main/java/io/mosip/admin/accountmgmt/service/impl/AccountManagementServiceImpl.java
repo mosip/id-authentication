@@ -100,7 +100,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto unBlockUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + appId+"registrationclient/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl +"registrationclient/").append(userId);
 		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getSuccessResponse(response);
 
@@ -167,7 +167,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient").append(mobile);
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}

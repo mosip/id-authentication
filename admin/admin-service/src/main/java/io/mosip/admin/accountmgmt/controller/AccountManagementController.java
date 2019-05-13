@@ -88,15 +88,19 @@ public class AccountManagementController {
 	 *            the user id
 	 */
 	@ResponseFilter
-	@GetMapping("/unblockaccount")
-	public StatusResponseDto unBlockAccount(String userId) {
-		return accountManagementService.unBlockUserName(userId);
+	@GetMapping("/unblockaccount/{userid}")
+	public ResponseWrapper<StatusResponseDto> unBlockAccount(@PathVariable("userid")String userId) {
+		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.unBlockUserName(userId));
+		return responseWrapper ;
 	}
 
 	@ResponseFilter
 	@GetMapping("/username/{mobilenumber}")
-	public UserNameDto getUserName(@PathVariable("mobilenumber") String mobile) throws Exception {
-		return accountManagementService.getUserNameBasedOnMobileNumber(mobile);
+	public ResponseWrapper<UserNameDto> getUserName(@PathVariable("mobilenumber") String mobile)  {
+		ResponseWrapper<UserNameDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.getUserNameBasedOnMobileNumber(mobile));
+		return responseWrapper ;
 	}
 
 }
