@@ -453,7 +453,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				scanningFlag = scanFile(decryptedData);
 			}
 			if (scanningFlag) {
-				fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
+				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray), DirectoryPathDto.LANDING_ZONE);
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());

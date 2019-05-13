@@ -54,6 +54,19 @@ public enum AuthErrorCode {
 	 * Empty Cookie error
 	 */
 	TOKEN_NOTPRESENT_ERROR("KER-ATH-007", "Token is not present in cookies"),
+	
+	/**
+	 * Client error
+	 */
+	SERVER_ERROR("KER-ATH-500", "Server error occured,Please check the logs "),
+	
+	
+	TEMPLATE_ERROR("KER-ATH-436", " Template is missing for language "),
+	
+	/**
+	 * Client error
+	 */
+	CLIENT_ERROR("KER-ATH-501", "Client error occured with message "),
 
 	/**
 	 * Empty Cookie error
