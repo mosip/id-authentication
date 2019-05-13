@@ -44,7 +44,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  */
 @Component
 public class MosipBioDeviceManager {
-	
+
 	@Autowired
 	private AuditManagerService auditFactory;
 
@@ -76,7 +76,7 @@ public class MosipBioDeviceManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public void init() throws RegBaseCheckedException {
-		
+
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering init method for preparing device registery");
 
@@ -91,24 +91,27 @@ public class MosipBioDeviceManager {
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
 
 				List<LinkedHashMap<String, String>> deviceInfoResponseDtos = (List<LinkedHashMap<String, String>>) mosipBioDeviceIntegrator
-						.getDeviceInfo(url, MosipBioDeviceConstants.DEVICE_INFO_SERVICENAME, Object[].class);
+						.getDeviceInfo(url, Object[].class);
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
 					for (LinkedHashMap<String, String> deviceInfoResponseHash : deviceInfoResponseDtos) {
 
 						try {
-							deviceInfoResponse = mapper.readValue(mapper.writeValueAsString(deviceInfoResponseHash), DeviceInfoResponseData.class);
-							auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND, RegistrationConstants.APPLICATION_NAME,
+							deviceInfoResponse = mapper.readValue(mapper.writeValueAsString(deviceInfoResponseHash),
+									DeviceInfoResponseData.class);
+							auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND,
+									RegistrationConstants.APPLICATION_NAME,
 									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 						} catch (IOException exception) {
-							LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
-									String.format(
-											"%s -> Exception while mapping the response  %s",
+							LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME,
+									APPLICATION_ID, String.format("%s -> Exception while mapping the response  %s",
 											exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
-							auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE, RegistrationConstants.APPLICATION_NAME,
+							auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE,
+									RegistrationConstants.APPLICATION_NAME,
 									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 						}
 
 						if (StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
@@ -148,7 +151,7 @@ public class MosipBioDeviceManager {
 
 								deviceRegistry.put(MosipBioDeviceConstants.VALUE_FACE, bioDevice);
 								LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-										bioDevice+" device type is being added in the device registery");
+										bioDevice + " device type is being added in the device registery");
 								break;
 							case MosipBioDeviceConstants.VALUE_IRIS:
 
@@ -167,16 +170,16 @@ public class MosipBioDeviceManager {
 							default:
 								break;
 							}
-						}else {
+						} else {
 							LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-									"Device response is invalid for device running at port number" +port  );
+									"Device response is invalid for device running at port number" + port);
 						}
 					}
 
 				}
-			}else {
+			} else {
 				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-						"No device is running at port number "+port);
+						"No device is running at port number " + port);
 			}
 		}
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
@@ -207,9 +210,8 @@ public class MosipBioDeviceManager {
 	 * @throws RegBaseCheckedException
 	 */
 	public Map<String, byte[]> scan(String deviceType) throws RegBaseCheckedException {
-		
-		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Enter scan method");
+
+		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID, "Enter scan method");
 
 		/*
 		 * fetch and store the bio device list from MDM if the device registry does not
@@ -248,14 +250,12 @@ public class MosipBioDeviceManager {
 			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_DISCOVERY_ENDPOINT);
 
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
-				deviceDiscoveryResponsetDtos = mosipBioDeviceIntegrator.getDeviceDiscovery(url,
-						MosipBioDeviceConstants.DEVICE_DISCOVERY_SERVICENAME, deviceType, null);
+				deviceDiscoveryResponsetDtos = mosipBioDeviceIntegrator.getDeviceDiscovery(url, deviceType, null);
 				break;
 			}
 
 		}
-		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Device discovery completed");
+		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID, "Device discovery completed");
 
 		return deviceDiscoveryResponsetDtos;
 
@@ -268,8 +268,8 @@ public class MosipBioDeviceManager {
 	public void deRegister(String type) {
 		deviceRegistry.remove(type);
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Removed" +type+" from Device registery");
-		
+				"Removed" + type + " from Device registery");
+
 	}
 
 	public void getBioDevice(String type, String modality) {
