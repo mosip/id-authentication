@@ -177,6 +177,7 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		reg.setClientStatusCode("SYNCED");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 		synchedPackets.add(packetStatusDTO);
 
@@ -198,6 +199,7 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("12345");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
@@ -213,7 +215,8 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("123456789");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
-
+		reg.setStatusCode("NEW");
+		
 		Object respObj = new Object();
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 
@@ -237,6 +240,7 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("123456789");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		synchedPackets.add(reg);
 		reg.setClientStatusCode("SYNCED");
 		Mockito.when(registrationDAO.get(idlist)).thenReturn(synchedPackets);

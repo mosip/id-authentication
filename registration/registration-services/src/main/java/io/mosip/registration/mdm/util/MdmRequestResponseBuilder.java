@@ -1,12 +1,20 @@
 package io.mosip.registration.mdm.util;
 
+import static io.mosip.registration.constants.LoggerConstants.MDM_REQUEST_RESPONSE_BUILDER;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
+import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegratorImpl;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
@@ -19,8 +27,26 @@ import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
  *
  */
 public class MdmRequestResponseBuilder {
+	
+	private static final Logger LOGGER = AppConfig.getLogger(MdmRequestResponseBuilder.class);
 
+	
+	private MdmRequestResponseBuilder() {
+		
+	}
+	
+	/**
+	 * Builds the capture request dto
+	 * 
+	 * @param BioDevice
+	 *            - type of device
+	 * @return captureRequestDto
+	 */
 	public static CaptureRequestDto buildMosipBioCaptureRequestDto(BioDevice bioDevice) {
+		
+		LOGGER.info(MDM_REQUEST_RESPONSE_BUILDER, APPLICATION_NAME, APPLICATION_ID,
+				"Building the request dto");
+
 
 		CaptureRequestDto bioCaptureRequestDto = new CaptureRequestDto();
 
@@ -46,7 +72,15 @@ public class MdmRequestResponseBuilder {
 
 	}
 
+	/**
+	 * Returns the map for captured byte
+	 * @param CaptureResponseDto
+	 * @return Map<String, byte[])
+	 */
 	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
+
+		LOGGER.info(MDM_REQUEST_RESPONSE_BUILDER, APPLICATION_NAME, APPLICATION_ID,
+				"Parsing the resonse dto");
 
 		Map<String, byte[]> responseBioData = new HashMap<>();
 
@@ -71,7 +105,16 @@ public class MdmRequestResponseBuilder {
 		return responseBioData;
 	}
 
+	/**
+	 * Returns the map for captured byte
+	 * @param String
+	 * 			-deviceType
+	 * @return DeviceDiscoveryRequestDto
+	 */
 	public static DeviceDiscoveryRequestDto buildDeviceDiscoveryRequest(String deviceType) {
+		LOGGER.info(MDM_REQUEST_RESPONSE_BUILDER, APPLICATION_NAME, APPLICATION_ID,
+				"Building the discovery request");
+
 		DeviceDiscoveryRequestDto deviceDiscoveryRequestDto = new DeviceDiscoveryRequestDto();
 		deviceDiscoveryRequestDto.setType(deviceType);
 

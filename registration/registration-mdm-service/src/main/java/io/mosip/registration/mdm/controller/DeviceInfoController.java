@@ -15,6 +15,10 @@ import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 @RestController
 public class DeviceInfoController {
 
+	/**
+	 * Returns the Device info data
+	 * @return DeviceInfoResponseData
+	 */
 	@GetMapping("/deviceInfo")
 	public List<DeviceInfoResponseData> getDevicesInfo() {
 		return Arrays.asList(
@@ -29,6 +33,11 @@ public class DeviceInfoController {
 
 	}
 
+	/**
+	 * Returns the Device info data
+	 * @param DeviceDiscoveryRequestDto
+	 * @return DeviceInfoResponseData
+	 */
 	@PostMapping("/deviceInfo")
 	private DeviceInfoResponseData getDeviceDiscoveryInfo(@RequestBody DeviceDiscoveryRequestDto deviceDiscoveryRequestDto) {
 		String type = deviceDiscoveryRequestDto.getType();
@@ -41,6 +50,14 @@ public class DeviceInfoController {
 		
 	}
 	
+	/**
+	 * Returns the Device info data
+	 * @param String
+	 * 		  -deviceType
+	 * @param String
+	 *        -deviceSubType
+	 * @return DeviceInfoResponseData
+	 */
 	private DeviceInfoResponseData getDeviceInfo(String type, String subType) {
 		DeviceInfoResponseData deviceInfo = new DeviceInfoResponseData();
 		deviceInfo.setType(type);
@@ -49,7 +66,14 @@ public class DeviceInfoController {
 
 		return deviceInfo;
 	}
-	
+
+
+	/**
+	 * Returns the Device info data
+	 * @param String
+	 * 		  -deviceType
+	 * @return DeviceInfoResponseData
+	 */
 	private DeviceInfoResponseData getDeviceInfo(String type) {
 		return getDeviceInfo(type, "");
 	}
