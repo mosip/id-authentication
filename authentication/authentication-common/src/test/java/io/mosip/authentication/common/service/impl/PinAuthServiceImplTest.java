@@ -28,9 +28,7 @@ import io.mosip.authentication.common.service.entity.StaticPin;
 import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -73,7 +71,7 @@ public class PinAuthServiceImplTest {
 	private OTPManager otpManager;
 
 	@InjectMocks
-	private RestHelper restHelper;
+	private RestHelperImpl restHelper;
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;

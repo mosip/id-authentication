@@ -159,12 +159,16 @@ public class RegistrationUpdate {
 				} else {
 					Attributes localAttribute = jar.getValue();
 					Attributes serverAttribute = serverAttributes.get(jar.getKey());
-					if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
-							.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
+					try {
+						if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
+								.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
 
-						/* Jar to be downloaded */
-						downloadJars.add(jar.getKey());
+							/* Jar to be downloaded */
+							downloadJars.add(jar.getKey());
 
+						}
+					} catch(Exception e) {
+						System.out.println("Hello");
 					}
 					serverManifest.getEntries().remove(jar.getKey());
 

@@ -10,7 +10,7 @@ import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
-import io.mosip.registration.mdm.dto.MosipBioRequest;
+import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
 
 /**
  * Handles all the request response parsing of biometric data
@@ -29,7 +29,7 @@ public class MdmRequestResponseBuilder {
 		bioCaptureRequestDto.setVersion("");
 		bioCaptureRequestDto.setTransactionId("");
 
-		MosipBioRequest mosipBioRequest = new MosipBioRequest();
+		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
 		mosipBioRequest.setCount(1);
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceType());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubType());
@@ -37,7 +37,7 @@ public class MdmRequestResponseBuilder {
 		mosipBioRequest.setPreviousHash("");
 		mosipBioRequest.setType("");
 
-		List<MosipBioRequest> bioRequests = new ArrayList<>();
+		List<CaptureRequestDeviceDetailDto> bioRequests = new ArrayList<>();
 		bioRequests.add(mosipBioRequest);
 
 		bioCaptureRequestDto.setMosipBioRequest(bioRequests);

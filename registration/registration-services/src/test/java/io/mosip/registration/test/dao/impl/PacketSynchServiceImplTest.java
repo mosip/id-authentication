@@ -32,7 +32,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
@@ -67,7 +67,7 @@ public class PacketSynchServiceImplTest {
 	@Mock
 	private RequestHTTPDTO requestHTTPDTO;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@InjectMocks
 	private PacketSynchServiceImpl packetSynchServiceImpl;
 

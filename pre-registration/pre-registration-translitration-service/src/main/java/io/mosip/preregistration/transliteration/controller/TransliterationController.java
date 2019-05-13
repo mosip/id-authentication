@@ -50,8 +50,7 @@ public class TransliterationController {
 	 */
 	@PostMapping(path = "/transliterate", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion-Translitration data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully"),
-			@ApiResponse(code = 400, message = "Unable to get the translitration") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully") })
 	public ResponseEntity<MainResponseDTO<TransliterationResponseDTO>> translitrator(
 			@RequestBody(required = true) MainRequestDTO<TransliterationRequestDTO> requestDTO) {
 		return ResponseEntity.status(HttpStatus.OK).body(transliterationService.translitratorService(requestDTO));

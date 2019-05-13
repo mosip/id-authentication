@@ -26,7 +26,7 @@ import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapterImpl;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.responsesignature.impl.SignatureUtilImpl;
+import io.mosip.kernel.cryptosignature.impl.SignatureUtilImpl;
 
 @Configuration
 public class KernelConfig {

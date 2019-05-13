@@ -45,7 +45,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<MainResponse
 				body.setResponsetime(cryptoManagerResponseDto.getResponseTime().toString());
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(ErrorCodes.PRG_DATA_SYNC_017.toString(),
-						ErrorMessages.ERROR_WHILE_PARSING.getMessage());
+						ErrorMessages.ERROR_WHILE_PARSING.getMessage(),body);
 			}
 		}
 		return body;

@@ -154,18 +154,17 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 		String regId = dataSyncRequest.getRegistrationCenterId();
 		String fromDate = dataSyncRequest.getFromDate();
-		String toDate = dataSyncRequest.getToDate();
 		String format = "dd-MM-yyyy";
 
 		if (isNull(regId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
-					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString(), mainResponseDTO);
+					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.getMessage(), mainResponseDTO);
 		}
 
 		if (isNull(fromDate) || !parseDate(fromDate, format)) {
 
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
-					ErrorMessages.INVALID_REQUESTED_DATE.toString(), mainResponseDTO);
+					ErrorMessages.INVALID_REQUESTED_DATE.getMessage(), mainResponseDTO);
 		}
 
 		return true;
@@ -177,7 +176,7 @@ public class DataSyncServiceUtil {
 		List<String> preRegIdsList = reverseDataSyncRequest.getPreRegistrationIds();
 		if (preRegIdsList == null || isNull(preRegIdsList)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_011.toString(),
-					ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.toString(), mainResponseDTO);
+					ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.getMessage(), mainResponseDTO);
 		}
 		return true;
 	}
@@ -221,7 +220,7 @@ public class DataSyncServiceUtil {
 					"In callGetPreIdsRestService method of datasync service util - " + ex.getMessage());
 
 			throw new RecordNotFoundForDateRange(ErrorCodes.PRG_DATA_SYNC_016.toString(),
-					ErrorMessages.BOOKING_NOT_FOUND.toString(), null);
+					ErrorMessages.BOOKING_NOT_FOUND.getMessage(), null);
 
 		}
 		return preRegIdsByRegCenterIdResponseDTO;
@@ -256,7 +255,7 @@ public class DataSyncServiceUtil {
 					"In callGetDocRestService method of datasync service util - " + ex.getMessage());
 
 			throw new DocumentGetDetailsException(ErrorCodes.PRG_DATA_SYNC_006.toString(),
-					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.toString(), null);
+					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.getMessage(), null);
 		}
 		return responsestatusDto;
 	}
@@ -292,7 +291,7 @@ public class DataSyncServiceUtil {
 					"In callGetBytesDocRestService method of datasync service util - " + ex.getMessage());
 
 			throw new DocumentGetDetailsException(ErrorCodes.PRG_DATA_SYNC_006.toString(),
-					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.toString(), null);
+					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.getMessage(), null);
 		}
 		return responsestatusDto;
 	}
@@ -332,7 +331,7 @@ public class DataSyncServiceUtil {
 					"In callGetPreRegInfoRestService method of datasync service util - " + ex.getMessage());
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), null);
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), null);
 		}
 		return responsestatusDto;
 	}
@@ -374,7 +373,7 @@ public class DataSyncServiceUtil {
 						BookingRegistrationDTO.class);
 				if (bookingRegistrationDTO == null) {
 					throw new RecordNotFoundForDateRange(ErrorCodes.PRG_DATA_SYNC_001.toString(),
-							ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString(), null);
+							ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.getMessage(), null);
 				}
 			}
 		} catch (RestClientException ex) {
@@ -382,7 +381,7 @@ public class DataSyncServiceUtil {
 					"In callGetAppointmentDetailsRestService method of datasync service util - " + ex.getMessage());
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_016.toString(),
-					ErrorMessages.BOOKING_NOT_FOUND.toString(), null);
+					ErrorMessages.BOOKING_NOT_FOUND.getMessage(), null);
 		}
 		return bookingRegistrationDTO;
 	}
@@ -457,7 +456,7 @@ public class DataSyncServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In archivingFiles method of datasync service util - " + ex.getMessage());
 			throw new ZipFileCreationException(ErrorCodes.PRG_DATA_SYNC_005.toString(),
-					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString(), null);
+					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.getMessage(), null);
 		}
 		return preRegArchiveDTO;
 	}
@@ -477,8 +476,7 @@ public class DataSyncServiceUtil {
 						|| documentMultipartResponseDTO.getDocCatCode().equals(RequestCodes.POB.getCode())) {
 					jsonObject.put(podUrl, prepareDocumentMetaData(documentMultipartResponseDTO));
 				}
-				DocumentDTO documentDTO = getDocBytesDetails(documentMultipartResponseDTO.getDocumentId(),
-						preId);
+				DocumentDTO documentDTO = getDocBytesDetails(documentMultipartResponseDTO.getDocumentId(), preId);
 				if (documentDTO != null && documentDTO.getDocument() != null) {
 					inputFile.put(documentMultipartResponseDTO.getDocCatCode().concat("_")
 							.concat(documentMultipartResponseDTO.getDocName()), documentDTO.getDocument());
@@ -535,7 +533,7 @@ public class DataSyncServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In getCompressed method of datasync service util for FileNotFoundException - " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(), null);
+					ErrorMessages.FILE_IO_EXCEPTION.getMessage(), null);
 		}
 		return byteArray;
 	}
@@ -552,7 +550,7 @@ public class DataSyncServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In zipping method of datasync service util for IOException - " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(), null);
+					ErrorMessages.FILE_IO_EXCEPTION.getMessage(), null);
 		}
 	}
 
@@ -613,7 +611,7 @@ public class DataSyncServiceUtil {
 					});
 			if (respEntity.getBody().getErrors() != null) {
 				throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_011.toString(),
-						ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.toString(), null);
+						ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.getMessage(), null);
 			} else {
 				response = mapper.convertValue(respEntity.getBody().getResponse(), Map.class);
 			}
@@ -622,7 +620,7 @@ public class DataSyncServiceUtil {
 					"In callGetUpdatedTimeRestService method of datasync service util - " + ex.getMessage());
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), null);
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), null);
 		}
 		return response;
 	}
@@ -701,7 +699,7 @@ public class DataSyncServiceUtil {
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id",
 					"In storeReverseDataSync method of datasync service util - " + ex.getMessage());
-			throw new ReverseDataFailedToStoreException(ErrorMessages.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString(),
+			throw new ReverseDataFailedToStoreException(ErrorMessages.FAILED_TO_STORE_PRE_REGISTRATION_IDS.getMessage(),
 					null);
 		}
 		return reponseDTO;

@@ -72,40 +72,7 @@ public class BaseService {
 	@Autowired
 	private GlobalParamService globalParamService;
 
-	/**
-	 * create error response.
-	 *
-	 * @param response
-	 *            the response
-	 * @param message
-	 *            the message
-	 * @param attributes
-	 *            the attributes
-	 * @return ResponseDTO returns the responseDTO after creating appropriate error
-	 *         response and mapping to it
-	 */
-	protected ResponseDTO getErrorResponse(final ResponseDTO response, final String message,
-			Map<String, Object> attributes) {
-
-		/** Create list of Error Response */
-		List<ErrorResponseDTO> errorResponses = (response.getErrorResponseDTOs() != null)
-				? response.getErrorResponseDTOs()
-				: new LinkedList<>();
-
-		/** Error response */
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-
-		errorResponse.setCode(RegistrationConstants.ERROR);
-		errorResponse.setMessage(message);
-		errorResponse.setOtherAttributes(attributes);
-
-		errorResponses.add(errorResponse);
-
-		/** Adding list of error responses to response */
-		response.setErrorResponseDTOs(errorResponses);
-		return response;
-
-	}
+	
 
 	/**
 	 * create success response.

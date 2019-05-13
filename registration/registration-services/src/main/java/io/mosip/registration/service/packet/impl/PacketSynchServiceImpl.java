@@ -22,7 +22,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -57,7 +57,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	private RegistrationDAO syncRegistrationDAO;
 
 	@Autowired
-	protected AuditFactory auditFactory;
+	protected AuditManagerService auditFactory;
 	
 	@Autowired
 	private AESEncryptionService aesEncryptionService;
