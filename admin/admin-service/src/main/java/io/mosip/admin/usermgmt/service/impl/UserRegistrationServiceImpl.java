@@ -1,5 +1,6 @@
 package io.mosip.admin.usermgmt.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
+import io.mosip.admin.usermgmt.dto.SendOtpRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
-import io.mosip.admin.usermgmt.exception.AdminListOfServiceException;
+import io.mosip.admin.usermgmt.exception.AdminServiceResponseException;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
 import io.mosip.admin.usermgmt.util.UserMgmtUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -46,12 +48,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorList.isEmpty()) {
-			throw new AdminListOfServiceException(validationErrorList);
+			throw new AdminServiceResponseException(validationErrorList);
 		}
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		emailMap.add("mailContent", "YOUR RID SUBMISSION LINK IS " + request.getRidValidationUrl()
-				+ "?username=" + request.getUserName());
+		emailMap.add("mailContent",
+				"YOUR RID SUBMISSION LINK IS " + request.getRidValidationUrl() + "?username=" + request.getUserName());
 		emailMap.add("mailSubject", "ADMIN USER REGISTRATION ALERT");
 		emailMap.add("mailTo", request.getEmailID());
 		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
@@ -63,12 +65,28 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	@Override
 	public UserRegistrationResponseDto ridVerification(RidVerificationRequestDto request) {
 		String authSendOtpUrl = "https://dev.mosip.io/v1/authmanager/authenticate/sendotp";
+		SendOtpRequestDto requestDto = new SendOtpRequestDto();
 		String demoAuthResponse = validateRidUtil.validateUserRid(request.getRid(), request.getUserName());
 		UserRegistrationResponseDto ridVerificationResponse = new UserRegistrationResponseDto();
 		if (demoAuthResponse.equals("SUCCESS")) {
+			requestDto.setAppId("admin");
+			requestDto.setContext("auth-otp");
+			requestDto.setUserId(request.getUserName());
+			requestDto.setUseridtype("USERID");
+			List<String> channel = new ArrayList<>();
+			channel.add("email");
+			requestDto.setOtpChannel(channel);
 			// sendOTP
-			// restTemplate.postForEntity(authSendOtpUrl, httpEntity, Object.class);
-
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			RequestWrapper<SendOtpRequestDto> requestWrapper = new RequestWrapper<>();
+			requestWrapper.setRequest(requestDto);
+			HttpEntity<RequestWrapper<SendOtpRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(authSendOtpUrl, otpHttpEntity, String.class);
+			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(response.getBody());
+			if (!validationErrorList.isEmpty()) {
+				throw new AdminServiceResponseException(validationErrorList);
+			}
 			ridVerificationResponse.setStatus("SUCCESS");
 
 		} else {
