@@ -10,7 +10,7 @@
             <form [formGroup]="otpAuthenticationForm" class="forgot-password-form" (ngSubmit)="onVerify()">
               <div class="otp-input">
                 <mat-form-field class="input-full-width">
-                  <input formControlName="otp" name="otp" matInput placeholder="Enter OTP" />
+                  <input type="password" formControlName="otp" name="otp" matInput placeholder="Enter OTP" />
                 </mat-form-field>
               </div>
               <div class="button-container">
