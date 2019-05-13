@@ -1,18 +1,20 @@
 package io.mosip.registration.processor.biodedupe.stage;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biodedupe.stage.exception.AdultCbeffNotPresentException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -27,16 +29,18 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -60,6 +64,9 @@ public class BioDedupeProcessor {
 
 	@Autowired
 	Utilities utilities;
+
+	@Autowired
+	private FileSystemAdapter adapter;
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -91,11 +98,11 @@ public class BioDedupeProcessor {
 	private static final String POST_API_PROCESS = "POST_API_PROCESS";
 
 	private String description = "";
-
+	public static final String FILE_SEPARATOR = "\\";
 	private String code = "";
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
-
+	JSONObject demographicIdentity = null;
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
 	List<String> machedRefIds = new ArrayList<>();
@@ -250,12 +257,18 @@ public class BioDedupeProcessor {
 	private void updatePacketInsertion(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
 			throws IOException {
 
-		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
-				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+		InputStream idJsonStream = adapter.getFile(registrationStatusDto.getRegistrationId(),
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
+		String jsonString = new String(bytearray);
+		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+		demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+				utilities.getGetRegProcessorDemographicIdentity());
 
-		if (regProcessorIdentityJson.getIdentity().getIndividualBiometrics() != null) {
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
+		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, "individualBiometrics");
+		if (json != null) {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
