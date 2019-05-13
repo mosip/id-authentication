@@ -14,15 +14,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
+import io.mosip.admin.usermgmt.util.UserMgmtUtil;
 
 @Service
 public class UserRegistrationServiceImpl implements UserRegistrationService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private UserMgmtUtil validateRidUtil;
 
 	@Override
 	public UserRegistrationResponseDto register(UserRegistrationRequestDto request) {
@@ -44,6 +49,25 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		}
 		UserRegistrationResponseDto dto = new UserRegistrationResponseDto("SUCCESS");
 		return dto;
+	}
+
+	@Override
+	public UserRegistrationResponseDto ridVerification(RidVerificationRequestDto request) {
+		String authSendOtpUrl="https://dev.mosip.io/v1/authmanager/authenticate/sendotp";
+		String demoAuthResponse=validateRidUtil.validateUserRid(request.getRid(),request.getUserName());
+		UserRegistrationResponseDto ridVerificationResponse=new UserRegistrationResponseDto();
+		if(demoAuthResponse.equals("SUCCESS")) {
+			//sendOTP
+			//restTemplate.postForEntity(authSendOtpUrl, httpEntity, Object.class);
+			
+			
+			
+			ridVerificationResponse.setStatus("SUCCESS");
+			
+		}else {
+			ridVerificationResponse.setStatus("FAILURE");
+		}
+		return ridVerificationResponse;
 	}
 
 }

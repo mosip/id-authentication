@@ -58,9 +58,7 @@ public class UserRegistrationController {
 	public ResponseWrapper<UserRegistrationResponseDto> ridVerification(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
 		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
-		UserRegistrationResponseDto response=new UserRegistrationResponseDto();
-		response.setStatus("SUCCESS");
-		responseWrapper.setResponse(response);
+		responseWrapper.setResponse(userRegistrationService.ridVerification(ridRequestDto.getRequest()));
 		return responseWrapper;
 	}
 }
