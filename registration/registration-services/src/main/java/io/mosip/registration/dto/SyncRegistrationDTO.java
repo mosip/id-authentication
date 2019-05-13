@@ -13,14 +13,11 @@ import lombok.Data;
 @Data
 public class SyncRegistrationDTO {
 	private String langCode;
-	private String parentRegistrationId;
 	private String registrationId;
-	private String statusComment;
-	private String syncStatus;
-	private String syncType;
+	private String registrationType;
+	private String packetHashValue;
 	private BigInteger packetSize;
-	private String packetHash;
 	private String supervisorStatus;
-	private String supervisorComments;
+	private String supervisorComment;
 
 }

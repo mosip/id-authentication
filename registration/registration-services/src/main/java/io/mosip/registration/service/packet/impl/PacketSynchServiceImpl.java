@@ -98,11 +98,11 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
-					syncDto.setSyncType(packetToBeSynch.getPacketStatus());
-					syncDto.setPacketHash(packetToBeSynch.getPacketHash());
+					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
+					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
 					syncDto.setPacketSize(packetToBeSynch.getPacketSize());
 					syncDto.setSupervisorStatus(packetToBeSynch.getSupervisorStatus());
-					syncDto.setSupervisorComments(packetToBeSynch.getSupervisorComments());
+					syncDto.setSupervisorComment(packetToBeSynch.getSupervisorComments());
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
@@ -112,7 +112,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
 				responseDTO = syncPacketsToServer(
 						CryptoUtil.encodeBase64(
-								aesEncryptionService.encrypt(javaObjectToJsonString(syncDtoList).getBytes())),
+								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -196,7 +196,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.PACKET_SYNC, encodedString, triggerPoint);
+					.post(RegistrationConstants.PACKET_SYNC, javaObjectToJsonString(encodedString), triggerPoint);
 			if (response.get("response") != null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				Map<String, Object> statusMap = new WeakHashMap<>();
