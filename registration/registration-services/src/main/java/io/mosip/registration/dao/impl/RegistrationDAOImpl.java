@@ -231,7 +231,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		Registration reg = registrationRepository.getOne(packet.getFileName());
-		reg.setStatusCode(packet.getPacketClientStatus());
+		//reg.setStatusCode(packet.getPacketClientStatus());
 		reg.setClientStatusCode(packet.getPacketClientStatus());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
