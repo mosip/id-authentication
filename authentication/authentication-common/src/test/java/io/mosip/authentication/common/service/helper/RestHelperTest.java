@@ -2,9 +2,19 @@ package io.mosip.authentication.common.service.helper;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,63 +25,77 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
-import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.util.UriBuilder;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.AuditResponseDto;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
 import reactor.ipc.netty.tcp.BlockingNettyContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RestUtilTest.
  *
  * @author Manoj SP
  */
-@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@PrepareForTest({ WebClient.class, SslContextBuilder.class, Mock.class })
 public class RestHelperTest {
 
 	/** The rest helper. */
@@ -103,275 +127,527 @@ public class RestHelperTest {
 
 	/**
 	 * Before.
+	 *
+	 * @throws SSLException the SSL exception
 	 */
 	@Before
-	public void before() {
+	public void before() throws SSLException {
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
-		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(restHelper, "env", environment);
+		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
+		ReflectionTestUtils.setField(restHelper, "authToken", "1324");
+		PowerMockito.mockStatic(SslContextBuilder.class);
+		SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
+		PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
+				.thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.build()).thenReturn(Mockito.mock(SslContext.class));
 	}
 
+
+	
+	
 	/**
-	 * Before class.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new AuditResponseDto(true)),
-						AuditResponseDto.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		System.err.println("started server");
-
-	}
-
-	/**
-	 * After class.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		server.shutdown();
-		HttpResources.reset();
-	}
-
-	/**
-	 * Test request sync.
+	 * Test req sync.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RestServiceException the rest service exception
 	 */
 	@Test
-	public void testRequestSync() throws IDDataValidationException, RestServiceException {
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restRequest.setTimeout(100);
-
-		AuditResponseDto response = null;
-		response = restHelper.requestSync(restRequest);
-
-		assertTrue(response.isStatus());
-
+	public void testReqSync() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestSync(restReqDTO);
 	}
+
+	
+	/**
+	 * Test req sync with headers.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RestServiceException the rest service exception
+	 */
+	@Test
+	public void testReqSyncWithHeaders() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		HttpHeaders headers=new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		restReqDTO.setHeaders(headers);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestSync(restReqDTO);
+	}
+	
+	
+	/**
+	 * Test req sync unknown error.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RestServiceException the rest service exception
+	 */
+	@Test(expected=RestServiceException.class)
+	public void testReqSyncUnknownError() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		HttpHeaders headers=new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		restReqDTO.setHeaders(headers);
+		restReqDTO.setResponseType(String.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestSync(restReqDTO);
+	}
+	
+	
+	
+	
+	/**
+	 * Test get auth token.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testGetAuthToken() throws JsonParseException, JsonMappingException, IOException {
+		ReflectionTestUtils.setField(restHelper, "authToken", null);
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		RequestHeadersSpec requestHeadersSpec = PowerMockito.mock(RequestHeadersSpec.class);
+		PowerMockito.when(requestBodyUriSpec.syncBody(Mockito.any())).thenReturn(requestHeadersSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		MultiValueMap<String, ResponseCookie> map = new LinkedMultiValueMap<>();
+		map.add("Authorization", ResponseCookie.from("Authorization", "1234").build());
+		PowerMockito.when(clientResponse.cookies()).thenReturn(map);
+		PowerMockito.when(clientResponse.statusCode()).thenReturn(HttpStatus.OK);
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "getAuthToken");
+	}
+	
+	
+	/**
+	 * Test get auth token invalid.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testGetAuthTokenInvalid() throws JsonParseException, JsonMappingException, IOException {
+		ReflectionTestUtils.setField(restHelper, "authToken", null);
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		RequestHeadersSpec requestHeadersSpec = PowerMockito.mock(RequestHeadersSpec.class);
+		PowerMockito.when(requestBodyUriSpec.syncBody(Mockito.any())).thenReturn(requestHeadersSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(clientResponse.toEntity(Mockito.any(Class.class))).thenReturn(Mono.just(new ResponseEntity<>(HttpStatus.OK)));
+		//PowerMockito.when(clientResponse.b(Mockito.any(Class.class))).thenReturn(clientResponse);
+		PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		MultiValueMap<String, ResponseCookie> map = new LinkedMultiValueMap<>();
+		map.add("Authorization", ResponseCookie.from("Authorization", "1234").build());
+		PowerMockito.when(clientResponse.cookies()).thenReturn(map);
+		PowerMockito.when(clientResponse.statusCode()).thenReturn(HttpStatus.CREATED);
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "getAuthToken");
+	}
+	
+	
 
 	/**
 	 * test request sync with params.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws IDDataValidationException             the ID data validation exception
+	 * @throws RestServiceException             the rest service exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
-	public void vtestRequestSyncWithParams() throws IDDataValidationException, RestServiceException {
-		MockEnvironment env = new MockEnvironment();
-		env.merge(((AbstractEnvironment) environment));
-		env.setProperty("audit.rest.uri.queryparam.audit", "yes");
-		ReflectionTestUtils.setField(restFactory, "env", env);
-		server.shutdown();
-		HttpResources.reset();
-		RouterFunction<?> functionSuccess = RouterFunctions.route(
-				RequestPredicates.POST("/auditmanager/audits")
-						.and(RequestPredicates.queryParam("audit", value -> value.equals("yes"))),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new AuditResponseDto(true)),
-						AuditResponseDto.class));
+	public void vtestRequestSyncWithParams() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		MultiValueMap<String, String> params = new MultiValueMap<String, String>() {
 
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+			@Override
+			public int size() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+			@Override
+			public boolean isEmpty() {
+				// TODO Auto-generated method stub
+				return false;
+			}
 
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
+			@Override
+			public boolean containsKey(Object key) {
+				// TODO Auto-generated method stub
+				return false;
+			}
 
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+			@Override
+			public boolean containsValue(Object value) {
+				// TODO Auto-generated method stub
+				return false;
+			}
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
+			@Override
+			public List<String> get(Object key) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 
-		restRequest.setTimeout(100);
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("audit", "yes");
-		restRequest.setParams(params);
+			@Override
+			public List<String> put(String key, List<String> value) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 
-		AuditResponseDto response = null;
-		response = restHelper.requestSync(restRequest);
+			@Override
+			public List<String> remove(Object key) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 
-		assertTrue(response.isStatus());
+			@Override
+			public void putAll(Map<? extends String, ? extends List<String>> m) {
+				// TODO Auto-generated method stub
+				
+			}
 
+			@Override
+			public void clear() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Set<String> keySet() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Collection<List<String>> values() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Set<Entry<String, List<String>>> entrySet() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String getFirst(String key) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void add(String key, String value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void addAll(String key, List<? extends String> values) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void addAll(MultiValueMap<String, String> values) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void set(String key, String value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setAll(Map<String, String> values) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Map<String, String> toSingleValueMap() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+		restReqDTO.setParams(params);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestSync(restReqDTO);
 	}
-
+	
+	
+	
+	
 	/**
-	 * test request sync with path var.
+	 * Vtest request sync with path variables.
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws RestServiceException the rest service exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
-	public void vtestRequestSyncWithPathVar() throws IDDataValidationException, RestServiceException {
-		MockEnvironment env = new MockEnvironment();
-		env.merge(((AbstractEnvironment) environment));
-		env.setProperty("audit.rest.uri.pathparam.audit", "yes");
-		ReflectionTestUtils.setField(restFactory, "env", env);
-		server.shutdown();
-		HttpResources.reset();
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/{service}"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new AuditResponseDto(true)),
-						AuditResponseDto.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restRequest.setTimeout(100);
-		restRequest.setUri("http://127.0.0.1:8082/auditmanager/{service}");
-		Map<String, String> params = new HashMap<>();
-		params.put("service", "audit");
-		restRequest.setPathVariables(params);
-
-		AuditResponseDto response = null;
-		response = restHelper.requestSync(restRequest);
-
-		assertTrue(response.isStatus());
-
+	public void vtestRequestSyncWithPathVariables() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		Map<String, String> pathVariables=new HashMap<>();;
+		restReqDTO.setPathVariables(pathVariables);
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestSync(restReqDTO);
 	}
+	
 
+	
+	
+	
 	/**
-	 * test request sync with timeout.
+	 * Utest request sync with timeout.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws Exception the exception
 	 */
 	@Test(expected = RestServiceException.class)
-	public void utestRequestSyncWithTimeout() throws IDDataValidationException, RestServiceException {
-		server.shutdown();
-		HttpResources.reset();
-		server = HttpServer.create(8065).start((req, resp) -> {
-			try {
-				Thread.sleep(10000000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return resp.status(200).send();
-		});
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restRequest.setTimeout(1);
-
-		restHelper.requestSync(restRequest);
+	public void utestRequestSyncWithTimeout() throws Exception {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		restReqDTO.setTimeout(1);
+		restReqDTO.setResponseType(String.class);
+		Map<String, String> pathVariables=new HashMap<>();;
+		restReqDTO.setPathVariables(pathVariables);
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono(Mockito.any(Class.class))).thenReturn(Mono.error(new RuntimeException((new TimeoutException()))));
+//		PowerMockito.doThrow(new RuntimeException((new TimeoutException()))).when(restHelper, "request", null,null);
+		//ReflectionTestUtils.invokeMethod(target, name,
+		restHelper.requestSync(restReqDTO);
 	}
+	
 
-	/**
-	 * Test request sync without timeout.
-	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
-	 */
-	@Test
-	public void testRequestSyncWithoutTimeout() throws IDDataValidationException, RestServiceException {
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restRequest.setTimeout(null);
-
-		AuditResponseDto response = null;
-		response = restHelper.requestSync(restRequest);
-
-		assertTrue(response.isStatus());
-	}
 
 	/**
 	 * Test request async.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws IDDataValidationException             the ID data validation exception
+	 * @throws RestServiceException             the rest service exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
-	public void testRequestAsync() throws IDDataValidationException, RestServiceException {
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-		restHelper.requestAsync(restRequest);
+	public void testRequestAsync() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		Map<String, String> pathVariables=new HashMap<>();;
+		restReqDTO.setPathVariables(pathVariables);
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono((Class)null)).thenReturn( Mono.<Object>just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		restHelper.requestAsync(restReqDTO);
 	}
 
 	/**
 	 * Test request async and return.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws IDDataValidationException             the ID data validation exception
+	 * @throws RestServiceException             the rest service exception
+	 * @throws SSLException the SSL exception
 	 */
-	@Test
-	public void testRequestAsyncAndReturn() throws IDDataValidationException, RestServiceException {
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restRequest.setTimeout(100);
-
-		AuditResponseDto response = null;
-		response = (AuditResponseDto) restHelper.requestSync(restRequest);
-
-		assertTrue(response.isStatus());
-		;
+	@Test(expected=RestServiceException.class)
+	public void testRequestAsyncAndReturn() throws IDDataValidationException, RestServiceException, SSLException {
+		PowerMockito.mockStatic(SslContextBuilder.class);
+		SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
+		PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
+				.thenReturn(sslContextBuilder);
+		PowerMockito.when(sslContextBuilder.build()).thenThrow(new SSLException(""));
+		Object object = restHelper.requestAsync(new RestRequestDTO()).get();
+		if(object instanceof RestServiceException) {
+			RestServiceException restServiceException = (RestServiceException) object;
+			throw restServiceException;
+			
+		}
 	}
 
 	/**
 	 * Test request async without headers.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws IDDataValidationException             the ID data validation exception
+	 * @throws RestServiceException             the rest service exception
+	 * @throws InterruptedException the interrupted exception
 	 */
-	@Test
+	/*@Test
 	public void testRequestAsyncWithoutHeaders() throws IDDataValidationException, RestServiceException {
 		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
-
 		restRequest.setHeaders(null);
 
 		restHelper.requestAsync(restRequest);
-	}
+	}*/
 
 	/**
 	 * Test request without body.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
+	 * @throws RestServiceException
+	 *             the rest service exception
 	 */
-	@Test
+	/*@Test
 	public void testRequestWithoutBody() throws IDDataValidationException, RestServiceException {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, null,
 				AuditResponseDto.class);
@@ -379,138 +655,144 @@ public class RestHelperTest {
 		restHelper.requestAsync(restRequest);
 	}
 
-	/**
+	*//**
 	 * Test request without body null.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
-	 */
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
+	 * @throws RestServiceException
+	 *             the rest service exception
+	 *//*
 	@Test(expected = RestServiceException.class)
 	public void testRequestWithoutBodyNull() throws IDDataValidationException, RestServiceException {
 		restHelper.requestSync(null);
-	}
+	}*/
 
 	/**
 	 * test request sync for 4 xx.
 	 *
-	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
-	 * @throws InterruptedException      the interrupted exception
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
+	 * @throws RestServiceException
+	 *             the rest service exception
+	 * @throws InterruptedException
+	 *             the interrupted exception
 	 */
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncWebClientResponseException()
 			throws IDDataValidationException, RestServiceException, InterruptedException {
-		server.shutdown();
-		HttpResources.reset();
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.BAD_REQUEST).body(Mono.just(new AuditResponseDto(false)),
-						AuditResponseDto.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restHelper.requestSync(restRequest);
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"response\":{\"status\":\"success\"}}";
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		restReqDTO.setTimeout(1);
+		restReqDTO.setResponseType(String.class);
+		Map<String, String> pathVariables=new HashMap<>();;
+		restReqDTO.setPathVariables(pathVariables);
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono(Mockito.any(Class.class))).thenReturn(Mono.error(new WebClientResponseException("message", 200, "statusText", null, null, null)));
+		restHelper.requestSync(restReqDTO);
 	}
 
+	/*
+	 * this method is used to handle the unauthorised rest error
+	 */
+	
 	/**
-	 * test request sync for 5 xx.
+	 * Ztest request sync unauthorised web client response exception.
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
-	 * @throws RestServiceException      the rest service exception
+	 * @throws RestServiceException the rest service exception
+	 * @throws InterruptedException the interrupted exception
 	 */
+	@Ignore
 	@Test(expected = RestServiceException.class)
-	public void ztestRequestSyncFor5xx() throws IDDataValidationException, RestServiceException {
-		server.shutdown();
-		HttpResources.reset();
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body(Mono.just(new AuditResponseDto(true)), AuditResponseDto.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restHelper.requestSync(restRequest);
+	public void ztestRequestSyncUnauthorisedWebClientResponseException()
+			throws IDDataValidationException, RestServiceException, InterruptedException {
+		PowerMockito.mockStatic(WebClient.class);
+		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]} ";  
+		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
+		RestRequestDTO restReqDTO=new RestRequestDTO();
+		restReqDTO.setTimeout(1);
+		restReqDTO.setResponseType(String.class);
+		Map<String, String> pathVariables=new HashMap<>();;
+		restReqDTO.setPathVariables(pathVariables);
+		//restReqDTO.setResponseType(Mockito.any(Class.class));
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		RequestBodySpec requestBodySpec = PowerMockito.mock(RequestBodySpec.class);
+		Builder mockBuilder = PowerMockito.mock(WebClient.Builder.class);
+		PowerMockito.when(WebClient.builder()).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.clientConnector(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.baseUrl(Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.defaultHeader(Mockito.any(), Mockito.any())).thenReturn(mockBuilder);
+		PowerMockito.when(mockBuilder.build()).thenReturn(webClient);
+		PowerMockito.when(webClient.method(Mockito.any())).thenReturn(requestBodyUriSpec);
+		Function<UriBuilder, URI> uriFunction=Mockito.any();
+		PowerMockito.when(requestBodyUriSpec.uri(uriFunction)).thenReturn(requestBodySpec);
+		PowerMockito.when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		PowerMockito.when(responseSpec.bodyToMono(Mockito.any(Class.class))).thenReturn(Mono.error(new WebClientResponseException("{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]}" , 401, "statusText", null, null, null)));
+		restHelper.requestSync(restReqDTO);
 	}
-
-	@Test(expected = RestServiceException.class)
-	public void ztestRequestSyncCheckForErrorsWithoutTimeout() throws IDDataValidationException, RestServiceException {
-		server.shutdown();
-		HttpResources.reset();
-		ObjectNode node = mapper.createObjectNode();
-		ArrayNode array = mapper.createArrayNode();
-		array.add(mapper.createObjectNode().put("error", "error"));
-		node.set("errors", array);
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(node), ObjectNode.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				ObjectNode.class);
-		restRequest.setTimeout(null);
-		restHelper.requestSync(restRequest);
-	}
-
-	@Test(expected = RestServiceException.class)
-	public void ztestRequestSyncCheckForErrorsWithTimeout() throws IDDataValidationException, RestServiceException {
-		server.shutdown();
-		HttpResources.reset();
-		ObjectNode node = mapper.createObjectNode();
-		ArrayNode array = mapper.createArrayNode();
-		array.add(mapper.createObjectNode().put("error", "error"));
-		node.set("errors", array);
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(node), ObjectNode.class));
-
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-
-		server = HttpServer.create(8082).start(adapter);
-		server.installShutdownHook();
-
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				ObjectNode.class);
-		restRequest.setTimeout(10);
-		restHelper.requestSync(restRequest);
-	}
-
-	@Test
-	public void testGetSslContext() {
+	
+	
+	
+	
+	
+	/**
+	 * Test get ssl context.
+	 *
+	 * @throws SSLException the SSL exception
+	 */
+	@Test()
+	public void testGetSslContext() throws SSLException {
 		assertTrue(ReflectionTestUtils.invokeMethod(restHelper, "getSslContext") instanceof SslContext);
 	}
 
+	/**
+	 * Test get ssl context exception.
+	 *
+	 * @throws Throwable the throwable
+	 */
+	@Test(expected = RestServiceException.class)
+	public void testGetSslContextException() throws Throwable {
+		try {
+			PowerMockito.mockStatic(SslContextBuilder.class);
+			SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
+			PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
+			PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
+					.thenReturn(sslContextBuilder);
+			PowerMockito.when(sslContextBuilder.build()).thenThrow(new SSLException(""));
+			ReflectionTestUtils.invokeMethod(restHelper, "getSslContext");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	/**
+	 * Test handle status error without response body.
+	 *
+	 * @throws Throwable the throwable
+	 */
 	@Test
 	public void testHandleStatusErrorWithoutResponseBody() throws Throwable {
 		try {
@@ -522,7 +804,41 @@ public class RestHelperTest {
 			throw e.getCause();
 		}
 	}
+	
+	/**
+	 * Test handle status error without response body unauthorised error.
+	 *
+	 * @throws Throwable the throwable
+	 */
+	@Test
+	public void testHandleStatusErrorWithoutResponseBodyUnauthorisedError() throws Throwable {
+		try {
+			PowerMockito.mockStatic(WebClient.class);
+			WebClient webClient = PowerMockito.mock(WebClient.class);
+			PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+			RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+			PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+			PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+			ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+			PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+			String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]}";
+			PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+					.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+			assertTrue(ReflectionTestUtils
+					.invokeMethod(restHelper, "handleStatusError",
+							new WebClientResponseException("message", 401, "failed", null, null, null), String.class)
+					.equals(true));
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
 
+	/**
+	 * Test handle status error 4 xx.
+	 *
+	 * @throws Throwable the throwable
+	 */
 	@Test
 	public void testHandleStatusError4xx() throws Throwable {
 		try {
@@ -537,6 +853,11 @@ public class RestHelperTest {
 		}
 	}
 
+	/**
+	 * Test handle status error 5 xx.
+	 *
+	 * @throws Throwable the throwable
+	 */
 	@Test
 	public void testHandleStatusError5xx() throws Throwable {
 		try {
@@ -551,19 +872,13 @@ public class RestHelperTest {
 		}
 	}
 
-	@Test(expected = RestServiceException.class)
-	public void testRequestSyncRuntimeException() throws IDDataValidationException, RestServiceException {
-		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
-				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-		restRequest.setUri("https://localhost:8082/auditmanager/v1.0/audits");
-		restRequest.setTimeout(100);
 
-		restHelper.requestSync(restRequest);
-	}
-
+	/**
+	 * Ztest request sync check for errors unknown error.
+	 *
+	 * @throws Throwable the throwable
+	 */
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
 		try {
@@ -573,4 +888,104 @@ public class RestHelperTest {
 		}
 	}
 
+	
+
+	/**
+	 * Test auth token valid.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testAuthTokenValid() throws JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "checkAuthTokenExpired");
+	}
+	
+	/**
+	 * Test auth token expired.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testAuthTokenExpired() throws JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "checkAuthTokenExpired");
+	}
+
+	/**
+	 * Test auth token not expired.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testAuthTokenNotExpired() throws JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(WebClient.class);
+		WebClient webClient = PowerMockito.mock(WebClient.class);
+		PowerMockito.when(WebClient.create(Mockito.any())).thenReturn(webClient);
+		RequestBodyUriSpec requestBodyUriSpec = PowerMockito.mock(RequestBodyUriSpec.class);
+		PowerMockito.when(webClient.post()).thenReturn(requestBodyUriSpec);
+		PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
+		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
+		String response = "{\"errors\":[{\"errorCode\":\"\"}]}";
+		PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
+				.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
+		ReflectionTestUtils.invokeMethod(restHelper, "checkAuthTokenExpired");
+	}
+
+	/**
+	 * Test check error response exception.
+	 *
+	 * @throws Throwable the throwable
+	 */
+	@Test(expected = RestServiceException.class)
+	public void testCheckErrorResponseException() throws Throwable {
+		try {
+			String response = "{\"errors\":[{\"errorCode\":\"\"}]}";
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse",
+					mapper.readValue(response.getBytes(), Object.class), ObjectNode.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	/**
+	 * Test check error response retry.
+	 *
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@Test
+	public void testCheckErrorResponseRetry() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
+		ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse",
+				mapper.readValue(response.getBytes(), Object.class), ObjectNode.class);
+	}
 }
