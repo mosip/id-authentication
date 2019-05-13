@@ -78,7 +78,7 @@ public class RestHelper {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdRepoLogger.getLogger(RestHelper.class);
 	
-//	@Autowired
+	@Autowired
 	private WebClient webClient;
 	
 	/**

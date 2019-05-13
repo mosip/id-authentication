@@ -53,13 +53,13 @@ public enum IdRepoConstants {
 	
 	MOSIP_IDREPO_VID_ALLOWED_STATUS("mosip.idrepo.vid.allowedStatus"),
 	
-	MOSIP_IDREPO_DB_VID_URL("mosip.idrepo.db.vid.url"),
+	MOSIP_IDREPO_DB_VID_URL("mosip.idrepo.vid.db.url"),
 	
-	MOSIP_IDREPO_DB_VID_USERNAME("mosip.idrepo.db.vid.username"),
+	MOSIP_IDREPO_DB_VID_USERNAME("mosip.idrepo.vid.db.username"),
 	
-	MOSIP_IDREPO_DB_VID_PASSWORD("mosip.idrepo.db.vid.password"),
+	MOSIP_IDREPO_DB_VID_PASSWORD("mosip.idrepo.vid.db.password"),
 	
-	MOSIP_IDREPO_DB_VID_DRIVER_CLASS_NAME("mosip.idrepo.db.vid.driverClassName");
+	MOSIP_IDREPO_DB_VID_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName");
 	/** The value. */
 	private final String value;
 
