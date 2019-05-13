@@ -71,7 +71,13 @@ public enum Components {
 	PACKETS_UPLOADED("REG-MOD-145","all the pakets are uploaded"),
 	//Scheduler
 	REFRESH_TIMEOUT("REG-MOD-146","refresh timeout"),
-	SESSION_TIMEOUT("REG-MOD-147","session timeout");
+	SESSION_TIMEOUT("REG-MOD-147","session timeout"),
+	
+
+	MDM_CAPTURE_FAIELD("REG-MOD-148","capture failed"),
+	MDM_CAPTURE_SUCESS("REG-MOD-149","capture successfull"),
+	MDM_NO_DEVICE_AVAILABLE("REG-MOD-150","no device found"),
+	MDM_DEVICE_FOUND("REG-MOD-151","Device found");
 
 	/**
 	 * The constructor

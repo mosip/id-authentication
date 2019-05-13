@@ -19,8 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.dto.BioDevice;
@@ -39,6 +44,9 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  */
 @Component
 public class MosipBioDeviceManager {
+	
+	@Autowired
+	private AuditManagerService auditFactory;
 
 	@Value("${mdm.host}")
 	private String host;
@@ -91,12 +99,16 @@ public class MosipBioDeviceManager {
 
 						try {
 							deviceInfoResponse = mapper.readValue(mapper.writeValueAsString(deviceInfoResponseHash), DeviceInfoResponseData.class);
+							auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND, RegistrationConstants.APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 						} catch (IOException exception) {
 							LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
 									String.format(
 											"%s -> Exception while mapping the response  %s",
 											exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
-
+							auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE, RegistrationConstants.APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 						}
 
 						if (StringUtils.isNotEmpty(deviceInfoResponse.getType())) {

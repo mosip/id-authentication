@@ -16,8 +16,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
@@ -37,6 +42,9 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	
 	@Autowired
 	protected MosipBioDeviceServiceDelagate mosipBioDeviceServiceDelagate;
+	
+	@Autowired
+	private AuditManagerService auditFactory;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceInfo(java.lang.String, java.lang.String, java.lang.Class)
@@ -82,11 +90,17 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 		try {
 			mosipBioCaptureResponseDto = mapper.readValue(mapper.writeValueAsString(mosipBioCaptureResponseMap), CaptureResponseDto.class);
+			auditFactory.audit(AuditEvent.MDM_CAPTURE_SUCCESS, Components.MDM_CAPTURE_SUCESS, RegistrationConstants.APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Error while reading the response from capture%s",
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
+			auditFactory.audit(AuditEvent.MDM_CAPTURE_FAILED, Components.MDM_CAPTURE_FAIELD, RegistrationConstants.APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+					
 		}
 
 		return MdmRequestResponseBuilder.parseBioCaptureResponse(mosipBioCaptureResponseDto);
