@@ -40,7 +40,7 @@ import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
  * 
  * @version 1.0.0
  * 
- * @author M1046129 - Jagadishwari
+ * @author Jagadishwari
  * @author Sanober Noor
  *
  */
@@ -100,12 +100,10 @@ public class DataSyncService {
 
 	private Logger log = LoggerConfiguration.logConfig(DataSyncService.class);
 
-	
-	  public AuthUserDetails authUserDetails() { 
-		  return (AuthUserDetails)
-	  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		  }
-	 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
 		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
@@ -121,8 +119,6 @@ public class DataSyncService {
 				serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest(), responseDto);
 
 				DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
-				System.out.println("dataSyncRequestDTO.getToDate(): " + dataSyncRequestDTO.getToDate());
-				System.out.println("isNull: " + serviceUtil.isNull(dataSyncRequestDTO.getToDate()));
 				if (dataSyncRequestDTO.getToDate() == null) {
 					dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
 				}
@@ -146,10 +142,13 @@ public class DataSyncService {
 			if (isRetrieveAllSuccess) {
 				setAuditValues(EventId.PRE_406.toString(), EventName.SYNC.toString(), EventType.BUSINESS.toString(),
 						"Retrieval of all the Preregistration Id is successful",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),dataSyncRequest.getRequest().getRegistrationCenterId());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), dataSyncRequest.getRequest().getRegistrationCenterId());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of all the Preregistration Id is unsuccessful", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),dataSyncRequest.getRequest().getRegistrationCenterId());
+						"Retrieval of all the Preregistration Id is unsuccessful", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(),
+						dataSyncRequest.getRequest().getRegistrationCenterId());
 			}
 		}
 		return responseDto;
@@ -170,8 +169,7 @@ public class DataSyncService {
 		try {
 			DemographicResponseDTO preRegistrationDTO = serviceUtil.getPreRegistrationData(preId.trim());
 			DocumentsMetaData documentsMetaData = serviceUtil.getDocDetails(preId.trim());
-			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil
-					.getAppointmentDetails(preId.trim());
+			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.getAppointmentDetails(preId.trim());
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO,
 					documentsMetaData);
 			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -184,11 +182,12 @@ public class DataSyncService {
 		} finally {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_406.toString(), EventName.SYNC.toString(), EventType.BUSINESS.toString(),
-						"Retrieval of the Preregistration data is successful",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),null);
+						"Retrieval of the Preregistration data is successful", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of the Preregistration data is unsuccessful", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),null);
+						"Retrieval of the Preregistration data is unsuccessful", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			}
 		}
 		return responseDto;
@@ -230,10 +229,12 @@ public class DataSyncService {
 				setAuditValues(EventId.PRE_408.toString(), EventName.REVERSESYNC.toString(),
 						EventType.BUSINESS.toString(),
 						"Reverse Data sync & the consumed PreRegistration ids successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),null);
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Reverse Data sync failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername(),null);
+						"Reverse Data sync failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null);
 			}
 		}
 		return responseDto;
@@ -248,7 +249,8 @@ public class DataSyncService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId, String userName,String refId) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName, String refId) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);

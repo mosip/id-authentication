@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -70,9 +72,13 @@ public class RegistrationSyncController {
 	@Autowired
 	TokenValidator tokenValidator;
 
+	@Autowired
+	SignatureUtil signatureUtil;
+
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	/**
 	 * Sync registration ids.
@@ -102,8 +108,10 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-
-			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseList));
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(RESPONSE_SIGNATURE,
+					signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseList)).getData());
+			return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
 		} catch (JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}

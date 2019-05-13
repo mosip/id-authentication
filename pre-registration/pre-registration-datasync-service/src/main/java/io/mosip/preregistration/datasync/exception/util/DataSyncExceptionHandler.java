@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -23,6 +23,7 @@ import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.datasync.exception.DataSyncRecordNotFoundException;
 import io.mosip.preregistration.datasync.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.datasync.exception.DocumentGetDetailsException;
+import io.mosip.preregistration.datasync.exception.ParseResponseException;
 import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
@@ -143,7 +144,7 @@ public class DataSyncExceptionHandler {
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e,WebRequest request){
+	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e){
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
@@ -151,6 +152,11 @@ public class DataSyncExceptionHandler {
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(ParseResponseException.class)
+	public ResponseEntity<MainResponseDTO<?>> parseResponseException(final ParseResponseException e){
+		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
 	public String getCurrentResponseTime() {

@@ -93,7 +93,6 @@ public class KycAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
@@ -223,7 +222,7 @@ public class KycAuthRequestValidatorTest {
 	public void TestMUAPermissionisNotAvail() {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
+		mockenv.setProperty("ekyc.auth.types.allowed", "otp,bio,pin");
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 

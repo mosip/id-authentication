@@ -1,15 +1,11 @@
 package io.mosip.registration.mapper;
 
-import java.beans.PropertyDescriptor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -22,7 +18,6 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.json.metadata.Applicant;
 import io.mosip.registration.dto.json.metadata.Biometric;
@@ -70,22 +65,22 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Applicant applicant = new Applicant();
 			biometric.setApplicant(applicant);
 
-			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
+			FaceDetailsDTO applicantFaceDetailsDTO = source.getBiometricDTO().getApplicantBiometricDTO().getFace();
 
 			// Set Photograph
-			identity.setApplicantPhotograph(buildPhotograph(documentDTO.getNumRetry(),
+			identity.setApplicantPhotograph(buildPhotograph(applicantFaceDetailsDTO.getNumOfRetries(),
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
-			FaceDetailsDTO faceDetailsDTO = source.getBiometricDTO().getIntroducerBiometricDTO().getFaceDetailsDTO();
+			boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+					|| source.isUpdateUINChild();
 			identity.setExceptionPhotograph(buildExceptionPhotograph(
-					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-							? faceDetailsDTO.getNumOfRetries()
-							: 0,
-					getBIRUUID(RegistrationConstants.INDIVIDUAL,
-							((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-									? RegistrationConstants.FACE
-									: RegistrationConstants.FACE_EXCEPTION))));
+					isIntroducerFace
+							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getNumOfRetries()
+							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getNumOfRetries(),
+					isIntroducerFace ? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace()
+							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace(),
+					source));
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
@@ -170,33 +165,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
 
-			setuinUpdatedFields(source, identity);
+			if (source.isNameNotUpdated()) {
+				identity.setPrintingName(source.getRegistrationMetaDataDTO().getFullName());
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
 					runtimeException.getMessage(), runtimeException);
 		}
 		return packetMetaInfo;
-	}
-
-	/**
-	 * Set uin updated fields.
-	 *
-	 * @param source the source
-	 * @param identity the identity
-	 */
-	private void setuinUpdatedFields(RegistrationDTO source, Identity identity) {
-		// uinUpdatedFields
-		if (source.getSelectionListDTO() != null) {
-			List<String> uinUpdateFields = new ArrayList<>();
-			BeanWrapper beanWrapper = new BeanWrapperImpl(source.getSelectionListDTO());
-			PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
-			for (PropertyDescriptor pd : pds) {
-				Object beanWrapperValue = beanWrapper.getPropertyValue(pd.getName());
-				if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue)
-					uinUpdateFields.add(pd.getName());
-			}
-			identity.setUinUpdatedFields(uinUpdateFields);
-		}
 	}
 
 	private Photograph buildPhotograph(int numRetry, String photographName) {
@@ -209,15 +185,23 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		return photograph;
 	}
-	
-	private Photograph buildExceptionPhotograph(int numRetry, String photographName) {
+
+	private ExceptionPhotograph buildExceptionPhotograph(int numRetry, byte[] face, RegistrationDTO source) {
 		ExceptionPhotograph exceptionPhotograph = null;
-		if (photographName != null) {
+		if (face != null) {
 			exceptionPhotograph = new ExceptionPhotograph();
 			exceptionPhotograph.setNumRetry(numRetry);
-			exceptionPhotograph.setBirIndex(removeFileExt(photographName));
-			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child) ? RegistrationConstants.PARENT : RegistrationConstants.INDIVIDUAL);
-			}
+			exceptionPhotograph.setIndividualType(
+					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child) || source.isUpdateUINChild()
+							? RegistrationConstants.PARENT
+							: RegistrationConstants.INDIVIDUAL);
+			exceptionPhotograph.setPhotoName(((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+					|| source.isUpdateUINChild() && !SessionContext.map()
+							.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN).equals(RegistrationConstants.ENABLE)
+									? RegistrationConstants.PARENT.toLowerCase()
+									: RegistrationConstants.INDIVIDUAL.toLowerCase())
+											.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO));
+		}
 
 		return exceptionPhotograph;
 	}
@@ -279,7 +263,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 				exceptionBiometrics.add(buildExceptionBiometric(biometricExceptionDTO.getBiometricType(),
 						biometricExceptionDTO.getMissingBiometric(), biometricExceptionDTO.getExceptionType(),
-						biometricExceptionDTO.getReason(),biometricExceptionDTO.getIndividualType()));
+						biometricExceptionDTO.getReason(), biometricExceptionDTO.getIndividualType()));
 			}
 		}
 
@@ -331,8 +315,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Registration Creation Date
 		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
-		metaData.add(buildFieldValue("applicantTypeCode", metaDataDTO.getApplicantTypeCode()));
-		
+		metaData.add(buildFieldValue("authenticationBiometricFileName",
+				registrationDTO.isUpdateUINChild()
+						? removeFileExt(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)
+						: null));
+
 		return metaData;
 	}
 

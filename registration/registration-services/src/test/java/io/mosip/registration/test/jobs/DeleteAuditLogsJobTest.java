@@ -30,11 +30,11 @@ import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.DeleteAuditLogsJob;
 import io.mosip.registration.jobs.impl.MasterSyncJob;
-import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.audit.AuditService;
 import io.mosip.registration.service.audit.impl.AuditServiceImpl;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 
 
 /**

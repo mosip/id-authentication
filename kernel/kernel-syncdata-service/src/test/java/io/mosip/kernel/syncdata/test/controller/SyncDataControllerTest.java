@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,17 +33,12 @@ import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
-import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
-import io.mosip.kernel.syncdata.utils.SigningUtil;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
 import net.minidev.json.JSONObject;
 
@@ -68,14 +62,11 @@ public class SyncDataControllerTest {
 	@MockBean
 	private SyncRolesService syncRolesService;
 
-	@Autowired
-	private RegistrationCenterUserService registrationCenterUserService;
-
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
-	
+
 	private SignatureResponse signResponse;
-	
+
 	@MockBean
 	private SignatureUtil signingUtil;
 
@@ -88,7 +79,7 @@ public class SyncDataControllerTest {
 		configDetialsSyncSetup();
 		syncMasterDataSetup();
 		getUsersBasedOnRegCenterSetUp();
-		signResponse=new SignatureResponse();
+		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
 		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
 
@@ -184,7 +175,7 @@ public class SyncDataControllerTest {
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
-		
+
 		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
@@ -227,40 +218,6 @@ public class SyncDataControllerTest {
 
 	}
 
-	@Test(expected = SyncDataServiceException.class)
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterUserFetchException() throws Exception {
-
-		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
-		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
-	}
-
-	@Test(expected = DataNotFoundException.class)
-	@WithUserDetails(value = "reg-officer")
-	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
-		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-				.thenReturn(new ArrayList<RegistrationCenterUser>());
-		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
-
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void getRegistrationCenterUsers() throws Exception {
-		RegistrationCenterUser registrationCenterUser = new RegistrationCenterUser();
-		RegistrationCenterUserID registrationCenterUserID = new RegistrationCenterUserID();
-		registrationCenterUserID.setRegCenterId("110044");
-		registrationCenterUserID.setUserId("individual");
-		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserID);
-		List<RegistrationCenterUser> regList = new ArrayList<>();
-		regList.add(registrationCenterUser);
-		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-				.thenReturn(regList);
-
-		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
-	}
-
 	// -----------------------public key-------------------------------------//
 
 	@Test
@@ -276,12 +233,12 @@ public class SyncDataControllerTest {
 	}
 
 	// -----------------AllRoles-------------------------------//
- 
+
 	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void getAllRoles() throws Exception{
+	public void getAllRoles() throws Exception {
 		when(signingUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
-		RolesResponseDto rolesResponseDto= new RolesResponseDto();
+		RolesResponseDto rolesResponseDto = new RolesResponseDto();
 		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
 		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
 		mockMvc.perform(get("/roles")).andExpect(status().isOk());

@@ -86,14 +86,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * authentication.service.filter.ResettableStreamHttpServletRequest)
 	 */
 	@Override
-	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper)
+	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		super.consumeRequest(requestWrapper);
+		super.consumeRequest(requestWrapper, requestBody);
 		authenticateRequest(requestWrapper);
 
 		try {
 			requestWrapper.resetInputStream();
-			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);

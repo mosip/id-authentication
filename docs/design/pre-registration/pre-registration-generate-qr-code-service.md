@@ -28,7 +28,7 @@ The key non-functional requirements are
 **Class Diagram**
 ![pre-registration generateQRCode](_images/_class_diagram/pre-registration-generateQRCode.png)
 **Sequence Diagram**
-![pre-registration generateQRCode](_images/_sequence_diagram/pre-registration-generateQRCode.png)
+![pre-registration generateQRCode](_images/_sequence_diagram/QRcodeGenerate-generate.png)
 
 **Error Code** 
   Code   |       Type  | Message|

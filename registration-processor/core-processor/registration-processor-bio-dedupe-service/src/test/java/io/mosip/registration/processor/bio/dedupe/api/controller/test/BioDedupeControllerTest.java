@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,21 +28,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import io.mosip.registration.processor.bio.dedupe.api.BioDedupeApiTestApplication;
 import io.mosip.registration.processor.bio.dedupe.api.config.BioDedupeConfigTest;
 import io.mosip.registration.processor.bio.dedupe.api.controller.BioDedupeController;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
  * @author M1022006
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = BioDedupeApiTestApplication.class)
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = BioDedupeConfigTest.class)
 @TestPropertySource(locations = "classpath:application.properties")
 public class BioDedupeControllerTest {
+
 	@InjectMocks
 	private BioDedupeController bioDedupeController = new BioDedupeController();
 
@@ -56,7 +60,7 @@ public class BioDedupeControllerTest {
 
 	@MockBean
 	private TokenValidator tokenValidator;
-	
+
 	String regId;
 
 	byte[] file;
@@ -70,6 +74,7 @@ public class BioDedupeControllerTest {
 	}
 
 	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void getFileSuccessTest() throws Exception {
 
 		this.mockMvc

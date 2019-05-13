@@ -136,7 +136,7 @@ public class LoginService {
 		response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 		
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
 				
 				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
@@ -183,7 +183,7 @@ public class LoginService {
 		response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
 		requiredRequestMap.put("id",userIdOtpId);
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
 				loginCommonUtil.validateOtpAndUserid(user);
 				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
@@ -302,8 +302,8 @@ public class LoginService {
 				reqParams.add(uiParams[i]);
 			}
 			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = loginCommonUtil.configRestCall(globalFileName);
-				String preregParam = loginCommonUtil.configRestCall(preRegFileName);
+				String globalParam = loginCommonUtil.getConfig(globalFileName);
+				String preregParam = loginCommonUtil.getConfig(preRegFileName);
 				Properties prop1 = loginCommonUtil.parsePropertiesString(globalParam);
 				Properties prop2 = loginCommonUtil.parsePropertiesString(preregParam);
 				loginCommonUtil.getConfigParams(prop1,configParams,reqParams);

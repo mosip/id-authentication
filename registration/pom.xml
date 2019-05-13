@@ -84,7 +84,6 @@
 			src/main/java/io/mosip/registration/cipher/**/*,
 			src/main/java/io/mosip/registration/update/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
-			src/main/java/io/mosip/registration/tpm/**/*,
 			src/main/java/io/mosip/registration/mdm/**/*,
 			src/main/java/io/mosip/registration/service/mdm/**/*
 		</sonar.exclusions>
@@ -92,7 +91,6 @@
 
 	<modules>
 		<module>registration-services</module>
-		<module>registration-mdm</module>
 		<module>registration-client</module>
 		<module>registration-libs</module>
 	</modules>
@@ -190,6 +188,11 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-idgenerator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-signature</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>

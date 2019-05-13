@@ -3,7 +3,7 @@ package io.mosip.preregistration.datasync.errorcodes;
 /**
  * Error codes
  * 
- * @author M1046129 - Jagadishwari
+ * @author Jagadishwari
  *
  */
 public enum ErrorCodes {
