@@ -11,8 +11,9 @@ import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
 import { AssetmgmtModule } from './feature/assetmgmt/assetmgmt.module';
-
 import { UserregistrationService } from './shared/services/userregistration.service';
+import { GetContactService } from '../app/shared/services/get-contact.service';
+import { AccountManagementService } from '../app/shared/services/account-management.service';
 import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { HttpClientModule } from '@angular/common/http';
     AssetmgmtModule,
     HttpClientModule
   ],
-  providers: [UserregistrationService],
+  providers: [UserregistrationService, GetContactService, AccountManagementService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

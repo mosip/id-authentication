@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { OtpAuthenticationComponent } from './otp-authentication/otp-authentication.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,9 @@ const routes: Routes = [
   },
   {
     path: 'resetpassword', component: ResetPasswordComponent
+  },
+  {
+    path: 'otpauthentication', component: OtpAuthenticationComponent
   }
 ];
 

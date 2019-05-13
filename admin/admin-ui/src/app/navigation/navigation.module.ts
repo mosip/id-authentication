@@ -9,6 +9,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { OtpAuthenticationComponent } from './otp-authentication/otp-authentication.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ReactiveFormsModule,
     FormsModule
   ],
-  declarations: [LoginComponent, AuthenticationComponent, ForgotPasswordComponent, ResetPasswordComponent]
+  declarations: [LoginComponent, AuthenticationComponent, ForgotPasswordComponent, ResetPasswordComponent, OtpAuthenticationComponent]
 })
 export class NavigationModule { }
