@@ -18,6 +18,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.swagger.annotations.Api;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * AccountManagementController.
@@ -73,6 +74,7 @@ public class AccountManagementController {
 	 *            the user id
 	 * @return the user name dto
 	 */
+	@ApiIgnore
 	@ResponseFilter
 	@GetMapping("/forgotusername")
 	public UserNameDto forgotUsername(String userId) {

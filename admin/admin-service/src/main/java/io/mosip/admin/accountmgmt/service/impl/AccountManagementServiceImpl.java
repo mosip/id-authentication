@@ -35,6 +35,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 
+
 /**
  * The Class AccountManagementServiceImpl.
  * 
@@ -44,24 +45,34 @@ import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 @Service
 public class AccountManagementServiceImpl implements AccountManagementService {
 
+	/** The rest template. */
 	@Autowired
 	private RestTemplate restTemplate;
 
+	/** The auth manager base url. */
 	@Value("${mosip.admin.accountmgmt.auth-manager-base-uri}")
 	private String authManagerBaseUrl;
 
+	/** The user name url. */
 	@Value("${mosip.admin.accountmgmt.user-name-url}")
 	private String userNameUrl;
 
+	/** The un block url. */
 	@Value("${mosip.admin.accountmgmt.unblock-url}")
 	private String unBlockUrl;
 
+	/** The change password. */
 	@Value("${mosip.admin.accountmgmt.change-passoword-url}")
 	private String changePassword;
 
+	/** The reset password. */
 	@Value("${mosip.admin.accountmgmt.reset-password-url}")
 	private String resetPassword;
+	
+	@Value("${mosip.admin.app-id}")
+	private String appId;
 
+	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -76,22 +87,31 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public UserNameDto getUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl +appId+"/").append(userId);
 		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#unBlockUserName(java.lang.String)
+	 */
 	@Override
 	public StatusResponseDto unBlockUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + appId+"registrationclient/").append(userId);
 		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getSuccessResponse(response);
 
 	}
 
+	/**
+	 * Gets the success response.
+	 *
+	 * @param responseBody the response body
+	 * @return the success response
+	 */
 	private StatusResponseDto getSuccessResponse(String responseBody) {
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -114,6 +134,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return unBlockResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#changePassword(io.mosip.admin.accountmgmt.dto.PasswordDto)
+	 */
 	@Override
 	public StatusResponseDto changePassword(PasswordDto passwordDto) {
 		passwordDto.setHashAlgo("SSHA-256");
@@ -125,6 +148,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return getSuccessResponse(response);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#resetPassword(io.mosip.admin.accountmgmt.dto.PasswordDto)
+	 */
 	@Override
 	public StatusResponseDto resetPassword(PasswordDto passwordDto) {
 		passwordDto.setHashAlgo("SSHA-256");
@@ -135,6 +161,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return getSuccessResponse(response);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#getUserNameBasedOnMobileNumber(java.lang.String)
+	 */
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
@@ -143,6 +172,14 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return getUserDetailFromResponse(response);
 	}
 
+	/**
+	 * Call auth manager service.
+	 *
+	 * @param url the url
+	 * @param httpMethod the http method
+	 * @param requestEntity the request entity
+	 * @return the string
+	 */
 	private String callAuthManagerService(String url, HttpMethod httpMethod,
 			HttpEntity<RequestWrapper<?>> requestEntity) {
 		String response = null;
@@ -174,6 +211,12 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return response;
 	}
 
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody the response body
+	 * @return the user detail from response
+	 */
 	private UserNameDto getUserDetailFromResponse(String responseBody) {
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -195,6 +238,12 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return userNameDto;
 	}
 
+	/**
+	 * Gets the http request.
+	 *
+	 * @param passwordDto the password dto
+	 * @return the http request
+	 */
 	private HttpEntity<RequestWrapper<?>> getHttpRequest(PasswordDto passwordDto) {
 		RequestWrapper<PasswordDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("ADMIN_REQUEST");
