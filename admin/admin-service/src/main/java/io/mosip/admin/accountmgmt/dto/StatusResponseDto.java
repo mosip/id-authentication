@@ -9,7 +9,7 @@ import lombok.Data;
  *
  */
 @Data
-public class UnBlockResponseDto {
+public class StatusResponseDto {
 
 	/** The status. */
 	private String status;
