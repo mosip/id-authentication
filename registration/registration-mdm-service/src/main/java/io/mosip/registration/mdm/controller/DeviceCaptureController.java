@@ -27,10 +27,15 @@ import io.mosip.registration.mdm.dto.MosipBioRequest;
 @RestController
 public class DeviceCaptureController {
 
+	
 	/**
-	 * Instance of {@link Logger}
+	 * Returns the captured data
+	 * 
+	 * @param MosipBioCaptureRequestDto
+	 * 			-mosipBioCaptureRequestDto
+	 * @return MosipBioCaptureResponseDto
+	 * 
 	 */
-
 	@PostMapping("/capture")
 	public MosipBioCaptureResponseDto getCaputuredData(@RequestBody MosipBioCaptureRequestDto requestDto) {
 
@@ -82,7 +87,14 @@ public class DeviceCaptureController {
 
 		return mosipBioCaptureResponseDto;
 	}
-
+	
+	/**
+	 * Stub the image for the response
+	 * 
+	 * @param CaptureResponseData
+	 * @param MosipBioRequest
+	 * @return 
+	 */
 	private void stubImage(CaptureResponseData captureResponseData, MosipBioRequest mosipBioRequest,String bioType) {
 		
 			captureResponseData.setBioSubType(mosipBioRequest.getDeviceSubId());
@@ -98,6 +110,14 @@ public class DeviceCaptureController {
 
 	}
 	
+
+	/**
+	 * Get the captured byte
+	 * 
+	 * @param String
+	 *         -imageType
+	 * @return  byte[]
+	 */
 	private byte[] getCapturedByte(String imageType) {
 		byte[] scannedBytes=null;
 		try {
