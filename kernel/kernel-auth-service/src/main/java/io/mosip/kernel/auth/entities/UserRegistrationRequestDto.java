@@ -26,8 +26,8 @@ public class UserRegistrationRequestDto {
 	private String contactNo;
 	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String emailID;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@NotNull
-	@JsonFormat(pattern="dd-MM-yyyy")
 	private LocalDate dateOfBirth;
 	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String gender;

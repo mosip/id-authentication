@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.mosip.admin.usermgmt.constants.UserManagementConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +27,7 @@ public class UserRegistrationRequestDto {
 	private String contactNo;
 	@NotBlank(message = UserManagementConstants.INVALID_REQUEST)
 	private String emailID;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@NotNull
 	private LocalDate dateOfBirth;
 	@NotBlank(message = UserManagementConstants.INVALID_REQUEST)
