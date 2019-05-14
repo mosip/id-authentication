@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,11 @@ public class OTPManager {
 					secLang);
 			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
-			otpGeneratorRequestDto.setOtpChannel(otpRequestDTO.getOtpChannel());
+			List<String> otpChannel = new ArrayList<>();
+			for (String channel : otpRequestDTO.getOtpChannel()) {
+				otpChannel.add(channel.toLowerCase());
+			}
+			otpGeneratorRequestDto.setOtpChannel(otpChannel);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
 			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
@@ -169,8 +174,8 @@ public class OTPManager {
 								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
 								String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
 										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} 
-					
+					}
+
 //					else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
 //							.equalsIgnoreCase(OtpErrorConstants.USERBLOCKED.getErrorCode()))) {
 //						throw new IdAuthenticationBusinessException(

@@ -85,7 +85,6 @@ public class OTPAuthServiceTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
@@ -173,7 +172,6 @@ public class OTPAuthServiceTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("application.id", "");
-		ReflectionTestUtils.setField(otpauthserviceimpl, "env", mockenv);
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		RequestDTO request = new RequestDTO();
