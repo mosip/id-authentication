@@ -1,5 +1,6 @@
 package io.mosip.registration.service.config;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
@@ -38,7 +39,7 @@ public interface GlobalParamService {
 	 *
 	 * @return the response DTO
 	 */
-	ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable);
+	ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp);
 
 	/**
 	 * Update global param

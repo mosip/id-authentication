@@ -230,14 +230,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 * updateSoftwareUpdateStatus(boolean)
 	 */
 	@Override
-	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
+	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp) {
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag started.");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable);
+		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable,timestamp);
 
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
