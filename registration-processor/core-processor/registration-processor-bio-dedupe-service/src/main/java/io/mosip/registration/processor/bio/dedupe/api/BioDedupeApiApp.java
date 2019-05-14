@@ -18,7 +18,7 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 @ComponentScan(basePackages = { "io.mosip.registration.processor.bio.dedupe.api.*",
 		"io.mosip.registration.processor.packet.storage.*", "io.mosip.registration.processor.rest.client.*",
 		"io.mosip.registration.processor.bio.dedupe.*",
-		"io.mosip.registration.processor.core.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+		"io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 				RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class,
 				KernelConfig.class }))
 
