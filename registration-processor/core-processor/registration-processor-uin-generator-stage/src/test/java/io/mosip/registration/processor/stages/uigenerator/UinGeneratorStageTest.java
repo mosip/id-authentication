@@ -233,7 +233,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setVersion("1.0");
 
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any(Class.class)))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
@@ -278,7 +278,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any(Class.class)))
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);

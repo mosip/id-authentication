@@ -159,7 +159,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The id repo api version. */
-	private String idRepoApiVersion = "1.0";
+	private String idRepoApiVersion = "v1";
 
 	/** The reg processor identity json. */
 	@Autowired
@@ -371,9 +371,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		requestDto.setDocuments(documentInfo);
 		requestDto.setRegistrationId(regId);
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
+		requestDto.setBiometricReferenceId(uin);
+		
 		IdResponseDTO result = null;
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setRequest(requestDto);
@@ -386,7 +385,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Request to IdRepo API", "is: " + idRequest);
 		try {
-			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments,
+			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
