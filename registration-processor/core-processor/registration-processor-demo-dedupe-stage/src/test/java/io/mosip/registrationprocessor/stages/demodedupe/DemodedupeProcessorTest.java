@@ -339,6 +339,7 @@ public class DemodedupeProcessorTest {
 		assertTrue(messageDto.getIsValid());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupeSuccessNotDuplicateAfterAuth() throws Exception {
 
