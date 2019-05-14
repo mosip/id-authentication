@@ -68,6 +68,8 @@ public class AbisMiddleWareStageTest {
 	@Mock
 	private Utilities utility;
 
+	private AbisMiddleWareStage abisMiddleWareStage;
+
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -108,11 +110,20 @@ public class AbisMiddleWareStageTest {
 			}
 		};
 		Mockito.when(utility.getMosipQueuesForAbis()).thenReturn(mosipQueueList);
-
+		List<String>abisInboundAddresses = new ArrayList<>();
+		abisInboundAddresses.add("abis1-inbound-address");
+		
+		List<String>abisOutboundAddresses = new ArrayList<>();
+		abisOutboundAddresses.add("abis1-outboundaddress");
+		List<List<String>> abisInboundOutBounAddressList = new ArrayList<>();
+		abisInboundOutBounAddressList.add(abisInboundAddresses);
+		abisInboundOutBounAddressList.add(abisOutboundAddresses);
+		
+		Mockito.when(utility.getInboundOutBoundAddressList()).thenReturn(abisInboundOutBounAddressList);
 	}
 
 	@Test
-	public void processTest() {
+	public void processTest() throws RegistrationProcessorCheckedException {
 		InternalRegistrationStatusDto regDto = new InternalRegistrationStatusDto();
 		regDto.setRegistrationId("");
 		regDto.setLatestTransactionStatusCode("Demodedupe");
@@ -141,10 +152,34 @@ public class AbisMiddleWareStageTest {
 		abisInsertIdentifyList.add(insertAbisReq);
 		abisInsertIdentifyList.add(identifyAbisReq);
 
+		List<MosipQueue> mosipQueueList = new ArrayList<>();
+		MosipQueue queue1 = new MosipQueue() {
+			@Override
+			public String getQueueName() {
+				// TODO Auto-generated method stub
+				return "code1";
+			}
+
+			@Override
+			public void createConnection(String username, String password, String brokerUrl) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+		mosipQueueList.add(queue1);
+		
+
+
+
+		Mockito.when(utility.getMosipQueuesForAbis()).thenReturn(mosipQueueList);
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(anyString(), anyString()))
 				.thenReturn(abisInsertIdentifyList);
 
 		Mockito.when(mosipQueueManager.send(any(), any(), any())).thenReturn(true);
+		abisMiddleWareStage = new AbisMiddleWareStage();
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10003100030001520190422074511");
+		stage.process(dto);
 	}
 
 }

@@ -218,7 +218,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            the id
 	 * @return the batch id by request id
 	 */
-	@Query("SELECT abisreq.reqBatchId FROM AbisRequestEntity abisreq WHERE abisreq.id =:id")
+	@Query("SELECT abisreq.reqBatchId FROM AbisRequestEntity abisreq WHERE abisreq.id.id =:id")
 	public List<String> getBatchIdByRequestId(@Param("id") String id);
 
 	/**

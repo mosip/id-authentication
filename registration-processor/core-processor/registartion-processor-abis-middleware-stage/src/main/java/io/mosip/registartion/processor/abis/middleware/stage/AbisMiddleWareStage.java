@@ -1,7 +1,6 @@
 package io.mosip.registartion.processor.abis.middleware.stage;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.jms.Message;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -100,19 +100,16 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String clusterManagerUrl;
 	/** The url. */
 	@Value("${registration.processor.queue.url}")
+
 	private String url;
-
-	private static final String INSERT = "INSERT";
-	private static final String IDENTIFY = "IDENTIFY";
-	private static final String PROCESSED = "PROCESSED";
 	private static final String SYSTEM = "SYSTEM";
-
 	private Map<Integer, String> failureReason = new HashMap<>();
 	private List<String> abisInboundAddresses;
 	private List<MosipQueue> mosipQueueList;
 	private InternalRegistrationStatusDto internalRegDto;
 	private List<AbisRequestDto> abisIdentifyRequestList;
 	private String registrationId;
+	private static final String REQUESTID = "requestId";
 
 	public void deployVerticle() throws RegistrationProcessorCheckedException {
 		try {
@@ -150,10 +147,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
 					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 		}
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("10003100030001520190422074511");
-		process(dto);
 	}
 
 	@Override
@@ -193,9 +186,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			}
 
 			List<AbisRequestDto> abisInsertRequestList = abisInsertIdentifyList.stream()
-					.filter(dto -> dto.getRequestType().equals(INSERT)).collect(Collectors.toList());
+					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.INSERT.toString()))
+					.collect(Collectors.toList());
 			abisIdentifyRequestList = abisInsertIdentifyList.stream()
-					.filter(dto -> dto.getRequestType().equals(IDENTIFY)).collect(Collectors.toList());
+					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString()))
+					.collect(Collectors.toList());
 
 			for (int i = 0; i < abisInsertRequestList.size(); i++) {
 
@@ -249,11 +244,10 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 		try {
-			AbisCommonResponseDto abisCommonResponseDto = JsonUtil.objectMapperReadValue(response,
-					AbisCommonResponseDto.class);
-			AbisRequestDto abisCommonRequestDto = packetInfoManager
-					.getAbisRequestByRequestId(abisCommonResponseDto.getRequestId());
-			if (abisCommonRequestDto.getRequestType().equals(INSERT)) {
+			JSONObject commonResponse = JsonUtil.objectMapperReadValue(response, JSONObject.class);
+			String requestId = JsonUtil.getJSONValue(commonResponse, REQUESTID);
+			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);
+			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.INSERT.toString())) {
 				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisInsertResponseDto.class);
 
@@ -269,7 +263,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					updateAbisRequest(isAddedToQueue, abisIdentifyRequestDto);
 				}
 			}
-			if (abisCommonRequestDto.getRequestType().equals(IDENTIFY)) {
+			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString())) {
 
 				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisIdentifyResponseDto.class);
@@ -320,10 +314,10 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		if (isAddedToQueue) {
 
-			abisReqEntity.setStatusCode("SENT");
+			abisReqEntity.setStatusCode(AbisStatusCode.SENT.toString());
 			abisReqEntity.setStatusComment("Request sent to ABIS is sucessful");
 		} else {
-			abisReqEntity.setStatusCode("FAILED");
+			abisReqEntity.setStatusCode(AbisStatusCode.FAILED.toString());
 			abisReqEntity.setStatusComment("Request sent to ABIS is unsucessful");
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			internalRegDto.setStatusComment("Request sent to ABIS is unsucessful");
@@ -393,13 +387,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisResponseEntity.setCrBy(abisResponseDto.getCrBy());
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
-		abisResponseEntity.setCrDtimes(abisResponseDto.getCrDtimes());
 
 		return abisResponseEntity;
 
 	}
 
-	private String getFaliureReason(int key) {
+	private String getFaliureReason(Integer key) {
+		if (key == null)
+			return null;
 		failureReason.put(1, "Internal error - Unknown");
 		failureReason.put(2, "Aborted");
 		failureReason.put(3, "Unexpected error - Unable to access biometric data");
@@ -425,7 +420,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisResponseDto.setUpdBy(SYSTEM);
 		abisResponseDto.setIsDeleted(false);
 		abisResponseDto.setAbisRequest(abisCommonResponseDto.getRequestId());
-		abisResponseDto.setCrDtimes(LocalDateTime.now());
 		abisResponseRepositary.save(convertAbisResponseDtoToAbisResponseEntity(abisResponseDto));
 
 		return abisResponseDto;
@@ -454,7 +448,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private boolean checkAllIdentifyRequestsProcessed(String batchId) {
 		List<String> batchStatus = packetInfoManager.getBatchStatusbyBatchId(batchId);
 		if (batchStatus != null) {
-			boolean flag = batchStatus.stream().allMatch(status -> status.equals(PROCESSED));
+			boolean flag = batchStatus.stream().allMatch(status -> status.equals(AbisStatusCode.PROCESSED.toString()));
 			if (flag)
 				return true;
 		}
