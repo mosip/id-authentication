@@ -31,7 +31,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -78,7 +78,7 @@ public class SyncStatusValidatorServiceTest {
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	@BeforeClass
 	public static void beforeClass() {

@@ -50,7 +50,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationSyncController {
 
@@ -89,7 +88,7 @@ public class RegistrationSyncController {
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@PostMapping(path = "/sync/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })

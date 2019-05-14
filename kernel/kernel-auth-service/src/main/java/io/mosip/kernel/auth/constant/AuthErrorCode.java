@@ -54,6 +54,19 @@ public enum AuthErrorCode {
 	 * Empty Cookie error
 	 */
 	TOKEN_NOTPRESENT_ERROR("KER-ATH-007", "Token is not present in cookies"),
+	
+	/**
+	 * Client error
+	 */
+	SERVER_ERROR("KER-ATH-500", "Server error occured,Please check the logs "),
+	
+	
+	TEMPLATE_ERROR("KER-ATH-436", " Template is missing for language "),
+	
+	/**
+	 * Client error
+	 */
+	CLIENT_ERROR("KER-ATH-501", "Client error occured with message "),
 
 	/**
 	 * Empty Cookie error
@@ -62,7 +75,13 @@ public enum AuthErrorCode {
 
 	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
 	
-	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context");
+	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context"),
+	
+	PASSWORD_POLICY_EXCEPTION("KER-ATH-011","Password that is entered does not meet the password policy"),
+	
+	OLD_PASSWORD_NOT_MATCH("KER-ATH-012","Old password entered is incorrect");
+	
+	
 
 	/**
 	 * The error code

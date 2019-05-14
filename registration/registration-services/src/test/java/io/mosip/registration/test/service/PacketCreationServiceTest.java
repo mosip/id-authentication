@@ -28,7 +28,7 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -66,7 +66,7 @@ public class PacketCreationServiceTest {
 	@Mock
 	private HMACGeneration hMACGeneration;
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 	@Mock
 	private AuditDAO auditDAO;
 	@Mock

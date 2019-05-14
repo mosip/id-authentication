@@ -1,5 +1,5 @@
 <div class="title">
-    <span class="title-word"><mat-icon class="test">keyboard_backspace</mat-icon>
+    <span class="title-word"><mat-icon class="arrow">keyboard_backspace</mat-icon>
   New User Registration</span>
   <hr  class="horizontal-line">
 </div>
@@ -7,7 +7,7 @@
 
   <form class="login-form"  [formGroup]="userRegistrationForm" (ngSubmit)="onSubmit()">
     <div>
-    <div>
+    <div style="display:inline-flex;flex-wrap: wrap;">
       <mat-form-field class="input-full-width">
         <input formControlName="firstName" matInput placeholder="First Name" />
       </mat-form-field>

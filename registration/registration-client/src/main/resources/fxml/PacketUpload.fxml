@@ -61,7 +61,7 @@
                                        </padding></CheckBox>
                                  </graphic>
                               </TableColumn>
-                              <TableColumn fx:id="fileNameColumn" prefWidth="2500.0" text="%files" />
+                              <TableColumn fx:id="fileNameColumn" prefWidth="2500.0" text="%files" styleClass="tableId"/>
                            </columns>
                         </TableView>
                         <GridPane GridPane.rowIndex="1">

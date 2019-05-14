@@ -410,11 +410,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
-					syncDto.setSyncType(packetToBeSynch.getPacketStatus());
-					syncDto.setPacketHash(packetToBeSynch.getPacketHash());
+					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
+					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
 					syncDto.setPacketSize(packetToBeSynch.getPacketSize());
 					syncDto.setSupervisorStatus(packetToBeSynch.getSupervisorStatus());
-					syncDto.setSupervisorComments(packetToBeSynch.getSupervisorComments());
+					syncDto.setSupervisorComment(packetToBeSynch.getSupervisorComments());
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();

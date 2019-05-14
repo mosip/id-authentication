@@ -114,7 +114,7 @@ public class RegistrationStatusControllerTest {
 	SignatureUtil signatureUtil;
 	@Mock
 	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
@@ -187,7 +187,7 @@ public class RegistrationStatusControllerTest {
 				"mosip.registration.status");
 
 		this.mockMvc
-		.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+		.perform(MockMvcRequestBuilders.get("/search")
 				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -201,7 +201,7 @@ public class RegistrationStatusControllerTest {
 	@Ignore
 	public void searchFailureTest() throws Exception {
 		this.mockMvc
-		.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+		.perform(MockMvcRequestBuilders.get("/search")
 				.accept(MediaType.APPLICATION_ATOM_XML).contentType(MediaType.ALL_VALUE))
 		.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
@@ -212,7 +212,7 @@ public class RegistrationStatusControllerTest {
 
 		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
 		.validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/registration-processor/registrationstatus/v1.0")
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/search")
 				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
 	}
 

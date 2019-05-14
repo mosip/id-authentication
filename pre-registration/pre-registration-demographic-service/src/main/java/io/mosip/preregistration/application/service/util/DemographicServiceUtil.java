@@ -58,8 +58,6 @@ public class DemographicServiceUtil {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
-	@Value("${mosip.nonmandatory.field}")
-	private String nonMandatoryField;
 
 	/**
 	 * Logger instance

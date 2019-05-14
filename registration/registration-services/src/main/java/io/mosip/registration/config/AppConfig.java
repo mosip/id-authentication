@@ -35,10 +35,12 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @Import({ DaoConfig.class, AuditConfig.class, PropertiesConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
-		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode","io.mosip.kernel.core.signatureutil",
-		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
-		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
-		"io.mosip.kernel.cbeffutil","io.mosip.kernel.core.pdfgenerator.spi","io.mosip.kernel.pdfgenerator.itext.impl","io.mosip.kernel.responsesignature"})
+		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
+		"io.mosip.kernel.core.signatureutil", "io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator",
+		"io.mosip.kernel.idgenerator", "io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration",
+		"io.mosip.kernel.applicanttype", "io.mosip.kernel.cbeffutil", "io.mosip.kernel.core.pdfgenerator.spi",
+		"io.mosip.kernel.pdfgenerator.itext.impl", "io.mosip.kernel.cryptosignature",
+		"io.mosip.kernel.core.signatureutil" })
 @PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 public class AppConfig {
 

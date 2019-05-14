@@ -86,12 +86,12 @@ public class GenerateQRcodeService {
 			qrcodedto.setVersion(qrCodeReqData.get("version").toString());
 			qrcodedto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(qrCodeReqData.get("requesttime").toString()) );
 			qrcodedto.setRequest(qrCodeData);
-			
+			response.setId(qrcodedto.getId());
+			response.setVersion(qrcodedto.getVersion());
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(qrcodedto),requiredRequestMap)) {
 			qrCode = qrCodeGenerator.generateQrCode(qrCodeData,QrVersion.valueOf(qrversion));
 			}
-			response.setId(qrcodedto.getId());
-			response.setVersion(qrcodedto.getVersion());
+			
 			responsedto.setQrcode(qrCode);
 
 		} catch (Exception ex) {
@@ -107,5 +107,6 @@ public class GenerateQRcodeService {
 		return response;
 	}
 
+	
 
 }

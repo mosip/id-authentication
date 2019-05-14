@@ -150,11 +150,12 @@ public class BookingServiceUtil {
 				throw new MasterDataNotAvailableException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity.getBody().getErrors().get(0).getMessage());
 			}
+			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
 			if (regCenter == null || regCenter.isEmpty()) {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 			}
-			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
+			
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "

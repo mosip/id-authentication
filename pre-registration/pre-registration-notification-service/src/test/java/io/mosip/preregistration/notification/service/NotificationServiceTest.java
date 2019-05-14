@@ -1,4 +1,4 @@
-/*package io.mosip.preregistration.notification.service;
+package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -61,10 +61,10 @@ import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
-*//**
+/**
  * @author Sanober Noor
  * @since 1.0.0
- *//*
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {NotificationApplicationTest.class})
 public class NotificationServiceTest {
@@ -132,7 +132,7 @@ public class NotificationServiceTest {
 //2019-04-8T07:22:57.186Z
 //		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
 		
-		mainReqDto.setRequesttime(df.parse(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")));
+		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		response.setMessage("Email and sms request successfully submitted");
@@ -163,14 +163,14 @@ public class NotificationServiceTest {
 
 	}
 
-	*//**
+	/**
 	 * This test method is for succes case of sendNotificationSuccess
 	 * 
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 * @throws java.io.IOException
-	 *//*
+	 */
      @Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
@@ -257,11 +257,11 @@ public class NotificationServiceTest {
   		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
   		assertEquals(responseDTO.getResponse(), response.getResponse());
   	}
-	*//**
+	/**
 	 * This method is for failure case of sendNotification
 	 * 
 	 * @throws JsonProcessingException
-	 *//*
+	 */
 	@Test(expected = MandatoryFieldException.class)
 	public void sendNotificationFailureTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
@@ -284,11 +284,11 @@ public class NotificationServiceTest {
 
 	}
 
-	*//**
+	/**
 	 * This method is for failure case of sendNotification
 	 * 
 	 * @throws JsonProcessingException
-	 *//*
+	 */
 	@Test(expected = MandatoryFieldException.class)
 	public void sendNotificationExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
@@ -313,25 +313,6 @@ public class NotificationServiceTest {
 
 
 
-	*//**
-	 * This test method is for succes case of getConfig
-	 * 
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws java.io.IOException
-	 *//*
 	
-	 * @Test public void getConfigSuccessTest() throws Exception {
-	 * ResponseEntity<String> res = new
-	 * ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
-	 * Map<String, String> configParams = new HashMap<>();
-	 * MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
-	 * Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
-	 * Mockito.eq(String.class))).thenReturn(res); response = service.getConfig();
-	 * assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
-	 * }
-	 
 
 }
-*/

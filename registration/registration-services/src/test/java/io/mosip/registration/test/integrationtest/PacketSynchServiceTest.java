@@ -325,11 +325,9 @@ String actualmsg=null;
 					) {
 				SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 				syncDto.setLangCode("ENG");
-				syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
+				syncDto.setRegistrationType(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
 						+ packetToBeSynch.getClientStatusComments());
 				syncDto.setRegistrationId(packetToBeSynch.getFileName());
-				syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-				syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 				syncDtoList.add(syncDto);
 			}
 			registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
@@ -346,10 +344,8 @@ String actualmsg=null;
 		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 		syncDto.setLangCode("ENG");
-		syncDto.setStatusComment("APPROVED - null");
+		syncDto.setRegistrationType("APPROVED - null");
 		syncDto.setRegistrationId("100111001100053201903190727");
-		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-		syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 		syncDtoList.add(syncDto);
 		//registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 		registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
