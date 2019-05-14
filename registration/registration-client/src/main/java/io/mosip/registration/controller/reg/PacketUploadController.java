@@ -378,10 +378,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			public void onChanged(Change<? extends PacketStatusVO> c) {
 				while (c.next()) {
 					if (c.wasUpdated()) {
-						if (!selectedPackets.contains(list.get(c.getFrom()))) {
-							selectedPackets.add(list.get(c.getFrom()));
+						if (!selectedPackets.contains(table.getItems().get(c.getFrom()))) {
+							selectedPackets.add(table.getItems().get(c.getFrom()));
 						} else {
-							selectedPackets.remove(list.get(c.getFrom()));
+							selectedPackets.remove(table.getItems().get(c.getFrom()));
 						}
 						saveToDevice.setDisable(!selectedPackets.isEmpty());
 					}
