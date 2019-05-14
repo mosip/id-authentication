@@ -153,7 +153,11 @@ public class RegistrationUIConstants {
 	public static final String UIN_INVALID = bundle.getString("UIN_INVALID");
 	public static final String IS_BLOCKED_WORD = bundle.getString("IS_BLOCKED_WORD");
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
-	public static final String INVALID_DATE_OF_BIRTH = bundle.getString("INVALID_DATE_OF_BIRTH");
+	public static final String INVALID_DATE = bundle.getString("INVALID_DATE");
+	public static final String INVALID_YEAR = bundle.getString("INVALID_YEAR");
+	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
+	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
+
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
 
