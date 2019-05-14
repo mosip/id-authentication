@@ -123,11 +123,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(MosipRouter router) {
 
-		router.post("/registrationpackets");
+		router.post(contextPath + "/registrationpackets");
 
 		router.handler(this::processURL, this::processPacket, this::failure);
 
-		router.get("/health");
+		router.get(contextPath + "/health");
 		router.handler(this::health);
 	};
 
