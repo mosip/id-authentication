@@ -34,7 +34,7 @@ this.requestObject.userName=this.userName;
 this.requestDTO=new RequestModel("id","v1",this.requestObject,null);
 this.service.ridVerification(this.requestDTO).subscribe(data=>{
   alert("Rid submitted successfully");
-  this.router.navigateByUrl('/admin/dashboard');
+  this.router.navigateByUrl('/admin/usermgmt/validateotp');
 },error=>{
 console.log(error);
 });
