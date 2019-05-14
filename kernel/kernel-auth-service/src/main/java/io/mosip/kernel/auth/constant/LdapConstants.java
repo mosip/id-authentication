@@ -16,6 +16,8 @@ public class LdapConstants {
 	public static final String GENDER_CODE="genderCode";
 	public static final String OBJECT_CLASS="objectClass";
 	public static final String INET_ORG_PERSON="inetOrgPerson";
+	public static final String USER_PASSWORD="userPassword";
+	public static final String RID="rid";
 	public static final String ORGANIZATIONAL_PERSON="organizationalPerson";
 	public static final String PERSON="person";
 	public static final String TOP="top";

@@ -53,6 +53,8 @@ import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
 import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -470,5 +472,34 @@ public class ILdapDataStore implements IDataStore {
 			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
 					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
 		}
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		try {
+			userDn = createUserDn(userPasswordRequestDto.getUserName());
+			context = new InitialDirContext(env);
+			ModificationItem[] mods = new ModificationItem[2];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.RID, userPasswordRequestDto.getRid()));
+			mods[1] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.USER_PASSWORD, userPasswordRequestDto.getPassword()));
+			context.modifyAttributes(userDn.getName(), mods);
+
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
 	}
 }

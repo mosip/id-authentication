@@ -32,11 +32,13 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -387,18 +389,13 @@ public class AuthController {
 		return responseWrapper;
 	}
 	
-	/**
-	 * Create a user account in Data Store
-	 * 
-	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
-	 * @return {@link UserCreationResponseDto}
-	 */
+	
 	@ResponseFilter
 	@PostMapping(value = "/user/addpassword")
-	public ResponseWrapper<UserCreationResponseDto> addPassword(
-			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
-		ResponseWrapper<UserCreationResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
+	public ResponseWrapper<UserPasswordResponseDto> addPassword(
+			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> userPasswordRequestDto) {
+		ResponseWrapper<UserPasswordResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.addUserPassword(userPasswordRequestDto.getRequest()));
 		return responseWrapper;
 	}
 

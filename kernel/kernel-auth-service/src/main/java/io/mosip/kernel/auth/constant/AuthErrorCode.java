@@ -83,6 +83,8 @@ public enum AuthErrorCode {
 	
 	USER_CREATE_EXCEPTION("KER-ATH-013","Exception occured while creating a user "),
 	
+	USER_PASSWORD_EXCEPTION("KER-ATH-016","Exception occured while inserting a password for user "),
+	
 	ROLLBACK_USER_EXCEPTION("KER-ATH-014","Exception occured while rolling back user"),
 	
 	INVALID_DN("KER-ATH-015","Exception occured while creating DN")

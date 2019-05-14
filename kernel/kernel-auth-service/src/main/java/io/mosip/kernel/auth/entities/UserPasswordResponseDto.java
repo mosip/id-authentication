@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPasswordResponseDto {
 
-	private String result;
+	private String userName;
 }

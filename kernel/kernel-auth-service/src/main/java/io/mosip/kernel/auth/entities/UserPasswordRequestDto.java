@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPasswordRequestDto {
 	@NotBlank
+	private String appId;
+	@NotBlank
 	private String userName;
 	@NotBlank
 	private String rid;

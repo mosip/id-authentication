@@ -25,10 +25,11 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 
@@ -244,6 +245,12 @@ public class DBDataStore implements IDataStore {
 
 	@Override
 	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
 		// TODO Auto-generated method stub
 		return null;
 	}
