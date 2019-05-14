@@ -1,14 +1,8 @@
 package io.mosip.registration.config;
 
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
-import io.mosip.registration.tpm.initialize.TPMInitialization;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -25,6 +19,12 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.tpm.spi.TPMUtil;
+
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * 
@@ -45,6 +45,8 @@ public class DaoConfig extends HibernateDaoConfig {
 	private static final String URL = "jdbc:derby:";
 	private static final String DB_AUTHENITICATION = ";bootPassword=";
 	private static final String DB_AUTH_FILE_PATH = "mosip.registration.db.key";
+	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration";
+	private static final String IS_ENABLED = "Y";
 
 	/**
 	 * instance of datasource
@@ -59,19 +61,27 @@ public class DaoConfig extends HibernateDaoConfig {
 			DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 			driverManagerDataSource.setDriverClassName(DRIVER_CLASS_NAME);
 
-			AsymmetricDecryptionService asymmetricDecryptionService = new AsymmetricDecryptionService();
 			Properties keys = new Properties();
 			keys.load(keyStream);
 
-			driverManagerDataSource.setUrl(URL + System.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION
-					+ new String(asymmetricDecryptionService.decryptUsingTPM(TPMInitialization.getTPMInstance(),
-							Base64.decodeBase64(
-									keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
+			String dbConnectionURL = URL + System.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION;
+			
+			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)
+					&& keys.getProperty(MOSIP_CLIENT_TPM_AVAILABILITY).equals(IS_ENABLED)) {
+				driverManagerDataSource.setUrl(dbConnectionURL + new String(TPMUtil.asymmetricDecrypt(Base64
+						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
+			} else {
+				driverManagerDataSource.setUrl(dbConnectionURL + new String(Base64
+						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes())));
+			}
 
 			dataSource = driverManagerDataSource;
-		} catch (Exception ioException) {
-			LOGGER.error("REGISTRATION - DAO Config", APPLICATION_NAME, APPLICATION_ID,
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - DAO Config - DB", APPLICATION_NAME, APPLICATION_ID,
 					"Unable to connect to DB -->" + ExceptionUtils.getStackTrace(ioException));
+		} catch (RegBaseUncheckedException uncheckedException) {
+			LOGGER.error("REGISTRATION - DAO Config - DB", APPLICATION_NAME, APPLICATION_ID,
+					"Unable to connect to DB -->" + ExceptionUtils.getStackTrace(uncheckedException));
 		}
 	}
 

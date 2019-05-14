@@ -2,11 +2,12 @@ package io.mosip.registration.tpm.initialize;
 
 import java.io.IOException;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 
 import tss.Tpm;
 import tss.TpmFactory;
@@ -50,10 +51,10 @@ public class TPMInitialization {
 	/**
 	 * Closes the {@link Tpm} instance
 	 * 
-	 * @throws IOException
+	 * @throws RegBaseCheckedException
 	 *             exception while closing the {@link Tpm}
 	 */
-	public static void closeTPMInstance() throws IOException {
+	public static void closeTPMInstance() throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Closing the instance of Platform TPM");
 
@@ -62,11 +63,9 @@ public class TPMInitialization {
 				tpm.close();
 			}
 		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
-					String.format("Exception while closing the instance of Platform TPM --> %s",
-							ExceptionUtils.getStackTrace(ioException)));
-
-			throw ioException;
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.TPM_INIT_CLOSE_TPM_INSTANCE_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.TPM_INIT_CLOSE_TPM_INSTANCE_ERROR.getErrorMessage(), ioException);
 		}
 		LOGGER.info(LoggerConstants.LOG_TPM_INITIALIZATION, RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Completed closing the instance of Platform TPM");
