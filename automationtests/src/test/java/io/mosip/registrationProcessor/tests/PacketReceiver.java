@@ -142,7 +142,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 
 
 			//generation of actual response
-			actualResponse = applicationLibrary.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
+			actualResponse = applicationLibrary.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"));
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);

@@ -88,7 +88,7 @@ public class Sync extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			switch ("smokeAndRegression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -126,7 +126,7 @@ public class Sync extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.postRequest(actualRequest.toJSONString(),prop.getProperty("syncListApi"));
+			actualResponse = applicationLibrary.regProcSync(actualRequest.toJSONString(),prop.getProperty("syncListApi"));
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");

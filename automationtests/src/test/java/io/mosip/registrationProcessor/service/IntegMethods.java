@@ -69,8 +69,7 @@ public class IntegMethods extends BaseTestCase {
 			}
 		}
 		try {
-			System.out.println(prop.getProperty("syncListApi"));
-			Response actualResponse=applnMethods.postRequest(actualRequest, prop.getProperty("syncListApi"));
+			Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
 			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
 			logger.info("Actual Response is :: "+ actualResponse.asString());
 			outerKeys.add("responsetime");
@@ -109,7 +108,7 @@ public class IntegMethods extends BaseTestCase {
 		if(status.equals("SUCCESS")) {
 			for(File f: folder) {
 				if(f.getName().toLowerCase().contains(responseObject.get("registrationId").toString())) {
-					actualResponse=applnMethods.putMultipartFile(f, prop.getProperty("packetReceiverApi"));
+					actualResponse=applnMethods.regProcPacketUpload(f, prop.getProperty("packetReceiverApi"));
 					registrationID=responseObject.get("registrationId").toString();
 				}
 				else if(f.getName().toLowerCase().contains("response")) {
@@ -155,7 +154,7 @@ public class IntegMethods extends BaseTestCase {
 				expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 			}
 		}
-		actualResponse=applnMethods.getRequestAsQueryParam(prop.getProperty("packetStatusApi"),actualRequest);
+		actualResponse=applnMethods.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest);
 		outerKeys.add("responsetime");
 		boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 		clearFromDB(registrationID);

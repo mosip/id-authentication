@@ -159,12 +159,16 @@ public class ApplicationLibrary extends BaseTestCase {
 	 public Response getRequestPathQueryParaString(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value) {
 	        return commonLibrary.getRequestPathQueryParamString(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
-	  //Notify
-	  /*  public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
-	    	
-	    	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA,langCodeKey,value);
-	        
-	    }*/
+	
+	 public Response regProcSync(Object body, String Resource_URI) {
+			return commonLibrary.regProcSyncRequest(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON);
+		}
+		public Response regProcPacketUpload(File file, String Url) {
+			return commonLibrary.regProcPacketUpload(file,ApplnURI+Url);
+		}
+		public Response regProcGetRequest(String Resource_URI, HashMap<String, String> valueMap) {
+			return commonLibrary.regProcGetRequest(ApplnURI + Resource_URI , valueMap);
 
-
+		}
 }

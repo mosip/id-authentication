@@ -130,7 +130,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			//generation of actual response
-			actualResponse = applicationLibrary.getRequestAsQueryParam(prop.getProperty("packetStatusApi"),actualRequest);
+			actualResponse = applicationLibrary.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest);
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
