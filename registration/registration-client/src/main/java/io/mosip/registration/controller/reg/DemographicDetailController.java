@@ -1096,6 +1096,7 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int age = 0;
+				if (newValue.matches(RegistrationConstants.NUMBER_OR_NOTHING_REGEX)) {
 					if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
 						if (!(Integer.parseInt(ageField.getText()) > maxAge)) {
 							age = Integer.parseInt(ageField.getText());
@@ -1148,7 +1149,10 @@ public class DemographicDetailController extends BaseController {
 								parentUinIdLocalLanguage.clear();
 								parentUinId.clear();
 							}
+						}
 					}
+				} else {
+					ageField.setText(oldValue);
 				}
 
 			});
