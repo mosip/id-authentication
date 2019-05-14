@@ -2,7 +2,7 @@
 
 [Background & Design](../../docs/design/kernel/kernel-syncservices.md)
 
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#3-sync-data)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#sync-data)
 
 
 Default Port and Context Path

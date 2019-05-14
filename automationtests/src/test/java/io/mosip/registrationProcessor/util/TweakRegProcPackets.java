@@ -532,25 +532,4 @@ public class TweakRegProcPackets {
 		return metaData;
 	}
 
-	public static void main(String[] args)
-			throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
-		TweakRegProcPackets e = new TweakRegProcPackets();
-
-		Properties property = new Properties();
-		String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
-		FileReader reader = new FileReader(new File(propertyFilePath));
-		property.load(reader);
-		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
-		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
-		/*
-		 * for (int i = 0; i < 2; i++) {
-		 * e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath,
-		 * invalidPacketFolderPath); }
-		 */
-		// e.osiValidatorPropertyFileReader("packetProperties.properties",
-		// validPacketPath, invalidPacketFolderPath);
-		reader.close();
-
-	}
 }

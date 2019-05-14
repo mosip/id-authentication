@@ -80,7 +80,6 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				SignatureResponse cryptoManagerResponseDto = signatureUtil
 						.signResponse(objectMapper.writeValueAsString(body));
 				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
-				body.setResponsetime(cryptoManagerResponseDto.getResponseTime());
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());

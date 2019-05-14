@@ -79,17 +79,17 @@
     "proofOfAddress" : {
       "value" : "POA_Passport",
       "format" : "jpg",
-      "type" : "Passport"
+      "type" : "DOC001"
     },
     "proofOfIdentity" : {
       "value" : "POI_Passport",
       "format" : "jpg",
-      "type" : "Passport"
+      "type" : "DOC001"
     },
     "proofOfRelationship" : {
       "value" : "POR_Passport",
       "format" : "jpg",
-      "type" : "Passport"
+      "type" : "DOC001"
     },
     "proofOfDateOfBirth" : {
       "value" : "POB_Passport",

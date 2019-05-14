@@ -138,6 +138,11 @@ img {
   padding-left: 10px;
   word-wrap: break-word;
 }
+
+.user__name--wordwrap {
+  max-width: 20px;
+}
+
 .modify-app-img {
   height: 15px;
 }

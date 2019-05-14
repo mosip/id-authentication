@@ -126,7 +126,7 @@ public class Sync extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.postRequest(actualRequest.toJSONString(),prop.getProperty("syncListApi"));
+			actualResponse = applicationLibrary.regProcSync(actualRequest.toJSONString(),prop.getProperty("syncListApi"));
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");

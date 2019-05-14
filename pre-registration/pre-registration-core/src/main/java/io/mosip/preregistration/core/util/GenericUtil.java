@@ -1,8 +1,15 @@
 package io.mosip.preregistration.core.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
@@ -32,5 +39,15 @@ public class GenericUtil {
 		return response;
 	}
 	
+	public static  <T extends BaseUncheckedException> ResponseEntity<MainResponseDTO<?>> errorResponse(final T e,MainResponseDTO<?> response){
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), 
+				e.getErrorText());
+		MainResponseDTO<?> errorRes = response;
+		List<ExceptionJSONInfoDTO> errorList=new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setResponsetime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 
 }

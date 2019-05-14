@@ -6,8 +6,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * The Class IdValidationFailedExceptionTest.

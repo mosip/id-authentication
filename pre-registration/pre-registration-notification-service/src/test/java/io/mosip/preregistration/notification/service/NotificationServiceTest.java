@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
@@ -82,7 +81,7 @@ public class NotificationServiceTest {
 	boolean requestValidatorFlag = false;
 	TemplateResponseDTO templateResponseDTO = new TemplateResponseDTO();
 	MainResponseDTO<ResponseDTO> responseDTO = new MainResponseDTO<>();
-	MainListResponseDTO<NotificationResponseDTO> responselist=new MainListResponseDTO<>();
+	MainResponseDTO<NotificationResponseDTO> responselist=new MainResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
 	MainRequestDTO<NotificationDTO> mainReqDto = new MainRequestDTO<>();
@@ -100,6 +99,7 @@ public class NotificationServiceTest {
 		File fileTest = new File(classLoader.getResource("pre-registration.json").getFile());
 		FileReader reader = new FileReader(fileTest);
 		jsonTestObject= (JSONObject) parser.parse(reader);
+
 		File fileTest1 = new File(classLoader.getResource("pre-registration-test.json").getFile());
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileTest1));
 

@@ -3,11 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
 	<artifactId>automationtests</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	
 	 <packaging>jar</packaging> 
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
+	
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.10.8</version>
+	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
@@ -27,6 +33,11 @@
 			<version>2.4.0</version>
 		</dependency>
 
+	<dependency>
+  <groupId>org.apache.maven</groupId>
+  <artifactId>maven-model</artifactId>
+  <version>3.3.9</version>
+</dependency>
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>

@@ -53,7 +53,7 @@ public class DocumentSizeExceedTest {
 	@Test
 	public void documentSizeExceedTest() throws FileNotFoundException, IOException, URISyntaxException {
 
-		DocumentSizeExceedException exceedException = new DocumentSizeExceedException(
+		DocumentSizeExceedException exceedException = new DocumentSizeExceedException("PRG_PAM_DOC_007",
 				DOCUMENT_EXCEEDING_PERMITTED_SIZE);
 		String preRegistrationId ="48690172097498";
 		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");

@@ -10,6 +10,8 @@ import java.util.Date;
 import org.apache.commons.codec.EncoderException;
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
+
 /**
  * 
  * @author Dinesh Karuppiah

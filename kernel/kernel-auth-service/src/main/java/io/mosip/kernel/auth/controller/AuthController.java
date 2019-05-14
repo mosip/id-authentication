@@ -22,6 +22,7 @@ import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.ClientSecretDto;
 import io.mosip.kernel.auth.entities.LoginUser;
@@ -29,8 +30,10 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -196,8 +199,8 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			//AuthToken token = getAuthToken(authResponseDto);
-			//customTokenServices.StoreToken(token);
+			// AuthToken token = getAuthToken(authResponseDto);
+			// customTokenServices.StoreToken(token);
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -216,9 +219,9 @@ public class AuthController {
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
-		if(cookies==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
 		}
 		MosipUserDtoToken mosipUserDtoToken = null;
 		try {
@@ -227,9 +230,9 @@ public class AuthController {
 					authToken = cookie.getValue();
 				}
 			}
-			if(authToken==null)
-			{
-				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+			if (authToken == null) {
+				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
 			if (mosipUserDtoToken != null) {
@@ -282,18 +285,18 @@ public class AuthController {
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
-		if(cookies==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
 		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
 				authToken = cookie.getValue();
 			}
 		}
-		if(authToken==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(), AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+		if (authToken == null) {
+			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 		}
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		responseWrapper.setResponse(authNResponse);
@@ -320,7 +323,7 @@ public class AuthController {
 		responseWrapper.setResponse(mosipUsers);
 		return responseWrapper;
 	}
-	
+
 	@ResponseFilter
 	@GetMapping(value = "/usersaltdetails/{appid}")
 	public ResponseWrapper<MosipUserSaltList> getUserDetailsWithSalt(@PathVariable("appid") String appId)
@@ -328,6 +331,44 @@ public class AuthController {
 		ResponseWrapper<MosipUserSaltList> responseWrapper = new ResponseWrapper<>();
 		MosipUserSaltList mosipUsers = authService.getAllUserDetailsWithSalt(appId);
 		responseWrapper.setResponse(mosipUsers);
+		return responseWrapper;
+	}
+
+	/**
+	 * This API will fetch RID based on appId and userId.
+	 * 
+	 * @param appId
+	 *            - application Id
+	 * @param userId
+	 *            - user Id
+	 * @return {@link RIdDto}
+	 * @throws Exception
+	 */
+	@ResponseFilter
+	@GetMapping(value = "rid/{appid}/{userid}")
+	public ResponseWrapper<RIdDto> getRId(@PathVariable("appid") String appId, @PathVariable("userid") String userId)
+			throws Exception {
+		ResponseWrapper<RIdDto> responseWrapper = new ResponseWrapper<>();
+		RIdDto rIdDto = authService.getRidBasedOnUid(userId, appId);
+		responseWrapper.setResponse(rIdDto);
+		return responseWrapper;
+	}
+	
+	
+	/**
+	 * Fetch username based on the user id.
+	 * @param appId - application id
+	 * @param userId - user id
+	 * @return {@link UserNameDto}
+	 * @throws Exception - exception is thrown if
+	 */
+	@ResponseFilter
+	@GetMapping(value="unblock/{appid}/{userid}")
+	public ResponseWrapper<AuthZResponseDto> getUserName(@PathVariable("appid") String appId,
+			@PathVariable("userid") String userId) throws Exception{
+		AuthZResponseDto authZResponseDto= authService.unBlockUser(userId, appId);
+		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authZResponseDto);
 		return responseWrapper;
 	}
 

@@ -5,7 +5,7 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 @Injectable({
   providedIn: 'root'
 })
-export class SharedService {
+export class BookingService {
   private nameList: NameList[] = [];
   private allApplicants: NameList[] = [];
   private coordinatesSource = new BehaviorSubject(Array);
@@ -37,7 +37,7 @@ export class SharedService {
   }
 
   addApplicants(applicants) {
-    this.allApplicants = applicants.response;
+    this.allApplicants = applicants;
   }
 
   addNameList(nameList: NameList) {

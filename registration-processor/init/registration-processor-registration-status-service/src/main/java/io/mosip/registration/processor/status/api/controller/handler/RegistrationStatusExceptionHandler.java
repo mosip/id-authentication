@@ -23,6 +23,8 @@ import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
+import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.status.api.controller.RegistrationStatusController;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -41,7 +43,20 @@ public class RegistrationStatusExceptionHandler {
 
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusExceptionHandler.class);
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public String accessDenied(AccessDeniedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildRegStatusExceptionResponse((Exception) e);
+	}
 
+	@ExceptionHandler(InvalidTokenException.class)
+	public String invalidToken(InvalidTokenException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildRegStatusExceptionResponse((Exception) e);
+	}
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public String duplicateentry(TablenotAccessibleException e, WebRequest request) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getCause().toString());

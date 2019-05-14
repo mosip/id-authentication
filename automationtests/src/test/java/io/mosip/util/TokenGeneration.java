@@ -20,7 +20,7 @@ import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
-public class TokenGeneration extends BaseTestCase{
+public class TokenGeneration{
 	private static Logger logger = Logger.getLogger(TokenGeneration.class);
 	TokenGenerationEntity generateTokenRequest=new TokenGenerationEntity();
 	TokenGenerationDto tokenRequestDto=new TokenGenerationDto();

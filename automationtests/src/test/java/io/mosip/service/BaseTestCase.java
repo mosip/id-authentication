@@ -26,15 +26,15 @@ import org.testng.annotations.BeforeSuite;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
 import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
+import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.util.PreRegistrationLibrary;
+import io.mosip.util.TokenGeneration;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
 import io.restassured.RestAssured;
 /**
@@ -58,6 +58,7 @@ public class BaseTestCase extends KernelMasterDataR {
 	private Properties prop;
 	public static String ApplnURI;	
 	public static String authToken;
+	public static String regProcAuthToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public  static String getOSType(){
@@ -133,10 +134,15 @@ public class BaseTestCase extends KernelMasterDataR {
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.attachReporter(htmlReporter);
+			
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-
+			TokenGeneration generateToken = new TokenGeneration();
+			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
+			String tokenGenerationProperties = generateToken.readPropertyFile();
+			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+			regProcAuthToken = generateToken.getToken(tokenEntity);
 
 			//authToken=pil.getToken();
 			

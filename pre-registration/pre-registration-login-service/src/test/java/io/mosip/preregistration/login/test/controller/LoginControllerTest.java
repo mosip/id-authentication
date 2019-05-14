@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -18,7 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,9 +29,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
-import io.mosip.preregistration.login.controller.LoginController;
-import io.mosip.preregistration.login.dto.MainResponseDTO;
+import io.mosip.preregistration.login.PreRegistartionLoginApplication;
 import io.mosip.preregistration.login.service.LoginService;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 import net.minidev.json.parser.JSONParser;
@@ -40,7 +39,8 @@ import net.minidev.json.parser.ParseException;
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(LoginController.class)
+@SpringBootTest(classes= {PreRegistartionLoginApplication.class})
+@AutoConfigureMockMvc
 public class LoginControllerTest {
 
 	@Autowired
@@ -104,7 +104,7 @@ public class LoginControllerTest {
 		//MainResponseDTO<AuthNResponse> mainResponseDTO=new MainResponseDTO<>();
 		HttpHeaders headers=new HttpHeaders();
 		headers.add("Set-Cookie","AuthToken=MOSIP");
-		authNResposne=new AuthNResponse("success");
+		authNResposne=new AuthNResponse("success","success");
 		responseEntity=new ResponseEntity<String>("Validation Successful", headers, HttpStatus.OK);
 		serviceResponse=new MainResponseDTO<>();
 		serviceResponse.setId("id");
@@ -126,7 +126,7 @@ public class LoginControllerTest {
 	
 	@Test
 	public void invalidateTokenTest() throws Exception {
-		AuthNResponse serviceResponse=new AuthNResponse();
+		MainResponseDTO<AuthNResponse> serviceResponse=new MainResponseDTO<>();
 		Mockito.when(authService.invalidateToken(Mockito.any())).thenReturn(serviceResponse);
 		 RequestBuilder requestBuilder=MockMvcRequestBuilders
 				 .post("/invalidateToken")
