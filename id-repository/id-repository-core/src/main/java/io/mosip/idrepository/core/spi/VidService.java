@@ -9,9 +9,6 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
  * @param <RESPONSE> the Response Object
  */
 public interface VidService<REQUEST, RESPONSE> {
-	
-	RESPONSE createVid(REQUEST vidRequest) throws IdRepoAppException;
-	
 	/**
 	 * This Method will return the Vid Response with Respective Uin.
 	 * 

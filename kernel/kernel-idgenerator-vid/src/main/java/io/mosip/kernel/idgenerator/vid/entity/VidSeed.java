@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "vid_seed", schema = "idmap")
+@Table(name = "vid_seed", schema = "ida")
 public class VidSeed {
 	/**
 	 * The seed number.

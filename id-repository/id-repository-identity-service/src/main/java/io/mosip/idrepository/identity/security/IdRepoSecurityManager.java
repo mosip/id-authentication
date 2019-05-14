@@ -1,4 +1,4 @@
-package io.mosip.idrepository.core.security;
+package io.mosip.idrepository.identity.security;
 
 import java.util.Date;
 import java.util.Objects;
@@ -59,11 +59,11 @@ public class IdRepoSecurityManager {
 	/**
 	 * Hash.
 	 *
-	 * @param data the identity info
+	 * @param identityInfo the identity info
 	 * @return the string
 	 */
-	public String hash(final byte[] data) {
-		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(data));
+	public String hash(final byte[] identityInfo) {
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityInfo));
 	}
 
 	/**

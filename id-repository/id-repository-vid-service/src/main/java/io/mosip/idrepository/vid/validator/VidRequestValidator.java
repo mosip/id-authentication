@@ -18,35 +18,20 @@ import org.springframework.validation.Validator;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
-import io.mosip.idrepository.core.logger.IdRepoLogger;
-import io.mosip.idrepository.vid.dto.RequestDTO;
+import io.mosip.idrepository.vid.dto.RequestDto;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
-import io.mosip.idrepository.vid.provider.VidPolicyProvider;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * This class will validate the Vid Request.
  * 
- * @author Manoj SP
  * @author Prem Kumar
  *
  */
 @Component
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRequestValidator implements Validator {
-	
-	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
-	
-	private static final String VID_REQUEST_VALIDATOR = "VidRequestValidator";
-
-	private static final String VID_TYPE = "vidType";
-
-	private static final String CREATE = "create";
 
 	/** The Constant ID. */
 	private static final String ID = "id";
@@ -66,21 +51,13 @@ public class VidRequestValidator implements Validator {
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "vidStatus";
 
-	private static final String UIN = "UIN";
-
 	/** The Environment */
 	@Autowired
-	private Environment env;
-	
-	@Autowired
-	private VidPolicyProvider policyProvider;
+	Environment env;
 
 	/** The Vid Validator */
 	@Autowired
 	private VidValidator<String> vidValidator;
-	
-	@Autowired
-	private UinValidator<String> uinValidator;
 
 	/** The allowed types. */
 	@Resource
@@ -109,47 +86,26 @@ public class VidRequestValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		VidRequestDTO request = (VidRequestDTO) target;
-		validateReqTime(request.getRequesttime(), errors);
-		validateVersion(request.getVersion(), errors);
-		validateRequest(request.getRequest(), errors);
-		
-		if (request.getId().equals(id.get(CREATE))) {
-			validateVidType(request.getRequest().getVidType(), errors);
-			validateUin(request.getRequest().getUin(), errors);
+		validateReqTime(request.getRequestTime(), errors);
+		if (!errors.hasErrors()) {
+			validateVersion(request.getVersion(), errors);
+			validateRequest(request.getRequest(), errors);
 		}
-		
-		if (request.getId().equals(id.get(UPDATE))) {
-			validateStatus(request.getRequest().getVidStatus(), errors);
+		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
+			if (request.getId().equals(id.get(UPDATE))) {
+				validateStatus(request.getRequest().getVidStatus(), errors);
+			} else {
+				errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), ID));
+			}
+		} else if (!errors.hasErrors()) {
+			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), ID));
 		}
+
 	}
 
-	private void validateVidType(String vidType, Errors errors) {
-		if (Objects.isNull(vidType)) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType",
-					"vidType is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), VID_TYPE));
-		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType",
-					"vidType is invalid - " + vidType);
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), VID_TYPE));
-		}
-	}
-	
-	private void validateUin(String uin, Errors errors) {
-		try {
-			uinValidator.validateId(uin);
-		} catch (InvalidIDException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateUin",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(),
-							UIN));
-		}
-	}
-
-	private void validateRequest(RequestDTO request, Errors errors) {
+	private void validateRequest(RequestDto request, Errors errors) {
 		if (Objects.isNull(request)) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST));
@@ -214,17 +170,7 @@ public class VidRequestValidator implements Validator {
 	 * @param vid
 	 * @throws IdRepoAppException
 	 */
-	public void validateVid(String vid) {
+	public void validateId(String vid) {
 		vidValidator.validateId(vid);
-	}
-
-	public void validateId(String id, Errors errors, String operation) {
-		if (Objects.isNull(id)) {
-			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
-		} else if (!this.id.get(operation).equals(id)) {
-			errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID));
-		}
 	}
 }

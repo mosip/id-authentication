@@ -9,8 +9,6 @@ public enum RestServicesConstants {
 
 	/** The audit manager service. */
 	AUDIT_MANAGER_SERVICE("mosip.idrepo.audit"),
-	
-	IDREPO_IDENTITY_SERVICE("mosip.idrepo.retrieve-by-uin"),
 
 	CRYPTO_MANAGER_ENCRYPT("mosip.idrepo.encryptor"),
 

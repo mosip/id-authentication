@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -61,9 +60,5 @@ public class VidPolicyProvider {
 	
 	public VidPolicy getPolicy(String vidType) {
 		return vidPolicies.get(vidType);
-	}
-	
-	public Set<String> getAllVidTypes() {
-		return vidPolicies.keySet();
 	}
 }

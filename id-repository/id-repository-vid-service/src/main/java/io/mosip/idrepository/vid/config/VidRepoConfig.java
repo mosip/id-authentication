@@ -8,15 +8,12 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
-import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
  * 
@@ -25,8 +22,8 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  */
 @Configuration
 @ConfigurationProperties("mosip.idrepo.vid")
-public class VidRepoConfig extends HibernateDaoConfig {
-	
+public class VidRepoConfig {
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -76,26 +73,12 @@ public class VidRepoConfig extends HibernateDaoConfig {
 		return Collections.unmodifiableList(allowedStatus);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.dao.config.BaseDaoConfig#jpaProperties()
-	 */
-	@Override
-	public Map<String, Object> jpaProperties() {
-		Map<String, Object> jpaProperties = super.jpaProperties();
-		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
-		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
-		return jpaProperties;
-	}
-	
 	/**
 	 * Builds the data source.
 	 *
 	 * @param dataSourceValues the data source values
 	 * @return the data source
 	 */
-	@Override
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_URL.getValue()));

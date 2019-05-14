@@ -11,7 +11,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ResponseDTO {
+public class ResponseDto {
 
 	/** The Value Of UIN in Decrypted value */
 	@JsonProperty("UIN")
