@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MasterDataCardResponseDto {
 
-	private List<MasterCardDto> masterdata;
+	private List<MasterDataCardDto> masterdata;
 }

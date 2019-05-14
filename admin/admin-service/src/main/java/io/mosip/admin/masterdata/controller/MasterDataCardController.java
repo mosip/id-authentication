@@ -19,6 +19,7 @@ public class MasterDataCardController {
 	private MasterDataCardService masterDataCardService;
 
 	@GetMapping("/{langCode}")
+	//@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<MasterDataCardResponseDto> getMasterCards(@PathVariable("langCode") String langCode) {
 		ResponseWrapper<MasterDataCardResponseDto> responseWrapper = new ResponseWrapper<>();
 		MasterDataCardResponseDto masterDataCards = masterDataCardService.getMasterdataCards(langCode);

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MasterCardDto {
+public class MasterDataCardDto {
 	private String dataCode;
 	private String displayName;
 }
