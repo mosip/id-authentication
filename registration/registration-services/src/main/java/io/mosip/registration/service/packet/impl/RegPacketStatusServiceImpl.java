@@ -424,7 +424,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
 				response = packetSynchService.syncPacketsToServer(
 						CryptoUtil.encodeBase64(
-								aesEncryptionService.encrypt(javaObjectToJsonString(syncDtoList).getBytes())),
+								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						triggerPoint);
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {

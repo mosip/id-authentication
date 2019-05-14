@@ -303,6 +303,7 @@ public class RegistrationUIConstants {
 	public static final String UPLOAD_COLUMN_HEADER_FILE = bundle.getString("UPLOAD_COLUMN_HEADER_FILE");
 	public static final String UPLOAD_COLUMN_HEADER_STATUS = bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS = bundle.getString("PACKET_UPLOAD_SUCCESS");
+	public static final String UPLOAD_FAILED = bundle.getString("UPLOAD_FAILED");
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
