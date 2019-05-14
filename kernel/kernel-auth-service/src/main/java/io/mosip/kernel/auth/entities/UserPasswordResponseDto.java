@@ -1,14 +1,13 @@
-package io.mosip.admin.usermgmt.dto;
+package io.mosip.kernel.auth.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistrationResponseDto {
-	
+@NoArgsConstructor
+public class UserPasswordResponseDto {
+
 	private String userName;
-	
 }

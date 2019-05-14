@@ -1,4 +1,4 @@
-package io.mosip.admin.core.config;
+package io.mosip.admin.configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +61,8 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION).build();
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION)
+				.build();
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-
+				.tags(new Tag("user_registration", "operation related to user Registration")).groupName(TITLE)
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
