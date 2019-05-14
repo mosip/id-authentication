@@ -113,6 +113,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	public void deployVerticle() throws RegistrationProcessorCheckedException {
 		try {
+			failureReason = new HashMap<>();
+			mapAbisFailureReasons();
 			MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			mosipQueueList = utility.getMosipQueuesForAbis();
@@ -224,8 +226,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		} finally {
-			registrationStatusService.updateRegistrationStatus(internalRegDto);
-
+			if (!isTransactionSuccessful)
+				registrationStatusService.updateRegistrationStatus(internalRegDto);
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
@@ -262,6 +264,13 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					boolean isAddedToQueue = sendToQueue(queue, new String(abisIdentifyRequestDto.getReqText()),
 							abisInBoundAddress);
 					updateAbisRequest(isAddedToQueue, abisIdentifyRequestDto);
+				} else {
+					internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
+					internalRegDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+					internalRegDto.setStatusComment("any one of the Insert response failed due to "
+							+ getFaliureReason(abisInsertResponseDto.getFailureReason()));
+					registrationStatusService.updateRegistrationStatus(internalRegDto);
 				}
 			}
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString())) {
@@ -396,6 +405,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String getFaliureReason(Integer key) {
 		if (key == null)
 			return null;
+		return failureReason.get(key);
+
+	}
+
+	private void mapAbisFailureReasons() {
 		failureReason.put(1, "Internal error - Unknown");
 		failureReason.put(2, "Aborted");
 		failureReason.put(3, "Unexpected error - Unable to access biometric data");
@@ -403,8 +417,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		failureReason.put(5, "Invalid request / Missing mandatory fields");
 		failureReason.put(6, "Unauthorized Access");
 		failureReason.put(7, "Unable to fetch biometric details");
-		return failureReason.get(key);
-
 	}
 
 	private AbisResponseDto updateAbisResponseEntity(AbisCommonResponseDto abisCommonResponseDto, String response) {
@@ -414,7 +426,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisResponseDto.setRespText(response.getBytes());
 		int responseStatus = abisCommonResponseDto.getReturnValue();
 
-		abisResponseDto.setStatusCode(responseStatus == 1 ? "SUCCESS" : "FAILED");
+		abisResponseDto.setStatusCode(
+				responseStatus == 1 ? AbisStatusCode.SUCCESS.toString() : AbisStatusCode.FAILED.toString());
 		abisResponseDto.setStatusComment(getFaliureReason(abisCommonResponseDto.getFailureReason()));
 		abisResponseDto.setLangCode("eng");
 		abisResponseDto.setCrBy(SYSTEM);

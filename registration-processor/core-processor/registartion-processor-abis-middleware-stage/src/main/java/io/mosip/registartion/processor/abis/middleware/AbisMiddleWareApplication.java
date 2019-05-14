@@ -4,6 +4,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import io.mosip.registartion.processor.abis.middleware.stage.AbisMiddleWareStage;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * Hello world!
@@ -21,7 +23,8 @@ public class AbisMiddleWareApplication {
 		try {
 			demodedupeStage.deployVerticle();
 		} catch (RegistrationProcessorCheckedException e) {
-			System.out.println(e);
+			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
+					"Unknown exception occured while deploying", e);
 		}
 
 	}
