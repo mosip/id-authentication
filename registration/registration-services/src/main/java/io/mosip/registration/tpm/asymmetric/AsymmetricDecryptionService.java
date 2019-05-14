@@ -22,8 +22,7 @@ import tss.tpm.TPMS_NULL_ASYM_SCHEME;
 public class AsymmetricDecryptionService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(AsymmetricDecryptionService.class);
-	@Autowired
-	private AsymmetricKeyCreationService asymmetricKeyCreationService;
+	private AsymmetricKeyCreationService asymmetricKeyCreationService = new AsymmetricKeyCreationService();
 
 	/**
 	 * Decrypts the encrypted data using the {@link Tpm} instance

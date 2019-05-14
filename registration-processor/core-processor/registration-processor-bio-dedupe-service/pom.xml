@@ -74,6 +74,7 @@
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+
   </dependencies>
   <build>
 		<plugins>

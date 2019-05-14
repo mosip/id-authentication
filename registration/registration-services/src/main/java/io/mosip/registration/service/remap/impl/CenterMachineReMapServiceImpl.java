@@ -22,7 +22,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -82,7 +82,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	
 	@Autowired
 	private GlobalParamService globalParamService;
