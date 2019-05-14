@@ -28,12 +28,11 @@ public class PacketInfoDaoTest {
 
 	/** The packet infodao. */
 	@InjectMocks
-	PacketInfoDao packetInfodao;
+	private PacketInfoDao packetInfodao;
 
 	/** The qcuser reg repositary. */
 	@Mock
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
-
 
 	/** The demographic dedupe repository. */
 	@Mock
@@ -180,7 +179,6 @@ public class PacketInfoDaoTest {
 		assertEquals("Abis", result.get(0).getAbisAppCode());
 	}
 
-
 	@Test
 	public void testgetDemoListByTransactionId(){
 		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList = new ArrayList<>();
@@ -190,6 +188,28 @@ public class PacketInfoDaoTest {
 		Mockito.when(abisRequestRepository.getDemoListByTransactionId(any())).thenReturn(regDemoDedupeListEntityList);
 		List<RegDemoDedupeListEntity> result = packetInfodao.getDemoListByTransactionId("abc-efg");
 		assertEquals("1234567890", result.get(0).getRegId());
+	}
+
+	@Test
+	public void testgetBioRefIdByRegId(){
+		List<RegBioRefEntity> regBioRefEntityList = new ArrayList<>();
+		RegBioRefEntity entity = new RegBioRefEntity();
+		entity.setBioRefId("abc-efg");
+		regBioRefEntityList.add(entity);
+		Mockito.when(abisRequestRepository.getBioRefIdByRegId(any())).thenReturn(regBioRefEntityList);
+		List<RegBioRefEntity> result = packetInfodao.getBioRefIdByRegId("1234567890");
+		assertEquals("abc-efg", result.get(0).getBioRefId());
+	}
+
+	@Test
+	public void testgetIdentifyByTransactionId(){
+		List<AbisRequestEntity> abisRequestEntityList = new ArrayList<>();
+		AbisRequestEntity entity = new AbisRequestEntity();
+		entity.setAbisAppCode("Abis");
+		abisRequestEntityList.add(entity);
+		Mockito.when(abisRequestRepository.getIdentifyByTransactionId(any(), any())).thenReturn(abisRequestEntityList);
+		List<AbisRequestEntity> result = packetInfodao.getIdentifyByTransactionId("12345", "IDENTIFY");
+		assertEquals("Abis", result.get(0).getAbisAppCode());
 	}
 
 }
